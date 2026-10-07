@@ -20,7 +20,8 @@ The LaTeX source of the thesis is in [`thesis/`](thesis/).
 
 ```
 prnote/                   core toolkit: four review modes, KG and RAG context builders, prompts
-scripts/                  evaluation, statistics, sensitivity analyses, figure generation
+scripts/                  the ~36 scripts that judge, aggregate, test and plot the thesis results;
+                          retired-experiment scripts are in archive/scripts_other/
 dataset_v2/               construction of the 40-PR dataset (scripts + audit docs)
 data/evidence_packs_v2/   the 40 frozen evidence packs (diff, metadata, graph facts, RAG chunks)
 outputs/reviews_v2/       the 160 generated reviews (40 PRs x 4 modes) + per-judge verdict cache
