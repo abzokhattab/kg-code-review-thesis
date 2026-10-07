@@ -1,7 +1,9 @@
 # Artefacts not in this repository (too large for GitHub)
 
 These live on the author's machine under `/Users/akhattab/ai/` and are to be
-uploaded to Drive. Nothing in the thesis *depends* on them being here: every
+uploaded to Drive. They are staged, under the same relative paths, in one
+folder on the source machine (`/Users/akhattab/thesis_drive_upload/`), which
+is what gets uploaded. Nothing in the thesis *depends* on them being here: every
 number is recomputable from the JSON/Markdown result files that are in this
 repository. They are needed only to re-run generation or re-build graphs from
 scratch.
