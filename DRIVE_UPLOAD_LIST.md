@@ -17,7 +17,7 @@ scratch.
 | `experiments/2026-05-15_joern_kg_main/{exports,cpgs,cache}/` | 7.5 GB | Joern CPG binaries, exported query results and caches for the 35 PRs. The query code and the 36 resulting evidence packs (`evidence/`) **are** in the repo; only the binaries are here | rebuilding the CPGs or re-running the CPGQL queries |
 | `experiments/2026-05-15_joern_kg/` | 173 MB | Superseded Joern pilot (May 2026) | historical only |
 | `archive/experiments/2026-09-19_budgeted_fusion_retrieval/RESULTS*.json` | 49 MB | Per-budget retrieval traces for the NO-GO fusion study (Markdown summaries are in the repo) | re-plotting only |
-| `repos/`, `luca_repos/` | 7.5 GB | Source repositories checked out at the 40 PR head SHAs | rebuilding evidence packs / CPGs |
+| `repos/`, `luca_repos/` | 7.5 GB | Source repositories checked out at the PR head commits. Not uploaded: `REPOS_MANIFEST.md` lists remote + commit for each, and `scripts/clone_source_repos.sh` re-creates them exactly | rebuilding evidence packs / CPGs |
 | `data/` (other than `luca_prs_v2`) | ~2.5 GB | v1 and intermediate datasets (v1 is contaminated; see `dataset_v2/docs/AUDIT_v1.md`) | historical only |
 | `workspace/` | 927 MB | Scratch working directory | none |
 
