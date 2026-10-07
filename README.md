@@ -89,7 +89,7 @@ pip install -r requirements-eval.txt
 | Human study — build stimuli | `experiments/2026-07-06_user_study_prs/{build_evidence,generate_reviews,judge_reviews,build_answer_key,normalize_review_surfaces,assemble_study_draft}.py` | folder README |
 
 Rebuilding the Joern graphs needs Joern and the repositories at the PR head
-commits (`scripts/clone_source_repos.sh`; CPG binaries on Drive). Thesis
+commits (`scripts/clone_source_repos.sh`; CPG binaries on Zenodo). Thesis
 figures are a by-product: `python3 scripts/generate_thesis_figures.py`
 redraws them from the result JSONs.
 

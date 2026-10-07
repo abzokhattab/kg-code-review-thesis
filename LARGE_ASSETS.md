@@ -1,6 +1,6 @@
 # Large assets (hosted on Zenodo, not in this repository)
 
-These are available on Drive under the same relative paths as the lab
+These are available on Zenodo under the same relative paths as the lab
 repository (e.g. `experiments/2026-05-15_joern_kg_main/exports/`).
 
 **Zenodo record:** https://zenodo.org/records/23215802
