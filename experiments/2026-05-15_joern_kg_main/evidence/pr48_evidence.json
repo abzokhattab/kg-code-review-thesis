@@ -1,0 +1,1300 @@
+{
+  "pr": {
+    "number": 26636,
+    "title": "Make getLoadedBuilds not to copy all coreMap builds",
+    "body": "Related to [https://github.com/jenkinsci/jenkins/issues/26596](https://github.com/jenkinsci/jenkins/issues/26596)\r\n\r\nThis change refactors `getLoadedBuilds()` to return a `BuildReferenceMapAdapter` backed by the existing `core` map with a `LoadedOnlyBuildReferenceResolver` that only returns builds already loaded into memory, without triggering disk loads. This avoids the unnecessary copy and allocation.\r\n\r\nAs part of this refactoring:\r\n- Extracted `BuildReferenceResolver` interface from the inner `Resolver` interface in `BuildReferenceMapAdapter`, separating build reference resolution logic from build metadata (`BuildTypeDescriptor`)\r\n- Introduced `LoadedOnlyBuildReferenceResolver` \u2014 resolves only in-memory references, used by `getLoadedBuilds()`\r\n- Introduced `DefaultBuildReferenceResolver` \u2014 resolves references with disk loading fallback, used by all other operations\r\n\r\n### Testing done\r\nManual testing done on local environment, Jenkins PR automated testing done\r\n\r\n### Screenshots (UI changes only)\r\n\r\n#### Before\r\n\r\n#### After\r\n\r\n### Proposed changelog entries\r\n\r\n- Avoid unnecessary copy of all loaded builds in `AbstractLazyLoadRunMap.getLoadedBuilds()`.\r\n\r\n### Proposed changelog category\r\n\r\n/label internal\r\n\r\n### Proposed upgrade guidelines\r\n\r\nN/A\r\n\r\n### Submitter checklist\r\n\r\n- [ ] The issue, if it exists, is well-described.\r\n- [ ] The changelog entries and upgrade guidelines are appropriate for the audience affected by the change (users or developers, depending on the change) and are in the imperative mood (see [examples](https://github.com/jenkins-infra/jenkins.io/blob/master/content/_data/changelogs/weekly.yml)). Fill in the **Proposed upgrade guidelines** section only if there are breaking changes or changes that may require extra steps from users during upgrade.\r\n- [ ] There is automated testing or an explanation as to why this change has no tests.\r\n- [ ] New public classes, fields, and methods are annotated with `@Restricted` or have `@since TODO` Javadocs, as appropriate.\r\n- [ ] New deprecations are annotated with `@Deprecated(since = \"TODO\")` or `@Deprecated(forRemoval = true, since = \"TODO\")`, if applicable.\r\n- [ ] UI changes do not introduce regressions when enforcing the current default rules of [Content Security Policy Plugin](https://plugins.jenkins.io/csp/). In particular, new or substantially changed JavaScript is not defined inline and does not call `eval` to ease future introduction of Content Security Policy (CSP) directives (see [documentation](https://www.jenkins.io/doc/developer/security/csp/)).\r\n- [ ] For dependency updates, there are links to external changelogs and, if possible, full differentials.\r\n- [ ] For new APIs and extension points, there is a link to at least one consumer.\r\n\r\n### Desired reviewers\r\n\r\n@jglick @timja @bennettzhu1\r\n\r\n\r\nBefore the changes are marked as `ready-for-merge`:\r\n\r\n### Maintainer checklist\r\n\r\n- [ ] There are at least two (2) approvals for the pull request and no outstanding requests for change.\r\n- [ ] Conversations in the pull request are over, or it is explicit that a reviewer is not blocking the change.\r\n- [ ] Changelog entries in the pull request title and/or **Proposed changelog entries** are accurate, human-readable, and in the imperative mood.\r\n- [ ] Proper changelog labels are set so that the changelog can be generated automatically.\r\n- [ ] If the change needs additional upgrade steps from users, the `upgrade-guide-needed` label is set and there is a **Proposed upgrade guidelines** section in the pull request title (see [example](https://github.com/jenkinsci/jenkins/pull/4387)).\r\n- [ ] If it would make sense to backport the change to LTS, be a _Bug_ or _Improvement_, and either the issue or pull request must be labeled as `lts-candidate` to be considered.\r\n",
+    "url": "https://github.com/jenkinsci/jenkins/pull/26636",
+    "repo": "jenkinsci/jenkins",
+    "base_branch": "master",
+    "head_branch": "build-ref-resolution-refactoring",
+    "merged_at": "2026-04-18T08:53:51Z",
+    "state": "MERGED"
+  },
+  "changed_files": [
+    {
+      "path": "core/src/main/java/hudson/model/RunMap.java",
+      "language": "java",
+      "added": 3,
+      "deleted": 31
+    },
+    {
+      "path": "core/src/main/java/hudson/util/CopyOnWriteMap.java",
+      "language": "java",
+      "added": 17,
+      "deleted": 5
+    },
+    {
+      "path": "core/src/main/java/jenkins/model/lazy/AbstractLazyLoadRunMap.java",
+      "language": "java",
+      "added": 105,
+      "deleted": 27
+    },
+    {
+      "path": "core/src/main/java/jenkins/model/lazy/BuildReferenceMapAdapter.java",
+      "language": "java",
+      "added": 63,
+      "deleted": 41
+    },
+    {
+      "path": "core/src/main/java/jenkins/model/lazy/LazyBuildMixIn.java",
+      "language": "java",
+      "added": 19,
+      "deleted": 14
+    }
+  ],
+  "nearest_tests": [
+    {
+      "path": "core/src/test/java/jenkins/model/lazy/AbstractLazyLoadRunMapTest.java",
+      "relationship": "tests",
+      "source_file": "core/src/main/java/hudson/model/RunMap.java"
+    },
+    {
+      "path": "test/src/test/java/hudson/model/RunMapTest.java",
+      "relationship": "tests",
+      "source_file": "core/src/main/java/hudson/model/RunMap.java"
+    },
+    {
+      "path": "core/src/test/java/hudson/util/CopyOnWriteMapTest.java",
+      "relationship": "tests",
+      "source_file": "core/src/main/java/hudson/util/CopyOnWriteMap.java"
+    },
+    {
+      "path": "test/src/test/java/jenkins/model/lazy/LazyBuildMixInTest.java",
+      "relationship": "tests",
+      "source_file": "core/src/main/java/jenkins/model/lazy/LazyBuildMixIn.java"
+    }
+  ],
+  "dependent_files": [
+    {
+      "path": "core/src/test/java/jenkins/model/lazy/FakeMap.java",
+      "relationship": "imports",
+      "source_file": "core/src/main/java/hudson/model/RunMap.java"
+    },
+    {
+      "path": "core/src/test/java/jenkins/model/lazy/AbstractLazyLoadRunMapTest.java",
+      "relationship": "imports",
+      "source_file": "core/src/main/java/hudson/model/RunMap.java"
+    },
+    {
+      "path": "core/src/main/java/hudson/model/Run.java",
+      "relationship": "imports",
+      "source_file": "core/src/main/java/hudson/model/RunMap.java"
+    },
+    {
+      "path": "core/src/main/java/hudson/model/ViewJob.java",
+      "relationship": "imports",
+      "source_file": "core/src/main/java/hudson/model/RunMap.java"
+    },
+    {
+      "path": "core/src/main/java/hudson/model/Job.java",
+      "relationship": "imports",
+      "source_file": "core/src/main/java/hudson/model/RunMap.java"
+    },
+    {
+      "path": "core/src/main/java/hudson/model/listeners/RunListener.java",
+      "relationship": "imports",
+      "source_file": "core/src/main/java/hudson/model/RunMap.java"
+    },
+    {
+      "path": "core/src/main/java/hudson/model/AbstractProject.java",
+      "relationship": "imports",
+      "source_file": "core/src/main/java/hudson/model/RunMap.java"
+    },
+    {
+      "path": "core/src/main/java/jenkins/model/lazy/BuildReference.java",
+      "relationship": "imports",
+      "source_file": "core/src/main/java/hudson/model/RunMap.java"
+    },
+    {
+      "path": "core/src/test/java/hudson/util/ConsistentHashTest.java",
+      "relationship": "imports",
+      "source_file": "core/src/main/java/hudson/util/CopyOnWriteMap.java"
+    },
+    {
+      "path": "core/src/test/java/hudson/util/CopyOnWriteMapTest.java",
+      "relationship": "imports",
+      "source_file": "core/src/main/java/hudson/util/CopyOnWriteMap.java"
+    },
+    {
+      "path": "core/src/main/java/hudson/util/XStream2.java",
+      "relationship": "imports",
+      "source_file": "core/src/main/java/hudson/util/CopyOnWriteMap.java"
+    },
+    {
+      "path": "core/src/main/java/hudson/model/ItemGroupMixIn.java",
+      "relationship": "imports",
+      "source_file": "core/src/main/java/hudson/util/CopyOnWriteMap.java"
+    },
+    {
+      "path": "core/src/main/java/hudson/logging/LogRecorderManager.java",
+      "relationship": "imports",
+      "source_file": "core/src/main/java/hudson/util/CopyOnWriteMap.java"
+    },
+    {
+      "path": "core/src/main/java/jenkins/model/Jenkins.java",
+      "relationship": "imports",
+      "source_file": "core/src/main/java/hudson/util/CopyOnWriteMap.java"
+    },
+    {
+      "path": "core/src/main/java/hudson/model/AbstractBuild.java",
+      "relationship": "imports",
+      "source_file": "core/src/main/java/jenkins/model/lazy/LazyBuildMixIn.java"
+    }
+  ],
+  "diff_summary": "5 files changed",
+  "full_diff": "diff --git a/core/src/main/java/hudson/model/RunMap.java b/core/src/main/java/hudson/model/RunMap.java\nindex 2204ad4f9744..ca5275325a74 100644\n--- a/core/src/main/java/hudson/model/RunMap.java\n+++ b/core/src/main/java/hudson/model/RunMap.java\n@@ -25,8 +25,6 @@\n package hudson.model;\n \n import static java.util.logging.Level.FINEST;\n-import static jenkins.model.lazy.AbstractLazyLoadRunMap.Direction.ASC;\n-import static jenkins.model.lazy.AbstractLazyLoadRunMap.Direction.DESC;\n \n import edu.umd.cs.findbugs.annotations.CheckForNull;\n import edu.umd.cs.findbugs.annotations.NonNull;\n@@ -40,7 +38,6 @@\n import java.util.Comparator;\n import java.util.Iterator;\n import java.util.Map;\n-import java.util.NoSuchElementException;\n import java.util.Objects;\n import java.util.SortedMap;\n import java.util.function.IntPredicate;\n@@ -120,32 +117,7 @@ public boolean remove(R run) {\n      */\n     @Override\n     public Iterator<R> iterator() {\n-        return new Iterator<>() {\n-            R last = null;\n-            R next = newestBuild();\n-\n-            @Override\n-            public boolean hasNext() {\n-                return next != null;\n-            }\n-\n-            @Override\n-            public R next() {\n-                last = next;\n-                if (last != null)\n-                    next = last.getPreviousBuild();\n-                else\n-                    throw new NoSuchElementException();\n-                return last;\n-            }\n-\n-            @Override\n-            public void remove() {\n-                if (last == null)\n-                    throw new UnsupportedOperationException();\n-                removeValue(last);\n-            }\n-        };\n+        return values().iterator();\n     }\n \n     @Override\n@@ -165,14 +137,14 @@ public SortedMap<Integer, R> getView() {\n      * This is the newest build (with the biggest build number)\n      */\n     public R newestValue() {\n-        return search(Integer.MAX_VALUE, DESC);\n+        return newestBuild();\n     }\n \n     /**\n      * This is the oldest build (with the smallest build number)\n      */\n     public R oldestValue() {\n-        return search(Integer.MIN_VALUE, ASC);\n+        return oldestBuild();\n     }\n \n     /**\ndiff --git a/core/src/main/java/hudson/util/CopyOnWriteMap.java b/core/src/main/java/hudson/util/CopyOnWriteMap.java\nindex c080d25ffc9c..4ab42793f9b6 100644\n--- a/core/src/main/java/hudson/util/CopyOnWriteMap.java\n+++ b/core/src/main/java/hudson/util/CopyOnWriteMap.java\n@@ -172,16 +172,16 @@ public Set<Entry<K, V>> entrySet() {\n     }\n \n     @Override public int hashCode() {\n-        return copy().hashCode();\n+        return core.hashCode();\n     }\n \n     @SuppressWarnings(\"EqualsWhichDoesntCheckParameterClass\")\n     @Override public boolean equals(Object obj) {\n-        return copy().equals(obj);\n+        return core.equals(obj);\n     }\n \n     @Override public String toString() {\n-        return copy().toString();\n+        return core.toString();\n     }\n \n     /**\n@@ -200,6 +200,11 @@ protected Map<K, V> copy() {\n             return new LinkedHashMap<>(core);\n         }\n \n+        @Override\n+        public synchronized void replaceBy(Map<? extends K, ? extends V> data) {\n+            update(new LinkedHashMap<>(data));\n+        }\n+\n         public static class ConverterImpl extends MapConverter {\n             public ConverterImpl(Mapper mapper) {\n                 super(mapper);\n@@ -226,14 +231,14 @@ public void marshal(Object source, HierarchicalStreamWriter writer, MarshallingC\n      * {@link CopyOnWriteMap} backed by {@link TreeMap}.\n      */\n     public static final class Tree<K, V> extends CopyOnWriteMap<K, V> implements NavigableMap<K, V> {\n-        private final Comparator<K> comparator;\n+        private final Comparator<? super K> comparator;\n \n         public Tree(Map<K, V> core, Comparator<K> comparator) {\n             this(comparator);\n             putAll(core);\n         }\n \n-        public Tree(Comparator<K> comparator) {\n+        public Tree(Comparator<? super K> comparator) {\n             super(new TreeMap<>(comparator));\n             this.comparator = comparator;\n         }\n@@ -254,6 +259,13 @@ public synchronized void clear() {\n             update(new TreeMap<>(comparator));\n         }\n \n+        @Override\n+        public synchronized void replaceBy(Map<? extends K, ? extends V> data) {\n+            TreeMap<K, V> m = new TreeMap<>(comparator);\n+            m.putAll(data);\n+            update(m);\n+        }\n+\n         @Override\n         protected NavigableMap<K, V> createView() {\n             return Collections.unmodifiableNavigableMap((NavigableMap<K, V>) core);\ndiff --git a/core/src/main/java/jenkins/model/lazy/AbstractLazyLoadRunMap.java b/core/src/main/java/jenkins/model/lazy/AbstractLazyLoadRunMap.java\nindex cc4679b6310d..b2234c6ec5a9 100644\n--- a/core/src/main/java/jenkins/model/lazy/AbstractLazyLoadRunMap.java\n+++ b/core/src/main/java/jenkins/model/lazy/AbstractLazyLoadRunMap.java\n@@ -24,10 +24,6 @@\n \n package jenkins.model.lazy;\n \n-import static jenkins.model.lazy.AbstractLazyLoadRunMap.Direction.ASC;\n-import static jenkins.model.lazy.AbstractLazyLoadRunMap.Direction.DESC;\n-import static jenkins.model.lazy.AbstractLazyLoadRunMap.Direction.EXACT;\n-\n import edu.umd.cs.findbugs.annotations.CheckForNull;\n import hudson.model.Job;\n import hudson.model.Run;\n@@ -40,6 +36,7 @@\n import java.util.Collection;\n import java.util.Collections;\n import java.util.Comparator;\n+import java.util.Iterator;\n import java.util.Map;\n import java.util.NavigableMap;\n import java.util.NoSuchElementException;\n@@ -92,10 +89,14 @@\n  * @since 1.485\n  */\n public abstract class AbstractLazyLoadRunMap<R> extends AbstractMap<Integer, R> implements SortedMap<Integer, R> {\n-    private final CopyOnWriteMap.Tree<Integer, BuildReference<R>> core = new CopyOnWriteMap.Tree<>(\n-            Collections.reverseOrder());\n-    private final BuildReferenceMapAdapter.Resolver<R> buildResolver = new BuildReferenceMapAdapterResolver();\n-    private final BuildReferenceMapAdapter<R> adapter = new BuildReferenceMapAdapter<>(core, buildResolver) {\n+    private final BuildTypeDescriptor buildTypeDescriptor = new BuildTypeDescriptor();\n+    private final BuildReferenceMapAdapter.BuildReferenceResolver<R> loadedOnlyBuildRefResolver =\n+            new LoadedOnlyBuildReferenceResolver<>();\n+    private final BuildReferenceMapAdapter.BuildReferenceResolver<R> defaultBuildRefResolver =\n+            new DefaultBuildReferenceResolver();\n+    private final CopyOnWriteMap.Tree<Integer, BuildReference<R>> core = new CopyOnWriteMap.Tree<>(comparator());\n+    private final BuildReferenceMapAdapter<R> adapter = new BuildReferenceMapAdapter<>(core, defaultBuildRefResolver,\n+            buildTypeDescriptor) {\n         @Override\n         protected boolean removeValue(R value) {\n             return AbstractLazyLoadRunMap.this.removeValue(value);\n@@ -139,7 +140,8 @@ protected void initBaseDir(File dir) {\n     }\n \n     /**\n-     * @return true if {@link AbstractLazyLoadRunMap#AbstractLazyLoadRunMap} was called with a non-null param, or {@link RunMap#load(Job, RunMap.Constructor)} was called\n+     * @return true if {@link AbstractLazyLoadRunMap#AbstractLazyLoadRunMap} was called with a non-null param,\n+     * or {@link RunMap#load(Job, RunMap.Constructor)} was called\n      */\n     @Restricted(NoExternalUse.class)\n     public final boolean baseDirInitialized() {\n@@ -175,7 +177,7 @@ private void loadNumberOnDisk() {\n             // the job may have just been created\n             kids = MemoryReductionUtil.EMPTY_STRING_ARRAY;\n         }\n-        TreeMap<Integer, BuildReference<R>> newBuildRefsMap = new TreeMap<>();\n+        TreeMap<Integer, BuildReference<R>> newBuildRefsMap = new TreeMap<>(core.comparator());\n         var allower = createLoadAllower();\n         for (String s : kids) {\n             if (!BUILD_NUMBER.matcher(s).matches()) {\n@@ -229,7 +231,7 @@ public final void recognizeNumber(int buildNumber) {\n \n     @Override\n     public Comparator<? super Integer> comparator() {\n-        return core.comparator();\n+        return Collections.reverseOrder();\n     }\n \n     @Override\n@@ -249,16 +251,17 @@ public boolean containsValue(Object value) {\n \n     /**\n      * Returns a read-only view of records that has already been loaded.\n+     * <p>\n+     * <b>Note:</b> Consider using {@link #streamLoadedBuilds()} instead of this method,\n+     * as (like {@code size()}) method of the returned map is implemented\n+     * inefficiently and may cause performance issues.\n      */\n     public SortedMap<Integer, R> getLoadedBuilds() {\n-        TreeMap<Integer, R> res = new TreeMap<>(Comparator.reverseOrder());\n-        streamLoadedBuilds().forEach(r -> res.put(getNumberOf(r), r));\n-        return res;\n+        return new ConsistentSizeBuildReferenceMapAdapter<>(core, loadedOnlyBuildRefResolver, buildTypeDescriptor);\n     }\n \n     /**\n      * Returns a lazy stream of build objects, sorted by newest first, skipping GC builds\n-     * Unlike {@link #getLoadedBuilds()}, this doesn't require copying the entire map\n      * @since 2.559\n      */\n     public Stream<R> streamLoadedBuilds() {\n@@ -299,11 +302,13 @@ public Integer lastKey() {\n     }\n \n     public R newestBuild() {\n-        return search(Integer.MAX_VALUE, DESC);\n+        Map.Entry<Integer, R> entry = adapter.firstEntry();\n+        return entry == null ? null : entry.getValue();\n     }\n \n     public R oldestBuild() {\n-        return search(Integer.MIN_VALUE, ASC);\n+        Map.Entry<Integer, R> entry = adapter.lastEntry();\n+        return entry == null ? null : entry.getValue();\n     }\n \n     @Override\n@@ -339,15 +344,11 @@ public boolean runExists(int number) {\n      *      If DESC, finds the closest #M that satisfies M \u2264 N.\n      */\n     public @CheckForNull R search(final int n, final Direction d) {\n-        if (d == EXACT) {\n+        if (d == Direction.EXACT) {\n             return this.adapter.get(n);\n         }\n-        // prepare sub map, where we need to find first resolvable entry\n-        NavigableMap<Integer, BuildReference<R>> subCore = (d == ASC)\n-                ? core.headMap(n, true).descendingMap()\n-                : core.tailMap(n, true);\n-        // wrap with BuildReferenceMapAdapter to skip unresolvable entries\n-        return new BuildReferenceMapAdapter<>(subCore, buildResolver).values().stream().findFirst().orElse(null);\n+        Map.Entry<Integer, R> entry = (d == Direction.ASC ? adapter.reversed() : adapter).tailMap(n).firstEntry();\n+        return entry == null ? null : entry.getValue();\n     }\n \n     public R getById(String id) {\n@@ -430,7 +431,7 @@ public synchronized R put(Integer key, R r) {\n \n     @Override\n     public synchronized void putAll(Map<? extends Integer, ? extends R> newData) {\n-        TreeMap<Integer, BuildReference<R>> newWrapperData = new TreeMap<>();\n+        TreeMap<Integer, BuildReference<R>> newWrapperData = new TreeMap<>(core.comparator());\n         for (Map.Entry<? extends Integer, ? extends R> entry : newData.entrySet()) {\n             newWrapperData.put(entry.getKey(), createReference(entry.getValue()));\n         }\n@@ -508,7 +509,7 @@ public synchronized boolean removeValue(R run) {\n      * Replaces all the current loaded Rs with the given ones.\n      */\n     public synchronized void reset(Map<Integer, R> builds) {\n-        TreeMap<Integer, BuildReference<R>> copy = new TreeMap<>();\n+        TreeMap<Integer, BuildReference<R>> copy = new TreeMap<>(core.comparator());\n         for (R r : builds.values()) {\n             copy.put(getNumberOf(r), createReference(r));\n         }\n@@ -530,12 +531,38 @@ public enum Direction {\n         ASC, DESC, EXACT\n     }\n \n-    private class BuildReferenceMapAdapterResolver implements BuildReferenceMapAdapter.Resolver<R> {\n+    /**\n+     * Default implementation of {@link BuildReferenceMapAdapter.BuildReferenceResolver} that handles\n+     * reference resolution for {@link AbstractLazyLoadRunMap}.\n+     */\n+    private final class DefaultBuildReferenceResolver implements BuildReferenceMapAdapter.BuildReferenceResolver<R> {\n+        /**\n+         * Returns the build already loaded into memory if it exists;\n+         * otherwise, loads it from the disk.\n+         *\n+         * @param buildRef the build reference to resolve\n+         * @return the resolved build instance, or {@code null} if it cannot be found\n+         */\n         @Override\n         public R resolveBuildRef(BuildReference<R> buildRef) {\n             return AbstractLazyLoadRunMap.this.resolveBuildRef(buildRef);\n         }\n \n+        /**\n+         * Checks if the reference can be resolved. If the reference was already resolved,\n+         * returns the cached status. Otherwise, attempts to resolve it and returns the result.\n+         *\n+         * @param buildRef the reference to check\n+         * @return {@code true} if the reference points to a valid build\n+         */\n+        @Override\n+        public boolean isBuildRefResolvable(BuildReference<R> buildRef) {\n+            return buildRef != null &&\n+                    (buildRef.isSet() ? !buildRef.isUnloadable() : this.resolveBuildRef(buildRef) != null);\n+        }\n+    }\n+\n+    private final class BuildTypeDescriptor implements BuildReferenceMapAdapter.BuildTypeDescriptor<R> {\n         @Override\n         public Integer getNumberOf(R build) {\n             return AbstractLazyLoadRunMap.this.getNumberOf(build);\n@@ -547,5 +574,56 @@ public Class<R> getBuildClass() {\n         }\n     }\n \n+    /**\n+     * An implementation of {@link BuildReferenceMapAdapter.BuildReferenceResolver} that does not\n+     * perform disk loading and only uses values already loaded into memory.\n+     */\n+    private static final class LoadedOnlyBuildReferenceResolver<R>\n+            implements BuildReferenceMapAdapter.BuildReferenceResolver<R> {\n+        @Override\n+        public R resolveBuildRef(BuildReference<R> buildRef) {\n+            return buildRef == null ? null : buildRef.get();\n+        }\n+\n+        @Override\n+        public boolean isBuildRefResolvable(BuildReference<R> buildRef) {\n+            return resolveBuildRef(buildRef) != null;\n+        }\n+    }\n+\n+    /**\n+     * An implementation of {@link BuildReferenceMapAdapter} that provides a precise\n+     * {@link #size()} implementation by iterating over all entries.\n+     * <p>\n+     * Unlike {@link BuildReferenceMapAdapter}, this version ensures that only valid,\n+     * resolvable entries are counted.\n+     */\n+    private static class ConsistentSizeBuildReferenceMapAdapter<R> extends BuildReferenceMapAdapter<R> {\n+        ConsistentSizeBuildReferenceMapAdapter(NavigableMap<Integer, BuildReference<R>> core,\n+                                               BuildReferenceResolver<R> resolver,\n+                                               BuildTypeDescriptor<R> typeDescriptor) {\n+            super(core, resolver, typeDescriptor);\n+        }\n+\n+        @Override\n+        protected ConsistentSizeBuildReferenceMapAdapter<R> createInstance(\n+                NavigableMap<Integer, BuildReference<R>> core) {\n+            return new ConsistentSizeBuildReferenceMapAdapter<>(core, resolver, typeDescriptor);\n+        }\n+\n+        /**\n+         * Avoid using this method as it performs a full collection scan and can be very slow for large maps.\n+         * Suitable for tests only.\n+         */\n+        @Override\n+        public int size() {\n+            int count = 0;\n+            for (Iterator<?> iter = super.entrySet().iterator(); iter.hasNext(); iter.next()) {\n+                count++;\n+            }\n+            return count;\n+        }\n+    }\n+\n     static final Logger LOGGER = Logger.getLogger(AbstractLazyLoadRunMap.class.getName());\n }\ndiff --git a/core/src/main/java/jenkins/model/lazy/BuildReferenceMapAdapter.java b/core/src/main/java/jenkins/model/lazy/BuildReferenceMapAdapter.java\nindex 41e23d65e266..5b6c864e8389 100644\n--- a/core/src/main/java/jenkins/model/lazy/BuildReferenceMapAdapter.java\n+++ b/core/src/main/java/jenkins/model/lazy/BuildReferenceMapAdapter.java\n@@ -22,7 +22,7 @@\n  * Take {@code SortedMap<Integer,BuildReference<R>>} and make it look like {@code SortedMap<Integer,R>}.\n  *\n  * <p>\n- * When {@link BuildReference} lost the build object, we'll use {@link Resolver} to obtain one.\n+ * When {@link BuildReference} lost the build object, we'll use {@link BuildReferenceResolver} to obtain one.\n  * </p>\n  *\n  * <p>\n@@ -43,17 +43,21 @@\n  *\n  * @author Kohsuke Kawaguchi\n  */\n-class BuildReferenceMapAdapter<R> extends AbstractMap<Integer, R> implements SortedMap<Integer, R> {\n-    private final NavigableMap<Integer, BuildReference<R>> core;\n-    private final Resolver<R> resolver;\n+class BuildReferenceMapAdapter<R> extends AbstractMap<Integer, R>\n+        implements SortedMap<Integer, R> {\n+    protected final NavigableMap<Integer, BuildReference<R>> core;\n+    protected final BuildReferenceResolver<R> resolver;\n+    protected final BuildTypeDescriptor<R>  typeDescriptor;\n \n     private final Set<Integer> keySet = new KeySetAdapter();\n     private final Collection<R> values = new ValuesAdapter();\n     private final Set<Map.Entry<Integer, R>> entrySet = new EntrySetAdapter();\n \n-    BuildReferenceMapAdapter(NavigableMap<Integer, BuildReference<R>> core, Resolver<R> resolver) {\n+    BuildReferenceMapAdapter(NavigableMap<Integer, BuildReference<R>> core, BuildReferenceResolver<R> resolver,\n+                             BuildTypeDescriptor<R> typeDescriptor) {\n         this.core = core;\n         this.resolver = resolver;\n+        this.typeDescriptor = typeDescriptor;\n     }\n \n     @Override\n@@ -63,17 +67,22 @@ public Comparator<? super Integer> comparator() {\n \n     @Override\n     public SortedMap<Integer, R> subMap(Integer fromKey, Integer toKey) {\n-        return new BuildReferenceMapAdapter<>(core.subMap(fromKey, true, toKey, false), resolver);\n+        return createInstance(core.subMap(fromKey, true, toKey, false));\n     }\n \n     @Override\n     public SortedMap<Integer, R> headMap(Integer toKey) {\n-        return new BuildReferenceMapAdapter<>(core.headMap(toKey, false), resolver);\n+        return createInstance(core.headMap(toKey, false));\n     }\n \n     @Override\n     public SortedMap<Integer, R> tailMap(Integer fromKey) {\n-        return new BuildReferenceMapAdapter<>(core.tailMap(fromKey, true), resolver);\n+        return createInstance(core.tailMap(fromKey, true));\n+    }\n+\n+    @Override\n+    public SortedMap<Integer, R> reversed() {\n+        return createInstance(core.descendingMap());\n     }\n \n     @Override\n@@ -83,7 +92,7 @@ public Integer firstKey() {\n \n     @Override\n     public Integer lastKey() {\n-        return new BuildReferenceMapAdapter<>(core.descendingMap(), resolver).firstKey();\n+        return reversed().firstKey();\n     }\n \n     @Override\n@@ -101,31 +110,28 @@ public Set<Map.Entry<Integer, R>> entrySet() {\n         return entrySet;\n     }\n \n+    @Override\n+    public int size() {\n+        return core.size();\n+    }\n+\n     @Override\n     public boolean isEmpty() {\n-        return entrySet().isEmpty();\n+        return entrySet().stream().findFirst().isEmpty();\n     }\n \n     @Override\n     public boolean containsKey(Object key) {\n-        BuildReference<R> ref = key instanceof Integer ? core.get(key) : null;\n-        if (ref == null) {\n-            return false;\n-        }\n-        // if found, check if value is loadable\n-        if (!ref.isSet()) {\n-            resolver.resolveBuildRef(ref);\n-        }\n-        return !ref.isUnloadable();\n+        return resolver.isBuildRefResolvable(key instanceof Integer ? core.get(key) : null);\n     }\n \n     @Override\n     public boolean containsValue(Object value) {\n-        if (!resolver.getBuildClass().isInstance(value)) {\n+        if (!typeDescriptor.getBuildClass().isInstance(value)) {\n             return false;\n         }\n-        R val = resolver.getBuildClass().cast(value);\n-        return val.equals(get(resolver.getNumberOf(val)));\n+        R val = typeDescriptor.getBuildClass().cast(value);\n+        return val.equals(get(typeDescriptor.getNumberOf(val)));\n     }\n \n     @Override\n@@ -142,6 +148,10 @@ public R remove(Object key) {\n         return removeValue(val) ? val : null;\n     }\n \n+    protected BuildReferenceMapAdapter<R> createInstance(NavigableMap<Integer, BuildReference<R>> coreMap) {\n+        return new BuildReferenceMapAdapter<>(coreMap, resolver, typeDescriptor);\n+    }\n+\n     protected boolean removeValue(R value) {\n         throw new UnsupportedOperationException();\n     }\n@@ -172,16 +182,7 @@ public Iterator<Integer> iterator() {\n             return Iterators.removeNull(Iterators.map(\n                     BuildReferenceMapAdapter.this.core.entrySet().iterator(), coreEntry -> {\n                         BuildReference<R> ref = coreEntry.getValue();\n-                        if (!ref.isSet()) {\n-                            R r = resolver.resolveBuildRef(ref);\n-                            if (r == null) {\n-                                return null;\n-                            }\n-                        }\n-                        if (ref.isUnloadable()) {\n-                            return null;\n-                        }\n-                        return ref.number;\n+                        return resolver.isBuildRefResolvable(ref) ? ref.number : null;\n                     }));\n         }\n \n@@ -227,8 +228,8 @@ public boolean contains(Object v) {\n \n         @Override\n         public boolean remove(Object o) {\n-            return resolver.getBuildClass().isInstance(o) &&\n-                    BuildReferenceMapAdapter.this.removeValue(resolver.getBuildClass().cast(o));\n+            return typeDescriptor.getBuildClass().isInstance(o) &&\n+                    BuildReferenceMapAdapter.this.removeValue(typeDescriptor.getBuildClass().cast(o));\n         }\n \n         @Override\n@@ -250,12 +251,12 @@ public Spliterator<R> spliterator() {\n     private class EntrySetAdapter extends AbstractSet<Map.Entry<Integer, R>> {\n         @Override\n         public int size() {\n-            return BuildReferenceMapAdapter.this.core.size();\n+            return BuildReferenceMapAdapter.this.size();\n         }\n \n         @Override\n         public boolean isEmpty() {\n-            return this.stream().findFirst().isEmpty();\n+            return BuildReferenceMapAdapter.this.isEmpty();\n         }\n \n         @Override\n@@ -269,8 +270,8 @@ public boolean contains(Object o) {\n         @Override\n         public boolean remove(Object o) {\n             if (o instanceof Map.Entry<?, ?> e) {\n-                return resolver.getBuildClass().isInstance(e.getValue()) &&\n-                        BuildReferenceMapAdapter.this.removeValue(resolver.getBuildClass().cast(e.getValue()));\n+                return typeDescriptor.getBuildClass().isInstance(e.getValue()) &&\n+                        BuildReferenceMapAdapter.this.removeValue(typeDescriptor.getBuildClass().cast(e.getValue()));\n             }\n             return false;\n         }\n@@ -314,12 +315,12 @@ public Spliterator<Map.Entry<Integer, R>> spliterator() {\n \n     /**\n      * An interface for resolving build references into actual build instances\n-     * and extracting basic metadata from them.\n      **/\n-    public interface Resolver<R> {\n-\n+    interface BuildReferenceResolver<R> {\n         /**\n          * Resolves the given build reference into an actual build instance.\n+         * This method is used by {@link BuildReferenceMapAdapter} for operations\n+         * that return map values or entries.\n          *\n          * @param buildRef the reference to a build to resolve, can be {@code null}\n          * @return the resolved build instance, or {@code null} if the reference is {@code null}\n@@ -327,6 +328,27 @@ public interface Resolver<R> {\n          */\n         R resolveBuildRef(BuildReference<R> buildRef);\n \n+        /**\n+         * Checks whether the given build reference can be resolved to a non-null build instance.\n+         * This method is used by {@link BuildReferenceMapAdapter} to determine whether a key\n+         * effectively exists in the map.\n+         *\n+         * <p>This method may be weakly consistent with {@link #resolveBuildRef(BuildReference)}.\n+         * However, the following guarantee must hold:\n+         * if this method returns {@code false}, then {@link #resolveBuildRef(BuildReference)}\n+         * must return {@code null} for the same reference.</p>\n+         *\n+         * @param buildRef the reference to a build, may be {@code null}\n+         * @return {@code true} if the reference can be resolved to a non-null build instance,\n+         *         {@code false} otherwise\n+         */\n+        boolean isBuildRefResolvable(BuildReference<R> buildRef);\n+    }\n+\n+    /**\n+     * An interface for extracting basic metadata from the build instance.\n+     **/\n+    interface BuildTypeDescriptor<R> {\n         /**\n          * Returns the build number associated with the given build instance.\n          *\ndiff --git a/core/src/main/java/jenkins/model/lazy/LazyBuildMixIn.java b/core/src/main/java/jenkins/model/lazy/LazyBuildMixIn.java\nindex fdae9970b74d..2708ce5f61e5 100644\n--- a/core/src/main/java/jenkins/model/lazy/LazyBuildMixIn.java\n+++ b/core/src/main/java/jenkins/model/lazy/LazyBuildMixIn.java\n@@ -44,6 +44,7 @@\n import java.lang.reflect.InvocationTargetException;\n import java.nio.file.Files;\n import java.util.ArrayList;\n+import java.util.Iterator;\n import java.util.List;\n import java.util.TreeMap;\n import java.util.logging.Level;\n@@ -130,11 +131,11 @@ public void onLoad(ItemGroup<? extends Item> parent, String name) throws IOExcep\n             TreeMap<Integer, RunT> stillBuildingBuilds = new TreeMap<>();\n             for (RunT r : currentBuilds.getLoadedBuilds().values()) {\n                 if (r.isBuilding()) {\n-                    // Do not use RunMap.put(Run):\n                     stillBuildingBuilds.put(r.getNumber(), r);\n                     LOGGER.log(Level.FINE, \"keeping reloaded {0}\", r);\n                 }\n             }\n+            // Do not use RunMap.put(Run) here, as it may trigger resolution of the replacing BuildReference.\n             _builds.putAll(stillBuildingBuilds);\n         }\n         this.builds = _builds;\n@@ -273,24 +274,28 @@ public final RunT getNearestOldBuild(int n) {\n      * @since 2.407\n      */\n     public List<RunT> getEstimatedDurationCandidates() {\n-        List<RunT> candidates = new ArrayList<>(3);\n-        for (Result threshold : List.of(Result.UNSTABLE, Result.FAILURE)) {\n-            for (RunT build : (Iterable<RunT>) builds.streamLoadedBuilds()::iterator) {\n-                if (candidates.contains(build)) {\n-                    continue;\n-                }\n-                if (!build.isBuilding()) {\n-                    Result result = build.getResult();\n-                    if (result != null && result.isBetterOrEqualTo(threshold)) {\n+        final int desiredCandidatesSize = 3;\n+        List<RunT> candidates = new ArrayList<>(desiredCandidatesSize);\n+        List<RunT> failureCandidates = new ArrayList<>(desiredCandidatesSize);\n+        Iterator<RunT> it = builds.streamLoadedBuilds().iterator();\n+        while (it.hasNext() && candidates.size() < desiredCandidatesSize) {\n+            RunT build = it.next();\n+            if (!build.isBuilding()) {\n+                Result result = build.getResult();\n+                if (result != null) {\n+                    if (result.isBetterOrEqualTo(Result.UNSTABLE)) {\n                         candidates.add(build);\n-                        if (candidates.size() == 3) {\n-                            LOGGER.fine(() -> \"Candidates: \" + candidates);\n-                            return candidates;\n-                        }\n+                    } else if (result.isBetterOrEqualTo(Result.FAILURE)\n+                            && failureCandidates.size() < desiredCandidatesSize) {\n+                        failureCandidates.add(build);\n                     }\n                 }\n             }\n         }\n+        it = failureCandidates.iterator();\n+        while (candidates.size() < desiredCandidatesSize && it.hasNext()) {\n+            candidates.add(it.next());\n+        }\n         LOGGER.fine(() -> \"Candidates: \" + candidates);\n         return candidates;\n     }\n",
+  "metadata": {
+    "v2_fetcher_version": 1,
+    "v2_fetched_at_unix": 1778582718,
+    "v2_diff_cap_bytes": 50000,
+    "v2_body_cap_bytes": 8000,
+    "v2_diff_truncated": false,
+    "v2_raw_diff_chars": 28254,
+    "v2_raw_body_chars": 3790,
+    "v2_rag_source": "fresh_for_v2_40pr_expansion",
+    "v2_rag_chunks_copied": 8,
+    "joern_enriched": true,
+    "joern_callers_count": 50,
+    "joern_functions_count": 50
+  },
+  "similar_chunks": [
+    {
+      "file": "core/src/main/java/hudson/model/Job.java",
+      "start_line": 930,
+      "end_line": 985,
+      "similarity": 0.7203,
+      "related_to": "core/src/main/java/hudson/model/RunMap.java",
+      "content_preview": "     */\n    public File getBuildDir() {\n        // we use the null check variant so that people can write true unit tests with a mock ItemParent\n        // and without a JenkinsRule. Such tests are of limited utility as there is a high risk of hitting\n        // some code that needs the singleton, but for persistence migration test cases it makes sense to permit\n        Jenkins j = Jenkins.getInstanceOrNull();\n        if (j == null) {\n            return new File(getRootDir(), \"builds\");\n        }\n        return j.getBuildDirFor(this);\n    }\n\n    /**\n     * Gets all the runs.\n     *\n     * The resulting map must be treated immutable (by employing copy-on-write\n     * semantics.) The map is descending order, with newest builds at the top.\n     * @see LazyBuildMixIn#_getRuns\n     */\n    prote"
+    },
+    {
+      "file": "core/src/main/java/hudson/model/AbstractProject.java",
+      "start_line": 92,
+      "end_line": 143,
+      "similarity": 0.7078,
+      "related_to": "core/src/main/java/jenkins/model/lazy/LazyBuildMixIn.java",
+      "content_preview": "l.Set;\nimport java.util.SortedMap;\nimport java.util.TreeMap;\nimport java.util.Vector;\nimport java.util.concurrent.Future;\nimport java.util.concurrent.TimeUnit;\nimport java.util.concurrent.atomic.AtomicReferenceFieldUpdater;\nimport java.util.logging.Level;\nimport java.util.logging.Logger;\nimport jenkins.model.BlockedBecauseOfBuildInProgress;\nimport jenkins.model.Jenkins;\nimport jenkins.model.ParameterizedJobMixIn;\nimport jenkins.model.Uptime;\nimport jenkins.model.lazy.LazyBuildMixIn;\nimport jenkins.scm.DefaultSCMCheckoutStrategyImpl;\nimport jenkins.scm.SCMCheckoutStrategy;\nimport jenkins.scm.SCMCheckoutStrategyDescriptor;\nimport jenkins.scm.SCMDecisionHandler;\nimport jenkins.triggers.SCMTriggerItem;\nimport jenkins.util.TimeDuration;\nimport net.sf.json.JSONObject;\nimport org.kohsuke.accmod.R"
+    },
+    {
+      "file": "core/src/main/java/hudson/model/Job.java",
+      "start_line": 135,
+      "end_line": 187,
+      "similarity": 0.693,
+      "related_to": "core/src/main/java/jenkins/model/lazy/LazyBuildMixIn.java",
+      "content_preview": "stapler.StaplerRequest;\nimport org.kohsuke.stapler.StaplerRequest2;\nimport org.kohsuke.stapler.StaplerResponse;\nimport org.kohsuke.stapler.StaplerResponse2;\nimport org.kohsuke.stapler.export.Exported;\nimport org.kohsuke.stapler.interceptor.RequirePOST;\nimport org.kohsuke.stapler.verb.POST;\n\n/**\n * A job is an runnable entity under the monitoring of Hudson.\n *\n * <p>\n * Every time it \"runs\", it will be recorded as a {@link Run} object.\n *\n * <p>\n * To create a custom job type, extend {@link TopLevelItemDescriptor} and put {@link Extension} on it.\n *\n * @author Kohsuke Kawaguchi\n */\npublic abstract class Job<JobT extends Job<JobT, RunT>, RunT extends Run<JobT, RunT>>\n        extends AbstractItem implements ExtensionPoint, StaplerOverridable, ModelObjectWithChildren, HasWidgets {\n\n    private"
+    },
+    {
+      "file": "core/src/main/java/hudson/model/Run.java",
+      "start_line": 141,
+      "end_line": 196,
+      "similarity": 0.6815,
+      "related_to": "core/src/main/java/jenkins/model/lazy/LazyBuildMixIn.java",
+      "content_preview": "\nimport org.kohsuke.stapler.HttpResponse;\nimport org.kohsuke.stapler.QueryParameter;\nimport org.kohsuke.stapler.Stapler;\nimport org.kohsuke.stapler.StaplerProxy;\nimport org.kohsuke.stapler.StaplerRequest;\nimport org.kohsuke.stapler.StaplerRequest2;\nimport org.kohsuke.stapler.StaplerResponse;\nimport org.kohsuke.stapler.StaplerResponse2;\nimport org.kohsuke.stapler.export.Exported;\nimport org.kohsuke.stapler.export.ExportedBean;\nimport org.kohsuke.stapler.interceptor.RequirePOST;\nimport org.kohsuke.stapler.verb.POST;\nimport org.springframework.security.access.AccessDeniedException;\nimport org.springframework.security.core.Authentication;\n\n/**\n * A particular execution of {@link Job}.\n *\n * <p>\n * Custom {@link Run} type is always used in conjunction with\n * a custom {@link Job} type, so there"
+    },
+    {
+      "file": "core/src/main/java/hudson/model/Queue.java",
+      "start_line": 3124,
+      "end_line": 3190,
+      "similarity": 0.6812,
+      "related_to": "core/src/main/java/jenkins/model/lazy/LazyBuildMixIn.java",
+      "content_preview": "\n    private class BuildableRunnable implements Runnable  {\n        private final BuildableItem buildableItem;\n\n        private BuildableRunnable(BuildableItem p) {\n            this.buildableItem = p;\n        }\n\n        @Override\n        public void run() {\n            //the flyweighttask enters the buildables queue and will ask Jenkins to provision a node\n            buildableItem.enter(Queue.this);\n        }\n    }\n\n    private static class LockedJUCCallable<V> implements java.util.concurrent.Callable<V> {\n        private final java.util.concurrent.Callable<V> delegate;\n\n        private LockedJUCCallable(java.util.concurrent.Callable<V> delegate) {\n            this.delegate = delegate;\n        }\n\n        @Override\n        public V call() throws Exception {\n            return withLock(dele"
+    },
+    {
+      "file": "core/src/main/java/hudson/model/Run.java",
+      "start_line": 781,
+      "end_line": 833,
+      "similarity": 0.6772,
+      "related_to": "core/src/main/java/hudson/model/RunMap.java",
+      "content_preview": "     */\n    protected @NonNull BuildReference<RunT> createReference() {\n        return new BuildReference<>(getId(), _this());\n    }\n\n    /**\n     * Called by {@link RunMap} in preparation for deleting a build.\n     * @see jenkins.model.lazy.LazyBuildMixIn.RunMixIn#dropLinks\n     * @since 1.556\n     */\n    protected void dropLinks() {\n    }\n\n    /**\n     * @see jenkins.model.lazy.LazyBuildMixIn.RunMixIn#getPreviousBuild\n     */\n    public @CheckForNull RunT getPreviousBuild() {\n        // TODO could be implemented for benefit of ExternalRun\n        return null;\n    }\n\n    /**\n     * Gets the most recent {@linkplain #isBuilding() completed} build excluding 'this' Run itself.\n     */\n    public final @CheckForNull RunT getPreviousCompletedBuild() {\n        RunT r = getPreviousBuild();\n      "
+    },
+    {
+      "file": "core/src/main/java/hudson/model/Job.java",
+      "start_line": 812,
+      "end_line": 874,
+      "similarity": 0.6728,
+      "related_to": "core/src/main/java/hudson/model/RunMap.java",
+      "content_preview": " builds in a map.\n     */\n    public SortedMap<Integer, RunT> getBuildsAsMap() {\n        return Collections.unmodifiableSortedMap(_getRuns());\n    }\n\n    /**\n     * Looks up a build by its ID.\n     * @see LazyBuildMixIn#getBuild\n     */\n    public RunT getBuild(String id) {\n        for (RunT r : _getRuns().values()) {\n            if (r.getId().equals(id))\n                return r;\n        }\n        return null;\n    }\n\n    /**\n     * @param n\n     *            The build number.\n     * @return null if no such build exists.\n     * @see Run#getNumber()\n     * @see LazyBuildMixIn#getBuildByNumber\n     */\n    public RunT getBuildByNumber(int n) {\n        return _getRuns().get(n);\n    }\n\n    /**\n     * Obtains a list of builds, in the descending order, that are within the specified time range [st"
+    },
+    {
+      "file": "core/src/main/java/hudson/model/AbstractProject.java",
+      "start_line": 245,
+      "end_line": 307,
+      "similarity": 0.6705,
+      "related_to": "core/src/main/java/jenkins/model/lazy/LazyBuildMixIn.java",
+      "content_preview": "     */\n    @CopyOnWrite\n    protected transient volatile List<Action> transientActions = new Vector<>();\n\n    private boolean concurrentBuild;\n\n    /**\n     * See {@link #setCustomWorkspace(String)}.\n     *\n     * @since 1.410\n     */\n    private String customWorkspace;\n\n    protected AbstractProject(ItemGroup parent, String name) {\n        super(parent, name);\n        buildMixIn = createBuildMixIn();\n        builds = buildMixIn.getRunMap();\n\n        Jenkins j = Jenkins.getInstanceOrNull();\n        if (j != null && !j.getNodes().isEmpty()) {\n            // if a new job is configured with Hudson that already has agent nodes\n            // make it roamable by default\n            canRoam = true;\n        }\n    }\n\n    private LazyBuildMixIn<P, R> createBuildMixIn() {\n        return new LazyBui"
+    }
+  ],
+  "rag_evidence": {
+    "similar_code": [
+      {
+        "file": "core/src/main/java/hudson/model/Job.java",
+        "start_line": 930,
+        "end_line": 985,
+        "similarity": 0.7203,
+        "related_to": "core/src/main/java/hudson/model/RunMap.java",
+        "content_preview": "     */\n    public File getBuildDir() {\n        // we use the null check variant so that people can write true unit tests with a mock ItemParent\n        // and without a JenkinsRule. Such tests are of limited utility as there is a high risk of hitting\n        // some code that needs the singleton, but for persistence migration test cases it makes sense to permit\n        Jenkins j = Jenkins.getInstanceOrNull();\n        if (j == null) {\n            return new File(getRootDir(), \"builds\");\n        }\n        return j.getBuildDirFor(this);\n    }\n\n    /**\n     * Gets all the runs.\n     *\n     * The resulting map must be treated immutable (by employing copy-on-write\n     * semantics.) The map is descending order, with newest builds at the top.\n     * @see LazyBuildMixIn#_getRuns\n     */\n    prote"
+      },
+      {
+        "file": "core/src/main/java/hudson/model/AbstractProject.java",
+        "start_line": 92,
+        "end_line": 143,
+        "similarity": 0.7078,
+        "related_to": "core/src/main/java/jenkins/model/lazy/LazyBuildMixIn.java",
+        "content_preview": "l.Set;\nimport java.util.SortedMap;\nimport java.util.TreeMap;\nimport java.util.Vector;\nimport java.util.concurrent.Future;\nimport java.util.concurrent.TimeUnit;\nimport java.util.concurrent.atomic.AtomicReferenceFieldUpdater;\nimport java.util.logging.Level;\nimport java.util.logging.Logger;\nimport jenkins.model.BlockedBecauseOfBuildInProgress;\nimport jenkins.model.Jenkins;\nimport jenkins.model.ParameterizedJobMixIn;\nimport jenkins.model.Uptime;\nimport jenkins.model.lazy.LazyBuildMixIn;\nimport jenkins.scm.DefaultSCMCheckoutStrategyImpl;\nimport jenkins.scm.SCMCheckoutStrategy;\nimport jenkins.scm.SCMCheckoutStrategyDescriptor;\nimport jenkins.scm.SCMDecisionHandler;\nimport jenkins.triggers.SCMTriggerItem;\nimport jenkins.util.TimeDuration;\nimport net.sf.json.JSONObject;\nimport org.kohsuke.accmod.R"
+      },
+      {
+        "file": "core/src/main/java/hudson/model/Job.java",
+        "start_line": 135,
+        "end_line": 187,
+        "similarity": 0.693,
+        "related_to": "core/src/main/java/jenkins/model/lazy/LazyBuildMixIn.java",
+        "content_preview": "stapler.StaplerRequest;\nimport org.kohsuke.stapler.StaplerRequest2;\nimport org.kohsuke.stapler.StaplerResponse;\nimport org.kohsuke.stapler.StaplerResponse2;\nimport org.kohsuke.stapler.export.Exported;\nimport org.kohsuke.stapler.interceptor.RequirePOST;\nimport org.kohsuke.stapler.verb.POST;\n\n/**\n * A job is an runnable entity under the monitoring of Hudson.\n *\n * <p>\n * Every time it \"runs\", it will be recorded as a {@link Run} object.\n *\n * <p>\n * To create a custom job type, extend {@link TopLevelItemDescriptor} and put {@link Extension} on it.\n *\n * @author Kohsuke Kawaguchi\n */\npublic abstract class Job<JobT extends Job<JobT, RunT>, RunT extends Run<JobT, RunT>>\n        extends AbstractItem implements ExtensionPoint, StaplerOverridable, ModelObjectWithChildren, HasWidgets {\n\n    private"
+      },
+      {
+        "file": "core/src/main/java/hudson/model/Run.java",
+        "start_line": 141,
+        "end_line": 196,
+        "similarity": 0.6815,
+        "related_to": "core/src/main/java/jenkins/model/lazy/LazyBuildMixIn.java",
+        "content_preview": "\nimport org.kohsuke.stapler.HttpResponse;\nimport org.kohsuke.stapler.QueryParameter;\nimport org.kohsuke.stapler.Stapler;\nimport org.kohsuke.stapler.StaplerProxy;\nimport org.kohsuke.stapler.StaplerRequest;\nimport org.kohsuke.stapler.StaplerRequest2;\nimport org.kohsuke.stapler.StaplerResponse;\nimport org.kohsuke.stapler.StaplerResponse2;\nimport org.kohsuke.stapler.export.Exported;\nimport org.kohsuke.stapler.export.ExportedBean;\nimport org.kohsuke.stapler.interceptor.RequirePOST;\nimport org.kohsuke.stapler.verb.POST;\nimport org.springframework.security.access.AccessDeniedException;\nimport org.springframework.security.core.Authentication;\n\n/**\n * A particular execution of {@link Job}.\n *\n * <p>\n * Custom {@link Run} type is always used in conjunction with\n * a custom {@link Job} type, so there"
+      },
+      {
+        "file": "core/src/main/java/hudson/model/Queue.java",
+        "start_line": 3124,
+        "end_line": 3190,
+        "similarity": 0.6812,
+        "related_to": "core/src/main/java/jenkins/model/lazy/LazyBuildMixIn.java",
+        "content_preview": "\n    private class BuildableRunnable implements Runnable  {\n        private final BuildableItem buildableItem;\n\n        private BuildableRunnable(BuildableItem p) {\n            this.buildableItem = p;\n        }\n\n        @Override\n        public void run() {\n            //the flyweighttask enters the buildables queue and will ask Jenkins to provision a node\n            buildableItem.enter(Queue.this);\n        }\n    }\n\n    private static class LockedJUCCallable<V> implements java.util.concurrent.Callable<V> {\n        private final java.util.concurrent.Callable<V> delegate;\n\n        private LockedJUCCallable(java.util.concurrent.Callable<V> delegate) {\n            this.delegate = delegate;\n        }\n\n        @Override\n        public V call() throws Exception {\n            return withLock(dele"
+      },
+      {
+        "file": "core/src/main/java/hudson/model/Run.java",
+        "start_line": 781,
+        "end_line": 833,
+        "similarity": 0.6772,
+        "related_to": "core/src/main/java/hudson/model/RunMap.java",
+        "content_preview": "     */\n    protected @NonNull BuildReference<RunT> createReference() {\n        return new BuildReference<>(getId(), _this());\n    }\n\n    /**\n     * Called by {@link RunMap} in preparation for deleting a build.\n     * @see jenkins.model.lazy.LazyBuildMixIn.RunMixIn#dropLinks\n     * @since 1.556\n     */\n    protected void dropLinks() {\n    }\n\n    /**\n     * @see jenkins.model.lazy.LazyBuildMixIn.RunMixIn#getPreviousBuild\n     */\n    public @CheckForNull RunT getPreviousBuild() {\n        // TODO could be implemented for benefit of ExternalRun\n        return null;\n    }\n\n    /**\n     * Gets the most recent {@linkplain #isBuilding() completed} build excluding 'this' Run itself.\n     */\n    public final @CheckForNull RunT getPreviousCompletedBuild() {\n        RunT r = getPreviousBuild();\n      "
+      },
+      {
+        "file": "core/src/main/java/hudson/model/Job.java",
+        "start_line": 812,
+        "end_line": 874,
+        "similarity": 0.6728,
+        "related_to": "core/src/main/java/hudson/model/RunMap.java",
+        "content_preview": " builds in a map.\n     */\n    public SortedMap<Integer, RunT> getBuildsAsMap() {\n        return Collections.unmodifiableSortedMap(_getRuns());\n    }\n\n    /**\n     * Looks up a build by its ID.\n     * @see LazyBuildMixIn#getBuild\n     */\n    public RunT getBuild(String id) {\n        for (RunT r : _getRuns().values()) {\n            if (r.getId().equals(id))\n                return r;\n        }\n        return null;\n    }\n\n    /**\n     * @param n\n     *            The build number.\n     * @return null if no such build exists.\n     * @see Run#getNumber()\n     * @see LazyBuildMixIn#getBuildByNumber\n     */\n    public RunT getBuildByNumber(int n) {\n        return _getRuns().get(n);\n    }\n\n    /**\n     * Obtains a list of builds, in the descending order, that are within the specified time range [st"
+      },
+      {
+        "file": "core/src/main/java/hudson/model/AbstractProject.java",
+        "start_line": 245,
+        "end_line": 307,
+        "similarity": 0.6705,
+        "related_to": "core/src/main/java/jenkins/model/lazy/LazyBuildMixIn.java",
+        "content_preview": "     */\n    @CopyOnWrite\n    protected transient volatile List<Action> transientActions = new Vector<>();\n\n    private boolean concurrentBuild;\n\n    /**\n     * See {@link #setCustomWorkspace(String)}.\n     *\n     * @since 1.410\n     */\n    private String customWorkspace;\n\n    protected AbstractProject(ItemGroup parent, String name) {\n        super(parent, name);\n        buildMixIn = createBuildMixIn();\n        builds = buildMixIn.getRunMap();\n\n        Jenkins j = Jenkins.getInstanceOrNull();\n        if (j != null && !j.getNodes().isEmpty()) {\n            // if a new job is configured with Hudson that already has agent nodes\n            // make it roamable by default\n            canRoam = true;\n        }\n    }\n\n    private LazyBuildMixIn<P, R> createBuildMixIn() {\n        return new LazyBui"
+      }
+    ]
+  },
+  "callers": [
+    {
+      "path": "hudson/logging/LogRecorderManager.java",
+      "from_function": "setRecorders",
+      "calls_function": "replaceBy",
+      "caller_line": 109,
+      "callee_file": "hudson/util/CopyOnWriteMap.java",
+      "callee_line": 86
+    },
+    {
+      "path": "hudson/model/AbstractBuild.java",
+      "from_function": "createReference",
+      "calls_function": "getRunMixIn",
+      "caller_line": 188,
+      "callee_file": "jenkins/model/lazy/LazyBuildMixIn.java",
+      "callee_line": 321
+    },
+    {
+      "path": "hudson/model/AbstractBuild.java",
+      "from_function": "dropLinks",
+      "calls_function": "getRunMixIn",
+      "caller_line": 193,
+      "callee_file": "jenkins/model/lazy/LazyBuildMixIn.java",
+      "callee_line": 321
+    },
+    {
+      "path": "hudson/model/AbstractBuild.java",
+      "from_function": "getPreviousBuild",
+      "calls_function": "getRunMixIn",
+      "caller_line": 197,
+      "callee_file": "jenkins/model/lazy/LazyBuildMixIn.java",
+      "callee_line": 321
+    },
+    {
+      "path": "hudson/model/AbstractBuild.java",
+      "from_function": "getNextBuild",
+      "calls_function": "getRunMixIn",
+      "caller_line": 202,
+      "callee_file": "jenkins/model/lazy/LazyBuildMixIn.java",
+      "callee_line": 321
+    },
+    {
+      "path": "hudson/model/AbstractProject.java",
+      "from_function": "onCreatedFromScratch",
+      "calls_function": "onCreatedFromScratch",
+      "caller_line": 294,
+      "callee_file": "jenkins/model/lazy/LazyBuildMixIn.java",
+      "callee_line": 97
+    },
+    {
+      "path": "hudson/model/AbstractProject.java",
+      "from_function": "onCreatedFromScratch",
+      "calls_function": "getRunMap",
+      "caller_line": 294,
+      "callee_file": "jenkins/model/lazy/LazyBuildMixIn.java",
+      "callee_line": 82
+    },
+    {
+      "path": "hudson/model/AbstractProject.java",
+      "from_function": "onLoad",
+      "calls_function": "onLoad",
+      "caller_line": 303,
+      "callee_file": "jenkins/model/lazy/LazyBuildMixIn.java",
+      "callee_line": 104
+    },
+    {
+      "path": "hudson/model/AbstractProject.java",
+      "from_function": "onLoad",
+      "calls_function": "getRunMap",
+      "caller_line": 303,
+      "callee_file": "jenkins/model/lazy/LazyBuildMixIn.java",
+      "callee_line": 82
+    },
+    {
+      "path": "hudson/model/AbstractProject.java",
+      "from_function": "_getRuns",
+      "calls_function": "_getRuns",
+      "caller_line": 905,
+      "callee_file": "jenkins/model/lazy/LazyBuildMixIn.java",
+      "callee_line": 89
+    },
+    {
+      "path": "hudson/model/AbstractProject.java",
+      "from_function": "getBuild",
+      "calls_function": "getBuild",
+      "caller_line": 920,
+      "callee_file": "jenkins/model/lazy/LazyBuildMixIn.java",
+      "callee_line": 232
+    },
+    {
+      "path": "hudson/model/AbstractProject.java",
+      "from_function": "getBuildByNumber",
+      "calls_function": "getBuildByNumber",
+      "caller_line": 930,
+      "callee_file": "jenkins/model/lazy/LazyBuildMixIn.java",
+      "callee_line": 239
+    },
+    {
+      "path": "hudson/model/AbstractProject.java",
+      "from_function": "getFirstBuild",
+      "calls_function": "getFirstBuild",
+      "caller_line": 940,
+      "callee_file": "jenkins/model/lazy/LazyBuildMixIn.java",
+      "callee_line": 246
+    },
+    {
+      "path": "hudson/model/AbstractProject.java",
+      "from_function": "getLastBuild",
+      "calls_function": "getLastBuild",
+      "caller_line": 945,
+      "callee_file": "jenkins/model/lazy/LazyBuildMixIn.java",
+      "callee_line": 253
+    },
+    {
+      "path": "hudson/model/AbstractProject.java",
+      "from_function": "getNearestBuild",
+      "calls_function": "getNearestBuild",
+      "caller_line": 950,
+      "callee_file": "jenkins/model/lazy/LazyBuildMixIn.java",
+      "callee_line": 260
+    },
+    {
+      "path": "hudson/model/AbstractProject.java",
+      "from_function": "getNearestOldBuild",
+      "calls_function": "getNearestOldBuild",
+      "caller_line": 955,
+      "callee_file": "jenkins/model/lazy/LazyBuildMixIn.java",
+      "callee_line": 267
+    },
+    {
+      "path": "hudson/model/AbstractProject.java",
+      "from_function": "getEstimatedDurationCandidates",
+      "calls_function": "getEstimatedDurationCandidates",
+      "caller_line": 960,
+      "callee_file": "jenkins/model/lazy/LazyBuildMixIn.java",
+      "callee_line": 275
+    },
+    {
+      "path": "hudson/model/AbstractProject.java",
+      "from_function": "newBuild",
+      "calls_function": "newBuild",
+      "caller_line": 976,
+      "callee_file": "jenkins/model/lazy/LazyBuildMixIn.java",
+      "callee_line": 186
+    },
+    {
+      "path": "hudson/model/AbstractProject.java",
+      "from_function": "loadBuild",
+      "calls_function": "loadBuild",
+      "caller_line": 983,
+      "callee_file": "jenkins/model/lazy/LazyBuildMixIn.java",
+      "callee_line": 171
+    },
+    {
+      "path": "hudson/model/ItemGroupMixIn.java",
+      "from_function": "loadChildren",
+      "calls_function": "put",
+      "caller_line": 103,
+      "callee_file": "hudson/util/CopyOnWriteMap.java",
+      "callee_line": 118
+    },
+    {
+      "path": "hudson/model/Job.java",
+      "from_function": "getBuildStabilityHealthReport",
+      "calls_function": "runExists",
+      "caller_line": 1328,
+      "callee_file": "jenkins/model/lazy/AbstractLazyLoadRunMap.java",
+      "callee_line": 318
+    },
+    {
+      "path": "hudson/model/RunMap.java",
+      "from_function": "remove",
+      "calls_function": "removeValue",
+      "caller_line": 114,
+      "callee_file": "hudson/model/RunMap.java",
+      "callee_line": 151
+    },
+    {
+      "path": "hudson/model/RunMap.java",
+      "from_function": "removeValue",
+      "calls_function": "removeValue",
+      "caller_line": 151,
+      "callee_file": "jenkins/model/lazy/AbstractLazyLoadRunMap.java",
+      "callee_line": 495
+    },
+    {
+      "path": "hudson/model/RunMap.java",
+      "from_function": "newestValue",
+      "calls_function": "search",
+      "caller_line": 167,
+      "callee_file": "jenkins/model/lazy/AbstractLazyLoadRunMap.java",
+      "callee_line": 333
+    },
+    {
+      "path": "hudson/model/RunMap.java",
+      "from_function": "oldestValue",
+      "calls_function": "search",
+      "caller_line": 174,
+      "callee_file": "jenkins/model/lazy/AbstractLazyLoadRunMap.java",
+      "callee_line": 333
+    },
+    {
+      "path": "hudson/model/RunMap.java",
+      "from_function": "put",
+      "calls_function": "proposeNewNumber",
+      "caller_line": 208,
+      "callee_file": "jenkins/model/lazy/AbstractLazyLoadRunMap.java",
+      "callee_line": 402
+    },
+    {
+      "path": "hudson/model/RunMap.java",
+      "from_function": "put",
+      "calls_function": "_put",
+      "caller_line": 208,
+      "callee_file": "jenkins/model/lazy/AbstractLazyLoadRunMap.java",
+      "callee_line": 412
+    },
+    {
+      "path": "hudson/model/RunMap.java",
+      "from_function": "getById",
+      "calls_function": "getByNumber",
+      "caller_line": 226,
+      "callee_file": "jenkins/model/lazy/AbstractLazyLoadRunMap.java",
+      "callee_line": 386
+    },
+    {
+      "path": "hudson/model/RunMap.java",
+      "from_function": "retrieve",
+      "calls_function": "create",
+      "caller_line": 284,
+      "callee_file": "hudson/model/RunMap.java",
+      "callee_line": 189
+    },
+    {
+      "path": "hudson/model/RunMap.java",
+      "from_function": "getBuildClass",
+      "calls_function": "getBuildClass",
+      "caller_line": 303,
+      "callee_file": "hudson/model/RunMap.java",
+      "callee_line": 191
+    },
+    {
+      "path": "hudson/model/RunMap.java",
+      "from_function": "remove",
+      "calls_function": "removeValue",
+      "caller_line": 142,
+      "callee_file": "hudson/model/RunMap.java",
+      "callee_line": 151
+    },
+    {
+      "path": "hudson/model/ViewJob.java",
+      "from_function": "removeRun",
+      "calls_function": "remove",
+      "caller_line": 147,
+      "callee_file": "hudson/model/RunMap.java",
+      "callee_line": 114
+    },
+    {
+      "path": "hudson/util/CopyOnWriteMap.java",
+      "from_function": "update",
+      "calls_function": "createView",
+      "caller_line": 78,
+      "callee_file": "hudson/util/CopyOnWriteMap.java",
+      "callee_line": 74
+    },
+    {
+      "path": "hudson/util/CopyOnWriteMap.java",
+      "from_function": "replaceBy",
+      "calls_function": "copy",
+      "caller_line": 86,
+      "callee_file": "hudson/util/CopyOnWriteMap.java",
+      "callee_line": 143
+    },
+    {
+      "path": "hudson/util/CopyOnWriteMap.java",
+      "from_function": "replaceBy",
+      "calls_function": "update",
+      "caller_line": 86,
+      "callee_file": "hudson/util/CopyOnWriteMap.java",
+      "callee_line": 78
+    },
+    {
+      "path": "hudson/util/CopyOnWriteMap.java",
+      "from_function": "put",
+      "calls_function": "copy",
+      "caller_line": 118,
+      "callee_file": "hudson/util/CopyOnWriteMap.java",
+      "callee_line": 143
+    },
+    {
+      "path": "hudson/util/CopyOnWriteMap.java",
+      "from_function": "put",
+      "calls_function": "update",
+      "caller_line": 118,
+      "callee_file": "hudson/util/CopyOnWriteMap.java",
+      "callee_line": 78
+    },
+    {
+      "path": "hudson/util/CopyOnWriteMap.java",
+      "from_function": "remove",
+      "calls_function": "copy",
+      "caller_line": 127,
+      "callee_file": "hudson/util/CopyOnWriteMap.java",
+      "callee_line": 143
+    },
+    {
+      "path": "hudson/util/CopyOnWriteMap.java",
+      "from_function": "remove",
+      "calls_function": "update",
+      "caller_line": 127,
+      "callee_file": "hudson/util/CopyOnWriteMap.java",
+      "callee_line": 78
+    },
+    {
+      "path": "hudson/util/CopyOnWriteMap.java",
+      "from_function": "putAll",
+      "calls_function": "copy",
+      "caller_line": 136,
+      "callee_file": "hudson/util/CopyOnWriteMap.java",
+      "callee_line": 143
+    },
+    {
+      "path": "hudson/util/CopyOnWriteMap.java",
+      "from_function": "putAll",
+      "calls_function": "update",
+      "caller_line": 136,
+      "callee_file": "hudson/util/CopyOnWriteMap.java",
+      "callee_line": 78
+    },
+    {
+      "path": "hudson/util/CopyOnWriteMap.java",
+      "from_function": "clear",
+      "calls_function": "update",
+      "caller_line": 145,
+      "callee_file": "hudson/util/CopyOnWriteMap.java",
+      "callee_line": 78
+    },
+    {
+      "path": "hudson/util/CopyOnWriteMap.java",
+      "from_function": "hashCode",
+      "calls_function": "copy",
+      "caller_line": 174,
+      "callee_file": "hudson/util/CopyOnWriteMap.java",
+      "callee_line": 143
+    },
+    {
+      "path": "hudson/util/CopyOnWriteMap.java",
+      "from_function": "equals",
+      "calls_function": "copy",
+      "caller_line": 178,
+      "callee_file": "hudson/util/CopyOnWriteMap.java",
+      "callee_line": 143
+    },
+    {
+      "path": "hudson/util/CopyOnWriteMap.java",
+      "from_function": "toString",
+      "calls_function": "copy",
+      "caller_line": 183,
+      "callee_file": "hudson/util/CopyOnWriteMap.java",
+      "callee_line": 143
+    },
+    {
+      "path": "hudson/util/CopyOnWriteMap.java",
+      "from_function": "clear",
+      "calls_function": "update",
+      "caller_line": 252,
+      "callee_file": "hudson/util/CopyOnWriteMap.java",
+      "callee_line": 78
+    },
+    {
+      "path": "hudson/util/CopyOnWriteMap.java",
+      "from_function": "getView",
+      "calls_function": "getView",
+      "caller_line": 262,
+      "callee_file": "hudson/util/CopyOnWriteMap.java",
+      "callee_line": 70
+    },
+    {
+      "path": "hudson/util/CopyOnWriteMap.java",
+      "from_function": "pollFirstEntry",
+      "calls_function": "copy",
+      "caller_line": 267,
+      "callee_file": "hudson/util/CopyOnWriteMap.java",
+      "callee_line": 245
+    },
+    {
+      "path": "hudson/util/CopyOnWriteMap.java",
+      "from_function": "pollFirstEntry",
+      "calls_function": "update",
+      "caller_line": 267,
+      "callee_file": "hudson/util/CopyOnWriteMap.java",
+      "callee_line": 78
+    },
+    {
+      "path": "hudson/util/CopyOnWriteMap.java",
+      "from_function": "pollLastEntry",
+      "calls_function": "copy",
+      "caller_line": 275,
+      "callee_file": "hudson/util/CopyOnWriteMap.java",
+      "callee_line": 245
+    }
+  ],
+  "call_graph_edges": [
+    {
+      "from": "hudson/logging/LogRecorderManager.java::setRecorders",
+      "to": "hudson/util/CopyOnWriteMap.java::replaceBy"
+    },
+    {
+      "from": "hudson/model/AbstractBuild.java::createReference",
+      "to": "jenkins/model/lazy/LazyBuildMixIn.java::getRunMixIn"
+    },
+    {
+      "from": "hudson/model/AbstractBuild.java::dropLinks",
+      "to": "jenkins/model/lazy/LazyBuildMixIn.java::getRunMixIn"
+    },
+    {
+      "from": "hudson/model/AbstractBuild.java::getPreviousBuild",
+      "to": "jenkins/model/lazy/LazyBuildMixIn.java::getRunMixIn"
+    },
+    {
+      "from": "hudson/model/AbstractBuild.java::getNextBuild",
+      "to": "jenkins/model/lazy/LazyBuildMixIn.java::getRunMixIn"
+    },
+    {
+      "from": "hudson/model/AbstractProject.java::onCreatedFromScratch",
+      "to": "jenkins/model/lazy/LazyBuildMixIn.java::onCreatedFromScratch"
+    },
+    {
+      "from": "hudson/model/AbstractProject.java::onCreatedFromScratch",
+      "to": "jenkins/model/lazy/LazyBuildMixIn.java::getRunMap"
+    },
+    {
+      "from": "hudson/model/AbstractProject.java::onLoad",
+      "to": "jenkins/model/lazy/LazyBuildMixIn.java::onLoad"
+    },
+    {
+      "from": "hudson/model/AbstractProject.java::onLoad",
+      "to": "jenkins/model/lazy/LazyBuildMixIn.java::getRunMap"
+    },
+    {
+      "from": "hudson/model/AbstractProject.java::_getRuns",
+      "to": "jenkins/model/lazy/LazyBuildMixIn.java::_getRuns"
+    },
+    {
+      "from": "hudson/model/AbstractProject.java::getBuild",
+      "to": "jenkins/model/lazy/LazyBuildMixIn.java::getBuild"
+    },
+    {
+      "from": "hudson/model/AbstractProject.java::getBuildByNumber",
+      "to": "jenkins/model/lazy/LazyBuildMixIn.java::getBuildByNumber"
+    },
+    {
+      "from": "hudson/model/AbstractProject.java::getFirstBuild",
+      "to": "jenkins/model/lazy/LazyBuildMixIn.java::getFirstBuild"
+    },
+    {
+      "from": "hudson/model/AbstractProject.java::getLastBuild",
+      "to": "jenkins/model/lazy/LazyBuildMixIn.java::getLastBuild"
+    },
+    {
+      "from": "hudson/model/AbstractProject.java::getNearestBuild",
+      "to": "jenkins/model/lazy/LazyBuildMixIn.java::getNearestBuild"
+    },
+    {
+      "from": "hudson/model/AbstractProject.java::getNearestOldBuild",
+      "to": "jenkins/model/lazy/LazyBuildMixIn.java::getNearestOldBuild"
+    },
+    {
+      "from": "hudson/model/AbstractProject.java::getEstimatedDurationCandidates",
+      "to": "jenkins/model/lazy/LazyBuildMixIn.java::getEstimatedDurationCandidates"
+    },
+    {
+      "from": "hudson/model/AbstractProject.java::newBuild",
+      "to": "jenkins/model/lazy/LazyBuildMixIn.java::newBuild"
+    },
+    {
+      "from": "hudson/model/AbstractProject.java::loadBuild",
+      "to": "jenkins/model/lazy/LazyBuildMixIn.java::loadBuild"
+    },
+    {
+      "from": "hudson/model/ItemGroupMixIn.java::loadChildren",
+      "to": "hudson/util/CopyOnWriteMap.java::put"
+    },
+    {
+      "from": "hudson/model/Job.java::getBuildStabilityHealthReport",
+      "to": "jenkins/model/lazy/AbstractLazyLoadRunMap.java::runExists"
+    },
+    {
+      "from": "hudson/model/RunMap.java::remove",
+      "to": "hudson/model/RunMap.java::removeValue"
+    },
+    {
+      "from": "hudson/model/RunMap.java::removeValue",
+      "to": "jenkins/model/lazy/AbstractLazyLoadRunMap.java::removeValue"
+    },
+    {
+      "from": "hudson/model/RunMap.java::newestValue",
+      "to": "jenkins/model/lazy/AbstractLazyLoadRunMap.java::search"
+    },
+    {
+      "from": "hudson/model/RunMap.java::oldestValue",
+      "to": "jenkins/model/lazy/AbstractLazyLoadRunMap.java::search"
+    },
+    {
+      "from": "hudson/model/RunMap.java::put",
+      "to": "jenkins/model/lazy/AbstractLazyLoadRunMap.java::proposeNewNumber"
+    },
+    {
+      "from": "hudson/model/RunMap.java::put",
+      "to": "jenkins/model/lazy/AbstractLazyLoadRunMap.java::_put"
+    },
+    {
+      "from": "hudson/model/RunMap.java::getById",
+      "to": "jenkins/model/lazy/AbstractLazyLoadRunMap.java::getByNumber"
+    },
+    {
+      "from": "hudson/model/RunMap.java::retrieve",
+      "to": "hudson/model/RunMap.java::create"
+    },
+    {
+      "from": "hudson/model/RunMap.java::getBuildClass",
+      "to": "hudson/model/RunMap.java::getBuildClass"
+    },
+    {
+      "from": "hudson/model/RunMap.java::remove",
+      "to": "hudson/model/RunMap.java::removeValue"
+    },
+    {
+      "from": "hudson/model/ViewJob.java::removeRun",
+      "to": "hudson/model/RunMap.java::remove"
+    },
+    {
+      "from": "hudson/util/CopyOnWriteMap.java::update",
+      "to": "hudson/util/CopyOnWriteMap.java::createView"
+    },
+    {
+      "from": "hudson/util/CopyOnWriteMap.java::replaceBy",
+      "to": "hudson/util/CopyOnWriteMap.java::copy"
+    },
+    {
+      "from": "hudson/util/CopyOnWriteMap.java::replaceBy",
+      "to": "hudson/util/CopyOnWriteMap.java::update"
+    },
+    {
+      "from": "hudson/util/CopyOnWriteMap.java::put",
+      "to": "hudson/util/CopyOnWriteMap.java::copy"
+    },
+    {
+      "from": "hudson/util/CopyOnWriteMap.java::put",
+      "to": "hudson/util/CopyOnWriteMap.java::update"
+    },
+    {
+      "from": "hudson/util/CopyOnWriteMap.java::remove",
+      "to": "hudson/util/CopyOnWriteMap.java::copy"
+    },
+    {
+      "from": "hudson/util/CopyOnWriteMap.java::remove",
+      "to": "hudson/util/CopyOnWriteMap.java::update"
+    },
+    {
+      "from": "hudson/util/CopyOnWriteMap.java::putAll",
+      "to": "hudson/util/CopyOnWriteMap.java::copy"
+    },
+    {
+      "from": "hudson/util/CopyOnWriteMap.java::putAll",
+      "to": "hudson/util/CopyOnWriteMap.java::update"
+    },
+    {
+      "from": "hudson/util/CopyOnWriteMap.java::clear",
+      "to": "hudson/util/CopyOnWriteMap.java::update"
+    },
+    {
+      "from": "hudson/util/CopyOnWriteMap.java::hashCode",
+      "to": "hudson/util/CopyOnWriteMap.java::copy"
+    },
+    {
+      "from": "hudson/util/CopyOnWriteMap.java::equals",
+      "to": "hudson/util/CopyOnWriteMap.java::copy"
+    },
+    {
+      "from": "hudson/util/CopyOnWriteMap.java::toString",
+      "to": "hudson/util/CopyOnWriteMap.java::copy"
+    },
+    {
+      "from": "hudson/util/CopyOnWriteMap.java::clear",
+      "to": "hudson/util/CopyOnWriteMap.java::update"
+    },
+    {
+      "from": "hudson/util/CopyOnWriteMap.java::getView",
+      "to": "hudson/util/CopyOnWriteMap.java::getView"
+    },
+    {
+      "from": "hudson/util/CopyOnWriteMap.java::pollFirstEntry",
+      "to": "hudson/util/CopyOnWriteMap.java::copy"
+    },
+    {
+      "from": "hudson/util/CopyOnWriteMap.java::pollFirstEntry",
+      "to": "hudson/util/CopyOnWriteMap.java::update"
+    },
+    {
+      "from": "hudson/util/CopyOnWriteMap.java::pollLastEntry",
+      "to": "hudson/util/CopyOnWriteMap.java::copy"
+    }
+  ],
+  "functions_in_changed_files": [
+    {
+      "name": "remove",
+      "full_name": "hudson.model.RunMap.remove:boolean(hudson.model.Run)",
+      "file": "hudson/model/RunMap.java",
+      "start_line": 114,
+      "end_line": 116,
+      "signature": "boolean(hudson.model.Run)"
+    },
+    {
+      "name": "iterator",
+      "full_name": "hudson.model.RunMap.iterator:java.util.Iterator()",
+      "file": "hudson/model/RunMap.java",
+      "start_line": 121,
+      "end_line": 149,
+      "signature": "java.util.Iterator()"
+    },
+    {
+      "name": "removeValue",
+      "full_name": "hudson.model.RunMap.removeValue:boolean(hudson.model.Run)",
+      "file": "hudson/model/RunMap.java",
+      "start_line": 151,
+      "end_line": 155,
+      "signature": "boolean(hudson.model.Run)"
+    },
+    {
+      "name": "getView",
+      "full_name": "hudson.model.RunMap.getView:java.util.SortedMap()",
+      "file": "hudson/model/RunMap.java",
+      "start_line": 160,
+      "end_line": 162,
+      "signature": "java.util.SortedMap()"
+    },
+    {
+      "name": "newestValue",
+      "full_name": "hudson.model.RunMap.newestValue:hudson.model.Run()",
+      "file": "hudson/model/RunMap.java",
+      "start_line": 167,
+      "end_line": 169,
+      "signature": "hudson.model.Run()"
+    },
+    {
+      "name": "oldestValue",
+      "full_name": "hudson.model.RunMap.oldestValue:hudson.model.Run()",
+      "file": "hudson/model/RunMap.java",
+      "start_line": 174,
+      "end_line": 176,
+      "signature": "hudson.model.Run()"
+    },
+    {
+      "name": "create",
+      "full_name": "hudson.model.RunMap$Constructor.create:hudson.model.Run(java.io.File)",
+      "file": "hudson/model/RunMap.java",
+      "start_line": 189,
+      "end_line": 189,
+      "signature": "hudson.model.Run(java.io.File)"
+    },
+    {
+      "name": "getBuildClass",
+      "full_name": "hudson.model.RunMap$Constructor.getBuildClass:java.lang.Class()",
+      "file": "hudson/model/RunMap.java",
+      "start_line": 191,
+      "end_line": 191,
+      "signature": "java.lang.Class()"
+    },
+    {
+      "name": "getNumberOf",
+      "full_name": "hudson.model.RunMap.getNumberOf:int(hudson.model.Run)",
+      "file": "hudson/model/RunMap.java",
+      "start_line": 194,
+      "end_line": 197,
+      "signature": "int(hudson.model.Run)"
+    },
+    {
+      "name": "getIdOf",
+      "full_name": "hudson.model.RunMap.getIdOf:java.lang.String(hudson.model.Run)",
+      "file": "hudson/model/RunMap.java",
+      "start_line": 199,
+      "end_line": 202,
+      "signature": "java.lang.String(hudson.model.Run)"
+    },
+    {
+      "name": "put",
+      "full_name": "hudson.model.RunMap.put:hudson.model.Run(hudson.model.Run)",
+      "file": "hudson/model/RunMap.java",
+      "start_line": 208,
+      "end_line": 224,
+      "signature": "hudson.model.Run(hudson.model.Run)"
+    },
+    {
+      "name": "getById",
+      "full_name": "hudson.model.RunMap.getById:hudson.model.Run(java.lang.String)",
+      "file": "hudson/model/RunMap.java",
+      "start_line": 226,
+      "end_line": 233,
+      "signature": "hudson.model.Run(java.lang.String)"
+    },
+    {
+      "name": "createReference",
+      "full_name": "hudson.model.RunMap.createReference:jenkins.model.lazy.BuildReference(hudson.model.Run)",
+      "file": "hudson/model/RunMap.java",
+      "start_line": 241,
+      "end_line": 244,
+      "signature": "jenkins.model.lazy.BuildReference(hudson.model.Run)"
+    },
+    {
+      "name": "allowLoad",
+      "full_name": "hudson.model.RunMap.allowLoad:boolean(int)",
+      "file": "hudson/model/RunMap.java",
+      "start_line": 246,
+      "end_line": 261,
+      "signature": "boolean(int)"
+    },
+    {
+      "name": "createLoadAllower",
+      "full_name": "hudson.model.RunMap.createLoadAllower:java.util.function.IntPredicate()",
+      "file": "hudson/model/RunMap.java",
+      "start_line": 263,
+      "end_line": 282,
+      "signature": "java.util.function.IntPredicate()"
+    },
+    {
+      "name": "retrieve",
+      "full_name": "hudson.model.RunMap.retrieve:hudson.model.Run(java.io.File)",
+      "file": "hudson/model/RunMap.java",
+      "start_line": 284,
+      "end_line": 301,
+      "signature": "hudson.model.Run(java.io.File)"
+    },
+    {
+      "name": "getBuildClass",
+      "full_name": "hudson.model.RunMap.getBuildClass:java.lang.Class()",
+      "file": "hudson/model/RunMap.java",
+      "start_line": 303,
+      "end_line": 306,
+      "signature": "java.lang.Class()"
+    },
+    {
+      "name": "load",
+      "full_name": "hudson.model.RunMap.load:void(hudson.model.Job,hudson.model.RunMap$Constructor)",
+      "file": "hudson/model/RunMap.java",
+      "start_line": 321,
+      "end_line": 325,
+      "signature": "void(hudson.model.Job,hudson.model.RunMap$Constructor)"
+    },
+    {
+      "name": "hasNext",
+      "full_name": "hudson.model.RunMap.iterator.Iterator$0.hasNext:boolean()",
+      "file": "hudson/model/RunMap.java",
+      "start_line": 127,
+      "end_line": 130,
+      "signature": "boolean()"
+    },
+    {
+      "name": "next",
+      "full_name": "hudson.model.RunMap.iterator.Iterator$0.next:hudson.model.Run()",
+      "file": "hudson/model/RunMap.java",
+      "start_line": 132,
+      "end_line": 140,
+      "signature": "hudson.model.Run()"
+    },
+    {
+      "name": "remove",
+      "full_name": "hudson.model.RunMap.iterator.Iterator$0.remove:void()",
+      "file": "hudson/model/RunMap.java",
+      "start_line": 142,
+      "end_line": 147,
+      "signature": "void()"
+    },
+    {
+      "name": "getView",
+      "full_name": "hudson.util.CopyOnWriteMap.getView:java.util.Map()",
+      "file": "hudson/util/CopyOnWriteMap.java",
+      "start_line": 70,
+      "end_line": 72,
+      "signature": "java.util.Map()"
+    },
+    {
+      "name": "createView",
+      "full_name": "hudson.util.CopyOnWriteMap.createView:java.util.Map()",
+      "file": "hudson/util/CopyOnWriteMap.java",
+      "start_line": 74,
+      "end_line": 76,
+      "signature": "java.util.Map()"
+    },
+    {
+      "name": "update",
+      "full_name": "hudson.util.CopyOnWriteMap.update:void(java.util.Map)",
+      "file": "hudson/util/CopyOnWriteMap.java",
+      "start_line": 78,
+      "end_line": 81,
+      "signature": "void(java.util.Map)"
+    },
+    {
+      "name": "replaceBy",
+      "full_name": "hudson.util.CopyOnWriteMap.replaceBy:void(java.util.Map)",
+      "file": "hudson/util/CopyOnWriteMap.java",
+      "start_line": 86,
+      "end_line": 91,
+      "signature": "void(java.util.Map)"
+    },
+    {
+      "name": "size",
+      "full_name": "hudson.util.CopyOnWriteMap.size:int()",
+      "file": "hudson/util/CopyOnWriteMap.java",
+      "start_line": 93,
+      "end_line": 96,
+      "signature": "int()"
+    },
+    {
+      "name": "isEmpty",
+      "full_name": "hudson.util.CopyOnWriteMap.isEmpty:boolean()",
+      "file": "hudson/util/CopyOnWriteMap.java",
+      "start_line": 98,
+      "end_line": 101,
+      "signature": "boolean()"
+    },
+    {
+      "name": "containsKey",
+      "full_name": "hudson.util.CopyOnWriteMap.containsKey:boolean(java.lang.Object)",
+      "file": "hudson/util/CopyOnWriteMap.java",
+      "start_line": 103,
+      "end_line": 106,
+      "signature": "boolean(java.lang.Object)"
+    },
+    {
+      "name": "containsValue",
+      "full_name": "hudson.util.CopyOnWriteMap.containsValue:boolean(java.lang.Object)",
+      "file": "hudson/util/CopyOnWriteMap.java",
+      "start_line": 108,
+      "end_line": 111,
+      "signature": "boolean(java.lang.Object)"
+    },
+    {
+      "name": "get",
+      "full_name": "hudson.util.CopyOnWriteMap.get:java.lang.Object(java.lang.Object)",
+      "file": "hudson/util/CopyOnWriteMap.java",
+      "start_line": 113,
+      "end_line": 116,
+      "signature": "java.lang.Object(java.lang.Object)"
+    },
+    {
+      "name": "put",
+      "full_name": "hudson.util.CopyOnWriteMap.put:java.lang.Object(java.lang.Object,java.lang.Object)",
+      "file": "hudson/util/CopyOnWriteMap.java",
+      "start_line": 118,
+      "end_line": 125,
+      "signature": "java.lang.Object(java.lang.Object,java.lang.Object)"
+    },
+    {
+      "name": "remove",
+      "full_name": "hudson.util.CopyOnWriteMap.remove:java.lang.Object(java.lang.Object)",
+      "file": "hudson/util/CopyOnWriteMap.java",
+      "start_line": 127,
+      "end_line": 134,
+      "signature": "java.lang.Object(java.lang.Object)"
+    },
+    {
+      "name": "putAll",
+      "full_name": "hudson.util.CopyOnWriteMap.putAll:void(java.util.Map)",
+      "file": "hudson/util/CopyOnWriteMap.java",
+      "start_line": 136,
+      "end_line": 141,
+      "signature": "void(java.util.Map)"
+    },
+    {
+      "name": "copy",
+      "full_name": "hudson.util.CopyOnWriteMap.copy:java.util.Map()",
+      "file": "hudson/util/CopyOnWriteMap.java",
+      "start_line": 143,
+      "end_line": 143,
+      "signature": "java.util.Map()"
+    },
+    {
+      "name": "clear",
+      "full_name": "hudson.util.CopyOnWriteMap.clear:void()",
+      "file": "hudson/util/CopyOnWriteMap.java",
+      "start_line": 145,
+      "end_line": 148,
+      "signature": "void()"
+    },
+    {
+      "name": "keySet",
+      "full_name": "hudson.util.CopyOnWriteMap.keySet:java.util.Set()",
+      "file": "hudson/util/CopyOnWriteMap.java",
+      "start_line": 153,
+      "end_line": 156,
+      "signature": "java.util.Set()"
+    },
+    {
+      "name": "values",
+      "full_name": "hudson.util.CopyOnWriteMap.values:java.util.Collection()",
+      "file": "hudson/util/CopyOnWriteMap.java",
+      "start_line": 161,
+      "end_line": 164,
+      "signature": "java.util.Collection()"
+    },
+    {
+      "name": "entrySet",
+      "full_name": "hudson.util.CopyOnWriteMap.entrySet:java.util.Set()",
+      "file": "hudson/util/CopyOnWriteMap.java",
+      "start_line": 169,
+      "end_line": 172,
+      "signature": "java.util.Set()"
+    },
+    {
+      "name": "hashCode",
+      "full_name": "hudson.util.CopyOnWriteMap.hashCode:int()",
+      "file": "hudson/util/CopyOnWriteMap.java",
+      "start_line": 174,
+      "end_line": 176,
+      "signature": "int()"
+    },
+    {
+      "name": "equals",
+      "full_name": "hudson.util.CopyOnWriteMap.equals:boolean(java.lang.Object)",
+      "file": "hudson/util/CopyOnWriteMap.java",
+      "start_line": 178,
+      "end_line": 181,
+      "signature": "boolean(java.lang.Object)"
+    },
+    {
+      "name": "toString",
+      "full_name": "hudson.util.CopyOnWriteMap.toString:java.lang.String()",
+      "file": "hudson/util/CopyOnWriteMap.java",
+      "start_line": 183,
+      "end_line": 185,
+      "signature": "java.lang.String()"
+    },
+    {
+      "name": "copy",
+      "full_name": "hudson.util.CopyOnWriteMap$Hash.copy:java.util.Map()",
+      "file": "hudson/util/CopyOnWriteMap.java",
+      "start_line": 198,
+      "end_line": 201,
+      "signature": "java.util.Map()"
+    },
+    {
+      "name": "canConvert",
+      "full_name": "hudson.util.CopyOnWriteMap$Hash$ConverterImpl.canConvert:boolean(java.lang.Class)",
+      "file": "hudson/util/CopyOnWriteMap.java",
+      "start_line": 208,
+      "end_line": 211,
+      "signature": "boolean(java.lang.Class)"
+    },
+    {
+      "name": "unmarshal",
+      "full_name": "hudson.util.CopyOnWriteMap$Hash$ConverterImpl.unmarshal:java.lang.Object(com.thoughtworks.xstream.io.HierarchicalStreamReader,com.thoughtworks.xstream.converters.UnmarshallingContext)",
+      "file": "hudson/util/CopyOnWriteMap.java",
+      "start_line": 213,
+      "end_line": 216,
+      "signature": "java.lang.Object(com.thoughtworks.xstream.io.HierarchicalStreamReader,com.thoughtworks.xstream.converters.UnmarshallingContext)"
+    },
+    {
+      "name": "marshal",
+      "full_name": "hudson.util.CopyOnWriteMap$Hash$ConverterImpl.marshal:void(java.lang.Object,com.thoughtworks.xstream.io.HierarchicalStreamWriter,com.thoughtworks.xstream.converters.MarshallingContext)",
+      "file": "hudson/util/CopyOnWriteMap.java",
+      "start_line": 218,
+      "end_line": 221,
+      "signature": "void(java.lang.Object,com.thoughtworks.xstream.io.HierarchicalStreamWriter,com.thoughtworks.xstream.converters.MarshallingContext)"
+    },
+    {
+      "name": "copy",
+      "full_name": "hudson.util.CopyOnWriteMap$Tree.copy:java.util.TreeMap()",
+      "file": "hudson/util/CopyOnWriteMap.java",
+      "start_line": 245,
+      "end_line": 250,
+      "signature": "java.util.TreeMap()"
+    },
+    {
+      "name": "clear",
+      "full_name": "hudson.util.CopyOnWriteMap$Tree.clear:void()",
+      "file": "hudson/util/CopyOnWriteMap.java",
+      "start_line": 252,
+      "end_line": 255,
+      "signature": "void()"
+    },
+    {
+      "name": "createView",
+      "full_name": "hudson.util.CopyOnWriteMap$Tree.createView:java.util.NavigableMap()",
+      "file": "hudson/util/CopyOnWriteMap.java",
+      "start_line": 257,
+      "end_line": 260,
+      "signature": "java.util.NavigableMap()"
+    },
+    {
+      "name": "getView",
+      "full_name": "hudson.util.CopyOnWriteMap$Tree.getView:java.util.NavigableMap()",
+      "file": "hudson/util/CopyOnWriteMap.java",
+      "start_line": 262,
+      "end_line": 265,
+      "signature": "java.util.NavigableMap()"
+    },
+    {
+      "name": "pollFirstEntry",
+      "full_name": "hudson.util.CopyOnWriteMap$Tree.pollFirstEntry:java.util.Map$Entry()",
+      "file": "hudson/util/CopyOnWriteMap.java",
+      "start_line": 267,
+      "end_line": 273,
+      "signature": "java.util.Map$Entry()"
+    }
+  ]
+}

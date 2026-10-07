@@ -37,7 +37,8 @@ DRIVE_UPLOAD_LIST.md      large artefacts that are on Drive instead of here
 
 | Folder | Thesis use |
 |---|---|
-| `experiments/2026-09-19_joern_replace_grep/` | Experiment 1 KG arm: Joern CPG evidence packs, the 35 KG reviews, judge scores, and the context-relevance (noise / relevant-only) control (`context_ablation/`) |
+| `experiments/2026-05-15_joern_kg_main/` | **Joern CPG construction** for Experiment 1: builds the CPG per PR, runs the caller/callee queries and writes the 36 Joern evidence packs (`evidence/`). Its own review results are superseded; only the graph stage is used downstream |
+| `experiments/2026-09-19_joern_replace_grep/` | Experiment 1 KG arm: converts the Joern callers into the KG block (`run.py`), the 35 KG reviews, judge scores, and the context-relevance (noise / relevant-only) control (`context_ablation/`) |
 | `experiments/2026-10-04_joern_unified_five_judge/` | **Experiment 1 headline table**: five-judge aggregation of baseline / KG / RAG / hybrid on the 35 PRs (`RESULTS.md`, `RESULTS.json`) |
 | `experiments/2026-09-23_five_judge_panel/` | Five-judge aggregation for both experiments, individual-judge sensitivity, Experiment 2 detection table (`RESULTS.json` feeds `scripts/generate_thesis_figures.py`) |
 | `experiments/2026-07-05_injection_exp2/` | Experiment 2: pre-registration (`docs/`), injection harness (`harness/`), manifest, reviews, judgments (`out/`) |

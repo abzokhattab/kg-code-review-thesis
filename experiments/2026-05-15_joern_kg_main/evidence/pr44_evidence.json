@@ -1,0 +1,824 @@
+{
+  "pr": {
+    "number": 33957,
+    "title": "MNT move bitset from HGBT to utils",
+    "body": "#### Reference Issues/PRs\r\nTo help #33354.\r\n\r\n#### What does this implement/fix? Explain your changes.\r\nMove bitset Cython code to `sklearn.utils`. Thereby, it is accessible and reusable from other submodules like `sklearn.tree`.\r\n\r\n#### AI usage disclosure\r\nNone\r\n\r\n#### Any other comments?\r\n",
+    "url": "https://github.com/scikit-learn/scikit-learn/pull/33957",
+    "repo": "scikit-learn/scikit-learn",
+    "base_branch": "main",
+    "head_branch": "mnt_bitset_to_utils",
+    "merged_at": "2026-05-09T14:05:18Z",
+    "state": "MERGED"
+  },
+  "changed_files": [
+    {
+      "path": "sklearn/ensemble/_hist_gradient_boosting/_bitset.pxd",
+      "language": "unknown",
+      "added": 0,
+      "deleted": 20
+    },
+    {
+      "path": "sklearn/ensemble/_hist_gradient_boosting/_bitset.pyx",
+      "language": "unknown",
+      "added": 0,
+      "deleted": 65
+    },
+    {
+      "path": "sklearn/ensemble/_hist_gradient_boosting/_predictor.pyx",
+      "language": "unknown",
+      "added": 1,
+      "deleted": 2
+    },
+    {
+      "path": "sklearn/ensemble/_hist_gradient_boosting/binning.py",
+      "language": "python",
+      "added": 1,
+      "deleted": 1
+    },
+    {
+      "path": "sklearn/ensemble/_hist_gradient_boosting/common.pxd",
+      "language": "unknown",
+      "added": 5,
+      "deleted": 3
+    },
+    {
+      "path": "sklearn/ensemble/_hist_gradient_boosting/common.pyx",
+      "language": "unknown",
+      "added": 3,
+      "deleted": 0
+    },
+    {
+      "path": "sklearn/ensemble/_hist_gradient_boosting/grower.py",
+      "language": "python",
+      "added": 1,
+      "deleted": 3
+    },
+    {
+      "path": "sklearn/ensemble/_hist_gradient_boosting/meson.build",
+      "language": "unknown",
+      "added": 0,
+      "deleted": 1
+    },
+    {
+      "path": "sklearn/ensemble/_hist_gradient_boosting/splitting.pyx",
+      "language": "unknown",
+      "added": 2,
+      "deleted": 5
+    },
+    {
+      "path": "sklearn/ensemble/_hist_gradient_boosting/tests/test_predictor.py",
+      "language": "python",
+      "added": 4,
+      "deleted": 4
+    },
+    {
+      "path": "sklearn/utils/_bitset.pxd",
+      "language": "unknown",
+      "added": 21,
+      "deleted": 0
+    },
+    {
+      "path": "sklearn/utils/_bitset.pyx",
+      "language": "unknown",
+      "added": 63,
+      "deleted": 0
+    },
+    {
+      "path": "sklearn/utils/meson.build",
+      "language": "unknown",
+      "added": 2,
+      "deleted": 0
+    },
+    {
+      "path": "sklearn/utils/tests/test_bitset.py",
+      "language": "python",
+      "added": 2,
+      "deleted": 3
+    }
+  ],
+  "nearest_tests": [
+    {
+      "path": "sklearn/ensemble/_hist_gradient_boosting/tests/test_bitset.py",
+      "relationship": "tests",
+      "source_file": "sklearn/ensemble/_hist_gradient_boosting/_bitset.pxd"
+    },
+    {
+      "path": "sklearn/ensemble/_hist_gradient_boosting/tests/test_predictor.py",
+      "relationship": "tests",
+      "source_file": "sklearn/ensemble/_hist_gradient_boosting/_predictor.pyx"
+    },
+    {
+      "path": "sklearn/ensemble/_hist_gradient_boosting/tests/test_binning.py",
+      "relationship": "tests",
+      "source_file": "sklearn/ensemble/_hist_gradient_boosting/binning.py"
+    },
+    {
+      "path": "sklearn/metrics/cluster/tests/test_common.py",
+      "relationship": "tests",
+      "source_file": "sklearn/ensemble/_hist_gradient_boosting/common.pxd"
+    },
+    {
+      "path": "sklearn/metrics/_plot/tests/test_common_curve_display.py",
+      "relationship": "tests",
+      "source_file": "sklearn/ensemble/_hist_gradient_boosting/common.pxd"
+    },
+    {
+      "path": "sklearn/metrics/tests/test_common.py",
+      "relationship": "tests",
+      "source_file": "sklearn/ensemble/_hist_gradient_boosting/common.pxd"
+    },
+    {
+      "path": "sklearn/ensemble/tests/test_common.py",
+      "relationship": "tests",
+      "source_file": "sklearn/ensemble/_hist_gradient_boosting/common.pxd"
+    },
+    {
+      "path": "sklearn/datasets/tests/test_common.py",
+      "relationship": "tests",
+      "source_file": "sklearn/ensemble/_hist_gradient_boosting/common.pxd"
+    },
+    {
+      "path": "sklearn/ensemble/_hist_gradient_boosting/tests/test_grower.py",
+      "relationship": "tests",
+      "source_file": "sklearn/ensemble/_hist_gradient_boosting/grower.py"
+    },
+    {
+      "path": "sklearn/ensemble/_hist_gradient_boosting/tests/test_splitting.py",
+      "relationship": "tests",
+      "source_file": "sklearn/ensemble/_hist_gradient_boosting/splitting.pyx"
+    }
+  ],
+  "dependent_files": [
+    {
+      "path": "sklearn/ensemble/_hist_gradient_boosting/predictor.py",
+      "relationship": "imports",
+      "source_file": "sklearn/ensemble/_hist_gradient_boosting/_bitset.pxd"
+    },
+    {
+      "path": "sklearn/ensemble/_hist_gradient_boosting/gradient_boosting.py",
+      "relationship": "imports",
+      "source_file": "sklearn/ensemble/_hist_gradient_boosting/_bitset.pxd"
+    },
+    {
+      "path": "sklearn/ensemble/_hist_gradient_boosting/tests/test_grower.py",
+      "relationship": "imports",
+      "source_file": "sklearn/ensemble/_hist_gradient_boosting/_bitset.pxd"
+    },
+    {
+      "path": "sklearn/ensemble/_hist_gradient_boosting/tests/test_bitset.py",
+      "relationship": "imports",
+      "source_file": "sklearn/ensemble/_hist_gradient_boosting/_bitset.pxd"
+    },
+    {
+      "path": "sklearn/ensemble/_hist_gradient_boosting/tests/test_binning.py",
+      "relationship": "imports",
+      "source_file": "sklearn/ensemble/_hist_gradient_boosting/_bitset.pxd"
+    },
+    {
+      "path": "sklearn/ensemble/_hist_gradient_boosting/tests/test_splitting.py",
+      "relationship": "imports",
+      "source_file": "sklearn/ensemble/_hist_gradient_boosting/_bitset.pxd"
+    },
+    {
+      "path": "sklearn/ensemble/_hist_gradient_boosting/tests/test_gradient_boosting.py",
+      "relationship": "imports",
+      "source_file": "sklearn/ensemble/_hist_gradient_boosting/_bitset.pxd"
+    },
+    {
+      "path": "sklearn/ensemble/_hist_gradient_boosting/tests/test_monotonic_constraints.py",
+      "relationship": "imports",
+      "source_file": "sklearn/ensemble/_hist_gradient_boosting/_predictor.pyx"
+    },
+    {
+      "path": "sklearn/ensemble/_hist_gradient_boosting/tests/test_warm_start.py",
+      "relationship": "imports",
+      "source_file": "sklearn/ensemble/_hist_gradient_boosting/_predictor.pyx"
+    },
+    {
+      "path": "sklearn/linear_model/_glm/glm.py",
+      "relationship": "imports",
+      "source_file": "sklearn/ensemble/_hist_gradient_boosting/_predictor.pyx"
+    },
+    {
+      "path": "sklearn/model_selection/tests/test_classification_threshold.py",
+      "relationship": "imports",
+      "source_file": "sklearn/ensemble/_hist_gradient_boosting/_predictor.pyx"
+    },
+    {
+      "path": "sklearn/ensemble/_hist_gradient_boosting/tests/test_compare_lightgbm.py",
+      "relationship": "imports",
+      "source_file": "sklearn/ensemble/_hist_gradient_boosting/binning.py"
+    },
+    {
+      "path": "sklearn/ensemble/_hist_gradient_boosting/utils.py",
+      "relationship": "imports",
+      "source_file": "sklearn/ensemble/_hist_gradient_boosting/binning.py"
+    },
+    {
+      "path": "sklearn/cluster/tests/test_mean_shift.py",
+      "relationship": "imports",
+      "source_file": "sklearn/ensemble/_hist_gradient_boosting/binning.py"
+    },
+    {
+      "path": "asv_benchmarks/benchmarks/metrics.py",
+      "relationship": "imports",
+      "source_file": "sklearn/ensemble/_hist_gradient_boosting/common.pxd"
+    }
+  ],
+  "diff_summary": "14 files changed",
+  "full_diff": "diff --git a/sklearn/ensemble/_hist_gradient_boosting/_bitset.pxd b/sklearn/ensemble/_hist_gradient_boosting/_bitset.pxd\ndeleted file mode 100644\nindex 83dda474bab7f..0000000000000\n--- a/sklearn/ensemble/_hist_gradient_boosting/_bitset.pxd\n+++ /dev/null\n@@ -1,20 +0,0 @@\n-from sklearn.ensemble._hist_gradient_boosting.common cimport X_BINNED_DTYPE_C\n-from sklearn.ensemble._hist_gradient_boosting.common cimport BITSET_DTYPE_C\n-from sklearn.ensemble._hist_gradient_boosting.common cimport BITSET_INNER_DTYPE_C\n-from sklearn.ensemble._hist_gradient_boosting.common cimport X_DTYPE_C\n-from sklearn.utils._typedefs cimport uint8_t\n-\n-\n-cdef void init_bitset(BITSET_DTYPE_C bitset) noexcept nogil\n-\n-cdef void set_bitset(BITSET_DTYPE_C bitset, X_BINNED_DTYPE_C val) noexcept nogil\n-\n-cdef uint8_t in_bitset(BITSET_DTYPE_C bitset, X_BINNED_DTYPE_C val) noexcept nogil\n-\n-cpdef uint8_t in_bitset_memoryview(const BITSET_INNER_DTYPE_C[:] bitset,\n-                                   X_BINNED_DTYPE_C val) noexcept nogil\n-\n-cdef uint8_t in_bitset_2d_memoryview(\n-    const BITSET_INNER_DTYPE_C[:, :] bitset,\n-    X_BINNED_DTYPE_C val,\n-    unsigned int row) noexcept nogil\ndiff --git a/sklearn/ensemble/_hist_gradient_boosting/_bitset.pyx b/sklearn/ensemble/_hist_gradient_boosting/_bitset.pyx\ndeleted file mode 100644\nindex e80ce0e16985d..0000000000000\n--- a/sklearn/ensemble/_hist_gradient_boosting/_bitset.pyx\n+++ /dev/null\n@@ -1,65 +0,0 @@\n-from sklearn.ensemble._hist_gradient_boosting.common cimport BITSET_INNER_DTYPE_C\n-from sklearn.ensemble._hist_gradient_boosting.common cimport BITSET_DTYPE_C\n-from sklearn.ensemble._hist_gradient_boosting.common cimport X_DTYPE_C\n-from sklearn.ensemble._hist_gradient_boosting.common cimport X_BINNED_DTYPE_C\n-from sklearn.utils._typedefs cimport uint8_t\n-\n-\n-# A bitset is a data structure used to represent sets of integers in [0, n]. We\n-# use them to represent sets of features indices (e.g. features that go to the\n-# left child, or features that are categorical). For familiarity with bitsets\n-# and bitwise operations:\n-# https://en.wikipedia.org/wiki/Bit_array\n-# https://en.wikipedia.org/wiki/Bitwise_operation\n-\n-\n-cdef inline void init_bitset(BITSET_DTYPE_C bitset) noexcept nogil:  # OUT\n-    cdef:\n-        unsigned int i\n-\n-    for i in range(8):\n-        bitset[i] = 0\n-\n-\n-cdef inline void set_bitset(BITSET_DTYPE_C bitset,  # OUT\n-                            X_BINNED_DTYPE_C val) noexcept nogil:\n-    bitset[val // 32] |= (1 << (val % 32))\n-\n-\n-cdef inline uint8_t in_bitset(BITSET_DTYPE_C bitset,\n-                              X_BINNED_DTYPE_C val) noexcept nogil:\n-    return (bitset[val // 32] >> (val % 32)) & 1\n-\n-\n-cpdef inline uint8_t in_bitset_memoryview(const BITSET_INNER_DTYPE_C[:] bitset,\n-                                          X_BINNED_DTYPE_C val) noexcept nogil:\n-    return (bitset[val // 32] >> (val % 32)) & 1\n-\n-\n-cdef inline uint8_t in_bitset_2d_memoryview(const BITSET_INNER_DTYPE_C[:, :] bitset,\n-                                            X_BINNED_DTYPE_C val,\n-                                            unsigned int row) noexcept nogil:\n-    # Same as above but works on 2d memory views to avoid the creation of 1d\n-    # memory views. See https://github.com/scikit-learn/scikit-learn/issues/17299\n-    return (bitset[row, val // 32] >> (val % 32)) & 1\n-\n-\n-cpdef inline void set_bitset_memoryview(BITSET_INNER_DTYPE_C[:] bitset,  # OUT\n-                                        X_BINNED_DTYPE_C val):\n-    bitset[val // 32] |= (1 << (val % 32))\n-\n-\n-def set_raw_bitset_from_binned_bitset(BITSET_INNER_DTYPE_C[:] raw_bitset,  # OUT\n-                                      BITSET_INNER_DTYPE_C[:] binned_bitset,\n-                                      X_DTYPE_C[:] categories):\n-    \"\"\"Set the raw_bitset from the values of the binned bitset\n-\n-    categories is a mapping from binned category value to raw category value.\n-    \"\"\"\n-    cdef:\n-        int binned_cat_value\n-        X_DTYPE_C raw_cat_value\n-\n-    for binned_cat_value, raw_cat_value in enumerate(categories):\n-        if in_bitset_memoryview(binned_bitset, binned_cat_value):\n-            set_bitset_memoryview(raw_bitset, <X_BINNED_DTYPE_C>raw_cat_value)\ndiff --git a/sklearn/ensemble/_hist_gradient_boosting/_predictor.pyx b/sklearn/ensemble/_hist_gradient_boosting/_predictor.pyx\nindex 37f8055fcdf8c..e8dde001ec98e 100644\n--- a/sklearn/ensemble/_hist_gradient_boosting/_predictor.pyx\n+++ b/sklearn/ensemble/_hist_gradient_boosting/_predictor.pyx\n@@ -5,14 +5,13 @@ from cython.parallel import prange\n from libc.math cimport isnan\n import numpy as np\n \n+from sklearn.utils._bitset cimport BITSET_INNER_DTYPE_C, in_bitset_2d_memoryview\n from sklearn.utils._typedefs cimport intp_t, uint8_t\n from sklearn.ensemble._hist_gradient_boosting.common cimport X_DTYPE_C\n from sklearn.ensemble._hist_gradient_boosting.common cimport Y_DTYPE_C\n from sklearn.ensemble._hist_gradient_boosting.common import Y_DTYPE\n from sklearn.ensemble._hist_gradient_boosting.common cimport X_BINNED_DTYPE_C\n-from sklearn.ensemble._hist_gradient_boosting.common cimport BITSET_INNER_DTYPE_C\n from sklearn.ensemble._hist_gradient_boosting.common cimport node_struct\n-from sklearn.ensemble._hist_gradient_boosting._bitset cimport in_bitset_2d_memoryview\n \n \n def _predict_from_raw_data(  # raw data = non-binned data\ndiff --git a/sklearn/ensemble/_hist_gradient_boosting/binning.py b/sklearn/ensemble/_hist_gradient_boosting/binning.py\nindex 3b3a4108359ee..444249eda041c 100644\n--- a/sklearn/ensemble/_hist_gradient_boosting/binning.py\n+++ b/sklearn/ensemble/_hist_gradient_boosting/binning.py\n@@ -14,7 +14,6 @@\n \n from sklearn.base import BaseEstimator, TransformerMixin\n from sklearn.ensemble._hist_gradient_boosting._binning import _map_to_bins\n-from sklearn.ensemble._hist_gradient_boosting._bitset import set_bitset_memoryview\n from sklearn.ensemble._hist_gradient_boosting.common import (\n     ALMOST_INF,\n     X_BINNED_DTYPE,\n@@ -22,6 +21,7 @@\n     X_DTYPE,\n )\n from sklearn.utils import check_array, check_random_state\n+from sklearn.utils._bitset import set_bitset_memoryview\n from sklearn.utils._openmp_helpers import _openmp_effective_n_threads\n from sklearn.utils.parallel import Parallel, delayed\n from sklearn.utils.stats import _weighted_percentile\ndiff --git a/sklearn/ensemble/_hist_gradient_boosting/common.pxd b/sklearn/ensemble/_hist_gradient_boosting/common.pxd\nindex 63ae2a3da2d3d..ec98206a685cc 100644\n--- a/sklearn/ensemble/_hist_gradient_boosting/common.pxd\n+++ b/sklearn/ensemble/_hist_gradient_boosting/common.pxd\n@@ -1,12 +1,14 @@\n-from sklearn.utils._typedefs cimport float32_t, float64_t, intp_t, uint8_t, uint32_t\n+# Authors: The scikit-learn developers\n+# SPDX-License-Identifier: BSD-3-Clause\n+\n+from sklearn.utils._bitset cimport BITSET_INNER_DTYPE_C, BITSET_INNER_DTYPE_C\n+from sklearn.utils._typedefs cimport float32_t, float64_t, intp_t, uint8_t\n \n \n ctypedef float64_t X_DTYPE_C\n ctypedef uint8_t X_BINNED_DTYPE_C\n ctypedef float64_t Y_DTYPE_C\n ctypedef float32_t G_H_DTYPE_C\n-ctypedef uint32_t BITSET_INNER_DTYPE_C\n-ctypedef BITSET_INNER_DTYPE_C[8] BITSET_DTYPE_C\n \n \n cdef packed struct hist_struct:\ndiff --git a/sklearn/ensemble/_hist_gradient_boosting/common.pyx b/sklearn/ensemble/_hist_gradient_boosting/common.pyx\nindex 6b20e32813d5b..184c80c72f088 100644\n--- a/sklearn/ensemble/_hist_gradient_boosting/common.pyx\n+++ b/sklearn/ensemble/_hist_gradient_boosting/common.pyx\n@@ -1,3 +1,6 @@\n+# Authors: The scikit-learn developers\n+# SPDX-License-Identifier: BSD-3-Clause\n+\n import numpy as np\n \n # Y_DYTPE is the dtype to which the targets y are converted to. This is also\ndiff --git a/sklearn/ensemble/_hist_gradient_boosting/grower.py b/sklearn/ensemble/_hist_gradient_boosting/grower.py\nindex d734c390ad824..55bcb35d4df64 100644\n--- a/sklearn/ensemble/_hist_gradient_boosting/grower.py\n+++ b/sklearn/ensemble/_hist_gradient_boosting/grower.py\n@@ -14,9 +14,6 @@\n \n import numpy as np\n \n-from sklearn.ensemble._hist_gradient_boosting._bitset import (\n-    set_raw_bitset_from_binned_bitset,\n-)\n from sklearn.ensemble._hist_gradient_boosting.common import (\n     PREDICTOR_RECORD_DTYPE,\n     X_BITSET_INNER_DTYPE,\n@@ -25,6 +22,7 @@\n from sklearn.ensemble._hist_gradient_boosting.histogram import HistogramBuilder\n from sklearn.ensemble._hist_gradient_boosting.predictor import TreePredictor\n from sklearn.ensemble._hist_gradient_boosting.splitting import Splitter\n+from sklearn.utils._bitset import set_raw_bitset_from_binned_bitset\n from sklearn.utils._openmp_helpers import _openmp_effective_n_threads\n \n \ndiff --git a/sklearn/ensemble/_hist_gradient_boosting/meson.build b/sklearn/ensemble/_hist_gradient_boosting/meson.build\nindex 1114b7719a2f4..7b5f1c6b5963e 100644\n--- a/sklearn/ensemble/_hist_gradient_boosting/meson.build\n+++ b/sklearn/ensemble/_hist_gradient_boosting/meson.build\n@@ -12,7 +12,6 @@ hist_gradient_boosting_extension_metadata = {\n   'splitting': {'sources': [cython_gen.process('splitting.pyx')], 'dependencies': [openmp_dep]},\n   '_binning': {'sources': [cython_gen.process('_binning.pyx')], 'dependencies': [openmp_dep]},\n   '_predictor': {'sources': [cython_gen.process('_predictor.pyx')], 'dependencies': [openmp_dep]},\n-  '_bitset': {'sources': [cython_gen.process('_bitset.pyx')]},\n   'common': {'sources': [cython_gen.process('common.pyx')]},\n }\n \ndiff --git a/sklearn/ensemble/_hist_gradient_boosting/splitting.pyx b/sklearn/ensemble/_hist_gradient_boosting/splitting.pyx\nindex 8b8b976415d81..6fae29e26ee4b 100644\n--- a/sklearn/ensemble/_hist_gradient_boosting/splitting.pyx\n+++ b/sklearn/ensemble/_hist_gradient_boosting/splitting.pyx\n@@ -16,16 +16,13 @@ from libc.math cimport INFINITY, ceil\n from libc.stdlib cimport malloc, free, qsort\n from libc.string cimport memcpy\n \n+from sklearn.utils._bitset cimport BITSET_DTYPE_C, BITSET_INNER_DTYPE_C\n+from sklearn.utils._bitset cimport in_bitset, init_bitset, set_bitset\n from sklearn.utils._typedefs cimport uint8_t\n from sklearn.ensemble._hist_gradient_boosting.common cimport X_BINNED_DTYPE_C\n from sklearn.ensemble._hist_gradient_boosting.common cimport Y_DTYPE_C\n from sklearn.ensemble._hist_gradient_boosting.common cimport hist_struct\n-from sklearn.ensemble._hist_gradient_boosting.common cimport BITSET_INNER_DTYPE_C\n-from sklearn.ensemble._hist_gradient_boosting.common cimport BITSET_DTYPE_C\n from sklearn.ensemble._hist_gradient_boosting.common cimport MonotonicConstraint\n-from sklearn.ensemble._hist_gradient_boosting._bitset cimport init_bitset\n-from sklearn.ensemble._hist_gradient_boosting._bitset cimport set_bitset\n-from sklearn.ensemble._hist_gradient_boosting._bitset cimport in_bitset\n \n \n cdef struct split_info_struct:\ndiff --git a/sklearn/ensemble/_hist_gradient_boosting/tests/test_predictor.py b/sklearn/ensemble/_hist_gradient_boosting/tests/test_predictor.py\nindex ae9770ca14a83..0612e038aa0a8 100644\n--- a/sklearn/ensemble/_hist_gradient_boosting/tests/test_predictor.py\n+++ b/sklearn/ensemble/_hist_gradient_boosting/tests/test_predictor.py\n@@ -3,10 +3,6 @@\n from numpy.testing import assert_allclose\n \n from sklearn.datasets import make_regression\n-from sklearn.ensemble._hist_gradient_boosting._bitset import (\n-    set_bitset_memoryview,\n-    set_raw_bitset_from_binned_bitset,\n-)\n from sklearn.ensemble._hist_gradient_boosting.binning import _BinMapper\n from sklearn.ensemble._hist_gradient_boosting.common import (\n     ALMOST_INF,\n@@ -20,6 +16,10 @@\n from sklearn.ensemble._hist_gradient_boosting.predictor import TreePredictor\n from sklearn.metrics import r2_score\n from sklearn.model_selection import train_test_split\n+from sklearn.utils._bitset import (\n+    set_bitset_memoryview,\n+    set_raw_bitset_from_binned_bitset,\n+)\n from sklearn.utils._openmp_helpers import _openmp_effective_n_threads\n \n n_threads = _openmp_effective_n_threads()\ndiff --git a/sklearn/utils/_bitset.pxd b/sklearn/utils/_bitset.pxd\nnew file mode 100644\nindex 0000000000000..5b8b145c08d80\n--- /dev/null\n+++ b/sklearn/utils/_bitset.pxd\n@@ -0,0 +1,21 @@\n+# Authors: The scikit-learn developers\n+# SPDX-License-Identifier: BSD-3-Clause\n+\n+from sklearn.utils._typedefs cimport float64_t, uint8_t, uint32_t\n+\n+ctypedef uint32_t BITSET_INNER_DTYPE_C\n+ctypedef BITSET_INNER_DTYPE_C[8] BITSET_DTYPE_C\n+\n+cdef void init_bitset(BITSET_DTYPE_C bitset) noexcept nogil\n+\n+cdef void set_bitset(BITSET_DTYPE_C bitset, uint8_t val) noexcept nogil\n+\n+cdef uint8_t in_bitset(BITSET_DTYPE_C bitset, uint8_t val) noexcept nogil\n+\n+cpdef uint8_t in_bitset_memoryview(\n+    const BITSET_INNER_DTYPE_C[:] bitset, uint8_t val\n+) noexcept nogil\n+\n+cdef uint8_t in_bitset_2d_memoryview(\n+    const BITSET_INNER_DTYPE_C[:, :] bitset, uint8_t val, unsigned int row\n+) noexcept nogil\ndiff --git a/sklearn/utils/_bitset.pyx b/sklearn/utils/_bitset.pyx\nnew file mode 100644\nindex 0000000000000..4b275eba03e69\n--- /dev/null\n+++ b/sklearn/utils/_bitset.pyx\n@@ -0,0 +1,63 @@\n+\"\"\"\n+A bitset is a data structure used to represent sets of integers in [0, n]. For decision\n+trees, we use them to represent sets of features indices (e.g. features that go to the\n+left child, or features that are categorical). For familiarity with bitsets and bitwise\n+operations see:\n+https://en.wikipedia.org/wiki/Bit_array\n+https://en.wikipedia.org/wiki/Bitwise_operation\n+\"\"\"\n+\n+# Authors: The scikit-learn developers\n+# SPDX-License-Identifier: BSD-3-Clause\n+\n+\n+cdef inline void init_bitset(BITSET_DTYPE_C bitset) noexcept nogil:\n+    cdef:\n+        unsigned int i\n+\n+    for i in range(8):\n+        bitset[i] = 0\n+\n+\n+cdef inline void set_bitset(BITSET_DTYPE_C bitset, uint8_t val) noexcept nogil:\n+    bitset[val // 32] |= (1 << (val % 32))\n+\n+\n+cdef inline uint8_t in_bitset(BITSET_DTYPE_C bitset, uint8_t val) noexcept nogil:\n+    return (bitset[val // 32] >> (val % 32)) & 1\n+\n+\n+cpdef inline uint8_t in_bitset_memoryview(\n+    const BITSET_INNER_DTYPE_C[:] bitset, uint8_t val\n+) noexcept nogil:\n+    return (bitset[val // 32] >> (val % 32)) & 1\n+\n+\n+cdef inline uint8_t in_bitset_2d_memoryview(\n+    const BITSET_INNER_DTYPE_C[:, :] bitset, uint8_t val, unsigned int row\n+) noexcept nogil:\n+    # Same as above but works on 2d memory views to avoid the creation of 1d\n+    # memory views. See https://github.com/scikit-learn/scikit-learn/issues/17299\n+    return (bitset[row, val // 32] >> (val % 32)) & 1\n+\n+\n+cpdef inline void set_bitset_memoryview(BITSET_INNER_DTYPE_C[:] bitset, uint8_t val):\n+    bitset[val // 32] |= (1 << (val % 32))\n+\n+\n+def set_raw_bitset_from_binned_bitset(\n+    BITSET_INNER_DTYPE_C[:] raw_bitset,\n+    BITSET_INNER_DTYPE_C[:] binned_bitset,\n+    float64_t[:] categories,\n+):\n+    \"\"\"Set the raw_bitset from the values of the binned bitset\n+\n+    categories is a mapping from binned category value to raw category value.\n+    \"\"\"\n+    cdef:\n+        int binned_cat_value\n+        float64_t raw_cat_value\n+\n+    for binned_cat_value, raw_cat_value in enumerate(categories):\n+        if in_bitset_memoryview(binned_bitset, binned_cat_value):\n+            set_bitset_memoryview(raw_bitset, <uint8_t>raw_cat_value)\ndiff --git a/sklearn/utils/meson.build b/sklearn/utils/meson.build\nindex c3402df91363c..71b98c088d4c1 100644\n--- a/sklearn/utils/meson.build\n+++ b/sklearn/utils/meson.build\n@@ -24,6 +24,7 @@ utils_cython_tree = [\n   # early in the build\n   sklearn_root_cython_tree,\n   fs.copyfile('__init__.py'),\n+  fs.copyfile('_bitset.pxd'),\n   fs.copyfile('_cython_blas.pxd'),\n   fs.copyfile('_heap.pxd'),\n   fs.copyfile('_openmp_helpers.pxd'),\n@@ -38,6 +39,7 @@ utils_extension_metadata = {\n     {'sources': [cython_gen.process('sparsefuncs_fast.pyx')]},\n   '_cython_blas': {'sources': [cython_gen.process('_cython_blas.pyx'), _blas_int_pxi]},\n   'arrayfuncs': {'sources': [cython_gen.process('arrayfuncs.pyx')]},\n+  '_bitset': {'sources': [cython_gen.process('_bitset.pyx')]},\n   'murmurhash': {\n       'sources': [cython_gen.process('murmurhash.pyx'), 'src' / 'MurmurHash3.cpp'],\n   },\ndiff --git a/sklearn/ensemble/_hist_gradient_boosting/tests/test_bitset.py b/sklearn/utils/tests/test_bitset.py\nsimilarity index 90%\nrename from sklearn/ensemble/_hist_gradient_boosting/tests/test_bitset.py\nrename to sklearn/utils/tests/test_bitset.py\nindex c02d66b666f80..8a8277ba56dfb 100644\n--- a/sklearn/ensemble/_hist_gradient_boosting/tests/test_bitset.py\n+++ b/sklearn/utils/tests/test_bitset.py\n@@ -2,12 +2,11 @@\n import pytest\n from numpy.testing import assert_allclose\n \n-from sklearn.ensemble._hist_gradient_boosting._bitset import (\n+from sklearn.utils._bitset import (\n     in_bitset_memoryview,\n     set_bitset_memoryview,\n     set_raw_bitset_from_binned_bitset,\n )\n-from sklearn.ensemble._hist_gradient_boosting.common import X_DTYPE\n \n \n @pytest.mark.parametrize(\n@@ -49,7 +48,7 @@ def test_raw_bitset_from_binned_bitset(\n ):\n     binned_bitset = np.zeros(2, dtype=np.uint32)\n     raw_bitset = np.zeros(2, dtype=np.uint32)\n-    raw_categories = np.asarray(raw_categories, dtype=X_DTYPE)\n+    raw_categories = np.asarray(raw_categories, dtype=np.float64)\n \n     for val in binned_cat_to_insert:\n         set_bitset_memoryview(binned_bitset, val)\n",
+  "metadata": {
+    "v2_fetcher_version": 1,
+    "v2_fetched_at_unix": 1778582634,
+    "v2_diff_cap_bytes": 50000,
+    "v2_body_cap_bytes": 8000,
+    "v2_diff_truncated": false,
+    "v2_raw_diff_chars": 17089,
+    "v2_raw_body_chars": 293,
+    "v2_rag_source": "fresh_for_v2_40pr_expansion",
+    "v2_rag_chunks_copied": 8,
+    "joern_enriched": true,
+    "joern_callers_count": 20,
+    "joern_functions_count": 25
+  },
+  "similar_chunks": [
+    {
+      "file": "sklearn/ensemble/_hist_gradient_boosting/tests/test_grower.py",
+      "start_line": 203,
+      "end_line": 261,
+      "similarity": 0.7862,
+      "related_to": "sklearn/ensemble/_hist_gradient_boosting/tests/test_predictor.py",
+      "content_preview": "ut_data, missing_values_bin_idx, n_threads\n    )\n    expected_targets = [1, 1, 1, 1, 1, 1, -1, -1, -1]\n    assert np.allclose(predictions, expected_targets)\n\n    # Check that training set can be recovered exactly:\n    predictions = predictor.predict_binned(X_binned, missing_values_bin_idx, n_threads)\n    assert np.allclose(predictions, -all_gradients)\n\n\n@pytest.mark.parametrize(\n    \"n_samples, min_samples_leaf, n_bins, constant_hessian, noise\",\n    [\n        (11, 10, 7, True, 0),\n        (13, 10, 42, False, 0),\n        (56, 10, 255, True, 0.1),\n        (101, 3, 7, True, 0),\n        (200, 42, 42, False, 0),\n        (300, 55, 255, True, 0.1),\n        (300, 301, 255, True, 0.1),\n    ],\n)\ndef test_min_samples_leaf(n_samples, min_samples_leaf, n_bins, constant_hessian, noise):\n    rng = np.ran"
+    },
+    {
+      "file": "sklearn/ensemble/_hist_gradient_boosting/tests/test_grower.py",
+      "start_line": 1,
+      "end_line": 57,
+      "similarity": 0.785,
+      "related_to": "sklearn/ensemble/_hist_gradient_boosting/tests/test_predictor.py",
+      "content_preview": "import numpy as np\nimport pytest\nfrom numpy.testing import assert_allclose, assert_array_equal\nfrom pytest import approx\n\nfrom sklearn.ensemble._hist_gradient_boosting.binning import _BinMapper\nfrom sklearn.ensemble._hist_gradient_boosting.common import (\n    G_H_DTYPE,\n    X_BINNED_DTYPE,\n    X_BITSET_INNER_DTYPE,\n    X_DTYPE,\n    Y_DTYPE,\n)\nfrom sklearn.ensemble._hist_gradient_boosting.grower import TreeGrower\nfrom sklearn.preprocessing import OneHotEncoder\nfrom sklearn.utils._openmp_helpers import _openmp_effective_n_threads\n\nn_threads = _openmp_effective_n_threads()\n\n\ndef _make_training_data(n_bins=256, constant_hessian=True):\n    rng = np.random.RandomState(42)\n    n_samples = 10000\n\n    # Generate some test data directly binned so as to test the grower code\n    # independently of the"
+    },
+    {
+      "file": "sklearn/ensemble/_hist_gradient_boosting/tests/test_grower.py",
+      "start_line": 459,
+      "end_line": 512,
+      "similarity": 0.7833,
+      "related_to": "sklearn/ensemble/_hist_gradient_boosting/tests/test_predictor.py",
+      "content_preview": "   is_categorical=is_categorical,\n        n_threads=n_threads,\n    )\n    grower.grow()\n    assert grower.n_nodes == 3\n\n    categories = [np.array([4, 9], dtype=X_DTYPE)]\n    predictor = grower.make_predictor(binning_thresholds=categories)\n    root = predictor.nodes[0]\n    assert root[\"count\"] == 23\n    assert root[\"depth\"] == 0\n    assert root[\"is_categorical\"]\n\n    left, right = predictor.nodes[root[\"left\"]], predictor.nodes[root[\"right\"]]\n\n    # arbitrary validation, but this means ones go to the left.\n    assert left[\"count\"] >= right[\"count\"]\n\n    # check binned category value (1)\n    expected_binned_cat_bitset = [2**1] + [0] * 7\n    binned_cat_bitset = predictor.binned_left_cat_bitsets\n    assert_array_equal(binned_cat_bitset[0], expected_binned_cat_bitset)\n\n    # check raw category v"
+    },
+    {
+      "file": "sklearn/ensemble/_hist_gradient_boosting/tests/test_grower.py",
+      "start_line": 407,
+      "end_line": 466,
+      "similarity": 0.7437,
+      "related_to": "sklearn/ensemble/_hist_gradient_boosting/tests/test_predictor.py",
+      "content_preview": "non_missing = 3\n    has_missing_values = True\n    grower = TreeGrower(\n        X_binned,\n        gradients,\n        hessians,\n        n_bins_non_missing=n_bins_non_missing,\n        has_missing_values=has_missing_values,\n        min_samples_leaf=1,\n        n_threads=n_threads,\n    )\n\n    grower.grow()\n\n    predictor = grower.make_predictor(binning_thresholds=bin_mapper.bin_thresholds_)\n\n    # sanity check: this was a split on nan\n    assert predictor.nodes[0][\"num_threshold\"] == np.inf\n    assert predictor.nodes[0][\"bin_threshold\"] == n_bins_non_missing - 1\n\n    known_cat_bitsets, f_idx_map = bin_mapper.make_known_categories_bitsets()\n\n    # Make sure in particular that the +inf sample is mapped to the left child\n    # Note that lightgbm \"fails\" here and will assign the inf sample to the\n  "
+    },
+    {
+      "file": "sklearn/ensemble/_hist_gradient_boosting/tests/test_grower.py",
+      "start_line": 363,
+      "end_line": 414,
+      "similarity": 0.7377,
+      "related_to": "sklearn/ensemble/_hist_gradient_boosting/tests/test_predictor.py",
+      "content_preview": "nned, gradients, hessians, min_samples_leaf=5, has_missing_values=False\n    )\n    grower.grow()\n\n    # We pass undefined binning_thresholds because we won't use predict anyway\n    predictor = grower.make_predictor(\n        binning_thresholds=np.zeros((X_binned.shape[1], X_binned.max() + 1))\n    )\n\n    # go from root to a leaf, always following node with the most samples.\n    # That's the path nans are supposed to take\n    node = predictor.nodes[0]\n    while not node[\"is_leaf\"]:\n        left = predictor.nodes[node[\"left\"]]\n        right = predictor.nodes[node[\"right\"]]\n        node = left if left[\"count\"] > right[\"count\"] else right\n\n    prediction_main_path = node[\"value\"]\n\n    # now build X_test with only nans, and make sure all predictions are equal\n    # to prediction_main_path\n    all_"
+    },
+    {
+      "file": "sklearn/ensemble/_hist_gradient_boosting/tests/test_splitting.py",
+      "start_line": 1,
+      "end_line": 59,
+      "similarity": 0.7315,
+      "related_to": "sklearn/ensemble/_hist_gradient_boosting/tests/test_predictor.py",
+      "content_preview": "import numpy as np\nimport pytest\nfrom numpy.testing import assert_array_equal\n\nfrom sklearn.ensemble._hist_gradient_boosting.common import (\n    G_H_DTYPE,\n    HISTOGRAM_DTYPE,\n    X_BINNED_DTYPE,\n    MonotonicConstraint,\n)\nfrom sklearn.ensemble._hist_gradient_boosting.histogram import HistogramBuilder\nfrom sklearn.ensemble._hist_gradient_boosting.splitting import (\n    Splitter,\n    compute_node_value,\n)\nfrom sklearn.utils._openmp_helpers import _openmp_effective_n_threads\nfrom sklearn.utils._testing import skip_if_32bit\n\nn_threads = _openmp_effective_n_threads()\n\n\n@pytest.mark.parametrize(\"n_bins\", [3, 32, 256])\ndef test_histogram_split(n_bins):\n    rng = np.random.RandomState(42)\n    feature_idx = 0\n    l2_regularization = 0\n    min_hessian_to_split = 1e-3\n    min_samples_leaf = 1\n    m"
+    },
+    {
+      "file": "sklearn/ensemble/_hist_gradient_boosting/tests/test_binning.py",
+      "start_line": 1,
+      "end_line": 65,
+      "similarity": 0.7258,
+      "related_to": "sklearn/ensemble/_hist_gradient_boosting/tests/test_predictor.py",
+      "content_preview": "import numpy as np\nimport pytest\nfrom numpy.testing import assert_allclose, assert_array_equal\n\nfrom sklearn.ensemble._hist_gradient_boosting.binning import (\n    _BinMapper,\n    _find_binning_thresholds,\n    _map_to_bins,\n)\nfrom sklearn.ensemble._hist_gradient_boosting.common import (\n    ALMOST_INF,\n    X_BINNED_DTYPE,\n    X_DTYPE,\n)\nfrom sklearn.utils._openmp_helpers import _openmp_effective_n_threads\n\nn_threads = _openmp_effective_n_threads()\n\n\nDATA = (\n    np.random.RandomState(42)\n    .normal(loc=[0, 10], scale=[1, 0.01], size=(int(1e6), 2))\n    .astype(X_DTYPE)\n)\n\n\ndef test_find_binning_thresholds_regular_data():\n    data = np.linspace(0, 10, 1001)\n    bin_thresholds = _find_binning_thresholds(data, max_bins=10)\n    assert_allclose(bin_thresholds, [1, 2, 3, 4, 5, 6, 7, 8, 9])\n\n    b"
+    },
+    {
+      "file": "sklearn/ensemble/_hist_gradient_boosting/predictor.py",
+      "start_line": 58,
+      "end_line": 123,
+      "similarity": 0.7185,
+      "related_to": "sklearn/ensemble/_hist_gradient_boosting/_predictor.pyx",
+      "content_preview": "    Array of bitsets of known categories, for each categorical feature.\n\n        f_idx_map : ndarray of shape (n_features,)\n            Map from original feature index to the corresponding index in the\n            known_cat_bitsets array.\n\n        n_threads : int\n            Number of OpenMP threads to use.\n\n        Returns\n        -------\n        y : ndarray, shape (n_samples,)\n            The raw predicted values.\n        \"\"\"\n        out = np.empty(X.shape[0], dtype=Y_DTYPE)\n\n        _predict_from_raw_data(\n            self.nodes,\n            X,\n            self.raw_left_cat_bitsets,\n            known_cat_bitsets,\n            f_idx_map,\n            n_threads,\n            out,\n        )\n        return out\n\n    def predict_binned(self, X, missing_values_bin_idx, n_threads):\n        \"\"\"Pred"
+    }
+  ],
+  "rag_evidence": {
+    "similar_code": [
+      {
+        "file": "sklearn/ensemble/_hist_gradient_boosting/tests/test_grower.py",
+        "start_line": 203,
+        "end_line": 261,
+        "similarity": 0.7862,
+        "related_to": "sklearn/ensemble/_hist_gradient_boosting/tests/test_predictor.py",
+        "content_preview": "ut_data, missing_values_bin_idx, n_threads\n    )\n    expected_targets = [1, 1, 1, 1, 1, 1, -1, -1, -1]\n    assert np.allclose(predictions, expected_targets)\n\n    # Check that training set can be recovered exactly:\n    predictions = predictor.predict_binned(X_binned, missing_values_bin_idx, n_threads)\n    assert np.allclose(predictions, -all_gradients)\n\n\n@pytest.mark.parametrize(\n    \"n_samples, min_samples_leaf, n_bins, constant_hessian, noise\",\n    [\n        (11, 10, 7, True, 0),\n        (13, 10, 42, False, 0),\n        (56, 10, 255, True, 0.1),\n        (101, 3, 7, True, 0),\n        (200, 42, 42, False, 0),\n        (300, 55, 255, True, 0.1),\n        (300, 301, 255, True, 0.1),\n    ],\n)\ndef test_min_samples_leaf(n_samples, min_samples_leaf, n_bins, constant_hessian, noise):\n    rng = np.ran"
+      },
+      {
+        "file": "sklearn/ensemble/_hist_gradient_boosting/tests/test_grower.py",
+        "start_line": 1,
+        "end_line": 57,
+        "similarity": 0.785,
+        "related_to": "sklearn/ensemble/_hist_gradient_boosting/tests/test_predictor.py",
+        "content_preview": "import numpy as np\nimport pytest\nfrom numpy.testing import assert_allclose, assert_array_equal\nfrom pytest import approx\n\nfrom sklearn.ensemble._hist_gradient_boosting.binning import _BinMapper\nfrom sklearn.ensemble._hist_gradient_boosting.common import (\n    G_H_DTYPE,\n    X_BINNED_DTYPE,\n    X_BITSET_INNER_DTYPE,\n    X_DTYPE,\n    Y_DTYPE,\n)\nfrom sklearn.ensemble._hist_gradient_boosting.grower import TreeGrower\nfrom sklearn.preprocessing import OneHotEncoder\nfrom sklearn.utils._openmp_helpers import _openmp_effective_n_threads\n\nn_threads = _openmp_effective_n_threads()\n\n\ndef _make_training_data(n_bins=256, constant_hessian=True):\n    rng = np.random.RandomState(42)\n    n_samples = 10000\n\n    # Generate some test data directly binned so as to test the grower code\n    # independently of the"
+      },
+      {
+        "file": "sklearn/ensemble/_hist_gradient_boosting/tests/test_grower.py",
+        "start_line": 459,
+        "end_line": 512,
+        "similarity": 0.7833,
+        "related_to": "sklearn/ensemble/_hist_gradient_boosting/tests/test_predictor.py",
+        "content_preview": "   is_categorical=is_categorical,\n        n_threads=n_threads,\n    )\n    grower.grow()\n    assert grower.n_nodes == 3\n\n    categories = [np.array([4, 9], dtype=X_DTYPE)]\n    predictor = grower.make_predictor(binning_thresholds=categories)\n    root = predictor.nodes[0]\n    assert root[\"count\"] == 23\n    assert root[\"depth\"] == 0\n    assert root[\"is_categorical\"]\n\n    left, right = predictor.nodes[root[\"left\"]], predictor.nodes[root[\"right\"]]\n\n    # arbitrary validation, but this means ones go to the left.\n    assert left[\"count\"] >= right[\"count\"]\n\n    # check binned category value (1)\n    expected_binned_cat_bitset = [2**1] + [0] * 7\n    binned_cat_bitset = predictor.binned_left_cat_bitsets\n    assert_array_equal(binned_cat_bitset[0], expected_binned_cat_bitset)\n\n    # check raw category v"
+      },
+      {
+        "file": "sklearn/ensemble/_hist_gradient_boosting/tests/test_grower.py",
+        "start_line": 407,
+        "end_line": 466,
+        "similarity": 0.7437,
+        "related_to": "sklearn/ensemble/_hist_gradient_boosting/tests/test_predictor.py",
+        "content_preview": "non_missing = 3\n    has_missing_values = True\n    grower = TreeGrower(\n        X_binned,\n        gradients,\n        hessians,\n        n_bins_non_missing=n_bins_non_missing,\n        has_missing_values=has_missing_values,\n        min_samples_leaf=1,\n        n_threads=n_threads,\n    )\n\n    grower.grow()\n\n    predictor = grower.make_predictor(binning_thresholds=bin_mapper.bin_thresholds_)\n\n    # sanity check: this was a split on nan\n    assert predictor.nodes[0][\"num_threshold\"] == np.inf\n    assert predictor.nodes[0][\"bin_threshold\"] == n_bins_non_missing - 1\n\n    known_cat_bitsets, f_idx_map = bin_mapper.make_known_categories_bitsets()\n\n    # Make sure in particular that the +inf sample is mapped to the left child\n    # Note that lightgbm \"fails\" here and will assign the inf sample to the\n  "
+      },
+      {
+        "file": "sklearn/ensemble/_hist_gradient_boosting/tests/test_grower.py",
+        "start_line": 363,
+        "end_line": 414,
+        "similarity": 0.7377,
+        "related_to": "sklearn/ensemble/_hist_gradient_boosting/tests/test_predictor.py",
+        "content_preview": "nned, gradients, hessians, min_samples_leaf=5, has_missing_values=False\n    )\n    grower.grow()\n\n    # We pass undefined binning_thresholds because we won't use predict anyway\n    predictor = grower.make_predictor(\n        binning_thresholds=np.zeros((X_binned.shape[1], X_binned.max() + 1))\n    )\n\n    # go from root to a leaf, always following node with the most samples.\n    # That's the path nans are supposed to take\n    node = predictor.nodes[0]\n    while not node[\"is_leaf\"]:\n        left = predictor.nodes[node[\"left\"]]\n        right = predictor.nodes[node[\"right\"]]\n        node = left if left[\"count\"] > right[\"count\"] else right\n\n    prediction_main_path = node[\"value\"]\n\n    # now build X_test with only nans, and make sure all predictions are equal\n    # to prediction_main_path\n    all_"
+      },
+      {
+        "file": "sklearn/ensemble/_hist_gradient_boosting/tests/test_splitting.py",
+        "start_line": 1,
+        "end_line": 59,
+        "similarity": 0.7315,
+        "related_to": "sklearn/ensemble/_hist_gradient_boosting/tests/test_predictor.py",
+        "content_preview": "import numpy as np\nimport pytest\nfrom numpy.testing import assert_array_equal\n\nfrom sklearn.ensemble._hist_gradient_boosting.common import (\n    G_H_DTYPE,\n    HISTOGRAM_DTYPE,\n    X_BINNED_DTYPE,\n    MonotonicConstraint,\n)\nfrom sklearn.ensemble._hist_gradient_boosting.histogram import HistogramBuilder\nfrom sklearn.ensemble._hist_gradient_boosting.splitting import (\n    Splitter,\n    compute_node_value,\n)\nfrom sklearn.utils._openmp_helpers import _openmp_effective_n_threads\nfrom sklearn.utils._testing import skip_if_32bit\n\nn_threads = _openmp_effective_n_threads()\n\n\n@pytest.mark.parametrize(\"n_bins\", [3, 32, 256])\ndef test_histogram_split(n_bins):\n    rng = np.random.RandomState(42)\n    feature_idx = 0\n    l2_regularization = 0\n    min_hessian_to_split = 1e-3\n    min_samples_leaf = 1\n    m"
+      },
+      {
+        "file": "sklearn/ensemble/_hist_gradient_boosting/tests/test_binning.py",
+        "start_line": 1,
+        "end_line": 65,
+        "similarity": 0.7258,
+        "related_to": "sklearn/ensemble/_hist_gradient_boosting/tests/test_predictor.py",
+        "content_preview": "import numpy as np\nimport pytest\nfrom numpy.testing import assert_allclose, assert_array_equal\n\nfrom sklearn.ensemble._hist_gradient_boosting.binning import (\n    _BinMapper,\n    _find_binning_thresholds,\n    _map_to_bins,\n)\nfrom sklearn.ensemble._hist_gradient_boosting.common import (\n    ALMOST_INF,\n    X_BINNED_DTYPE,\n    X_DTYPE,\n)\nfrom sklearn.utils._openmp_helpers import _openmp_effective_n_threads\n\nn_threads = _openmp_effective_n_threads()\n\n\nDATA = (\n    np.random.RandomState(42)\n    .normal(loc=[0, 10], scale=[1, 0.01], size=(int(1e6), 2))\n    .astype(X_DTYPE)\n)\n\n\ndef test_find_binning_thresholds_regular_data():\n    data = np.linspace(0, 10, 1001)\n    bin_thresholds = _find_binning_thresholds(data, max_bins=10)\n    assert_allclose(bin_thresholds, [1, 2, 3, 4, 5, 6, 7, 8, 9])\n\n    b"
+      },
+      {
+        "file": "sklearn/ensemble/_hist_gradient_boosting/predictor.py",
+        "start_line": 58,
+        "end_line": 123,
+        "similarity": 0.7185,
+        "related_to": "sklearn/ensemble/_hist_gradient_boosting/_predictor.pyx",
+        "content_preview": "    Array of bitsets of known categories, for each categorical feature.\n\n        f_idx_map : ndarray of shape (n_features,)\n            Map from original feature index to the corresponding index in the\n            known_cat_bitsets array.\n\n        n_threads : int\n            Number of OpenMP threads to use.\n\n        Returns\n        -------\n        y : ndarray, shape (n_samples,)\n            The raw predicted values.\n        \"\"\"\n        out = np.empty(X.shape[0], dtype=Y_DTYPE)\n\n        _predict_from_raw_data(\n            self.nodes,\n            X,\n            self.raw_left_cat_bitsets,\n            known_cat_bitsets,\n            f_idx_map,\n            n_threads,\n            out,\n        )\n        return out\n\n    def predict_binned(self, X, missing_values_bin_idx, n_threads):\n        \"\"\"Pred"
+      }
+    ]
+  },
+  "callers": [
+    {
+      "path": "_hist_gradient_boosting/grower.py",
+      "from_function": "__init__",
+      "calls_function": "set_children_bounds",
+      "caller_line": 87,
+      "callee_file": "_hist_gradient_boosting/grower.py",
+      "callee_line": 123
+    },
+    {
+      "path": "_hist_gradient_boosting/grower.py",
+      "from_function": "__init__",
+      "calls_function": "_validate_parameters",
+      "caller_line": 246,
+      "callee_file": "_hist_gradient_boosting/grower.py",
+      "callee_line": 359
+    },
+    {
+      "path": "_hist_gradient_boosting/grower.py",
+      "from_function": "__init__",
+      "calls_function": "_initialize_root",
+      "caller_line": 246,
+      "callee_file": "_hist_gradient_boosting/grower.py",
+      "callee_line": 404
+    },
+    {
+      "path": "_hist_gradient_boosting/grower.py",
+      "from_function": "grow",
+      "calls_function": "split_next",
+      "caller_line": 385,
+      "callee_file": "_hist_gradient_boosting/grower.py",
+      "callee_line": 488
+    },
+    {
+      "path": "_hist_gradient_boosting/grower.py",
+      "from_function": "grow",
+      "calls_function": "_apply_shrinkage",
+      "caller_line": 385,
+      "callee_file": "_hist_gradient_boosting/grower.py",
+      "callee_line": 392
+    },
+    {
+      "path": "_hist_gradient_boosting/grower.py",
+      "from_function": "_initialize_root",
+      "calls_function": "__init__",
+      "caller_line": 404,
+      "callee_file": "_hist_gradient_boosting/grower.py",
+      "callee_line": 87
+    },
+    {
+      "path": "_hist_gradient_boosting/grower.py",
+      "from_function": "_initialize_root",
+      "calls_function": "_finalize_leaf",
+      "caller_line": 404,
+      "callee_file": "_hist_gradient_boosting/grower.py",
+      "callee_line": 696
+    },
+    {
+      "path": "_hist_gradient_boosting/grower.py",
+      "from_function": "_initialize_root",
+      "calls_function": "_compute_best_split_and_push",
+      "caller_line": 404,
+      "callee_file": "_hist_gradient_boosting/grower.py",
+      "callee_line": 463
+    },
+    {
+      "path": "_hist_gradient_boosting/grower.py",
+      "from_function": "_compute_best_split_and_push",
+      "calls_function": "_finalize_leaf",
+      "caller_line": 463,
+      "callee_file": "_hist_gradient_boosting/grower.py",
+      "callee_line": 696
+    },
+    {
+      "path": "_hist_gradient_boosting/grower.py",
+      "from_function": "split_next",
+      "calls_function": "__init__",
+      "caller_line": 488,
+      "callee_file": "_hist_gradient_boosting/grower.py",
+      "callee_line": 87
+    },
+    {
+      "path": "_hist_gradient_boosting/grower.py",
+      "from_function": "split_next",
+      "calls_function": "_compute_interactions",
+      "caller_line": 488,
+      "callee_file": "_hist_gradient_boosting/grower.py",
+      "callee_line": 654
+    },
+    {
+      "path": "_hist_gradient_boosting/grower.py",
+      "from_function": "split_next",
+      "calls_function": "_finalize_leaf",
+      "caller_line": 488,
+      "callee_file": "_hist_gradient_boosting/grower.py",
+      "callee_line": 696
+    },
+    {
+      "path": "_hist_gradient_boosting/grower.py",
+      "from_function": "split_next",
+      "calls_function": "_finalize_splittable_nodes",
+      "caller_line": 488,
+      "callee_file": "_hist_gradient_boosting/grower.py",
+      "callee_line": 702
+    },
+    {
+      "path": "_hist_gradient_boosting/grower.py",
+      "from_function": "split_next",
+      "calls_function": "set_children_bounds",
+      "caller_line": 488,
+      "callee_file": "_hist_gradient_boosting/grower.py",
+      "callee_line": 123
+    },
+    {
+      "path": "_hist_gradient_boosting/grower.py",
+      "from_function": "split_next",
+      "calls_function": "_compute_best_split_and_push",
+      "caller_line": 488,
+      "callee_file": "_hist_gradient_boosting/grower.py",
+      "callee_line": 463
+    },
+    {
+      "path": "_hist_gradient_boosting/grower.py",
+      "from_function": "_finalize_splittable_nodes",
+      "calls_function": "_finalize_leaf",
+      "caller_line": 702,
+      "callee_file": "_hist_gradient_boosting/grower.py",
+      "callee_line": 696
+    },
+    {
+      "path": "_hist_gradient_boosting/grower.py",
+      "from_function": "make_predictor",
+      "calls_function": "_fill_predictor_arrays",
+      "caller_line": 711,
+      "callee_file": "_hist_gradient_boosting/grower.py",
+      "callee_line": 747
+    },
+    {
+      "path": "tests/test_forest.py",
+      "from_function": "test_regressor_attributes",
+      "calls_function": "fit",
+      "caller_line": 264,
+      "callee_file": "_hist_gradient_boosting/binning.py",
+      "callee_line": 178
+    },
+    {
+      "path": "tests/test_forest.py",
+      "from_function": "test_max_samples_boundary_regressors",
+      "calls_function": "fit",
+      "caller_line": 1619,
+      "callee_file": "_hist_gradient_boosting/binning.py",
+      "callee_line": 178
+    },
+    {
+      "path": "tests/test_forest.py",
+      "from_function": "test_max_samples_boundary_classifiers",
+      "calls_function": "fit",
+      "caller_line": 1641,
+      "callee_file": "_hist_gradient_boosting/binning.py",
+      "callee_line": 178
+    }
+  ],
+  "call_graph_edges": [
+    {
+      "from": "_hist_gradient_boosting/grower.py::__init__",
+      "to": "_hist_gradient_boosting/grower.py::set_children_bounds"
+    },
+    {
+      "from": "_hist_gradient_boosting/grower.py::__init__",
+      "to": "_hist_gradient_boosting/grower.py::_validate_parameters"
+    },
+    {
+      "from": "_hist_gradient_boosting/grower.py::__init__",
+      "to": "_hist_gradient_boosting/grower.py::_initialize_root"
+    },
+    {
+      "from": "_hist_gradient_boosting/grower.py::grow",
+      "to": "_hist_gradient_boosting/grower.py::split_next"
+    },
+    {
+      "from": "_hist_gradient_boosting/grower.py::grow",
+      "to": "_hist_gradient_boosting/grower.py::_apply_shrinkage"
+    },
+    {
+      "from": "_hist_gradient_boosting/grower.py::_initialize_root",
+      "to": "_hist_gradient_boosting/grower.py::__init__"
+    },
+    {
+      "from": "_hist_gradient_boosting/grower.py::_initialize_root",
+      "to": "_hist_gradient_boosting/grower.py::_finalize_leaf"
+    },
+    {
+      "from": "_hist_gradient_boosting/grower.py::_initialize_root",
+      "to": "_hist_gradient_boosting/grower.py::_compute_best_split_and_push"
+    },
+    {
+      "from": "_hist_gradient_boosting/grower.py::_compute_best_split_and_push",
+      "to": "_hist_gradient_boosting/grower.py::_finalize_leaf"
+    },
+    {
+      "from": "_hist_gradient_boosting/grower.py::split_next",
+      "to": "_hist_gradient_boosting/grower.py::__init__"
+    },
+    {
+      "from": "_hist_gradient_boosting/grower.py::split_next",
+      "to": "_hist_gradient_boosting/grower.py::_compute_interactions"
+    },
+    {
+      "from": "_hist_gradient_boosting/grower.py::split_next",
+      "to": "_hist_gradient_boosting/grower.py::_finalize_leaf"
+    },
+    {
+      "from": "_hist_gradient_boosting/grower.py::split_next",
+      "to": "_hist_gradient_boosting/grower.py::_finalize_splittable_nodes"
+    },
+    {
+      "from": "_hist_gradient_boosting/grower.py::split_next",
+      "to": "_hist_gradient_boosting/grower.py::set_children_bounds"
+    },
+    {
+      "from": "_hist_gradient_boosting/grower.py::split_next",
+      "to": "_hist_gradient_boosting/grower.py::_compute_best_split_and_push"
+    },
+    {
+      "from": "_hist_gradient_boosting/grower.py::_finalize_splittable_nodes",
+      "to": "_hist_gradient_boosting/grower.py::_finalize_leaf"
+    },
+    {
+      "from": "_hist_gradient_boosting/grower.py::make_predictor",
+      "to": "_hist_gradient_boosting/grower.py::_fill_predictor_arrays"
+    },
+    {
+      "from": "tests/test_forest.py::test_regressor_attributes",
+      "to": "_hist_gradient_boosting/binning.py::fit"
+    },
+    {
+      "from": "tests/test_forest.py::test_max_samples_boundary_regressors",
+      "to": "_hist_gradient_boosting/binning.py::fit"
+    },
+    {
+      "from": "tests/test_forest.py::test_max_samples_boundary_classifiers",
+      "to": "_hist_gradient_boosting/binning.py::fit"
+    }
+  ],
+  "functions_in_changed_files": [
+    {
+      "name": "_find_binning_thresholds",
+      "full_name": "_hist_gradient_boosting/binning.py:<module>._find_binning_thresholds",
+      "file": "_hist_gradient_boosting/binning.py",
+      "start_line": 29,
+      "end_line": 79,
+      "signature": ""
+    },
+    {
+      "name": "__init__",
+      "full_name": "_hist_gradient_boosting/binning.py:<module>._BinMapper.__init__",
+      "file": "_hist_gradient_boosting/binning.py",
+      "start_line": 162,
+      "end_line": 178,
+      "signature": ""
+    },
+    {
+      "name": "fit",
+      "full_name": "_hist_gradient_boosting/binning.py:<module>._BinMapper.fit",
+      "file": "_hist_gradient_boosting/binning.py",
+      "start_line": 178,
+      "end_line": 264,
+      "signature": ""
+    },
+    {
+      "name": "transform",
+      "full_name": "_hist_gradient_boosting/binning.py:<module>._BinMapper.transform",
+      "file": "_hist_gradient_boosting/binning.py",
+      "start_line": 264,
+      "end_line": 304,
+      "signature": ""
+    },
+    {
+      "name": "make_known_categories_bitsets",
+      "full_name": "_hist_gradient_boosting/binning.py:<module>._BinMapper.make_known_categories_bitsets",
+      "file": "_hist_gradient_boosting/binning.py",
+      "start_line": 304,
+      "end_line": 338,
+      "signature": ""
+    },
+    {
+      "name": "__init__",
+      "full_name": "_hist_gradient_boosting/grower.py:<module>.TreeNode.__init__",
+      "file": "_hist_gradient_boosting/grower.py",
+      "start_line": 87,
+      "end_line": 123,
+      "signature": ""
+    },
+    {
+      "name": "set_children_bounds",
+      "full_name": "_hist_gradient_boosting/grower.py:<module>.TreeNode.set_children_bounds",
+      "file": "_hist_gradient_boosting/grower.py",
+      "start_line": 123,
+      "end_line": 132,
+      "signature": ""
+    },
+    {
+      "name": "__lt__",
+      "full_name": "_hist_gradient_boosting/grower.py:<module>.TreeNode.__lt__",
+      "file": "_hist_gradient_boosting/grower.py",
+      "start_line": 132,
+      "end_line": 148,
+      "signature": ""
+    },
+    {
+      "name": "__init__",
+      "full_name": "_hist_gradient_boosting/grower.py:<module>.TreeGrower.__init__",
+      "file": "_hist_gradient_boosting/grower.py",
+      "start_line": 246,
+      "end_line": 359,
+      "signature": ""
+    },
+    {
+      "name": "_validate_parameters",
+      "full_name": "_hist_gradient_boosting/grower.py:<module>.TreeGrower._validate_parameters",
+      "file": "_hist_gradient_boosting/grower.py",
+      "start_line": 359,
+      "end_line": 385,
+      "signature": ""
+    },
+    {
+      "name": "grow",
+      "full_name": "_hist_gradient_boosting/grower.py:<module>.TreeGrower.grow",
+      "file": "_hist_gradient_boosting/grower.py",
+      "start_line": 385,
+      "end_line": 392,
+      "signature": ""
+    },
+    {
+      "name": "_apply_shrinkage",
+      "full_name": "_hist_gradient_boosting/grower.py:<module>.TreeGrower._apply_shrinkage",
+      "file": "_hist_gradient_boosting/grower.py",
+      "start_line": 392,
+      "end_line": 404,
+      "signature": ""
+    },
+    {
+      "name": "_initialize_root",
+      "full_name": "_hist_gradient_boosting/grower.py:<module>.TreeGrower._initialize_root",
+      "file": "_hist_gradient_boosting/grower.py",
+      "start_line": 404,
+      "end_line": 463,
+      "signature": ""
+    },
+    {
+      "name": "_compute_best_split_and_push",
+      "full_name": "_hist_gradient_boosting/grower.py:<module>.TreeGrower._compute_best_split_and_push",
+      "file": "_hist_gradient_boosting/grower.py",
+      "start_line": 463,
+      "end_line": 488,
+      "signature": ""
+    },
+    {
+      "name": "split_next",
+      "full_name": "_hist_gradient_boosting/grower.py:<module>.TreeGrower.split_next",
+      "file": "_hist_gradient_boosting/grower.py",
+      "start_line": 488,
+      "end_line": 654,
+      "signature": ""
+    },
+    {
+      "name": "_compute_interactions",
+      "full_name": "_hist_gradient_boosting/grower.py:<module>.TreeGrower._compute_interactions",
+      "file": "_hist_gradient_boosting/grower.py",
+      "start_line": 654,
+      "end_line": 696,
+      "signature": ""
+    },
+    {
+      "name": "_finalize_leaf",
+      "full_name": "_hist_gradient_boosting/grower.py:<module>.TreeGrower._finalize_leaf",
+      "file": "_hist_gradient_boosting/grower.py",
+      "start_line": 696,
+      "end_line": 702,
+      "signature": ""
+    },
+    {
+      "name": "_finalize_splittable_nodes",
+      "full_name": "_hist_gradient_boosting/grower.py:<module>.TreeGrower._finalize_splittable_nodes",
+      "file": "_hist_gradient_boosting/grower.py",
+      "start_line": 702,
+      "end_line": 711,
+      "signature": ""
+    },
+    {
+      "name": "make_predictor",
+      "full_name": "_hist_gradient_boosting/grower.py:<module>.TreeGrower.make_predictor",
+      "file": "_hist_gradient_boosting/grower.py",
+      "start_line": 711,
+      "end_line": 746,
+      "signature": ""
+    },
+    {
+      "name": "_fill_predictor_arrays",
+      "full_name": "_hist_gradient_boosting/grower.py:<module>._fill_predictor_arrays",
+      "file": "_hist_gradient_boosting/grower.py",
+      "start_line": 747,
+      "end_line": 822,
+      "signature": ""
+    },
+    {
+      "name": "test_set_get_bitset",
+      "full_name": "_hist_gradient_boosting/tests/test_bitset.py:<module>.test_set_get_bitset",
+      "file": "_hist_gradient_boosting/tests/test_bitset.py",
+      "start_line": 23,
+      "end_line": 35,
+      "signature": ""
+    },
+    {
+      "name": "test_raw_bitset_from_binned_bitset",
+      "full_name": "_hist_gradient_boosting/tests/test_bitset.py:<module>.test_raw_bitset_from_binned_bitset",
+      "file": "_hist_gradient_boosting/tests/test_bitset.py",
+      "start_line": 47,
+      "end_line": 64,
+      "signature": ""
+    },
+    {
+      "name": "test_regression_dataset",
+      "full_name": "_hist_gradient_boosting/tests/test_predictor.py:<module>.test_regression_dataset",
+      "file": "_hist_gradient_boosting/tests/test_predictor.py",
+      "start_line": 29,
+      "end_line": 66,
+      "signature": ""
+    },
+    {
+      "name": "test_infinite_values_and_thresholds",
+      "full_name": "_hist_gradient_boosting/tests/test_predictor.py:<module>.test_infinite_values_and_thresholds",
+      "file": "_hist_gradient_boosting/tests/test_predictor.py",
+      "start_line": 77,
+      "end_line": 111,
+      "signature": ""
+    },
+    {
+      "name": "test_categorical_predictor",
+      "full_name": "_hist_gradient_boosting/tests/test_predictor.py:<module>.test_categorical_predictor",
+      "file": "_hist_gradient_boosting/tests/test_predictor.py",
+      "start_line": 120,
+      "end_line": 187,
+      "signature": ""
+    }
+  ]
+}

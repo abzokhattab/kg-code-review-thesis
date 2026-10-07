@@ -1,0 +1,441 @@
+{
+  "pr": {
+    "number": 14778,
+    "title": "KAFKA-15776: Introduce remote.fetch.max.timeout.ms to configure DelayedRemoteFetch timeout",
+    "body": "[KIP-1018](https://cwiki.apache.org/confluence/display/KAFKA/KIP-1018%3A+Introduce+max+remote+fetch+timeout+config+for+DelayedRemoteFetch+requests)\r\n\r\nTest: Existing unit and integration tests\r\n\r\n### Committer Checklist (excluded from commit message)\r\n- [ ] Verify design and implementation \r\n- [ ] Verify test coverage and CI build status\r\n- [ ] Verify documentation (including upgrade notes)\r\n",
+    "url": "https://github.com/apache/kafka/pull/14778",
+    "repo": "apache/kafka",
+    "base_branch": "trunk",
+    "head_branch": "KAFKA-15776",
+    "merged_at": "2024-06-05T06:42:23Z",
+    "state": "MERGED"
+  },
+  "changed_files": [
+    {
+      "path": "clients/src/main/java/org/apache/kafka/clients/consumer/ConsumerConfig.java",
+      "language": "java",
+      "added": 4,
+      "deleted": 1
+    },
+    {
+      "path": "core/src/main/scala/kafka/server/DelayedRemoteFetch.scala",
+      "language": "scala",
+      "added": 2,
+      "deleted": 1
+    },
+    {
+      "path": "core/src/main/scala/kafka/server/ReplicaManager.scala",
+      "language": "scala",
+      "added": 2,
+      "deleted": 1
+    },
+    {
+      "path": "core/src/test/scala/integration/kafka/server/DelayedRemoteFetchTest.scala",
+      "language": "scala",
+      "added": 11,
+      "deleted": 10
+    },
+    {
+      "path": "storage/src/main/java/org/apache/kafka/server/log/remote/storage/RemoteLogManagerConfig.java",
+      "language": "java",
+      "added": 180,
+      "deleted": 162
+    },
+    {
+      "path": "storage/src/test/java/org/apache/kafka/server/log/remote/storage/RemoteLogManagerConfigTest.java",
+      "language": "java",
+      "added": 4,
+      "deleted": 2
+    }
+  ],
+  "nearest_tests": [
+    {
+      "path": "clients/src/test/java/org/apache/kafka/clients/consumer/ConsumerConfigTest.java",
+      "relationship": "tests",
+      "source_file": "clients/src/main/java/org/apache/kafka/clients/consumer/ConsumerConfig.java"
+    },
+    {
+      "path": "clients/src/test/java/org/apache/kafka/clients/consumer/ShareConsumerConfigTest.java",
+      "relationship": "tests",
+      "source_file": "clients/src/main/java/org/apache/kafka/clients/consumer/ConsumerConfig.java"
+    },
+    {
+      "path": "storage/src/test/java/org/apache/kafka/server/purgatory/DelayedRemoteFetchTest.java",
+      "relationship": "tests",
+      "source_file": "core/src/main/scala/kafka/server/DelayedRemoteFetch.scala"
+    },
+    {
+      "path": "core/src/test/scala/unit/kafka/server/ReplicaManagerConcurrencyTest.scala",
+      "relationship": "tests",
+      "source_file": "core/src/main/scala/kafka/server/ReplicaManager.scala"
+    },
+    {
+      "path": "core/src/test/scala/unit/kafka/server/ReplicaManagerTest.scala",
+      "relationship": "tests",
+      "source_file": "core/src/main/scala/kafka/server/ReplicaManager.scala"
+    },
+    {
+      "path": "core/src/test/scala/unit/kafka/server/ReplicaManagerQuotasTest.scala",
+      "relationship": "tests",
+      "source_file": "core/src/main/scala/kafka/server/ReplicaManager.scala"
+    },
+    {
+      "path": "storage/src/test/java/org/apache/kafka/server/log/remote/storage/RemoteLogManagerConfigTest.java",
+      "relationship": "tests",
+      "source_file": "storage/src/main/java/org/apache/kafka/server/log/remote/storage/RemoteLogManagerConfig.java"
+    }
+  ],
+  "dependent_files": [
+    {
+      "path": "clients/clients-integration-tests/src/test/java/org/apache/kafka/clients/producer/ProducerIdExpirationTest.java",
+      "relationship": "imports",
+      "source_file": "clients/src/main/java/org/apache/kafka/clients/consumer/ConsumerConfig.java"
+    },
+    {
+      "path": "clients/clients-integration-tests/src/test/java/org/apache/kafka/clients/producer/ProducerCompressionTest.java",
+      "relationship": "imports",
+      "source_file": "clients/src/main/java/org/apache/kafka/clients/consumer/ConsumerConfig.java"
+    },
+    {
+      "path": "clients/clients-integration-tests/src/test/java/org/apache/kafka/clients/security/GroupAuthorizerIntegrationTest.java",
+      "relationship": "imports",
+      "source_file": "clients/src/main/java/org/apache/kafka/clients/consumer/ConsumerConfig.java"
+    },
+    {
+      "path": "clients/clients-integration-tests/src/test/java/org/apache/kafka/clients/admin/ClientTelemetryTest.java",
+      "relationship": "imports",
+      "source_file": "clients/src/main/java/org/apache/kafka/clients/consumer/ConsumerConfig.java"
+    },
+    {
+      "path": "clients/clients-integration-tests/src/test/java/org/apache/kafka/clients/TransactionsExpirationTest.java",
+      "relationship": "imports",
+      "source_file": "clients/src/main/java/org/apache/kafka/clients/consumer/ConsumerConfig.java"
+    },
+    {
+      "path": "clients/clients-integration-tests/src/test/java/org/apache/kafka/clients/ClientsTestUtils.java",
+      "relationship": "imports",
+      "source_file": "clients/src/main/java/org/apache/kafka/clients/consumer/ConsumerConfig.java"
+    },
+    {
+      "path": "clients/clients-integration-tests/src/test/java/org/apache/kafka/clients/consumer/PlaintextConsumerPollTest.java",
+      "relationship": "imports",
+      "source_file": "clients/src/main/java/org/apache/kafka/clients/consumer/ConsumerConfig.java"
+    },
+    {
+      "path": "clients/clients-integration-tests/src/test/java/org/apache/kafka/clients/consumer/PlaintextConsumerSubscriptionTest.java",
+      "relationship": "imports",
+      "source_file": "clients/src/main/java/org/apache/kafka/clients/consumer/ConsumerConfig.java"
+    },
+    {
+      "path": "clients/clients-integration-tests/src/test/java/org/apache/kafka/clients/consumer/ConsumerBounceTest.java",
+      "relationship": "imports",
+      "source_file": "clients/src/main/java/org/apache/kafka/clients/consumer/ConsumerConfig.java"
+    },
+    {
+      "path": "clients/clients-integration-tests/src/test/java/org/apache/kafka/clients/consumer/ShareConsumerTest.java",
+      "relationship": "imports",
+      "source_file": "clients/src/main/java/org/apache/kafka/clients/consumer/ConsumerConfig.java"
+    },
+    {
+      "path": "core/src/test/scala/unit/kafka/coordinator/AbstractCoordinatorConcurrencyTest.scala",
+      "relationship": "imports",
+      "source_file": "core/src/main/scala/kafka/server/DelayedRemoteFetch.scala"
+    },
+    {
+      "path": "core/src/test/scala/unit/kafka/server/ReplicaManagerTest.scala",
+      "relationship": "imports",
+      "source_file": "core/src/main/scala/kafka/server/DelayedRemoteFetch.scala"
+    },
+    {
+      "path": "storage/src/test/java/org/apache/kafka/server/purgatory/DelayedRemoteFetchTest.java",
+      "relationship": "imports",
+      "source_file": "core/src/main/scala/kafka/server/DelayedRemoteFetch.scala"
+    },
+    {
+      "path": "storage/src/main/java/org/apache/kafka/server/purgatory/DelayedRemoteFetch.java",
+      "relationship": "imports",
+      "source_file": "core/src/main/scala/kafka/server/DelayedRemoteFetch.scala"
+    },
+    {
+      "path": "clients/src/main/java/org/apache/kafka/common/errors/KafkaStorageException.java",
+      "relationship": "imports",
+      "source_file": "core/src/main/scala/kafka/server/ReplicaManager.scala"
+    }
+  ],
+  "diff_summary": "6 files changed",
+  "full_diff": "diff --git a/clients/src/main/java/org/apache/kafka/clients/consumer/ConsumerConfig.java b/clients/src/main/java/org/apache/kafka/clients/consumer/ConsumerConfig.java\nindex 7ec147e9e3ced..76bfe7e91a149 100644\n--- a/clients/src/main/java/org/apache/kafka/clients/consumer/ConsumerConfig.java\n+++ b/clients/src/main/java/org/apache/kafka/clients/consumer/ConsumerConfig.java\n@@ -198,7 +198,10 @@ public class ConsumerConfig extends AbstractConfig {\n      * <code>fetch.max.wait.ms</code>\n      */\n     public static final String FETCH_MAX_WAIT_MS_CONFIG = \"fetch.max.wait.ms\";\n-    private static final String FETCH_MAX_WAIT_MS_DOC = \"The maximum amount of time the server will block before answering the fetch request if there isn't sufficient data to immediately satisfy the requirement given by fetch.min.bytes.\";\n+    private static final String FETCH_MAX_WAIT_MS_DOC = \"The maximum amount of time the server will block before \" +\n+            \"answering the fetch request there isn't sufficient data to immediately satisfy the requirement given by \" +\n+            \"fetch.min.bytes. This config is used only for local log fetch. To tune the remote fetch maximum wait \" +\n+            \"time, please refer to 'remote.fetch.max.wait.ms' broker config\";\n     public static final int DEFAULT_FETCH_MAX_WAIT_MS = 500;\n \n     /** <code>metadata.max.age.ms</code> */\ndiff --git a/core/src/main/scala/kafka/server/DelayedRemoteFetch.scala b/core/src/main/scala/kafka/server/DelayedRemoteFetch.scala\nindex 00d6afb89ffe2..58a866aa4a63f 100644\n--- a/core/src/main/scala/kafka/server/DelayedRemoteFetch.scala\n+++ b/core/src/main/scala/kafka/server/DelayedRemoteFetch.scala\n@@ -35,12 +35,13 @@ import scala.collection._\n class DelayedRemoteFetch(remoteFetchTask: Future[Void],\n                          remoteFetchResult: CompletableFuture[RemoteLogReadResult],\n                          remoteFetchInfo: RemoteStorageFetchInfo,\n+                         remoteFetchMaxWaitMs: Long,\n                          fetchPartitionStatus: Seq[(TopicIdPartition, FetchPartitionStatus)],\n                          fetchParams: FetchParams,\n                          localReadResults: Seq[(TopicIdPartition, LogReadResult)],\n                          replicaManager: ReplicaManager,\n                          responseCallback: Seq[(TopicIdPartition, FetchPartitionData)] => Unit)\n-  extends DelayedOperation(fetchParams.maxWaitMs) {\n+  extends DelayedOperation(remoteFetchMaxWaitMs) {\n \n   if (fetchParams.isFromFollower) {\n     throw new IllegalStateException(s\"The follower should not invoke remote fetch. Fetch params are: $fetchParams\")\ndiff --git a/core/src/main/scala/kafka/server/ReplicaManager.scala b/core/src/main/scala/kafka/server/ReplicaManager.scala\nindex a2a070bcd0331..74023dea1aad2 100644\n--- a/core/src/main/scala/kafka/server/ReplicaManager.scala\n+++ b/core/src/main/scala/kafka/server/ReplicaManager.scala\n@@ -1479,7 +1479,8 @@ class ReplicaManager(val config: KafkaConfig,\n         return Some(createLogReadResult(e))\n     }\n \n-    val remoteFetch = new DelayedRemoteFetch(remoteFetchTask, remoteFetchResult, remoteFetchInfo,\n+    val remoteFetchMaxWaitMs = config.remoteLogManagerConfig.remoteFetchMaxWaitMs()\n+    val remoteFetch = new DelayedRemoteFetch(remoteFetchTask, remoteFetchResult, remoteFetchInfo, remoteFetchMaxWaitMs,\n       fetchPartitionStatus, params, logReadResults, this, responseCallback)\n \n     delayedRemoteFetchPurgatory.tryCompleteElseWatch(remoteFetch, Seq(key))\ndiff --git a/core/src/test/scala/integration/kafka/server/DelayedRemoteFetchTest.scala b/core/src/test/scala/integration/kafka/server/DelayedRemoteFetchTest.scala\nindex c35385bcbc8ca..ea1ffaf0b1179 100644\n--- a/core/src/test/scala/integration/kafka/server/DelayedRemoteFetchTest.scala\n+++ b/core/src/test/scala/integration/kafka/server/DelayedRemoteFetchTest.scala\n@@ -40,6 +40,7 @@ class DelayedRemoteFetchTest {\n   private val fetchOffset = 500L\n   private val logStartOffset = 0L\n   private val currentLeaderEpoch = Optional.of[Integer](10)\n+  private val remoteFetchMaxWaitMs = 500\n \n   private val fetchStatus = FetchPartitionStatus(\n     startOffsetMetadata = new LogOffsetMetadata(fetchOffset),\n@@ -64,8 +65,8 @@ class DelayedRemoteFetchTest {\n     val leaderLogStartOffset = 10\n     val logReadInfo = buildReadResult(Errors.NONE, highWatermark, leaderLogStartOffset)\n \n-    val delayedRemoteFetch = new DelayedRemoteFetch(null, future, fetchInfo, Seq(topicIdPartition -> fetchStatus), fetchParams,\n-      Seq(topicIdPartition -> logReadInfo), replicaManager, callback)\n+    val delayedRemoteFetch = new DelayedRemoteFetch(null, future, fetchInfo, remoteFetchMaxWaitMs,\n+      Seq(topicIdPartition -> fetchStatus), fetchParams, Seq(topicIdPartition -> logReadInfo), replicaManager, callback)\n \n     when(replicaManager.getPartitionOrException(topicIdPartition.topicPartition))\n       .thenReturn(mock(classOf[Partition]))\n@@ -100,8 +101,8 @@ class DelayedRemoteFetchTest {\n     val leaderLogStartOffset = 10\n     val logReadInfo = buildReadResult(Errors.NONE, highWatermark, leaderLogStartOffset)\n     val fetchParams = buildFetchParams(replicaId = 1, maxWaitMs = 500)\n-    assertThrows(classOf[IllegalStateException], () => new DelayedRemoteFetch(null, future, fetchInfo, Seq(topicIdPartition -> fetchStatus), fetchParams,\n-      Seq(topicIdPartition -> logReadInfo), replicaManager, callback))\n+    assertThrows(classOf[IllegalStateException], () => new DelayedRemoteFetch(null, future, fetchInfo, remoteFetchMaxWaitMs,\n+      Seq(topicIdPartition -> fetchStatus), fetchParams, Seq(topicIdPartition -> logReadInfo), replicaManager, callback))\n   }\n \n   @Test\n@@ -124,8 +125,8 @@ class DelayedRemoteFetchTest {\n \n     val logReadInfo = buildReadResult(Errors.NONE)\n \n-    val delayedRemoteFetch = new DelayedRemoteFetch(null, future, fetchInfo, Seq(topicIdPartition -> fetchStatus), fetchParams,\n-      Seq(topicIdPartition -> logReadInfo), replicaManager, callback)\n+    val delayedRemoteFetch = new DelayedRemoteFetch(null, future, fetchInfo, remoteFetchMaxWaitMs,\n+      Seq(topicIdPartition -> fetchStatus), fetchParams, Seq(topicIdPartition -> logReadInfo), replicaManager, callback)\n \n     // delayed remote fetch should still be able to complete\n     assertTrue(delayedRemoteFetch.tryComplete())\n@@ -155,8 +156,8 @@ class DelayedRemoteFetchTest {\n     // build a read result with error\n     val logReadInfo = buildReadResult(Errors.FENCED_LEADER_EPOCH)\n \n-    val delayedRemoteFetch = new DelayedRemoteFetch(null, future, fetchInfo, Seq(topicIdPartition -> fetchStatus), fetchParams,\n-      Seq(topicIdPartition -> logReadInfo), replicaManager, callback)\n+    val delayedRemoteFetch = new DelayedRemoteFetch(null, future, fetchInfo, remoteFetchMaxWaitMs,\n+      Seq(topicIdPartition -> fetchStatus), fetchParams, Seq(topicIdPartition -> logReadInfo), replicaManager, callback)\n \n     assertTrue(delayedRemoteFetch.tryComplete())\n     assertTrue(delayedRemoteFetch.isCompleted)\n@@ -184,8 +185,8 @@ class DelayedRemoteFetchTest {\n     val fetchInfo: RemoteStorageFetchInfo = new RemoteStorageFetchInfo(0, false, topicIdPartition.topicPartition(), null, null, false)\n     val logReadInfo = buildReadResult(Errors.NONE, highWatermark, leaderLogStartOffset)\n \n-    val delayedRemoteFetch = new DelayedRemoteFetch(remoteFetchTask, future, fetchInfo, Seq(topicIdPartition -> fetchStatus), fetchParams,\n-      Seq(topicIdPartition -> logReadInfo), replicaManager, callback)\n+    val delayedRemoteFetch = new DelayedRemoteFetch(remoteFetchTask, future, fetchInfo, remoteFetchMaxWaitMs,\n+      Seq(topicIdPartition -> fetchStatus), fetchParams, Seq(topicIdPartition -> logReadInfo), replicaManager, callback)\n \n     when(replicaManager.getPartitionOrException(topicIdPartition.topicPartition))\n       .thenReturn(mock(classOf[Partition]))\ndiff --git a/storage/src/main/java/org/apache/kafka/server/log/remote/storage/RemoteLogManagerConfig.java b/storage/src/main/java/org/apache/kafka/server/log/remote/storage/RemoteLogManagerConfig.java\nindex 1add933d788b6..e41cc011c313f 100644\n--- a/storage/src/main/java/org/apache/kafka/server/log/remote/storage/RemoteLogManagerConfig.java\n+++ b/storage/src/main/java/org/apache/kafka/server/log/remote/storage/RemoteLogManagerConfig.java\n@@ -54,7 +54,6 @@ public final class RemoteLogManagerConfig {\n             \"implementation. For example this value can be `rlmm.config.`.\";\n     public static final String DEFAULT_REMOTE_LOG_METADATA_MANAGER_CONFIG_PREFIX = \"rlmm.config.\";\n \n-\n     public static final String REMOTE_LOG_STORAGE_SYSTEM_ENABLE_PROP = \"remote.log.storage.system.enable\";\n     public static final String REMOTE_LOG_STORAGE_SYSTEM_ENABLE_DOC = \"Whether to enable tiered storage functionality in a broker or not. Valid values \" +\n             \"are `true` or `false` and the default value is false. When it is true broker starts all the services required for the tiered storage functionality.\";\n@@ -185,167 +184,178 @@ public final class RemoteLogManagerConfig {\n             \"The default value is 1 second.\";\n     public static final int DEFAULT_REMOTE_LOG_MANAGER_FETCH_QUOTA_WINDOW_SIZE_SECONDS = 1;\n \n+    public static final String REMOTE_FETCH_MAX_WAIT_MS_PROP = \"remote.fetch.max.wait.ms\";\n+    public static final String REMOTE_FETCH_MAX_WAIT_MS_DOC = \"The maximum amount of time the server will wait before answering the remote fetch request\";\n+    public static final int DEFAULT_REMOTE_FETCH_MAX_WAIT_MS = 500;\n+\n     public static final ConfigDef CONFIG_DEF = new ConfigDef();\n \n     static {\n-        CONFIG_DEF.define(REMOTE_LOG_STORAGE_SYSTEM_ENABLE_PROP,\n-                                  BOOLEAN,\n-                                  DEFAULT_REMOTE_LOG_STORAGE_SYSTEM_ENABLE,\n-                                  null,\n-                                  MEDIUM,\n-                                  REMOTE_LOG_STORAGE_SYSTEM_ENABLE_DOC)\n-                  .define(REMOTE_STORAGE_MANAGER_CONFIG_PREFIX_PROP,\n-                                  STRING,\n-                                  DEFAULT_REMOTE_STORAGE_MANAGER_CONFIG_PREFIX,\n-                                  new ConfigDef.NonEmptyString(),\n-                                  MEDIUM,\n-                                  REMOTE_STORAGE_MANAGER_CONFIG_PREFIX_DOC)\n-                  .define(REMOTE_LOG_METADATA_MANAGER_CONFIG_PREFIX_PROP,\n-                                  STRING,\n-                                  DEFAULT_REMOTE_LOG_METADATA_MANAGER_CONFIG_PREFIX,\n-                                  new ConfigDef.NonEmptyString(),\n-                                  MEDIUM,\n-                                  REMOTE_LOG_METADATA_MANAGER_CONFIG_PREFIX_DOC)\n-                  .define(REMOTE_STORAGE_MANAGER_CLASS_NAME_PROP, STRING,\n-                                  null,\n-                                  new ConfigDef.NonEmptyString(),\n-                                  MEDIUM,\n-                                  REMOTE_STORAGE_MANAGER_CLASS_NAME_DOC)\n-                  .define(REMOTE_STORAGE_MANAGER_CLASS_PATH_PROP, STRING,\n-                                  null,\n-                                  null,\n-                                  MEDIUM,\n-                                  REMOTE_STORAGE_MANAGER_CLASS_PATH_DOC)\n-                  .define(REMOTE_LOG_METADATA_MANAGER_CLASS_NAME_PROP,\n-                                  STRING,\n-                                  DEFAULT_REMOTE_LOG_METADATA_MANAGER_CLASS_NAME,\n-                                  new ConfigDef.NonEmptyString(),\n-                                  MEDIUM,\n-                                  REMOTE_LOG_METADATA_MANAGER_CLASS_NAME_DOC)\n-                  .define(REMOTE_LOG_METADATA_MANAGER_CLASS_PATH_PROP,\n-                                  STRING,\n-                                  null,\n-                                  null,\n-                                  MEDIUM,\n-                                  REMOTE_LOG_METADATA_MANAGER_CLASS_PATH_DOC)\n-                  .define(REMOTE_LOG_METADATA_MANAGER_LISTENER_NAME_PROP, STRING,\n-                                  null,\n-                                  new ConfigDef.NonEmptyString(),\n-                                  MEDIUM,\n-                                  REMOTE_LOG_METADATA_MANAGER_LISTENER_NAME_DOC)\n-                  .define(REMOTE_LOG_METADATA_CUSTOM_METADATA_MAX_BYTES_PROP,\n-                                  INT,\n-                                  DEFAULT_REMOTE_LOG_METADATA_CUSTOM_METADATA_MAX_BYTES,\n-                                  atLeast(0),\n-                                  LOW,\n-                                  REMOTE_LOG_METADATA_CUSTOM_METADATA_MAX_BYTES_DOC)\n-                  .define(REMOTE_LOG_INDEX_FILE_CACHE_TOTAL_SIZE_BYTES_PROP,\n-                                  LONG,\n-                                  DEFAULT_REMOTE_LOG_INDEX_FILE_CACHE_TOTAL_SIZE_BYTES,\n-                                  atLeast(1),\n-                                  LOW,\n-                                  REMOTE_LOG_INDEX_FILE_CACHE_TOTAL_SIZE_BYTES_DOC)\n-                  .define(REMOTE_LOG_MANAGER_THREAD_POOL_SIZE_PROP,\n-                                  INT,\n-                                  DEFAULT_REMOTE_LOG_MANAGER_THREAD_POOL_SIZE,\n-                                  atLeast(1),\n-                                  MEDIUM,\n-                                  REMOTE_LOG_MANAGER_THREAD_POOL_SIZE_DOC)\n-                  .defineInternal(REMOTE_LOG_MANAGER_COPIER_THREAD_POOL_SIZE_PROP,\n+        CONFIG_DEF\n+                .define(REMOTE_LOG_STORAGE_SYSTEM_ENABLE_PROP,\n+                        BOOLEAN,\n+                        DEFAULT_REMOTE_LOG_STORAGE_SYSTEM_ENABLE,\n+                        null,\n+                        MEDIUM,\n+                        REMOTE_LOG_STORAGE_SYSTEM_ENABLE_DOC)\n+                .define(REMOTE_STORAGE_MANAGER_CONFIG_PREFIX_PROP,\n+                        STRING,\n+                        DEFAULT_REMOTE_STORAGE_MANAGER_CONFIG_PREFIX,\n+                        new ConfigDef.NonEmptyString(),\n+                        MEDIUM,\n+                        REMOTE_STORAGE_MANAGER_CONFIG_PREFIX_DOC)\n+                .define(REMOTE_LOG_METADATA_MANAGER_CONFIG_PREFIX_PROP,\n+                        STRING,\n+                        DEFAULT_REMOTE_LOG_METADATA_MANAGER_CONFIG_PREFIX,\n+                        new ConfigDef.NonEmptyString(),\n+                        MEDIUM,\n+                        REMOTE_LOG_METADATA_MANAGER_CONFIG_PREFIX_DOC)\n+                .define(REMOTE_STORAGE_MANAGER_CLASS_NAME_PROP, STRING,\n+                        null,\n+                        new ConfigDef.NonEmptyString(),\n+                        MEDIUM,\n+                        REMOTE_STORAGE_MANAGER_CLASS_NAME_DOC)\n+                .define(REMOTE_STORAGE_MANAGER_CLASS_PATH_PROP, STRING,\n+                        null,\n+                        null,\n+                        MEDIUM,\n+                        REMOTE_STORAGE_MANAGER_CLASS_PATH_DOC)\n+                .define(REMOTE_LOG_METADATA_MANAGER_CLASS_NAME_PROP,\n+                        STRING,\n+                        DEFAULT_REMOTE_LOG_METADATA_MANAGER_CLASS_NAME,\n+                        new ConfigDef.NonEmptyString(),\n+                        MEDIUM,\n+                        REMOTE_LOG_METADATA_MANAGER_CLASS_NAME_DOC)\n+                .define(REMOTE_LOG_METADATA_MANAGER_CLASS_PATH_PROP,\n+                        STRING,\n+                        null,\n+                        null,\n+                        MEDIUM,\n+                        REMOTE_LOG_METADATA_MANAGER_CLASS_PATH_DOC)\n+                .define(REMOTE_LOG_METADATA_MANAGER_LISTENER_NAME_PROP, STRING,\n+                        null,\n+                        new ConfigDef.NonEmptyString(),\n+                        MEDIUM,\n+                        REMOTE_LOG_METADATA_MANAGER_LISTENER_NAME_DOC)\n+                .define(REMOTE_LOG_METADATA_CUSTOM_METADATA_MAX_BYTES_PROP,\n+                        INT,\n+                        DEFAULT_REMOTE_LOG_METADATA_CUSTOM_METADATA_MAX_BYTES,\n+                        atLeast(0),\n+                        LOW,\n+                        REMOTE_LOG_METADATA_CUSTOM_METADATA_MAX_BYTES_DOC)\n+                .define(REMOTE_LOG_INDEX_FILE_CACHE_TOTAL_SIZE_BYTES_PROP,\n+                        LONG,\n+                        DEFAULT_REMOTE_LOG_INDEX_FILE_CACHE_TOTAL_SIZE_BYTES,\n+                        atLeast(1),\n+                        LOW,\n+                        REMOTE_LOG_INDEX_FILE_CACHE_TOTAL_SIZE_BYTES_DOC)\n+                .define(REMOTE_LOG_MANAGER_THREAD_POOL_SIZE_PROP,\n+                        INT,\n+                        DEFAULT_REMOTE_LOG_MANAGER_THREAD_POOL_SIZE,\n+                        atLeast(1),\n+                        MEDIUM,\n+                        REMOTE_LOG_MANAGER_THREAD_POOL_SIZE_DOC)\n+                .defineInternal(REMOTE_LOG_MANAGER_COPIER_THREAD_POOL_SIZE_PROP,\n                         INT,\n                         DEFAULT_REMOTE_LOG_MANAGER_COPIER_THREAD_POOL_SIZE,\n                         atLeast(1),\n                         MEDIUM,\n                         REMOTE_LOG_MANAGER_COPIER_THREAD_POOL_SIZE_DOC)\n-                  .defineInternal(REMOTE_LOG_MANAGER_EXPIRATION_THREAD_POOL_SIZE_PROP,\n+                .defineInternal(REMOTE_LOG_MANAGER_EXPIRATION_THREAD_POOL_SIZE_PROP,\n                         INT,\n                         DEFAULT_REMOTE_LOG_MANAGER_EXPIRATION_THREAD_POOL_SIZE,\n                         atLeast(1),\n                         MEDIUM,\n                         REMOTE_LOG_MANAGER_EXPIRATION_THREAD_POOL_SIZE_DOC)\n-                  .define(REMOTE_LOG_MANAGER_TASK_INTERVAL_MS_PROP,\n-                                  LONG,\n-                                  DEFAULT_REMOTE_LOG_MANAGER_TASK_INTERVAL_MS,\n-                                  atLeast(1),\n-                                  LOW,\n-                                  REMOTE_LOG_MANAGER_TASK_INTERVAL_MS_DOC)\n-                  .defineInternal(REMOTE_LOG_MANAGER_TASK_RETRY_BACK_OFF_MS_PROP,\n-                                  LONG,\n-                                  DEFAULT_REMOTE_LOG_MANAGER_TASK_RETRY_BACK_OFF_MS,\n-                                  atLeast(1),\n-                                  LOW,\n-                                  REMOTE_LOG_MANAGER_TASK_RETRY_BACK_OFF_MS_DOC)\n-                  .defineInternal(REMOTE_LOG_MANAGER_TASK_RETRY_BACK_OFF_MAX_MS_PROP,\n-                                  LONG,\n-                                  DEFAULT_REMOTE_LOG_MANAGER_TASK_RETRY_BACK_OFF_MAX_MS,\n-                                  atLeast(1), LOW,\n-                                  REMOTE_LOG_MANAGER_TASK_RETRY_BACK_OFF_MAX_MS_DOC)\n-                  .defineInternal(REMOTE_LOG_MANAGER_TASK_RETRY_JITTER_PROP,\n-                                  DOUBLE,\n-                                  DEFAULT_REMOTE_LOG_MANAGER_TASK_RETRY_JITTER,\n-                                  between(0, 0.5),\n-                                  LOW,\n-                                  REMOTE_LOG_MANAGER_TASK_RETRY_JITTER_DOC)\n-                  .define(REMOTE_LOG_READER_THREADS_PROP,\n-                                  INT,\n-                                  DEFAULT_REMOTE_LOG_READER_THREADS,\n-                                  atLeast(1),\n-                                  MEDIUM,\n-                                  REMOTE_LOG_READER_THREADS_DOC)\n-                  .define(REMOTE_LOG_READER_MAX_PENDING_TASKS_PROP,\n-                                  INT,\n-                                  DEFAULT_REMOTE_LOG_READER_MAX_PENDING_TASKS,\n-                                  atLeast(1),\n-                                  MEDIUM,\n-                                  REMOTE_LOG_READER_MAX_PENDING_TASKS_DOC)\n-                  .define(LOG_LOCAL_RETENTION_MS_PROP,\n-                                  LONG,\n-                                  DEFAULT_LOG_LOCAL_RETENTION_MS,\n-                                  atLeast(DEFAULT_LOG_LOCAL_RETENTION_MS),\n-                                  MEDIUM,\n-                                  LOG_LOCAL_RETENTION_MS_DOC)\n-                  .define(LOG_LOCAL_RETENTION_BYTES_PROP,\n-                                  LONG,\n-                                  DEFAULT_LOG_LOCAL_RETENTION_BYTES,\n-                                  atLeast(DEFAULT_LOG_LOCAL_RETENTION_BYTES),\n-                                  MEDIUM,\n-                                  LOG_LOCAL_RETENTION_BYTES_DOC)\n-                  .define(REMOTE_LOG_MANAGER_COPY_MAX_BYTES_PER_SECOND_PROP,\n-                                  LONG,\n-                                  DEFAULT_REMOTE_LOG_MANAGER_COPY_MAX_BYTES_PER_SECOND,\n-                                  atLeast(1),\n-                                  MEDIUM,\n-                                  REMOTE_LOG_MANAGER_COPY_MAX_BYTES_PER_SECOND_DOC)\n-                  .define(REMOTE_LOG_MANAGER_COPY_QUOTA_WINDOW_NUM_PROP,\n-                                  INT,\n-                                  DEFAULT_REMOTE_LOG_MANAGER_COPY_QUOTA_WINDOW_NUM,\n-                                  atLeast(1),\n-                                  MEDIUM,\n-                                  REMOTE_LOG_MANAGER_COPY_QUOTA_WINDOW_NUM_DOC)\n-                  .define(REMOTE_LOG_MANAGER_COPY_QUOTA_WINDOW_SIZE_SECONDS_PROP,\n-                                 INT,\n-                                 DEFAULT_REMOTE_LOG_MANAGER_COPY_QUOTA_WINDOW_SIZE_SECONDS,\n-                                 atLeast(1),\n-                                 MEDIUM,\n-                                 REMOTE_LOG_MANAGER_COPY_QUOTA_WINDOW_SIZE_SECONDS_DOC)\n-                  .define(REMOTE_LOG_MANAGER_FETCH_MAX_BYTES_PER_SECOND_PROP,\n-                                 LONG,\n-                                 DEFAULT_REMOTE_LOG_MANAGER_FETCH_MAX_BYTES_PER_SECOND,\n-                                 atLeast(1),\n-                                 MEDIUM,\n-                                 REMOTE_LOG_MANAGER_FETCH_MAX_BYTES_PER_SECOND_DOC)\n-                  .define(REMOTE_LOG_MANAGER_FETCH_QUOTA_WINDOW_NUM_PROP,\n-                                 INT,\n-                                 DEFAULT_REMOTE_LOG_MANAGER_FETCH_QUOTA_WINDOW_NUM,\n-                                 atLeast(1),\n-                                 MEDIUM,\n-                                 REMOTE_LOG_MANAGER_FETCH_QUOTA_WINDOW_NUM_DOC)\n-                  .define(REMOTE_LOG_MANAGER_FETCH_QUOTA_WINDOW_SIZE_SECONDS_PROP,\n-                                 INT,\n-                                 DEFAULT_REMOTE_LOG_MANAGER_FETCH_QUOTA_WINDOW_SIZE_SECONDS,\n-                                 atLeast(1),\n-                                 MEDIUM,\n-                                 REMOTE_LOG_MANAGER_FETCH_QUOTA_WINDOW_SIZE_SECONDS_DOC);\n+                .define(REMOTE_LOG_MANAGER_TASK_INTERVAL_MS_PROP,\n+                        LONG,\n+                        DEFAULT_REMOTE_LOG_MANAGER_TASK_INTERVAL_MS,\n+                        atLeast(1),\n+                        LOW,\n+                        REMOTE_LOG_MANAGER_TASK_INTERVAL_MS_DOC)\n+                .defineInternal(REMOTE_LOG_MANAGER_TASK_RETRY_BACK_OFF_MS_PROP,\n+                        LONG,\n+                        DEFAULT_REMOTE_LOG_MANAGER_TASK_RETRY_BACK_OFF_MS,\n+                        atLeast(1),\n+                        LOW,\n+                        REMOTE_LOG_MANAGER_TASK_RETRY_BACK_OFF_MS_DOC)\n+                .defineInternal(REMOTE_LOG_MANAGER_TASK_RETRY_BACK_OFF_MAX_MS_PROP,\n+                        LONG,\n+                        DEFAULT_REMOTE_LOG_MANAGER_TASK_RETRY_BACK_OFF_MAX_MS,\n+                        atLeast(1), LOW,\n+                        REMOTE_LOG_MANAGER_TASK_RETRY_BACK_OFF_MAX_MS_DOC)\n+                .defineInternal(REMOTE_LOG_MANAGER_TASK_RETRY_JITTER_PROP,\n+                        DOUBLE,\n+                        DEFAULT_REMOTE_LOG_MANAGER_TASK_RETRY_JITTER,\n+                        between(0, 0.5),\n+                        LOW,\n+                        REMOTE_LOG_MANAGER_TASK_RETRY_JITTER_DOC)\n+                .define(REMOTE_LOG_READER_THREADS_PROP,\n+                        INT,\n+                        DEFAULT_REMOTE_LOG_READER_THREADS,\n+                        atLeast(1),\n+                        MEDIUM,\n+                        REMOTE_LOG_READER_THREADS_DOC)\n+                .define(REMOTE_LOG_READER_MAX_PENDING_TASKS_PROP,\n+                        INT,\n+                        DEFAULT_REMOTE_LOG_READER_MAX_PENDING_TASKS,\n+                        atLeast(1),\n+                        MEDIUM,\n+                        REMOTE_LOG_READER_MAX_PENDING_TASKS_DOC)\n+                .define(LOG_LOCAL_RETENTION_MS_PROP,\n+                        LONG,\n+                        DEFAULT_LOG_LOCAL_RETENTION_MS,\n+                        atLeast(DEFAULT_LOG_LOCAL_RETENTION_MS),\n+                        MEDIUM,\n+                        LOG_LOCAL_RETENTION_MS_DOC)\n+                .define(LOG_LOCAL_RETENTION_BYTES_PROP,\n+                        LONG,\n+                        DEFAULT_LOG_LOCAL_RETENTION_BYTES,\n+                        atLeast(DEFAULT_LOG_LOCAL_RETENTION_BYTES),\n+                        MEDIUM,\n+                        LOG_LOCAL_RETENTION_BYTES_DOC)\n+                .define(REMOTE_LOG_MANAGER_COPY_MAX_BYTES_PER_SECOND_PROP,\n+                        LONG,\n+                        DEFAULT_REMOTE_LOG_MANAGER_COPY_MAX_BYTES_PER_SECOND,\n+                        atLeast(1),\n+                        MEDIUM,\n+                        REMOTE_LOG_MANAGER_COPY_MAX_BYTES_PER_SECOND_DOC)\n+                .define(REMOTE_LOG_MANAGER_COPY_QUOTA_WINDOW_NUM_PROP,\n+                        INT,\n+                        DEFAULT_REMOTE_LOG_MANAGER_COPY_QUOTA_WINDOW_NUM,\n+                        atLeast(1),\n+                        MEDIUM,\n+                        REMOTE_LOG_MANAGER_COPY_QUOTA_WINDOW_NUM_DOC)\n+                .define(REMOTE_LOG_MANAGER_COPY_QUOTA_WINDOW_SIZE_SECONDS_PROP,\n+                        INT,\n+                        DEFAULT_REMOTE_LOG_MANAGER_COPY_QUOTA_WINDOW_SIZE_SECONDS,\n+                        atLeast(1),\n+                        MEDIUM,\n+                        REMOTE_LOG_MANAGER_COPY_QUOTA_WINDOW_SIZE_SECONDS_DOC)\n+                .define(REMOTE_LOG_MANAGER_FETCH_MAX_BYTES_PER_SECOND_PROP,\n+                        LONG,\n+                        DEFAULT_REMOTE_LOG_MANAGER_FETCH_MAX_BYTES_PER_SECOND,\n+                        atLeast(1),\n+                        MEDIUM,\n+                        REMOTE_LOG_MANAGER_FETCH_MAX_BYTES_PER_SECOND_DOC)\n+                .define(REMOTE_LOG_MANAGER_FETCH_QUOTA_WINDOW_NUM_PROP,\n+                        INT,\n+                        DEFAULT_REMOTE_LOG_MANAGER_FETCH_QUOTA_WINDOW_NUM,\n+                        atLeast(1),\n+                        MEDIUM,\n+                        REMOTE_LOG_MANAGER_FETCH_QUOTA_WINDOW_NUM_DOC)\n+                .define(REMOTE_LOG_MANAGER_FETCH_QUOTA_WINDOW_SIZE_SECONDS_PROP,\n+                        INT,\n+                        DEFAULT_REMOTE_LOG_MANAGER_FETCH_QUOTA_WINDOW_SIZE_SECONDS,\n+                        atLeast(1),\n+                        MEDIUM,\n+                        REMOTE_LOG_MANAGER_FETCH_QUOTA_WINDOW_SIZE_SECONDS_DOC)\n+                .define(REMOTE_FETCH_MAX_WAIT_MS_PROP,\n+                        INT,\n+                        DEFAULT_REMOTE_FETCH_MAX_WAIT_MS,\n+                        atLeast(1),\n+                        MEDIUM,\n+                        REMOTE_FETCH_MAX_WAIT_MS_DOC);\n     }\n \n     private final boolean enableRemoteStorageSystem;\n@@ -375,6 +385,7 @@ public final class RemoteLogManagerConfig {\n     private final long remoteLogManagerFetchMaxBytesPerSecond;\n     private final int remoteLogManagerFetchNumQuotaSamples;\n     private final int remoteLogManagerFetchQuotaWindowSizeSeconds;\n+    private final int remoteFetchMaxWaitMs;\n \n     public RemoteLogManagerConfig(AbstractConfig config) {\n         this(config.getBoolean(REMOTE_LOG_STORAGE_SYSTEM_ENABLE_PROP),\n@@ -407,7 +418,8 @@ public RemoteLogManagerConfig(AbstractConfig config) {\n             config.getInt(REMOTE_LOG_MANAGER_COPY_QUOTA_WINDOW_SIZE_SECONDS_PROP),\n             config.getLong(REMOTE_LOG_MANAGER_FETCH_MAX_BYTES_PER_SECOND_PROP),\n             config.getInt(REMOTE_LOG_MANAGER_FETCH_QUOTA_WINDOW_NUM_PROP),\n-            config.getInt(REMOTE_LOG_MANAGER_FETCH_QUOTA_WINDOW_SIZE_SECONDS_PROP));\n+            config.getInt(REMOTE_LOG_MANAGER_FETCH_QUOTA_WINDOW_SIZE_SECONDS_PROP),\n+            config.getInt(REMOTE_FETCH_MAX_WAIT_MS_PROP));\n     }\n \n     // Visible for testing\n@@ -437,8 +449,8 @@ public RemoteLogManagerConfig(boolean enableRemoteStorageSystem,\n                                   int remoteLogManagerCopyQuotaWindowSizeSeconds,\n                                   long remoteLogManagerFetchMaxBytesPerSecond,\n                                   int remoteLogManagerFetchNumQuotaSamples,\n-                                  int remoteLogManagerFetchQuotaWindowSizeSeconds\n-    ) {\n+                                  int remoteLogManagerFetchQuotaWindowSizeSeconds,\n+                                  int remoteFetchMaxWaitMs) {\n         this.enableRemoteStorageSystem = enableRemoteStorageSystem;\n         this.remoteStorageManagerClassName = remoteStorageManagerClassName;\n         this.remoteStorageManagerClassPath = remoteStorageManagerClassPath;\n@@ -466,6 +478,7 @@ public RemoteLogManagerConfig(boolean enableRemoteStorageSystem,\n         this.remoteLogManagerFetchMaxBytesPerSecond = remoteLogManagerFetchMaxBytesPerSecond;\n         this.remoteLogManagerFetchNumQuotaSamples = remoteLogManagerFetchNumQuotaSamples;\n         this.remoteLogManagerFetchQuotaWindowSizeSeconds = remoteLogManagerFetchQuotaWindowSizeSeconds;\n+        this.remoteFetchMaxWaitMs = remoteFetchMaxWaitMs;\n     }\n \n     public boolean enableRemoteStorageSystem() {\n@@ -576,6 +589,9 @@ public int remoteLogManagerFetchQuotaWindowSizeSeconds() {\n         return remoteLogManagerFetchQuotaWindowSizeSeconds;\n     }\n \n+    public int remoteFetchMaxWaitMs() {\n+        return remoteFetchMaxWaitMs;\n+    }\n \n     @Override\n     public boolean equals(Object o) {\n@@ -608,20 +624,22 @@ public boolean equals(Object o) {\n                 && remoteLogManagerCopyQuotaWindowSizeSeconds == that.remoteLogManagerCopyQuotaWindowSizeSeconds\n                 && remoteLogManagerFetchMaxBytesPerSecond == that.remoteLogManagerFetchMaxBytesPerSecond\n                 && remoteLogManagerFetchNumQuotaSamples == that.remoteLogManagerFetchNumQuotaSamples\n-                && remoteLogManagerFetchQuotaWindowSizeSeconds == that.remoteLogManagerFetchQuotaWindowSizeSeconds;\n+                && remoteLogManagerFetchQuotaWindowSizeSeconds == that.remoteLogManagerFetchQuotaWindowSizeSeconds\n+                && remoteFetchMaxWaitMs == that.remoteFetchMaxWaitMs;\n     }\n \n     @Override\n     public int hashCode() {\n-        return Objects.hash(enableRemoteStorageSystem, remoteStorageManagerClassName, remoteStorageManagerClassPath,\n-                            remoteLogMetadataManagerClassName, remoteLogMetadataManagerClassPath, remoteLogMetadataManagerListenerName,\n-                            remoteLogMetadataCustomMetadataMaxBytes, remoteLogIndexFileCacheTotalSizeBytes, remoteLogManagerThreadPoolSize,\n-                            remoteLogManagerCopierThreadPoolSize, remoteLogManagerExpirationThreadPoolSize, remoteLogManagerTaskIntervalMs,\n-                            remoteLogManagerTaskRetryBackoffMs, remoteLogManagerTaskRetryBackoffMaxMs, remoteLogManagerTaskRetryJitter,\n-                            remoteLogReaderThreads, remoteLogReaderMaxPendingTasks, remoteStorageManagerProps, remoteLogMetadataManagerProps,\n-                            remoteStorageManagerPrefix, remoteLogMetadataManagerPrefix, remoteLogManagerCopyMaxBytesPerSecond,\n-                            remoteLogManagerCopyNumQuotaSamples, remoteLogManagerCopyQuotaWindowSizeSeconds, remoteLogManagerFetchMaxBytesPerSecond,\n-                            remoteLogManagerFetchNumQuotaSamples, remoteLogManagerFetchQuotaWindowSizeSeconds);\n+        return Objects.hash(\n+                enableRemoteStorageSystem, remoteStorageManagerClassName, remoteStorageManagerClassPath,\n+                remoteLogMetadataManagerClassName, remoteLogMetadataManagerClassPath, remoteLogMetadataManagerListenerName,\n+                remoteLogMetadataCustomMetadataMaxBytes, remoteLogIndexFileCacheTotalSizeBytes, remoteLogManagerThreadPoolSize,\n+                remoteLogManagerCopierThreadPoolSize, remoteLogManagerExpirationThreadPoolSize, remoteLogManagerTaskIntervalMs,\n+                remoteLogManagerTaskRetryBackoffMs, remoteLogManagerTaskRetryBackoffMaxMs, remoteLogManagerTaskRetryJitter,\n+                remoteLogReaderThreads, remoteLogReaderMaxPendingTasks, remoteStorageManagerProps, remoteLogMetadataManagerProps,\n+                remoteStorageManagerPrefix, remoteLogMetadataManagerPrefix, remoteLogManagerCopyMaxBytesPerSecond,\n+                remoteLogManagerCopyNumQuotaSamples, remoteLogManagerCopyQuotaWindowSizeSeconds, remoteLogManagerFetchMaxBytesPerSecond,\n+                remoteLogManagerFetchNumQuotaSamples, remoteLogManagerFetchQuotaWindowSizeSeconds, remoteFetchMaxWaitMs);\n     }\n \n     public static void main(String[] args) {\ndiff --git a/storage/src/test/java/org/apache/kafka/server/log/remote/storage/RemoteLogManagerConfigTest.java b/storage/src/test/java/org/apache/kafka/server/log/remote/storage/RemoteLogManagerConfigTest.java\nindex d04c42409b21a..058f81626d158 100644\n--- a/storage/src/test/java/org/apache/kafka/server/log/remote/storage/RemoteLogManagerConfigTest.java\n+++ b/storage/src/test/java/org/apache/kafka/server/log/remote/storage/RemoteLogManagerConfigTest.java\n@@ -95,7 +95,8 @@ private static RemoteLogManagerConfig getRemoteLogManagerConfig(boolean useDefau\n                 1,\n                 Long.MAX_VALUE,\n                 11,\n-                1);\n+                1,\n+                500);\n     }\n \n     private Map<String, Object> extractProps(RemoteLogManagerConfig remoteLogManagerConfig) {\n@@ -189,7 +190,8 @@ public void testHashCodeAndEquals_ForAllAndTwoFields() {\n                 1,\n                 Long.MAX_VALUE,\n                 11,\n-                1);\n+                1,\n+                500);\n         \n         assertNotEquals(config1.hashCode(), config3.hashCode());\n         assertNotEquals(config1, config3);\n",
+  "metadata": {
+    "v2_fetcher_version": 1,
+    "v2_fetched_at_unix": 1777501087,
+    "v2_diff_cap_bytes": 50000,
+    "v2_body_cap_bytes": 8000,
+    "v2_diff_truncated": false,
+    "v2_raw_diff_chars": 34324,
+    "v2_raw_body_chars": 395,
+    "v2_rag_source": "merged_from_v1",
+    "v2_rag_chunks_copied": 8,
+    "joern_enriched": true,
+    "joern_callers_count": 4,
+    "joern_functions_count": 9
+  },
+  "similar_chunks": [
+    {
+      "file": "core/src/main/scala/kafka/server/AbstractFetcherThread.scala",
+      "start_line": 17,
+      "end_line": 37,
+      "similarity": 0.891,
+      "related_to": "core/src/main/scala/kafka/server/ReplicaManager.scala",
+      "content_preview": "\npackage kafka.server\n\nimport com.yammer.metrics.core.Meter\nimport kafka.utils.Logging\nimport org.apache.kafka.common.errors._\nimport org.apache.kafka.common.internals.PartitionStates\nimport org.apache.kafka.common.message.OffsetForLeaderEpochResponseData.EpochEndOffset\nimport org.apache.kafka.common.message.FetchResponseData.PartitionData\nimport org.apache.kafka.common.message.{FetchResponseData, OffsetForLeaderEpochRequestData}\nimport org.apache.kafka.common.protocol.Errors\nimport org.apache.kafka.common.record.{FileRecords, MemoryRecords, Records}\nimport org.apache.kafka.common.requests.OffsetsForLeaderEpochResponse.{UNDEFINED_EPOCH, UNDEFINED_EPOCH_OFFSET}\nimport org.apache.kafka.common.r"
+    },
+    {
+      "file": "core/src/main/scala/kafka/server/RemoteLeaderEndPoint.scala",
+      "start_line": 17,
+      "end_line": 37,
+      "similarity": 0.8344,
+      "related_to": "core/src/main/scala/kafka/server/ReplicaManager.scala",
+      "content_preview": "\npackage kafka.server\n\nimport java.util.{Collections, Optional}\nimport kafka.utils.Logging\nimport org.apache.kafka.clients.FetchSessionHandler\nimport org.apache.kafka.common.errors.KafkaStorageException\nimport org.apache.kafka.common.{TopicPartition, Uuid}\nimport org.apache.kafka.common.message.{FetchResponseData, OffsetForLeaderEpochRequestData}\nimport org.apache.kafka.common.message.ListOffsetsRequestData.{ListOffsetsPartition, ListOffsetsTopic}\nimport org.apache.kafka.common.message.OffsetForLeaderEpochRequestData.{OffsetForLeaderTopic, OffsetForLeaderTopicCollection}\nimport org.apache.kafka.common.message.OffsetForLeaderEpochResponseData.EpochEndOffset\nimport org.apache.kafka.common.proto"
+    },
+    {
+      "file": "core/src/main/scala/kafka/server/KafkaApis.scala",
+      "start_line": 17,
+      "end_line": 36,
+      "similarity": 0.8329,
+      "related_to": "core/src/main/scala/kafka/server/ReplicaManager.scala",
+      "content_preview": "\npackage kafka.server\n\nimport kafka.coordinator.transaction.{InitProducerIdResult, TransactionCoordinator}\nimport kafka.network.RequestChannel\nimport kafka.server.QuotaFactory.{QuotaManagers, UNBOUNDED_QUOTA}\nimport kafka.server.handlers.DescribeTopicPartitionsRequestHandler\nimport kafka.server.share.{ShareFetchUtils, SharePartitionManager}\nimport kafka.utils.Logging\nimport org.apache.kafka.clients.CommonClientConfigs\nimport org.apache.kafka.clients.admin.EndpointType\nimport org.apache.kafka.common.acl.AclOperation\nimport org.apache.kafka.common.acl.AclOperation._\nimport org.apache.kafka.common.config.ConfigResource\nimport org.apache.kafka.common.errors._\nimport org.apache.kafka.common.int"
+    },
+    {
+      "file": "core/src/main/scala/kafka/server/ReplicaAlterLogDirsThread.scala",
+      "start_line": 17,
+      "end_line": 41,
+      "similarity": 0.8237,
+      "related_to": "core/src/main/scala/kafka/server/ReplicaManager.scala",
+      "content_preview": "\npackage kafka.server\n\nimport kafka.cluster.Partition\nimport kafka.server.ReplicaAlterLogDirsThread.{PromotionState, ReassignmentState}\nimport org.apache.kafka.common.{TopicPartition, Uuid}\nimport org.apache.kafka.common.requests.FetchResponse\nimport org.apache.kafka.server.common.{DirectoryEventHandler, OffsetAndEpoch, TopicIdPartition}\nimport org.apache.kafka.storage.internals.log.{LogAppendInfo, LogStartOffsetIncrementReason}\nimport org.apache.kafka.storage.log.metrics.BrokerTopicStats\nimport org.apache.kafka.server.LeaderEndPoint\nimport org.apache.kafka.server.PartitionFetchState\n\nimport java.util.Optional\nimport java.util.concurrent.ConcurrentHashMap\nimport scala.collec"
+    },
+    {
+      "file": "core/src/main/scala/kafka/server/BrokerServer.scala",
+      "start_line": 17,
+      "end_line": 38,
+      "similarity": 0.8228,
+      "related_to": "core/src/main/scala/kafka/server/ReplicaManager.scala",
+      "content_preview": "\npackage kafka.server\n\nimport kafka.coordinator.group.CoordinatorPartitionWriter\nimport kafka.coordinator.transaction.TransactionCoordinator\nimport kafka.log.LogManager\nimport kafka.network.SocketServer\nimport kafka.raft.KafkaRaftManager\nimport kafka.server.metadata._\nimport kafka.server.share.{ShareCoordinatorMetadataCacheHelperImpl, SharePartitionManager}\nimport org.apache.kafka.common.config.ConfigException\nimport org.apache.kafka.common.internals.Plugin\nimport org.apache.kafka.common.message.ApiMessageType.ListenerType\nimport org.apache.kafka.common.metrics.Metrics\nimport org.apache.kafka.common.network.ListenerName\nimport org.apache.kafka.common.security.scram.internals.ScramMechanism"
+    },
+    {
+      "file": "core/src/main/scala/kafka/server/KafkaApis.scala",
+      "start_line": 34,
+      "end_line": 60,
+      "similarity": 0.8175,
+      "related_to": "core/src/main/scala/kafka/server/ReplicaManager.scala",
+      "content_preview": "nResultCollection}\nimport org.apache.kafka.common.message.DeleteRecordsResponseData.{DeleteRecordsPartitionResult, DeleteRecordsTopicResult}\nimport org.apache.kafka.common.message.DeleteShareGroupOffsetsRequestData.DeleteShareGroupOffsetsRequestTopic\nimport org.apache.kafka.common.message.DeleteShareGroupOffsetsResponseData.DeleteShareGroupOffsetsResponseTopic\nimport org.apache.kafka.common.message.ListOffsetsRequestData.ListOffsetsPartition\nimport org.apache.kafka.common.message.ListOffsetsResponseData.{ListOffsetsPartitionResponse, ListOffsetsTopicResponse}\nimport org.apache.kafka.common.message.MetadataResponseData.{MetadataResponsePartition, MetadataResponseTopic}\nimport org.apache.kafka.common.message.OffsetForLeaderEpochRequestData.OffsetForLeaderTopic\nimport org.apache.kafka.common."
+    },
+    {
+      "file": "core/src/main/scala/kafka/server/KafkaBroker.scala",
+      "start_line": 17,
+      "end_line": 42,
+      "similarity": 0.8132,
+      "related_to": "core/src/main/scala/kafka/server/ReplicaManager.scala",
+      "content_preview": "\npackage kafka.server\n\nimport kafka.log.LogManager\nimport kafka.network.SocketServer\nimport kafka.utils.Logging\nimport org.apache.kafka.common.ClusterResource\nimport org.apache.kafka.common.internals.{ClusterResourceListeners, Plugin}\nimport org.apache.kafka.common.metrics.{Metrics, MetricsReporter}\nimport org.apache.kafka.common.network.ListenerName\nimport org.apache.kafka.common.security.token.delegation.internals.DelegationTokenCache\nimport org.apache.kafka.common.utils.Time\nimport org.apache.kafka.coordinator.group.GroupCoordinator\nimport org.apache.kafka.metadata.{BrokerState, MetadataCache}\nimport org.apache.kafka.security.CredentialProvider\nimport org.apache.kafka.server.authorizer."
+    },
+    {
+      "file": "core/src/main/scala/kafka/server/DelayedProduce.scala",
+      "start_line": 17,
+      "end_line": 47,
+      "similarity": 0.7985,
+      "related_to": "core/src/main/scala/kafka/server/ReplicaManager.scala",
+      "content_preview": "\npackage kafka.server\n\nimport java.util.concurrent.{ConcurrentHashMap, TimeUnit}\nimport com.typesafe.scalalogging.Logger\nimport com.yammer.metrics.core.Meter\nimport kafka.utils.Logging\nimport org.apache.kafka.common.{TopicIdPartition, TopicPartition}\nimport org.apache.kafka.common.protocol.Errors\nimport org.apache.kafka.common.requests.ProduceResponse.PartitionResponse\nimport org.apache.kafka.server.metrics.KafkaMetricsGroup\nimport org.apache.kafka.server.purgatory.DelayedOperation\n\nimport scala.collection._\nimport scala.jdk.CollectionConverters._\n\ncase class ProducePartitionStatus(requiredOffset: Long, responseStatus: PartitionResponse) {\n  @volatile var acksPending = false\n\n  override de"
+    }
+  ],
+  "rag_evidence": {
+    "similar_code": [
+      {
+        "file": "core/src/main/scala/kafka/server/AbstractFetcherThread.scala",
+        "start_line": 17,
+        "end_line": 37,
+        "similarity": 0.891,
+        "related_to": "core/src/main/scala/kafka/server/ReplicaManager.scala",
+        "content_preview": "\npackage kafka.server\n\nimport com.yammer.metrics.core.Meter\nimport kafka.utils.Logging\nimport org.apache.kafka.common.errors._\nimport org.apache.kafka.common.internals.PartitionStates\nimport org.apache.kafka.common.message.OffsetForLeaderEpochResponseData.EpochEndOffset\nimport org.apache.kafka.common.message.FetchResponseData.PartitionData\nimport org.apache.kafka.common.message.{FetchResponseData, OffsetForLeaderEpochRequestData}\nimport org.apache.kafka.common.protocol.Errors\nimport org.apache.kafka.common.record.{FileRecords, MemoryRecords, Records}\nimport org.apache.kafka.common.requests.OffsetsForLeaderEpochResponse.{UNDEFINED_EPOCH, UNDEFINED_EPOCH_OFFSET}\nimport org.apache.kafka.common.r"
+      },
+      {
+        "file": "core/src/main/scala/kafka/server/RemoteLeaderEndPoint.scala",
+        "start_line": 17,
+        "end_line": 37,
+        "similarity": 0.8344,
+        "related_to": "core/src/main/scala/kafka/server/ReplicaManager.scala",
+        "content_preview": "\npackage kafka.server\n\nimport java.util.{Collections, Optional}\nimport kafka.utils.Logging\nimport org.apache.kafka.clients.FetchSessionHandler\nimport org.apache.kafka.common.errors.KafkaStorageException\nimport org.apache.kafka.common.{TopicPartition, Uuid}\nimport org.apache.kafka.common.message.{FetchResponseData, OffsetForLeaderEpochRequestData}\nimport org.apache.kafka.common.message.ListOffsetsRequestData.{ListOffsetsPartition, ListOffsetsTopic}\nimport org.apache.kafka.common.message.OffsetForLeaderEpochRequestData.{OffsetForLeaderTopic, OffsetForLeaderTopicCollection}\nimport org.apache.kafka.common.message.OffsetForLeaderEpochResponseData.EpochEndOffset\nimport org.apache.kafka.common.proto"
+      },
+      {
+        "file": "core/src/main/scala/kafka/server/KafkaApis.scala",
+        "start_line": 17,
+        "end_line": 36,
+        "similarity": 0.8329,
+        "related_to": "core/src/main/scala/kafka/server/ReplicaManager.scala",
+        "content_preview": "\npackage kafka.server\n\nimport kafka.coordinator.transaction.{InitProducerIdResult, TransactionCoordinator}\nimport kafka.network.RequestChannel\nimport kafka.server.QuotaFactory.{QuotaManagers, UNBOUNDED_QUOTA}\nimport kafka.server.handlers.DescribeTopicPartitionsRequestHandler\nimport kafka.server.share.{ShareFetchUtils, SharePartitionManager}\nimport kafka.utils.Logging\nimport org.apache.kafka.clients.CommonClientConfigs\nimport org.apache.kafka.clients.admin.EndpointType\nimport org.apache.kafka.common.acl.AclOperation\nimport org.apache.kafka.common.acl.AclOperation._\nimport org.apache.kafka.common.config.ConfigResource\nimport org.apache.kafka.common.errors._\nimport org.apache.kafka.common.int"
+      },
+      {
+        "file": "core/src/main/scala/kafka/server/ReplicaAlterLogDirsThread.scala",
+        "start_line": 17,
+        "end_line": 41,
+        "similarity": 0.8237,
+        "related_to": "core/src/main/scala/kafka/server/ReplicaManager.scala",
+        "content_preview": "\npackage kafka.server\n\nimport kafka.cluster.Partition\nimport kafka.server.ReplicaAlterLogDirsThread.{PromotionState, ReassignmentState}\nimport org.apache.kafka.common.{TopicPartition, Uuid}\nimport org.apache.kafka.common.requests.FetchResponse\nimport org.apache.kafka.server.common.{DirectoryEventHandler, OffsetAndEpoch, TopicIdPartition}\nimport org.apache.kafka.storage.internals.log.{LogAppendInfo, LogStartOffsetIncrementReason}\nimport org.apache.kafka.storage.log.metrics.BrokerTopicStats\nimport org.apache.kafka.server.LeaderEndPoint\nimport org.apache.kafka.server.PartitionFetchState\n\nimport java.util.Optional\nimport java.util.concurrent.ConcurrentHashMap\nimport scala.collec"
+      },
+      {
+        "file": "core/src/main/scala/kafka/server/BrokerServer.scala",
+        "start_line": 17,
+        "end_line": 38,
+        "similarity": 0.8228,
+        "related_to": "core/src/main/scala/kafka/server/ReplicaManager.scala",
+        "content_preview": "\npackage kafka.server\n\nimport kafka.coordinator.group.CoordinatorPartitionWriter\nimport kafka.coordinator.transaction.TransactionCoordinator\nimport kafka.log.LogManager\nimport kafka.network.SocketServer\nimport kafka.raft.KafkaRaftManager\nimport kafka.server.metadata._\nimport kafka.server.share.{ShareCoordinatorMetadataCacheHelperImpl, SharePartitionManager}\nimport org.apache.kafka.common.config.ConfigException\nimport org.apache.kafka.common.internals.Plugin\nimport org.apache.kafka.common.message.ApiMessageType.ListenerType\nimport org.apache.kafka.common.metrics.Metrics\nimport org.apache.kafka.common.network.ListenerName\nimport org.apache.kafka.common.security.scram.internals.ScramMechanism"
+      },
+      {
+        "file": "core/src/main/scala/kafka/server/KafkaApis.scala",
+        "start_line": 34,
+        "end_line": 60,
+        "similarity": 0.8175,
+        "related_to": "core/src/main/scala/kafka/server/ReplicaManager.scala",
+        "content_preview": "nResultCollection}\nimport org.apache.kafka.common.message.DeleteRecordsResponseData.{DeleteRecordsPartitionResult, DeleteRecordsTopicResult}\nimport org.apache.kafka.common.message.DeleteShareGroupOffsetsRequestData.DeleteShareGroupOffsetsRequestTopic\nimport org.apache.kafka.common.message.DeleteShareGroupOffsetsResponseData.DeleteShareGroupOffsetsResponseTopic\nimport org.apache.kafka.common.message.ListOffsetsRequestData.ListOffsetsPartition\nimport org.apache.kafka.common.message.ListOffsetsResponseData.{ListOffsetsPartitionResponse, ListOffsetsTopicResponse}\nimport org.apache.kafka.common.message.MetadataResponseData.{MetadataResponsePartition, MetadataResponseTopic}\nimport org.apache.kafka.common.message.OffsetForLeaderEpochRequestData.OffsetForLeaderTopic\nimport org.apache.kafka.common."
+      },
+      {
+        "file": "core/src/main/scala/kafka/server/KafkaBroker.scala",
+        "start_line": 17,
+        "end_line": 42,
+        "similarity": 0.8132,
+        "related_to": "core/src/main/scala/kafka/server/ReplicaManager.scala",
+        "content_preview": "\npackage kafka.server\n\nimport kafka.log.LogManager\nimport kafka.network.SocketServer\nimport kafka.utils.Logging\nimport org.apache.kafka.common.ClusterResource\nimport org.apache.kafka.common.internals.{ClusterResourceListeners, Plugin}\nimport org.apache.kafka.common.metrics.{Metrics, MetricsReporter}\nimport org.apache.kafka.common.network.ListenerName\nimport org.apache.kafka.common.security.token.delegation.internals.DelegationTokenCache\nimport org.apache.kafka.common.utils.Time\nimport org.apache.kafka.coordinator.group.GroupCoordinator\nimport org.apache.kafka.metadata.{BrokerState, MetadataCache}\nimport org.apache.kafka.security.CredentialProvider\nimport org.apache.kafka.server.authorizer."
+      },
+      {
+        "file": "core/src/main/scala/kafka/server/DelayedProduce.scala",
+        "start_line": 17,
+        "end_line": 47,
+        "similarity": 0.7985,
+        "related_to": "core/src/main/scala/kafka/server/ReplicaManager.scala",
+        "content_preview": "\npackage kafka.server\n\nimport java.util.concurrent.{ConcurrentHashMap, TimeUnit}\nimport com.typesafe.scalalogging.Logger\nimport com.yammer.metrics.core.Meter\nimport kafka.utils.Logging\nimport org.apache.kafka.common.{TopicIdPartition, TopicPartition}\nimport org.apache.kafka.common.protocol.Errors\nimport org.apache.kafka.common.requests.ProduceResponse.PartitionResponse\nimport org.apache.kafka.server.metrics.KafkaMetricsGroup\nimport org.apache.kafka.server.purgatory.DelayedOperation\n\nimport scala.collection._\nimport scala.jdk.CollectionConverters._\n\ncase class ProducePartitionStatus(requiredOffset: Long, responseStatus: PartitionResponse) {\n  @volatile var acksPending = false\n\n  override de"
+      }
+    ]
+  },
+  "callers": [
+    {
+      "path": "main/java/org/apache/kafka/clients/consumer/ConsumerConfig.java",
+      "from_function": "postProcessParsedConfig",
+      "calls_function": "maybeOverrideClientId",
+      "caller_line": 712,
+      "callee_file": "main/java/org/apache/kafka/clients/consumer/ConsumerConfig.java",
+      "callee_line": 723
+    },
+    {
+      "path": "main/java/org/apache/kafka/clients/consumer/ConsumerConfig.java",
+      "from_function": "postProcessParsedConfig",
+      "calls_function": "maybeOverrideEnableAutoCommit",
+      "caller_line": 712,
+      "callee_file": "main/java/org/apache/kafka/clients/consumer/ConsumerConfig.java",
+      "callee_line": 753
+    },
+    {
+      "path": "main/java/org/apache/kafka/clients/consumer/ConsumerConfig.java",
+      "from_function": "postProcessParsedConfig",
+      "calls_function": "checkUnsupportedConfigsPostProcess",
+      "caller_line": 712,
+      "callee_file": "main/java/org/apache/kafka/clients/consumer/ConsumerConfig.java",
+      "callee_line": 766
+    },
+    {
+      "path": "main/java/org/apache/kafka/clients/consumer/ConsumerConfig.java",
+      "from_function": "checkUnsupportedConfigsPostProcess",
+      "calls_function": "checkUnsupportedConfigsPostProcess",
+      "caller_line": 766,
+      "callee_file": "main/java/org/apache/kafka/clients/consumer/ConsumerConfig.java",
+      "callee_line": 775
+    }
+  ],
+  "call_graph_edges": [
+    {
+      "from": "main/java/org/apache/kafka/clients/consumer/ConsumerConfig.java::postProcessParsedConfig",
+      "to": "main/java/org/apache/kafka/clients/consumer/ConsumerConfig.java::maybeOverrideClientId"
+    },
+    {
+      "from": "main/java/org/apache/kafka/clients/consumer/ConsumerConfig.java::postProcessParsedConfig",
+      "to": "main/java/org/apache/kafka/clients/consumer/ConsumerConfig.java::maybeOverrideEnableAutoCommit"
+    },
+    {
+      "from": "main/java/org/apache/kafka/clients/consumer/ConsumerConfig.java::postProcessParsedConfig",
+      "to": "main/java/org/apache/kafka/clients/consumer/ConsumerConfig.java::checkUnsupportedConfigsPostProcess"
+    },
+    {
+      "from": "main/java/org/apache/kafka/clients/consumer/ConsumerConfig.java::checkUnsupportedConfigsPostProcess",
+      "to": "main/java/org/apache/kafka/clients/consumer/ConsumerConfig.java::checkUnsupportedConfigsPostProcess"
+    }
+  ],
+  "functions_in_changed_files": [
+    {
+      "name": "postProcessParsedConfig",
+      "full_name": "org.apache.kafka.clients.consumer.ConsumerConfig.postProcessParsedConfig:java.util.Map(java.util.Map)",
+      "file": "main/java/org/apache/kafka/clients/consumer/ConsumerConfig.java",
+      "start_line": 712,
+      "end_line": 721,
+      "signature": "java.util.Map(java.util.Map)"
+    },
+    {
+      "name": "maybeOverrideClientId",
+      "full_name": "org.apache.kafka.clients.consumer.ConsumerConfig.maybeOverrideClientId:void(java.util.Map)",
+      "file": "main/java/org/apache/kafka/clients/consumer/ConsumerConfig.java",
+      "start_line": 723,
+      "end_line": 735,
+      "signature": "void(java.util.Map)"
+    },
+    {
+      "name": "appendDeserializerToConfig",
+      "full_name": "org.apache.kafka.clients.consumer.ConsumerConfig.appendDeserializerToConfig:java.util.Map(java.util.Map,org.apache.kafka.common.serialization.Deserializer,org.apache.kafka.common.serialization.Deserializer)",
+      "file": "main/java/org/apache/kafka/clients/consumer/ConsumerConfig.java",
+      "start_line": 737,
+      "end_line": 751,
+      "signature": "java.util.Map(java.util.Map,org.apache.kafka.common.serialization.Deserializer,org.apache.kafka.common.serialization.Deserializer)"
+    },
+    {
+      "name": "maybeOverrideEnableAutoCommit",
+      "full_name": "org.apache.kafka.clients.consumer.ConsumerConfig.maybeOverrideEnableAutoCommit:void(java.util.Map)",
+      "file": "main/java/org/apache/kafka/clients/consumer/ConsumerConfig.java",
+      "start_line": 753,
+      "end_line": 764,
+      "signature": "void(java.util.Map)"
+    },
+    {
+      "name": "checkUnsupportedConfigsPostProcess",
+      "full_name": "org.apache.kafka.clients.consumer.ConsumerConfig.checkUnsupportedConfigsPostProcess:void()",
+      "file": "main/java/org/apache/kafka/clients/consumer/ConsumerConfig.java",
+      "start_line": 766,
+      "end_line": 773,
+      "signature": "void()"
+    },
+    {
+      "name": "checkUnsupportedConfigsPostProcess",
+      "full_name": "org.apache.kafka.clients.consumer.ConsumerConfig.checkUnsupportedConfigsPostProcess:void(org.apache.kafka.clients.consumer.GroupProtocol,java.util.List)",
+      "file": "main/java/org/apache/kafka/clients/consumer/ConsumerConfig.java",
+      "start_line": 775,
+      "end_line": 789,
+      "signature": "void(org.apache.kafka.clients.consumer.GroupProtocol,java.util.List)"
+    },
+    {
+      "name": "configNames",
+      "full_name": "org.apache.kafka.clients.consumer.ConsumerConfig.configNames:java.util.Set()",
+      "file": "main/java/org/apache/kafka/clients/consumer/ConsumerConfig.java",
+      "start_line": 803,
+      "end_line": 805,
+      "signature": "java.util.Set()"
+    },
+    {
+      "name": "configDef",
+      "full_name": "org.apache.kafka.clients.consumer.ConsumerConfig.configDef:org.apache.kafka.common.config.ConfigDef()",
+      "file": "main/java/org/apache/kafka/clients/consumer/ConsumerConfig.java",
+      "start_line": 807,
+      "end_line": 809,
+      "signature": "org.apache.kafka.common.config.ConfigDef()"
+    },
+    {
+      "name": "main",
+      "full_name": "org.apache.kafka.clients.consumer.ConsumerConfig.main:void(java.lang.String[])",
+      "file": "main/java/org/apache/kafka/clients/consumer/ConsumerConfig.java",
+      "start_line": 811,
+      "end_line": 813,
+      "signature": "void(java.lang.String[])"
+    }
+  ]
+}

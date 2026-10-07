@@ -1,0 +1,1248 @@
+{
+  "pr": {
+    "number": 6229,
+    "title": "Use modern icons in workspace view of a job",
+    "body": "The change proposed utilizes existing SVG icons at the `/ws` view of a job instead of legacy icons.\r\n\r\n### Proposed changelog entries\r\n\r\n* Use modern icons at the workspace view.\r\n\r\n### Proposed upgrade guidelines\r\n\r\nThe following GIF and PNG icons have been removed in favor of appropriate SVGs:\r\nfolder-error -> folder-delete\r\ntext-error -> document-delete\r\ntext -> document\r\n\r\n<!-- For new API and extension points: Link to the reference implementation in open-source (or example in Javadoc) -->\r\n\r\n### Desired reviewers\r\n\r\n@mention\r\n\r\n<!-- Comment:\r\nIf you need an accelerated review process by the community (e.g., for critical bugs), mention @jenkinsci/code-reviewers\r\n-->\r\n\r\n### Maintainer checklist\r\n\r\nBefore the changes are marked as `ready-for-merge`: \r\n\r\n- [ ] There are at least 2 approvals for the pull request and no outstanding requests for change\r\n- [ ] Conversations in the pull request are over OR it is explicit that a reviewer does not block the change\r\n- [ ] Changelog entries in the PR title and/or `Proposed changelog entries` are correct\r\n- [ ] Proper changelog labels are set so that the changelog can be generated automatically\r\n- [ ] If the change needs additional upgrade steps from users, `upgrade-guide-needed` label is set and there is a `Proposed upgrade guidelines` section in the PR title. ([example](https://github.com/jenkinsci/jenkins/pull/4387))\r\n- [ ] If it would make sense to backport the change to LTS, a Jira issue must exist, be a _Bug_ or _Improvement_, and be labeled as `lts-candidate` to be considered (see [query](https://issues.jenkins-ci.org/issues/?filter=12146)).\r\n",
+    "url": "https://github.com/jenkinsci/jenkins/pull/6229",
+    "repo": "jenkinsci/jenkins",
+    "base_branch": "master",
+    "head_branch": "feat/master/use-svgs-in-ws-view",
+    "merged_at": "2022-03-07T21:52:43Z",
+    "state": "MERGED"
+  },
+  "changed_files": [
+    {
+      "path": "core/src/main/java/hudson/model/DirectoryBrowserSupport.java",
+      "language": "java",
+      "added": 4,
+      "deleted": 4
+    },
+    {
+      "path": "core/src/main/java/org/jenkins/ui/icon/IconSet.java",
+      "language": "java",
+      "added": 0,
+      "deleted": 4
+    },
+    {
+      "path": "core/src/main/resources/hudson/model/DirectoryBrowserSupport/dir.jelly",
+      "language": "jelly",
+      "added": 1,
+      "deleted": 1
+    },
+    {
+      "path": "core/src/main/resources/hudson/model/Run/artifacts-index.jelly",
+      "language": "jelly",
+      "added": 1,
+      "deleted": 1
+    },
+    {
+      "path": "core/src/main/resources/lib/hudson/artifactList.jelly",
+      "language": "jelly",
+      "added": 1,
+      "deleted": 1
+    },
+    {
+      "path": "war/src/main/webapp/images/16x16/folder-error.gif",
+      "language": "binary",
+      "added": 0,
+      "deleted": 0
+    },
+    {
+      "path": "war/src/main/webapp/images/16x16/folder-error.png",
+      "language": "binary",
+      "added": 0,
+      "deleted": 0
+    },
+    {
+      "path": "war/src/main/webapp/images/16x16/text-error.gif",
+      "language": "binary",
+      "added": 0,
+      "deleted": 0
+    },
+    {
+      "path": "war/src/main/webapp/images/16x16/text-error.png",
+      "language": "binary",
+      "added": 0,
+      "deleted": 0
+    },
+    {
+      "path": "war/src/main/webapp/images/16x16/text.gif",
+      "language": "binary",
+      "added": 0,
+      "deleted": 0
+    },
+    {
+      "path": "war/src/main/webapp/images/16x16/text.png",
+      "language": "binary",
+      "added": 0,
+      "deleted": 0
+    }
+  ],
+  "nearest_tests": [
+    {
+      "path": "test/src/test/java/hudson/model/DirectoryBrowserSupportTest.java",
+      "relationship": "tests",
+      "source_file": "core/src/main/java/hudson/model/DirectoryBrowserSupport.java"
+    },
+    {
+      "path": "core/src/test/java/org/jenkins/ui/icon/IconSetTest.java",
+      "relationship": "tests",
+      "source_file": "core/src/main/java/org/jenkins/ui/icon/IconSet.java"
+    },
+    {
+      "path": "core/src/test/java/org/jenkins/ui/icon/IconSetJenkins68805Test.java",
+      "relationship": "tests",
+      "source_file": "core/src/main/java/org/jenkins/ui/icon/IconSet.java"
+    },
+    {
+      "path": "test/src/test/java/hudson/bugs/LoginRedirectTest.java",
+      "relationship": "tests",
+      "source_file": "core/src/main/resources/hudson/model/DirectoryBrowserSupport/dir.jelly"
+    },
+    {
+      "path": "core/src/test/java/org/acegisecurity/context/SecurityContextTest.java",
+      "relationship": "tests",
+      "source_file": "war/src/main/webapp/images/16x16/text.gif"
+    },
+    {
+      "path": "test/src/test/java/jenkins/util/SetContextClassLoaderTest.java",
+      "relationship": "tests",
+      "source_file": "war/src/main/webapp/images/16x16/text.gif"
+    },
+    {
+      "path": "test/src/test/java/jenkins/security/SecurityContextExecutorServiceTest.java",
+      "relationship": "tests",
+      "source_file": "war/src/main/webapp/images/16x16/text.gif"
+    },
+    {
+      "path": "test/src/test/java/jenkins/model/ContextMenuTest.java",
+      "relationship": "tests",
+      "source_file": "war/src/main/webapp/images/16x16/text.gif"
+    }
+  ],
+  "dependent_files": [
+    {
+      "path": "core/src/main/java/hudson/model/Run.java",
+      "relationship": "imports",
+      "source_file": "core/src/main/java/hudson/model/DirectoryBrowserSupport.java"
+    },
+    {
+      "path": "core/src/main/java/hudson/model/FileParameterValue.java",
+      "relationship": "imports",
+      "source_file": "core/src/main/java/hudson/model/DirectoryBrowserSupport.java"
+    },
+    {
+      "path": "core/src/main/java/hudson/model/AbstractProject.java",
+      "relationship": "imports",
+      "source_file": "core/src/main/java/hudson/model/DirectoryBrowserSupport.java"
+    },
+    {
+      "path": "core/src/main/java/hudson/slaves/WorkspaceList.java",
+      "relationship": "imports",
+      "source_file": "core/src/main/java/hudson/model/DirectoryBrowserSupport.java"
+    },
+    {
+      "path": "core/src/main/java/jenkins/util/VirtualFile.java",
+      "relationship": "imports",
+      "source_file": "core/src/main/java/hudson/model/DirectoryBrowserSupport.java"
+    },
+    {
+      "path": "core/src/main/java/jenkins/security/ResourceDomainRootAction.java",
+      "relationship": "imports",
+      "source_file": "core/src/main/java/hudson/model/DirectoryBrowserSupport.java"
+    },
+    {
+      "path": "core/src/main/java/jenkins/security/ResourceDomainRecommendation.java",
+      "relationship": "imports",
+      "source_file": "core/src/main/java/hudson/model/DirectoryBrowserSupport.java"
+    },
+    {
+      "path": "core/src/main/java/jenkins/model/Jenkins.java",
+      "relationship": "imports",
+      "source_file": "core/src/main/java/hudson/model/DirectoryBrowserSupport.java"
+    },
+    {
+      "path": "core/src/main/java/jenkins/telemetry/impl/SecuritySystemProperties.java",
+      "relationship": "imports",
+      "source_file": "core/src/main/java/hudson/model/DirectoryBrowserSupport.java"
+    },
+    {
+      "path": "test/src/test/java/hudson/model/DirectoryBrowserSupportTest.java",
+      "relationship": "imports",
+      "source_file": "core/src/main/java/hudson/model/DirectoryBrowserSupport.java"
+    },
+    {
+      "path": "core/src/test/java/org/jenkins/ui/icon/IconSetTest.java",
+      "relationship": "imports",
+      "source_file": "core/src/main/java/org/jenkins/ui/icon/IconSet.java"
+    },
+    {
+      "path": "core/src/test/java/org/jenkins/ui/icon/IconSetJenkins68805Test.java",
+      "relationship": "imports",
+      "source_file": "core/src/main/java/org/jenkins/ui/icon/IconSet.java"
+    },
+    {
+      "path": "core/src/main/java/hudson/Functions.java",
+      "relationship": "imports",
+      "source_file": "core/src/main/java/org/jenkins/ui/icon/IconSet.java"
+    },
+    {
+      "path": "core/src/main/java/hudson/model/FreeStyleProject.java",
+      "relationship": "imports",
+      "source_file": "core/src/main/java/org/jenkins/ui/icon/IconSet.java"
+    },
+    {
+      "path": "core/src/main/java/hudson/model/View.java",
+      "relationship": "imports",
+      "source_file": "core/src/main/java/org/jenkins/ui/icon/IconSet.java"
+    }
+  ],
+  "diff_summary": "11 files changed",
+  "full_diff": "diff --git a/core/src/main/java/hudson/model/DirectoryBrowserSupport.java b/core/src/main/java/hudson/model/DirectoryBrowserSupport.java\nindex c6c595becdc5..1df1e1ab69a8 100644\n--- a/core/src/main/java/hudson/model/DirectoryBrowserSupport.java\n+++ b/core/src/main/java/hudson/model/DirectoryBrowserSupport.java\n@@ -659,16 +659,16 @@ public String getTitle() {\n \n         public String getIconName() {\n             if (isReadable)\n-                return isFolder ? \"folder.png\" : \"text.png\";\n+                return isFolder ? \"folder.svg\" : \"document.svg\";\n             else\n-                return isFolder ? \"folder-error.png\" : \"text-error.png\";\n+                return isFolder ? \"folder-delete.svg\" : \"document-delete.svg\";\n         }\n \n         public String getIconClassName() {\n             if (isReadable)\n-                return isFolder ? \"icon-folder\" : \"icon-text\";\n+                return isFolder ? \"icon-folder\" : \"icon-document\";\n             else\n-                return isFolder ? \"icon-folder-error\" : \"icon-text-error\";\n+                return isFolder ? \"icon-folder-delete\" : \"icon-document-delete\";\n         }\n \n         public long getSize() {\ndiff --git a/core/src/main/java/org/jenkins/ui/icon/IconSet.java b/core/src/main/java/org/jenkins/ui/icon/IconSet.java\nindex 280f0102789d..fdc1c1edcaed 100644\n--- a/core/src/main/java/org/jenkins/ui/icon/IconSet.java\n+++ b/core/src/main/java/org/jenkins/ui/icon/IconSet.java\n@@ -329,7 +329,6 @@ private static String toNormalizedIconUrl(String url) {\n         icons.addIcon(new Icon(\"icon-edit-delete icon-sm\", \"16x16/edit-delete.gif\", Icon.ICON_SMALL_STYLE));\n         icons.addIcon(new Icon(\"icon-edit-select-all icon-sm\", \"16x16/edit-select-all.gif\", Icon.ICON_SMALL_STYLE));\n         icons.addIcon(new Icon(\"icon-empty icon-sm\", \"16x16/empty.gif\", Icon.ICON_SMALL_STYLE));\n-        icons.addIcon(new Icon(\"icon-folder-error icon-sm\", \"16x16/folder-error.gif\", Icon.ICON_SMALL_STYLE));\n         icons.addIcon(new Icon(\"icon-folder-open icon-sm\", \"16x16/folder-open.gif\", Icon.ICON_SMALL_STYLE));\n         icons.addIcon(new Icon(\"icon-green icon-sm\", \"16x16/green.gif\", Icon.ICON_SMALL_STYLE));\n         icons.addIcon(new Icon(\"icon-green-anime icon-sm\", \"16x16/green_anime.gif\", Icon.ICON_SMALL_STYLE));\n@@ -344,8 +343,6 @@ private static String toNormalizedIconUrl(String url) {\n         icons.addIcon(new BuildStatusIcon(\"icon-nobuilt-anime icon-sm\", \"build-status/build-status-sprite.svg#never-built\", Icon.ICON_SMALL_STYLE, true));\n         icons.addIcon(new BuildStatusIcon(\"icon-red icon-sm\", \"build-status/build-status-sprite.svg#last-failed\", Icon.ICON_SMALL_STYLE));\n         icons.addIcon(new BuildStatusIcon(\"icon-red-anime icon-sm\", \"build-status/build-status-sprite.svg#last-failed\", Icon.ICON_SMALL_STYLE, true));\n-        icons.addIcon(new Icon(\"icon-text-error icon-sm\", \"16x16/text-error.gif\", Icon.ICON_SMALL_STYLE));\n-        icons.addIcon(new Icon(\"icon-text icon-sm\", \"16x16/text.gif\", Icon.ICON_SMALL_STYLE));\n         icons.addIcon(new BuildStatusIcon(\"icon-yellow icon-sm\", \"build-status/build-status-sprite.svg#last-unstable\", Icon.ICON_SMALL_STYLE));\n         icons.addIcon(new BuildStatusIcon(\"icon-yellow-anime icon-sm\", \"build-status/build-status-sprite.svg#last-unstable\", Icon.ICON_SMALL_STYLE, true));\n         icons.addIcon(new Icon(\"icon-collapse icon-sm\", \"16x16/collapse.png\", Icon.ICON_SMALL_STYLE));\n@@ -355,7 +352,6 @@ private static String toNormalizedIconUrl(String url) {\n         icons.addIcon(new Icon(\"icon-edit-select-all icon-sm\", \"16x16/edit-select-all.png\", Icon.ICON_SMALL_STYLE));\n         icons.addIcon(new Icon(\"icon-empty icon-sm\", \"16x16/empty.png\", Icon.ICON_SMALL_STYLE));\n         icons.addIcon(new Icon(\"icon-expand icon-sm\", \"16x16/expand.png\", Icon.ICON_SMALL_STYLE));\n-        icons.addIcon(new Icon(\"icon-folder-error icon-sm\", \"16x16/folder-error.png\", Icon.ICON_SMALL_STYLE));\n         icons.addIcon(new Icon(\"icon-folder-open icon-sm\", \"16x16/folder-open.png\", Icon.ICON_SMALL_STYLE));\n         icons.addIcon(new Icon(\"icon-go-next icon-sm\", \"16x16/go-next.png\", Icon.ICON_SMALL_STYLE));\n         icons.addIcon(new BuildStatusIcon(\"icon-grey icon-sm\", \"build-status/build-status-sprite.svg#never-built\", Icon.ICON_SMALL_STYLE));\ndiff --git a/core/src/main/resources/hudson/model/DirectoryBrowserSupport/dir.jelly b/core/src/main/resources/hudson/model/DirectoryBrowserSupport/dir.jelly\nindex 6ab362f30578..d0afa4d63093 100644\n--- a/core/src/main/resources/hudson/model/DirectoryBrowserSupport/dir.jelly\n+++ b/core/src/main/resources/hudson/model/DirectoryBrowserSupport/dir.jelly\n@@ -39,7 +39,7 @@ THE SOFTWARE.\n               /\n             </j:forEach>\n             <input type=\"text\" name=\"pattern\" value=\"${pattern}\" />\n-            <l:icon class=\"icon-go-next icon-sm\" onclick=\"this.parentNode.submit()\" style=\"vertical-align:middle; cursor:pointer\"/>\n+            <l:icon class=\"icon-next icon-md\" onclick=\"this.parentNode.submit()\" style=\"vertical-align:middle; cursor:pointer\"/>\n           </form>\n         </div>\n         <j:choose>\ndiff --git a/core/src/main/resources/hudson/model/Run/artifacts-index.jelly b/core/src/main/resources/hudson/model/Run/artifacts-index.jelly\nindex 67a057e8eaed..4a5f41c21b5b 100644\n--- a/core/src/main/resources/hudson/model/Run/artifacts-index.jelly\n+++ b/core/src/main/resources/hudson/model/Run/artifacts-index.jelly\n@@ -33,7 +33,7 @@ THE SOFTWARE.\n           <j:forEach var=\"f\" items=\"${it.artifacts}\">\n             <tr>\n               <td>\n-                <l:icon class=\"icon-text icon-sm\"/>\n+                <l:icon class=\"icon-document icon-sm\"/>\n               </td>\n               <td>\n                 <a href=\"artifact/${f.href}\">${f.displayPath}</a>\ndiff --git a/core/src/main/resources/lib/hudson/artifactList.jelly b/core/src/main/resources/lib/hudson/artifactList.jelly\nindex 59bb5d4a9065..d4909b1731d0 100644\n--- a/core/src/main/resources/lib/hudson/artifactList.jelly\n+++ b/core/src/main/resources/lib/hudson/artifactList.jelly\n@@ -55,7 +55,7 @@ THE SOFTWARE.\n               <j:forEach var=\"f\" items=\"${artifacts}\">\n                 <tr>\n                   <td>\n-                    <l:icon class=\"icon-text icon-sm\"/>\n+                    <l:icon class=\"icon-document icon-sm\"/>\n                   </td>\n                   <td>\n                     <a href=\"${baseURL}artifact/${f.href}\">${f.displayPath}</a>\ndiff --git a/war/src/main/webapp/images/16x16/folder-error.gif b/war/src/main/webapp/images/16x16/folder-error.gif\ndeleted file mode 100644\nindex 2ff8d9cf9661..000000000000\nBinary files a/war/src/main/webapp/images/16x16/folder-error.gif and /dev/null differ\ndiff --git a/war/src/main/webapp/images/16x16/folder-error.png b/war/src/main/webapp/images/16x16/folder-error.png\ndeleted file mode 100644\nindex 2bb8d12050d8..000000000000\nBinary files a/war/src/main/webapp/images/16x16/folder-error.png and /dev/null differ\ndiff --git a/war/src/main/webapp/images/16x16/text-error.gif b/war/src/main/webapp/images/16x16/text-error.gif\ndeleted file mode 100644\nindex 6dbdbbdf5633..000000000000\nBinary files a/war/src/main/webapp/images/16x16/text-error.gif and /dev/null differ\ndiff --git a/war/src/main/webapp/images/16x16/text-error.png b/war/src/main/webapp/images/16x16/text-error.png\ndeleted file mode 100644\nindex e1c0cbe26399..000000000000\nBinary files a/war/src/main/webapp/images/16x16/text-error.png and /dev/null differ\ndiff --git a/war/src/main/webapp/images/16x16/text.gif b/war/src/main/webapp/images/16x16/text.gif\ndeleted file mode 100644\nindex df68a9d5a73f..000000000000\nBinary files a/war/src/main/webapp/images/16x16/text.gif and /dev/null differ\ndiff --git a/war/src/main/webapp/images/16x16/text.png b/war/src/main/webapp/images/16x16/text.png\ndeleted file mode 100644\nindex a82aaac50327..000000000000\nBinary files a/war/src/main/webapp/images/16x16/text.png and /dev/null differ\n",
+  "metadata": {
+    "v2_fetcher_version": 1,
+    "v2_fetched_at_unix": 1777501322,
+    "v2_diff_cap_bytes": 50000,
+    "v2_body_cap_bytes": 8000,
+    "v2_diff_truncated": false,
+    "v2_raw_diff_chars": 7902,
+    "v2_raw_body_chars": 1618,
+    "v2_rag_source": "merged_from_v1",
+    "v2_rag_chunks_copied": 8,
+    "joern_enriched": true,
+    "joern_callers_count": 41,
+    "joern_functions_count": 50
+  },
+  "similar_chunks": [
+    {
+      "file": "core/src/main/java/hudson/Functions.java",
+      "start_line": 143,
+      "end_line": 196,
+      "similarity": 0.7073,
+      "related_to": "core/src/main/java/hudson/model/DirectoryBrowserSupport.java",
+      "content_preview": ";\nimport java.util.Map;\nimport java.util.Optional;\nimport java.util.Set;\nimport java.util.SortedMap;\nimport java.util.TimeZone;\nimport java.util.TreeMap;\nimport java.util.concurrent.TimeUnit;\nimport java.util.concurrent.atomic.AtomicLong;\nimport java.util.function.Predicate;\nimport java.util.logging.Level;\nimport java.util.logging.LogManager;\nimport java.util.logging.LogRecord;\nimport java.util.logging.Logger;\nimport java.util.logging.SimpleFormatter;\nimport java.util.regex.Pattern;\nimport java.util.stream.Collectors;\nimport jenkins.console.ConsoleUrlProvider;\nimport jenkins.console.DefaultConsoleUrlProvider;\nimport jenkins.console.WithConsoleUrl;\nimport jenkins.model.GlobalConfiguration;\nimport jenkins.model.GlobalConfigurationCategory;\nimport jenkins.model.Jenkins;\nimport jenkins.model.M"
+    },
+    {
+      "file": "core/src/main/java/hudson/model/Api.java",
+      "start_line": 24,
+      "end_line": 48,
+      "similarity": 0.7064,
+      "related_to": "core/src/main/java/hudson/model/DirectoryBrowserSupport.java",
+      "content_preview": "\npackage hudson.model;\n\nimport hudson.ExtensionList;\nimport hudson.Util;\nimport io.jenkins.servlet.ServletExceptionWrapper;\nimport jakarta.servlet.ServletException;\nimport jakarta.servlet.http.HttpServletResponse;\nimport java.io.IOException;\nimport java.io.OutputStream;\nimport java.io.StringReader;\nimport java."
+    },
+    {
+      "file": "core/src/main/java/hudson/model/ManageJenkinsAction.java",
+      "start_line": 24,
+      "end_line": 50,
+      "similarity": 0.706,
+      "related_to": "core/src/main/java/hudson/model/DirectoryBrowserSupport.java",
+      "content_preview": "\npackage hudson.model;\n\nimport hudson.Extension;\nimport hudson.Util;\nimport hudson.util.HudsonIsLoading;\nimport hudson.util.HudsonIsRestarting;\nimport jakarta.servlet.ServletException;\nimport java.io.IOException;\nimport java.util.logging.Level;\nimport java.util.logging.Logger;\nimport jenkins.management.Badge;\nimport jenkins.model.Jenkins;\nimport jenkins.m"
+    },
+    {
+      "file": "core/src/main/java/hudson/model/Actionable.java",
+      "start_line": 24,
+      "end_line": 48,
+      "similarity": 0.7032,
+      "related_to": "core/src/main/java/hudson/model/DirectoryBrowserSupport.java",
+      "content_preview": "\npackage hudson.model;\n\nimport edu.umd.cs.findbugs.annotations.NonNull;\nimport edu.umd.cs.findbugs.annotations.Nullable;\nimport hudson.Util;\nimport java.util.ArrayList;\nimport java.util.Collection;\nimport java.util.Collections;\nimport java.util.List;\nimport java.util.Set;\nimport java.util.concurrent.CopyOnW"
+    },
+    {
+      "file": "core/src/main/java/hudson/model/AbstractItem.java",
+      "start_line": 42,
+      "end_line": 93,
+      "similarity": 0.6936,
+      "related_to": "core/src/main/java/hudson/model/DirectoryBrowserSupport.java",
+      "content_preview": "ACLContext;\nimport hudson.security.AccessControlled;\nimport hudson.util.AlternativeUiTextProvider;\nimport hudson.util.AlternativeUiTextProvider.Message;\nimport hudson.util.AtomicFileWriter;\nimport hudson.util.FormValidation;\nimport hudson.util.IOUtils;\nimport hudson.util.Secret;\nimport io.jenkins.servlet.ServletExceptionWrapper;\nimport jakarta.servlet.ServletException;\nimport java.io.File;\nimport java.io.IOException;\nimport java.io.OutputStream;\nimport java.nio.charset.Charset;\nimport java.nio.file.Files;\nimport java.util.Collection;\nimport java.util.List;\nimport java.util.ListIterator;\nimport java.util.logging.Level;\nimport java.util.logging.Logger;\nimport javax.xml.transform.Source;\nimport javax.xml.transform.TransformerException;\nimport javax.xml.transform.sax.SAXSource;\nimport javax.xm"
+    },
+    {
+      "file": "core/src/main/java/hudson/model/AllView.java",
+      "start_line": 24,
+      "end_line": 51,
+      "similarity": 0.6933,
+      "related_to": "core/src/main/java/hudson/model/DirectoryBrowserSupport.java",
+      "content_preview": "\npackage hudson.model;\n\nimport edu.umd.cs.findbugs.annotations.NonNull;\nimport hudson.Extension;\nimport hudson.Util;\nimport hudson.model.Descriptor.FormException;\nimport io.jenkins.servlet.ServletExceptionWrapper;\nimport jakarta.servlet.ServletException;\nimport java.io.IOException;\nimport java.util.Collection"
+    },
+    {
+      "file": "core/src/main/java/hudson/Plugin.java",
+      "start_line": 24,
+      "end_line": 48,
+      "similarity": 0.6862,
+      "related_to": "core/src/main/java/hudson/model/DirectoryBrowserSupport.java",
+      "content_preview": "\npackage hudson;\n\nimport com.thoughtworks.xstream.XStream;\nimport edu.umd.cs.findbugs.annotations.SuppressFBWarnings;\nimport hudson.init.Initializer;\nimport hudson.init.Terminator;\nimport hudson.model.Descriptor;\nimport hudson.model.Descriptor.FormException;\nimport hudson.model.Saveable;\nimport hudson.model.listeners.ItemLis"
+    },
+    {
+      "file": "core/src/main/java/hudson/model/Computer.java",
+      "start_line": 89,
+      "end_line": 142,
+      "similarity": 0.6855,
+      "related_to": "core/src/main/java/hudson/model/DirectoryBrowserSupport.java",
+      "content_preview": "e.InvalidPathException;\nimport java.nio.file.StandardCopyOption;\nimport java.util.ArrayList;\nimport java.util.Collection;\nimport java.util.Collections;\nimport java.util.Date;\nimport java.util.Enumeration;\nimport java.util.HashMap;\nimport java.util.HashSet;\nimport java.util.LinkedHashMap;\nimport java.util.List;\nimport java.util.Map;\nimport java.util.Set;\nimport java.util.concurrent.CopyOnWriteArrayList;\nimport java.util.concurrent.ExecutionException;\nimport java.util.concurrent.ExecutorService;\nimport java.util.concurrent.Executors;\nimport java.util.concurrent.Future;\nimport java.util.logging.Level;\nimport java.util.logging.LogRecord;\nimport java.util.logging.Logger;\nimport java.util.regex.Matcher;\nimport java.util.regex.Pattern;\nimport jenkins.model.DisplayExecutor;\nimport jenkins.model.IC"
+    }
+  ],
+  "rag_evidence": {
+    "similar_code": [
+      {
+        "file": "core/src/main/java/hudson/Functions.java",
+        "start_line": 143,
+        "end_line": 196,
+        "similarity": 0.7073,
+        "related_to": "core/src/main/java/hudson/model/DirectoryBrowserSupport.java",
+        "content_preview": ";\nimport java.util.Map;\nimport java.util.Optional;\nimport java.util.Set;\nimport java.util.SortedMap;\nimport java.util.TimeZone;\nimport java.util.TreeMap;\nimport java.util.concurrent.TimeUnit;\nimport java.util.concurrent.atomic.AtomicLong;\nimport java.util.function.Predicate;\nimport java.util.logging.Level;\nimport java.util.logging.LogManager;\nimport java.util.logging.LogRecord;\nimport java.util.logging.Logger;\nimport java.util.logging.SimpleFormatter;\nimport java.util.regex.Pattern;\nimport java.util.stream.Collectors;\nimport jenkins.console.ConsoleUrlProvider;\nimport jenkins.console.DefaultConsoleUrlProvider;\nimport jenkins.console.WithConsoleUrl;\nimport jenkins.model.GlobalConfiguration;\nimport jenkins.model.GlobalConfigurationCategory;\nimport jenkins.model.Jenkins;\nimport jenkins.model.M"
+      },
+      {
+        "file": "core/src/main/java/hudson/model/Api.java",
+        "start_line": 24,
+        "end_line": 48,
+        "similarity": 0.7064,
+        "related_to": "core/src/main/java/hudson/model/DirectoryBrowserSupport.java",
+        "content_preview": "\npackage hudson.model;\n\nimport hudson.ExtensionList;\nimport hudson.Util;\nimport io.jenkins.servlet.ServletExceptionWrapper;\nimport jakarta.servlet.ServletException;\nimport jakarta.servlet.http.HttpServletResponse;\nimport java.io.IOException;\nimport java.io.OutputStream;\nimport java.io.StringReader;\nimport java."
+      },
+      {
+        "file": "core/src/main/java/hudson/model/ManageJenkinsAction.java",
+        "start_line": 24,
+        "end_line": 50,
+        "similarity": 0.706,
+        "related_to": "core/src/main/java/hudson/model/DirectoryBrowserSupport.java",
+        "content_preview": "\npackage hudson.model;\n\nimport hudson.Extension;\nimport hudson.Util;\nimport hudson.util.HudsonIsLoading;\nimport hudson.util.HudsonIsRestarting;\nimport jakarta.servlet.ServletException;\nimport java.io.IOException;\nimport java.util.logging.Level;\nimport java.util.logging.Logger;\nimport jenkins.management.Badge;\nimport jenkins.model.Jenkins;\nimport jenkins.m"
+      },
+      {
+        "file": "core/src/main/java/hudson/model/Actionable.java",
+        "start_line": 24,
+        "end_line": 48,
+        "similarity": 0.7032,
+        "related_to": "core/src/main/java/hudson/model/DirectoryBrowserSupport.java",
+        "content_preview": "\npackage hudson.model;\n\nimport edu.umd.cs.findbugs.annotations.NonNull;\nimport edu.umd.cs.findbugs.annotations.Nullable;\nimport hudson.Util;\nimport java.util.ArrayList;\nimport java.util.Collection;\nimport java.util.Collections;\nimport java.util.List;\nimport java.util.Set;\nimport java.util.concurrent.CopyOnW"
+      },
+      {
+        "file": "core/src/main/java/hudson/model/AbstractItem.java",
+        "start_line": 42,
+        "end_line": 93,
+        "similarity": 0.6936,
+        "related_to": "core/src/main/java/hudson/model/DirectoryBrowserSupport.java",
+        "content_preview": "ACLContext;\nimport hudson.security.AccessControlled;\nimport hudson.util.AlternativeUiTextProvider;\nimport hudson.util.AlternativeUiTextProvider.Message;\nimport hudson.util.AtomicFileWriter;\nimport hudson.util.FormValidation;\nimport hudson.util.IOUtils;\nimport hudson.util.Secret;\nimport io.jenkins.servlet.ServletExceptionWrapper;\nimport jakarta.servlet.ServletException;\nimport java.io.File;\nimport java.io.IOException;\nimport java.io.OutputStream;\nimport java.nio.charset.Charset;\nimport java.nio.file.Files;\nimport java.util.Collection;\nimport java.util.List;\nimport java.util.ListIterator;\nimport java.util.logging.Level;\nimport java.util.logging.Logger;\nimport javax.xml.transform.Source;\nimport javax.xml.transform.TransformerException;\nimport javax.xml.transform.sax.SAXSource;\nimport javax.xm"
+      },
+      {
+        "file": "core/src/main/java/hudson/model/AllView.java",
+        "start_line": 24,
+        "end_line": 51,
+        "similarity": 0.6933,
+        "related_to": "core/src/main/java/hudson/model/DirectoryBrowserSupport.java",
+        "content_preview": "\npackage hudson.model;\n\nimport edu.umd.cs.findbugs.annotations.NonNull;\nimport hudson.Extension;\nimport hudson.Util;\nimport hudson.model.Descriptor.FormException;\nimport io.jenkins.servlet.ServletExceptionWrapper;\nimport jakarta.servlet.ServletException;\nimport java.io.IOException;\nimport java.util.Collection"
+      },
+      {
+        "file": "core/src/main/java/hudson/Plugin.java",
+        "start_line": 24,
+        "end_line": 48,
+        "similarity": 0.6862,
+        "related_to": "core/src/main/java/hudson/model/DirectoryBrowserSupport.java",
+        "content_preview": "\npackage hudson;\n\nimport com.thoughtworks.xstream.XStream;\nimport edu.umd.cs.findbugs.annotations.SuppressFBWarnings;\nimport hudson.init.Initializer;\nimport hudson.init.Terminator;\nimport hudson.model.Descriptor;\nimport hudson.model.Descriptor.FormException;\nimport hudson.model.Saveable;\nimport hudson.model.listeners.ItemLis"
+      },
+      {
+        "file": "core/src/main/java/hudson/model/Computer.java",
+        "start_line": 89,
+        "end_line": 142,
+        "similarity": 0.6855,
+        "related_to": "core/src/main/java/hudson/model/DirectoryBrowserSupport.java",
+        "content_preview": "e.InvalidPathException;\nimport java.nio.file.StandardCopyOption;\nimport java.util.ArrayList;\nimport java.util.Collection;\nimport java.util.Collections;\nimport java.util.Date;\nimport java.util.Enumeration;\nimport java.util.HashMap;\nimport java.util.HashSet;\nimport java.util.LinkedHashMap;\nimport java.util.List;\nimport java.util.Map;\nimport java.util.Set;\nimport java.util.concurrent.CopyOnWriteArrayList;\nimport java.util.concurrent.ExecutionException;\nimport java.util.concurrent.ExecutorService;\nimport java.util.concurrent.Executors;\nimport java.util.concurrent.Future;\nimport java.util.logging.Level;\nimport java.util.logging.LogRecord;\nimport java.util.logging.Logger;\nimport java.util.regex.Matcher;\nimport java.util.regex.Pattern;\nimport jenkins.model.DisplayExecutor;\nimport jenkins.model.IC"
+      }
+    ]
+  },
+  "callers": [
+    {
+      "path": "hudson/Functions.java",
+      "from_function": "initPageVariables",
+      "calls_function": "initPageVariables",
+      "caller_line": 294,
+      "callee_file": "org/jenkins/ui/icon/IconSet.java",
+      "callee_line": 65
+    },
+    {
+      "path": "hudson/Functions.java",
+      "from_function": "tryGetIcon",
+      "calls_function": "getIconByClassSpec",
+      "caller_line": 2530,
+      "callee_file": "org/jenkins/ui/icon/IconSet.java",
+      "callee_line": 143
+    },
+    {
+      "path": "hudson/Functions.java",
+      "from_function": "tryGetIcon",
+      "calls_function": "toNormalizedIconNameClass",
+      "caller_line": 2530,
+      "callee_file": "org/jenkins/ui/icon/IconSet.java",
+      "callee_line": 224
+    },
+    {
+      "path": "hudson/Functions.java",
+      "from_function": "tryGetIcon",
+      "calls_function": "getIconByUrl",
+      "caller_line": 2530,
+      "callee_file": "org/jenkins/ui/icon/IconSet.java",
+      "callee_line": 191
+    },
+    {
+      "path": "hudson/Functions.java",
+      "from_function": "tryGetIconPath",
+      "calls_function": "tryTranslateTangoIconToSymbol",
+      "caller_line": 2585,
+      "callee_file": "org/jenkins/ui/icon/IconSet.java",
+      "callee_line": 557
+    },
+    {
+      "path": "hudson/model/DirectoryBrowserSupport.java",
+      "from_function": "call",
+      "calls_function": "buildChildPaths",
+      "caller_line": 768,
+      "callee_file": "hudson/model/DirectoryBrowserSupport.java",
+      "callee_line": 778
+    },
+    {
+      "path": "hudson/model/DirectoryBrowserSupport.java",
+      "from_function": "generateResponse",
+      "calls_function": "serveFile",
+      "caller_line": 163,
+      "callee_file": "hudson/model/DirectoryBrowserSupport.java",
+      "callee_line": 206
+    },
+    {
+      "path": "hudson/model/DirectoryBrowserSupport.java",
+      "from_function": "serveFile",
+      "calls_function": "serveFile",
+      "caller_line": 197,
+      "callee_file": "hudson/model/DirectoryBrowserSupport.java",
+      "callee_line": 206
+    },
+    {
+      "path": "hudson/model/DirectoryBrowserSupport.java",
+      "from_function": "serveFile",
+      "calls_function": "getPath",
+      "caller_line": 206,
+      "callee_file": "hudson/model/DirectoryBrowserSupport.java",
+      "callee_line": 495
+    },
+    {
+      "path": "hudson/model/DirectoryBrowserSupport.java",
+      "from_function": "serveFile",
+      "calls_function": "getOpenOptions",
+      "caller_line": 206,
+      "callee_file": "hudson/model/DirectoryBrowserSupport.java",
+      "callee_line": 865
+    },
+    {
+      "path": "hudson/model/DirectoryBrowserSupport.java",
+      "from_function": "serveFile",
+      "calls_function": "hasTmpDir",
+      "caller_line": 206,
+      "callee_file": "hudson/model/DirectoryBrowserSupport.java",
+      "callee_line": 437
+    },
+    {
+      "path": "hudson/model/DirectoryBrowserSupport.java",
+      "from_function": "serveFile",
+      "calls_function": "patternScan",
+      "caller_line": 206,
+      "callee_file": "hudson/model/DirectoryBrowserSupport.java",
+      "callee_line": 821
+    },
+    {
+      "path": "hudson/model/DirectoryBrowserSupport.java",
+      "from_function": "serveFile",
+      "calls_function": "createBackRef",
+      "caller_line": 206,
+      "callee_file": "hudson/model/DirectoryBrowserSupport.java",
+      "callee_line": 519
+    },
+    {
+      "path": "hudson/model/DirectoryBrowserSupport.java",
+      "from_function": "serveFile",
+      "calls_function": "buildParentPath",
+      "caller_line": 206,
+      "callee_file": "hudson/model/DirectoryBrowserSupport.java",
+      "callee_line": 506
+    },
+    {
+      "path": "hudson/model/DirectoryBrowserSupport.java",
+      "from_function": "buildParentPath",
+      "calls_function": "createBackRef",
+      "caller_line": 506,
+      "callee_file": "hudson/model/DirectoryBrowserSupport.java",
+      "callee_line": 519
+    },
+    {
+      "path": "hudson/model/DirectoryBrowserSupport.java",
+      "from_function": "zip",
+      "calls_function": "collectRecursivelyAllLegalChildren",
+      "caller_line": 524,
+      "callee_file": "hudson/model/DirectoryBrowserSupport.java",
+      "callee_line": 583
+    },
+    {
+      "path": "hudson/model/DirectoryBrowserSupport.java",
+      "from_function": "zip",
+      "calls_function": "sendZipUsingMap",
+      "caller_line": 524,
+      "callee_file": "hudson/model/DirectoryBrowserSupport.java",
+      "callee_line": 547
+    },
+    {
+      "path": "hudson/model/DirectoryBrowserSupport.java",
+      "from_function": "zip",
+      "calls_function": "sendZipUsingListOfNames",
+      "caller_line": 524,
+      "callee_file": "hudson/model/DirectoryBrowserSupport.java",
+      "callee_line": 559
+    },
+    {
+      "path": "hudson/model/DirectoryBrowserSupport.java",
+      "from_function": "sendZipUsingMap",
+      "calls_function": "sendOneZipEntry",
+      "caller_line": 547,
+      "callee_file": "hudson/model/DirectoryBrowserSupport.java",
+      "callee_line": 566
+    },
+    {
+      "path": "hudson/model/DirectoryBrowserSupport.java",
+      "from_function": "sendZipUsingListOfNames",
+      "calls_function": "sendOneZipEntry",
+      "caller_line": 559,
+      "callee_file": "hudson/model/DirectoryBrowserSupport.java",
+      "callee_line": 566
+    },
+    {
+      "path": "hudson/model/DirectoryBrowserSupport.java",
+      "from_function": "collectRecursivelyAllLegalChildren",
+      "calls_function": "collectRecursivelyAllLegalChildren",
+      "caller_line": 583,
+      "callee_file": "hudson/model/DirectoryBrowserSupport.java",
+      "callee_line": 589
+    },
+    {
+      "path": "hudson/model/DirectoryBrowserSupport.java",
+      "from_function": "compare",
+      "calls_function": "dirRank",
+      "caller_line": 725,
+      "callee_file": "hudson/model/DirectoryBrowserSupport.java",
+      "callee_line": 734
+    },
+    {
+      "path": "hudson/model/DirectoryBrowserSupport.java",
+      "from_function": "buildChildPaths",
+      "calls_function": "getOpenOptions",
+      "caller_line": 778,
+      "callee_file": "hudson/model/DirectoryBrowserSupport.java",
+      "callee_line": 865
+    },
+    {
+      "path": "hudson/model/DirectoryBrowserSupport.java",
+      "from_function": "patternScan",
+      "calls_function": "getOpenOptions",
+      "caller_line": 821,
+      "callee_file": "hudson/model/DirectoryBrowserSupport.java",
+      "callee_line": 865
+    },
+    {
+      "path": "hudson/model/DirectoryBrowserSupport.java",
+      "from_function": "patternScan",
+      "calls_function": "buildPathList",
+      "caller_line": 821,
+      "callee_file": "hudson/model/DirectoryBrowserSupport.java",
+      "callee_line": 839
+    },
+    {
+      "path": "hudson/model/DirectoryBrowserSupport.java",
+      "from_function": "buildPathList",
+      "calls_function": "buildPathList",
+      "caller_line": 839,
+      "callee_file": "hudson/model/DirectoryBrowserSupport.java",
+      "callee_line": 850
+    },
+    {
+      "path": "hudson/model/TopLevelItemDescriptor.java",
+      "from_function": "getIconClassName",
+      "calls_function": "toNormalizedIconNameClass",
+      "caller_line": 236,
+      "callee_file": "org/jenkins/ui/icon/IconSet.java",
+      "callee_line": 224
+    },
+    {
+      "path": "hudson/model/TopLevelItemDescriptor.java",
+      "from_function": "getIconClassName",
+      "calls_function": "getIconByUrl",
+      "caller_line": 236,
+      "callee_file": "org/jenkins/ui/icon/IconSet.java",
+      "callee_line": 191
+    },
+    {
+      "path": "hudson/model/View.java",
+      "from_function": "doItemCategories",
+      "calls_function": "getIconByClassSpec",
+      "caller_line": 879,
+      "callee_file": "org/jenkins/ui/icon/IconSet.java",
+      "callee_line": 143
+    },
+    {
+      "path": "jenkins/model/ModelObjectWithContextMenu.java",
+      "from_function": "withIconClass",
+      "calls_function": "getIconByClassSpec",
+      "caller_line": 481,
+      "callee_file": "org/jenkins/ui/icon/IconSet.java",
+      "callee_line": 143
+    },
+    {
+      "path": "org/jenkins/ui/icon/IconSet.java",
+      "from_function": "getSymbol",
+      "calls_function": "cleanName",
+      "caller_line": 70,
+      "callee_file": "org/jenkins/ui/icon/IconSet.java",
+      "callee_line": 562
+    },
+    {
+      "path": "org/jenkins/ui/icon/IconSet.java",
+      "from_function": "getIconByNormalizedCSSSelector",
+      "calls_function": "getIconByNormalizedCSSSelector",
+      "caller_line": 103,
+      "callee_file": "org/jenkins/ui/icon/IconSet.java",
+      "callee_line": 115
+    },
+    {
+      "path": "org/jenkins/ui/icon/IconSet.java",
+      "from_function": "getIconByClassSpec",
+      "calls_function": "getIconByClassSpec",
+      "caller_line": 131,
+      "callee_file": "org/jenkins/ui/icon/IconSet.java",
+      "callee_line": 143
+    },
+    {
+      "path": "org/jenkins/ui/icon/IconSet.java",
+      "from_function": "getIconByClassSpec",
+      "calls_function": "getIconByNormalizedCSSSelector",
+      "caller_line": 143,
+      "callee_file": "org/jenkins/ui/icon/IconSet.java",
+      "callee_line": 115
+    },
+    {
+      "path": "org/jenkins/ui/icon/IconSet.java",
+      "from_function": "getIconByUrl",
+      "calls_function": "getIconByUrl",
+      "caller_line": 179,
+      "callee_file": "org/jenkins/ui/icon/IconSet.java",
+      "callee_line": 191
+    },
+    {
+      "path": "org/jenkins/ui/icon/IconSet.java",
+      "from_function": "toNormalizedIconNameClass",
+      "calls_function": "toNormalizedIconNameClass",
+      "caller_line": 211,
+      "callee_file": "org/jenkins/ui/icon/IconSet.java",
+      "callee_line": 224
+    },
+    {
+      "path": "org/jenkins/ui/icon/IconSet.java",
+      "from_function": "toNormalizedIconSizeClass",
+      "calls_function": "toNormalizedIconSizeClass",
+      "caller_line": 239,
+      "callee_file": "org/jenkins/ui/icon/IconSet.java",
+      "callee_line": 253
+    },
+    {
+      "path": "org/jenkins/ui/icon/IconSet.java",
+      "from_function": "toNormalizedIconUrl",
+      "calls_function": "toNormalizedIconUrl",
+      "caller_line": 267,
+      "callee_file": "org/jenkins/ui/icon/IconSet.java",
+      "callee_line": 280
+    },
+    {
+      "path": "org/jenkins/ui/icon/IconSet.java",
+      "from_function": "initializeSVGs",
+      "calls_function": "addIcon",
+      "caller_line": 417,
+      "callee_file": "org/jenkins/ui/icon/IconSet.java",
+      "callee_line": 85
+    },
+    {
+      "path": "org/jenkins/ui/icon/IconSet.java",
+      "from_function": "tryTranslateTangoIconToSymbol",
+      "calls_function": "tryTranslateTangoIconToSymbol",
+      "caller_line": 544,
+      "callee_file": "org/jenkins/ui/icon/IconSet.java",
+      "callee_line": 557
+    },
+    {
+      "path": "org/jenkins/ui/icon/IconSet.java",
+      "from_function": "tryTranslateTangoIconToSymbol",
+      "calls_function": "cleanName",
+      "caller_line": 557,
+      "callee_file": "org/jenkins/ui/icon/IconSet.java",
+      "callee_line": 562
+    }
+  ],
+  "call_graph_edges": [
+    {
+      "from": "hudson/Functions.java::initPageVariables",
+      "to": "org/jenkins/ui/icon/IconSet.java::initPageVariables"
+    },
+    {
+      "from": "hudson/Functions.java::tryGetIcon",
+      "to": "org/jenkins/ui/icon/IconSet.java::getIconByClassSpec"
+    },
+    {
+      "from": "hudson/Functions.java::tryGetIcon",
+      "to": "org/jenkins/ui/icon/IconSet.java::toNormalizedIconNameClass"
+    },
+    {
+      "from": "hudson/Functions.java::tryGetIcon",
+      "to": "org/jenkins/ui/icon/IconSet.java::getIconByUrl"
+    },
+    {
+      "from": "hudson/Functions.java::tryGetIconPath",
+      "to": "org/jenkins/ui/icon/IconSet.java::tryTranslateTangoIconToSymbol"
+    },
+    {
+      "from": "hudson/model/DirectoryBrowserSupport.java::call",
+      "to": "hudson/model/DirectoryBrowserSupport.java::buildChildPaths"
+    },
+    {
+      "from": "hudson/model/DirectoryBrowserSupport.java::generateResponse",
+      "to": "hudson/model/DirectoryBrowserSupport.java::serveFile"
+    },
+    {
+      "from": "hudson/model/DirectoryBrowserSupport.java::serveFile",
+      "to": "hudson/model/DirectoryBrowserSupport.java::serveFile"
+    },
+    {
+      "from": "hudson/model/DirectoryBrowserSupport.java::serveFile",
+      "to": "hudson/model/DirectoryBrowserSupport.java::getPath"
+    },
+    {
+      "from": "hudson/model/DirectoryBrowserSupport.java::serveFile",
+      "to": "hudson/model/DirectoryBrowserSupport.java::getOpenOptions"
+    },
+    {
+      "from": "hudson/model/DirectoryBrowserSupport.java::serveFile",
+      "to": "hudson/model/DirectoryBrowserSupport.java::hasTmpDir"
+    },
+    {
+      "from": "hudson/model/DirectoryBrowserSupport.java::serveFile",
+      "to": "hudson/model/DirectoryBrowserSupport.java::patternScan"
+    },
+    {
+      "from": "hudson/model/DirectoryBrowserSupport.java::serveFile",
+      "to": "hudson/model/DirectoryBrowserSupport.java::createBackRef"
+    },
+    {
+      "from": "hudson/model/DirectoryBrowserSupport.java::serveFile",
+      "to": "hudson/model/DirectoryBrowserSupport.java::buildParentPath"
+    },
+    {
+      "from": "hudson/model/DirectoryBrowserSupport.java::buildParentPath",
+      "to": "hudson/model/DirectoryBrowserSupport.java::createBackRef"
+    },
+    {
+      "from": "hudson/model/DirectoryBrowserSupport.java::zip",
+      "to": "hudson/model/DirectoryBrowserSupport.java::collectRecursivelyAllLegalChildren"
+    },
+    {
+      "from": "hudson/model/DirectoryBrowserSupport.java::zip",
+      "to": "hudson/model/DirectoryBrowserSupport.java::sendZipUsingMap"
+    },
+    {
+      "from": "hudson/model/DirectoryBrowserSupport.java::zip",
+      "to": "hudson/model/DirectoryBrowserSupport.java::sendZipUsingListOfNames"
+    },
+    {
+      "from": "hudson/model/DirectoryBrowserSupport.java::sendZipUsingMap",
+      "to": "hudson/model/DirectoryBrowserSupport.java::sendOneZipEntry"
+    },
+    {
+      "from": "hudson/model/DirectoryBrowserSupport.java::sendZipUsingListOfNames",
+      "to": "hudson/model/DirectoryBrowserSupport.java::sendOneZipEntry"
+    },
+    {
+      "from": "hudson/model/DirectoryBrowserSupport.java::collectRecursivelyAllLegalChildren",
+      "to": "hudson/model/DirectoryBrowserSupport.java::collectRecursivelyAllLegalChildren"
+    },
+    {
+      "from": "hudson/model/DirectoryBrowserSupport.java::compare",
+      "to": "hudson/model/DirectoryBrowserSupport.java::dirRank"
+    },
+    {
+      "from": "hudson/model/DirectoryBrowserSupport.java::buildChildPaths",
+      "to": "hudson/model/DirectoryBrowserSupport.java::getOpenOptions"
+    },
+    {
+      "from": "hudson/model/DirectoryBrowserSupport.java::patternScan",
+      "to": "hudson/model/DirectoryBrowserSupport.java::getOpenOptions"
+    },
+    {
+      "from": "hudson/model/DirectoryBrowserSupport.java::patternScan",
+      "to": "hudson/model/DirectoryBrowserSupport.java::buildPathList"
+    },
+    {
+      "from": "hudson/model/DirectoryBrowserSupport.java::buildPathList",
+      "to": "hudson/model/DirectoryBrowserSupport.java::buildPathList"
+    },
+    {
+      "from": "hudson/model/TopLevelItemDescriptor.java::getIconClassName",
+      "to": "org/jenkins/ui/icon/IconSet.java::toNormalizedIconNameClass"
+    },
+    {
+      "from": "hudson/model/TopLevelItemDescriptor.java::getIconClassName",
+      "to": "org/jenkins/ui/icon/IconSet.java::getIconByUrl"
+    },
+    {
+      "from": "hudson/model/View.java::doItemCategories",
+      "to": "org/jenkins/ui/icon/IconSet.java::getIconByClassSpec"
+    },
+    {
+      "from": "jenkins/model/ModelObjectWithContextMenu.java::withIconClass",
+      "to": "org/jenkins/ui/icon/IconSet.java::getIconByClassSpec"
+    },
+    {
+      "from": "org/jenkins/ui/icon/IconSet.java::getSymbol",
+      "to": "org/jenkins/ui/icon/IconSet.java::cleanName"
+    },
+    {
+      "from": "org/jenkins/ui/icon/IconSet.java::getIconByNormalizedCSSSelector",
+      "to": "org/jenkins/ui/icon/IconSet.java::getIconByNormalizedCSSSelector"
+    },
+    {
+      "from": "org/jenkins/ui/icon/IconSet.java::getIconByClassSpec",
+      "to": "org/jenkins/ui/icon/IconSet.java::getIconByClassSpec"
+    },
+    {
+      "from": "org/jenkins/ui/icon/IconSet.java::getIconByClassSpec",
+      "to": "org/jenkins/ui/icon/IconSet.java::getIconByNormalizedCSSSelector"
+    },
+    {
+      "from": "org/jenkins/ui/icon/IconSet.java::getIconByUrl",
+      "to": "org/jenkins/ui/icon/IconSet.java::getIconByUrl"
+    },
+    {
+      "from": "org/jenkins/ui/icon/IconSet.java::toNormalizedIconNameClass",
+      "to": "org/jenkins/ui/icon/IconSet.java::toNormalizedIconNameClass"
+    },
+    {
+      "from": "org/jenkins/ui/icon/IconSet.java::toNormalizedIconSizeClass",
+      "to": "org/jenkins/ui/icon/IconSet.java::toNormalizedIconSizeClass"
+    },
+    {
+      "from": "org/jenkins/ui/icon/IconSet.java::toNormalizedIconUrl",
+      "to": "org/jenkins/ui/icon/IconSet.java::toNormalizedIconUrl"
+    },
+    {
+      "from": "org/jenkins/ui/icon/IconSet.java::initializeSVGs",
+      "to": "org/jenkins/ui/icon/IconSet.java::addIcon"
+    },
+    {
+      "from": "org/jenkins/ui/icon/IconSet.java::tryTranslateTangoIconToSymbol",
+      "to": "org/jenkins/ui/icon/IconSet.java::tryTranslateTangoIconToSymbol"
+    },
+    {
+      "from": "org/jenkins/ui/icon/IconSet.java::tryTranslateTangoIconToSymbol",
+      "to": "org/jenkins/ui/icon/IconSet.java::cleanName"
+    }
+  ],
+  "functions_in_changed_files": [
+    {
+      "name": "generateResponse",
+      "full_name": "hudson.model.DirectoryBrowserSupport.generateResponse:void(org.kohsuke.stapler.StaplerRequest2,org.kohsuke.stapler.StaplerResponse2,java.lang.Object)",
+      "file": "hudson/model/DirectoryBrowserSupport.java",
+      "start_line": 163,
+      "end_line": 174,
+      "signature": "void(org.kohsuke.stapler.StaplerRequest2,org.kohsuke.stapler.StaplerResponse2,java.lang.Object)"
+    },
+    {
+      "name": "setIndexFileName",
+      "full_name": "hudson.model.DirectoryBrowserSupport.setIndexFileName:void(java.lang.String)",
+      "file": "hudson/model/DirectoryBrowserSupport.java",
+      "start_line": 181,
+      "end_line": 183,
+      "signature": "void(java.lang.String)"
+    },
+    {
+      "name": "serveFile",
+      "full_name": "hudson.model.DirectoryBrowserSupport.serveFile:void(org.kohsuke.stapler.StaplerRequest,org.kohsuke.stapler.StaplerResponse,hudson.FilePath,java.lang.String,boolean)",
+      "file": "hudson/model/DirectoryBrowserSupport.java",
+      "start_line": 197,
+      "end_line": 204,
+      "signature": "void(org.kohsuke.stapler.StaplerRequest,org.kohsuke.stapler.StaplerResponse,hudson.FilePath,java.lang.String,boolean)"
+    },
+    {
+      "name": "serveFile",
+      "full_name": "hudson.model.DirectoryBrowserSupport.serveFile:void(org.kohsuke.stapler.StaplerRequest2,org.kohsuke.stapler.StaplerResponse2,jenkins.util.VirtualFile,java.lang.String,boolean)",
+      "file": "hudson/model/DirectoryBrowserSupport.java",
+      "start_line": 206,
+      "end_line": 422,
+      "signature": "void(org.kohsuke.stapler.StaplerRequest2,org.kohsuke.stapler.StaplerResponse2,jenkins.util.VirtualFile,java.lang.String,boolean)"
+    },
+    {
+      "name": "call",
+      "full_name": "hudson.model.DirectoryBrowserSupport$IsAbsolute.call:java.lang.Boolean()",
+      "file": "hudson/model/DirectoryBrowserSupport.java",
+      "start_line": 431,
+      "end_line": 434,
+      "signature": "java.lang.Boolean()"
+    },
+    {
+      "name": "hasTmpDir",
+      "full_name": "hudson.model.DirectoryBrowserSupport.hasTmpDir:boolean(jenkins.util.VirtualFile,java.lang.String,java.nio.file.OpenOption[])",
+      "file": "hudson/model/DirectoryBrowserSupport.java",
+      "start_line": 437,
+      "end_line": 442,
+      "signature": "boolean(jenkins.util.VirtualFile,java.lang.String,java.nio.file.OpenOption[])"
+    },
+    {
+      "name": "keepReadabilityOnlyOnDescendants",
+      "full_name": "hudson.model.DirectoryBrowserSupport.keepReadabilityOnlyOnDescendants:java.util.List(jenkins.util.VirtualFile,boolean,java.util.List)",
+      "file": "hudson/model/DirectoryBrowserSupport.java",
+      "start_line": 444,
+      "end_line": 484,
+      "signature": "java.util.List(jenkins.util.VirtualFile,boolean,java.util.List)"
+    },
+    {
+      "name": "isDescendant",
+      "full_name": "hudson.model.DirectoryBrowserSupport.isDescendant:boolean(jenkins.util.VirtualFile,java.lang.String)",
+      "file": "hudson/model/DirectoryBrowserSupport.java",
+      "start_line": 486,
+      "end_line": 493,
+      "signature": "boolean(jenkins.util.VirtualFile,java.lang.String)"
+    },
+    {
+      "name": "getPath",
+      "full_name": "hudson.model.DirectoryBrowserSupport.getPath:java.lang.String(org.kohsuke.stapler.StaplerRequest2)",
+      "file": "hudson/model/DirectoryBrowserSupport.java",
+      "start_line": 495,
+      "end_line": 500,
+      "signature": "java.lang.String(org.kohsuke.stapler.StaplerRequest2)"
+    },
+    {
+      "name": "buildParentPath",
+      "full_name": "hudson.model.DirectoryBrowserSupport.buildParentPath:java.util.List(java.lang.String,int)",
+      "file": "hudson/model/DirectoryBrowserSupport.java",
+      "start_line": 506,
+      "end_line": 517,
+      "signature": "java.util.List(java.lang.String,int)"
+    },
+    {
+      "name": "createBackRef",
+      "full_name": "hudson.model.DirectoryBrowserSupport.createBackRef:java.lang.String(int)",
+      "file": "hudson/model/DirectoryBrowserSupport.java",
+      "start_line": 519,
+      "end_line": 522,
+      "signature": "java.lang.String(int)"
+    },
+    {
+      "name": "zip",
+      "full_name": "hudson.model.DirectoryBrowserSupport.zip:void(org.kohsuke.stapler.StaplerResponse2,jenkins.util.VirtualFile,jenkins.util.VirtualFile,java.lang.String)",
+      "file": "hudson/model/DirectoryBrowserSupport.java",
+      "start_line": 524,
+      "end_line": 545,
+      "signature": "void(org.kohsuke.stapler.StaplerResponse2,jenkins.util.VirtualFile,jenkins.util.VirtualFile,java.lang.String)"
+    },
+    {
+      "name": "sendZipUsingMap",
+      "full_name": "hudson.model.DirectoryBrowserSupport.sendZipUsingMap:void(java.util.zip.ZipOutputStream,jenkins.util.VirtualFile,java.util.Map)",
+      "file": "hudson/model/DirectoryBrowserSupport.java",
+      "start_line": 547,
+      "end_line": 557,
+      "signature": "void(java.util.zip.ZipOutputStream,jenkins.util.VirtualFile,java.util.Map)"
+    },
+    {
+      "name": "sendZipUsingListOfNames",
+      "full_name": "hudson.model.DirectoryBrowserSupport.sendZipUsingListOfNames:void(java.util.zip.ZipOutputStream,jenkins.util.VirtualFile,java.util.Collection)",
+      "file": "hudson/model/DirectoryBrowserSupport.java",
+      "start_line": 559,
+      "end_line": 564,
+      "signature": "void(java.util.zip.ZipOutputStream,jenkins.util.VirtualFile,java.util.Collection)"
+    },
+    {
+      "name": "sendOneZipEntry",
+      "full_name": "hudson.model.DirectoryBrowserSupport.sendOneZipEntry:void(java.util.zip.ZipOutputStream,jenkins.util.VirtualFile,java.lang.String)",
+      "file": "hudson/model/DirectoryBrowserSupport.java",
+      "start_line": 566,
+      "end_line": 581,
+      "signature": "void(java.util.zip.ZipOutputStream,jenkins.util.VirtualFile,java.lang.String)"
+    },
+    {
+      "name": "collectRecursivelyAllLegalChildren",
+      "full_name": "hudson.model.DirectoryBrowserSupport.collectRecursivelyAllLegalChildren:java.util.Map(jenkins.util.VirtualFile)",
+      "file": "hudson/model/DirectoryBrowserSupport.java",
+      "start_line": 583,
+      "end_line": 587,
+      "signature": "java.util.Map(jenkins.util.VirtualFile)"
+    },
+    {
+      "name": "collectRecursivelyAllLegalChildren",
+      "full_name": "hudson.model.DirectoryBrowserSupport.collectRecursivelyAllLegalChildren:void(jenkins.util.VirtualFile,java.lang.String,java.util.Map)",
+      "file": "hudson/model/DirectoryBrowserSupport.java",
+      "start_line": 589,
+      "end_line": 603,
+      "signature": "void(jenkins.util.VirtualFile,java.lang.String,java.util.Map)"
+    },
+    {
+      "name": "isFolder",
+      "full_name": "hudson.model.DirectoryBrowserSupport$Path.isFolder:boolean()",
+      "file": "hudson/model/DirectoryBrowserSupport.java",
+      "start_line": 652,
+      "end_line": 654,
+      "signature": "boolean()"
+    },
+    {
+      "name": "isReadable",
+      "full_name": "hudson.model.DirectoryBrowserSupport$Path.isReadable:boolean()",
+      "file": "hudson/model/DirectoryBrowserSupport.java",
+      "start_line": 656,
+      "end_line": 658,
+      "signature": "boolean()"
+    },
+    {
+      "name": "getHref",
+      "full_name": "hudson.model.DirectoryBrowserSupport$Path.getHref:java.lang.String()",
+      "file": "hudson/model/DirectoryBrowserSupport.java",
+      "start_line": 660,
+      "end_line": 662,
+      "signature": "java.lang.String()"
+    },
+    {
+      "name": "getTitle",
+      "full_name": "hudson.model.DirectoryBrowserSupport$Path.getTitle:java.lang.String()",
+      "file": "hudson/model/DirectoryBrowserSupport.java",
+      "start_line": 664,
+      "end_line": 666,
+      "signature": "java.lang.String()"
+    },
+    {
+      "name": "getIconName",
+      "full_name": "hudson.model.DirectoryBrowserSupport$Path.getIconName:java.lang.String()",
+      "file": "hudson/model/DirectoryBrowserSupport.java",
+      "start_line": 668,
+      "end_line": 673,
+      "signature": "java.lang.String()"
+    },
+    {
+      "name": "getIconClassName",
+      "full_name": "hudson.model.DirectoryBrowserSupport$Path.getIconClassName:java.lang.String()",
+      "file": "hudson/model/DirectoryBrowserSupport.java",
+      "start_line": 675,
+      "end_line": 680,
+      "signature": "java.lang.String()"
+    },
+    {
+      "name": "getSize",
+      "full_name": "hudson.model.DirectoryBrowserSupport$Path.getSize:long()",
+      "file": "hudson/model/DirectoryBrowserSupport.java",
+      "start_line": 682,
+      "end_line": 684,
+      "signature": "long()"
+    },
+    {
+      "name": "getLastModified",
+      "full_name": "hudson.model.DirectoryBrowserSupport$Path.getLastModified:long()",
+      "file": "hudson/model/DirectoryBrowserSupport.java",
+      "start_line": 692,
+      "end_line": 694,
+      "signature": "long()"
+    },
+    {
+      "name": "getLastModifiedAsCalendar",
+      "full_name": "hudson.model.DirectoryBrowserSupport$Path.getLastModifiedAsCalendar:java.util.Calendar()",
+      "file": "hudson/model/DirectoryBrowserSupport.java",
+      "start_line": 702,
+      "end_line": 707,
+      "signature": "java.util.Calendar()"
+    },
+    {
+      "name": "createNotReadableVersionOf",
+      "full_name": "hudson.model.DirectoryBrowserSupport$Path.createNotReadableVersionOf:hudson.model.DirectoryBrowserSupport$Path(hudson.model.DirectoryBrowserSupport$Path)",
+      "file": "hudson/model/DirectoryBrowserSupport.java",
+      "start_line": 709,
+      "end_line": 711,
+      "signature": "hudson.model.DirectoryBrowserSupport$Path(hudson.model.DirectoryBrowserSupport$Path)"
+    },
+    {
+      "name": "compare",
+      "full_name": "hudson.model.DirectoryBrowserSupport$FileComparator.compare:int(jenkins.util.VirtualFile,jenkins.util.VirtualFile)",
+      "file": "hudson/model/DirectoryBrowserSupport.java",
+      "start_line": 725,
+      "end_line": 732,
+      "signature": "int(jenkins.util.VirtualFile,jenkins.util.VirtualFile)"
+    },
+    {
+      "name": "dirRank",
+      "full_name": "hudson.model.DirectoryBrowserSupport$FileComparator.dirRank:int(jenkins.util.VirtualFile)",
+      "file": "hudson/model/DirectoryBrowserSupport.java",
+      "start_line": 734,
+      "end_line": 741,
+      "signature": "int(jenkins.util.VirtualFile)"
+    },
+    {
+      "name": "call",
+      "full_name": "hudson.model.DirectoryBrowserSupport$BuildChildPaths.call:hudson.model.DirectoryBrowserSupport$BuildChildPathsResult()",
+      "file": "hudson/model/DirectoryBrowserSupport.java",
+      "start_line": 768,
+      "end_line": 770,
+      "signature": "hudson.model.DirectoryBrowserSupport$BuildChildPathsResult()"
+    },
+    {
+      "name": "buildChildPaths",
+      "full_name": "hudson.model.DirectoryBrowserSupport.buildChildPaths:java.util.List(jenkins.util.VirtualFile,java.util.Locale)",
+      "file": "hudson/model/DirectoryBrowserSupport.java",
+      "start_line": 778,
+      "end_line": 814,
+      "signature": "java.util.List(jenkins.util.VirtualFile,java.util.Locale)"
+    },
+    {
+      "name": "patternScan",
+      "full_name": "hudson.model.DirectoryBrowserSupport.patternScan:java.util.List(jenkins.util.VirtualFile,java.lang.String,java.lang.String)",
+      "file": "hudson/model/DirectoryBrowserSupport.java",
+      "start_line": 821,
+      "end_line": 834,
+      "signature": "java.util.List(jenkins.util.VirtualFile,java.lang.String,java.lang.String)"
+    },
+    {
+      "name": "buildPathList",
+      "full_name": "hudson.model.DirectoryBrowserSupport.buildPathList:java.util.List(jenkins.util.VirtualFile,jenkins.util.VirtualFile,java.lang.String)",
+      "file": "hudson/model/DirectoryBrowserSupport.java",
+      "start_line": 839,
+      "end_line": 845,
+      "signature": "java.util.List(jenkins.util.VirtualFile,jenkins.util.VirtualFile,java.lang.String)"
+    },
+    {
+      "name": "buildPathList",
+      "full_name": "hudson.model.DirectoryBrowserSupport.buildPathList:void(jenkins.util.VirtualFile,jenkins.util.VirtualFile,java.util.List,java.lang.StringBuilder)",
+      "file": "hudson/model/DirectoryBrowserSupport.java",
+      "start_line": 850,
+      "end_line": 863,
+      "signature": "void(jenkins.util.VirtualFile,jenkins.util.VirtualFile,java.util.List,java.lang.StringBuilder)"
+    },
+    {
+      "name": "getOpenOptions",
+      "full_name": "hudson.model.DirectoryBrowserSupport.getOpenOptions:java.nio.file.OpenOption[]()",
+      "file": "hudson/model/DirectoryBrowserSupport.java",
+      "start_line": 865,
+      "end_line": 874,
+      "signature": "java.nio.file.OpenOption[]()"
+    },
+    {
+      "name": "getCoreIcons",
+      "full_name": "org.jenkins.ui.icon.IconSet.getCoreIcons:java.util.Map()",
+      "file": "org/jenkins/ui/icon/IconSet.java",
+      "start_line": 61,
+      "end_line": 63,
+      "signature": "java.util.Map()"
+    },
+    {
+      "name": "initPageVariables",
+      "full_name": "org.jenkins.ui.icon.IconSet.initPageVariables:void(org.apache.commons.jelly.JellyContext)",
+      "file": "org/jenkins/ui/icon/IconSet.java",
+      "start_line": 65,
+      "end_line": 67,
+      "signature": "void(org.apache.commons.jelly.JellyContext)"
+    },
+    {
+      "name": "getSymbol",
+      "full_name": "org.jenkins.ui.icon.IconSet.getSymbol:java.lang.String(java.lang.String,java.lang.String,java.lang.String,java.lang.String,java.lang.String,java.lang.String,java.lang.String)",
+      "file": "org/jenkins/ui/icon/IconSet.java",
+      "start_line": 70,
+      "end_line": 83,
+      "signature": "java.lang.String(java.lang.String,java.lang.String,java.lang.String,java.lang.String,java.lang.String,java.lang.String,java.lang.String)"
+    },
+    {
+      "name": "addIcon",
+      "full_name": "org.jenkins.ui.icon.IconSet.addIcon:org.jenkins.ui.icon.IconSet(org.jenkins.ui.icon.Icon)",
+      "file": "org/jenkins/ui/icon/IconSet.java",
+      "start_line": 85,
+      "end_line": 92,
+      "signature": "org.jenkins.ui.icon.IconSet(org.jenkins.ui.icon.Icon)"
+    },
+    {
+      "name": "getIconByNormalizedCSSSelector",
+      "full_name": "org.jenkins.ui.icon.IconSet.getIconByNormalizedCSSSelector:org.jenkins.ui.icon.Icon(java.lang.Object)",
+      "file": "org/jenkins/ui/icon/IconSet.java",
+      "start_line": 103,
+      "end_line": 108,
+      "signature": "org.jenkins.ui.icon.Icon(java.lang.Object)"
+    },
+    {
+      "name": "getIconByNormalizedCSSSelector",
+      "full_name": "org.jenkins.ui.icon.IconSet.getIconByNormalizedCSSSelector:org.jenkins.ui.icon.Icon(java.lang.String)",
+      "file": "org/jenkins/ui/icon/IconSet.java",
+      "start_line": 115,
+      "end_line": 120,
+      "signature": "org.jenkins.ui.icon.Icon(java.lang.String)"
+    },
+    {
+      "name": "getIconByClassSpec",
+      "full_name": "org.jenkins.ui.icon.IconSet.getIconByClassSpec:org.jenkins.ui.icon.Icon(java.lang.Object)",
+      "file": "org/jenkins/ui/icon/IconSet.java",
+      "start_line": 131,
+      "end_line": 136,
+      "signature": "org.jenkins.ui.icon.Icon(java.lang.Object)"
+    },
+    {
+      "name": "getIconByClassSpec",
+      "full_name": "org.jenkins.ui.icon.IconSet.getIconByClassSpec:org.jenkins.ui.icon.Icon(java.lang.String)",
+      "file": "org/jenkins/ui/icon/IconSet.java",
+      "start_line": 143,
+      "end_line": 168,
+      "signature": "org.jenkins.ui.icon.Icon(java.lang.String)"
+    },
+    {
+      "name": "getIconByUrl",
+      "full_name": "org.jenkins.ui.icon.IconSet.getIconByUrl:org.jenkins.ui.icon.Icon(java.lang.Object)",
+      "file": "org/jenkins/ui/icon/IconSet.java",
+      "start_line": 179,
+      "end_line": 184,
+      "signature": "org.jenkins.ui.icon.Icon(java.lang.Object)"
+    },
+    {
+      "name": "getIconByUrl",
+      "full_name": "org.jenkins.ui.icon.IconSet.getIconByUrl:org.jenkins.ui.icon.Icon(java.lang.String)",
+      "file": "org/jenkins/ui/icon/IconSet.java",
+      "start_line": 191,
+      "end_line": 199,
+      "signature": "org.jenkins.ui.icon.Icon(java.lang.String)"
+    },
+    {
+      "name": "toNormalizedIconNameClass",
+      "full_name": "org.jenkins.ui.icon.IconSet.toNormalizedIconNameClass:java.lang.String(java.lang.Object)",
+      "file": "org/jenkins/ui/icon/IconSet.java",
+      "start_line": 211,
+      "end_line": 216,
+      "signature": "java.lang.String(java.lang.Object)"
+    },
+    {
+      "name": "toNormalizedIconNameClass",
+      "full_name": "org.jenkins.ui.icon.IconSet.toNormalizedIconNameClass:java.lang.String(java.lang.String)",
+      "file": "org/jenkins/ui/icon/IconSet.java",
+      "start_line": 224,
+      "end_line": 226,
+      "signature": "java.lang.String(java.lang.String)"
+    },
+    {
+      "name": "toNormalizedIconSizeClass",
+      "full_name": "org.jenkins.ui.icon.IconSet.toNormalizedIconSizeClass:java.lang.String(java.lang.Object)",
+      "file": "org/jenkins/ui/icon/IconSet.java",
+      "start_line": 239,
+      "end_line": 244,
+      "signature": "java.lang.String(java.lang.Object)"
+    },
+    {
+      "name": "toNormalizedIconSizeClass",
+      "full_name": "org.jenkins.ui.icon.IconSet.toNormalizedIconSizeClass:java.lang.String(java.lang.String)",
+      "file": "org/jenkins/ui/icon/IconSet.java",
+      "start_line": 253,
+      "end_line": 255,
+      "signature": "java.lang.String(java.lang.String)"
+    },
+    {
+      "name": "toNormalizedIconUrl",
+      "full_name": "org.jenkins.ui.icon.IconSet.toNormalizedIconUrl:java.lang.String(java.lang.Object)",
+      "file": "org/jenkins/ui/icon/IconSet.java",
+      "start_line": 267,
+      "end_line": 272,
+      "signature": "java.lang.String(java.lang.Object)"
+    }
+  ]
+}

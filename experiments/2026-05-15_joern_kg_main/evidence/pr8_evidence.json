@@ -1,0 +1,1481 @@
+{
+  "pr": {
+    "number": 95949,
+    "title": "Dashboards: Add possibility to lock multi value variables option list",
+    "body": "<!--\r\n\r\nThank you for sending a pull request! Here are some tips:\r\n\r\n1. If this is your first time, please read our contribution guide at https://github.com/grafana/grafana/blob/main/CONTRIBUTING.md\r\n\r\n2. Ensure you include and run the appropriate tests as part of your Pull Request.\r\n\r\n3. In a new feature or configuration option, an update to the documentation is necessary. Everything related to the documentation is under the docs folder in the root of the repository.\r\n\r\n4. If the Pull Request is a work in progress, make use of GitHub's \"Draft PR\" feature and mark it as such.\r\n\r\n5. If you can not merge your Pull Request due to a merge conflict, Rebase it. This gets it in sync with the main branch.\r\n\r\n6. Name your PR as \"<FeatureArea>: Describe your change\", e.g. Alerting: Prevent race condition. If it's a fix or feature relevant for the changelog describe the user impact in the title. The PR title is used to auto-generate the changelog for issues marked with the \"add to changelog\" label.\r\n\r\n7. If your PR content should be added to the What's New document for the next major or minor release, add the **add to what's new** label to your PR. Note that you should add this label to the main PR that introduces the feature; do not add this label to smaller PRs for the feature.\r\n\r\n-->\r\n\r\n**What is this feature?**\r\n\r\nThere are scenarios where we do not want the ability to add custom values to a variable values list. This PR adds a new setting in the dashboard to lock the options list.\r\n\r\nThe new option is found in the dashboard settings when editing a variable. Under `Selection Options` there is now a new flag (`Allow custom values`) which is true by default to maintain existing functionality. Unchecking this flag will no longer show arbitrary strings entered in the input as selectable options, thus locking the values list to only the values returned by the variable itself.\r\n\r\n**Why do we need this feature?**\r\n\r\nWe have requests for this feature.\r\n\r\n**Who is this feature for?**\r\n\r\nEveryone\r\n\r\n**Special notes for your reviewer:**\r\n\r\nAdds the settings flag for Query, Custom, Datasource and AdHoc variables as these are the only variables that support multi values and also allow custom values to be entered.\r\n\r\nDepends on https://github.com/grafana/scenes/pull/956\r\n\r\nPlease check that:\r\n- [ ] It works as expected from a user's perspective.\r\n- [ ] If this is a pre-GA feature, it is behind a feature toggle.\r\n- [ ] The docs are updated, and if this is a [notable improvement](https://grafana.com/docs/writers-toolkit/contribute/release-notes/#how-to-determine-if-content-belongs-in-whats-new), it's added to our [What's New](https://grafana.com/docs/writers-toolkit/contribute/release-notes/) doc.\r\n",
+    "url": "https://github.com/grafana/grafana/pull/95949",
+    "repo": "grafana/grafana",
+    "base_branch": "main",
+    "head_branch": "mdvictor/add-variable-option-to-lock-value-list",
+    "merged_at": "2024-11-21T14:01:55Z",
+    "state": "MERGED"
+  },
+  "changed_files": [
+    {
+      "path": "kinds/dashboard/dashboard_kind.cue",
+      "language": "cue",
+      "added": 2,
+      "deleted": 0
+    },
+    {
+      "path": "packages/grafana-data/src/types/templateVars.ts",
+      "language": "typescript",
+      "added": 2,
+      "deleted": 0
+    },
+    {
+      "path": "packages/grafana-e2e-selectors/src/selectors/pages.ts",
+      "language": "typescript",
+      "added": 3,
+      "deleted": 0
+    },
+    {
+      "path": "packages/grafana-schema/src/raw/dashboard/x/dashboard_types.gen.ts",
+      "language": "typescript",
+      "added": 5,
+      "deleted": 0
+    },
+    {
+      "path": "pkg/kinds/dashboard/dashboard_spec_gen.go",
+      "language": "go",
+      "added": 3,
+      "deleted": 0
+    },
+    {
+      "path": "public/app/features/dashboard-scene/serialization/__snapshots__/transformSceneToSaveModel.test.ts.snap",
+      "language": "unknown",
+      "added": 10,
+      "deleted": 0
+    },
+    {
+      "path": "public/app/features/dashboard-scene/serialization/sceneVariablesSetToVariables.test.ts",
+      "language": "typescript",
+      "added": 12,
+      "deleted": 0
+    },
+    {
+      "path": "public/app/features/dashboard-scene/serialization/sceneVariablesSetToVariables.ts",
+      "language": "typescript",
+      "added": 4,
+      "deleted": 0
+    },
+    {
+      "path": "public/app/features/dashboard-scene/settings/variables/components/AdHocVariableForm.test.tsx",
+      "language": "typescript",
+      "added": 16,
+      "deleted": 0
+    },
+    {
+      "path": "public/app/features/dashboard-scene/settings/variables/components/AdHocVariableForm.tsx",
+      "language": "typescript",
+      "added": 16,
+      "deleted": 1
+    },
+    {
+      "path": "public/app/features/dashboard-scene/settings/variables/components/CustomVariableForm.test.tsx",
+      "language": "typescript",
+      "added": 18,
+      "deleted": 0
+    },
+    {
+      "path": "public/app/features/dashboard-scene/settings/variables/components/CustomVariableForm.tsx",
+      "language": "typescript",
+      "added": 6,
+      "deleted": 0
+    },
+    {
+      "path": "public/app/features/dashboard-scene/settings/variables/components/DataSourceVariableForm.tsx",
+      "language": "typescript",
+      "added": 6,
+      "deleted": 0
+    },
+    {
+      "path": "public/app/features/dashboard-scene/settings/variables/components/QueryVariableForm.test.tsx",
+      "language": "typescript",
+      "added": 22,
+      "deleted": 0
+    },
+    {
+      "path": "public/app/features/dashboard-scene/settings/variables/components/QueryVariableForm.tsx",
+      "language": "typescript",
+      "added": 6,
+      "deleted": 0
+    },
+    {
+      "path": "public/app/features/dashboard-scene/settings/variables/components/SelectionOptionsForm.tsx",
+      "language": "typescript",
+      "added": 13,
+      "deleted": 0
+    },
+    {
+      "path": "public/app/features/dashboard-scene/settings/variables/editors/AdHocFiltersVariableEditor.test.tsx",
+      "language": "typescript",
+      "added": 6,
+      "deleted": 0
+    },
+    {
+      "path": "public/app/features/dashboard-scene/settings/variables/editors/AdHocFiltersVariableEditor.tsx",
+      "language": "typescript",
+      "added": 8,
+      "deleted": 1
+    },
+    {
+      "path": "public/app/features/dashboard-scene/settings/variables/editors/CustomVariableEditor.test.tsx",
+      "language": "typescript",
+      "added": 7,
+      "deleted": 0
+    },
+    {
+      "path": "public/app/features/dashboard-scene/settings/variables/editors/CustomVariableEditor.tsx",
+      "language": "typescript",
+      "added": 6,
+      "deleted": 1
+    },
+    {
+      "path": "public/app/features/dashboard-scene/settings/variables/editors/DataSourceVariableEditor.test.tsx",
+      "language": "typescript",
+      "added": 5,
+      "deleted": 0
+    },
+    {
+      "path": "public/app/features/dashboard-scene/settings/variables/editors/DataSourceVariableEditor.tsx",
+      "language": "typescript",
+      "added": 7,
+      "deleted": 1
+    },
+    {
+      "path": "public/app/features/dashboard-scene/settings/variables/editors/QueryVariableEditor.test.tsx",
+      "language": "typescript",
+      "added": 6,
+      "deleted": 0
+    },
+    {
+      "path": "public/app/features/dashboard-scene/settings/variables/editors/QueryVariableEditor.tsx",
+      "language": "typescript",
+      "added": 7,
+      "deleted": 1
+    },
+    {
+      "path": "public/app/features/dashboard-scene/utils/variables.test.ts",
+      "language": "typescript",
+      "added": 11,
+      "deleted": 0
+    },
+    {
+      "path": "public/app/features/dashboard-scene/utils/variables.ts",
+      "language": "typescript",
+      "added": 4,
+      "deleted": 0
+    }
+  ],
+  "nearest_tests": [
+    {
+      "path": "public/app/features/variables/state/templateVarsChangedInUrl.test.ts",
+      "relationship": "tests",
+      "source_file": "packages/grafana-data/src/types/templateVars.ts"
+    },
+    {
+      "path": "public/app/features/dashboard-scene/serialization/sceneVariablesSetToVariables.test.ts",
+      "relationship": "tests",
+      "source_file": "public/app/features/dashboard-scene/serialization/sceneVariablesSetToVariables.ts"
+    },
+    {
+      "path": "public/app/features/dashboard-scene/settings/variables/components/AdHocVariableForm.test.tsx",
+      "relationship": "tests",
+      "source_file": "public/app/features/dashboard-scene/settings/variables/components/AdHocVariableForm.tsx"
+    },
+    {
+      "path": "public/app/features/dashboard-scene/settings/variables/components/CustomVariableForm.test.tsx",
+      "relationship": "tests",
+      "source_file": "public/app/features/dashboard-scene/settings/variables/components/CustomVariableForm.tsx"
+    },
+    {
+      "path": "public/app/features/dashboard-scene/settings/variables/components/QueryVariableForm.test.tsx",
+      "relationship": "tests",
+      "source_file": "public/app/features/dashboard-scene/settings/variables/components/QueryVariableForm.tsx"
+    },
+    {
+      "path": "public/app/features/dashboard-scene/settings/variables/editors/AdHocFiltersVariableEditor.test.tsx",
+      "relationship": "tests",
+      "source_file": "public/app/features/dashboard-scene/settings/variables/editors/AdHocFiltersVariableEditor.tsx"
+    },
+    {
+      "path": "public/app/features/dashboard-scene/settings/variables/editors/CustomVariableEditor/CustomVariableEditor.test.tsx",
+      "relationship": "tests",
+      "source_file": "public/app/features/dashboard-scene/settings/variables/editors/CustomVariableEditor.tsx"
+    },
+    {
+      "path": "public/app/features/variables/datasource/DataSourceVariableEditor.test.tsx",
+      "relationship": "tests",
+      "source_file": "public/app/features/dashboard-scene/settings/variables/editors/DataSourceVariableEditor.tsx"
+    },
+    {
+      "path": "public/app/features/dashboard-scene/settings/variables/editors/DataSourceVariableEditor.test.tsx",
+      "relationship": "tests",
+      "source_file": "public/app/features/dashboard-scene/settings/variables/editors/DataSourceVariableEditor.tsx"
+    },
+    {
+      "path": "public/app/features/variables/query/QueryVariableEditor.test.tsx",
+      "relationship": "tests",
+      "source_file": "public/app/features/dashboard-scene/settings/variables/editors/QueryVariableEditor.tsx"
+    },
+    {
+      "path": "public/app/features/dashboard-scene/settings/variables/editors/QueryVariableEditor.test.tsx",
+      "relationship": "tests",
+      "source_file": "public/app/features/dashboard-scene/settings/variables/editors/QueryVariableEditor.tsx"
+    },
+    {
+      "path": "public/app/plugins/datasource/cloudwatch/variables.test.ts",
+      "relationship": "tests",
+      "source_file": "public/app/features/dashboard-scene/utils/variables.ts"
+    },
+    {
+      "path": "public/app/plugins/datasource/azuremonitor/variables.test.ts",
+      "relationship": "tests",
+      "source_file": "public/app/features/dashboard-scene/utils/variables.ts"
+    },
+    {
+      "path": "public/app/plugins/datasource/tempo/variables.test.ts",
+      "relationship": "tests",
+      "source_file": "public/app/features/dashboard-scene/utils/variables.ts"
+    },
+    {
+      "path": "public/app/features/dashboard-scene/utils/variables.test.ts",
+      "relationship": "tests",
+      "source_file": "public/app/features/dashboard-scene/utils/variables.ts"
+    }
+  ],
+  "dependent_files": [
+    {
+      "path": "public/app/plugins/panel/xychart/panelcfg.gen.ts",
+      "relationship": "imports",
+      "source_file": "kinds/dashboard/dashboard_kind.cue"
+    },
+    {
+      "path": "public/app/features/dashboard/state/DashboardMigrator.ts",
+      "relationship": "imports",
+      "source_file": "kinds/dashboard/dashboard_kind.cue"
+    },
+    {
+      "path": "public/app/features/dashboard/api/ResponseTransformers.ts",
+      "relationship": "imports",
+      "source_file": "kinds/dashboard/dashboard_kind.cue"
+    },
+    {
+      "path": "packages/grafana-schema/src/raw/composable/xychart/panelcfg/x/XYChartPanelCfg_types.gen.ts",
+      "relationship": "imports",
+      "source_file": "kinds/dashboard/dashboard_kind.cue"
+    },
+    {
+      "path": "packages/grafana-schema/src/raw/composable/xychart2/panelcfg/x/XYChartPanelCfg_types.gen.ts",
+      "relationship": "imports",
+      "source_file": "kinds/dashboard/dashboard_kind.cue"
+    },
+    {
+      "path": "apps/dashboard/pkg/apis/dashboard/v1beta1/validation.go",
+      "relationship": "imports",
+      "source_file": "kinds/dashboard/dashboard_kind.cue"
+    },
+    {
+      "path": "apps/dashboard/pkg/apis/dashboard/v0alpha1/validation.go",
+      "relationship": "imports",
+      "source_file": "kinds/dashboard/dashboard_kind.cue"
+    },
+    {
+      "path": "apps/dashboard/pkg/migration/conversion/v1beta1_to_v2alpha1.go",
+      "relationship": "imports",
+      "source_file": "kinds/dashboard/dashboard_kind.cue"
+    },
+    {
+      "path": "pkg/registry/schemas/core_kind.go",
+      "relationship": "imports",
+      "source_file": "kinds/dashboard/dashboard_kind.cue"
+    },
+    {
+      "path": "public/app/plugins/datasource/azuremonitor/components/ArgQueryEditor/ArgQueryEditor.tsx",
+      "relationship": "imports",
+      "source_file": "packages/grafana-data/src/types/templateVars.ts"
+    },
+    {
+      "path": "public/app/features/dashboard/containers/DashboardPage.test.tsx",
+      "relationship": "imports",
+      "source_file": "packages/grafana-data/src/types/templateVars.ts"
+    },
+    {
+      "path": "public/app/features/dashboard/containers/DashboardPage.tsx",
+      "relationship": "imports",
+      "source_file": "packages/grafana-data/src/types/templateVars.ts"
+    },
+    {
+      "path": "public/app/features/variables/state/templateVarsChangedInUrl.test.ts",
+      "relationship": "imports",
+      "source_file": "packages/grafana-data/src/types/templateVars.ts"
+    },
+    {
+      "path": "public/app/features/variables/state/actions.ts",
+      "relationship": "imports",
+      "source_file": "packages/grafana-data/src/types/templateVars.ts"
+    },
+    {
+      "path": "packages/grafana-data/src/types/datasource.ts",
+      "relationship": "imports",
+      "source_file": "packages/grafana-data/src/types/templateVars.ts"
+    }
+  ],
+  "diff_summary": "26 files changed",
+  "full_diff": "diff --git a/kinds/dashboard/dashboard_kind.cue b/kinds/dashboard/dashboard_kind.cue\nindex 6a24fc9226685..9ed6b5cc0c1ec 100644\n--- a/kinds/dashboard/dashboard_kind.cue\n+++ b/kinds/dashboard/dashboard_kind.cue\n@@ -200,6 +200,8 @@ lineage: schemas: [{\n \t\t\tcurrent?: #VariableOption\n \t\t\t// Whether multiple values can be selected or not from variable value list\n \t\t\tmulti?: bool | *false\n+\t\t\t// Allow custom values to be entered in the variable\n+\t\t\tallowCustomValue?: bool | *true\n \t\t\t// Options that can be selected for a variable.\n \t\t\toptions?: [...#VariableOption]\n \t\t\t// Options to config when to refresh a variable\ndiff --git a/packages/grafana-data/src/types/templateVars.ts b/packages/grafana-data/src/types/templateVars.ts\nindex b8d0de9092a4c..e31319b96751d 100644\n--- a/packages/grafana-data/src/types/templateVars.ts\n+++ b/packages/grafana-data/src/types/templateVars.ts\n@@ -70,6 +70,7 @@ export interface AdHocVariableModel extends BaseVariableModel {\n    * Static keys that override any dynamic keys from the datasource.\n    */\n   defaultKeys?: MetricFindValue[];\n+  allowCustomValue?: boolean;\n }\n \n export interface GroupByVariableModel extends VariableWithOptions {\n@@ -127,6 +128,7 @@ export interface VariableWithMultiSupport extends VariableWithOptions {\n   multi: boolean;\n   includeAll: boolean;\n   allValue?: string | null;\n+  allowCustomValue?: boolean;\n }\n \n export interface VariableWithOptions extends BaseVariableModel {\ndiff --git a/packages/grafana-e2e-selectors/src/selectors/pages.ts b/packages/grafana-e2e-selectors/src/selectors/pages.ts\nindex 92f73b8530355..148f4fd56e264 100644\n--- a/packages/grafana-e2e-selectors/src/selectors/pages.ts\n+++ b/packages/grafana-e2e-selectors/src/selectors/pages.ts\n@@ -414,6 +414,9 @@ export const versionedPages = {\n             generalHideSelectV2: {\n               [MIN_GRAFANA_VERSION]: 'data-testid Variable editor Form Hide select',\n             },\n+            selectionOptionsAllowCustomValueSwitch: {\n+              [MIN_GRAFANA_VERSION]: 'data-testid Variable editor Form Allow Custom Value switch',\n+            },\n             selectionOptionsMultiSwitch: {\n               '10.4.0': 'data-testid Variable editor Form Multi switch',\n               [MIN_GRAFANA_VERSION]: 'Variable editor Form Multi switch',\ndiff --git a/packages/grafana-schema/src/raw/dashboard/x/dashboard_types.gen.ts b/packages/grafana-schema/src/raw/dashboard/x/dashboard_types.gen.ts\nindex a67ab34ae3898..2a0a2de17ba89 100644\n--- a/packages/grafana-schema/src/raw/dashboard/x/dashboard_types.gen.ts\n+++ b/packages/grafana-schema/src/raw/dashboard/x/dashboard_types.gen.ts\n@@ -130,6 +130,10 @@ export interface VariableModel {\n    * Custom all value\n    */\n   allValue?: string;\n+  /**\n+   * Allow custom values to be entered in the variable\n+   */\n+  allowCustomValue?: boolean;\n   /**\n    * Shows current selected variable text/value on the dashboard\n    */\n@@ -194,6 +198,7 @@ export interface VariableModel {\n }\n \n export const defaultVariableModel: Partial<VariableModel> = {\n+  allowCustomValue: true,\n   includeAll: false,\n   multi: false,\n   options: [],\ndiff --git a/pkg/kinds/dashboard/dashboard_spec_gen.go b/pkg/kinds/dashboard/dashboard_spec_gen.go\nindex de16129aa202c..2a26d5eb9980c 100644\n--- a/pkg/kinds/dashboard/dashboard_spec_gen.go\n+++ b/pkg/kinds/dashboard/dashboard_spec_gen.go\n@@ -924,6 +924,9 @@ type VariableModel struct {\n \t// Custom all value\n \tAllValue *string `json:\"allValue,omitempty\"`\n \n+\t// Allow custom values to be entered in the variable\n+\tAllowCustomValue *bool `json:\"allowCustomValue,omitempty\"`\n+\n \t// Option to be selected in a variable.\n \tCurrent *VariableOption `json:\"current,omitempty\"`\n \ndiff --git a/public/app/features/dashboard-scene/serialization/__snapshots__/transformSceneToSaveModel.test.ts.snap b/public/app/features/dashboard-scene/serialization/__snapshots__/transformSceneToSaveModel.test.ts.snap\nindex 8ab27fc7a705d..ab41276f8ef2a 100644\n--- a/public/app/features/dashboard-scene/serialization/__snapshots__/transformSceneToSaveModel.test.ts.snap\n+++ b/public/app/features/dashboard-scene/serialization/__snapshots__/transformSceneToSaveModel.test.ts.snap\n@@ -288,6 +288,7 @@ exports[`transformSceneToSaveModel Given a scene with rows Should transform back\n   \"templating\": {\n     \"list\": [\n       {\n+        \"allowCustomValue\": true,\n         \"current\": {\n           \"text\": [\n             \"A\",\n@@ -306,6 +307,7 @@ exports[`transformSceneToSaveModel Given a scene with rows Should transform back\n         \"type\": \"custom\",\n       },\n       {\n+        \"allowCustomValue\": true,\n         \"current\": {\n           \"text\": [\n             \"1\",\n@@ -556,6 +558,7 @@ exports[`transformSceneToSaveModel Given a simple scene with custom settings Sho\n   \"templating\": {\n     \"list\": [\n       {\n+        \"allowCustomValue\": true,\n         \"baseFilters\": [],\n         \"datasource\": {\n           \"type\": \"prometheus\",\n@@ -631,6 +634,7 @@ exports[`transformSceneToSaveModel Given a simple scene with custom settings Sho\n         \"type\": \"interval\",\n       },\n       {\n+        \"allowCustomValue\": true,\n         \"current\": {\n           \"text\": [\n             \"a\",\n@@ -647,6 +651,7 @@ exports[`transformSceneToSaveModel Given a simple scene with custom settings Sho\n         \"type\": \"custom\",\n       },\n       {\n+        \"allowCustomValue\": true,\n         \"current\": {\n           \"text\": \"gdev-testdata\",\n           \"value\": \"PD8C576611E62080A\",\n@@ -660,6 +665,7 @@ exports[`transformSceneToSaveModel Given a simple scene with custom settings Sho\n         \"type\": \"datasource\",\n       },\n       {\n+        \"allowCustomValue\": true,\n         \"current\": {\n           \"text\": \"A\",\n           \"value\": \"A\",\n@@ -915,6 +921,7 @@ exports[`transformSceneToSaveModel Given a simple scene with variables Should tr\n   \"templating\": {\n     \"list\": [\n       {\n+        \"allowCustomValue\": true,\n         \"baseFilters\": [],\n         \"datasource\": {\n           \"type\": \"prometheus\",\n@@ -990,6 +997,7 @@ exports[`transformSceneToSaveModel Given a simple scene with variables Should tr\n         \"type\": \"interval\",\n       },\n       {\n+        \"allowCustomValue\": true,\n         \"current\": {\n           \"text\": [\n             \"a\",\n@@ -1006,6 +1014,7 @@ exports[`transformSceneToSaveModel Given a simple scene with variables Should tr\n         \"type\": \"custom\",\n       },\n       {\n+        \"allowCustomValue\": true,\n         \"current\": {\n           \"text\": \"gdev-testdata\",\n           \"value\": \"PD8C576611E62080A\",\n@@ -1019,6 +1028,7 @@ exports[`transformSceneToSaveModel Given a simple scene with variables Should tr\n         \"type\": \"datasource\",\n       },\n       {\n+        \"allowCustomValue\": true,\n         \"current\": {\n           \"text\": \"A\",\n           \"value\": \"A\",\ndiff --git a/public/app/features/dashboard-scene/serialization/sceneVariablesSetToVariables.test.ts b/public/app/features/dashboard-scene/serialization/sceneVariablesSetToVariables.test.ts\nindex 293b17a11439f..b6d4a0ee6724c 100644\n--- a/public/app/features/dashboard-scene/serialization/sceneVariablesSetToVariables.test.ts\n+++ b/public/app/features/dashboard-scene/serialization/sceneVariablesSetToVariables.test.ts\n@@ -98,6 +98,7 @@ describe('sceneVariablesSetToVariables', () => {\n       datasource: { uid: 'fake-std', type: 'fake-std' },\n       query: 'query',\n       includeAll: true,\n+      allowCustomValue: true,\n       allValue: 'test-all',\n       isMulti: true,\n     });\n@@ -112,6 +113,7 @@ describe('sceneVariablesSetToVariables', () => {\n     expect(result[0]).toMatchInlineSnapshot(`\n     {\n       \"allValue\": \"test-all\",\n+      \"allowCustomValue\": true,\n       \"current\": {\n         \"text\": [\n           \"selected-value-text\",\n@@ -151,6 +153,7 @@ describe('sceneVariablesSetToVariables', () => {\n       definition: 'query',\n       includeAll: true,\n       allValue: 'test-all',\n+      allowCustomValue: false,\n       isMulti: true,\n     });\n     const set = new SceneVariableSet({\n@@ -163,6 +166,7 @@ describe('sceneVariablesSetToVariables', () => {\n     expect(result[0]).toMatchInlineSnapshot(`\n     {\n       \"allValue\": \"test-all\",\n+      \"allowCustomValue\": false,\n       \"current\": {\n         \"text\": [\n           \"selected-value-text\",\n@@ -256,6 +260,7 @@ describe('sceneVariablesSetToVariables', () => {\n       pluginId: 'fake-std',\n       includeAll: true,\n       allValue: 'test-all',\n+      allowCustomValue: true,\n       isMulti: true,\n     });\n     const set = new SceneVariableSet({\n@@ -268,6 +273,7 @@ describe('sceneVariablesSetToVariables', () => {\n     expect(result[0]).toMatchInlineSnapshot(`\n     {\n       \"allValue\": \"test-all\",\n+      \"allowCustomValue\": true,\n       \"current\": {\n         \"text\": [\n           \"selected-ds-1-text\",\n@@ -307,6 +313,7 @@ describe('sceneVariablesSetToVariables', () => {\n       ],\n       includeAll: true,\n       allValue: 'test-all',\n+      allowCustomValue: true,\n       isMulti: true,\n     });\n     const set = new SceneVariableSet({\n@@ -319,6 +326,7 @@ describe('sceneVariablesSetToVariables', () => {\n     expect(result[0]).toMatchInlineSnapshot(`\n     {\n       \"allValue\": \"test-all\",\n+      \"allowCustomValue\": true,\n       \"current\": {\n         \"text\": [\n           \"test\",\n@@ -488,6 +496,7 @@ describe('sceneVariablesSetToVariables', () => {\n   it('should handle AdHocFiltersVariable', () => {\n     const variable = new AdHocFiltersVariable({\n       name: 'test',\n+      allowCustomValue: true,\n       label: 'test-label',\n       description: 'test-desc',\n       datasource: { uid: 'fake-std', type: 'fake-std' },\n@@ -515,6 +524,7 @@ describe('sceneVariablesSetToVariables', () => {\n     expect(result).toHaveLength(1);\n     expect(result[0]).toMatchInlineSnapshot(`\n     {\n+      \"allowCustomValue\": true,\n       \"baseFilters\": [\n         {\n           \"key\": \"baseFilterTest\",\n@@ -545,6 +555,7 @@ describe('sceneVariablesSetToVariables', () => {\n   it('should handle AdHocFiltersVariable with defaultKeys', () => {\n     const variable = new AdHocFiltersVariable({\n       name: 'test',\n+      allowCustomValue: true,\n       label: 'test-label',\n       description: 'test-desc',\n       datasource: { uid: 'fake-std', type: 'fake-std' },\n@@ -586,6 +597,7 @@ describe('sceneVariablesSetToVariables', () => {\n     expect(result).toHaveLength(1);\n     expect(result[0]).toMatchInlineSnapshot(`\n     {\n+      \"allowCustomValue\": true,\n       \"baseFilters\": [\n         {\n           \"key\": \"baseFilterTest\",\ndiff --git a/public/app/features/dashboard-scene/serialization/sceneVariablesSetToVariables.ts b/public/app/features/dashboard-scene/serialization/sceneVariablesSetToVariables.ts\nindex 4aff03af4ec41..5c8dd72112956 100644\n--- a/public/app/features/dashboard-scene/serialization/sceneVariablesSetToVariables.ts\n+++ b/public/app/features/dashboard-scene/serialization/sceneVariablesSetToVariables.ts\n@@ -74,6 +74,7 @@ export function sceneVariablesSetToVariables(set: SceneVariables, keepQueryOptio\n         allValue: variable.state.allValue,\n         includeAll: variable.state.includeAll,\n         multi: variable.state.isMulti,\n+        allowCustomValue: variable.state.allowCustomValue,\n         skipUrlSync: variable.state.skipUrlSync,\n       });\n     } else if (sceneUtils.isCustomVariable(variable)) {\n@@ -90,6 +91,7 @@ export function sceneVariablesSetToVariables(set: SceneVariables, keepQueryOptio\n         multi: variable.state.isMulti,\n         allValue: variable.state.allValue,\n         includeAll: variable.state.includeAll,\n+        allowCustomValue: variable.state.allowCustomValue,\n       });\n     } else if (sceneUtils.isDataSourceVariable(variable)) {\n       variables.push({\n@@ -107,6 +109,7 @@ export function sceneVariablesSetToVariables(set: SceneVariables, keepQueryOptio\n         multi: variable.state.isMulti,\n         allValue: variable.state.allValue,\n         includeAll: variable.state.includeAll,\n+        allowCustomValue: variable.state.allowCustomValue,\n       });\n     } else if (sceneUtils.isConstantVariable(variable)) {\n       variables.push({\n@@ -175,6 +178,7 @@ export function sceneVariablesSetToVariables(set: SceneVariables, keepQueryOptio\n         name: variable.state.name,\n         type: 'adhoc',\n         datasource: variable.state.datasource,\n+        allowCustomValue: variable.state.allowCustomValue,\n         // @ts-expect-error\n         baseFilters: variable.state.baseFilters,\n         filters: variable.state.filters,\ndiff --git a/public/app/features/dashboard-scene/settings/variables/components/AdHocVariableForm.test.tsx b/public/app/features/dashboard-scene/settings/variables/components/AdHocVariableForm.test.tsx\nindex 3aae0735ccea0..c07db30ba5522 100644\n--- a/public/app/features/dashboard-scene/settings/variables/components/AdHocVariableForm.test.tsx\n+++ b/public/app/features/dashboard-scene/settings/variables/components/AdHocVariableForm.test.tsx\n@@ -63,6 +63,22 @@ describe('AdHocVariableForm', () => {\n     expect(onDataSourceChange).toHaveBeenCalledWith(promDatasource, undefined);\n   });\n \n+  it('should render the form with allow custom value true', async () => {\n+    const mockOnAllowCustomValueChange = jest.fn();\n+    const { renderer } = await setup({\n+      ...defaultProps,\n+      allowCustomValue: true,\n+      onAllowCustomValueChange: mockOnAllowCustomValueChange,\n+    });\n+\n+    const allowCustomValueCheckbox = renderer.getByTestId(\n+      selectors.pages.Dashboard.Settings.Variables.Edit.General.selectionOptionsAllowCustomValueSwitch\n+    );\n+\n+    expect(allowCustomValueCheckbox).toBeInTheDocument();\n+    expect(allowCustomValueCheckbox).toBeChecked();\n+  });\n+\n   it('should not render code editor when no default keys provided', async () => {\n     await setup(defaultProps);\n \ndiff --git a/public/app/features/dashboard-scene/settings/variables/components/AdHocVariableForm.tsx b/public/app/features/dashboard-scene/settings/variables/components/AdHocVariableForm.tsx\nindex e683e1ea9811e..9f25276c86f43 100644\n--- a/public/app/features/dashboard-scene/settings/variables/components/AdHocVariableForm.tsx\n+++ b/public/app/features/dashboard-scene/settings/variables/components/AdHocVariableForm.tsx\n@@ -1,4 +1,4 @@\n-import { useCallback } from 'react';\n+import { FormEvent, useCallback } from 'react';\n \n import { DataSourceInstanceSettings, MetricFindValue, readCSV } from '@grafana/data';\n import { selectors } from '@grafana/e2e-selectors';\n@@ -6,21 +6,26 @@ import { DataSourceRef } from '@grafana/schema';\n import { Alert, CodeEditor, Field, Switch } from '@grafana/ui';\n import { DataSourcePicker } from 'app/features/datasources/components/picker/DataSourcePicker';\n \n+import { VariableCheckboxField } from './VariableCheckboxField';\n import { VariableLegend } from './VariableLegend';\n \n export interface AdHocVariableFormProps {\n   datasource?: DataSourceRef;\n   onDataSourceChange: (dsSettings: DataSourceInstanceSettings) => void;\n+  allowCustomValue?: boolean;\n   infoText?: string;\n   defaultKeys?: MetricFindValue[];\n   onDefaultKeysChange?: (keys?: MetricFindValue[]) => void;\n+  onAllowCustomValueChange?: (event: FormEvent<HTMLInputElement>) => void;\n }\n \n export function AdHocVariableForm({\n   datasource,\n   infoText,\n+  allowCustomValue,\n   onDataSourceChange,\n   onDefaultKeysChange,\n+  onAllowCustomValueChange,\n   defaultKeys,\n }: AdHocVariableFormProps) {\n   const updateStaticKeys = useCallback(\n@@ -80,6 +85,16 @@ export function AdHocVariableForm({\n           )}\n         </>\n       )}\n+\n+      {onAllowCustomValueChange && (\n+        <VariableCheckboxField\n+          value={allowCustomValue ?? true}\n+          name=\"Allow custom values\"\n+          description=\"Enables users to add custom values to the list\"\n+          onChange={onAllowCustomValueChange}\n+          testId={selectors.pages.Dashboard.Settings.Variables.Edit.General.selectionOptionsAllowCustomValueSwitch}\n+        />\n+      )}\n     </>\n   );\n }\ndiff --git a/public/app/features/dashboard-scene/settings/variables/components/CustomVariableForm.test.tsx b/public/app/features/dashboard-scene/settings/variables/components/CustomVariableForm.test.tsx\nindex 334383998df74..924f9fa5702c0 100644\n--- a/public/app/features/dashboard-scene/settings/variables/components/CustomVariableForm.test.tsx\n+++ b/public/app/features/dashboard-scene/settings/variables/components/CustomVariableForm.test.tsx\n@@ -9,6 +9,7 @@ describe('CustomVariableForm', () => {\n   const onMultiChange = jest.fn();\n   const onIncludeAllChange = jest.fn();\n   const onAllValueChange = jest.fn();\n+  const onAllowCustomValueChange = jest.fn();\n \n   beforeEach(() => {\n     jest.clearAllMocks();\n@@ -21,10 +22,12 @@ describe('CustomVariableForm', () => {\n         multi={true}\n         allValue=\"custom value\"\n         includeAll={true}\n+        allowCustomValue={true}\n         onQueryChange={onQueryChange}\n         onMultiChange={onMultiChange}\n         onIncludeAllChange={onIncludeAllChange}\n         onAllValueChange={onAllValueChange}\n+        onAllowCustomValueChange={onAllowCustomValueChange}\n       />\n     );\n \n@@ -39,12 +42,18 @@ describe('CustomVariableForm', () => {\n       selectors.pages.Dashboard.Settings.Variables.Edit.General.selectionOptionsCustomAllInput\n     );\n \n+    const allowCustomValueCheckbox = getByTestId(\n+      selectors.pages.Dashboard.Settings.Variables.Edit.General.selectionOptionsAllowCustomValueSwitch\n+    );\n+\n     expect(queryInput).toBeInTheDocument();\n     expect(queryInput).toHaveValue('query');\n     expect(multiCheckbox).toBeInTheDocument();\n     expect(multiCheckbox).toBeChecked();\n     expect(includeAllCheckbox).toBeInTheDocument();\n     expect(includeAllCheckbox).toBeChecked();\n+    expect(allowCustomValueCheckbox).toBeInTheDocument();\n+    expect(allowCustomValueCheckbox).toBeChecked();\n     expect(allValueInput).toBeInTheDocument();\n     expect(allValueInput).toHaveValue('custom value');\n   });\n@@ -56,10 +65,12 @@ describe('CustomVariableForm', () => {\n         multi={true}\n         allValue=\"\"\n         includeAll={true}\n+        allowCustomValue={true}\n         onQueryChange={onQueryChange}\n         onMultiChange={onMultiChange}\n         onIncludeAllChange={onIncludeAllChange}\n         onAllValueChange={onAllValueChange}\n+        onAllowCustomValueChange={onAllowCustomValueChange}\n       />\n     );\n \n@@ -73,13 +84,18 @@ describe('CustomVariableForm', () => {\n     const allValueInput = getByTestId(\n       selectors.pages.Dashboard.Settings.Variables.Edit.General.selectionOptionsCustomAllInput\n     );\n+    const allowCustomValueCheckbox = getByTestId(\n+      selectors.pages.Dashboard.Settings.Variables.Edit.General.selectionOptionsAllowCustomValueSwitch\n+    );\n \n     fireEvent.click(multiCheckbox);\n     fireEvent.click(includeAllCheckbox);\n+    fireEvent.click(allowCustomValueCheckbox);\n     fireEvent.change(queryInput, { currentTarget: { value: 'test query' } });\n     fireEvent.change(allValueInput, { currentTarget: { value: 'test value' } });\n \n     expect(onMultiChange).toHaveBeenCalledTimes(1);\n+    expect(onAllowCustomValueChange).toHaveBeenCalledTimes(1);\n     expect(onIncludeAllChange).toHaveBeenCalledTimes(1);\n     expect(onQueryChange).not.toHaveBeenCalledTimes(1);\n     expect(onAllValueChange).not.toHaveBeenCalledTimes(1);\n@@ -92,10 +108,12 @@ describe('CustomVariableForm', () => {\n         multi={true}\n         allValue=\"custom all value\"\n         includeAll={true}\n+        allowCustomValue={true}\n         onQueryChange={onQueryChange}\n         onMultiChange={onMultiChange}\n         onIncludeAllChange={onIncludeAllChange}\n         onAllValueChange={onAllValueChange}\n+        onAllowCustomValueChange={onAllowCustomValueChange}\n       />\n     );\n \ndiff --git a/public/app/features/dashboard-scene/settings/variables/components/CustomVariableForm.tsx b/public/app/features/dashboard-scene/settings/variables/components/CustomVariableForm.tsx\nindex 5c11178141a92..5236e9e3f1e29 100644\n--- a/public/app/features/dashboard-scene/settings/variables/components/CustomVariableForm.tsx\n+++ b/public/app/features/dashboard-scene/settings/variables/components/CustomVariableForm.tsx\n@@ -12,12 +12,14 @@ interface CustomVariableFormProps {\n   multi: boolean;\n   allValue?: string | null;\n   includeAll: boolean;\n+  allowCustomValue?: boolean;\n   onQueryChange: (event: FormEvent<HTMLTextAreaElement>) => void;\n   onMultiChange: (event: FormEvent<HTMLInputElement>) => void;\n   onIncludeAllChange: (event: FormEvent<HTMLInputElement>) => void;\n   onAllValueChange: (event: FormEvent<HTMLInputElement>) => void;\n   onQueryBlur?: (event: FormEvent<HTMLTextAreaElement>) => void;\n   onAllValueBlur?: (event: FormEvent<HTMLInputElement>) => void;\n+  onAllowCustomValueChange?: (event: FormEvent<HTMLInputElement>) => void;\n }\n \n export function CustomVariableForm({\n@@ -25,10 +27,12 @@ export function CustomVariableForm({\n   multi,\n   allValue,\n   includeAll,\n+  allowCustomValue,\n   onQueryChange,\n   onMultiChange,\n   onIncludeAllChange,\n   onAllValueChange,\n+  onAllowCustomValueChange,\n }: CustomVariableFormProps) {\n   return (\n     <>\n@@ -48,9 +52,11 @@ export function CustomVariableForm({\n         multi={multi}\n         includeAll={includeAll}\n         allValue={allValue}\n+        allowCustomValue={allowCustomValue}\n         onMultiChange={onMultiChange}\n         onIncludeAllChange={onIncludeAllChange}\n         onAllValueChange={onAllValueChange}\n+        onAllowCustomValueChange={onAllowCustomValueChange}\n       />\n     </>\n   );\ndiff --git a/public/app/features/dashboard-scene/settings/variables/components/DataSourceVariableForm.tsx b/public/app/features/dashboard-scene/settings/variables/components/DataSourceVariableForm.tsx\nindex 52300ca4c5d52..bb6432a5b2aec 100644\n--- a/public/app/features/dashboard-scene/settings/variables/components/DataSourceVariableForm.tsx\n+++ b/public/app/features/dashboard-scene/settings/variables/components/DataSourceVariableForm.tsx\n@@ -13,6 +13,7 @@ interface DataSourceVariableFormProps {\n   regex: string;\n   multi: boolean;\n   allValue?: string | null;\n+  allowCustomValue?: boolean;\n   includeAll: boolean;\n   onChange: (option: SelectableValue) => void;\n   optionTypes: Array<{ value: string; label: string }>;\n@@ -20,6 +21,7 @@ interface DataSourceVariableFormProps {\n   onMultiChange: (event: FormEvent<HTMLInputElement>) => void;\n   onIncludeAllChange: (event: FormEvent<HTMLInputElement>) => void;\n   onAllValueChange: (event: FormEvent<HTMLInputElement>) => void;\n+  onAllowCustomValueChange?: (event: FormEvent<HTMLInputElement>) => void;\n   onQueryBlur?: (event: FormEvent<HTMLTextAreaElement>) => void;\n   onAllValueBlur?: (event: FormEvent<HTMLInputElement>) => void;\n }\n@@ -28,6 +30,7 @@ export function DataSourceVariableForm({\n   query,\n   regex,\n   optionTypes,\n+  allowCustomValue,\n   onChange,\n   onRegExBlur,\n   multi,\n@@ -36,6 +39,7 @@ export function DataSourceVariableForm({\n   onMultiChange,\n   onIncludeAllChange,\n   onAllValueChange,\n+  onAllowCustomValueChange,\n }: DataSourceVariableFormProps) {\n   const typeValue = optionTypes.find((o) => o.value === query) ?? optionTypes[0];\n \n@@ -70,9 +74,11 @@ export function DataSourceVariableForm({\n         multi={multi}\n         includeAll={includeAll}\n         allValue={allValue}\n+        allowCustomValue={allowCustomValue}\n         onMultiChange={onMultiChange}\n         onIncludeAllChange={onIncludeAllChange}\n         onAllValueChange={onAllValueChange}\n+        onAllowCustomValueChange={onAllowCustomValueChange}\n       />\n     </>\n   );\ndiff --git a/public/app/features/dashboard-scene/settings/variables/components/QueryVariableForm.test.tsx b/public/app/features/dashboard-scene/settings/variables/components/QueryVariableForm.test.tsx\nindex 8000aebdd9abb..12fdb76f10373 100644\n--- a/public/app/features/dashboard-scene/settings/variables/components/QueryVariableForm.test.tsx\n+++ b/public/app/features/dashboard-scene/settings/variables/components/QueryVariableForm.test.tsx\n@@ -76,6 +76,7 @@ describe('QueryVariableEditorForm', () => {\n   const mockOnMultiChange = jest.fn();\n   const mockOnIncludeAllChange = jest.fn();\n   const mockOnAllValueChange = jest.fn();\n+  const mockOnAllowCustomValueChange = jest.fn();\n \n   const defaultProps: React.ComponentProps<typeof QueryVariableEditorForm> = {\n     datasource: { uid: defaultDatasource.uid, type: defaultDatasource.type },\n@@ -90,12 +91,14 @@ describe('QueryVariableEditorForm', () => {\n     onSortChange: mockOnSortChange,\n     refresh: VariableRefresh.onDashboardLoad,\n     onRefreshChange: mockOnRefreshChange,\n+    allowCustomValue: true,\n     isMulti: true,\n     onMultiChange: mockOnMultiChange,\n     includeAll: true,\n     onIncludeAllChange: mockOnIncludeAllChange,\n     allValue: 'custom all value',\n     onAllValueChange: mockOnAllValueChange,\n+    onAllowCustomValueChange: mockOnAllowCustomValueChange,\n   };\n \n   async function setup(props?: React.ComponentProps<typeof QueryVariableEditorForm>) {\n@@ -135,6 +138,9 @@ describe('QueryVariableEditorForm', () => {\n     const allValueInput = getByTestId(\n       selectors.pages.Dashboard.Settings.Variables.Edit.General.selectionOptionsCustomAllInput\n     );\n+    const allowCustomValueSwitch = getByTestId(\n+      selectors.pages.Dashboard.Settings.Variables.Edit.General.selectionOptionsAllowCustomValueSwitch\n+    );\n \n     expect(dataSourcePicker).toBeInTheDocument();\n     expect(dataSourcePicker.getAttribute('placeholder')).toBe('Default Test Data Source');\n@@ -146,6 +152,8 @@ describe('QueryVariableEditorForm', () => {\n     expect(getByRole('radio', { name: 'On dashboard load' })).toBeChecked();\n     expect(multiSwitch).toBeInTheDocument();\n     expect(multiSwitch).toBeChecked();\n+    expect(allowCustomValueSwitch).toBeInTheDocument();\n+    expect(allowCustomValueSwitch).toBeChecked();\n     expect(includeAllSwitch).toBeInTheDocument();\n     expect(includeAllSwitch).toBeChecked();\n     expect(allValueInput).toBeInTheDocument();\n@@ -257,6 +265,20 @@ describe('QueryVariableEditorForm', () => {\n     ).toBeChecked();\n   });\n \n+  it('should call onAllowCustomValue when changing the allow custom value switch', async () => {\n+    const {\n+      renderer: { getByTestId },\n+    } = await setup();\n+    const allowCustomValue = getByTestId(\n+      selectors.pages.Dashboard.Settings.Variables.Edit.General.selectionOptionsAllowCustomValueSwitch\n+    );\n+    await userEvent.click(allowCustomValue);\n+    expect(mockOnAllowCustomValueChange).toHaveBeenCalledTimes(1);\n+    expect(\n+      (mockOnAllowCustomValueChange.mock.calls[0][0] as FormEvent<HTMLInputElement>).target as HTMLInputElement\n+    ).toBeChecked();\n+  });\n+\n   it('should call onAllValueChange when changing the all value', async () => {\n     const {\n       renderer: { getByTestId },\ndiff --git a/public/app/features/dashboard-scene/settings/variables/components/QueryVariableForm.tsx b/public/app/features/dashboard-scene/settings/variables/components/QueryVariableForm.tsx\nindex 9a8e0c730789b..5185cfb1287aa 100644\n--- a/public/app/features/dashboard-scene/settings/variables/components/QueryVariableForm.tsx\n+++ b/public/app/features/dashboard-scene/settings/variables/components/QueryVariableForm.tsx\n@@ -34,6 +34,8 @@ interface QueryVariableEditorFormProps {\n   onRefreshChange: (option: VariableRefresh) => void;\n   isMulti: boolean;\n   onMultiChange: (event: FormEvent<HTMLInputElement>) => void;\n+  allowCustomValue?: boolean;\n+  onAllowCustomValueChange?: (event: FormEvent<HTMLInputElement>) => void;\n   includeAll: boolean;\n   onIncludeAllChange: (event: FormEvent<HTMLInputElement>) => void;\n   allValue: string;\n@@ -55,6 +57,8 @@ export function QueryVariableEditorForm({\n   onRefreshChange,\n   isMulti,\n   onMultiChange,\n+  allowCustomValue,\n+  onAllowCustomValueChange,\n   includeAll,\n   onIncludeAllChange,\n   allValue,\n@@ -126,10 +130,12 @@ export function QueryVariableEditorForm({\n       <SelectionOptionsForm\n         multi={!!isMulti}\n         includeAll={!!includeAll}\n+        allowCustomValue={allowCustomValue}\n         allValue={allValue}\n         onMultiChange={onMultiChange}\n         onIncludeAllChange={onIncludeAllChange}\n         onAllValueChange={onAllValueChange}\n+        onAllowCustomValueChange={onAllowCustomValueChange}\n       />\n     </>\n   );\ndiff --git a/public/app/features/dashboard-scene/settings/variables/components/SelectionOptionsForm.tsx b/public/app/features/dashboard-scene/settings/variables/components/SelectionOptionsForm.tsx\nindex de2ba28a91ffe..9e9d6a15c5ce8 100644\n--- a/public/app/features/dashboard-scene/settings/variables/components/SelectionOptionsForm.tsx\n+++ b/public/app/features/dashboard-scene/settings/variables/components/SelectionOptionsForm.tsx\n@@ -8,17 +8,21 @@ import { VariableTextField } from 'app/features/dashboard-scene/settings/variabl\n interface SelectionOptionsFormProps {\n   multi: boolean;\n   includeAll: boolean;\n+  allowCustomValue?: boolean;\n   allValue?: string | null;\n   onMultiChange: (event: ChangeEvent<HTMLInputElement>) => void;\n+  onAllowCustomValueChange?: (event: ChangeEvent<HTMLInputElement>) => void;\n   onIncludeAllChange: (event: ChangeEvent<HTMLInputElement>) => void;\n   onAllValueChange: (event: FormEvent<HTMLInputElement>) => void;\n }\n \n export function SelectionOptionsForm({\n   multi,\n+  allowCustomValue,\n   includeAll,\n   allValue,\n   onMultiChange,\n+  onAllowCustomValueChange,\n   onIncludeAllChange,\n   onAllValueChange,\n }: SelectionOptionsFormProps) {\n@@ -31,6 +35,15 @@ export function SelectionOptionsForm({\n         onChange={onMultiChange}\n         testId={selectors.pages.Dashboard.Settings.Variables.Edit.General.selectionOptionsMultiSwitch}\n       />\n+      {onAllowCustomValueChange && ( // backwards compat with old arch, remove on cleanup\n+        <VariableCheckboxField\n+          value={allowCustomValue ?? true}\n+          name=\"Allow custom values\"\n+          description=\"Enables users to add custom values to the list\"\n+          onChange={onAllowCustomValueChange}\n+          testId={selectors.pages.Dashboard.Settings.Variables.Edit.General.selectionOptionsAllowCustomValueSwitch}\n+        />\n+      )}\n       <VariableCheckboxField\n         value={includeAll}\n         name=\"Include All option\"\ndiff --git a/public/app/features/dashboard-scene/settings/variables/editors/AdHocFiltersVariableEditor.test.tsx b/public/app/features/dashboard-scene/settings/variables/editors/AdHocFiltersVariableEditor.test.tsx\nindex eaeee5427fafc..82d4fe3e23b7f 100644\n--- a/public/app/features/dashboard-scene/settings/variables/editors/AdHocFiltersVariableEditor.test.tsx\n+++ b/public/app/features/dashboard-scene/settings/variables/editors/AdHocFiltersVariableEditor.test.tsx\n@@ -70,7 +70,12 @@ describe('AdHocFiltersVariableEditor', () => {\n     const infoText = renderer.getByTestId(\n       selectors.pages.Dashboard.Settings.Variables.Edit.AdHocFiltersVariable.infoText\n     );\n+    const allowCustomValueCheckbox = renderer.getByTestId(\n+      selectors.pages.Dashboard.Settings.Variables.Edit.General.selectionOptionsAllowCustomValueSwitch\n+    );\n \n+    expect(allowCustomValueCheckbox).toBeInTheDocument();\n+    expect(allowCustomValueCheckbox).toBeChecked();\n     expect(dataSourcePicker).toBeInTheDocument();\n     expect(dataSourcePicker.getAttribute('placeholder')).toBe('Default Test Data Source');\n     expect(infoText).toBeInTheDocument();\n@@ -132,6 +137,7 @@ async function setup(props?: React.ComponentProps<typeof AdHocFiltersVariableEdi\n         value: 'baseTestValue',\n       },\n     ],\n+    allowCustomValue: true,\n     defaultKeys: withDefaultKeys ? [{ text: 'A', value: 'A' }] : undefined,\n   });\n   return {\ndiff --git a/public/app/features/dashboard-scene/settings/variables/editors/AdHocFiltersVariableEditor.tsx b/public/app/features/dashboard-scene/settings/variables/editors/AdHocFiltersVariableEditor.tsx\nindex f165818ebfe7b..cedb3bad6dabd 100644\n--- a/public/app/features/dashboard-scene/settings/variables/editors/AdHocFiltersVariableEditor.tsx\n+++ b/public/app/features/dashboard-scene/settings/variables/editors/AdHocFiltersVariableEditor.tsx\n@@ -1,3 +1,4 @@\n+import { FormEvent } from 'react';\n import { useAsync } from 'react-use';\n \n import { DataSourceInstanceSettings, MetricFindValue, getDataSourceRef } from '@grafana/data';\n@@ -13,7 +14,7 @@ interface AdHocFiltersVariableEditorProps {\n \n export function AdHocFiltersVariableEditor(props: AdHocFiltersVariableEditorProps) {\n   const { variable } = props;\n-  const { datasource: datasourceRef, defaultKeys } = variable.useState();\n+  const { datasource: datasourceRef, defaultKeys, allowCustomValue } = variable.useState();\n \n   const { value: datasourceSettings } = useAsync(async () => {\n     return await getDataSourceSrv().get(datasourceRef);\n@@ -38,13 +39,19 @@ export function AdHocFiltersVariableEditor(props: AdHocFiltersVariableEditorProp\n     });\n   };\n \n+  const onAllowCustomValueChange = (event: FormEvent<HTMLInputElement>) => {\n+    variable.setState({ allowCustomValue: event.currentTarget.checked });\n+  };\n+\n   return (\n     <AdHocVariableForm\n       datasource={datasourceRef ?? undefined}\n       infoText={message}\n+      allowCustomValue={allowCustomValue}\n       onDataSourceChange={onDataSourceChange}\n       defaultKeys={defaultKeys}\n       onDefaultKeysChange={onDefaultKeysChange}\n+      onAllowCustomValueChange={onAllowCustomValueChange}\n     />\n   );\n }\ndiff --git a/public/app/features/dashboard-scene/settings/variables/editors/CustomVariableEditor.test.tsx b/public/app/features/dashboard-scene/settings/variables/editors/CustomVariableEditor.test.tsx\nindex 90292024c02a2..a7315d37a7689 100644\n--- a/public/app/features/dashboard-scene/settings/variables/editors/CustomVariableEditor.test.tsx\n+++ b/public/app/features/dashboard-scene/settings/variables/editors/CustomVariableEditor.test.tsx\n@@ -55,11 +55,17 @@ describe('CustomVariableEditor', () => {\n       selectors.pages.Dashboard.Settings.Variables.Edit.General.selectionOptionsIncludeAllSwitch\n     );\n \n+    const allowCustomValueCheckbox = getByTestId(\n+      selectors.pages.Dashboard.Settings.Variables.Edit.General.selectionOptionsAllowCustomValueSwitch\n+    );\n+\n     // It include-all-custom input appears after include-all checkbox is checked only\n     expect(() =>\n       getByTestId(selectors.pages.Dashboard.Settings.Variables.Edit.General.selectionOptionsCustomAllInput)\n     ).toThrow('Unable to find an element');\n \n+    fireEvent.click(allowCustomValueCheckbox);\n+\n     fireEvent.click(multiCheckbox);\n \n     fireEvent.click(includeAllCheckbox);\n@@ -69,6 +75,7 @@ describe('CustomVariableEditor', () => {\n \n     expect(variable.state.isMulti).toBe(true);\n     expect(variable.state.includeAll).toBe(true);\n+    expect(variable.state.allowCustomValue).toBe(false);\n     expect(allValueInput).toBeInTheDocument();\n   });\n \ndiff --git a/public/app/features/dashboard-scene/settings/variables/editors/CustomVariableEditor.tsx b/public/app/features/dashboard-scene/settings/variables/editors/CustomVariableEditor.tsx\nindex 9b507c34a6659..9ec8289a07411 100644\n--- a/public/app/features/dashboard-scene/settings/variables/editors/CustomVariableEditor.tsx\n+++ b/public/app/features/dashboard-scene/settings/variables/editors/CustomVariableEditor.tsx\n@@ -10,7 +10,7 @@ interface CustomVariableEditorProps {\n }\n \n export function CustomVariableEditor({ variable, onRunQuery }: CustomVariableEditorProps) {\n-  const { query, isMulti, allValue, includeAll } = variable.useState();\n+  const { query, isMulti, allValue, includeAll, allowCustomValue } = variable.useState();\n \n   const onMultiChange = (event: FormEvent<HTMLInputElement>) => {\n     variable.setState({ isMulti: event.currentTarget.checked });\n@@ -25,6 +25,9 @@ export function CustomVariableEditor({ variable, onRunQuery }: CustomVariableEdi\n   const onAllValueChange = (event: FormEvent<HTMLInputElement>) => {\n     variable.setState({ allValue: event.currentTarget.value });\n   };\n+  const onAllowCustomValueChange = (event: FormEvent<HTMLInputElement>) => {\n+    variable.setState({ allowCustomValue: event.currentTarget.checked });\n+  };\n \n   return (\n     <CustomVariableForm\n@@ -32,10 +35,12 @@ export function CustomVariableEditor({ variable, onRunQuery }: CustomVariableEdi\n       multi={!!isMulti}\n       allValue={allValue ?? ''}\n       includeAll={!!includeAll}\n+      allowCustomValue={allowCustomValue}\n       onMultiChange={onMultiChange}\n       onIncludeAllChange={onIncludeAllChange}\n       onQueryChange={onQueryChange}\n       onAllValueChange={onAllValueChange}\n+      onAllowCustomValueChange={onAllowCustomValueChange}\n     />\n   );\n }\ndiff --git a/public/app/features/dashboard-scene/settings/variables/editors/DataSourceVariableEditor.test.tsx b/public/app/features/dashboard-scene/settings/variables/editors/DataSourceVariableEditor.test.tsx\nindex 8dd102b49f3a3..44e0cb9a5e26a 100644\n--- a/public/app/features/dashboard-scene/settings/variables/editors/DataSourceVariableEditor.test.tsx\n+++ b/public/app/features/dashboard-scene/settings/variables/editors/DataSourceVariableEditor.test.tsx\n@@ -61,6 +61,9 @@ describe('DataSourceVariableEditor', () => {\n     const includeAllCheckbox = getByTestId(\n       selectors.pages.Dashboard.Settings.Variables.Edit.General.selectionOptionsIncludeAllSwitch\n     );\n+    const allowCustomValueCheckbox = getByTestId(\n+      selectors.pages.Dashboard.Settings.Variables.Edit.General.selectionOptionsAllowCustomValueSwitch\n+    );\n \n     const typeSelect = getByTestId(\n       selectors.pages.Dashboard.Settings.Variables.Edit.DatasourceVariable.datasourceSelect\n@@ -69,6 +72,8 @@ describe('DataSourceVariableEditor', () => {\n     expect(typeSelect.textContent).toBe('ds1');\n     expect(multiCheckbox).toBeInTheDocument();\n     expect(multiCheckbox).not.toBeChecked();\n+    expect(allowCustomValueCheckbox).toBeInTheDocument();\n+    expect(allowCustomValueCheckbox).toBeChecked();\n     expect(includeAllCheckbox).toBeInTheDocument();\n     expect(includeAllCheckbox).not.toBeChecked();\n   });\ndiff --git a/public/app/features/dashboard-scene/settings/variables/editors/DataSourceVariableEditor.tsx b/public/app/features/dashboard-scene/settings/variables/editors/DataSourceVariableEditor.tsx\nindex 82deb3965fd60..63a2a63238e2d 100644\n--- a/public/app/features/dashboard-scene/settings/variables/editors/DataSourceVariableEditor.tsx\n+++ b/public/app/features/dashboard-scene/settings/variables/editors/DataSourceVariableEditor.tsx\n@@ -12,7 +12,7 @@ interface DataSourceVariableEditorProps {\n }\n \n export function DataSourceVariableEditor({ variable, onRunQuery }: DataSourceVariableEditorProps) {\n-  const { pluginId, regex, isMulti, allValue, includeAll } = variable.useState();\n+  const { pluginId, regex, isMulti, allValue, includeAll, allowCustomValue } = variable.useState();\n \n   const optionTypes = getOptionDataSourceTypes();\n \n@@ -44,6 +44,10 @@ export function DataSourceVariableEditor({ variable, onRunQuery }: DataSourceVar\n     variable.setState({ allValue: event.currentTarget.value });\n   };\n \n+  const onAllowCustomValueChange = (event: FormEvent<HTMLInputElement>) => {\n+    variable.setState({ allowCustomValue: event.currentTarget.checked });\n+  };\n+\n   return (\n     <DataSourceVariableForm\n       query={pluginId}\n@@ -52,11 +56,13 @@ export function DataSourceVariableEditor({ variable, onRunQuery }: DataSourceVar\n       allValue={allValue}\n       includeAll={includeAll || false}\n       optionTypes={optionTypes}\n+      allowCustomValue={allowCustomValue}\n       onChange={onChangeType}\n       onRegExBlur={onRegExChange}\n       onMultiChange={onMultiChange}\n       onIncludeAllChange={onIncludeAllChange}\n       onAllValueChange={onAllValueChange}\n+      onAllowCustomValueChange={onAllowCustomValueChange}\n     />\n   );\n }\ndiff --git a/public/app/features/dashboard-scene/settings/variables/editors/QueryVariableEditor.test.tsx b/public/app/features/dashboard-scene/settings/variables/editors/QueryVariableEditor.test.tsx\nindex d96bb9516ca4f..920744e53ec61 100644\n--- a/public/app/features/dashboard-scene/settings/variables/editors/QueryVariableEditor.test.tsx\n+++ b/public/app/features/dashboard-scene/settings/variables/editors/QueryVariableEditor.test.tsx\n@@ -117,6 +117,10 @@ describe('QueryVariableEditor', () => {\n       selectors.pages.Dashboard.Settings.Variables.Edit.General.selectionOptionsCustomAllInput\n     );\n \n+    const allowCustomValueCheckbox = renderer.getByTestId(\n+      selectors.pages.Dashboard.Settings.Variables.Edit.General.selectionOptionsAllowCustomValueSwitch\n+    );\n+\n     expect(dataSourcePicker).toBeInTheDocument();\n     expect(dataSourcePicker.getAttribute('placeholder')).toBe('Default Test Data Source');\n     expect(queryEditor).toBeInTheDocument();\n@@ -129,6 +133,8 @@ describe('QueryVariableEditor', () => {\n     expect(getByRole(refreshSelect, 'radio', { name: 'On dashboard load' })).toBeChecked();\n     expect(multiSwitch).toBeInTheDocument();\n     expect(multiSwitch).toBeChecked();\n+    expect(allowCustomValueCheckbox).toBeInTheDocument();\n+    expect(allowCustomValueCheckbox).toBeChecked();\n     expect(includeAllSwitch).toBeInTheDocument();\n     expect(includeAllSwitch).toBeChecked();\n     expect(allValueInput).toBeInTheDocument();\ndiff --git a/public/app/features/dashboard-scene/settings/variables/editors/QueryVariableEditor.tsx b/public/app/features/dashboard-scene/settings/variables/editors/QueryVariableEditor.tsx\nindex 05ea0873e915e..f1ec139eb38db 100644\n--- a/public/app/features/dashboard-scene/settings/variables/editors/QueryVariableEditor.tsx\n+++ b/public/app/features/dashboard-scene/settings/variables/editors/QueryVariableEditor.tsx\n@@ -14,7 +14,8 @@ interface QueryVariableEditorProps {\n type VariableQueryType = QueryVariable['state']['query'];\n \n export function QueryVariableEditor({ variable, onRunQuery }: QueryVariableEditorProps) {\n-  const { datasource, regex, sort, refresh, isMulti, includeAll, allValue, query } = variable.useState();\n+  const { datasource, regex, sort, refresh, isMulti, includeAll, allValue, query, allowCustomValue } =\n+    variable.useState();\n   const { value: timeRange } = sceneGraph.getTimeRange(variable).useState();\n \n   const onRegExChange = (event: React.FormEvent<HTMLTextAreaElement>) => {\n@@ -35,6 +36,9 @@ export function QueryVariableEditor({ variable, onRunQuery }: QueryVariableEdito\n   const onAllValueChange = (event: FormEvent<HTMLInputElement>) => {\n     variable.setState({ allValue: event.currentTarget.value });\n   };\n+  const onAllowCustomValueChange = (event: FormEvent<HTMLInputElement>) => {\n+    variable.setState({ allowCustomValue: event.currentTarget.checked });\n+  };\n   const onDataSourceChange = (dsInstanceSettings: DataSourceInstanceSettings) => {\n     const datasource = getDataSourceRef(dsInstanceSettings);\n \n@@ -78,6 +82,8 @@ export function QueryVariableEditor({ variable, onRunQuery }: QueryVariableEdito\n       onIncludeAllChange={onIncludeAllChange}\n       allValue={allValue ?? ''}\n       onAllValueChange={onAllValueChange}\n+      allowCustomValue={allowCustomValue}\n+      onAllowCustomValueChange={onAllowCustomValueChange}\n     />\n   );\n }\ndiff --git a/public/app/features/dashboard-scene/utils/variables.test.ts b/public/app/features/dashboard-scene/utils/variables.test.ts\nindex 4c6e7bc316520..9bdd9c6c5bea0 100644\n--- a/public/app/features/dashboard-scene/utils/variables.test.ts\n+++ b/public/app/features/dashboard-scene/utils/variables.test.ts\n@@ -45,6 +45,7 @@ describe('when creating variables objects', () => {\n       hide: 0,\n       includeAll: false,\n       multi: false,\n+      allowCustomValue: true,\n       name: 'query0',\n       options: [\n         {\n@@ -91,6 +92,7 @@ describe('when creating variables objects', () => {\n       description: null,\n       includeAll: false,\n       isMulti: false,\n+      allowCustomValue: true,\n       label: undefined,\n       name: 'query0',\n       options: [],\n@@ -106,6 +108,7 @@ describe('when creating variables objects', () => {\n   it('should migrate query variable with definition', () => {\n     const variable: QueryVariableModel = {\n       allValue: null,\n+      allowCustomValue: false,\n       current: {\n         text: 'America',\n         value: 'America',\n@@ -164,6 +167,7 @@ describe('when creating variables objects', () => {\n     expect(migrated).toBeInstanceOf(QueryVariable);\n     expect(rest).toEqual({\n       allValue: undefined,\n+      allowCustomValue: false,\n       datasource: {\n         type: 'influxdb',\n         uid: 'P15396BDD62B2BE29',\n@@ -191,6 +195,7 @@ describe('when creating variables objects', () => {\n   it('should migrate datasource variable', () => {\n     const variable: DataSourceVariableModel = {\n       id: 'query1',\n+      allowCustomValue: true,\n       rootStateKey: 'N4XLmH5Vz',\n       name: 'query1',\n       type: 'datasource',\n@@ -237,6 +242,7 @@ describe('when creating variables objects', () => {\n     expect(migrated).toBeInstanceOf(DataSourceVariable);\n     expect(rest).toEqual({\n       allValue: 'Custom all',\n+      allowCustomValue: true,\n       defaultToAll: true,\n       includeAll: true,\n       label: undefined,\n@@ -385,6 +391,7 @@ describe('when creating variables objects', () => {\n   it('should migrate adhoc variable', () => {\n     const variable: TypedVariableModel = {\n       id: 'adhoc',\n+      allowCustomValue: false,\n       global: false,\n       index: 0,\n       state: LoadingState.Done,\n@@ -423,6 +430,7 @@ describe('when creating variables objects', () => {\n     expect(filterVarState).toEqual({\n       key: expect.any(String),\n       description: 'Adhoc Description',\n+      allowCustomValue: false,\n       hide: 0,\n       label: 'Adhoc Label',\n       name: 'adhoc',\n@@ -493,6 +501,7 @@ describe('when creating variables objects', () => {\n     expect(filterVarState).toEqual({\n       key: expect.any(String),\n       description: 'Adhoc Description',\n+      allowCustomValue: true,\n       hide: 0,\n       label: 'Adhoc Label',\n       name: 'adhoc',\n@@ -663,6 +672,7 @@ describe('when creating variables objects', () => {\n     expect(migrated).toBeInstanceOf(DataSourceVariable);\n     expect(rest).toEqual({\n       allValue: 'Custom all',\n+      allowCustomValue: true,\n       defaultToAll: true,\n       includeAll: true,\n       label: undefined,\n@@ -705,6 +715,7 @@ describe('when creating variables objects', () => {\n     expect(migrated).toBeInstanceOf(DataSourceVariable);\n     expect(rest).toEqual({\n       allValue: 'Custom all',\n+      allowCustomValue: true,\n       defaultToAll: true,\n       includeAll: true,\n       label: undefined,\ndiff --git a/public/app/features/dashboard-scene/utils/variables.ts b/public/app/features/dashboard-scene/utils/variables.ts\nindex 48ab164100378..4b6c1bdcb6d65 100644\n--- a/public/app/features/dashboard-scene/utils/variables.ts\n+++ b/public/app/features/dashboard-scene/utils/variables.ts\n@@ -138,6 +138,7 @@ export function createSceneVariableFromVariableModel(variable: TypedVariableMode\n       filters: variable.filters ?? [],\n       baseFilters: variable.baseFilters ?? [],\n       defaultKeys: variable.defaultKeys,\n+      allowCustomValue: variable.allowCustomValue ?? true,\n       useQueriesAsFilterForOptions: true,\n       layout: config.featureToggles.newFiltersUI ? 'combobox' : undefined,\n       supportsMultiValueOperators: Boolean(\n@@ -158,6 +159,7 @@ export function createSceneVariableFromVariableModel(variable: TypedVariableMode\n       defaultToAll: Boolean(variable.includeAll),\n       skipUrlSync: variable.skipUrlSync,\n       hide: variable.hide,\n+      allowCustomValue: variable.allowCustomValue ?? true,\n     });\n   } else if (variable.type === 'query') {\n     return new QueryVariable({\n@@ -177,6 +179,7 @@ export function createSceneVariableFromVariableModel(variable: TypedVariableMode\n       skipUrlSync: variable.skipUrlSync,\n       hide: variable.hide,\n       definition: variable.definition,\n+      allowCustomValue: variable.allowCustomValue ?? true,\n     });\n   } else if (variable.type === 'datasource') {\n     return new DataSourceVariable({\n@@ -192,6 +195,7 @@ export function createSceneVariableFromVariableModel(variable: TypedVariableMode\n       isMulti: variable.multi,\n       hide: variable.hide,\n       defaultOptionEnabled: variable.current?.value === DEFAULT_DATASOURCE && variable.current?.text === 'default',\n+      allowCustomValue: variable.allowCustomValue ?? true,\n     });\n   } else if (variable.type === 'interval') {\n     const intervals = getIntervalsFromQueryString(variable.query);\n",
+  "metadata": {
+    "v2_fetcher_version": 1,
+    "v2_fetched_at_unix": 1777501170,
+    "v2_diff_cap_bytes": 50000,
+    "v2_body_cap_bytes": 8000,
+    "v2_diff_truncated": false,
+    "v2_raw_diff_chars": 48388,
+    "v2_raw_body_chars": 2725,
+    "v2_rag_source": "merged_from_v1",
+    "v2_rag_chunks_copied": 8,
+    "joern_enriched": true,
+    "joern_callers_count": 50,
+    "joern_functions_count": 50
+  },
+  "similar_chunks": [
+    {
+      "file": "public/app/features/dashboard-scene/settings/variables/components/GroupByVariableForm.test.tsx",
+      "start_line": 1,
+      "end_line": 63,
+      "similarity": 0.8982,
+      "related_to": "public/app/features/dashboard-scene/settings/variables/components/AdHocVariableForm.test.tsx",
+      "content_preview": "import { render, screen } from '@testing-library/react';\nimport userEvent from '@testing-library/user-event';\nimport { byTestId } from 'testing-library-selector';\n\nimport { VariableSupportType } from '@grafana/data';\nimport { selectors } from '@grafana/e2e-selectors';\nimport { mockDataSource } from 'app/features/alerting/unified/mocks';\nimport { LegacyVariableQueryEditor } from 'app/features/variables/editor/LegacyVariableQueryEditor';\n\nimport { GroupByVariableForm, GroupByVariableFormProps } from './GroupByVariableForm';\n\nconst defaultDatasource = mockDataSource({\n  name: 'Default Test Data Source',\n  type: 'test',\n});\n\nconst promDatasource = mockDataSource({\n  name: 'Prometheus',\n  type: 'prometheus',\n});\n\njest.mock('@grafana/runtime', () => ({\n  ...jest.requireActual('@grafana/runtime')"
+    },
+    {
+      "file": "public/app/features/dashboard-scene/settings/variables/editors/GroupByVariableEditor.test.tsx",
+      "start_line": 1,
+      "end_line": 55,
+      "similarity": 0.8872,
+      "related_to": "public/app/features/dashboard-scene/settings/variables/editors/AdHocFiltersVariableEditor.test.tsx",
+      "content_preview": "import { act, render, waitFor, screen } from '@testing-library/react';\nimport userEvent from '@testing-library/user-event';\n\nimport { MetricFindValue, VariableSupportType } from '@grafana/data';\nimport { selectors } from '@grafana/e2e-selectors';\nimport { GroupByVariable } from '@grafana/scenes';\nimport { mockDataSource } from 'app/features/alerting/unified/mocks';\nimport { OptionsPaneCategoryDescriptor } from 'app/features/dashboard/components/PanelEditor/OptionsPaneCategoryDescriptor';\nimport { LegacyVariableQueryEditor } from 'app/features/variables/editor/LegacyVariableQueryEditor';\n\nimport { getGroupByVariableOptions, GroupByVariableEditor } from './GroupByVariableEditor';\n\nconst defaultDatasource = mockDataSource({\n  name: 'Default Test Data Source',\n  uid: 'test-ds',\n  type: 'test',"
+    },
+    {
+      "file": "public/app/features/dashboard-scene/settings/variables/components/SwitchVariableForm.test.tsx",
+      "start_line": 1,
+      "end_line": 63,
+      "similarity": 0.8817,
+      "related_to": "public/app/features/dashboard-scene/settings/variables/components/CustomVariableForm.test.tsx",
+      "content_preview": "import { render, screen } from '@testing-library/react';\nimport userEvent from '@testing-library/user-event';\n\nimport { selectors } from '@grafana/e2e-selectors';\n\nimport { SwitchVariableForm } from './SwitchVariableForm';\n\ndescribe('SwitchVariableForm', () => {\n  const onEnabledValueChange = jest.fn();\n  const onDisabledValueChange = jest.fn();\n\n  const defaultProps = {\n    enabledValue: 'true',\n    disabledValue: 'false',\n    onEnabledValueChange,\n    onDisabledValueChange,\n  };\n\n  function renderForm(props = {}) {\n    return render(<SwitchVariableForm {...defaultProps} {...props} />);\n  }\n\n  beforeEach(() => {\n    jest.clearAllMocks();\n  });\n\n  it('should render the form', () => {\n    render(<SwitchVariableForm {...defaultProps} />);\n\n    expect(screen.getByText('Switch options')).toBeI"
+    },
+    {
+      "file": "public/app/features/dashboard-scene/settings/variables/components/GroupByVariableForm.tsx",
+      "start_line": 1,
+      "end_line": 60,
+      "similarity": 0.8782,
+      "related_to": "public/app/features/dashboard-scene/settings/variables/components/AdHocVariableForm.tsx",
+      "content_preview": "import { FormEvent, useCallback } from 'react';\n\nimport { DataSourceInstanceSettings, MetricFindValue, readCSV } from '@grafana/data';\nimport { selectors } from '@grafana/e2e-selectors';\nimport { Trans, t } from '@grafana/i18n';\nimport { EditorField } from '@grafana/plugin-ui';\nimport { DataSourceRef } from '@grafana/schema';\nimport { Alert, Box, CodeEditor, Field, Switch } from '@grafana/ui';\nimport { DataSourcePicker } from 'app/features/datasources/components/picker/DataSourcePicker';\n\nimport { VariableCheckboxField } from './VariableCheckboxField';\nimport { VariableLegend } from './VariableLegend';\n\nexport interface GroupByVariableFormProps {\n  datasource?: DataSourceRef;\n  onDataSourceChange: (dsSettings: DataSourceInstanceSettings) => void;\n  onDefaultOptionsChange: (options?: Metric"
+    },
+    {
+      "file": "public/app/features/dashboard-scene/settings/variables/editors/GroupByVariableEditor.tsx",
+      "start_line": 1,
+      "end_line": 53,
+      "similarity": 0.8602,
+      "related_to": "public/app/features/dashboard-scene/settings/variables/editors/AdHocFiltersVariableEditor.tsx",
+      "content_preview": "import { noop } from 'lodash';\nimport { FormEvent } from 'react';\nimport { useAsync } from 'react-use';\n\nimport { DataSourceInstanceSettings, MetricFindValue, getDataSourceRef } from '@grafana/data';\nimport { getDataSourceSrv } from '@grafana/runtime';\nimport { GroupByVariable, SceneVariable } from '@grafana/scenes';\nimport { OptionsPaneItemDescriptor } from 'app/features/dashboard/components/PanelEditor/OptionsPaneItemDescriptor';\n\nimport { GroupByVariableForm } from '../components/GroupByVariableForm';\n\ninterface GroupByVariableEditorProps {\n  variable: GroupByVariable;\n  onRunQuery: () => void;\n  inline?: boolean;\n}\n\nexport function GroupByVariableEditor(props: GroupByVariableEditorProps) {\n  const { variable, onRunQuery, inline } = props;\n  const { datasource: datasourceRef, defaultOpt"
+    },
+    {
+      "file": "public/app/features/dashboard-scene/settings/variables/components/ConstantVariableForm.tsx",
+      "start_line": 1,
+      "end_line": 31,
+      "similarity": 0.8449,
+      "related_to": "public/app/features/dashboard-scene/settings/variables/components/DataSourceVariableForm.tsx",
+      "content_preview": "import { FormEvent } from 'react';\n\nimport { selectors } from '@grafana/e2e-selectors';\nimport { Trans, t } from '@grafana/i18n';\n\nimport { VariableLegend } from './VariableLegend';\nimport { VariableTextField } from './VariableTextField';\n\ninterface ConstantVariableFormProps {\n  constantValue: string;\n  onChange: (event: FormEvent<HTMLInputElement>) => void;\n}\n\nexport function ConstantVariableForm({ onChange, constantValue }: ConstantVariableFormProps) {\n  return (\n    <>\n      <VariableLegend>\n        <Trans i18nKey=\"dashboard-scene.constant-variable-form.constant-options\">Constant options</Trans>\n      </VariableLegend>\n      <VariableTextField\n        defaultValue={constantValue}\n        name=\"Value\"\n        placeholder={t('dashboard-scene.constant-variable-form.placeholder-your-metric-"
+    },
+    {
+      "file": "public/app/features/dashboard-scene/settings/variables/components/QueryVariableRegexForm.test.tsx",
+      "start_line": 1,
+      "end_line": 59,
+      "similarity": 0.8378,
+      "related_to": "public/app/features/dashboard-scene/settings/variables/components/CustomVariableForm.test.tsx",
+      "content_preview": "import { render, fireEvent } from '@testing-library/react';\n\nimport { selectors } from '@grafana/e2e-selectors';\n\nimport { QueryVariableRegexForm } from './QueryVariableRegexForm';\n\ndescribe('QueryVariableRegexForm', () => {\n  const onRegExChange = jest.fn();\n  const onRegexApplyToChange = jest.fn();\n\n  beforeEach(() => {\n    jest.clearAllMocks();\n  });\n\n  it('should render the form fields correctly', () => {\n    const { getByTestId, getByRole } = render(\n      <QueryVariableRegexForm\n        regex=\".*test.*\"\n        regexApplyTo=\"value\"\n        onRegExChange={onRegExChange}\n        onRegexApplyToChange={onRegexApplyToChange}\n      />\n    );\n\n    const regexInput = getByTestId(\n      selectors.pages.Dashboard.Settings.Variables.Edit.QueryVariable.queryOptionsRegExInputV2\n    );\n    const r"
+    },
+    {
+      "file": "public/app/features/dashboard-scene/settings/variables/components/TextBoxVariableForm.tsx",
+      "start_line": 1,
+      "end_line": 38,
+      "similarity": 0.8369,
+      "related_to": "public/app/features/dashboard-scene/settings/variables/components/DataSourceVariableForm.tsx",
+      "content_preview": "import { FormEvent } from 'react';\n\nimport { selectors } from '@grafana/e2e-selectors';\nimport { Trans, t } from '@grafana/i18n';\nimport { VariableLegend } from 'app/features/dashboard-scene/settings/variables/components/VariableLegend';\nimport { VariableTextField } from 'app/features/dashboard-scene/settings/variables/components/VariableTextField';\n\ninterface TextBoxVariableFormProps {\n  value?: string;\n  defaultValue?: string;\n  onChange?: (event: FormEvent<HTMLInputElement>) => void;\n  onBlur?: (event: FormEvent<HTMLInputElement>) => void;\n  inline?: boolean;\n}\n\nexport function TextBoxVariableForm({ defaultValue, value, onChange, onBlur, inline }: TextBoxVariableFormProps) {\n  return (\n    <>\n      {!inline && (\n        <VariableLegend>\n          <Trans i18nKey=\"dashboard-scene.text-box"
+    }
+  ],
+  "rag_evidence": {
+    "similar_code": [
+      {
+        "file": "public/app/features/dashboard-scene/settings/variables/components/GroupByVariableForm.test.tsx",
+        "start_line": 1,
+        "end_line": 63,
+        "similarity": 0.8982,
+        "related_to": "public/app/features/dashboard-scene/settings/variables/components/AdHocVariableForm.test.tsx",
+        "content_preview": "import { render, screen } from '@testing-library/react';\nimport userEvent from '@testing-library/user-event';\nimport { byTestId } from 'testing-library-selector';\n\nimport { VariableSupportType } from '@grafana/data';\nimport { selectors } from '@grafana/e2e-selectors';\nimport { mockDataSource } from 'app/features/alerting/unified/mocks';\nimport { LegacyVariableQueryEditor } from 'app/features/variables/editor/LegacyVariableQueryEditor';\n\nimport { GroupByVariableForm, GroupByVariableFormProps } from './GroupByVariableForm';\n\nconst defaultDatasource = mockDataSource({\n  name: 'Default Test Data Source',\n  type: 'test',\n});\n\nconst promDatasource = mockDataSource({\n  name: 'Prometheus',\n  type: 'prometheus',\n});\n\njest.mock('@grafana/runtime', () => ({\n  ...jest.requireActual('@grafana/runtime')"
+      },
+      {
+        "file": "public/app/features/dashboard-scene/settings/variables/editors/GroupByVariableEditor.test.tsx",
+        "start_line": 1,
+        "end_line": 55,
+        "similarity": 0.8872,
+        "related_to": "public/app/features/dashboard-scene/settings/variables/editors/AdHocFiltersVariableEditor.test.tsx",
+        "content_preview": "import { act, render, waitFor, screen } from '@testing-library/react';\nimport userEvent from '@testing-library/user-event';\n\nimport { MetricFindValue, VariableSupportType } from '@grafana/data';\nimport { selectors } from '@grafana/e2e-selectors';\nimport { GroupByVariable } from '@grafana/scenes';\nimport { mockDataSource } from 'app/features/alerting/unified/mocks';\nimport { OptionsPaneCategoryDescriptor } from 'app/features/dashboard/components/PanelEditor/OptionsPaneCategoryDescriptor';\nimport { LegacyVariableQueryEditor } from 'app/features/variables/editor/LegacyVariableQueryEditor';\n\nimport { getGroupByVariableOptions, GroupByVariableEditor } from './GroupByVariableEditor';\n\nconst defaultDatasource = mockDataSource({\n  name: 'Default Test Data Source',\n  uid: 'test-ds',\n  type: 'test',"
+      },
+      {
+        "file": "public/app/features/dashboard-scene/settings/variables/components/SwitchVariableForm.test.tsx",
+        "start_line": 1,
+        "end_line": 63,
+        "similarity": 0.8817,
+        "related_to": "public/app/features/dashboard-scene/settings/variables/components/CustomVariableForm.test.tsx",
+        "content_preview": "import { render, screen } from '@testing-library/react';\nimport userEvent from '@testing-library/user-event';\n\nimport { selectors } from '@grafana/e2e-selectors';\n\nimport { SwitchVariableForm } from './SwitchVariableForm';\n\ndescribe('SwitchVariableForm', () => {\n  const onEnabledValueChange = jest.fn();\n  const onDisabledValueChange = jest.fn();\n\n  const defaultProps = {\n    enabledValue: 'true',\n    disabledValue: 'false',\n    onEnabledValueChange,\n    onDisabledValueChange,\n  };\n\n  function renderForm(props = {}) {\n    return render(<SwitchVariableForm {...defaultProps} {...props} />);\n  }\n\n  beforeEach(() => {\n    jest.clearAllMocks();\n  });\n\n  it('should render the form', () => {\n    render(<SwitchVariableForm {...defaultProps} />);\n\n    expect(screen.getByText('Switch options')).toBeI"
+      },
+      {
+        "file": "public/app/features/dashboard-scene/settings/variables/components/GroupByVariableForm.tsx",
+        "start_line": 1,
+        "end_line": 60,
+        "similarity": 0.8782,
+        "related_to": "public/app/features/dashboard-scene/settings/variables/components/AdHocVariableForm.tsx",
+        "content_preview": "import { FormEvent, useCallback } from 'react';\n\nimport { DataSourceInstanceSettings, MetricFindValue, readCSV } from '@grafana/data';\nimport { selectors } from '@grafana/e2e-selectors';\nimport { Trans, t } from '@grafana/i18n';\nimport { EditorField } from '@grafana/plugin-ui';\nimport { DataSourceRef } from '@grafana/schema';\nimport { Alert, Box, CodeEditor, Field, Switch } from '@grafana/ui';\nimport { DataSourcePicker } from 'app/features/datasources/components/picker/DataSourcePicker';\n\nimport { VariableCheckboxField } from './VariableCheckboxField';\nimport { VariableLegend } from './VariableLegend';\n\nexport interface GroupByVariableFormProps {\n  datasource?: DataSourceRef;\n  onDataSourceChange: (dsSettings: DataSourceInstanceSettings) => void;\n  onDefaultOptionsChange: (options?: Metric"
+      },
+      {
+        "file": "public/app/features/dashboard-scene/settings/variables/editors/GroupByVariableEditor.tsx",
+        "start_line": 1,
+        "end_line": 53,
+        "similarity": 0.8602,
+        "related_to": "public/app/features/dashboard-scene/settings/variables/editors/AdHocFiltersVariableEditor.tsx",
+        "content_preview": "import { noop } from 'lodash';\nimport { FormEvent } from 'react';\nimport { useAsync } from 'react-use';\n\nimport { DataSourceInstanceSettings, MetricFindValue, getDataSourceRef } from '@grafana/data';\nimport { getDataSourceSrv } from '@grafana/runtime';\nimport { GroupByVariable, SceneVariable } from '@grafana/scenes';\nimport { OptionsPaneItemDescriptor } from 'app/features/dashboard/components/PanelEditor/OptionsPaneItemDescriptor';\n\nimport { GroupByVariableForm } from '../components/GroupByVariableForm';\n\ninterface GroupByVariableEditorProps {\n  variable: GroupByVariable;\n  onRunQuery: () => void;\n  inline?: boolean;\n}\n\nexport function GroupByVariableEditor(props: GroupByVariableEditorProps) {\n  const { variable, onRunQuery, inline } = props;\n  const { datasource: datasourceRef, defaultOpt"
+      },
+      {
+        "file": "public/app/features/dashboard-scene/settings/variables/components/ConstantVariableForm.tsx",
+        "start_line": 1,
+        "end_line": 31,
+        "similarity": 0.8449,
+        "related_to": "public/app/features/dashboard-scene/settings/variables/components/DataSourceVariableForm.tsx",
+        "content_preview": "import { FormEvent } from 'react';\n\nimport { selectors } from '@grafana/e2e-selectors';\nimport { Trans, t } from '@grafana/i18n';\n\nimport { VariableLegend } from './VariableLegend';\nimport { VariableTextField } from './VariableTextField';\n\ninterface ConstantVariableFormProps {\n  constantValue: string;\n  onChange: (event: FormEvent<HTMLInputElement>) => void;\n}\n\nexport function ConstantVariableForm({ onChange, constantValue }: ConstantVariableFormProps) {\n  return (\n    <>\n      <VariableLegend>\n        <Trans i18nKey=\"dashboard-scene.constant-variable-form.constant-options\">Constant options</Trans>\n      </VariableLegend>\n      <VariableTextField\n        defaultValue={constantValue}\n        name=\"Value\"\n        placeholder={t('dashboard-scene.constant-variable-form.placeholder-your-metric-"
+      },
+      {
+        "file": "public/app/features/dashboard-scene/settings/variables/components/QueryVariableRegexForm.test.tsx",
+        "start_line": 1,
+        "end_line": 59,
+        "similarity": 0.8378,
+        "related_to": "public/app/features/dashboard-scene/settings/variables/components/CustomVariableForm.test.tsx",
+        "content_preview": "import { render, fireEvent } from '@testing-library/react';\n\nimport { selectors } from '@grafana/e2e-selectors';\n\nimport { QueryVariableRegexForm } from './QueryVariableRegexForm';\n\ndescribe('QueryVariableRegexForm', () => {\n  const onRegExChange = jest.fn();\n  const onRegexApplyToChange = jest.fn();\n\n  beforeEach(() => {\n    jest.clearAllMocks();\n  });\n\n  it('should render the form fields correctly', () => {\n    const { getByTestId, getByRole } = render(\n      <QueryVariableRegexForm\n        regex=\".*test.*\"\n        regexApplyTo=\"value\"\n        onRegExChange={onRegExChange}\n        onRegexApplyToChange={onRegexApplyToChange}\n      />\n    );\n\n    const regexInput = getByTestId(\n      selectors.pages.Dashboard.Settings.Variables.Edit.QueryVariable.queryOptionsRegExInputV2\n    );\n    const r"
+      },
+      {
+        "file": "public/app/features/dashboard-scene/settings/variables/components/TextBoxVariableForm.tsx",
+        "start_line": 1,
+        "end_line": 38,
+        "similarity": 0.8369,
+        "related_to": "public/app/features/dashboard-scene/settings/variables/components/DataSourceVariableForm.tsx",
+        "content_preview": "import { FormEvent } from 'react';\n\nimport { selectors } from '@grafana/e2e-selectors';\nimport { Trans, t } from '@grafana/i18n';\nimport { VariableLegend } from 'app/features/dashboard-scene/settings/variables/components/VariableLegend';\nimport { VariableTextField } from 'app/features/dashboard-scene/settings/variables/components/VariableTextField';\n\ninterface TextBoxVariableFormProps {\n  value?: string;\n  defaultValue?: string;\n  onChange?: (event: FormEvent<HTMLInputElement>) => void;\n  onBlur?: (event: FormEvent<HTMLInputElement>) => void;\n  inline?: boolean;\n}\n\nexport function TextBoxVariableForm({ defaultValue, value, onChange, onBlur, inline }: TextBoxVariableFormProps) {\n  return (\n    <>\n      {!inline && (\n        <VariableLegend>\n          <Trans i18nKey=\"dashboard-scene.text-box"
+      }
+    ]
+  },
+  "callers": [
+    {
+      "path": "api/clients/folder/v1beta1/index.ts",
+      "from_function": "endpoints",
+      "calls_function": "query",
+      "caller_line": 30,
+      "callee_file": "plugins/datasource/azuremonitor/variables.ts",
+      "callee_line": 54
+    },
+    {
+      "path": "api/clients/scope/v0alpha1/endpoints.gen.ts",
+      "from_function": "endpoints",
+      "calls_function": "query",
+      "caller_line": 17,
+      "callee_file": "plugins/datasource/azuremonitor/variables.ts",
+      "callee_line": 54
+    },
+    {
+      "path": "core/utils/explore.ts",
+      "from_function": "generateEmptyQuery",
+      "calls_function": "getDefaultQuery",
+      "caller_line": 172,
+      "callee_file": "plugins/datasource/cloudwatch/variables.ts",
+      "callee_line": 173
+    },
+    {
+      "path": "features/alerting/unified/api/alertRuleApi.ts",
+      "from_function": "endpoints",
+      "calls_function": "query",
+      "caller_line": 92,
+      "callee_file": "plugins/datasource/azuremonitor/variables.ts",
+      "callee_line": 54
+    },
+    {
+      "path": "features/alerting/unified/api/alertSilencesApi.ts",
+      "from_function": "endpoints",
+      "calls_function": "query",
+      "caller_line": 12,
+      "callee_file": "plugins/datasource/azuremonitor/variables.ts",
+      "callee_line": 54
+    },
+    {
+      "path": "features/alerting/unified/api/alertmanagerApi.ts",
+      "from_function": "endpoints",
+      "calls_function": "query",
+      "caller_line": 68,
+      "callee_file": "plugins/datasource/azuremonitor/variables.ts",
+      "callee_line": 54
+    },
+    {
+      "path": "features/alerting/unified/api/dataSourcesApi.ts",
+      "from_function": "endpoints",
+      "calls_function": "query",
+      "caller_line": 6,
+      "callee_file": "plugins/datasource/azuremonitor/variables.ts",
+      "callee_line": 54
+    },
+    {
+      "path": "features/alerting/unified/api/featureDiscoveryApi.ts",
+      "from_function": "endpoints",
+      "calls_function": "query",
+      "caller_line": 27,
+      "callee_file": "plugins/datasource/azuremonitor/variables.ts",
+      "callee_line": 54
+    },
+    {
+      "path": "features/alerting/unified/api/incidentsApi.ts",
+      "from_function": "endpoints",
+      "calls_function": "query",
+      "caller_line": 13,
+      "callee_file": "plugins/datasource/azuremonitor/variables.ts",
+      "callee_line": 54
+    },
+    {
+      "path": "features/alerting/unified/api/labelsApi.ts",
+      "from_function": "endpoints",
+      "calls_function": "query",
+      "caller_line": 17,
+      "callee_file": "plugins/datasource/azuremonitor/variables.ts",
+      "callee_line": 54
+    },
+    {
+      "path": "features/alerting/unified/api/onCallApi.ts",
+      "from_function": "endpoints",
+      "calls_function": "query",
+      "caller_line": 46,
+      "callee_file": "plugins/datasource/azuremonitor/variables.ts",
+      "callee_line": 54
+    },
+    {
+      "path": "features/alerting/unified/api/prometheusApi.ts",
+      "from_function": "endpoints",
+      "calls_function": "query",
+      "caller_line": 56,
+      "callee_file": "plugins/datasource/azuremonitor/variables.ts",
+      "callee_line": 54
+    },
+    {
+      "path": "features/alerting/unified/api/receiversApi.ts",
+      "from_function": "endpoints",
+      "calls_function": "query",
+      "caller_line": 13,
+      "callee_file": "plugins/datasource/azuremonitor/variables.ts",
+      "callee_line": 54
+    },
+    {
+      "path": "features/alerting/unified/api/sloApi.ts",
+      "from_function": "endpoints",
+      "calls_function": "query",
+      "caller_line": 29,
+      "callee_file": "plugins/datasource/azuremonitor/variables.ts",
+      "callee_line": 54
+    },
+    {
+      "path": "features/alerting/unified/api/stateHistoryApi.ts",
+      "from_function": "endpoints",
+      "calls_function": "query",
+      "caller_line": 6,
+      "callee_file": "plugins/datasource/azuremonitor/variables.ts",
+      "callee_line": 54
+    },
+    {
+      "path": "features/alerting/unified/api/templateApi.ts",
+      "from_function": "endpoints",
+      "calls_function": "query",
+      "caller_line": 35,
+      "callee_file": "plugins/datasource/azuremonitor/variables.ts",
+      "callee_line": 54
+    },
+    {
+      "path": "features/alerting/unified/hooks/useAsync.tsx",
+      "from_function": "execute",
+      "calls_function": "execute",
+      "caller_line": 135,
+      "callee_file": "plugins/datasource/cloudwatch/variables.ts",
+      "callee_line": 33
+    },
+    {
+      "path": "features/alerting/unified/openapi/receiversApi.gen.ts",
+      "from_function": "endpoints",
+      "calls_function": "query",
+      "caller_line": 8,
+      "callee_file": "plugins/datasource/azuremonitor/variables.ts",
+      "callee_line": 54
+    },
+    {
+      "path": "features/alerting/unified/openapi/routesApi.gen.ts",
+      "from_function": "endpoints",
+      "calls_function": "query",
+      "caller_line": 8,
+      "callee_file": "plugins/datasource/azuremonitor/variables.ts",
+      "callee_line": 54
+    },
+    {
+      "path": "features/alerting/unified/openapi/timeIntervalsApi.gen.ts",
+      "from_function": "endpoints",
+      "calls_function": "query",
+      "caller_line": 8,
+      "callee_file": "plugins/datasource/azuremonitor/variables.ts",
+      "callee_line": 54
+    },
+    {
+      "path": "features/annotations/executeAnnotationQuery.ts",
+      "from_function": "executeAnnotationQuery",
+      "calls_function": "getDefaultQuery",
+      "caller_line": 16,
+      "callee_file": "plugins/datasource/cloudwatch/variables.ts",
+      "callee_line": 173
+    },
+    {
+      "path": "features/annotations/utils/savedQueryUtils.ts",
+      "from_function": "updateAnnotationFromSavedQuery",
+      "calls_function": "getDefaultQuery",
+      "caller_line": 40,
+      "callee_file": "plugins/datasource/cloudwatch/variables.ts",
+      "callee_line": 173
+    },
+    {
+      "path": "features/browse-dashboards/api/browseDashboardsAPI.ts",
+      "from_function": "endpoints",
+      "calls_function": "query",
+      "caller_line": 84,
+      "callee_file": "plugins/datasource/azuremonitor/variables.ts",
+      "callee_line": 54
+    },
+    {
+      "path": "features/dashboard-scene/saving/getDashboardChanges.ts",
+      "from_function": "applyVariableChanges",
+      "calls_function": "validateFiltersOrigin",
+      "caller_line": 239,
+      "callee_file": "features/dashboard-scene/serialization/sceneVariablesSetToVariables.ts",
+      "callee_line": 589
+    },
+    {
+      "path": "features/dashboard-scene/serialization/sceneVariablesSetToVariables.ts",
+      "from_function": "sceneVariablesSetToVariables",
+      "calls_function": "variableValueOptionsToVariableOptions",
+      "caller_line": 54,
+      "callee_file": "features/dashboard-scene/serialization/sceneVariablesSetToVariables.ts",
+      "callee_line": 282
+    },
+    {
+      "path": "features/dashboard-scene/serialization/sceneVariablesSetToVariables.ts",
+      "from_function": "sceneVariablesSetToVariables",
+      "calls_function": "validateFiltersOrigin",
+      "caller_line": 54,
+      "callee_file": "features/dashboard-scene/serialization/sceneVariablesSetToVariables.ts",
+      "callee_line": 589
+    },
+    {
+      "path": "features/dashboard-scene/serialization/sceneVariablesSetToVariables.ts",
+      "from_function": "sceneVariablesSetToSchemaV2Variables",
+      "calls_function": "variableValueOptionsToVariableOptions",
+      "caller_line": 290,
+      "callee_file": "features/dashboard-scene/serialization/sceneVariablesSetToVariables.ts",
+      "callee_line": 282
+    },
+    {
+      "path": "features/dashboard-scene/serialization/sceneVariablesSetToVariables.ts",
+      "from_function": "sceneVariablesSetToSchemaV2Variables",
+      "calls_function": "validateFiltersOrigin",
+      "caller_line": 290,
+      "callee_file": "features/dashboard-scene/serialization/sceneVariablesSetToVariables.ts",
+      "callee_line": 589
+    },
+    {
+      "path": "features/dashboard-scene/serialization/transformSaveModelToScene.ts",
+      "from_function": "createDashboardSceneFromDashboardModel",
+      "calls_function": "createVariablesForSnapshot",
+      "caller_line": 301,
+      "callee_file": "features/dashboard-scene/utils/variables.ts",
+      "callee_line": 49
+    },
+    {
+      "path": "features/dashboard-scene/serialization/transformSaveModelToScene.ts",
+      "from_function": "createDashboardSceneFromDashboardModel",
+      "calls_function": "createVariablesForDashboard",
+      "caller_line": 301,
+      "callee_file": "features/dashboard-scene/utils/variables.ts",
+      "callee_line": 25
+    },
+    {
+      "path": "features/dashboard-scene/serialization/transformSceneToSaveModel.ts",
+      "from_function": "transformSceneToSaveModel",
+      "calls_function": "sceneVariablesSetToVariables",
+      "caller_line": 60,
+      "callee_file": "features/dashboard-scene/serialization/sceneVariablesSetToVariables.ts",
+      "callee_line": 54
+    },
+    {
+      "path": "features/dashboard-scene/serialization/transformSceneToSaveModelSchemaV2.ts",
+      "from_function": "getVariables",
+      "calls_function": "sceneVariablesSetToSchemaV2Variables",
+      "caller_line": 493,
+      "callee_file": "features/dashboard-scene/serialization/sceneVariablesSetToVariables.ts",
+      "callee_line": 290
+    },
+    {
+      "path": "features/dashboard-scene/settings/variables/editors/CustomVariableEditor/ModalEditor.tsx",
+      "from_function": "onQueryChange",
+      "calls_function": "validateJsonQuery",
+      "caller_line": 130,
+      "callee_file": "features/dashboard-scene/settings/variables/editors/CustomVariableEditor/CustomVariableEditor.tsx",
+      "callee_line": 124
+    },
+    {
+      "path": "features/dashboard-scene/settings/variables/editors/QueryVariableEditor.tsx",
+      "from_function": "onQueryChange",
+      "calls_function": "getQueryDef",
+      "caller_line": 85,
+      "callee_file": "features/dashboard-scene/settings/variables/editors/QueryVariableEditor.tsx",
+      "callee_line": 315
+    },
+    {
+      "path": "features/dashboard-scene/settings/variables/editors/QueryVariableEditor.tsx",
+      "from_function": "onQueryChange",
+      "calls_function": "onRunQuery",
+      "caller_line": 85,
+      "callee_file": "features/dashboard-scene/settings/variables/editors/QueryVariableEditor.tsx",
+      "callee_line": 149
+    },
+    {
+      "path": "features/dashboard-scene/settings/variables/editors/QueryVariableEditor.tsx",
+      "from_function": "onStaticOptionsChange",
+      "calls_function": "onRunQuery",
+      "caller_line": 90,
+      "callee_file": "features/dashboard-scene/settings/variables/editors/QueryVariableEditor.tsx",
+      "callee_line": 149
+    },
+    {
+      "path": "features/dashboard-scene/settings/variables/editors/QueryVariableEditor.tsx",
+      "from_function": "onStaticOptionsOrderChange",
+      "calls_function": "onRunQuery",
+      "caller_line": 95,
+      "callee_file": "features/dashboard-scene/settings/variables/editors/QueryVariableEditor.tsx",
+      "callee_line": 149
+    },
+    {
+      "path": "features/dashboard-scene/settings/variables/editors/QueryVariableEditor.tsx",
+      "from_function": "onQueryChange",
+      "calls_function": "getQueryDef",
+      "caller_line": 237,
+      "callee_file": "features/dashboard-scene/settings/variables/editors/QueryVariableEditor.tsx",
+      "callee_line": 315
+    },
+    {
+      "path": "features/dashboard-scene/utils/getVariablesCompatibility.ts",
+      "from_function": "getVariablesCompatibility",
+      "calls_function": "sceneVariablesSetToVariables",
+      "caller_line": 6,
+      "callee_file": "features/dashboard-scene/serialization/sceneVariablesSetToVariables.ts",
+      "callee_line": 54
+    },
+    {
+      "path": "features/dashboard-scene/utils/variables.ts",
+      "from_function": "createSceneVariableFromVariableModel",
+      "calls_function": "pickFirstValue",
+      "caller_line": 141,
+      "callee_file": "features/dashboard-scene/utils/variables.ts",
+      "callee_line": 304
+    },
+    {
+      "path": "features/dashboard/api/publicDashboardApi.ts",
+      "from_function": "endpoints",
+      "calls_function": "query",
+      "caller_line": 35,
+      "callee_file": "plugins/datasource/azuremonitor/variables.ts",
+      "callee_line": 54
+    },
+    {
+      "path": "features/explore/TraceView/components/TraceTimelineViewer/SpanDetail/SpanFlameGraph.tsx",
+      "from_function": "getFlameGraphData",
+      "calls_function": "query",
+      "caller_line": 79,
+      "callee_file": "plugins/datasource/azuremonitor/variables.ts",
+      "callee_line": 54
+    },
+    {
+      "path": "features/migrate-to-cloud/api/index.ts",
+      "from_function": "endpoints",
+      "calls_function": "query",
+      "caller_line": 7,
+      "callee_file": "plugins/datasource/azuremonitor/variables.ts",
+      "callee_line": 54
+    },
+    {
+      "path": "plugins/datasource/azuremonitor/variables.ts",
+      "from_function": "promisedResults",
+      "calls_function": "hasValue",
+      "caller_line": 55,
+      "callee_file": "plugins/datasource/azuremonitor/variables.ts",
+      "callee_line": 50
+    },
+    {
+      "path": "plugins/datasource/azuremonitor/variables.ts",
+      "from_function": "promisedResults",
+      "calls_function": "parseResourceNamesAsTemplateVariable",
+      "caller_line": 55,
+      "callee_file": "plugins/datasource/azuremonitor/variables.ts",
+      "callee_line": 23
+    },
+    {
+      "path": "plugins/datasource/azuremonitor/variables.ts",
+      "from_function": "promisedResults",
+      "calls_function": "callGrafanaTemplateVariableFn",
+      "caller_line": 55,
+      "callee_file": "plugins/datasource/azuremonitor/variables.ts",
+      "callee_line": 217
+    },
+    {
+      "path": "plugins/datasource/azuremonitor/variables.ts",
+      "from_function": "query",
+      "calls_function": "promisedResults",
+      "caller_line": 54,
+      "callee_file": "plugins/datasource/azuremonitor/variables.ts",
+      "callee_line": 55
+    },
+    {
+      "path": "plugins/datasource/azuremonitor/variables.ts",
+      "from_function": "callGrafanaTemplateVariableFn",
+      "calls_function": "replaceVariable",
+      "caller_line": 217,
+      "callee_file": "plugins/datasource/azuremonitor/variables.ts",
+      "callee_line": 262
+    },
+    {
+      "path": "plugins/datasource/cloud-monitoring/datasource.ts",
+      "from_function": "query",
+      "calls_function": "query",
+      "caller_line": 56,
+      "callee_file": "plugins/datasource/azuremonitor/variables.ts",
+      "callee_line": 54
+    },
+    {
+      "path": "plugins/datasource/cloudwatch/variables.ts",
+      "from_function": "query",
+      "calls_function": "execute",
+      "caller_line": 28,
+      "callee_file": "plugins/datasource/cloudwatch/variables.ts",
+      "callee_line": 33
+    }
+  ],
+  "call_graph_edges": [
+    {
+      "from": "api/clients/folder/v1beta1/index.ts::endpoints",
+      "to": "plugins/datasource/azuremonitor/variables.ts::query"
+    },
+    {
+      "from": "api/clients/scope/v0alpha1/endpoints.gen.ts::endpoints",
+      "to": "plugins/datasource/azuremonitor/variables.ts::query"
+    },
+    {
+      "from": "core/utils/explore.ts::generateEmptyQuery",
+      "to": "plugins/datasource/cloudwatch/variables.ts::getDefaultQuery"
+    },
+    {
+      "from": "features/alerting/unified/api/alertRuleApi.ts::endpoints",
+      "to": "plugins/datasource/azuremonitor/variables.ts::query"
+    },
+    {
+      "from": "features/alerting/unified/api/alertSilencesApi.ts::endpoints",
+      "to": "plugins/datasource/azuremonitor/variables.ts::query"
+    },
+    {
+      "from": "features/alerting/unified/api/alertmanagerApi.ts::endpoints",
+      "to": "plugins/datasource/azuremonitor/variables.ts::query"
+    },
+    {
+      "from": "features/alerting/unified/api/dataSourcesApi.ts::endpoints",
+      "to": "plugins/datasource/azuremonitor/variables.ts::query"
+    },
+    {
+      "from": "features/alerting/unified/api/featureDiscoveryApi.ts::endpoints",
+      "to": "plugins/datasource/azuremonitor/variables.ts::query"
+    },
+    {
+      "from": "features/alerting/unified/api/incidentsApi.ts::endpoints",
+      "to": "plugins/datasource/azuremonitor/variables.ts::query"
+    },
+    {
+      "from": "features/alerting/unified/api/labelsApi.ts::endpoints",
+      "to": "plugins/datasource/azuremonitor/variables.ts::query"
+    },
+    {
+      "from": "features/alerting/unified/api/onCallApi.ts::endpoints",
+      "to": "plugins/datasource/azuremonitor/variables.ts::query"
+    },
+    {
+      "from": "features/alerting/unified/api/prometheusApi.ts::endpoints",
+      "to": "plugins/datasource/azuremonitor/variables.ts::query"
+    },
+    {
+      "from": "features/alerting/unified/api/receiversApi.ts::endpoints",
+      "to": "plugins/datasource/azuremonitor/variables.ts::query"
+    },
+    {
+      "from": "features/alerting/unified/api/sloApi.ts::endpoints",
+      "to": "plugins/datasource/azuremonitor/variables.ts::query"
+    },
+    {
+      "from": "features/alerting/unified/api/stateHistoryApi.ts::endpoints",
+      "to": "plugins/datasource/azuremonitor/variables.ts::query"
+    },
+    {
+      "from": "features/alerting/unified/api/templateApi.ts::endpoints",
+      "to": "plugins/datasource/azuremonitor/variables.ts::query"
+    },
+    {
+      "from": "features/alerting/unified/hooks/useAsync.tsx::execute",
+      "to": "plugins/datasource/cloudwatch/variables.ts::execute"
+    },
+    {
+      "from": "features/alerting/unified/openapi/receiversApi.gen.ts::endpoints",
+      "to": "plugins/datasource/azuremonitor/variables.ts::query"
+    },
+    {
+      "from": "features/alerting/unified/openapi/routesApi.gen.ts::endpoints",
+      "to": "plugins/datasource/azuremonitor/variables.ts::query"
+    },
+    {
+      "from": "features/alerting/unified/openapi/timeIntervalsApi.gen.ts::endpoints",
+      "to": "plugins/datasource/azuremonitor/variables.ts::query"
+    },
+    {
+      "from": "features/annotations/executeAnnotationQuery.ts::executeAnnotationQuery",
+      "to": "plugins/datasource/cloudwatch/variables.ts::getDefaultQuery"
+    },
+    {
+      "from": "features/annotations/utils/savedQueryUtils.ts::updateAnnotationFromSavedQuery",
+      "to": "plugins/datasource/cloudwatch/variables.ts::getDefaultQuery"
+    },
+    {
+      "from": "features/browse-dashboards/api/browseDashboardsAPI.ts::endpoints",
+      "to": "plugins/datasource/azuremonitor/variables.ts::query"
+    },
+    {
+      "from": "features/dashboard-scene/saving/getDashboardChanges.ts::applyVariableChanges",
+      "to": "features/dashboard-scene/serialization/sceneVariablesSetToVariables.ts::validateFiltersOrigin"
+    },
+    {
+      "from": "features/dashboard-scene/serialization/sceneVariablesSetToVariables.ts::sceneVariablesSetToVariables",
+      "to": "features/dashboard-scene/serialization/sceneVariablesSetToVariables.ts::variableValueOptionsToVariableOptions"
+    },
+    {
+      "from": "features/dashboard-scene/serialization/sceneVariablesSetToVariables.ts::sceneVariablesSetToVariables",
+      "to": "features/dashboard-scene/serialization/sceneVariablesSetToVariables.ts::validateFiltersOrigin"
+    },
+    {
+      "from": "features/dashboard-scene/serialization/sceneVariablesSetToVariables.ts::sceneVariablesSetToSchemaV2Variables",
+      "to": "features/dashboard-scene/serialization/sceneVariablesSetToVariables.ts::variableValueOptionsToVariableOptions"
+    },
+    {
+      "from": "features/dashboard-scene/serialization/sceneVariablesSetToVariables.ts::sceneVariablesSetToSchemaV2Variables",
+      "to": "features/dashboard-scene/serialization/sceneVariablesSetToVariables.ts::validateFiltersOrigin"
+    },
+    {
+      "from": "features/dashboard-scene/serialization/transformSaveModelToScene.ts::createDashboardSceneFromDashboardModel",
+      "to": "features/dashboard-scene/utils/variables.ts::createVariablesForSnapshot"
+    },
+    {
+      "from": "features/dashboard-scene/serialization/transformSaveModelToScene.ts::createDashboardSceneFromDashboardModel",
+      "to": "features/dashboard-scene/utils/variables.ts::createVariablesForDashboard"
+    },
+    {
+      "from": "features/dashboard-scene/serialization/transformSceneToSaveModel.ts::transformSceneToSaveModel",
+      "to": "features/dashboard-scene/serialization/sceneVariablesSetToVariables.ts::sceneVariablesSetToVariables"
+    },
+    {
+      "from": "features/dashboard-scene/serialization/transformSceneToSaveModelSchemaV2.ts::getVariables",
+      "to": "features/dashboard-scene/serialization/sceneVariablesSetToVariables.ts::sceneVariablesSetToSchemaV2Variables"
+    },
+    {
+      "from": "features/dashboard-scene/settings/variables/editors/CustomVariableEditor/ModalEditor.tsx::onQueryChange",
+      "to": "features/dashboard-scene/settings/variables/editors/CustomVariableEditor/CustomVariableEditor.tsx::validateJsonQuery"
+    },
+    {
+      "from": "features/dashboard-scene/settings/variables/editors/QueryVariableEditor.tsx::onQueryChange",
+      "to": "features/dashboard-scene/settings/variables/editors/QueryVariableEditor.tsx::getQueryDef"
+    },
+    {
+      "from": "features/dashboard-scene/settings/variables/editors/QueryVariableEditor.tsx::onQueryChange",
+      "to": "features/dashboard-scene/settings/variables/editors/QueryVariableEditor.tsx::onRunQuery"
+    },
+    {
+      "from": "features/dashboard-scene/settings/variables/editors/QueryVariableEditor.tsx::onStaticOptionsChange",
+      "to": "features/dashboard-scene/settings/variables/editors/QueryVariableEditor.tsx::onRunQuery"
+    },
+    {
+      "from": "features/dashboard-scene/settings/variables/editors/QueryVariableEditor.tsx::onStaticOptionsOrderChange",
+      "to": "features/dashboard-scene/settings/variables/editors/QueryVariableEditor.tsx::onRunQuery"
+    },
+    {
+      "from": "features/dashboard-scene/settings/variables/editors/QueryVariableEditor.tsx::onQueryChange",
+      "to": "features/dashboard-scene/settings/variables/editors/QueryVariableEditor.tsx::getQueryDef"
+    },
+    {
+      "from": "features/dashboard-scene/utils/getVariablesCompatibility.ts::getVariablesCompatibility",
+      "to": "features/dashboard-scene/serialization/sceneVariablesSetToVariables.ts::sceneVariablesSetToVariables"
+    },
+    {
+      "from": "features/dashboard-scene/utils/variables.ts::createSceneVariableFromVariableModel",
+      "to": "features/dashboard-scene/utils/variables.ts::pickFirstValue"
+    },
+    {
+      "from": "features/dashboard/api/publicDashboardApi.ts::endpoints",
+      "to": "plugins/datasource/azuremonitor/variables.ts::query"
+    },
+    {
+      "from": "features/explore/TraceView/components/TraceTimelineViewer/SpanDetail/SpanFlameGraph.tsx::getFlameGraphData",
+      "to": "plugins/datasource/azuremonitor/variables.ts::query"
+    },
+    {
+      "from": "features/migrate-to-cloud/api/index.ts::endpoints",
+      "to": "plugins/datasource/azuremonitor/variables.ts::query"
+    },
+    {
+      "from": "plugins/datasource/azuremonitor/variables.ts::promisedResults",
+      "to": "plugins/datasource/azuremonitor/variables.ts::hasValue"
+    },
+    {
+      "from": "plugins/datasource/azuremonitor/variables.ts::promisedResults",
+      "to": "plugins/datasource/azuremonitor/variables.ts::parseResourceNamesAsTemplateVariable"
+    },
+    {
+      "from": "plugins/datasource/azuremonitor/variables.ts::promisedResults",
+      "to": "plugins/datasource/azuremonitor/variables.ts::callGrafanaTemplateVariableFn"
+    },
+    {
+      "from": "plugins/datasource/azuremonitor/variables.ts::query",
+      "to": "plugins/datasource/azuremonitor/variables.ts::promisedResults"
+    },
+    {
+      "from": "plugins/datasource/azuremonitor/variables.ts::callGrafanaTemplateVariableFn",
+      "to": "plugins/datasource/azuremonitor/variables.ts::replaceVariable"
+    },
+    {
+      "from": "plugins/datasource/cloud-monitoring/datasource.ts::query",
+      "to": "plugins/datasource/azuremonitor/variables.ts::query"
+    },
+    {
+      "from": "plugins/datasource/cloudwatch/variables.ts::query",
+      "to": "plugins/datasource/cloudwatch/variables.ts::execute"
+    }
+  ],
+  "functions_in_changed_files": [
+    {
+      "name": ":program",
+      "full_name": "features/dashboard-scene/serialization/sceneVariablesSetToVariables.ts::program",
+      "file": "features/dashboard-scene/serialization/sceneVariablesSetToVariables.ts",
+      "start_line": 1,
+      "end_line": 597,
+      "signature": ""
+    },
+    {
+      "name": "variableValueOptionsToVariableOptions",
+      "full_name": "features/dashboard-scene/serialization/sceneVariablesSetToVariables.ts::program:variableValueOptionsToVariableOptions",
+      "file": "features/dashboard-scene/serialization/sceneVariablesSetToVariables.ts",
+      "start_line": 282,
+      "end_line": 288,
+      "signature": ""
+    },
+    {
+      "name": "sceneVariablesSetToVariables",
+      "full_name": "features/dashboard-scene/serialization/sceneVariablesSetToVariables.ts::program:sceneVariablesSetToVariables",
+      "file": "features/dashboard-scene/serialization/sceneVariablesSetToVariables.ts",
+      "start_line": 54,
+      "end_line": 280,
+      "signature": ""
+    },
+    {
+      "name": "sceneVariablesSetToSchemaV2Variables",
+      "full_name": "features/dashboard-scene/serialization/sceneVariablesSetToVariables.ts::program:sceneVariablesSetToSchemaV2Variables",
+      "file": "features/dashboard-scene/serialization/sceneVariablesSetToVariables.ts",
+      "start_line": 290,
+      "end_line": 587,
+      "signature": ""
+    },
+    {
+      "name": "validateFiltersOrigin",
+      "full_name": "features/dashboard-scene/serialization/sceneVariablesSetToVariables.ts::program:validateFiltersOrigin",
+      "file": "features/dashboard-scene/serialization/sceneVariablesSetToVariables.ts",
+      "start_line": 589,
+      "end_line": 592,
+      "signature": ""
+    },
+    {
+      "name": "isVariableEditable",
+      "full_name": "features/dashboard-scene/serialization/sceneVariablesSetToVariables.ts::program:isVariableEditable",
+      "file": "features/dashboard-scene/serialization/sceneVariablesSetToVariables.ts",
+      "start_line": 594,
+      "end_line": 596,
+      "signature": ""
+    },
+    {
+      "name": ":program",
+      "full_name": "features/dashboard-scene/settings/variables/components/AdHocVariableForm.tsx::program",
+      "file": "features/dashboard-scene/settings/variables/components/AdHocVariableForm.tsx",
+      "start_line": 1,
+      "end_line": 141,
+      "signature": ""
+    },
+    {
+      "name": "AdHocVariableForm",
+      "full_name": "features/dashboard-scene/settings/variables/components/AdHocVariableForm.tsx::program:AdHocVariableForm",
+      "file": "features/dashboard-scene/settings/variables/components/AdHocVariableForm.tsx",
+      "start_line": 26,
+      "end_line": 140,
+      "signature": ""
+    },
+    {
+      "name": ":program",
+      "full_name": "features/dashboard-scene/settings/variables/components/CustomVariableForm.tsx::program",
+      "file": "features/dashboard-scene/settings/variables/components/CustomVariableForm.tsx",
+      "start_line": 1,
+      "end_line": 212,
+      "signature": ""
+    },
+    {
+      "name": "CustomVariableFormNonMultiProps",
+      "full_name": "features/dashboard-scene/settings/variables/components/CustomVariableForm.tsx::program:CustomVariableFormNonMultiProps",
+      "file": "features/dashboard-scene/settings/variables/components/CustomVariableForm.tsx",
+      "start_line": 157,
+      "end_line": 211,
+      "signature": ""
+    },
+    {
+      "name": "CustomVariableForm",
+      "full_name": "features/dashboard-scene/settings/variables/components/CustomVariableForm.tsx::program:CustomVariableForm",
+      "file": "features/dashboard-scene/settings/variables/components/CustomVariableForm.tsx",
+      "start_line": 31,
+      "end_line": 108,
+      "signature": ""
+    },
+    {
+      "name": "ValuesFormatSelector",
+      "full_name": "features/dashboard-scene/settings/variables/components/CustomVariableForm.tsx::program:ValuesFormatSelector",
+      "file": "features/dashboard-scene/settings/variables/components/CustomVariableForm.tsx",
+      "start_line": 115,
+      "end_line": 155,
+      "signature": ""
+    },
+    {
+      "name": ":program",
+      "full_name": "features/dashboard-scene/settings/variables/components/DataSourceVariableForm.tsx::program",
+      "file": "features/dashboard-scene/settings/variables/components/DataSourceVariableForm.tsx",
+      "start_line": 1,
+      "end_line": 100,
+      "signature": ""
+    },
+    {
+      "name": "DataSourceVariableForm",
+      "full_name": "features/dashboard-scene/settings/variables/components/DataSourceVariableForm.tsx::program:DataSourceVariableForm",
+      "file": "features/dashboard-scene/settings/variables/components/DataSourceVariableForm.tsx",
+      "start_line": 30,
+      "end_line": 99,
+      "signature": ""
+    },
+    {
+      "name": ":program",
+      "full_name": "features/dashboard-scene/settings/variables/components/QueryVariableForm.tsx::program",
+      "file": "features/dashboard-scene/settings/variables/components/QueryVariableForm.tsx",
+      "start_line": 1,
+      "end_line": 182,
+      "signature": ""
+    },
+    {
+      "name": "QueryVariableEditorForm",
+      "full_name": "features/dashboard-scene/settings/variables/components/QueryVariableForm.tsx::program:QueryVariableEditorForm",
+      "file": "features/dashboard-scene/settings/variables/components/QueryVariableForm.tsx",
+      "start_line": 57,
+      "end_line": 181,
+      "signature": ""
+    },
+    {
+      "name": ":program",
+      "full_name": "features/dashboard-scene/settings/variables/components/SelectionOptionsForm.tsx::program",
+      "file": "features/dashboard-scene/settings/variables/components/SelectionOptionsForm.tsx",
+      "start_line": 1,
+      "end_line": 80,
+      "signature": ""
+    },
+    {
+      "name": "SelectionOptionsForm",
+      "full_name": "features/dashboard-scene/settings/variables/components/SelectionOptionsForm.tsx::program:SelectionOptionsForm",
+      "file": "features/dashboard-scene/settings/variables/components/SelectionOptionsForm.tsx",
+      "start_line": 22,
+      "end_line": 79,
+      "signature": ""
+    },
+    {
+      "name": ":program",
+      "full_name": "features/dashboard-scene/settings/variables/editors/AdHocFiltersVariableEditor.tsx::program",
+      "file": "features/dashboard-scene/settings/variables/editors/AdHocFiltersVariableEditor.tsx",
+      "start_line": 1,
+      "end_line": 77,
+      "signature": ""
+    },
+    {
+      "name": "AdHocFiltersVariableEditor",
+      "full_name": "features/dashboard-scene/settings/variables/editors/AdHocFiltersVariableEditor.tsx::program:AdHocFiltersVariableEditor",
+      "file": "features/dashboard-scene/settings/variables/editors/AdHocFiltersVariableEditor.tsx",
+      "start_line": 18,
+      "end_line": 62,
+      "signature": ""
+    },
+    {
+      "name": "onDataSourceChange",
+      "full_name": "features/dashboard-scene/settings/variables/editors/AdHocFiltersVariableEditor.tsx::program:AdHocFiltersVariableEditor:onDataSourceChange",
+      "file": "features/dashboard-scene/settings/variables/editors/AdHocFiltersVariableEditor.tsx",
+      "start_line": 30,
+      "end_line": 37,
+      "signature": ""
+    },
+    {
+      "name": "onDefaultKeysChange",
+      "full_name": "features/dashboard-scene/settings/variables/editors/AdHocFiltersVariableEditor.tsx::program:AdHocFiltersVariableEditor:onDefaultKeysChange",
+      "file": "features/dashboard-scene/settings/variables/editors/AdHocFiltersVariableEditor.tsx",
+      "start_line": 39,
+      "end_line": 43,
+      "signature": ""
+    },
+    {
+      "name": "onAllowCustomValueChange",
+      "full_name": "features/dashboard-scene/settings/variables/editors/AdHocFiltersVariableEditor.tsx::program:AdHocFiltersVariableEditor:onAllowCustomValueChange",
+      "file": "features/dashboard-scene/settings/variables/editors/AdHocFiltersVariableEditor.tsx",
+      "start_line": 45,
+      "end_line": 47,
+      "signature": ""
+    },
+    {
+      "name": "render",
+      "full_name": "features/dashboard-scene/settings/variables/editors/AdHocFiltersVariableEditor.tsx::program:getAdHocFilterOptions:render",
+      "file": "features/dashboard-scene/settings/variables/editors/AdHocFiltersVariableEditor.tsx",
+      "start_line": 73,
+      "end_line": 73,
+      "signature": ""
+    },
+    {
+      "name": "getAdHocFilterOptions",
+      "full_name": "features/dashboard-scene/settings/variables/editors/AdHocFiltersVariableEditor.tsx::program:getAdHocFilterOptions",
+      "file": "features/dashboard-scene/settings/variables/editors/AdHocFiltersVariableEditor.tsx",
+      "start_line": 64,
+      "end_line": 76,
+      "signature": ""
+    },
+    {
+      "name": ":program",
+      "full_name": "features/dashboard-scene/settings/variables/editors/CustomVariableEditor/CustomVariableEditor.tsx::program",
+      "file": "features/dashboard-scene/settings/variables/editors/CustomVariableEditor/CustomVariableEditor.tsx",
+      "start_line": 1,
+      "end_line": 166,
+      "signature": ""
+    },
+    {
+      "name": "CustomVariableEditor",
+      "full_name": "features/dashboard-scene/settings/variables/editors/CustomVariableEditor/CustomVariableEditor.tsx::program:CustomVariableEditor",
+      "file": "features/dashboard-scene/settings/variables/editors/CustomVariableEditor/CustomVariableEditor.tsx",
+      "start_line": 19,
+      "end_line": 108,
+      "signature": ""
+    },
+    {
+      "name": "render",
+      "full_name": "features/dashboard-scene/settings/variables/editors/CustomVariableEditor/CustomVariableEditor.tsx::program:getCustomVariableOptions:render",
+      "file": "features/dashboard-scene/settings/variables/editors/CustomVariableEditor/CustomVariableEditor.tsx",
+      "start_line": 119,
+      "end_line": 119,
+      "signature": ""
+    },
+    {
+      "name": "getCustomVariableOptions",
+      "full_name": "features/dashboard-scene/settings/variables/editors/CustomVariableEditor/CustomVariableEditor.tsx::program:getCustomVariableOptions",
+      "file": "features/dashboard-scene/settings/variables/editors/CustomVariableEditor/CustomVariableEditor.tsx",
+      "start_line": 110,
+      "end_line": 122,
+      "signature": ""
+    },
+    {
+      "name": "validateJsonQuery",
+      "full_name": "features/dashboard-scene/settings/variables/editors/CustomVariableEditor/CustomVariableEditor.tsx::program:validateJsonQuery",
+      "file": "features/dashboard-scene/settings/variables/editors/CustomVariableEditor/CustomVariableEditor.tsx",
+      "start_line": 124,
+      "end_line": 165,
+      "signature": ""
+    },
+    {
+      "name": ":program",
+      "full_name": "features/dashboard-scene/settings/variables/editors/DataSourceVariableEditor.tsx::program",
+      "file": "features/dashboard-scene/settings/variables/editors/DataSourceVariableEditor.tsx",
+      "start_line": 1,
+      "end_line": 142,
+      "signature": ""
+    },
+    {
+      "name": "DataSourceTypeSelect",
+      "full_name": "features/dashboard-scene/settings/variables/editors/DataSourceVariableEditor.tsx::program:DataSourceTypeSelect",
+      "file": "features/dashboard-scene/settings/variables/editors/DataSourceVariableEditor.tsx",
+      "start_line": 103,
+      "end_line": 122,
+      "signature": ""
+    },
+    {
+      "name": "onChange",
+      "full_name": "features/dashboard-scene/settings/variables/editors/DataSourceVariableEditor.tsx::program:DataSourceTypeSelect:onChange",
+      "file": "features/dashboard-scene/settings/variables/editors/DataSourceVariableEditor.tsx",
+      "start_line": 107,
+      "end_line": 110,
+      "signature": ""
+    },
+    {
+      "name": "DataSourceNameFilter",
+      "full_name": "features/dashboard-scene/settings/variables/editors/DataSourceVariableEditor.tsx::program:DataSourceNameFilter",
+      "file": "features/dashboard-scene/settings/variables/editors/DataSourceVariableEditor.tsx",
+      "start_line": 124,
+      "end_line": 141,
+      "signature": ""
+    },
+    {
+      "name": "onBlur",
+      "full_name": "features/dashboard-scene/settings/variables/editors/DataSourceVariableEditor.tsx::program:DataSourceNameFilter:onBlur",
+      "file": "features/dashboard-scene/settings/variables/editors/DataSourceVariableEditor.tsx",
+      "start_line": 127,
+      "end_line": 130,
+      "signature": ""
+    },
+    {
+      "name": "onChangeType",
+      "full_name": "features/dashboard-scene/settings/variables/editors/DataSourceVariableEditor.tsx::program:DataSourceVariableEditor:onChangeType",
+      "file": "features/dashboard-scene/settings/variables/editors/DataSourceVariableEditor.tsx",
+      "start_line": 24,
+      "end_line": 29,
+      "signature": ""
+    },
+    {
+      "name": "DataSourceVariableEditor",
+      "full_name": "features/dashboard-scene/settings/variables/editors/DataSourceVariableEditor.tsx::program:DataSourceVariableEditor",
+      "file": "features/dashboard-scene/settings/variables/editors/DataSourceVariableEditor.tsx",
+      "start_line": 19,
+      "end_line": 73,
+      "signature": ""
+    },
+    {
+      "name": "onRegExChange",
+      "full_name": "features/dashboard-scene/settings/variables/editors/DataSourceVariableEditor.tsx::program:DataSourceVariableEditor:onRegExChange",
+      "file": "features/dashboard-scene/settings/variables/editors/DataSourceVariableEditor.tsx",
+      "start_line": 31,
+      "end_line": 36,
+      "signature": ""
+    },
+    {
+      "name": "onMultiChange",
+      "full_name": "features/dashboard-scene/settings/variables/editors/DataSourceVariableEditor.tsx::program:DataSourceVariableEditor:onMultiChange",
+      "file": "features/dashboard-scene/settings/variables/editors/DataSourceVariableEditor.tsx",
+      "start_line": 38,
+      "end_line": 42,
+      "signature": ""
+    },
+    {
+      "name": "onIncludeAllChange",
+      "full_name": "features/dashboard-scene/settings/variables/editors/DataSourceVariableEditor.tsx::program:DataSourceVariableEditor:onIncludeAllChange",
+      "file": "features/dashboard-scene/settings/variables/editors/DataSourceVariableEditor.tsx",
+      "start_line": 44,
+      "end_line": 46,
+      "signature": ""
+    },
+    {
+      "name": "onAllValueChange",
+      "full_name": "features/dashboard-scene/settings/variables/editors/DataSourceVariableEditor.tsx::program:DataSourceVariableEditor:onAllValueChange",
+      "file": "features/dashboard-scene/settings/variables/editors/DataSourceVariableEditor.tsx",
+      "start_line": 48,
+      "end_line": 50,
+      "signature": ""
+    },
+    {
+      "name": "onAllowCustomValueChange",
+      "full_name": "features/dashboard-scene/settings/variables/editors/DataSourceVariableEditor.tsx::program:DataSourceVariableEditor:onAllowCustomValueChange",
+      "file": "features/dashboard-scene/settings/variables/editors/DataSourceVariableEditor.tsx",
+      "start_line": 52,
+      "end_line": 54,
+      "signature": ""
+    },
+    {
+      "name": "render",
+      "full_name": "features/dashboard-scene/settings/variables/editors/DataSourceVariableEditor.tsx::program:getDataSourceVariableOptions:render",
+      "file": "features/dashboard-scene/settings/variables/editors/DataSourceVariableEditor.tsx",
+      "start_line": 84,
+      "end_line": 84,
+      "signature": ""
+    },
+    {
+      "name": "getDataSourceVariableOptions",
+      "full_name": "features/dashboard-scene/settings/variables/editors/DataSourceVariableEditor.tsx::program:getDataSourceVariableOptions",
+      "file": "features/dashboard-scene/settings/variables/editors/DataSourceVariableEditor.tsx",
+      "start_line": 75,
+      "end_line": 96,
+      "signature": ""
+    },
+    {
+      "name": "render",
+      "full_name": "features/dashboard-scene/settings/variables/editors/DataSourceVariableEditor.tsx::program:getDataSourceVariableOptions:render",
+      "file": "features/dashboard-scene/settings/variables/editors/DataSourceVariableEditor.tsx",
+      "start_line": 93,
+      "end_line": 93,
+      "signature": ""
+    },
+    {
+      "name": ":program",
+      "full_name": "features/dashboard-scene/settings/variables/editors/QueryVariableEditor.tsx::program",
+      "file": "features/dashboard-scene/settings/variables/editors/QueryVariableEditor.tsx",
+      "start_line": 1,
+      "end_line": 324,
+      "signature": ""
+    },
+    {
+      "name": "getQueryDef",
+      "full_name": "features/dashboard-scene/settings/variables/editors/QueryVariableEditor.tsx::program:getQueryDef",
+      "file": "features/dashboard-scene/settings/variables/editors/QueryVariableEditor.tsx",
+      "start_line": 315,
+      "end_line": 323,
+      "signature": ""
+    },
+    {
+      "name": "onRegExChange",
+      "full_name": "features/dashboard-scene/settings/variables/editors/QueryVariableEditor.tsx::program:QueryVariableEditor:onRegExChange",
+      "file": "features/dashboard-scene/settings/variables/editors/QueryVariableEditor.tsx",
+      "start_line": 51,
+      "end_line": 53,
+      "signature": ""
+    },
+    {
+      "name": "QueryVariableEditor",
+      "full_name": "features/dashboard-scene/settings/variables/editors/QueryVariableEditor.tsx::program:QueryVariableEditor",
+      "file": "features/dashboard-scene/settings/variables/editors/QueryVariableEditor.tsx",
+      "start_line": 34,
+      "end_line": 130,
+      "signature": ""
+    },
+    {
+      "name": "onRegexApplyToChange",
+      "full_name": "features/dashboard-scene/settings/variables/editors/QueryVariableEditor.tsx::program:QueryVariableEditor:onRegexApplyToChange",
+      "file": "features/dashboard-scene/settings/variables/editors/QueryVariableEditor.tsx",
+      "start_line": 54,
+      "end_line": 56,
+      "signature": ""
+    }
+  ]
+}

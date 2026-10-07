@@ -1,0 +1,1050 @@
+{
+  "pr": {
+    "number": 33878,
+    "title": "Update to/from to y_pred/other in array API metric test",
+    "body": "#### Reference Issues/PRs\r\n<!--\r\nExample: Fixes #1234. See also #3456.\r\nPlease use keywords (e.g., Fixes) to create link to the issues or pull requests\r\nyou resolved, so that they will automatically be closed when your pull request\r\nis merged. See https://github.com/blog/1506-closing-issues-via-pull-requests\r\n-->\r\n\r\n\r\n#### What does this implement/fix? Explain your changes.\r\nFollowing on from #33525, as discussed in thread https://github.com/scikit-learn/scikit-learn/pull/33525#discussion_r2924536898\r\nAmends:\r\n`to_ns_and_device` -> `y_pred_ns_and_device` (as everything follows y_pred)\r\n`from_ns_and_device` -> `other_ns_and_device`\r\n\r\nthis makes it consistent with what is used in the common estimator tests\r\n\r\n#### AI usage disclosure\r\n<!--\r\nIf AI tools were involved in creating this PR, please check all boxes that apply\r\nbelow and make sure that you adhere to our Automated Contributions Policy:\r\nhttps://scikit-learn.org/dev/developers/contributing.html#automated-contributions-policy\r\n-->\r\nI used AI assistance for:\r\n- [ ] Code generation (e.g., when writing an implementation or fixing a bug)\r\n- [ ] Test/benchmark generation\r\n- [ ] Documentation (including examples)\r\n- [ ] Research and understanding\r\n\r\n\r\n#### Any other comments?\r\ncc @OmarManzoor @betatim (and @ogrisel just FYI)\r\n\r\n<!--\r\nThank you for your patience. Changes to scikit-learn require careful\r\nattention, but with limited maintainer time, not every contribution can be reviewed\r\nquickly.\r\nFor more information and tips on improving your pull request, see:\r\nhttps://scikit-learn.org/dev/faq.html#why-is-my-pull-request-not-getting-any-attention.\r\n\r\nThanks for contributing!\r\n-->\r\n",
+    "url": "https://github.com/scikit-learn/scikit-learn/pull/33878",
+    "repo": "scikit-learn/scikit-learn",
+    "base_branch": "main",
+    "head_branch": "tst_metric_name",
+    "merged_at": "2026-04-28T07:40:54Z",
+    "state": "MERGED"
+  },
+  "changed_files": [
+    {
+      "path": "sklearn/metrics/tests/test_common.py",
+      "language": "python",
+      "added": 17,
+      "deleted": 15
+    }
+  ],
+  "nearest_tests": [],
+  "dependent_files": [
+    {
+      "path": "sklearn/metrics/cluster/tests/test_common.py",
+      "relationship": "imports",
+      "source_file": "sklearn/metrics/tests/test_common.py"
+    },
+    {
+      "path": "sklearn/metrics/tests/test_ranking.py",
+      "relationship": "imports",
+      "source_file": "sklearn/metrics/tests/test_common.py"
+    },
+    {
+      "path": "sklearn/datasets/tests/test_california_housing.py",
+      "relationship": "imports",
+      "source_file": "sklearn/metrics/tests/test_common.py"
+    },
+    {
+      "path": "sklearn/datasets/tests/test_common.py",
+      "relationship": "imports",
+      "source_file": "sklearn/metrics/tests/test_common.py"
+    },
+    {
+      "path": "sklearn/datasets/tests/test_lfw.py",
+      "relationship": "imports",
+      "source_file": "sklearn/metrics/tests/test_common.py"
+    },
+    {
+      "path": "sklearn/datasets/tests/test_rcv1.py",
+      "relationship": "imports",
+      "source_file": "sklearn/metrics/tests/test_common.py"
+    },
+    {
+      "path": "sklearn/datasets/tests/test_kddcup99.py",
+      "relationship": "imports",
+      "source_file": "sklearn/metrics/tests/test_common.py"
+    },
+    {
+      "path": "sklearn/datasets/tests/test_covtype.py",
+      "relationship": "imports",
+      "source_file": "sklearn/metrics/tests/test_common.py"
+    },
+    {
+      "path": "sklearn/datasets/tests/test_20news.py",
+      "relationship": "imports",
+      "source_file": "sklearn/metrics/tests/test_common.py"
+    },
+    {
+      "path": "sklearn/datasets/tests/test_base.py",
+      "relationship": "imports",
+      "source_file": "sklearn/metrics/tests/test_common.py"
+    }
+  ],
+  "diff_summary": "1 files changed",
+  "full_diff": "diff --git a/sklearn/metrics/tests/test_common.py b/sklearn/metrics/tests/test_common.py\nindex 3caf897099b0e..4b37dea49cf32 100644\n--- a/sklearn/metrics/tests/test_common.py\n+++ b/sklearn/metrics/tests/test_common.py\n@@ -2535,7 +2535,7 @@ def _check_output(out_np, out_xp, xp_to, y2_xp):\n \n \n @pytest.mark.parametrize(\n-    \"from_ns_and_device, to_ns_and_device\",\n+    \"other_ns_and_device, y_pred_ns_and_device\",\n     [\n         pytest.param(*args[:2], id=args[2])\n         for args in yield_mixed_namespace_input_permutations()\n@@ -2543,7 +2543,7 @@ def _check_output(out_np, out_xp, xp_to, y2_xp):\n )\n @pytest.mark.parametrize(\"metric_name\", sorted(METRICS_SUPPORTING_MIXED_NAMESPACE))\n def test_mixed_array_api_namespace_input_compliance(\n-    metric_name, from_ns_and_device, to_ns_and_device\n+    metric_name, other_ns_and_device, y_pred_ns_and_device\n ):\n     \"\"\"Check `y_true` and `sample_weight` follows `y_pred` for mixed namespace inputs.\n \n@@ -2551,15 +2551,15 @@ def test_mixed_array_api_namespace_input_compliance(\n     If the output is a float, checks that both all-numpy and mixed-type inputs return\n     a float.\n     If output is an array, checks it is of the same namespace and device as `y_pred`\n-    (`to_ns_and_device`).\n+    (`y_pred_ns_and_device`).\n     If the output is a tuple, checks that each element, whether float or array,\n     is correct, as detailed above.\n     \"\"\"\n-    xp_to, device_to = _array_api_for_tests(\n-        to_ns_and_device.xp, device_name=to_ns_and_device.device\n+    xp_y_pred, device_y_pred = _array_api_for_tests(\n+        y_pred_ns_and_device.xp, device_name=y_pred_ns_and_device.device\n     )\n-    xp_from, device_from = _array_api_for_tests(\n-        from_ns_and_device.xp, device_name=from_ns_and_device.device\n+    xp_other, device_other = _array_api_for_tests(\n+        other_ns_and_device.xp, device_name=other_ns_and_device.device\n     )\n \n     metric = ALL_METRICS[metric_name]\n@@ -2599,28 +2599,30 @@ def _get_dtype(data, xp, device):\n         for data_case in data_cases:\n             y1, y2 = data_all[data_case]\n \n-            dtype = _get_dtype(y1, xp_from, device_from)\n-            y1_xp = xp_from.asarray(y1, device=device_from, dtype=dtype)\n+            dtype = _get_dtype(y1, xp_other, device_other)\n+            y1_xp = xp_other.asarray(y1, device=device_other, dtype=dtype)\n \n             metric_kwargs_xp = metric_kwargs_np = {}\n             if metric_name not in METRICS_WITHOUT_SAMPLE_WEIGHT:\n-                # use `from_ns_and_device` for `sample_weight` as well\n+                # use `other_ns_and_device` for `sample_weight` as well\n                 sample_weight_np = np.array(sample_weight)\n                 metric_kwargs_np = {\"sample_weight\": sample_weight_np}\n-                sample_weight_xp = xp_from.asarray(sample_weight_np, device=device_from)\n+                sample_weight_xp = xp_other.asarray(\n+                    sample_weight_np, device=device_other\n+                )\n                 metric_kwargs_xp = {\"sample_weight\": sample_weight_xp}\n \n-            dtype = _get_dtype(y2, xp_to, device_to)\n-            y2_xp = xp_to.asarray(y2, device=device_to, dtype=dtype)\n+            dtype = _get_dtype(y2, xp_y_pred, device_y_pred)\n+            y2_xp = xp_y_pred.asarray(y2, device=device_y_pred, dtype=dtype)\n \n             metric_xp = metric(y1_xp, y2_xp, **metric_kwargs_xp)\n             metric_np = metric(y1, y2, **metric_kwargs_np)\n \n             if isinstance(metric_np, Tuple):\n                 for out_np, out_xp in zip(metric_np, metric_xp):\n-                    _check_output(out_np, out_xp, xp_to, y2_xp)\n+                    _check_output(out_np, out_xp, xp_y_pred, y2_xp)\n             else:\n-                _check_output(metric_np, metric_xp, xp_to, y2_xp)\n+                _check_output(metric_np, metric_xp, xp_y_pred, y2_xp)\n \n \n # Check thresholded classification metrics, minus multilabel ranking metrics\n",
+  "metadata": {
+    "v2_fetcher_version": 1,
+    "v2_fetched_at_unix": 1777987720,
+    "v2_diff_cap_bytes": 50000,
+    "v2_body_cap_bytes": 8000,
+    "v2_diff_truncated": false,
+    "v2_raw_diff_chars": 3921,
+    "v2_raw_body_chars": 1660,
+    "v2_rag_source": "fresh_for_v2_25pr_expansion",
+    "v2_rag_chunks_copied": 8,
+    "joern_enriched": true,
+    "joern_callers_count": 35,
+    "joern_functions_count": 50
+  },
+  "similar_chunks": [
+    {
+      "file": "sklearn/metrics/cluster/tests/test_common.py",
+      "start_line": 1,
+      "end_line": 61,
+      "similarity": 0.7618,
+      "related_to": "sklearn/metrics/tests/test_common.py",
+      "content_preview": "from functools import partial\nfrom itertools import chain\n\nimport numpy as np\nimport pytest\n\nfrom sklearn.metrics.cluster import (\n    adjusted_mutual_info_score,\n    adjusted_rand_score,\n    calinski_harabasz_score,\n    completeness_score,\n    davies_bouldin_score,\n    fowlkes_mallows_score,\n    homogeneity_score,\n    mutual_info_score,\n    normalized_mutual_info_score,\n    rand_score,\n    silhouette_score,\n    v_measure_score,\n)\nfrom sklearn.metrics.tests.test_common import check_array_api_metric\nfrom sklearn.utils._array_api import (\n    _get_namespace_device_dtype_ids,\n    yield_namespace_device_dtype_combinations,\n)\nfrom sklearn.utils._testing import assert_allclose\n\n# Dictionaries of metrics\n# ------------------------\n# The goal of having those dictionaries is to have an easy way to "
+    },
+    {
+      "file": "sklearn/metrics/tests/test_classification.py",
+      "start_line": 1,
+      "end_line": 72,
+      "similarity": 0.709,
+      "related_to": "sklearn/metrics/tests/test_common.py",
+      "content_preview": "import re\nimport warnings\nfrom functools import partial\nfrom itertools import chain, permutations, product\n\nimport numpy as np\nimport pytest\nfrom scipy import linalg, sparse\nfrom scipy.spatial.distance import hamming as sp_hamming\nfrom scipy.stats import bernoulli\n\nfrom sklearn import datasets, svm\nfrom sklearn.base import config_context\nfrom sklearn.datasets import make_multilabel_classification\nfrom sklearn.exceptions import UndefinedMetricWarning\nfrom sklearn.metrics import (\n    accuracy_score,\n    average_precision_score,\n    balanced_accuracy_score,\n    brier_score_loss,\n    class_likelihood_ratios,\n    classification_report,\n    cohen_kappa_score,\n    confusion_matrix,\n    f1_score,\n    fbeta_score,\n    hamming_loss,\n    hinge_loss,\n    jaccard_score,\n    log_loss,\n    make_scorer,\n"
+    },
+    {
+      "file": "sklearn/metrics/_classification.py",
+      "start_line": 1,
+      "end_line": 76,
+      "similarity": 0.6645,
+      "related_to": "sklearn/metrics/tests/test_common.py",
+      "content_preview": "\"\"\"Metrics to assess performance on classification task given class prediction.\n\nFunctions named as ``*_score`` return a scalar value to maximize: the higher\nthe better.\n\nFunction named as ``*_error`` or ``*_loss`` return a scalar value to minimize:\nthe lower the better.\n\"\"\"\n\n# Authors: The scikit-learn developers\n# SPDX-License-Identifier: BSD-3-Clause\n\nimport warnings\nfrom contextlib import nullcontext\nfrom math import sqrt\nfrom numbers import Integral, Real\n\nimport numpy as np\nfrom scipy.sparse import coo_matrix, csr_matrix, issparse\n\nfrom sklearn.exceptions import UndefinedMetricWarning\nfrom sklearn.preprocessing import LabelBinarizer, LabelEncoder\nfrom sklearn.utils import (\n    assert_all_finite,\n    check_array,\n    check_consistent_length,\n    check_scalar,\n    column_or_1d,\n)\nfrom"
+    },
+    {
+      "file": "sklearn/metrics/tests/test_pairwise_distances_reduction.py",
+      "start_line": 1,
+      "end_line": 77,
+      "similarity": 0.6439,
+      "related_to": "sklearn/metrics/tests/test_common.py",
+      "content_preview": "import itertools\nimport re\nimport warnings\nfrom functools import partial\n\nimport numpy as np\nimport pytest\nfrom scipy.spatial.distance import cdist\n\nfrom sklearn.metrics import euclidean_distances, pairwise_distances\nfrom sklearn.metrics._pairwise_distances_reduction import (\n    ArgKmin,\n    ArgKminClassMode,\n    BaseDistancesReductionDispatcher,\n    RadiusNeighbors,\n    RadiusNeighborsClassMode,\n    sqeuclidean_row_norms,\n)\nfrom sklearn.utils._testing import (\n    assert_allclose,\n    assert_array_equal,\n    create_memmap_backed_data,\n)\nfrom sklearn.utils.fixes import CSR_CONTAINERS\nfrom sklearn.utils.parallel import _get_threadpool_controller\n\n# Common supported metric between scipy.spatial.distance.cdist\n# and BaseDistanceReductionDispatcher.\n# This allows constructing tests to check c"
+    },
+    {
+      "file": "sklearn/metrics/cluster/tests/test_supervised.py",
+      "start_line": 1,
+      "end_line": 68,
+      "similarity": 0.6433,
+      "related_to": "sklearn/metrics/tests/test_common.py",
+      "content_preview": "import warnings\n\nimport numpy as np\nimport pytest\nfrom numpy.testing import assert_allclose, assert_array_almost_equal, assert_array_equal\n\nfrom sklearn.base import config_context\nfrom sklearn.metrics.cluster import (\n    adjusted_mutual_info_score,\n    adjusted_rand_score,\n    completeness_score,\n    contingency_matrix,\n    expected_mutual_information,\n    fowlkes_mallows_score,\n    homogeneity_completeness_v_measure,\n    homogeneity_score,\n    mutual_info_score,\n    normalized_mutual_info_score,\n    pair_confusion_matrix,\n    rand_score,\n    v_measure_score,\n)\nfrom sklearn.metrics.cluster._supervised import (\n    _entropy,\n    _generalized_average,\n    check_clusterings,\n    entropy,\n)\nfrom sklearn.utils import assert_all_finite\nfrom sklearn.utils._array_api import (\n    _get_namespace_d"
+    },
+    {
+      "file": "sklearn/metrics/tests/test_dist_metrics.py",
+      "start_line": 305,
+      "end_line": 374,
+      "similarity": 0.6297,
+      "related_to": "sklearn/metrics/tests/test_common.py",
+      "content_preview": "\n    D_sklearn = haversine.pairwise(X_csr, Y_csr)\n    assert D_sklearn.flags.c_contiguous\n    assert_allclose(D_sklearn, D_reference)\n\n    D_sklearn = haversine.pairwise(X_csr, Y)\n    assert D_sklearn.flags.c_contiguous\n    assert_allclose(D_sklearn, D_reference)\n\n    D_sklearn = haversine.pairwise(X, Y_csr)\n    assert D_sklearn.flags.c_contiguous\n    assert_allclose(D_sklearn, D_reference)\n\n\ndef test_pyfunc_metric():\n    X = np.random.random((10, 3))\n\n    euclidean = DistanceMetric.get_metric(\"euclidean\")\n    pyfunc = DistanceMetric.get_metric(\"pyfunc\", func=dist_func, p=2)\n\n    # Check if both callable metric and predefined metric initialized\n    # DistanceMetric object is picklable\n    euclidean_pkl = pickle.loads(pickle.dumps(euclidean))\n    pyfunc_pkl = pickle.loads(pickle.dumps(pyfun"
+    },
+    {
+      "file": "sklearn/metrics/cluster/tests/test_common.py",
+      "start_line": 206,
+      "end_line": 274,
+      "similarity": 0.627,
+      "related_to": "sklearn/metrics/tests/test_common.py",
+      "content_preview": "        invalids = [\n            ([0, 1], [np.inf, np.inf]),\n            ([0, 1], [np.nan, np.nan]),\n            ([0, 1], [np.nan, np.inf]),\n        ]\n    else:\n        X = np.random.randint(10, size=(2, 10))\n        invalids = [(X, [np.inf, np.inf]), (X, [np.nan, np.nan]), (X, [np.nan, np.inf])]\n    with pytest.raises(ValueError, match=r\"contains (NaN|infinity)\"):\n        for args in invalids:\n            metric_func(*args)\n\n\n@pytest.mark.parametrize(\"name\", chain(SUPERVISED_METRICS, UNSUPERVISED_METRICS))\ndef test_returned_value_consistency(name):\n    \"\"\"Ensure that the returned values of all metrics are consistent.\n\n    It can only be a float. It should not be a numpy float64 or float32.\n    \"\"\"\n\n    rng = np.random.RandomState(0)\n    X = rng.randint(10, size=(20, 10))\n    labels_true ="
+    },
+    {
+      "file": "sklearn/metrics/tests/test_pairwise.py",
+      "start_line": 444,
+      "end_line": 501,
+      "similarity": 0.6249,
+      "related_to": "sklearn/metrics/tests/test_common.py",
+      "content_preview": "x, y: 5)[0, 0] == 5\n\n\n# Test with all metrics that should be in PAIRWISE_KERNEL_FUNCTIONS.\n@pytest.mark.parametrize(\n    \"metric\",\n    [\"rbf\", \"laplacian\", \"sigmoid\", \"polynomial\", \"linear\", \"chi2\", \"additive_chi2\"],\n)\n@pytest.mark.parametrize(\"csr_container\", CSR_CONTAINERS)\ndef test_pairwise_kernels(metric, csr_container):\n    # Test the pairwise_kernels helper function.\n\n    rng = np.random.RandomState(0)\n    X = rng.random_sample((5, 4))\n    Y = rng.random_sample((2, 4))\n    function = PAIRWISE_KERNEL_FUNCTIONS[metric]\n    # Test with Y=None\n    K1 = pairwise_kernels(X, metric=metric)\n    K2 = function(X)\n    assert_allclose(K1, K2)\n    # Test with Y=Y\n    K1 = pairwise_kernels(X, Y=Y, metric=metric)\n    K2 = function(X, Y=Y)\n    assert_allclose(K1, K2)\n    # Test with tuples as X and "
+    }
+  ],
+  "rag_evidence": {
+    "similar_code": [
+      {
+        "file": "sklearn/metrics/cluster/tests/test_common.py",
+        "start_line": 1,
+        "end_line": 61,
+        "similarity": 0.7618,
+        "related_to": "sklearn/metrics/tests/test_common.py",
+        "content_preview": "from functools import partial\nfrom itertools import chain\n\nimport numpy as np\nimport pytest\n\nfrom sklearn.metrics.cluster import (\n    adjusted_mutual_info_score,\n    adjusted_rand_score,\n    calinski_harabasz_score,\n    completeness_score,\n    davies_bouldin_score,\n    fowlkes_mallows_score,\n    homogeneity_score,\n    mutual_info_score,\n    normalized_mutual_info_score,\n    rand_score,\n    silhouette_score,\n    v_measure_score,\n)\nfrom sklearn.metrics.tests.test_common import check_array_api_metric\nfrom sklearn.utils._array_api import (\n    _get_namespace_device_dtype_ids,\n    yield_namespace_device_dtype_combinations,\n)\nfrom sklearn.utils._testing import assert_allclose\n\n# Dictionaries of metrics\n# ------------------------\n# The goal of having those dictionaries is to have an easy way to "
+      },
+      {
+        "file": "sklearn/metrics/tests/test_classification.py",
+        "start_line": 1,
+        "end_line": 72,
+        "similarity": 0.709,
+        "related_to": "sklearn/metrics/tests/test_common.py",
+        "content_preview": "import re\nimport warnings\nfrom functools import partial\nfrom itertools import chain, permutations, product\n\nimport numpy as np\nimport pytest\nfrom scipy import linalg, sparse\nfrom scipy.spatial.distance import hamming as sp_hamming\nfrom scipy.stats import bernoulli\n\nfrom sklearn import datasets, svm\nfrom sklearn.base import config_context\nfrom sklearn.datasets import make_multilabel_classification\nfrom sklearn.exceptions import UndefinedMetricWarning\nfrom sklearn.metrics import (\n    accuracy_score,\n    average_precision_score,\n    balanced_accuracy_score,\n    brier_score_loss,\n    class_likelihood_ratios,\n    classification_report,\n    cohen_kappa_score,\n    confusion_matrix,\n    f1_score,\n    fbeta_score,\n    hamming_loss,\n    hinge_loss,\n    jaccard_score,\n    log_loss,\n    make_scorer,\n"
+      },
+      {
+        "file": "sklearn/metrics/_classification.py",
+        "start_line": 1,
+        "end_line": 76,
+        "similarity": 0.6645,
+        "related_to": "sklearn/metrics/tests/test_common.py",
+        "content_preview": "\"\"\"Metrics to assess performance on classification task given class prediction.\n\nFunctions named as ``*_score`` return a scalar value to maximize: the higher\nthe better.\n\nFunction named as ``*_error`` or ``*_loss`` return a scalar value to minimize:\nthe lower the better.\n\"\"\"\n\n# Authors: The scikit-learn developers\n# SPDX-License-Identifier: BSD-3-Clause\n\nimport warnings\nfrom contextlib import nullcontext\nfrom math import sqrt\nfrom numbers import Integral, Real\n\nimport numpy as np\nfrom scipy.sparse import coo_matrix, csr_matrix, issparse\n\nfrom sklearn.exceptions import UndefinedMetricWarning\nfrom sklearn.preprocessing import LabelBinarizer, LabelEncoder\nfrom sklearn.utils import (\n    assert_all_finite,\n    check_array,\n    check_consistent_length,\n    check_scalar,\n    column_or_1d,\n)\nfrom"
+      },
+      {
+        "file": "sklearn/metrics/tests/test_pairwise_distances_reduction.py",
+        "start_line": 1,
+        "end_line": 77,
+        "similarity": 0.6439,
+        "related_to": "sklearn/metrics/tests/test_common.py",
+        "content_preview": "import itertools\nimport re\nimport warnings\nfrom functools import partial\n\nimport numpy as np\nimport pytest\nfrom scipy.spatial.distance import cdist\n\nfrom sklearn.metrics import euclidean_distances, pairwise_distances\nfrom sklearn.metrics._pairwise_distances_reduction import (\n    ArgKmin,\n    ArgKminClassMode,\n    BaseDistancesReductionDispatcher,\n    RadiusNeighbors,\n    RadiusNeighborsClassMode,\n    sqeuclidean_row_norms,\n)\nfrom sklearn.utils._testing import (\n    assert_allclose,\n    assert_array_equal,\n    create_memmap_backed_data,\n)\nfrom sklearn.utils.fixes import CSR_CONTAINERS\nfrom sklearn.utils.parallel import _get_threadpool_controller\n\n# Common supported metric between scipy.spatial.distance.cdist\n# and BaseDistanceReductionDispatcher.\n# This allows constructing tests to check c"
+      },
+      {
+        "file": "sklearn/metrics/cluster/tests/test_supervised.py",
+        "start_line": 1,
+        "end_line": 68,
+        "similarity": 0.6433,
+        "related_to": "sklearn/metrics/tests/test_common.py",
+        "content_preview": "import warnings\n\nimport numpy as np\nimport pytest\nfrom numpy.testing import assert_allclose, assert_array_almost_equal, assert_array_equal\n\nfrom sklearn.base import config_context\nfrom sklearn.metrics.cluster import (\n    adjusted_mutual_info_score,\n    adjusted_rand_score,\n    completeness_score,\n    contingency_matrix,\n    expected_mutual_information,\n    fowlkes_mallows_score,\n    homogeneity_completeness_v_measure,\n    homogeneity_score,\n    mutual_info_score,\n    normalized_mutual_info_score,\n    pair_confusion_matrix,\n    rand_score,\n    v_measure_score,\n)\nfrom sklearn.metrics.cluster._supervised import (\n    _entropy,\n    _generalized_average,\n    check_clusterings,\n    entropy,\n)\nfrom sklearn.utils import assert_all_finite\nfrom sklearn.utils._array_api import (\n    _get_namespace_d"
+      },
+      {
+        "file": "sklearn/metrics/tests/test_dist_metrics.py",
+        "start_line": 305,
+        "end_line": 374,
+        "similarity": 0.6297,
+        "related_to": "sklearn/metrics/tests/test_common.py",
+        "content_preview": "\n    D_sklearn = haversine.pairwise(X_csr, Y_csr)\n    assert D_sklearn.flags.c_contiguous\n    assert_allclose(D_sklearn, D_reference)\n\n    D_sklearn = haversine.pairwise(X_csr, Y)\n    assert D_sklearn.flags.c_contiguous\n    assert_allclose(D_sklearn, D_reference)\n\n    D_sklearn = haversine.pairwise(X, Y_csr)\n    assert D_sklearn.flags.c_contiguous\n    assert_allclose(D_sklearn, D_reference)\n\n\ndef test_pyfunc_metric():\n    X = np.random.random((10, 3))\n\n    euclidean = DistanceMetric.get_metric(\"euclidean\")\n    pyfunc = DistanceMetric.get_metric(\"pyfunc\", func=dist_func, p=2)\n\n    # Check if both callable metric and predefined metric initialized\n    # DistanceMetric object is picklable\n    euclidean_pkl = pickle.loads(pickle.dumps(euclidean))\n    pyfunc_pkl = pickle.loads(pickle.dumps(pyfun"
+      },
+      {
+        "file": "sklearn/metrics/cluster/tests/test_common.py",
+        "start_line": 206,
+        "end_line": 274,
+        "similarity": 0.627,
+        "related_to": "sklearn/metrics/tests/test_common.py",
+        "content_preview": "        invalids = [\n            ([0, 1], [np.inf, np.inf]),\n            ([0, 1], [np.nan, np.nan]),\n            ([0, 1], [np.nan, np.inf]),\n        ]\n    else:\n        X = np.random.randint(10, size=(2, 10))\n        invalids = [(X, [np.inf, np.inf]), (X, [np.nan, np.nan]), (X, [np.nan, np.inf])]\n    with pytest.raises(ValueError, match=r\"contains (NaN|infinity)\"):\n        for args in invalids:\n            metric_func(*args)\n\n\n@pytest.mark.parametrize(\"name\", chain(SUPERVISED_METRICS, UNSUPERVISED_METRICS))\ndef test_returned_value_consistency(name):\n    \"\"\"Ensure that the returned values of all metrics are consistent.\n\n    It can only be a float. It should not be a numpy float64 or float32.\n    \"\"\"\n\n    rng = np.random.RandomState(0)\n    X = rng.randint(10, size=(20, 10))\n    labels_true ="
+      },
+      {
+        "file": "sklearn/metrics/tests/test_pairwise.py",
+        "start_line": 444,
+        "end_line": 501,
+        "similarity": 0.6249,
+        "related_to": "sklearn/metrics/tests/test_common.py",
+        "content_preview": "x, y: 5)[0, 0] == 5\n\n\n# Test with all metrics that should be in PAIRWISE_KERNEL_FUNCTIONS.\n@pytest.mark.parametrize(\n    \"metric\",\n    [\"rbf\", \"laplacian\", \"sigmoid\", \"polynomial\", \"linear\", \"chi2\", \"additive_chi2\"],\n)\n@pytest.mark.parametrize(\"csr_container\", CSR_CONTAINERS)\ndef test_pairwise_kernels(metric, csr_container):\n    # Test the pairwise_kernels helper function.\n\n    rng = np.random.RandomState(0)\n    X = rng.random_sample((5, 4))\n    Y = rng.random_sample((2, 4))\n    function = PAIRWISE_KERNEL_FUNCTIONS[metric]\n    # Test with Y=None\n    K1 = pairwise_kernels(X, metric=metric)\n    K2 = function(X)\n    assert_allclose(K1, K2)\n    # Test with Y=Y\n    K1 = pairwise_kernels(X, Y=Y, metric=metric)\n    K2 = function(X, Y=Y)\n    assert_allclose(K1, K2)\n    # Test with tuples as X and "
+      }
+    ]
+  },
+  "callers": [
+    {
+      "path": "cluster/tests/test_common.py",
+      "from_function": "test_format_invariance",
+      "calls_function": "generate_formats",
+      "caller_line": 161,
+      "callee_file": "cluster/tests/test_common.py",
+      "callee_line": 165
+    },
+    {
+      "path": "tests/test_common.py",
+      "from_function": "test_symmetric_metric",
+      "calls_function": "_require_positive_targets",
+      "caller_line": 648,
+      "callee_file": "tests/test_common.py",
+      "callee_line": 617
+    },
+    {
+      "path": "tests/test_common.py",
+      "from_function": "test_symmetric_metric",
+      "calls_function": "_require_log1p_targets",
+      "caller_line": 648,
+      "callee_file": "tests/test_common.py",
+      "callee_line": 625
+    },
+    {
+      "path": "tests/test_common.py",
+      "from_function": "test_not_symmetric_metric",
+      "calls_function": "_require_positive_targets",
+      "caller_line": 682,
+      "callee_file": "tests/test_common.py",
+      "callee_line": 617
+    },
+    {
+      "path": "tests/test_common.py",
+      "from_function": "test_symmetry_tests",
+      "calls_function": "test_symmetric_metric",
+      "caller_line": 708,
+      "callee_file": "tests/test_common.py",
+      "callee_line": 648
+    },
+    {
+      "path": "tests/test_common.py",
+      "from_function": "test_symmetry_tests",
+      "calls_function": "test_not_symmetric_metric",
+      "caller_line": 708,
+      "callee_file": "tests/test_common.py",
+      "callee_line": 682
+    },
+    {
+      "path": "tests/test_common.py",
+      "from_function": "test_sample_order_invariance",
+      "calls_function": "_require_positive_targets",
+      "caller_line": 727,
+      "callee_file": "tests/test_common.py",
+      "callee_line": 617
+    },
+    {
+      "path": "tests/test_common.py",
+      "from_function": "test_sample_order_invariance",
+      "calls_function": "_require_log1p_targets",
+      "caller_line": 727,
+      "callee_file": "tests/test_common.py",
+      "callee_line": 625
+    },
+    {
+      "path": "tests/test_common.py",
+      "from_function": "test_format_invariance_with_1d_vectors",
+      "calls_function": "_require_positive_targets",
+      "caller_line": 796,
+      "callee_file": "tests/test_common.py",
+      "callee_line": 617
+    },
+    {
+      "path": "tests/test_common.py",
+      "from_function": "test_format_invariance_with_1d_vectors",
+      "calls_function": "_require_log1p_targets",
+      "caller_line": 796,
+      "callee_file": "tests/test_common.py",
+      "callee_line": 625
+    },
+    {
+      "path": "tests/test_common.py",
+      "from_function": "test_single_sample",
+      "calls_function": "check_single_sample",
+      "caller_line": 1173,
+      "callee_file": "tests/test_common.py",
+      "callee_line": 1137
+    },
+    {
+      "path": "tests/test_common.py",
+      "from_function": "test_single_sample_multioutput",
+      "calls_function": "check_single_sample_multioutput",
+      "caller_line": 1180,
+      "callee_file": "tests/test_common.py",
+      "callee_line": 1155
+    },
+    {
+      "path": "tests/test_common.py",
+      "from_function": "check_averaging",
+      "calls_function": "_check_averaging",
+      "caller_line": 1469,
+      "callee_file": "tests/test_common.py",
+      "callee_line": 1415
+    },
+    {
+      "path": "tests/test_common.py",
+      "from_function": "test_averaging_multiclass",
+      "calls_function": "check_averaging",
+      "caller_line": 1487,
+      "callee_file": "tests/test_common.py",
+      "callee_line": 1469
+    },
+    {
+      "path": "tests/test_common.py",
+      "from_function": "test_averaging_multilabel",
+      "calls_function": "check_averaging",
+      "caller_line": 1505,
+      "callee_file": "tests/test_common.py",
+      "callee_line": 1469
+    },
+    {
+      "path": "tests/test_common.py",
+      "from_function": "test_averaging_multilabel_all_zeroes",
+      "calls_function": "check_averaging",
+      "caller_line": 1524,
+      "callee_file": "tests/test_common.py",
+      "callee_line": 1469
+    },
+    {
+      "path": "tests/test_common.py",
+      "from_function": "test_averaging_binary_multilabel_all_zeroes",
+      "calls_function": "_check_averaging",
+      "caller_line": 1534,
+      "callee_file": "tests/test_common.py",
+      "callee_line": 1415
+    },
+    {
+      "path": "tests/test_common.py",
+      "from_function": "test_averaging_multilabel_all_ones",
+      "calls_function": "check_averaging",
+      "caller_line": 1554,
+      "callee_file": "tests/test_common.py",
+      "callee_line": 1469
+    },
+    {
+      "path": "tests/test_common.py",
+      "from_function": "test_regression_sample_weight_invariance",
+      "calls_function": "check_sample_weight_invariance",
+      "caller_line": 1675,
+      "callee_file": "tests/test_common.py",
+      "callee_line": 1564
+    },
+    {
+      "path": "tests/test_common.py",
+      "from_function": "test_binary_sample_weight_invariance",
+      "calls_function": "check_sample_weight_invariance",
+      "caller_line": 1738,
+      "callee_file": "tests/test_common.py",
+      "callee_line": 1564
+    },
+    {
+      "path": "tests/test_common.py",
+      "from_function": "test_multiclass_sample_weight_invariance",
+      "calls_function": "check_sample_weight_invariance",
+      "caller_line": 1761,
+      "callee_file": "tests/test_common.py",
+      "callee_line": 1564
+    },
+    {
+      "path": "tests/test_common.py",
+      "from_function": "test_multilabel_sample_weight_invariance",
+      "calls_function": "check_sample_weight_invariance",
+      "caller_line": 1785,
+      "callee_file": "tests/test_common.py",
+      "callee_line": 1564
+    },
+    {
+      "path": "tests/test_common.py",
+      "from_function": "test_multioutput_sample_weight_invariance",
+      "calls_function": "check_sample_weight_invariance",
+      "caller_line": 1812,
+      "callee_file": "tests/test_common.py",
+      "callee_line": 1564
+    },
+    {
+      "path": "tests/test_common.py",
+      "from_function": "_check_each_metric_matches",
+      "calls_function": "_check_metric_matches",
+      "caller_line": 2021,
+      "callee_file": "tests/test_common.py",
+      "callee_line": 2016
+    },
+    {
+      "path": "tests/test_common.py",
+      "from_function": "check_array_api_metric",
+      "calls_function": "_check_each_metric_matches",
+      "caller_line": 1982,
+      "callee_file": "tests/test_common.py",
+      "callee_line": 2021
+    },
+    {
+      "path": "tests/test_common.py",
+      "from_function": "check_array_api_metric",
+      "calls_function": "_check_metric_matches",
+      "caller_line": 1982,
+      "callee_file": "tests/test_common.py",
+      "callee_line": 2016
+    },
+    {
+      "path": "tests/test_common.py",
+      "from_function": "check_array_api_binary_classification_metric",
+      "calls_function": "check_array_api_metric",
+      "caller_line": 2061,
+      "callee_file": "tests/test_common.py",
+      "callee_line": 1982
+    },
+    {
+      "path": "tests/test_common.py",
+      "from_function": "check_array_api_multiclass_classification_metric",
+      "calls_function": "_get_metric_kwargs_for_array_api_testing",
+      "caller_line": 2096,
+      "callee_file": "tests/test_common.py",
+      "callee_line": 2495
+    },
+    {
+      "path": "tests/test_common.py",
+      "from_function": "check_array_api_multiclass_classification_metric",
+      "calls_function": "check_array_api_metric",
+      "caller_line": 2096,
+      "callee_file": "tests/test_common.py",
+      "callee_line": 1982
+    },
+    {
+      "path": "tests/test_common.py",
+      "from_function": "check_array_api_multilabel_classification_metric",
+      "calls_function": "_get_metric_kwargs_for_array_api_testing",
+      "caller_line": 2149,
+      "callee_file": "tests/test_common.py",
+      "callee_line": 2495
+    },
+    {
+      "path": "tests/test_common.py",
+      "from_function": "check_array_api_multilabel_classification_metric",
+      "calls_function": "check_array_api_metric",
+      "caller_line": 2149,
+      "callee_file": "tests/test_common.py",
+      "callee_line": 1982
+    },
+    {
+      "path": "tests/test_common.py",
+      "from_function": "check_array_api_regression_metric",
+      "calls_function": "check_array_api_metric",
+      "caller_line": 2189,
+      "callee_file": "tests/test_common.py",
+      "callee_line": 1982
+    },
+    {
+      "path": "tests/test_common.py",
+      "from_function": "check_array_api_regression_metric_multioutput",
+      "calls_function": "check_array_api_metric",
+      "caller_line": 2231,
+      "callee_file": "tests/test_common.py",
+      "callee_line": 1982
+    },
+    {
+      "path": "tests/test_common.py",
+      "from_function": "check_array_api_metric_pairwise",
+      "calls_function": "check_array_api_metric",
+      "caller_line": 2280,
+      "callee_file": "tests/test_common.py",
+      "callee_line": 1982
+    },
+    {
+      "path": "tests/test_common.py",
+      "from_function": "test_returned_value_consistency",
+      "calls_function": "_require_positive_targets",
+      "caller_line": 2517,
+      "callee_file": "tests/test_common.py",
+      "callee_line": 617
+    }
+  ],
+  "call_graph_edges": [
+    {
+      "from": "cluster/tests/test_common.py::test_format_invariance",
+      "to": "cluster/tests/test_common.py::generate_formats"
+    },
+    {
+      "from": "tests/test_common.py::test_symmetric_metric",
+      "to": "tests/test_common.py::_require_positive_targets"
+    },
+    {
+      "from": "tests/test_common.py::test_symmetric_metric",
+      "to": "tests/test_common.py::_require_log1p_targets"
+    },
+    {
+      "from": "tests/test_common.py::test_not_symmetric_metric",
+      "to": "tests/test_common.py::_require_positive_targets"
+    },
+    {
+      "from": "tests/test_common.py::test_symmetry_tests",
+      "to": "tests/test_common.py::test_symmetric_metric"
+    },
+    {
+      "from": "tests/test_common.py::test_symmetry_tests",
+      "to": "tests/test_common.py::test_not_symmetric_metric"
+    },
+    {
+      "from": "tests/test_common.py::test_sample_order_invariance",
+      "to": "tests/test_common.py::_require_positive_targets"
+    },
+    {
+      "from": "tests/test_common.py::test_sample_order_invariance",
+      "to": "tests/test_common.py::_require_log1p_targets"
+    },
+    {
+      "from": "tests/test_common.py::test_format_invariance_with_1d_vectors",
+      "to": "tests/test_common.py::_require_positive_targets"
+    },
+    {
+      "from": "tests/test_common.py::test_format_invariance_with_1d_vectors",
+      "to": "tests/test_common.py::_require_log1p_targets"
+    },
+    {
+      "from": "tests/test_common.py::test_single_sample",
+      "to": "tests/test_common.py::check_single_sample"
+    },
+    {
+      "from": "tests/test_common.py::test_single_sample_multioutput",
+      "to": "tests/test_common.py::check_single_sample_multioutput"
+    },
+    {
+      "from": "tests/test_common.py::check_averaging",
+      "to": "tests/test_common.py::_check_averaging"
+    },
+    {
+      "from": "tests/test_common.py::test_averaging_multiclass",
+      "to": "tests/test_common.py::check_averaging"
+    },
+    {
+      "from": "tests/test_common.py::test_averaging_multilabel",
+      "to": "tests/test_common.py::check_averaging"
+    },
+    {
+      "from": "tests/test_common.py::test_averaging_multilabel_all_zeroes",
+      "to": "tests/test_common.py::check_averaging"
+    },
+    {
+      "from": "tests/test_common.py::test_averaging_binary_multilabel_all_zeroes",
+      "to": "tests/test_common.py::_check_averaging"
+    },
+    {
+      "from": "tests/test_common.py::test_averaging_multilabel_all_ones",
+      "to": "tests/test_common.py::check_averaging"
+    },
+    {
+      "from": "tests/test_common.py::test_regression_sample_weight_invariance",
+      "to": "tests/test_common.py::check_sample_weight_invariance"
+    },
+    {
+      "from": "tests/test_common.py::test_binary_sample_weight_invariance",
+      "to": "tests/test_common.py::check_sample_weight_invariance"
+    },
+    {
+      "from": "tests/test_common.py::test_multiclass_sample_weight_invariance",
+      "to": "tests/test_common.py::check_sample_weight_invariance"
+    },
+    {
+      "from": "tests/test_common.py::test_multilabel_sample_weight_invariance",
+      "to": "tests/test_common.py::check_sample_weight_invariance"
+    },
+    {
+      "from": "tests/test_common.py::test_multioutput_sample_weight_invariance",
+      "to": "tests/test_common.py::check_sample_weight_invariance"
+    },
+    {
+      "from": "tests/test_common.py::_check_each_metric_matches",
+      "to": "tests/test_common.py::_check_metric_matches"
+    },
+    {
+      "from": "tests/test_common.py::check_array_api_metric",
+      "to": "tests/test_common.py::_check_each_metric_matches"
+    },
+    {
+      "from": "tests/test_common.py::check_array_api_metric",
+      "to": "tests/test_common.py::_check_metric_matches"
+    },
+    {
+      "from": "tests/test_common.py::check_array_api_binary_classification_metric",
+      "to": "tests/test_common.py::check_array_api_metric"
+    },
+    {
+      "from": "tests/test_common.py::check_array_api_multiclass_classification_metric",
+      "to": "tests/test_common.py::_get_metric_kwargs_for_array_api_testing"
+    },
+    {
+      "from": "tests/test_common.py::check_array_api_multiclass_classification_metric",
+      "to": "tests/test_common.py::check_array_api_metric"
+    },
+    {
+      "from": "tests/test_common.py::check_array_api_multilabel_classification_metric",
+      "to": "tests/test_common.py::_get_metric_kwargs_for_array_api_testing"
+    },
+    {
+      "from": "tests/test_common.py::check_array_api_multilabel_classification_metric",
+      "to": "tests/test_common.py::check_array_api_metric"
+    },
+    {
+      "from": "tests/test_common.py::check_array_api_regression_metric",
+      "to": "tests/test_common.py::check_array_api_metric"
+    },
+    {
+      "from": "tests/test_common.py::check_array_api_regression_metric_multioutput",
+      "to": "tests/test_common.py::check_array_api_metric"
+    },
+    {
+      "from": "tests/test_common.py::check_array_api_metric_pairwise",
+      "to": "tests/test_common.py::check_array_api_metric"
+    },
+    {
+      "from": "tests/test_common.py::test_returned_value_consistency",
+      "to": "tests/test_common.py::_require_positive_targets"
+    }
+  ],
+  "functions_in_changed_files": [
+    {
+      "name": "test_symmetric_non_symmetric_union",
+      "full_name": "cluster/tests/test_common.py:<module>.test_symmetric_non_symmetric_union",
+      "file": "cluster/tests/test_common.py",
+      "start_line": 98,
+      "end_line": 103,
+      "signature": ""
+    },
+    {
+      "name": "test_symmetry",
+      "full_name": "cluster/tests/test_common.py:<module>.test_symmetry",
+      "file": "cluster/tests/test_common.py",
+      "start_line": 107,
+      "end_line": 111,
+      "signature": ""
+    },
+    {
+      "name": "test_non_symmetry",
+      "full_name": "cluster/tests/test_common.py:<module>.test_non_symmetry",
+      "file": "cluster/tests/test_common.py",
+      "start_line": 115,
+      "end_line": 119,
+      "signature": ""
+    },
+    {
+      "name": "test_normalized_output",
+      "full_name": "cluster/tests/test_common.py:<module>.test_normalized_output",
+      "file": "cluster/tests/test_common.py",
+      "start_line": 121,
+      "end_line": 138,
+      "signature": ""
+    },
+    {
+      "name": "test_permute_labels",
+      "full_name": "cluster/tests/test_common.py:<module>.test_permute_labels",
+      "file": "cluster/tests/test_common.py",
+      "start_line": 140,
+      "end_line": 157,
+      "signature": ""
+    },
+    {
+      "name": "test_format_invariance",
+      "full_name": "cluster/tests/test_common.py:<module>.test_format_invariance",
+      "file": "cluster/tests/test_common.py",
+      "start_line": 161,
+      "end_line": 193,
+      "signature": ""
+    },
+    {
+      "name": "generate_formats",
+      "full_name": "cluster/tests/test_common.py:<module>.test_format_invariance.generate_formats",
+      "file": "cluster/tests/test_common.py",
+      "start_line": 165,
+      "end_line": 177,
+      "signature": ""
+    },
+    {
+      "name": "test_single_sample",
+      "full_name": "cluster/tests/test_common.py:<module>.test_single_sample",
+      "file": "cluster/tests/test_common.py",
+      "start_line": 195,
+      "end_line": 200,
+      "signature": ""
+    },
+    {
+      "name": "test_inf_nan_input",
+      "full_name": "cluster/tests/test_common.py:<module>.test_inf_nan_input",
+      "file": "cluster/tests/test_common.py",
+      "start_line": 204,
+      "end_line": 218,
+      "signature": ""
+    },
+    {
+      "name": "test_returned_value_consistency",
+      "full_name": "cluster/tests/test_common.py:<module>.test_returned_value_consistency",
+      "file": "cluster/tests/test_common.py",
+      "start_line": 220,
+      "end_line": 241,
+      "signature": ""
+    },
+    {
+      "name": "check_array_api_unsupervised_metric",
+      "full_name": "cluster/tests/test_common.py:<module>.check_array_api_unsupervised_metric",
+      "file": "cluster/tests/test_common.py",
+      "start_line": 242,
+      "end_line": 255,
+      "signature": ""
+    },
+    {
+      "name": "yield_metric_checker_combinations",
+      "full_name": "cluster/tests/test_common.py:<module>.yield_metric_checker_combinations",
+      "file": "cluster/tests/test_common.py",
+      "start_line": 266,
+      "end_line": 271,
+      "signature": ""
+    },
+    {
+      "name": "test_array_api_compliance",
+      "full_name": "cluster/tests/test_common.py:<module>.test_array_api_compliance",
+      "file": "cluster/tests/test_common.py",
+      "start_line": 278,
+      "end_line": 279,
+      "signature": ""
+    },
+    {
+      "name": "precision_recall_curve_padded_thresholds",
+      "full_name": "tests/test_common.py:<module>.precision_recall_curve_padded_thresholds",
+      "file": "tests/test_common.py",
+      "start_line": 215,
+      "end_line": 245,
+      "signature": ""
+    },
+    {
+      "name": "_require_positive_targets",
+      "full_name": "tests/test_common.py:<module>._require_positive_targets",
+      "file": "tests/test_common.py",
+      "start_line": 617,
+      "end_line": 624,
+      "signature": ""
+    },
+    {
+      "name": "_require_log1p_targets",
+      "full_name": "tests/test_common.py:<module>._require_log1p_targets",
+      "file": "tests/test_common.py",
+      "start_line": 625,
+      "end_line": 634,
+      "signature": ""
+    },
+    {
+      "name": "test_symmetry_consistency",
+      "full_name": "tests/test_common.py:<module>.test_symmetry_consistency",
+      "file": "tests/test_common.py",
+      "start_line": 635,
+      "end_line": 646,
+      "signature": ""
+    },
+    {
+      "name": "test_symmetric_metric",
+      "full_name": "tests/test_common.py:<module>.test_symmetric_metric",
+      "file": "tests/test_common.py",
+      "start_line": 648,
+      "end_line": 680,
+      "signature": ""
+    },
+    {
+      "name": "test_not_symmetric_metric",
+      "full_name": "tests/test_common.py:<module>.test_not_symmetric_metric",
+      "file": "tests/test_common.py",
+      "start_line": 682,
+      "end_line": 707,
+      "signature": ""
+    },
+    {
+      "name": "test_symmetry_tests",
+      "full_name": "tests/test_common.py:<module>.test_symmetry_tests",
+      "file": "tests/test_common.py",
+      "start_line": 708,
+      "end_line": 723,
+      "signature": ""
+    },
+    {
+      "name": "test_sample_order_invariance",
+      "full_name": "tests/test_common.py:<module>.test_sample_order_invariance",
+      "file": "tests/test_common.py",
+      "start_line": 727,
+      "end_line": 747,
+      "signature": ""
+    },
+    {
+      "name": "test_sample_order_invariance_multilabel_and_multioutput",
+      "full_name": "tests/test_common.py:<module>.test_sample_order_invariance_multilabel_and_multioutput",
+      "file": "tests/test_common.py",
+      "start_line": 748,
+      "end_line": 792,
+      "signature": ""
+    },
+    {
+      "name": "test_format_invariance_with_1d_vectors",
+      "full_name": "tests/test_common.py:<module>.test_format_invariance_with_1d_vectors",
+      "file": "tests/test_common.py",
+      "start_line": 796,
+      "end_line": 921,
+      "signature": ""
+    },
+    {
+      "name": "test_classification_metrics_raise_on_empty_input",
+      "full_name": "tests/test_common.py:<module>.test_classification_metrics_raise_on_empty_input",
+      "file": "tests/test_common.py",
+      "start_line": 929,
+      "end_line": 934,
+      "signature": ""
+    },
+    {
+      "name": "test_classification_with_invalid_sample_weight",
+      "full_name": "tests/test_common.py:<module>.test_classification_with_invalid_sample_weight",
+      "file": "tests/test_common.py",
+      "start_line": 936,
+      "end_line": 966,
+      "signature": ""
+    },
+    {
+      "name": "test_classification_invariance_string_vs_numbers_labels",
+      "full_name": "tests/test_common.py:<module>.test_classification_invariance_string_vs_numbers_labels",
+      "file": "tests/test_common.py",
+      "start_line": 970,
+      "end_line": 1022,
+      "signature": ""
+    },
+    {
+      "name": "test_continuous_classification_invariance_string_vs_numbers_labels",
+      "full_name": "tests/test_common.py:<module>.test_continuous_classification_invariance_string_vs_numbers_labels",
+      "file": "tests/test_common.py",
+      "start_line": 1024,
+      "end_line": 1066,
+      "signature": ""
+    },
+    {
+      "name": "test_continuous_inf_nan_input",
+      "full_name": "tests/test_common.py:<module>.test_continuous_inf_nan_input",
+      "file": "tests/test_common.py",
+      "start_line": 1081,
+      "end_line": 1089,
+      "signature": ""
+    },
+    {
+      "name": "test_classification_inf_nan_input",
+      "full_name": "tests/test_common.py:<module>.test_classification_inf_nan_input",
+      "file": "tests/test_common.py",
+      "start_line": 1103,
+      "end_line": 1124,
+      "signature": ""
+    },
+    {
+      "name": "test_classification_binary_continuous_input",
+      "full_name": "tests/test_common.py:<module>.test_classification_binary_continuous_input",
+      "file": "tests/test_common.py",
+      "start_line": 1126,
+      "end_line": 1136,
+      "signature": ""
+    },
+    {
+      "name": "check_single_sample",
+      "full_name": "tests/test_common.py:<module>.check_single_sample",
+      "file": "tests/test_common.py",
+      "start_line": 1137,
+      "end_line": 1154,
+      "signature": ""
+    },
+    {
+      "name": "check_single_sample_multioutput",
+      "full_name": "tests/test_common.py:<module>.check_single_sample_multioutput",
+      "file": "tests/test_common.py",
+      "start_line": 1155,
+      "end_line": 1161,
+      "signature": ""
+    },
+    {
+      "name": "test_single_sample",
+      "full_name": "tests/test_common.py:<module>.test_single_sample",
+      "file": "tests/test_common.py",
+      "start_line": 1173,
+      "end_line": 1177,
+      "signature": ""
+    },
+    {
+      "name": "test_single_sample_multioutput",
+      "full_name": "tests/test_common.py:<module>.test_single_sample_multioutput",
+      "file": "tests/test_common.py",
+      "start_line": 1180,
+      "end_line": 1183,
+      "signature": ""
+    },
+    {
+      "name": "test_multioutput_number_of_output_differ",
+      "full_name": "tests/test_common.py:<module>.test_multioutput_number_of_output_differ",
+      "file": "tests/test_common.py",
+      "start_line": 1185,
+      "end_line": 1193,
+      "signature": ""
+    },
+    {
+      "name": "test_multioutput_regression_invariance_to_dimension_shuffling",
+      "full_name": "tests/test_common.py:<module>.test_multioutput_regression_invariance_to_dimension_shuffling",
+      "file": "tests/test_common.py",
+      "start_line": 1195,
+      "end_line": 1212,
+      "signature": ""
+    },
+    {
+      "name": "test_multilabel_representation_invariance",
+      "full_name": "tests/test_common.py:<module>.test_multilabel_representation_invariance",
+      "file": "tests/test_common.py",
+      "start_line": 1215,
+      "end_line": 1289,
+      "signature": ""
+    },
+    {
+      "name": "test_raise_value_error_multilabel_sequences",
+      "full_name": "tests/test_common.py:<module>.test_raise_value_error_multilabel_sequences",
+      "file": "tests/test_common.py",
+      "start_line": 1291,
+      "end_line": 1306,
+      "signature": ""
+    },
+    {
+      "name": "test_normalize_option_binary_classification",
+      "full_name": "tests/test_common.py:<module>.test_normalize_option_binary_classification",
+      "file": "tests/test_common.py",
+      "start_line": 1308,
+      "end_line": 1335,
+      "signature": ""
+    },
+    {
+      "name": "test_normalize_option_multiclass_classification",
+      "full_name": "tests/test_common.py:<module>.test_normalize_option_multiclass_classification",
+      "file": "tests/test_common.py",
+      "start_line": 1337,
+      "end_line": 1364,
+      "signature": ""
+    },
+    {
+      "name": "test_normalize_option_multilabel_classification",
+      "full_name": "tests/test_common.py:<module>.test_normalize_option_multilabel_classification",
+      "file": "tests/test_common.py",
+      "start_line": 1368,
+      "end_line": 1414,
+      "signature": ""
+    },
+    {
+      "name": "_check_averaging",
+      "full_name": "tests/test_common.py:<module>._check_averaging",
+      "file": "tests/test_common.py",
+      "start_line": 1415,
+      "end_line": 1468,
+      "signature": ""
+    },
+    {
+      "name": "check_averaging",
+      "full_name": "tests/test_common.py:<module>.check_averaging",
+      "file": "tests/test_common.py",
+      "start_line": 1469,
+      "end_line": 1485,
+      "signature": ""
+    },
+    {
+      "name": "test_averaging_multiclass",
+      "full_name": "tests/test_common.py:<module>.test_averaging_multiclass",
+      "file": "tests/test_common.py",
+      "start_line": 1487,
+      "end_line": 1500,
+      "signature": ""
+    },
+    {
+      "name": "test_averaging_multilabel",
+      "full_name": "tests/test_common.py:<module>.test_averaging_multilabel",
+      "file": "tests/test_common.py",
+      "start_line": 1505,
+      "end_line": 1522,
+      "signature": ""
+    },
+    {
+      "name": "test_averaging_multilabel_all_zeroes",
+      "full_name": "tests/test_common.py:<module>.test_averaging_multilabel_all_zeroes",
+      "file": "tests/test_common.py",
+      "start_line": 1524,
+      "end_line": 1533,
+      "signature": ""
+    },
+    {
+      "name": "test_averaging_binary_multilabel_all_zeroes",
+      "full_name": "tests/test_common.py:<module>.test_averaging_binary_multilabel_all_zeroes",
+      "file": "tests/test_common.py",
+      "start_line": 1534,
+      "end_line": 1552,
+      "signature": ""
+    },
+    {
+      "name": "test_averaging_multilabel_all_ones",
+      "full_name": "tests/test_common.py:<module>.test_averaging_multilabel_all_ones",
+      "file": "tests/test_common.py",
+      "start_line": 1554,
+      "end_line": 1563,
+      "signature": ""
+    },
+    {
+      "name": "check_sample_weight_invariance",
+      "full_name": "tests/test_common.py:<module>.check_sample_weight_invariance",
+      "file": "tests/test_common.py",
+      "start_line": 1564,
+      "end_line": 1667,
+      "signature": ""
+    },
+    {
+      "name": "test_regression_sample_weight_invariance",
+      "full_name": "tests/test_common.py:<module>.test_regression_sample_weight_invariance",
+      "file": "tests/test_common.py",
+      "start_line": 1675,
+      "end_line": 1688,
+      "signature": ""
+    }
+  ]
+}

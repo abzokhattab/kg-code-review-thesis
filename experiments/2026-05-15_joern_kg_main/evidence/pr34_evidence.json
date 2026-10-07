@@ -1,0 +1,270 @@
+{
+  "pr": {
+    "number": 124601,
+    "title": "Scopes: hide dashboards sidebar when entering edit mode",
+    "body": "## Summary\n\n- Closes https://github.com/grafana/hyperion-planning/issues/616\n- When a user enters dashboard edit mode, the scope-based dashboard navigation sidebar is now automatically hidden\n- When the user exits edit mode (save or discard), the sidebar is restored to its previous open/closed state\n- If the sidebar was already closed before entering edit mode, nothing changes\n\n## Implementation\n\n`DashboardSceneRenderer` already wired edit mode to scopes behavior (disabling redirects via `setRedirectEnabled`). This PR extends that same `useEffect` to also close the sidebar on edit enter and restore it on exit, using the existing `toggleDrawer()` API. The closure over a local `drawerWasOpen` variable handles the restore logic cleanly \u2014 no new service methods or refs needed.\n\n## Test plan\n\n- [ ] Updated existing test \"Does not close dashboards list when entering edit mode\" \u2192 now asserts the sidebar **is** closed\n- [ ] Added new test verifying the sidebar is restored when exiting edit mode\n- [ ] Manual: open a dashboard with scopes enabled, open the sidebar, enter edit mode \u2192 sidebar disappears; exit edit mode \u2192 sidebar reappears\n\n\ud83e\udd16 Generated with [Claude Code](https://claude.com/claude-code)",
+    "url": "https://github.com/grafana/grafana/pull/124601",
+    "repo": "grafana/grafana",
+    "base_branch": "main",
+    "head_branch": "feat/hide-scopes-sidebar-in-edit-mode",
+    "merged_at": "2026-05-12T08:29:37Z",
+    "state": "MERGED"
+  },
+  "changed_files": [
+    {
+      "path": "public/app/features/dashboard-scene/scene/DashboardSceneRenderer.tsx",
+      "language": "typescript",
+      "added": 10,
+      "deleted": 0
+    },
+    {
+      "path": "public/app/features/scopes/tests/editMode.test.ts",
+      "language": "typescript",
+      "added": 12,
+      "deleted": 2
+    }
+  ],
+  "nearest_tests": [],
+  "dependent_files": [
+    {
+      "path": "public/app/features/dashboard-scene/scene/DashboardScene.tsx",
+      "relationship": "imports",
+      "source_file": "public/app/features/dashboard-scene/scene/DashboardSceneRenderer.tsx"
+    },
+    {
+      "path": "public/app/features/dashboard-scene/pages/PublicDashboardScenePage.tsx",
+      "relationship": "imports",
+      "source_file": "public/app/features/dashboard-scene/scene/DashboardSceneRenderer.tsx"
+    }
+  ],
+  "diff_summary": "2 files changed",
+  "full_diff": "diff --git a/public/app/features/dashboard-scene/scene/DashboardSceneRenderer.tsx b/public/app/features/dashboard-scene/scene/DashboardSceneRenderer.tsx\nindex 36a40f56389f7..e98da10bf2b98 100644\n--- a/public/app/features/dashboard-scene/scene/DashboardSceneRenderer.tsx\n+++ b/public/app/features/dashboard-scene/scene/DashboardSceneRenderer.tsx\n@@ -31,10 +31,20 @@ export function DashboardSceneRenderer({ model }: SceneComponentProps<DashboardS\n   const scopesServices = useScopesServices();\n \n   // Disable scope redirects while in edit mode so users aren't navigated away mid-edit.\n+  // Also close the scopes dashboards drawer while editing and restore it on exit.\n   useEffect(() => {\n     scopesServices?.scopesSelectorService.setRedirectEnabled(!isEditing);\n+\n+    const drawerWasOpen = Boolean(isEditing && scopesServices?.scopesDashboardsService.state.drawerOpened);\n+    if (drawerWasOpen) {\n+      scopesServices?.scopesDashboardsService.toggleDrawer();\n+    }\n+\n     return () => {\n       scopesServices?.scopesSelectorService.setRedirectEnabled(true);\n+      if (drawerWasOpen && !scopesServices?.scopesDashboardsService.state.drawerOpened) {\n+        scopesServices?.scopesDashboardsService.toggleDrawer();\n+      }\n     };\n   }, [scopesServices, isEditing]);\n \ndiff --git a/public/app/features/scopes/tests/editMode.test.ts b/public/app/features/scopes/tests/editMode.test.ts\nindex 48a4bce7c2d8e..30a935f20e33d 100644\n--- a/public/app/features/scopes/tests/editMode.test.ts\n+++ b/public/app/features/scopes/tests/editMode.test.ts\n@@ -9,7 +9,7 @@ import { type ScopesService } from '../ScopesService';\n import { type ScopesSelectorService } from '../selector/ScopesSelectorService';\n \n import { enterEditMode, openSelector, toggleDashboards } from './utils/actions';\n-import { expectDashboardsOpen } from './utils/assertions';\n+import { expectDashboardsClosed, expectDashboardsOpen } from './utils/assertions';\n import { getDatasource, getInstanceSettings } from './utils/mocks';\n import { renderDashboard, resetScenes } from './utils/render';\n import { getDashboardsExpand, getSelectorInput, querySelectorApply } from './utils/selectors';\n@@ -55,9 +55,19 @@ describe('Scope selector in edit mode', () => {\n     expect(querySelectorApply()).toBeInTheDocument();\n   });\n \n-  it('Does not close dashboards list when entering edit mode', async () => {\n+  it('Closes dashboards list when entering edit mode', async () => {\n     await toggleDashboards();\n     await enterEditMode(dashboardScene);\n+    expectDashboardsClosed();\n+  });\n+\n+  it('Restores dashboards list when exiting edit mode', async () => {\n+    await toggleDashboards();\n+    await enterEditMode(dashboardScene);\n+    expectDashboardsClosed();\n+    act(() => {\n+      dashboardScene.exitEditMode({ skipConfirm: true });\n+    });\n     expectDashboardsOpen();\n   });\n \n",
+  "metadata": {
+    "v2_fetcher_version": 1,
+    "v2_fetched_at_unix": 1778582471,
+    "v2_diff_cap_bytes": 50000,
+    "v2_body_cap_bytes": 8000,
+    "v2_diff_truncated": false,
+    "v2_raw_diff_chars": 2844,
+    "v2_raw_body_chars": 1208,
+    "v2_rag_source": "fresh_for_v2_40pr_expansion",
+    "v2_rag_chunks_copied": 8,
+    "joern_enriched": true
+  },
+  "similar_chunks": [
+    {
+      "file": "public/app/features/dashboard-scene/panel-edit/PanelEditorRenderer.tsx",
+      "start_line": 1,
+      "end_line": 48,
+      "similarity": 0.801,
+      "related_to": "public/app/features/dashboard-scene/scene/DashboardSceneRenderer.tsx",
+      "content_preview": "import { css, cx } from '@emotion/css';\nimport { useEffect, useMemo } from 'react';\n\nimport { GrafanaTheme2 } from '@grafana/data';\nimport { selectors } from '@grafana/e2e-selectors';\nimport { t } from '@grafana/i18n';\nimport { SceneComponentProps, VizPanel } from '@grafana/scenes';\nimport { Button, Spinner, ToolbarButton, useStyles2, useTheme2 } from '@grafana/ui';\nimport { MIN_SUGGESTIONS_PANE_WIDTH } from 'app/features/panel/suggestions/constants';\n\nimport { useEditPaneCollapsed } from '../edit-pane/shared';\nimport { NavToolbarActions } from '../scene/NavToolbarActions';\nimport { UnlinkModal } from '../scene/UnlinkModal';\nimport { getDashboardSceneFor, getLibraryPanelBehavior } from '../utils/utils';\n\nimport { PanelEditor } from './PanelEditor';\nimport { SaveLibraryVizPanelModal } from "
+    },
+    {
+      "file": "public/app/features/dashboard-scene/edit-pane/DashboardEditPaneSplitter.tsx",
+      "start_line": 1,
+      "end_line": 46,
+      "similarity": 0.7964,
+      "related_to": "public/app/features/dashboard-scene/scene/DashboardSceneRenderer.tsx",
+      "content_preview": "import { css, cx } from '@emotion/css';\nimport React, { useEffect, useLayoutEffect } from 'react';\nimport { useEffectOnce } from 'react-use';\n\nimport { GrafanaTheme2 } from '@grafana/data';\nimport { selectors } from '@grafana/e2e-selectors';\nimport { config, useChromeHeaderHeight } from '@grafana/runtime';\nimport { useSceneObjectState } from '@grafana/scenes';\nimport { ElementSelectionContext, useSidebar, useStyles2, Sidebar } from '@grafana/ui';\nimport NativeScrollbar, { DivScrollElement } from 'app/core/components/NativeScrollbar';\nimport { useGrafana } from 'app/core/context/GrafanaContext';\nimport { getDashboardSrv } from 'app/features/dashboard/services/DashboardSrv';\nimport { playlistSrv } from 'app/features/playlist/PlaylistSrv';\nimport { KioskMode } from 'app/types/dashboard';\n\nimp"
+    },
+    {
+      "file": "public/app/features/dashboard-scene/pages/DashboardScenePage.tsx",
+      "start_line": 1,
+      "end_line": 35,
+      "similarity": 0.7888,
+      "related_to": "public/app/features/dashboard-scene/scene/DashboardSceneRenderer.tsx",
+      "content_preview": "import { useEffect, useRef } from 'react';\nimport { Params, useParams } from 'react-router-dom-v5-compat';\nimport { usePrevious } from 'react-use';\n\nimport { PageLayoutType } from '@grafana/data';\nimport { locationService } from '@grafana/runtime';\nimport { UrlSyncContextProvider } from '@grafana/scenes';\nimport { Box } from '@grafana/ui';\nimport { Page } from 'app/core/components/Page/Page';\nimport PageLoader from 'app/core/components/PageLoader/PageLoader';\nimport { GrafanaRouteComponentProps } from 'app/core/navigation/types';\nimport { DashboardPageError } from 'app/features/dashboard/containers/DashboardPageError';\nimport { DashboardPageRouteParams, DashboardPageRouteSearchParams } from 'app/features/dashboard/containers/types';\nimport { getDashboardSceneProfiler } from 'app/features/d"
+    },
+    {
+      "file": "public/app/features/dashboard-scene/edit-pane/DashboardEditPaneRenderer.tsx",
+      "start_line": 1,
+      "end_line": 41,
+      "similarity": 0.7832,
+      "related_to": "public/app/features/dashboard-scene/scene/DashboardSceneRenderer.tsx",
+      "content_preview": "import { useCallback, useMemo, useState } from 'react';\n\nimport { selectors } from '@grafana/e2e-selectors';\nimport { t } from '@grafana/i18n';\nimport { config } from '@grafana/runtime';\nimport { sceneGraph, SceneObject, SceneObjectState, useSceneObjectState } from '@grafana/scenes';\nimport { Sidebar } from '@grafana/ui';\nimport { getDashboardSrv } from 'app/features/dashboard/services/DashboardSrv';\n\nimport { DashboardScene } from '../scene/DashboardScene';\nimport { onOpenSnapshotOriginalDashboard } from '../scene/GoToSnapshotOriginButton';\nimport { ManagedDashboardNavBarBadge } from '../scene/ManagedDashboardNavBarBadge';\nimport { RowItem } from '../scene/layout-rows/RowItem';\nimport { TabItem } from '../scene/layout-tabs/TabItem';\nimport { ToolbarActionProps } from '../scene/new-toolbar"
+    },
+    {
+      "file": "public/app/features/dashboard-scene/embedding/EmbeddedDashboard.tsx",
+      "start_line": 1,
+      "end_line": 62,
+      "similarity": 0.7791,
+      "related_to": "public/app/features/dashboard-scene/scene/DashboardSceneRenderer.tsx",
+      "content_preview": "import { css, cx } from '@emotion/css';\nimport { useEffect, useState } from 'react';\n\nimport { GrafanaTheme2, urlUtil } from '@grafana/data';\nimport { t } from '@grafana/i18n';\nimport { EmbeddedDashboardProps } from '@grafana/runtime';\nimport { SceneObjectStateChangedEvent, sceneUtils } from '@grafana/scenes';\nimport { Spinner, Alert, useStyles2 } from '@grafana/ui';\nimport { getMessageFromError } from 'app/core/utils/errors';\nimport { DashboardRoutes } from 'app/types/dashboard';\n\nimport { getDashboardScenePageStateManager } from '../pages/DashboardScenePageStateManager';\nimport { DashboardScene } from '../scene/DashboardScene';\n\nexport function EmbeddedDashboard(props: EmbeddedDashboardProps) {\n  const stateManager = getDashboardScenePageStateManager();\n  const { dashboard, loadError } ="
+    },
+    {
+      "file": "public/app/features/dashboard-scene/pages/PublicDashboardScenePage.tsx",
+      "start_line": 1,
+      "end_line": 42,
+      "similarity": 0.7677,
+      "related_to": "public/app/features/dashboard-scene/scene/DashboardSceneRenderer.tsx",
+      "content_preview": "import { css } from '@emotion/css';\nimport { useEffect, useState } from 'react';\nimport { useParams } from 'react-router-dom-v5-compat';\n\nimport { GrafanaTheme2, PageLayoutType } from '@grafana/data';\nimport { selectors as e2eSelectors } from '@grafana/e2e-selectors';\nimport { SceneComponentProps, UrlSyncContextProvider } from '@grafana/scenes';\nimport { Alert, Box, Icon, Stack, useStyles2 } from '@grafana/ui';\nimport { Page } from 'app/core/components/Page/Page';\nimport PageLoader from 'app/core/components/PageLoader/PageLoader';\nimport { GrafanaRouteComponentProps } from 'app/core/navigation/types';\nimport { PublicDashboardFooter } from 'app/features/dashboard/components/PublicDashboard/PublicDashboardsFooter';\nimport { useGetPublicDashboardConfig } from 'app/features/dashboard/component"
+    },
+    {
+      "file": "public/app/features/dashboard-scene/panel-edit/PanelEditorRenderer.tsx",
+      "start_line": 39,
+      "end_line": 92,
+      "similarity": 0.7647,
+      "related_to": "public/app/features/dashboard-scene/scene/DashboardSceneRenderer.tsx",
+      "content_preview": "d: isScrollingLayout,\n    });\n\n  useEffect(() => {\n    setIsCollapsed(splitterState.collapsed);\n  }, [splitterState.collapsed, setIsCollapsed]);\n\n  return (\n    <>\n      <NavToolbarActions dashboard={dashboard} />\n      <div\n        {...containerProps}\n        className={cx(containerProps.className, styles.content)}\n        data-testid={selectors.components.PanelEditor.General.content}\n      >\n        <div {...primaryProps} className={cx(primaryProps.className, styles.body)}>\n          <VizAndDataPane model={model} />\n        </div>\n        <div {...splitterProps} />\n        <div {...secondaryProps} className={cx(secondaryProps.className, styles.optionsPane)}>\n          {splitterState.collapsed && (\n            <div className={styles.expandOptionsWrapper}>\n              <ToolbarButton\n    "
+    },
+    {
+      "file": "public/app/features/dashboard-scene/pages/PublicDashboardScenePage.tsx",
+      "start_line": 36,
+      "end_line": 104,
+      "similarity": 0.7633,
+      "related_to": "public/app/features/dashboard-scene/scene/DashboardSceneRenderer.tsx",
+      "content_preview": "s2(getStyles);\n  const { dashboard, isLoading, loadError } = stateManager.useState();\n\n  useEffect(() => {\n    stateManager.loadDashboard({ uid: accessToken, route: DashboardRoutes.Public });\n\n    return () => {\n      stateManager.clearState();\n    };\n  }, [stateManager, accessToken, route.routeName]);\n\n  if (loadError) {\n    return <PublicDashboardScenePageError error={loadError} />;\n  }\n\n  if (!dashboard) {\n    return (\n      <Page layout={PageLayoutType.Custom} className={styles.loadingPage} data-testid={selectors.loadingPage}>\n        {isLoading && <PageLoader />}\n      </Page>\n    );\n  }\n\n  // if no time picker render without url sync\n  if (dashboard.state.controls?.state.hideTimeControls) {\n    return <PublicDashboardSceneRenderer model={dashboard} />;\n  }\n\n  return (\n    <UrlSyncCon"
+    }
+  ],
+  "rag_evidence": {
+    "similar_code": [
+      {
+        "file": "public/app/features/dashboard-scene/panel-edit/PanelEditorRenderer.tsx",
+        "start_line": 1,
+        "end_line": 48,
+        "similarity": 0.801,
+        "related_to": "public/app/features/dashboard-scene/scene/DashboardSceneRenderer.tsx",
+        "content_preview": "import { css, cx } from '@emotion/css';\nimport { useEffect, useMemo } from 'react';\n\nimport { GrafanaTheme2 } from '@grafana/data';\nimport { selectors } from '@grafana/e2e-selectors';\nimport { t } from '@grafana/i18n';\nimport { SceneComponentProps, VizPanel } from '@grafana/scenes';\nimport { Button, Spinner, ToolbarButton, useStyles2, useTheme2 } from '@grafana/ui';\nimport { MIN_SUGGESTIONS_PANE_WIDTH } from 'app/features/panel/suggestions/constants';\n\nimport { useEditPaneCollapsed } from '../edit-pane/shared';\nimport { NavToolbarActions } from '../scene/NavToolbarActions';\nimport { UnlinkModal } from '../scene/UnlinkModal';\nimport { getDashboardSceneFor, getLibraryPanelBehavior } from '../utils/utils';\n\nimport { PanelEditor } from './PanelEditor';\nimport { SaveLibraryVizPanelModal } from "
+      },
+      {
+        "file": "public/app/features/dashboard-scene/edit-pane/DashboardEditPaneSplitter.tsx",
+        "start_line": 1,
+        "end_line": 46,
+        "similarity": 0.7964,
+        "related_to": "public/app/features/dashboard-scene/scene/DashboardSceneRenderer.tsx",
+        "content_preview": "import { css, cx } from '@emotion/css';\nimport React, { useEffect, useLayoutEffect } from 'react';\nimport { useEffectOnce } from 'react-use';\n\nimport { GrafanaTheme2 } from '@grafana/data';\nimport { selectors } from '@grafana/e2e-selectors';\nimport { config, useChromeHeaderHeight } from '@grafana/runtime';\nimport { useSceneObjectState } from '@grafana/scenes';\nimport { ElementSelectionContext, useSidebar, useStyles2, Sidebar } from '@grafana/ui';\nimport NativeScrollbar, { DivScrollElement } from 'app/core/components/NativeScrollbar';\nimport { useGrafana } from 'app/core/context/GrafanaContext';\nimport { getDashboardSrv } from 'app/features/dashboard/services/DashboardSrv';\nimport { playlistSrv } from 'app/features/playlist/PlaylistSrv';\nimport { KioskMode } from 'app/types/dashboard';\n\nimp"
+      },
+      {
+        "file": "public/app/features/dashboard-scene/pages/DashboardScenePage.tsx",
+        "start_line": 1,
+        "end_line": 35,
+        "similarity": 0.7888,
+        "related_to": "public/app/features/dashboard-scene/scene/DashboardSceneRenderer.tsx",
+        "content_preview": "import { useEffect, useRef } from 'react';\nimport { Params, useParams } from 'react-router-dom-v5-compat';\nimport { usePrevious } from 'react-use';\n\nimport { PageLayoutType } from '@grafana/data';\nimport { locationService } from '@grafana/runtime';\nimport { UrlSyncContextProvider } from '@grafana/scenes';\nimport { Box } from '@grafana/ui';\nimport { Page } from 'app/core/components/Page/Page';\nimport PageLoader from 'app/core/components/PageLoader/PageLoader';\nimport { GrafanaRouteComponentProps } from 'app/core/navigation/types';\nimport { DashboardPageError } from 'app/features/dashboard/containers/DashboardPageError';\nimport { DashboardPageRouteParams, DashboardPageRouteSearchParams } from 'app/features/dashboard/containers/types';\nimport { getDashboardSceneProfiler } from 'app/features/d"
+      },
+      {
+        "file": "public/app/features/dashboard-scene/edit-pane/DashboardEditPaneRenderer.tsx",
+        "start_line": 1,
+        "end_line": 41,
+        "similarity": 0.7832,
+        "related_to": "public/app/features/dashboard-scene/scene/DashboardSceneRenderer.tsx",
+        "content_preview": "import { useCallback, useMemo, useState } from 'react';\n\nimport { selectors } from '@grafana/e2e-selectors';\nimport { t } from '@grafana/i18n';\nimport { config } from '@grafana/runtime';\nimport { sceneGraph, SceneObject, SceneObjectState, useSceneObjectState } from '@grafana/scenes';\nimport { Sidebar } from '@grafana/ui';\nimport { getDashboardSrv } from 'app/features/dashboard/services/DashboardSrv';\n\nimport { DashboardScene } from '../scene/DashboardScene';\nimport { onOpenSnapshotOriginalDashboard } from '../scene/GoToSnapshotOriginButton';\nimport { ManagedDashboardNavBarBadge } from '../scene/ManagedDashboardNavBarBadge';\nimport { RowItem } from '../scene/layout-rows/RowItem';\nimport { TabItem } from '../scene/layout-tabs/TabItem';\nimport { ToolbarActionProps } from '../scene/new-toolbar"
+      },
+      {
+        "file": "public/app/features/dashboard-scene/embedding/EmbeddedDashboard.tsx",
+        "start_line": 1,
+        "end_line": 62,
+        "similarity": 0.7791,
+        "related_to": "public/app/features/dashboard-scene/scene/DashboardSceneRenderer.tsx",
+        "content_preview": "import { css, cx } from '@emotion/css';\nimport { useEffect, useState } from 'react';\n\nimport { GrafanaTheme2, urlUtil } from '@grafana/data';\nimport { t } from '@grafana/i18n';\nimport { EmbeddedDashboardProps } from '@grafana/runtime';\nimport { SceneObjectStateChangedEvent, sceneUtils } from '@grafana/scenes';\nimport { Spinner, Alert, useStyles2 } from '@grafana/ui';\nimport { getMessageFromError } from 'app/core/utils/errors';\nimport { DashboardRoutes } from 'app/types/dashboard';\n\nimport { getDashboardScenePageStateManager } from '../pages/DashboardScenePageStateManager';\nimport { DashboardScene } from '../scene/DashboardScene';\n\nexport function EmbeddedDashboard(props: EmbeddedDashboardProps) {\n  const stateManager = getDashboardScenePageStateManager();\n  const { dashboard, loadError } ="
+      },
+      {
+        "file": "public/app/features/dashboard-scene/pages/PublicDashboardScenePage.tsx",
+        "start_line": 1,
+        "end_line": 42,
+        "similarity": 0.7677,
+        "related_to": "public/app/features/dashboard-scene/scene/DashboardSceneRenderer.tsx",
+        "content_preview": "import { css } from '@emotion/css';\nimport { useEffect, useState } from 'react';\nimport { useParams } from 'react-router-dom-v5-compat';\n\nimport { GrafanaTheme2, PageLayoutType } from '@grafana/data';\nimport { selectors as e2eSelectors } from '@grafana/e2e-selectors';\nimport { SceneComponentProps, UrlSyncContextProvider } from '@grafana/scenes';\nimport { Alert, Box, Icon, Stack, useStyles2 } from '@grafana/ui';\nimport { Page } from 'app/core/components/Page/Page';\nimport PageLoader from 'app/core/components/PageLoader/PageLoader';\nimport { GrafanaRouteComponentProps } from 'app/core/navigation/types';\nimport { PublicDashboardFooter } from 'app/features/dashboard/components/PublicDashboard/PublicDashboardsFooter';\nimport { useGetPublicDashboardConfig } from 'app/features/dashboard/component"
+      },
+      {
+        "file": "public/app/features/dashboard-scene/panel-edit/PanelEditorRenderer.tsx",
+        "start_line": 39,
+        "end_line": 92,
+        "similarity": 0.7647,
+        "related_to": "public/app/features/dashboard-scene/scene/DashboardSceneRenderer.tsx",
+        "content_preview": "d: isScrollingLayout,\n    });\n\n  useEffect(() => {\n    setIsCollapsed(splitterState.collapsed);\n  }, [splitterState.collapsed, setIsCollapsed]);\n\n  return (\n    <>\n      <NavToolbarActions dashboard={dashboard} />\n      <div\n        {...containerProps}\n        className={cx(containerProps.className, styles.content)}\n        data-testid={selectors.components.PanelEditor.General.content}\n      >\n        <div {...primaryProps} className={cx(primaryProps.className, styles.body)}>\n          <VizAndDataPane model={model} />\n        </div>\n        <div {...splitterProps} />\n        <div {...secondaryProps} className={cx(secondaryProps.className, styles.optionsPane)}>\n          {splitterState.collapsed && (\n            <div className={styles.expandOptionsWrapper}>\n              <ToolbarButton\n    "
+      },
+      {
+        "file": "public/app/features/dashboard-scene/pages/PublicDashboardScenePage.tsx",
+        "start_line": 36,
+        "end_line": 104,
+        "similarity": 0.7633,
+        "related_to": "public/app/features/dashboard-scene/scene/DashboardSceneRenderer.tsx",
+        "content_preview": "s2(getStyles);\n  const { dashboard, isLoading, loadError } = stateManager.useState();\n\n  useEffect(() => {\n    stateManager.loadDashboard({ uid: accessToken, route: DashboardRoutes.Public });\n\n    return () => {\n      stateManager.clearState();\n    };\n  }, [stateManager, accessToken, route.routeName]);\n\n  if (loadError) {\n    return <PublicDashboardScenePageError error={loadError} />;\n  }\n\n  if (!dashboard) {\n    return (\n      <Page layout={PageLayoutType.Custom} className={styles.loadingPage} data-testid={selectors.loadingPage}>\n        {isLoading && <PageLoader />}\n      </Page>\n    );\n  }\n\n  // if no time picker render without url sync\n  if (dashboard.state.controls?.state.hideTimeControls) {\n    return <PublicDashboardSceneRenderer model={dashboard} />;\n  }\n\n  return (\n    <UrlSyncCon"
+      }
+    ]
+  },
+  "callers": [
+    {
+      "path": "dashboard-scene/scene/DashboardSceneRenderer.tsx",
+      "from_function": "DashboardSceneRenderer",
+      "calls_function": "renderBody",
+      "caller_line": 17,
+      "callee_file": "dashboard-scene/scene/DashboardSceneRenderer.tsx",
+      "callee_line": 82
+    }
+  ],
+  "call_graph_edges": [
+    {
+      "from": "dashboard-scene/scene/DashboardSceneRenderer.tsx::DashboardSceneRenderer",
+      "to": "dashboard-scene/scene/DashboardSceneRenderer.tsx::renderBody"
+    }
+  ],
+  "functions_in_changed_files": [
+    {
+      "name": ":program",
+      "full_name": "dashboard-scene/scene/DashboardSceneRenderer.tsx::program",
+      "file": "dashboard-scene/scene/DashboardSceneRenderer.tsx",
+      "start_line": 1,
+      "end_line": 116,
+      "signature": ""
+    },
+    {
+      "name": "DashboardSceneRenderer",
+      "full_name": "dashboard-scene/scene/DashboardSceneRenderer.tsx::program:DashboardSceneRenderer",
+      "file": "dashboard-scene/scene/DashboardSceneRenderer.tsx",
+      "start_line": 17,
+      "end_line": 115,
+      "signature": ""
+    },
+    {
+      "name": "renderBody",
+      "full_name": "dashboard-scene/scene/DashboardSceneRenderer.tsx::program:DashboardSceneRenderer:renderBody",
+      "file": "dashboard-scene/scene/DashboardSceneRenderer.tsx",
+      "start_line": 82,
+      "end_line": 96,
+      "signature": ""
+    },
+    {
+      "name": "<lambda>0",
+      "full_name": "dashboard-scene/scene/DashboardSceneRenderer.tsx::program:DashboardSceneRenderer:<lambda>0",
+      "file": "dashboard-scene/scene/DashboardSceneRenderer.tsx",
+      "start_line": 33,
+      "end_line": 33,
+      "signature": ""
+    },
+    {
+      "name": "<lambda>1",
+      "full_name": "dashboard-scene/scene/DashboardSceneRenderer.tsx::program:DashboardSceneRenderer:<lambda>1",
+      "file": "dashboard-scene/scene/DashboardSceneRenderer.tsx",
+      "start_line": 48,
+      "end_line": 52,
+      "signature": ""
+    },
+    {
+      "name": "<lambda>2",
+      "full_name": "dashboard-scene/scene/DashboardSceneRenderer.tsx::program:DashboardSceneRenderer:<lambda>2",
+      "file": "dashboard-scene/scene/DashboardSceneRenderer.tsx",
+      "start_line": 55,
+      "end_line": 59,
+      "signature": ""
+    },
+    {
+      "name": "<lambda>4",
+      "full_name": "dashboard-scene/scene/DashboardSceneRenderer.tsx::program:DashboardSceneRenderer:<lambda>3:<lambda>4",
+      "file": "dashboard-scene/scene/DashboardSceneRenderer.tsx",
+      "start_line": 65,
+      "end_line": 67,
+      "signature": ""
+    },
+    {
+      "name": "<lambda>3",
+      "full_name": "dashboard-scene/scene/DashboardSceneRenderer.tsx::program:DashboardSceneRenderer:<lambda>3",
+      "file": "dashboard-scene/scene/DashboardSceneRenderer.tsx",
+      "start_line": 61,
+      "end_line": 71,
+      "signature": ""
+    }
+  ]
+}

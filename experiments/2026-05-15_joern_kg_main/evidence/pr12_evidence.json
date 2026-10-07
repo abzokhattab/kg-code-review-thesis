@@ -1,0 +1,1197 @@
+{
+  "pr": {
+    "number": 68625,
+    "title": "[3.x] Add ability to pick random value from array",
+    "body": "Backport of https://github.com/godotengine/godot/pull/67444.",
+    "url": "https://github.com/godotengine/godot/pull/68625",
+    "repo": "godotengine/godot",
+    "base_branch": "3.x",
+    "head_branch": "pick_random",
+    "merged_at": "2022-11-14T22:52:12Z",
+    "state": "MERGED"
+  },
+  "changed_files": [
+    {
+      "path": "core/array.cpp",
+      "language": "cpp",
+      "added": 5,
+      "deleted": 0
+    },
+    {
+      "path": "core/array.h",
+      "language": "cpp",
+      "added": 1,
+      "deleted": 0
+    },
+    {
+      "path": "core/variant_call.cpp",
+      "language": "cpp",
+      "added": 2,
+      "deleted": 0
+    },
+    {
+      "path": "doc/classes/Array.xml",
+      "language": "xml",
+      "added": 10,
+      "deleted": 0
+    }
+  ],
+  "nearest_tests": [],
+  "dependent_files": [],
+  "diff_summary": "4 files changed",
+  "full_diff": "diff --git a/core/array.cpp b/core/array.cpp\nindex 056ee332f10c..08cdec7323a1 100644\n--- a/core/array.cpp\n+++ b/core/array.cpp\n@@ -31,6 +31,7 @@\n #include \"array.h\"\n \n #include \"core/hashfuncs.h\"\n+#include \"core/math/math_funcs.h\"\n #include \"core/object.h\"\n #include \"core/variant.h\"\n #include \"core/vector.h\"\n@@ -407,6 +408,10 @@ Variant Array::pop_front() {\n \t}\n \treturn Variant();\n }\n+Variant Array::pick_random() const {\n+\tERR_FAIL_COND_V_MSG(_p->array.size() == 0, Variant(), \"Can't take value from empty array.\");\n+\treturn operator[](Math::rand() % _p->array.size());\n+}\n \n Variant Array::pop_at(int p_pos) {\n \tif (_p->array.empty()) {\ndiff --git a/core/array.h b/core/array.h\nindex 09aed83981d5..2fcfc4ba813a 100644\n--- a/core/array.h\n+++ b/core/array.h\n@@ -72,6 +72,7 @@ class Array {\n \tvoid fill(const Variant &p_value);\n \n \tVariant front() const;\n+\tVariant pick_random() const;\n \tVariant back() const;\n \n \tArray &sort();\ndiff --git a/core/variant_call.cpp b/core/variant_call.cpp\nindex e57e6bde0594..db2a4671425e 100644\n--- a/core/variant_call.cpp\n+++ b/core/variant_call.cpp\n@@ -578,6 +578,7 @@ struct _VariantCall {\n \tVCALL_LOCALMEM2(Array, insert);\n \tVCALL_LOCALMEM1(Array, remove);\n \tVCALL_LOCALMEM0R(Array, front);\n+\tVCALL_LOCALMEM0R(Array, pick_random)\n \tVCALL_LOCALMEM0R(Array, back);\n \tVCALL_LOCALMEM2R(Array, find);\n \tVCALL_LOCALMEM2R(Array, rfind);\n@@ -1960,6 +1961,7 @@ void register_variant_methods() {\n \tADDFUNC1NC(ARRAY, NIL, Array, remove, INT, \"position\", varray());\n \tADDFUNC1NC(ARRAY, NIL, Array, erase, NIL, \"value\", varray());\n \tADDFUNC0R(ARRAY, NIL, Array, front, varray());\n+\tADDFUNC0R(ARRAY, NIL, Array, pick_random, varray())\n \tADDFUNC0R(ARRAY, NIL, Array, back, varray());\n \tADDFUNC2R(ARRAY, INT, Array, find, NIL, \"what\", INT, \"from\", varray(0));\n \tADDFUNC2R(ARRAY, INT, Array, rfind, NIL, \"what\", INT, \"from\", varray(-1));\ndiff --git a/doc/classes/Array.xml b/doc/classes/Array.xml\nindex 8ca08eae8a3f..5e9f692dadbb 100644\n--- a/doc/classes/Array.xml\n+++ b/doc/classes/Array.xml\n@@ -263,6 +263,16 @@\n \t\t\t\tReturns the minimum value contained in the array if all elements are of comparable types. If the elements can't be compared, [code]null[/code] is returned.\n \t\t\t</description>\n \t\t</method>\n+\t\t<method name=\"pick_random\">\n+\t\t\t<return type=\"Variant\" />\n+\t\t\t<description>\n+\t\t\t\tReturns a random value from the target array.\n+\t\t\t\t[codeblock]\n+\t\t\t\tvar array: Array[int] = [1, 2, 3, 4]\n+\t\t\t\tprint(array.pick_random())  # Prints either of the four numbers.\n+\t\t\t\t[/codeblock]\n+\t\t\t</description>\n+\t\t</method>\n \t\t<method name=\"pop_at\">\n \t\t\t<return type=\"Variant\" />\n \t\t\t<argument index=\"0\" name=\"position\" type=\"int\" />\n",
+  "metadata": {
+    "v2_fetcher_version": 1,
+    "v2_fetched_at_unix": 1777501230,
+    "v2_diff_cap_bytes": 50000,
+    "v2_body_cap_bytes": 8000,
+    "v2_diff_truncated": false,
+    "v2_raw_diff_chars": 2648,
+    "v2_raw_body_chars": 60,
+    "v2_rag_source": "rebuilt_v2_clean_changed_files",
+    "v2_rag_chunks_copied": 8,
+    "joern_enriched": true,
+    "joern_callers_count": 50,
+    "joern_functions_count": 50
+  },
+  "similar_chunks": [
+    {
+      "file": "core/config/project_settings.h",
+      "start_line": 24,
+      "end_line": 81,
+      "similarity": 0.593,
+      "related_to": "doc/classes/Array.xml",
+      "content_preview": "OR A PARTICULAR PURPOSE AND NONINFRINGEMENT. */\n/* IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY   */\n/* CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,   */\n/* TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE      */\n/* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */\n/**************************************************************************/\n\n#pragma once\n\n#include \"core/object/object.h\"\n#include \"core/templates/rb_map.h\"\n\ntemplate <typename T>\nclass TypedArray;\n\nclass ProjectSettings : public Object {\n\tGDCLASS(ProjectSettings, Object);\n\t_THREAD_SAFE_CLASS_\n\tfriend class TestProjectSettingsInternalsAccessor;\n\n\tbool is_changed = false;\n\n\t// Starting version from 1 ensures that all callers can reset thei"
+    },
+    {
+      "file": "core/extension/extension_api_dump.cpp",
+      "start_line": 237,
+      "end_line": 286,
+      "similarity": 0.5884,
+      "related_to": "core/array.h",
+      "content_preview": "at64Array mismatch\");\n\t\tstatic_assert(type_size_array[Variant::PACKED_STRING_ARRAY][sizeof(void *)] == sizeof(PackedStringArray), \"Size of PackedStringArray mismatch\");\n\t\tstatic_assert(type_size_array[Variant::PACKED_VECTOR2_ARRAY][sizeof(void *)] == sizeof(PackedVector2Array), \"Size of PackedVector2Array mismatch\");\n\t\tstatic_assert(type_size_array[Variant::PACKED_VECTOR3_ARRAY][sizeof(void *)] == sizeof(PackedVector3Array), \"Size of PackedVector3Array mismatch\");\n\t\tstatic_assert(type_size_array[Variant::PACKED_COLOR_ARRAY][sizeof(void *)] == sizeof(PackedColorArray), \"Size of PackedColorArray mismatch\");\n\t\tstatic_assert(type_size_array[Variant::PACKED_VECTOR4_ARRAY][sizeof(void *)] == sizeof(PackedVector4Array), \"Size of PackedVector4Array mismatch\");\n\t\tstatic_assert(type_size_array[Varia"
+    },
+    {
+      "file": "core/io/marshalls.cpp",
+      "start_line": 787,
+      "end_line": 873,
+      "similarity": 0.5876,
+      "related_to": "core/variant_call.cpp",
+      "content_preview": ";\n\t\tcase Variant::CALLABLE: {\n\t\t\tr_variant = Callable();\n\t\t} break;\n\t\tcase Variant::SIGNAL: {\n\t\t\tString name;\n\t\t\tError err = _decode_string(buf, len, r_len, name);\n\t\t\tif (err) {\n\t\t\t\treturn err;\n\t\t\t}\n\n\t\t\tERR_FAIL_COND_V(len < 8, ERR_INVALID_DATA);\n\t\t\tObjectID id = ObjectID(decode_uint64(buf));\n\t\t\tif (r_len) {\n\t\t\t\t(*r_len) += 8;\n\t\t\t}\n\n\t\t\tr_variant = Signal(id, StringName(name));\n\t\t} break;\n\t\tcase Variant::DICTIONARY: {\n\t\t\tContainerType key_type;\n\n\t\t\t{\n\t\t\t\tContainerTypeKind key_type_kind = GET_CONTAINER_TYPE_KIND(header, TYPED_DICTIONARY_KEY);\n\t\t\t\tError err = _decode_container_type(buf, len, r_len, p_allow_objects, key_type_kind, key_type);\n\t\t\t\tif (err) {\n\t\t\t\t\treturn err;\n\t\t\t\t}\n\t\t\t}\n\n\t\t\tContainerType value_type;\n\n\t\t\t{\n\t\t\t\tContainerTypeKind value_type_kind = GET_CONTAINER_TYPE_KIND(header, TYP"
+    },
+    {
+      "file": "core/io/json.cpp",
+      "start_line": 1423,
+      "end_line": 1489,
+      "similarity": 0.5516,
+      "related_to": "doc/classes/Array.xml",
+      "content_preview": "arr.write[i] = Vector2(args[i * 2 + 0], args[i * 2 + 1]);\n\t\t\t\t\t}\n\n\t\t\t\t\treturn arr;\n\t\t\t\t} break;\n\t\t\t\tcase Variant::PACKED_VECTOR3_ARRAY: {\n\t\t\t\t\tLOAD_ARGS_CHECK_FACTOR(3);\n\n\t\t\t\t\tPackedVector3Array arr;\n\t\t\t\t\tarr.resize(args.size() / 3);\n\t\t\t\t\tfor (int i = 0; i < arr.size(); i++) {\n\t\t\t\t\t\tarr.write[i] = Vector3(args[i * 3 + 0], args[i * 3 + 1], args[i * 3 + 2]);\n\t\t\t\t\t}\n\n\t\t\t\t\treturn arr;\n\t\t\t\t} break;\n\t\t\t\tcase Variant::PACKED_COLOR_ARRAY: {\n\t\t\t\t\tLOAD_ARGS_CHECK_FACTOR(4);\n\n\t\t\t\t\tPackedColorArray arr;\n\t\t\t\t\tarr.resize(args.size() / 4);\n\t\t\t\t\tfor (int i = 0; i < arr.size(); i++) {\n\t\t\t\t\t\tarr.write[i] = Color(args[i * 4 + 0], args[i * 4 + 1], args[i * 4 + 2], args[i * 4 + 3]);\n\t\t\t\t\t}\n\n\t\t\t\t\treturn arr;\n\t\t\t\t} break;\n\t\t\t\tcase Variant::PACKED_VECTOR4_ARRAY: {\n\t\t\t\t\tLOAD_ARGS_CHECK_FACTOR(4);\n\n\t\t\t\t\tPackedVecto"
+    },
+    {
+      "file": "core/io/json.cpp",
+      "start_line": 764,
+      "end_line": 828,
+      "similarity": 0.5495,
+      "related_to": "core/variant_call.cpp",
+      "content_preview": " args = { aabb.position.x, aabb.position.y, aabb.position.z, aabb.size.x, aabb.size.y, aabb.size.z };\n\t\t\tRETURN_ARGS;\n\t\t} break;\n\t\tcase Variant::BASIS: {\n\t\t\tconst Basis b = p_variant;\n\n\t\t\tArray args = { b.get_column(0).x, b.get_column(0).y, b.get_column(0).z,\n\t\t\t\tb.get_column(1).x, b.get_column(1).y, b.get_column(1).z,\n\t\t\t\tb.get_column(2).x, b.get_column(2).y, b.get_column(2).z };\n\n\t\t\tRETURN_ARGS;\n\t\t} break;\n\t\tcase Variant::TRANSFORM3D: {\n\t\t\tconst Transform3D t = p_variant;\n\n\t\t\tArray args = { t.basis.get_column(0).x, t.basis.get_column(0).y, t.basis.get_column(0).z,\n\t\t\t\tt.basis.get_column(1).x, t.basis.get_column(1).y, t.basis.get_column(1).z,\n\t\t\t\tt.basis.get_column(2).x, t.basis.get_column(2).y, t.basis.get_column(2).z,\n\t\t\t\tt.origin.x, t.origin.y, t.origin.z };\n\n\t\t\tRETURN_ARGS;\n\t\t} break;"
+    },
+    {
+      "file": "core/extension/gdextension_interface.cpp",
+      "start_line": 1712,
+      "end_line": 1753,
+      "similarity": 0.5471,
+      "related_to": "core/variant_call.cpp",
+      "content_preview": "TER_INTERFACE_FUNC(print_warning);\n\tREGISTER_INTERFACE_FUNC(print_warning_with_message);\n\tREGISTER_INTERFACE_FUNC(print_script_error);\n\tREGISTER_INTERFACE_FUNC(print_script_error_with_message);\n\tREGISTER_INTERFACE_FUNC(get_native_struct_size);\n\tREGISTER_INTERFACE_FUNC(variant_new_copy);\n\tREGISTER_INTERFACE_FUNC(variant_new_nil);\n\tREGISTER_INTERFACE_FUNC(variant_destroy);\n\tREGISTER_INTERFACE_FUNC(variant_call);\n\tREGISTER_INTERFACE_FUNC(variant_call_static);\n\tREGISTER_INTERFACE_FUNC(variant_evaluate);\n\tREGISTER_INTERFACE_FUNC(variant_set);\n\tREGISTER_INTERFACE_FUNC(variant_set_named);\n\tREGISTER_INTERFACE_FUNC(variant_set_keyed);\n\tREGISTER_INTERFACE_FUNC(variant_set_indexed);\n\tREGISTER_INTERFACE_FUNC(variant_get);\n\tREGISTER_INTERFACE_FUNC(variant_get_named);\n\tREGISTER_INTERFACE_FUNC(variant_ge"
+    },
+    {
+      "file": "core/extension/extension_api_dump.cpp",
+      "start_line": 431,
+      "end_line": 495,
+      "similarity": 0.544,
+      "related_to": "core/variant_call.cpp",
+      "content_preview": "hile (true) {\n\t\t\t\tVariant::Type t = member_offset_array[idx].type;\n\t\t\t\tif (t != previous_type) {\n\t\t\t\t\tif (previous_type != Variant::NIL) {\n\t\t\t\t\t\td2[\"members\"] = members;\n\t\t\t\t\t\ttype_offsets.push_back(d2);\n\t\t\t\t\t}\n\t\t\t\t\tif (t == Variant::NIL) {\n\t\t\t\t\t\tbreak;\n\t\t\t\t\t}\n\n\t\t\t\t\tString name = t == Variant::VARIANT_MAX ? String(\"Variant\") : Variant::get_type_name(t);\n\t\t\t\t\td2 = Dictionary();\n\t\t\t\t\tmembers = Array();\n\t\t\t\t\toffset = 0;\n\t\t\t\t\td2[\"name\"] = name;\n\t\t\t\t\tprevious_type = t;\n\t\t\t\t}\n\t\t\t\tDictionary d3;\n\t\t\t\tconst char *member_meta = nullptr;\n\t\t\t\tuint32_t member_size = 0;\n\t\t\t\tswitch (i) {\n\t\t\t\t\tcase 0:\n\t\t\t\t\t\tmember_meta = member_offset_array[idx].member_meta_32_bits_real_float;\n\t\t\t\t\t\tmember_size = member_offset_array[idx].member_size_32_bits_real_float;\n\t\t\t\t\t\tbreak;\n\t\t\t\t\tcase 1:\n\t\t\t\t\t\tmember_meta = member_"
+    },
+    {
+      "file": "core/io/json.cpp",
+      "start_line": 695,
+      "end_line": 770,
+      "similarity": 0.5439,
+      "related_to": "core/variant_call.cpp",
+      "content_preview": "ant::NODE_PATH: {\n\t\t\treturn \"np:\" + String(p_variant);\n\t\t} break;\n\n\t\tcase Variant::RID:\n\t\tcase Variant::CALLABLE:\n\t\tcase Variant::SIGNAL: {\n\t\t\tDictionary ret;\n\t\t\tret[TYPE] = Variant::get_type_name(p_variant.get_type());\n\t\t\treturn ret;\n\t\t} break;\n\n\t\tcase Variant::VECTOR2: {\n\t\t\tconst Vector2 v = p_variant;\n\t\t\tArray args = { v.x, v.y };\n\t\t\tRETURN_ARGS;\n\t\t} break;\n\t\tcase Variant::VECTOR2I: {\n\t\t\tconst Vector2i v = p_variant;\n\t\t\tArray args = { v.x, v.y };\n\t\t\tRETURN_ARGS;\n\t\t} break;\n\t\tcase Variant::RECT2: {\n\t\t\tconst Rect2 r = p_variant;\n\t\t\tArray args = { r.position.x, r.position.y, r.size.width, r.size.height };\n\t\t\tRETURN_ARGS;\n\t\t} break;\n\t\tcase Variant::RECT2I: {\n\t\t\tconst Rect2i r = p_variant;\n\t\t\tArray args = { r.position.x, r.position.y, r.size.width, r.size.height };\n\t\t\tRETURN_ARGS;\n\t\t} break;"
+    }
+  ],
+  "rag_evidence": {
+    "similar_code": [
+      {
+        "file": "core/config/project_settings.h",
+        "start_line": 24,
+        "end_line": 81,
+        "similarity": 0.593,
+        "related_to": "doc/classes/Array.xml",
+        "content_preview": "OR A PARTICULAR PURPOSE AND NONINFRINGEMENT. */\n/* IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY   */\n/* CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,   */\n/* TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE      */\n/* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */\n/**************************************************************************/\n\n#pragma once\n\n#include \"core/object/object.h\"\n#include \"core/templates/rb_map.h\"\n\ntemplate <typename T>\nclass TypedArray;\n\nclass ProjectSettings : public Object {\n\tGDCLASS(ProjectSettings, Object);\n\t_THREAD_SAFE_CLASS_\n\tfriend class TestProjectSettingsInternalsAccessor;\n\n\tbool is_changed = false;\n\n\t// Starting version from 1 ensures that all callers can reset thei"
+      },
+      {
+        "file": "core/extension/extension_api_dump.cpp",
+        "start_line": 237,
+        "end_line": 286,
+        "similarity": 0.5884,
+        "related_to": "core/array.h",
+        "content_preview": "at64Array mismatch\");\n\t\tstatic_assert(type_size_array[Variant::PACKED_STRING_ARRAY][sizeof(void *)] == sizeof(PackedStringArray), \"Size of PackedStringArray mismatch\");\n\t\tstatic_assert(type_size_array[Variant::PACKED_VECTOR2_ARRAY][sizeof(void *)] == sizeof(PackedVector2Array), \"Size of PackedVector2Array mismatch\");\n\t\tstatic_assert(type_size_array[Variant::PACKED_VECTOR3_ARRAY][sizeof(void *)] == sizeof(PackedVector3Array), \"Size of PackedVector3Array mismatch\");\n\t\tstatic_assert(type_size_array[Variant::PACKED_COLOR_ARRAY][sizeof(void *)] == sizeof(PackedColorArray), \"Size of PackedColorArray mismatch\");\n\t\tstatic_assert(type_size_array[Variant::PACKED_VECTOR4_ARRAY][sizeof(void *)] == sizeof(PackedVector4Array), \"Size of PackedVector4Array mismatch\");\n\t\tstatic_assert(type_size_array[Varia"
+      },
+      {
+        "file": "core/io/marshalls.cpp",
+        "start_line": 787,
+        "end_line": 873,
+        "similarity": 0.5876,
+        "related_to": "core/variant_call.cpp",
+        "content_preview": ";\n\t\tcase Variant::CALLABLE: {\n\t\t\tr_variant = Callable();\n\t\t} break;\n\t\tcase Variant::SIGNAL: {\n\t\t\tString name;\n\t\t\tError err = _decode_string(buf, len, r_len, name);\n\t\t\tif (err) {\n\t\t\t\treturn err;\n\t\t\t}\n\n\t\t\tERR_FAIL_COND_V(len < 8, ERR_INVALID_DATA);\n\t\t\tObjectID id = ObjectID(decode_uint64(buf));\n\t\t\tif (r_len) {\n\t\t\t\t(*r_len) += 8;\n\t\t\t}\n\n\t\t\tr_variant = Signal(id, StringName(name));\n\t\t} break;\n\t\tcase Variant::DICTIONARY: {\n\t\t\tContainerType key_type;\n\n\t\t\t{\n\t\t\t\tContainerTypeKind key_type_kind = GET_CONTAINER_TYPE_KIND(header, TYPED_DICTIONARY_KEY);\n\t\t\t\tError err = _decode_container_type(buf, len, r_len, p_allow_objects, key_type_kind, key_type);\n\t\t\t\tif (err) {\n\t\t\t\t\treturn err;\n\t\t\t\t}\n\t\t\t}\n\n\t\t\tContainerType value_type;\n\n\t\t\t{\n\t\t\t\tContainerTypeKind value_type_kind = GET_CONTAINER_TYPE_KIND(header, TYP"
+      },
+      {
+        "file": "core/io/json.cpp",
+        "start_line": 1423,
+        "end_line": 1489,
+        "similarity": 0.5516,
+        "related_to": "doc/classes/Array.xml",
+        "content_preview": "arr.write[i] = Vector2(args[i * 2 + 0], args[i * 2 + 1]);\n\t\t\t\t\t}\n\n\t\t\t\t\treturn arr;\n\t\t\t\t} break;\n\t\t\t\tcase Variant::PACKED_VECTOR3_ARRAY: {\n\t\t\t\t\tLOAD_ARGS_CHECK_FACTOR(3);\n\n\t\t\t\t\tPackedVector3Array arr;\n\t\t\t\t\tarr.resize(args.size() / 3);\n\t\t\t\t\tfor (int i = 0; i < arr.size(); i++) {\n\t\t\t\t\t\tarr.write[i] = Vector3(args[i * 3 + 0], args[i * 3 + 1], args[i * 3 + 2]);\n\t\t\t\t\t}\n\n\t\t\t\t\treturn arr;\n\t\t\t\t} break;\n\t\t\t\tcase Variant::PACKED_COLOR_ARRAY: {\n\t\t\t\t\tLOAD_ARGS_CHECK_FACTOR(4);\n\n\t\t\t\t\tPackedColorArray arr;\n\t\t\t\t\tarr.resize(args.size() / 4);\n\t\t\t\t\tfor (int i = 0; i < arr.size(); i++) {\n\t\t\t\t\t\tarr.write[i] = Color(args[i * 4 + 0], args[i * 4 + 1], args[i * 4 + 2], args[i * 4 + 3]);\n\t\t\t\t\t}\n\n\t\t\t\t\treturn arr;\n\t\t\t\t} break;\n\t\t\t\tcase Variant::PACKED_VECTOR4_ARRAY: {\n\t\t\t\t\tLOAD_ARGS_CHECK_FACTOR(4);\n\n\t\t\t\t\tPackedVecto"
+      },
+      {
+        "file": "core/io/json.cpp",
+        "start_line": 764,
+        "end_line": 828,
+        "similarity": 0.5495,
+        "related_to": "core/variant_call.cpp",
+        "content_preview": " args = { aabb.position.x, aabb.position.y, aabb.position.z, aabb.size.x, aabb.size.y, aabb.size.z };\n\t\t\tRETURN_ARGS;\n\t\t} break;\n\t\tcase Variant::BASIS: {\n\t\t\tconst Basis b = p_variant;\n\n\t\t\tArray args = { b.get_column(0).x, b.get_column(0).y, b.get_column(0).z,\n\t\t\t\tb.get_column(1).x, b.get_column(1).y, b.get_column(1).z,\n\t\t\t\tb.get_column(2).x, b.get_column(2).y, b.get_column(2).z };\n\n\t\t\tRETURN_ARGS;\n\t\t} break;\n\t\tcase Variant::TRANSFORM3D: {\n\t\t\tconst Transform3D t = p_variant;\n\n\t\t\tArray args = { t.basis.get_column(0).x, t.basis.get_column(0).y, t.basis.get_column(0).z,\n\t\t\t\tt.basis.get_column(1).x, t.basis.get_column(1).y, t.basis.get_column(1).z,\n\t\t\t\tt.basis.get_column(2).x, t.basis.get_column(2).y, t.basis.get_column(2).z,\n\t\t\t\tt.origin.x, t.origin.y, t.origin.z };\n\n\t\t\tRETURN_ARGS;\n\t\t} break;"
+      },
+      {
+        "file": "core/extension/gdextension_interface.cpp",
+        "start_line": 1712,
+        "end_line": 1753,
+        "similarity": 0.5471,
+        "related_to": "core/variant_call.cpp",
+        "content_preview": "TER_INTERFACE_FUNC(print_warning);\n\tREGISTER_INTERFACE_FUNC(print_warning_with_message);\n\tREGISTER_INTERFACE_FUNC(print_script_error);\n\tREGISTER_INTERFACE_FUNC(print_script_error_with_message);\n\tREGISTER_INTERFACE_FUNC(get_native_struct_size);\n\tREGISTER_INTERFACE_FUNC(variant_new_copy);\n\tREGISTER_INTERFACE_FUNC(variant_new_nil);\n\tREGISTER_INTERFACE_FUNC(variant_destroy);\n\tREGISTER_INTERFACE_FUNC(variant_call);\n\tREGISTER_INTERFACE_FUNC(variant_call_static);\n\tREGISTER_INTERFACE_FUNC(variant_evaluate);\n\tREGISTER_INTERFACE_FUNC(variant_set);\n\tREGISTER_INTERFACE_FUNC(variant_set_named);\n\tREGISTER_INTERFACE_FUNC(variant_set_keyed);\n\tREGISTER_INTERFACE_FUNC(variant_set_indexed);\n\tREGISTER_INTERFACE_FUNC(variant_get);\n\tREGISTER_INTERFACE_FUNC(variant_get_named);\n\tREGISTER_INTERFACE_FUNC(variant_ge"
+      },
+      {
+        "file": "core/extension/extension_api_dump.cpp",
+        "start_line": 431,
+        "end_line": 495,
+        "similarity": 0.544,
+        "related_to": "core/variant_call.cpp",
+        "content_preview": "hile (true) {\n\t\t\t\tVariant::Type t = member_offset_array[idx].type;\n\t\t\t\tif (t != previous_type) {\n\t\t\t\t\tif (previous_type != Variant::NIL) {\n\t\t\t\t\t\td2[\"members\"] = members;\n\t\t\t\t\t\ttype_offsets.push_back(d2);\n\t\t\t\t\t}\n\t\t\t\t\tif (t == Variant::NIL) {\n\t\t\t\t\t\tbreak;\n\t\t\t\t\t}\n\n\t\t\t\t\tString name = t == Variant::VARIANT_MAX ? String(\"Variant\") : Variant::get_type_name(t);\n\t\t\t\t\td2 = Dictionary();\n\t\t\t\t\tmembers = Array();\n\t\t\t\t\toffset = 0;\n\t\t\t\t\td2[\"name\"] = name;\n\t\t\t\t\tprevious_type = t;\n\t\t\t\t}\n\t\t\t\tDictionary d3;\n\t\t\t\tconst char *member_meta = nullptr;\n\t\t\t\tuint32_t member_size = 0;\n\t\t\t\tswitch (i) {\n\t\t\t\t\tcase 0:\n\t\t\t\t\t\tmember_meta = member_offset_array[idx].member_meta_32_bits_real_float;\n\t\t\t\t\t\tmember_size = member_offset_array[idx].member_size_32_bits_real_float;\n\t\t\t\t\t\tbreak;\n\t\t\t\t\tcase 1:\n\t\t\t\t\t\tmember_meta = member_"
+      },
+      {
+        "file": "core/io/json.cpp",
+        "start_line": 695,
+        "end_line": 770,
+        "similarity": 0.5439,
+        "related_to": "core/variant_call.cpp",
+        "content_preview": "ant::NODE_PATH: {\n\t\t\treturn \"np:\" + String(p_variant);\n\t\t} break;\n\n\t\tcase Variant::RID:\n\t\tcase Variant::CALLABLE:\n\t\tcase Variant::SIGNAL: {\n\t\t\tDictionary ret;\n\t\t\tret[TYPE] = Variant::get_type_name(p_variant.get_type());\n\t\t\treturn ret;\n\t\t} break;\n\n\t\tcase Variant::VECTOR2: {\n\t\t\tconst Vector2 v = p_variant;\n\t\t\tArray args = { v.x, v.y };\n\t\t\tRETURN_ARGS;\n\t\t} break;\n\t\tcase Variant::VECTOR2I: {\n\t\t\tconst Vector2i v = p_variant;\n\t\t\tArray args = { v.x, v.y };\n\t\t\tRETURN_ARGS;\n\t\t} break;\n\t\tcase Variant::RECT2: {\n\t\t\tconst Rect2 r = p_variant;\n\t\t\tArray args = { r.position.x, r.position.y, r.size.width, r.size.height };\n\t\t\tRETURN_ARGS;\n\t\t} break;\n\t\tcase Variant::RECT2I: {\n\t\t\tconst Rect2i r = p_variant;\n\t\t\tArray args = { r.position.x, r.position.y, r.size.width, r.size.height };\n\t\t\tRETURN_ARGS;\n\t\t} break;"
+      }
+    ]
+  },
+  "callers": [
+    {
+      "path": "array.cpp",
+      "from_function": "<",
+      "calls_function": "size",
+      "caller_line": 164,
+      "callee_file": "array.cpp",
+      "callee_line": 116
+    },
+    {
+      "path": "array.cpp",
+      "from_function": "recursive_duplicate",
+      "calls_function": "Array",
+      "caller_line": 537,
+      "callee_file": "array.cpp",
+      "callee_line": 963
+    },
+    {
+      "path": "array.cpp",
+      "from_function": "recursive_duplicate",
+      "calls_function": "resize",
+      "caller_line": 537,
+      "callee_file": "array.h",
+      "callee_line": 124
+    },
+    {
+      "path": "array.cpp",
+      "from_function": "slice",
+      "calls_function": "Array",
+      "caller_line": 568,
+      "callee_file": "array.cpp",
+      "callee_line": 963
+    },
+    {
+      "path": "array.cpp",
+      "from_function": "slice",
+      "calls_function": "resize",
+      "caller_line": 568,
+      "callee_file": "array.h",
+      "callee_line": 124
+    },
+    {
+      "path": "array.cpp",
+      "from_function": "filter",
+      "calls_function": "Array",
+      "caller_line": 604,
+      "callee_file": "array.cpp",
+      "callee_line": 963
+    },
+    {
+      "path": "array.cpp",
+      "from_function": "filter",
+      "calls_function": "resize",
+      "caller_line": 604,
+      "callee_file": "array.h",
+      "callee_line": 124
+    },
+    {
+      "path": "array.cpp",
+      "from_function": "map",
+      "calls_function": "Array",
+      "caller_line": 633,
+      "callee_file": "array.cpp",
+      "callee_line": 963
+    },
+    {
+      "path": "array.cpp",
+      "from_function": "map",
+      "calls_function": "resize",
+      "caller_line": 633,
+      "callee_file": "array.h",
+      "callee_line": 124
+    },
+    {
+      "path": "array.cpp",
+      "from_function": "Array",
+      "calls_function": "assign",
+      "caller_line": 874,
+      "callee_file": "array.cpp",
+      "callee_line": 217
+    },
+    {
+      "path": "array.cpp",
+      "from_function": "create_read_only",
+      "calls_function": "Array",
+      "caller_line": 932,
+      "callee_file": "array.cpp",
+      "callee_line": 963
+    },
+    {
+      "path": "array.cpp",
+      "from_function": "create_read_only",
+      "calls_function": "make_read_only",
+      "caller_line": 932,
+      "callee_file": "array.cpp",
+      "callee_line": 938
+    },
+    {
+      "path": "callable.cpp",
+      "from_function": "callv",
+      "calls_function": "size",
+      "caller_line": 73,
+      "callee_file": "array.cpp",
+      "callee_line": 116
+    },
+    {
+      "path": "callable.cpp",
+      "from_function": "bindv",
+      "calls_function": "is_empty",
+      "caller_line": 134,
+      "callee_file": "array.cpp",
+      "callee_line": 120
+    },
+    {
+      "path": "callable.cpp",
+      "from_function": "bindv",
+      "calls_function": "size",
+      "caller_line": 134,
+      "callee_file": "array.cpp",
+      "callee_line": 116
+    },
+    {
+      "path": "callable.cpp",
+      "from_function": "get_bound_arguments",
+      "calls_function": "Array",
+      "caller_line": 217,
+      "callee_file": "array.cpp",
+      "callee_line": 963
+    },
+    {
+      "path": "callable.cpp",
+      "from_function": "get_connections",
+      "calls_function": "Array",
+      "caller_line": 569,
+      "callee_file": "array.cpp",
+      "callee_line": 963
+    },
+    {
+      "path": "dictionary.cpp",
+      "from_function": "has_all",
+      "calls_function": "size",
+      "caller_line": 230,
+      "callee_file": "array.cpp",
+      "callee_line": 116
+    },
+    {
+      "path": "dictionary.cpp",
+      "from_function": "keys",
+      "calls_function": "Array",
+      "caller_line": 390,
+      "callee_file": "array.cpp",
+      "callee_line": 963
+    },
+    {
+      "path": "dictionary.cpp",
+      "from_function": "keys",
+      "calls_function": "resize",
+      "caller_line": 390,
+      "callee_file": "array.h",
+      "callee_line": 124
+    },
+    {
+      "path": "dictionary.cpp",
+      "from_function": "values",
+      "calls_function": "Array",
+      "caller_line": 410,
+      "callee_file": "array.cpp",
+      "callee_line": 963
+    },
+    {
+      "path": "dictionary.cpp",
+      "from_function": "values",
+      "calls_function": "resize",
+      "caller_line": 410,
+      "callee_file": "array.h",
+      "callee_line": 124
+    },
+    {
+      "path": "variant.cpp",
+      "from_function": "is_zero",
+      "calls_function": "is_empty",
+      "caller_line": 889,
+      "callee_file": "array.cpp",
+      "callee_line": 120
+    },
+    {
+      "path": "variant.cpp",
+      "from_function": "_clear_internal",
+      "calls_function": "~Array",
+      "caller_line": 1378,
+      "callee_file": "array.cpp",
+      "callee_line": 968
+    },
+    {
+      "path": "variant.cpp",
+      "from_function": "?",
+      "calls_function": "size",
+      "caller_line": 2222,
+      "callee_file": "array.cpp",
+      "callee_line": 116
+    },
+    {
+      "path": "variant.cpp",
+      "from_function": "?",
+      "calls_function": "size",
+      "caller_line": 2232,
+      "callee_file": "array.cpp",
+      "callee_line": 116
+    },
+    {
+      "path": "variant.cpp",
+      "from_function": "?",
+      "calls_function": "size",
+      "caller_line": 2269,
+      "callee_file": "array.cpp",
+      "callee_line": 116
+    },
+    {
+      "path": "variant.cpp",
+      "from_function": "Variant",
+      "calls_function": "Array",
+      "caller_line": 2627,
+      "callee_file": "array.cpp",
+      "callee_line": 963
+    },
+    {
+      "path": "variant.cpp",
+      "from_function": "recursive_hash",
+      "calls_function": "recursive_hash",
+      "caller_line": 2802,
+      "callee_file": "array.h",
+      "callee_line": 117
+    },
+    {
+      "path": "variant.cpp",
+      "from_function": "hash_compare",
+      "calls_function": "recursive_equal",
+      "caller_line": 3169,
+      "callee_file": "array.cpp",
+      "callee_line": 137
+    },
+    {
+      "path": "variant.cpp",
+      "from_function": "identity_compare",
+      "calls_function": "id",
+      "caller_line": 3352,
+      "callee_file": "array.cpp",
+      "callee_line": 870
+    },
+    {
+      "path": "variant.cpp",
+      "from_function": "is_read_only",
+      "calls_function": "is_read_only",
+      "caller_line": 3447,
+      "callee_file": "array.cpp",
+      "callee_line": 944
+    },
+    {
+      "path": "variant.cpp",
+      "from_function": "register_types",
+      "calls_function": "_register_variant_methods",
+      "caller_line": 3550,
+      "callee_file": "variant_call.cpp",
+      "callee_line": 3179
+    },
+    {
+      "path": "variant.cpp",
+      "from_function": "unregister_types",
+      "calls_function": "_unregister_variant_methods",
+      "caller_line": 3558,
+      "callee_file": "variant_call.cpp",
+      "callee_line": 3187
+    },
+    {
+      "path": "variant_call.cpp",
+      "from_function": "func_Array_get",
+      "calls_function": "size",
+      "caller_line": 681,
+      "callee_file": "array.cpp",
+      "callee_line": 116
+    },
+    {
+      "path": "variant_call.cpp",
+      "from_function": "func_Array_set",
+      "calls_function": "size",
+      "caller_line": 681,
+      "callee_file": "array.cpp",
+      "callee_line": 116
+    },
+    {
+      "path": "variant_call.cpp",
+      "from_function": "get_builtin_method_info",
+      "calls_function": "get_method_info",
+      "caller_line": 1544,
+      "callee_file": "variant_call.cpp",
+      "callee_line": 1282
+    },
+    {
+      "path": "variant_call.cpp",
+      "from_function": "get_method_list",
+      "calls_function": "get_method_info",
+      "caller_line": 1653,
+      "callee_file": "variant_call.cpp",
+      "callee_line": 1282
+    },
+    {
+      "path": "variant_call.cpp",
+      "from_function": "_register_variant_methods",
+      "calls_function": "_register_variant_builtin_methods_string",
+      "caller_line": 3179,
+      "callee_file": "variant_call.cpp",
+      "callee_line": 1989
+    },
+    {
+      "path": "variant_call.cpp",
+      "from_function": "_register_variant_methods",
+      "calls_function": "_register_variant_builtin_methods_math",
+      "caller_line": 3179,
+      "callee_file": "variant_call.cpp",
+      "callee_line": 2133
+    },
+    {
+      "path": "variant_call.cpp",
+      "from_function": "_register_variant_methods",
+      "calls_function": "_register_variant_builtin_methods_misc",
+      "caller_line": 3179,
+      "callee_file": "variant_call.cpp",
+      "callee_line": 2437
+    },
+    {
+      "path": "variant_call.cpp",
+      "from_function": "_register_variant_methods",
+      "calls_function": "_register_variant_builtin_methods_array",
+      "caller_line": 3179,
+      "callee_file": "variant_call.cpp",
+      "callee_line": 2661
+    },
+    {
+      "path": "variant_call.cpp",
+      "from_function": "_register_variant_methods",
+      "calls_function": "_register_variant_builtin_constants",
+      "caller_line": 3179,
+      "callee_file": "variant_call.cpp",
+      "callee_line": 3060
+    },
+    {
+      "path": "variant_callable.cpp",
+      "from_function": "is_valid",
+      "calls_function": "has_builtin_method",
+      "caller_line": 59,
+      "callee_file": "variant_call.cpp",
+      "callee_line": 1503
+    },
+    {
+      "path": "variant_callable.cpp",
+      "from_function": "get_argument_count",
+      "calls_function": "has_builtin_method",
+      "caller_line": 71,
+      "callee_file": "variant_call.cpp",
+      "callee_line": 1503
+    },
+    {
+      "path": "variant_callable.cpp",
+      "from_function": "get_argument_count",
+      "calls_function": "get_builtin_method_argument_count",
+      "caller_line": 71,
+      "callee_file": "variant_call.cpp",
+      "callee_line": 1551
+    },
+    {
+      "path": "variant_parser.cpp",
+      "from_function": "parse_value",
+      "calls_function": "Array",
+      "caller_line": 676,
+      "callee_file": "array.cpp",
+      "callee_line": 963
+    },
+    {
+      "path": "variant_parser.cpp",
+      "from_function": "parse_value",
+      "calls_function": "assign",
+      "caller_line": 676,
+      "callee_file": "array.cpp",
+      "callee_line": 217
+    },
+    {
+      "path": "variant_parser.cpp",
+      "from_function": "_parse_array",
+      "calls_function": "push_back",
+      "caller_line": 1643,
+      "callee_file": "array.cpp",
+      "callee_line": 282
+    },
+    {
+      "path": "variant_parser.cpp",
+      "from_function": "write",
+      "calls_function": "is_typed",
+      "caller_line": 2011,
+      "callee_file": "array.cpp",
+      "callee_line": 900
+    }
+  ],
+  "call_graph_edges": [
+    {
+      "from": "array.cpp::<",
+      "to": "array.cpp::size"
+    },
+    {
+      "from": "array.cpp::recursive_duplicate",
+      "to": "array.cpp::Array"
+    },
+    {
+      "from": "array.cpp::recursive_duplicate",
+      "to": "array.h::resize"
+    },
+    {
+      "from": "array.cpp::slice",
+      "to": "array.cpp::Array"
+    },
+    {
+      "from": "array.cpp::slice",
+      "to": "array.h::resize"
+    },
+    {
+      "from": "array.cpp::filter",
+      "to": "array.cpp::Array"
+    },
+    {
+      "from": "array.cpp::filter",
+      "to": "array.h::resize"
+    },
+    {
+      "from": "array.cpp::map",
+      "to": "array.cpp::Array"
+    },
+    {
+      "from": "array.cpp::map",
+      "to": "array.h::resize"
+    },
+    {
+      "from": "array.cpp::Array",
+      "to": "array.cpp::assign"
+    },
+    {
+      "from": "array.cpp::create_read_only",
+      "to": "array.cpp::Array"
+    },
+    {
+      "from": "array.cpp::create_read_only",
+      "to": "array.cpp::make_read_only"
+    },
+    {
+      "from": "callable.cpp::callv",
+      "to": "array.cpp::size"
+    },
+    {
+      "from": "callable.cpp::bindv",
+      "to": "array.cpp::is_empty"
+    },
+    {
+      "from": "callable.cpp::bindv",
+      "to": "array.cpp::size"
+    },
+    {
+      "from": "callable.cpp::get_bound_arguments",
+      "to": "array.cpp::Array"
+    },
+    {
+      "from": "callable.cpp::get_connections",
+      "to": "array.cpp::Array"
+    },
+    {
+      "from": "dictionary.cpp::has_all",
+      "to": "array.cpp::size"
+    },
+    {
+      "from": "dictionary.cpp::keys",
+      "to": "array.cpp::Array"
+    },
+    {
+      "from": "dictionary.cpp::keys",
+      "to": "array.h::resize"
+    },
+    {
+      "from": "dictionary.cpp::values",
+      "to": "array.cpp::Array"
+    },
+    {
+      "from": "dictionary.cpp::values",
+      "to": "array.h::resize"
+    },
+    {
+      "from": "variant.cpp::is_zero",
+      "to": "array.cpp::is_empty"
+    },
+    {
+      "from": "variant.cpp::_clear_internal",
+      "to": "array.cpp::~Array"
+    },
+    {
+      "from": "variant.cpp::?",
+      "to": "array.cpp::size"
+    },
+    {
+      "from": "variant.cpp::?",
+      "to": "array.cpp::size"
+    },
+    {
+      "from": "variant.cpp::?",
+      "to": "array.cpp::size"
+    },
+    {
+      "from": "variant.cpp::Variant",
+      "to": "array.cpp::Array"
+    },
+    {
+      "from": "variant.cpp::recursive_hash",
+      "to": "array.h::recursive_hash"
+    },
+    {
+      "from": "variant.cpp::hash_compare",
+      "to": "array.cpp::recursive_equal"
+    },
+    {
+      "from": "variant.cpp::identity_compare",
+      "to": "array.cpp::id"
+    },
+    {
+      "from": "variant.cpp::is_read_only",
+      "to": "array.cpp::is_read_only"
+    },
+    {
+      "from": "variant.cpp::register_types",
+      "to": "variant_call.cpp::_register_variant_methods"
+    },
+    {
+      "from": "variant.cpp::unregister_types",
+      "to": "variant_call.cpp::_unregister_variant_methods"
+    },
+    {
+      "from": "variant_call.cpp::func_Array_get",
+      "to": "array.cpp::size"
+    },
+    {
+      "from": "variant_call.cpp::func_Array_set",
+      "to": "array.cpp::size"
+    },
+    {
+      "from": "variant_call.cpp::get_builtin_method_info",
+      "to": "variant_call.cpp::get_method_info"
+    },
+    {
+      "from": "variant_call.cpp::get_method_list",
+      "to": "variant_call.cpp::get_method_info"
+    },
+    {
+      "from": "variant_call.cpp::_register_variant_methods",
+      "to": "variant_call.cpp::_register_variant_builtin_methods_string"
+    },
+    {
+      "from": "variant_call.cpp::_register_variant_methods",
+      "to": "variant_call.cpp::_register_variant_builtin_methods_math"
+    },
+    {
+      "from": "variant_call.cpp::_register_variant_methods",
+      "to": "variant_call.cpp::_register_variant_builtin_methods_misc"
+    },
+    {
+      "from": "variant_call.cpp::_register_variant_methods",
+      "to": "variant_call.cpp::_register_variant_builtin_methods_array"
+    },
+    {
+      "from": "variant_call.cpp::_register_variant_methods",
+      "to": "variant_call.cpp::_register_variant_builtin_constants"
+    },
+    {
+      "from": "variant_callable.cpp::is_valid",
+      "to": "variant_call.cpp::has_builtin_method"
+    },
+    {
+      "from": "variant_callable.cpp::get_argument_count",
+      "to": "variant_call.cpp::has_builtin_method"
+    },
+    {
+      "from": "variant_callable.cpp::get_argument_count",
+      "to": "variant_call.cpp::get_builtin_method_argument_count"
+    },
+    {
+      "from": "variant_parser.cpp::parse_value",
+      "to": "array.cpp::Array"
+    },
+    {
+      "from": "variant_parser.cpp::parse_value",
+      "to": "array.cpp::assign"
+    },
+    {
+      "from": "variant_parser.cpp::_parse_array",
+      "to": "array.cpp::push_back"
+    },
+    {
+      "from": "variant_parser.cpp::write",
+      "to": "array.cpp::is_typed"
+    }
+  ],
+  "functions_in_changed_files": [
+    {
+      "name": "ArrayPrivate",
+      "full_name": "ArrayPrivate.ArrayPrivate:void()",
+      "file": "array.cpp",
+      "start_line": 51,
+      "end_line": 51,
+      "signature": "void()"
+    },
+    {
+      "name": "ArrayPrivate",
+      "full_name": "ArrayPrivate.ArrayPrivate:void(std.initializer_list)",
+      "file": "array.cpp",
+      "start_line": 52,
+      "end_line": 53,
+      "signature": "void(std.initializer_list)"
+    },
+    {
+      "name": "_ref",
+      "full_name": "Array._ref:void(Array&)<const>",
+      "file": "array.cpp",
+      "start_line": 56,
+      "end_line": 72,
+      "signature": "void(Array&)<const>"
+    },
+    {
+      "name": "_unref",
+      "full_name": "Array._unref:void()<const>",
+      "file": "array.cpp",
+      "start_line": 74,
+      "end_line": 86,
+      "signature": "void()<const>"
+    },
+    {
+      "name": "begin",
+      "full_name": "Array.begin:Array.Iterator()",
+      "file": "array.cpp",
+      "start_line": 88,
+      "end_line": 90,
+      "signature": "Array.Iterator()"
+    },
+    {
+      "name": "end",
+      "full_name": "Array.end:Array.Iterator()",
+      "file": "array.cpp",
+      "start_line": 92,
+      "end_line": 94,
+      "signature": "Array.Iterator()"
+    },
+    {
+      "name": "begin",
+      "full_name": "Array.begin:Array.ConstIterator()<const>",
+      "file": "array.cpp",
+      "start_line": 96,
+      "end_line": 98,
+      "signature": "Array.ConstIterator()<const>"
+    },
+    {
+      "name": "end",
+      "full_name": "Array.end:Array.ConstIterator()<const>",
+      "file": "array.cpp",
+      "start_line": 100,
+      "end_line": 102,
+      "signature": "Array.ConstIterator()<const>"
+    },
+    {
+      "name": "[]",
+      "full_name": "Array.[]:Variant&(int)",
+      "file": "array.cpp",
+      "start_line": 104,
+      "end_line": 110,
+      "signature": "Variant&(int)"
+    },
+    {
+      "name": "[]",
+      "full_name": "Array.[]:Variant&(int)<const>",
+      "file": "array.cpp",
+      "start_line": 112,
+      "end_line": 114,
+      "signature": "Variant&(int)<const>"
+    },
+    {
+      "name": "size",
+      "full_name": "Array.size:int()<const>",
+      "file": "array.cpp",
+      "start_line": 116,
+      "end_line": 118,
+      "signature": "int()<const>"
+    },
+    {
+      "name": "is_empty",
+      "full_name": "Array.is_empty:bool()<const>",
+      "file": "array.cpp",
+      "start_line": 120,
+      "end_line": 122,
+      "signature": "bool()<const>"
+    },
+    {
+      "name": "clear",
+      "full_name": "Array.clear:void()",
+      "file": "array.cpp",
+      "start_line": 124,
+      "end_line": 127,
+      "signature": "void()"
+    },
+    {
+      "name": "==",
+      "full_name": "Array.==:bool(Array&)<const>",
+      "file": "array.cpp",
+      "start_line": 129,
+      "end_line": 131,
+      "signature": "bool(Array&)<const>"
+    },
+    {
+      "name": "!=",
+      "full_name": "Array.!=:bool(Array&)<const>",
+      "file": "array.cpp",
+      "start_line": 133,
+      "end_line": 135,
+      "signature": "bool(Array&)<const>"
+    },
+    {
+      "name": "recursive_equal",
+      "full_name": "Array.recursive_equal:bool(Array&,int)<const>",
+      "file": "array.cpp",
+      "start_line": 137,
+      "end_line": 162,
+      "signature": "bool(Array&,int)<const>"
+    },
+    {
+      "name": "<",
+      "full_name": "Array.<:bool(Array&)<const>",
+      "file": "array.cpp",
+      "start_line": 164,
+      "end_line": 179,
+      "signature": "bool(Array&)<const>"
+    },
+    {
+      "name": "<=",
+      "full_name": "Array.<=:bool(Array&)<const>",
+      "file": "array.cpp",
+      "start_line": 181,
+      "end_line": 183,
+      "signature": "bool(Array&)<const>"
+    },
+    {
+      "name": ">",
+      "full_name": "Array.>:bool(Array&)<const>",
+      "file": "array.cpp",
+      "start_line": 184,
+      "end_line": 186,
+      "signature": "bool(Array&)<const>"
+    },
+    {
+      "name": ">=",
+      "full_name": "Array.>=:bool(Array&)<const>",
+      "file": "array.cpp",
+      "start_line": 187,
+      "end_line": 189,
+      "signature": "bool(Array&)<const>"
+    },
+    {
+      "name": "hash",
+      "full_name": "Array.hash:uint32_t()<const>",
+      "file": "array.cpp",
+      "start_line": 191,
+      "end_line": 193,
+      "signature": "uint32_t()<const>"
+    },
+    {
+      "name": "recursive_hash",
+      "full_name": "Array.recursive_hash:uint32_t(int)<const>",
+      "file": "array.cpp",
+      "start_line": 195,
+      "end_line": 208,
+      "signature": "uint32_t(int)<const>"
+    },
+    {
+      "name": "=",
+      "full_name": "Array.=:void(Array&)",
+      "file": "array.cpp",
+      "start_line": 210,
+      "end_line": 215,
+      "signature": "void(Array&)"
+    },
+    {
+      "name": "assign",
+      "full_name": "Array.assign:void(Array&)",
+      "file": "array.cpp",
+      "start_line": 217,
+      "end_line": 280,
+      "signature": "void(Array&)"
+    },
+    {
+      "name": "push_back",
+      "full_name": "Array.push_back:void(Variant&)",
+      "file": "array.cpp",
+      "start_line": 282,
+      "end_line": 287,
+      "signature": "void(Variant&)"
+    },
+    {
+      "name": "append_array",
+      "full_name": "Array.append_array:void(Array&)",
+      "file": "array.cpp",
+      "start_line": 289,
+      "end_line": 304,
+      "signature": "void(Array&)"
+    },
+    {
+      "name": "resize",
+      "full_name": "Array.resize:Error(int)",
+      "file": "array.cpp",
+      "start_line": 306,
+      "end_line": 318,
+      "signature": "Error(int)"
+    },
+    {
+      "name": "reserve",
+      "full_name": "Array.reserve:Error(int)",
+      "file": "array.cpp",
+      "start_line": 320,
+      "end_line": 323,
+      "signature": "Error(int)"
+    },
+    {
+      "name": "insert",
+      "full_name": "Array.insert:Error(int,Variant&)",
+      "file": "array.cpp",
+      "start_line": 325,
+      "end_line": 338,
+      "signature": "Error(int,Variant&)"
+    },
+    {
+      "name": "fill",
+      "full_name": "Array.fill:void(Variant&)",
+      "file": "array.cpp",
+      "start_line": 340,
+      "end_line": 345,
+      "signature": "void(Variant&)"
+    },
+    {
+      "name": "erase",
+      "full_name": "Array.erase:void(Variant&)",
+      "file": "array.cpp",
+      "start_line": 347,
+      "end_line": 352,
+      "signature": "void(Variant&)"
+    },
+    {
+      "name": "front",
+      "full_name": "Array.front:Variant()<const>",
+      "file": "array.cpp",
+      "start_line": 354,
+      "end_line": 357,
+      "signature": "Variant()<const>"
+    },
+    {
+      "name": "back",
+      "full_name": "Array.back:Variant()<const>",
+      "file": "array.cpp",
+      "start_line": 359,
+      "end_line": 362,
+      "signature": "Variant()<const>"
+    },
+    {
+      "name": "pick_random",
+      "full_name": "Array.pick_random:Variant()<const>",
+      "file": "array.cpp",
+      "start_line": 364,
+      "end_line": 367,
+      "signature": "Variant()<const>"
+    },
+    {
+      "name": "find",
+      "full_name": "Array.find:int(Variant&,int)<const>",
+      "file": "array.cpp",
+      "start_line": 369,
+      "end_line": 390,
+      "signature": "int(Variant&,int)<const>"
+    },
+    {
+      "name": "find_custom",
+      "full_name": "Array.find_custom:int(Callable&,int)<const>",
+      "file": "array.cpp",
+      "start_line": 392,
+      "end_line": 418,
+      "signature": "int(Callable&,int)<const>"
+    },
+    {
+      "name": "rfind",
+      "full_name": "Array.rfind:int(Variant&,int)<const>",
+      "file": "array.cpp",
+      "start_line": 420,
+      "end_line": 443,
+      "signature": "int(Variant&,int)<const>"
+    },
+    {
+      "name": "rfind_custom",
+      "full_name": "Array.rfind_custom:int(Callable&,int)<const>",
+      "file": "array.cpp",
+      "start_line": 445,
+      "end_line": 478,
+      "signature": "int(Callable&,int)<const>"
+    },
+    {
+      "name": "count",
+      "full_name": "Array.count:int(Variant&)<const>",
+      "file": "array.cpp",
+      "start_line": 480,
+      "end_line": 495,
+      "signature": "int(Variant&)<const>"
+    },
+    {
+      "name": "has",
+      "full_name": "Array.has:bool(Variant&)<const>",
+      "file": "array.cpp",
+      "start_line": 497,
+      "end_line": 502,
+      "signature": "bool(Variant&)<const>"
+    },
+    {
+      "name": "remove_at",
+      "full_name": "Array.remove_at:void(int)",
+      "file": "array.cpp",
+      "start_line": 504,
+      "end_line": 515,
+      "signature": "void(int)"
+    },
+    {
+      "name": "set",
+      "full_name": "Array.set:void(int,Variant&)",
+      "file": "array.cpp",
+      "start_line": 517,
+      "end_line": 523,
+      "signature": "void(int,Variant&)"
+    },
+    {
+      "name": "get",
+      "full_name": "Array.get:Variant&(int)<const>",
+      "file": "array.cpp",
+      "start_line": 525,
+      "end_line": 527,
+      "signature": "Variant&(int)<const>"
+    },
+    {
+      "name": "duplicate",
+      "full_name": "Array.duplicate:Array(bool)<const>",
+      "file": "array.cpp",
+      "start_line": 529,
+      "end_line": 531,
+      "signature": "Array(bool)<const>"
+    },
+    {
+      "name": "duplicate_deep",
+      "full_name": "Array.duplicate_deep:Array(ResourceDeepDuplicateMode)<const>",
+      "file": "array.cpp",
+      "start_line": 533,
+      "end_line": 535,
+      "signature": "Array(ResourceDeepDuplicateMode)<const>"
+    },
+    {
+      "name": "recursive_duplicate",
+      "full_name": "Array.recursive_duplicate:Array(bool,ResourceDeepDuplicateMode,int)<const>",
+      "file": "array.cpp",
+      "start_line": 537,
+      "end_line": 566,
+      "signature": "Array(bool,ResourceDeepDuplicateMode,int)<const>"
+    },
+    {
+      "name": "slice",
+      "full_name": "Array.slice:Array(int,int,int,bool)<const>",
+      "file": "array.cpp",
+      "start_line": 568,
+      "end_line": 602,
+      "signature": "Array(int,int,int,bool)<const>"
+    },
+    {
+      "name": "filter",
+      "full_name": "Array.filter:Array(Callable&)<const>",
+      "file": "array.cpp",
+      "start_line": 604,
+      "end_line": 631,
+      "signature": "Array(Callable&)<const>"
+    },
+    {
+      "name": "map",
+      "full_name": "Array.map:Array(Callable&)<const>",
+      "file": "array.cpp",
+      "start_line": 633,
+      "end_line": 650,
+      "signature": "Array(Callable&)<const>"
+    },
+    {
+      "name": "reduce",
+      "full_name": "Array.reduce:Variant(Callable&,Variant&)<const>",
+      "file": "array.cpp",
+      "start_line": 652,
+      "end_line": 675,
+      "signature": "Variant(Callable&,Variant&)<const>"
+    }
+  ]
+}

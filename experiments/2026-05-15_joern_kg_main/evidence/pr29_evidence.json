@@ -1,0 +1,296 @@
+{
+  "pr": {
+    "number": 22195,
+    "title": "MINOR: Add tests for RaftVoterEndpoint",
+    "body": "Add tests for RaftVoterEndpoint\n\nReviewers: Ken Huang <s7133700@gmail.com>, Chia-Ping Tsai\n <chia7712@gmail.com>\n",
+    "url": "https://github.com/apache/kafka/pull/22195",
+    "repo": "apache/kafka",
+    "base_branch": "trunk",
+    "head_branch": "test-raft-voter-endpoint",
+    "merged_at": "2026-05-03T22:54:08Z",
+    "state": "MERGED"
+  },
+  "changed_files": [
+    {
+      "path": "clients/src/main/java/org/apache/kafka/clients/admin/RaftVoterEndpoint.java",
+      "language": "java",
+      "added": 1,
+      "deleted": 1
+    },
+    {
+      "path": "clients/src/test/java/org/apache/kafka/clients/admin/RaftVoterEndpointTest.java",
+      "language": "java",
+      "added": 128,
+      "deleted": 0
+    }
+  ],
+  "nearest_tests": [],
+  "dependent_files": [
+    {
+      "path": "clients/src/test/java/org/apache/kafka/clients/admin/KafkaAdminClientTest.java",
+      "relationship": "imports",
+      "source_file": "clients/src/main/java/org/apache/kafka/clients/admin/RaftVoterEndpoint.java"
+    },
+    {
+      "path": "clients/src/test/java/org/apache/kafka/clients/admin/MockAdminClient.java",
+      "relationship": "imports",
+      "source_file": "clients/src/main/java/org/apache/kafka/clients/admin/RaftVoterEndpoint.java"
+    },
+    {
+      "path": "clients/src/main/java/org/apache/kafka/clients/admin/KafkaAdminClient.java",
+      "relationship": "imports",
+      "source_file": "clients/src/main/java/org/apache/kafka/clients/admin/RaftVoterEndpoint.java"
+    },
+    {
+      "path": "clients/src/main/java/org/apache/kafka/clients/admin/Admin.java",
+      "relationship": "imports",
+      "source_file": "clients/src/main/java/org/apache/kafka/clients/admin/RaftVoterEndpoint.java"
+    },
+    {
+      "path": "clients/src/main/java/org/apache/kafka/clients/admin/ForwardingAdmin.java",
+      "relationship": "imports",
+      "source_file": "clients/src/main/java/org/apache/kafka/clients/admin/RaftVoterEndpoint.java"
+    },
+    {
+      "path": "clients/src/main/java/org/apache/kafka/clients/admin/QuorumInfo.java",
+      "relationship": "imports",
+      "source_file": "clients/src/main/java/org/apache/kafka/clients/admin/RaftVoterEndpoint.java"
+    },
+    {
+      "path": "tools/src/test/java/org/apache/kafka/tools/MetadataQuorumCommandUnitTest.java",
+      "relationship": "imports",
+      "source_file": "clients/src/main/java/org/apache/kafka/clients/admin/RaftVoterEndpoint.java"
+    },
+    {
+      "path": "tools/src/main/java/org/apache/kafka/tools/MetadataQuorumCommand.java",
+      "relationship": "imports",
+      "source_file": "clients/src/main/java/org/apache/kafka/clients/admin/RaftVoterEndpoint.java"
+    },
+    {
+      "path": "streams/integration-tests/src/test/java/org/apache/kafka/streams/integration/TestingMetricsInterceptingAdminClient.java",
+      "relationship": "imports",
+      "source_file": "clients/src/main/java/org/apache/kafka/clients/admin/RaftVoterEndpoint.java"
+    },
+    {
+      "path": "server/src/test/java/org/apache/kafka/server/ReconfigurableQuorumIntegrationTest.java",
+      "relationship": "imports",
+      "source_file": "clients/src/main/java/org/apache/kafka/clients/admin/RaftVoterEndpoint.java"
+    }
+  ],
+  "diff_summary": "2 files changed",
+  "full_diff": "diff --git a/clients/src/main/java/org/apache/kafka/clients/admin/RaftVoterEndpoint.java b/clients/src/main/java/org/apache/kafka/clients/admin/RaftVoterEndpoint.java\nindex ba5b39284ebea..c137c2edae161 100644\n--- a/clients/src/main/java/org/apache/kafka/clients/admin/RaftVoterEndpoint.java\n+++ b/clients/src/main/java/org/apache/kafka/clients/admin/RaftVoterEndpoint.java\n@@ -30,7 +30,7 @@ public class RaftVoterEndpoint {\n     private final String host;\n     private final int port;\n \n-    static String requireNonNullAllCapsNonEmpty(String input) {\n+    private static String requireNonNullAllCapsNonEmpty(String input) {\n         if (input == null) {\n             throw new IllegalArgumentException(\"Null argument not allowed.\");\n         }\ndiff --git a/clients/src/test/java/org/apache/kafka/clients/admin/RaftVoterEndpointTest.java b/clients/src/test/java/org/apache/kafka/clients/admin/RaftVoterEndpointTest.java\nnew file mode 100644\nindex 0000000000000..06ed7a5efa793\n--- /dev/null\n+++ b/clients/src/test/java/org/apache/kafka/clients/admin/RaftVoterEndpointTest.java\n@@ -0,0 +1,128 @@\n+/*\n+ * Licensed to the Apache Software Foundation (ASF) under one or more\n+ * contributor license agreements. See the NOTICE file distributed with\n+ * this work for additional information regarding copyright ownership.\n+ * The ASF licenses this file to You under the Apache License, Version 2.0\n+ * (the \"License\"); you may not use this file except in compliance with\n+ * the License. You may obtain a copy of the License at\n+ *\n+ *    http://www.apache.org/licenses/LICENSE-2.0\n+ *\n+ * Unless required by applicable law or agreed to in writing, software\n+ * distributed under the License is distributed on an \"AS IS\" BASIS,\n+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\n+ * See the License for the specific language governing permissions and\n+ * limitations under the License.\n+ */\n+package org.apache.kafka.clients.admin;\n+\n+import org.junit.jupiter.api.Test;\n+\n+import static org.junit.jupiter.api.Assertions.assertEquals;\n+import static org.junit.jupiter.api.Assertions.assertNotEquals;\n+import static org.junit.jupiter.api.Assertions.assertThrows;\n+\n+public class RaftVoterEndpointTest {\n+\n+    @Test\n+    public void testListenerNullConstructor() {\n+        var ex = assertThrows(IllegalArgumentException.class,\n+                () -> new RaftVoterEndpoint(null, \"example.com\", 8080));\n+        assertEquals(\"Null argument not allowed.\", ex.getMessage());\n+    }\n+\n+    @Test\n+    public void testListenerWhitespaceConstructor() {\n+        var ex = assertThrows(IllegalArgumentException.class,\n+                () -> new RaftVoterEndpoint(\" CONTROLLER\", \"example.com\", 8080));\n+        assertEquals(\"Leading or trailing whitespace is not allowed.\", ex.getMessage());\n+    }\n+\n+    @Test\n+    public void testListenerEmptyConstructor() {\n+        var ex = assertThrows(IllegalArgumentException.class,\n+                () -> new RaftVoterEndpoint(\"\", \"example.com\", 8080));\n+        assertEquals(\"Empty string is not allowed.\", ex.getMessage());\n+    }\n+\n+    @Test\n+    public void testListenerNotUpperCaseConstructor() {\n+        var ex = assertThrows(IllegalArgumentException.class,\n+                () -> new RaftVoterEndpoint(\"controller\", \"example.com\", 8080));\n+        assertEquals(\"String must be UPPERCASE.\", ex.getMessage());\n+    }\n+\n+    @Test\n+    public void testHostNullConstructor() {\n+        assertThrows(NullPointerException.class,\n+                () -> new RaftVoterEndpoint(\"CONTROLLER\", null, 8080));\n+    }\n+\n+    @Test\n+    public void testAccessors() {\n+        var endpoint = new RaftVoterEndpoint(\"CONTROLLER\", \"example.com\", 8080);\n+        assertEquals(\"CONTROLLER\", endpoint.listener());\n+        assertEquals(\"example.com\", endpoint.host());\n+        assertEquals(8080, endpoint.port());\n+    }\n+\n+    @Test\n+    public void testEquals() {\n+        var a = new RaftVoterEndpoint(\"CONTROLLER\", \"example.com\", 8080);\n+        var b = new RaftVoterEndpoint(\"CONTROLLER\", \"example.com\", 8080);\n+        assertEquals(a, b);\n+    }\n+\n+    @Test\n+    public void testHashCode() {\n+        var a = new RaftVoterEndpoint(\"CONTROLLER\", \"example.com\", 8080);\n+        var b = new RaftVoterEndpoint(\"CONTROLLER\", \"example.com\", 8080);\n+        assertEquals(a.hashCode(), b.hashCode());\n+    }\n+\n+    @Test\n+    public void testNotEqualsWithDifferentListener() {\n+        var listenerA = new RaftVoterEndpoint(\"CONTROLLER\", \"example.com\", 8080);\n+        var listenerB = new RaftVoterEndpoint(\"BROKER\", \"example.com\", 8080);\n+        assertNotEquals(listenerA, listenerB);\n+    }\n+\n+    @Test\n+    public void testNotEqualsWithDifferentHost() {\n+        var hostA = new RaftVoterEndpoint(\"CONTROLLER\", \"example.com\", 8080);\n+        var hostB = new RaftVoterEndpoint(\"CONTROLLER\", \"other.com\", 8080);\n+        assertNotEquals(hostA, hostB);\n+    }\n+\n+    @Test\n+    public void testNotEqualsWithDifferentPort() {\n+        var portA = new RaftVoterEndpoint(\"CONTROLLER\", \"example.com\", 8080);\n+        var portB = new RaftVoterEndpoint(\"CONTROLLER\", \"example.com\", 9092);\n+        assertNotEquals(portA, portB);\n+    }\n+\n+    @Test\n+    public void testNotEqualsWithNull() {\n+        var endpoint = new RaftVoterEndpoint(\"CONTROLLER\", \"example.com\", 8080);\n+        assertNotEquals(null, endpoint);\n+    }\n+\n+    @Test\n+    public void testNotEqualsWithDifferentClass() {\n+        var endpoint = new RaftVoterEndpoint(\"CONTROLLER\", \"example.com\", 8080);\n+        var string = \"CONTROLLER://example.com:8080\";\n+        assertNotEquals(string, endpoint);\n+    }\n+\n+    @Test\n+    public void testToString() {\n+        var endpoint = new RaftVoterEndpoint(\"CONTROLLER\", \"example.com\", 8080);\n+        assertEquals(\"CONTROLLER://example.com:8080\", endpoint.toString());\n+    }\n+\n+    @Test\n+    public void testToStringWithIpv6Host() {\n+        var endpoint = new RaftVoterEndpoint(\"CONTROLLER\", \"::1\", 8080);\n+        assertEquals(\"CONTROLLER://[::1]:8080\", endpoint.toString());\n+    }\n+}\n\\ No newline at end of file\n",
+  "metadata": {
+    "v2_fetcher_version": 1,
+    "v2_fetched_at_unix": 1777987704,
+    "v2_diff_cap_bytes": 50000,
+    "v2_body_cap_bytes": 8000,
+    "v2_diff_truncated": false,
+    "v2_raw_diff_chars": 6064,
+    "v2_raw_body_chars": 113,
+    "v2_rag_source": "fresh_for_v2_25pr_expansion",
+    "v2_rag_chunks_copied": 8,
+    "joern_enriched": true,
+    "joern_callers_count": 0,
+    "joern_functions_count": 8
+  },
+  "similar_chunks": [
+    {
+      "file": "clients/src/main/java/org/apache/kafka/clients/admin/AddRaftVoterOptions.java",
+      "start_line": 16,
+      "end_line": 48,
+      "similarity": 0.6626,
+      "related_to": "clients/src/main/java/org/apache/kafka/clients/admin/RaftVoterEndpoint.java",
+      "content_preview": " */\npackage org.apache.kafka.clients.admin;\n\nimport org.apache.kafka.common.annotation.InterfaceStability;\nimport org.apache.kafka.common.protocol.Errors;\n\nimport java.util.Optional;\n\n/**\n * Options for {@link Admin#addRaftVoter}.\n *\n * <p>\n * The clusterId is optional.\n * <p>\n * If provided, the request will only succeed if the cluster id matches the id of the current cluster.\n * If the cluster id does not match, the request will fail with {@link Errors#INCONSISTENT_CLUSTER_ID}.\n * <p>\n * If not provided, the cluster id check is skipped.\n */\n@InterfaceStability.Stable\npublic class AddRaftVoterOptions extends AbstractOptions<AddRaftVoterOptions> {\n    private Optional<String> clusterId = Optional"
+    },
+    {
+      "file": "clients/src/main/java/org/apache/kafka/clients/admin/RemoveRaftVoterOptions.java",
+      "start_line": 16,
+      "end_line": 48,
+      "similarity": 0.6425,
+      "related_to": "clients/src/main/java/org/apache/kafka/clients/admin/RaftVoterEndpoint.java",
+      "content_preview": " */\npackage org.apache.kafka.clients.admin;\n\nimport org.apache.kafka.common.annotation.InterfaceStability;\nimport org.apache.kafka.common.protocol.Errors;\n\nimport java.util.Optional;\n\n/**\n * Options for {@link Admin#removeRaftVoter}.\n *\n * <p>\n * The clusterId is optional.\n * <p>\n * If provided, the request will only succeed if the cluster id matches the id of the current cluster.\n * If the cluster id does not match, the request will fail with {@link Errors#INCONSISTENT_CLUSTER_ID}.\n * <p>\n * If not provided, the cluster id check is skipped.\n */\n@InterfaceStability.Stable\npublic class RemoveRaftVoterOptions extends AbstractOptions<RemoveRaftVoterOptions> {\n    private Optional<String> clusterId ="
+    },
+    {
+      "file": "clients/src/main/java/org/apache/kafka/clients/admin/AddRaftVoterResult.java",
+      "start_line": 16,
+      "end_line": 43,
+      "similarity": 0.6349,
+      "related_to": "clients/src/main/java/org/apache/kafka/clients/admin/RaftVoterEndpoint.java",
+      "content_preview": " */\npackage org.apache.kafka.clients.admin;\n\nimport org.apache.kafka.common.KafkaFuture;\nimport org.apache.kafka.common.annotation.InterfaceStability;\n\n/**\n * The result of {@link org.apache.kafka.clients.admin.Admin#addRaftVoter(int, org.apache.kafka.common.Uuid, java.util.Set, org.apache.kafka.clients.admin.AddRaftVoterOptions)}.\n *\n * The API of this class is evolving, see {@link Admin} for details.\n */\n@InterfaceStability.Stable\npublic class AddRaftVoterResult {\n    private final KafkaFuture<Void> result;\n\n    AddRaftVoterResult(KafkaFuture<Void> result) {\n        this.result = result;\n    }\n\n    /**\n     * Returns a future that completes when the voter has been added.\n     */\n    public Kafk"
+    },
+    {
+      "file": "clients/src/main/java/org/apache/kafka/clients/admin/KafkaAdminClient.java",
+      "start_line": 4947,
+      "end_line": 4995,
+      "similarity": 0.6262,
+      "related_to": "clients/src/test/java/org/apache/kafka/clients/admin/RaftVoterEndpointTest.java",
+      "content_preview": "ter(entry -> entry.resourceType() == ConfigResource.Type.CLIENT_METRICS.id())\n                        .map(entry -> new ClientMetricsResourceListing(entry.resourceName()))\n                        .collect(Collectors.toList()));\n                }\n            }\n\n            @Override\n            void handleFailure(Throwable throwable) {\n                future.completeExceptionally(throwable);\n            }\n        }, now);\n        return new ListClientMetricsResourcesResult(future);\n    }\n\n    @Override\n    public AddRaftVoterResult addRaftVoter(\n        int voterId,\n        Uuid voterDirectoryId,\n        Set<RaftVoterEndpoint> endpoints,\n        AddRaftVoterOptions options\n    ) {\n        NodeProvider provider = new LeastLoadedBrokerOrActiveKController();\n\n        final KafkaFutureImpl<Void"
+    },
+    {
+      "file": "clients/src/main/java/org/apache/kafka/clients/admin/KafkaAdminClient.java",
+      "start_line": 4695,
+      "end_line": 4733,
+      "similarity": 0.6193,
+      "related_to": "clients/src/main/java/org/apache/kafka/clients/admin/RaftVoterEndpoint.java",
+      "content_preview": "tVoterEndpoint> endpoints = n.listeners().stream()\n                        .map(l -> new RaftVoterEndpoint(l.name(), l.host(), l.port()))\n                        .collect(Collectors.toList());\n\n                    return new QuorumInfo.Node(n.nodeId(), endpoints);\n                }).collect(Collectors.toMap(QuorumInfo.Node::nodeId, Function.identity()));\n\n                return new QuorumInfo(\n                    partition.leaderId(),\n                    partition.leaderEpoch(),\n                    partition.highWatermark(),\n                    voters,\n                    observers,\n                    nodes\n                );\n            }\n\n            @Override\n            DescribeQuorumRequest.Builder createRequest(int timeoutMs) {\n                return new Builder(DescribeQuorumReques"
+    },
+    {
+      "file": "clients/src/main/java/org/apache/kafka/clients/admin/RemoveRaftVoterResult.java",
+      "start_line": 16,
+      "end_line": 43,
+      "similarity": 0.6141,
+      "related_to": "clients/src/main/java/org/apache/kafka/clients/admin/RaftVoterEndpoint.java",
+      "content_preview": " */\npackage org.apache.kafka.clients.admin;\n\nimport org.apache.kafka.common.KafkaFuture;\nimport org.apache.kafka.common.annotation.InterfaceStability;\n\n/**\n * The result of {@link org.apache.kafka.clients.admin.Admin#removeRaftVoter(int, org.apache.kafka.common.Uuid, org.apache.kafka.clients.admin.RemoveRaftVoterOptions)}.\n *\n * The API of this class is evolving, see {@link Admin} for details.\n */\n@InterfaceStability.Stable\npublic class RemoveRaftVoterResult {\n    private final KafkaFuture<Void> result;\n\n    RemoveRaftVoterResult(KafkaFuture<Void> result) {\n        this.result = result;\n    }\n\n    /**\n     * Returns a future that completes when the voter has been removed.\n     */\n    public Kafka"
+    },
+    {
+      "file": "clients/src/main/java/org/apache/kafka/clients/admin/QuorumInfo.java",
+      "start_line": 53,
+      "end_line": 124,
+      "similarity": 0.5831,
+      "related_to": "clients/src/main/java/org/apache/kafka/clients/admin/RaftVoterEndpoint.java",
+      "content_preview": "d() {\n        return leaderId;\n    }\n\n    public long leaderEpoch() {\n        return leaderEpoch;\n    }\n\n    public long highWatermark() {\n        return highWatermark;\n    }\n\n    public List<ReplicaState> voters() {\n        return voters;\n    }\n\n    public List<ReplicaState> observers() {\n        return observers;\n    }\n\n    /**\n     * @return The voter nodes in the Raft cluster, or an empty map if KIP-853 is not enabled.\n     */\n    public Map<Integer, Node> nodes() {\n        return nodes;\n    }\n\n    @Override\n    public boolean equals(Object o) {\n        if (this == o) return true;\n        if (o == null || getClass() != o.getClass()) return false;\n        QuorumInfo that = (QuorumInfo) o;\n        return leaderId == that.leaderId\n            && leaderEpoch == that.leaderEpoch\n           "
+    },
+    {
+      "file": "clients/src/main/java/org/apache/kafka/clients/admin/Admin.java",
+      "start_line": 1851,
+      "end_line": 1894,
+      "similarity": 0.5727,
+      "related_to": "clients/src/main/java/org/apache/kafka/clients/admin/RaftVoterEndpoint.java",
+      "content_preview": "     */\n    Uuid clientInstanceId(Duration timeout);\n\n    /**\n     * Add a new voter node to the KRaft metadata quorum.\n     *\n     * @param voterId           The node ID of the voter.\n     * @param voterDirectoryId  The directory ID of the voter.\n     * @param endpoints         The endpoints that the new voter has.\n     */\n    default AddRaftVoterResult addRaftVoter(\n        int voterId,\n        Uuid voterDirectoryId,\n        Set<RaftVoterEndpoint> endpoints\n    ) {\n        return addRaftVoter(voterId, voterDirectoryId, endpoints, new AddRaftVoterOptions());\n    }\n\n    /**\n     * Add a new voter node to the KRaft metadata quorum.\n     *\n     * <p>\n     * The clusterId in {@link AddRaftVoterOptions} is optional.\n     * If provided, the operation will only succeed if the cluster id matches "
+    }
+  ],
+  "rag_evidence": {
+    "similar_code": [
+      {
+        "file": "clients/src/main/java/org/apache/kafka/clients/admin/AddRaftVoterOptions.java",
+        "start_line": 16,
+        "end_line": 48,
+        "similarity": 0.6626,
+        "related_to": "clients/src/main/java/org/apache/kafka/clients/admin/RaftVoterEndpoint.java",
+        "content_preview": " */\npackage org.apache.kafka.clients.admin;\n\nimport org.apache.kafka.common.annotation.InterfaceStability;\nimport org.apache.kafka.common.protocol.Errors;\n\nimport java.util.Optional;\n\n/**\n * Options for {@link Admin#addRaftVoter}.\n *\n * <p>\n * The clusterId is optional.\n * <p>\n * If provided, the request will only succeed if the cluster id matches the id of the current cluster.\n * If the cluster id does not match, the request will fail with {@link Errors#INCONSISTENT_CLUSTER_ID}.\n * <p>\n * If not provided, the cluster id check is skipped.\n */\n@InterfaceStability.Stable\npublic class AddRaftVoterOptions extends AbstractOptions<AddRaftVoterOptions> {\n    private Optional<String> clusterId = Optional"
+      },
+      {
+        "file": "clients/src/main/java/org/apache/kafka/clients/admin/RemoveRaftVoterOptions.java",
+        "start_line": 16,
+        "end_line": 48,
+        "similarity": 0.6425,
+        "related_to": "clients/src/main/java/org/apache/kafka/clients/admin/RaftVoterEndpoint.java",
+        "content_preview": " */\npackage org.apache.kafka.clients.admin;\n\nimport org.apache.kafka.common.annotation.InterfaceStability;\nimport org.apache.kafka.common.protocol.Errors;\n\nimport java.util.Optional;\n\n/**\n * Options for {@link Admin#removeRaftVoter}.\n *\n * <p>\n * The clusterId is optional.\n * <p>\n * If provided, the request will only succeed if the cluster id matches the id of the current cluster.\n * If the cluster id does not match, the request will fail with {@link Errors#INCONSISTENT_CLUSTER_ID}.\n * <p>\n * If not provided, the cluster id check is skipped.\n */\n@InterfaceStability.Stable\npublic class RemoveRaftVoterOptions extends AbstractOptions<RemoveRaftVoterOptions> {\n    private Optional<String> clusterId ="
+      },
+      {
+        "file": "clients/src/main/java/org/apache/kafka/clients/admin/AddRaftVoterResult.java",
+        "start_line": 16,
+        "end_line": 43,
+        "similarity": 0.6349,
+        "related_to": "clients/src/main/java/org/apache/kafka/clients/admin/RaftVoterEndpoint.java",
+        "content_preview": " */\npackage org.apache.kafka.clients.admin;\n\nimport org.apache.kafka.common.KafkaFuture;\nimport org.apache.kafka.common.annotation.InterfaceStability;\n\n/**\n * The result of {@link org.apache.kafka.clients.admin.Admin#addRaftVoter(int, org.apache.kafka.common.Uuid, java.util.Set, org.apache.kafka.clients.admin.AddRaftVoterOptions)}.\n *\n * The API of this class is evolving, see {@link Admin} for details.\n */\n@InterfaceStability.Stable\npublic class AddRaftVoterResult {\n    private final KafkaFuture<Void> result;\n\n    AddRaftVoterResult(KafkaFuture<Void> result) {\n        this.result = result;\n    }\n\n    /**\n     * Returns a future that completes when the voter has been added.\n     */\n    public Kafk"
+      },
+      {
+        "file": "clients/src/main/java/org/apache/kafka/clients/admin/KafkaAdminClient.java",
+        "start_line": 4947,
+        "end_line": 4995,
+        "similarity": 0.6262,
+        "related_to": "clients/src/test/java/org/apache/kafka/clients/admin/RaftVoterEndpointTest.java",
+        "content_preview": "ter(entry -> entry.resourceType() == ConfigResource.Type.CLIENT_METRICS.id())\n                        .map(entry -> new ClientMetricsResourceListing(entry.resourceName()))\n                        .collect(Collectors.toList()));\n                }\n            }\n\n            @Override\n            void handleFailure(Throwable throwable) {\n                future.completeExceptionally(throwable);\n            }\n        }, now);\n        return new ListClientMetricsResourcesResult(future);\n    }\n\n    @Override\n    public AddRaftVoterResult addRaftVoter(\n        int voterId,\n        Uuid voterDirectoryId,\n        Set<RaftVoterEndpoint> endpoints,\n        AddRaftVoterOptions options\n    ) {\n        NodeProvider provider = new LeastLoadedBrokerOrActiveKController();\n\n        final KafkaFutureImpl<Void"
+      },
+      {
+        "file": "clients/src/main/java/org/apache/kafka/clients/admin/KafkaAdminClient.java",
+        "start_line": 4695,
+        "end_line": 4733,
+        "similarity": 0.6193,
+        "related_to": "clients/src/main/java/org/apache/kafka/clients/admin/RaftVoterEndpoint.java",
+        "content_preview": "tVoterEndpoint> endpoints = n.listeners().stream()\n                        .map(l -> new RaftVoterEndpoint(l.name(), l.host(), l.port()))\n                        .collect(Collectors.toList());\n\n                    return new QuorumInfo.Node(n.nodeId(), endpoints);\n                }).collect(Collectors.toMap(QuorumInfo.Node::nodeId, Function.identity()));\n\n                return new QuorumInfo(\n                    partition.leaderId(),\n                    partition.leaderEpoch(),\n                    partition.highWatermark(),\n                    voters,\n                    observers,\n                    nodes\n                );\n            }\n\n            @Override\n            DescribeQuorumRequest.Builder createRequest(int timeoutMs) {\n                return new Builder(DescribeQuorumReques"
+      },
+      {
+        "file": "clients/src/main/java/org/apache/kafka/clients/admin/RemoveRaftVoterResult.java",
+        "start_line": 16,
+        "end_line": 43,
+        "similarity": 0.6141,
+        "related_to": "clients/src/main/java/org/apache/kafka/clients/admin/RaftVoterEndpoint.java",
+        "content_preview": " */\npackage org.apache.kafka.clients.admin;\n\nimport org.apache.kafka.common.KafkaFuture;\nimport org.apache.kafka.common.annotation.InterfaceStability;\n\n/**\n * The result of {@link org.apache.kafka.clients.admin.Admin#removeRaftVoter(int, org.apache.kafka.common.Uuid, org.apache.kafka.clients.admin.RemoveRaftVoterOptions)}.\n *\n * The API of this class is evolving, see {@link Admin} for details.\n */\n@InterfaceStability.Stable\npublic class RemoveRaftVoterResult {\n    private final KafkaFuture<Void> result;\n\n    RemoveRaftVoterResult(KafkaFuture<Void> result) {\n        this.result = result;\n    }\n\n    /**\n     * Returns a future that completes when the voter has been removed.\n     */\n    public Kafka"
+      },
+      {
+        "file": "clients/src/main/java/org/apache/kafka/clients/admin/QuorumInfo.java",
+        "start_line": 53,
+        "end_line": 124,
+        "similarity": 0.5831,
+        "related_to": "clients/src/main/java/org/apache/kafka/clients/admin/RaftVoterEndpoint.java",
+        "content_preview": "d() {\n        return leaderId;\n    }\n\n    public long leaderEpoch() {\n        return leaderEpoch;\n    }\n\n    public long highWatermark() {\n        return highWatermark;\n    }\n\n    public List<ReplicaState> voters() {\n        return voters;\n    }\n\n    public List<ReplicaState> observers() {\n        return observers;\n    }\n\n    /**\n     * @return The voter nodes in the Raft cluster, or an empty map if KIP-853 is not enabled.\n     */\n    public Map<Integer, Node> nodes() {\n        return nodes;\n    }\n\n    @Override\n    public boolean equals(Object o) {\n        if (this == o) return true;\n        if (o == null || getClass() != o.getClass()) return false;\n        QuorumInfo that = (QuorumInfo) o;\n        return leaderId == that.leaderId\n            && leaderEpoch == that.leaderEpoch\n           "
+      },
+      {
+        "file": "clients/src/main/java/org/apache/kafka/clients/admin/Admin.java",
+        "start_line": 1851,
+        "end_line": 1894,
+        "similarity": 0.5727,
+        "related_to": "clients/src/main/java/org/apache/kafka/clients/admin/RaftVoterEndpoint.java",
+        "content_preview": "     */\n    Uuid clientInstanceId(Duration timeout);\n\n    /**\n     * Add a new voter node to the KRaft metadata quorum.\n     *\n     * @param voterId           The node ID of the voter.\n     * @param voterDirectoryId  The directory ID of the voter.\n     * @param endpoints         The endpoints that the new voter has.\n     */\n    default AddRaftVoterResult addRaftVoter(\n        int voterId,\n        Uuid voterDirectoryId,\n        Set<RaftVoterEndpoint> endpoints\n    ) {\n        return addRaftVoter(voterId, voterDirectoryId, endpoints, new AddRaftVoterOptions());\n    }\n\n    /**\n     * Add a new voter node to the KRaft metadata quorum.\n     *\n     * <p>\n     * The clusterId in {@link AddRaftVoterOptions} is optional.\n     * If provided, the operation will only succeed if the cluster id matches "
+      }
+    ]
+  },
+  "functions_in_changed_files": [
+    {
+      "name": "requireNonNullAllCapsNonEmpty",
+      "full_name": "org.apache.kafka.clients.admin.RaftVoterEndpoint.requireNonNullAllCapsNonEmpty:java.lang.String(java.lang.String)",
+      "file": "main/java/org/apache/kafka/clients/admin/RaftVoterEndpoint.java",
+      "start_line": 33,
+      "end_line": 47,
+      "signature": "java.lang.String(java.lang.String)"
+    },
+    {
+      "name": "listener",
+      "full_name": "org.apache.kafka.clients.admin.RaftVoterEndpoint.listener:java.lang.String()",
+      "file": "main/java/org/apache/kafka/clients/admin/RaftVoterEndpoint.java",
+      "start_line": 69,
+      "end_line": 71,
+      "signature": "java.lang.String()"
+    },
+    {
+      "name": "name",
+      "full_name": "org.apache.kafka.clients.admin.RaftVoterEndpoint.name:java.lang.String()",
+      "file": "main/java/org/apache/kafka/clients/admin/RaftVoterEndpoint.java",
+      "start_line": 76,
+      "end_line": 79,
+      "signature": "java.lang.String()"
+    },
+    {
+      "name": "host",
+      "full_name": "org.apache.kafka.clients.admin.RaftVoterEndpoint.host:java.lang.String()",
+      "file": "main/java/org/apache/kafka/clients/admin/RaftVoterEndpoint.java",
+      "start_line": 81,
+      "end_line": 83,
+      "signature": "java.lang.String()"
+    },
+    {
+      "name": "port",
+      "full_name": "org.apache.kafka.clients.admin.RaftVoterEndpoint.port:int()",
+      "file": "main/java/org/apache/kafka/clients/admin/RaftVoterEndpoint.java",
+      "start_line": 85,
+      "end_line": 87,
+      "signature": "int()"
+    },
+    {
+      "name": "equals",
+      "full_name": "org.apache.kafka.clients.admin.RaftVoterEndpoint.equals:boolean(java.lang.Object)",
+      "file": "main/java/org/apache/kafka/clients/admin/RaftVoterEndpoint.java",
+      "start_line": 89,
+      "end_line": 96,
+      "signature": "boolean(java.lang.Object)"
+    },
+    {
+      "name": "hashCode",
+      "full_name": "org.apache.kafka.clients.admin.RaftVoterEndpoint.hashCode:int()",
+      "file": "main/java/org/apache/kafka/clients/admin/RaftVoterEndpoint.java",
+      "start_line": 98,
+      "end_line": 101,
+      "signature": "int()"
+    },
+    {
+      "name": "toString",
+      "full_name": "org.apache.kafka.clients.admin.RaftVoterEndpoint.toString:java.lang.String()",
+      "file": "main/java/org/apache/kafka/clients/admin/RaftVoterEndpoint.java",
+      "start_line": 103,
+      "end_line": 108,
+      "signature": "java.lang.String()"
+    }
+  ]
+}

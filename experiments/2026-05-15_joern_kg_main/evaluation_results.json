@@ -1,0 +1,1683 @@
+{
+  "evaluations": [
+    {
+      "pr_id": 31,
+      "mode": "joern_kg",
+      "total_score": 14,
+      "max_score": 25,
+      "percentage": 56.0,
+      "kg_relevant_score": 8,
+      "kg_relevant_max": 9,
+      "kg_relevant_percentage": 88.9,
+      "criteria_scores": [
+        {
+          "criterion_id": "F1",
+          "score": 0,
+          "evidence": "The review's 'Scope' acknowledges the PR's stated fix, but the subsequent 'Problem' and 'Recommendation' sections focus on identifying *new* issues and *missing* test coverage rather than explicitly verifying that the original problem (centering X for `fit_intercept=True`) is correctly and fully addressed by the changes.",
+          "n_yes": 0,
+          "n_valid": 1,
+          "unanimous": true
+        },
+        {
+          "criterion_id": "F2",
+          "score": 1,
+          "evidence": "The review identifies 'Incomplete test coverage for `predict(return_std=True)` across `fit_intercept` configurations' (specifically `fit_intercept=False`) and 'Potential for `AttributeError` if `predict` is called before `fit`' as edge cases/boundary conditions.",
+          "n_yes": 1,
+          "n_valid": 1,
+          "unanimous": true
+        },
+        {
+          "criterion_id": "F3",
+          "score": 1,
+          "evidence": "The review discusses how the change (accessing `self.X_offset_`) interacts with the existing `NotFittedError` mechanism in scikit-learn estimators: 'If `predict` is called on an unfitted estimator, this would result in an `AttributeError` instead of the more informative `NotFittedError` typically raised by scikit-learn estimators.'",
+          "n_yes": 1,
+          "n_valid": 1,
+          "unanimous": true
+        },
+        {
+          "criterion_id": "F4",
+          "score": 1,
+          "evidence": "The review warns about the impact of the `AttributeError` on user experience: 'Calling `predict` on an unfitted `BayesianRidge` or `ARDRegression` estimator will result in a less helpful `AttributeError` instead of a `NotFittedError`, potentially confusing users or making debugging harder.'",
+          "n_yes": 1,
+          "n_valid": 1,
+          "unanimous": true
+        },
+        {
+          "criterion_id": "T1",
+          "score": 1,
+          "evidence": "The first problem identified is 'Incomplete test coverage for `predict(return_std=True)` across `fit_intercept` configurations,' directly discussing the need for more tests.",
+          "n_yes": 1,
+          "n_valid": 1,
+          "unanimous": true
+        },
+        {
+          "criterion_id": "T2",
+          "score": 1,
+          "evidence": "The review mentions testing the edge case of `fit_intercept=False` and the error path of calling `predict` before `fit`: 'Enhance Test Coverage for `fit_intercept=False`' and 'Add `NotFittedError` checks'.",
+          "n_yes": 1,
+          "n_valid": 1,
+          "unanimous": true
+        },
+        {
+          "criterion_id": "T3",
+          "score": 1,
+          "evidence": "The review references specific test files and suggests additions: 'Add a new test case within `sklearn/linear_model/tests/test_bayes.py` (e.g., extending `test_std_bayesian_ridge_noncentered` or a new dedicated test)' and 'Re-evaluate the assertions in `sklearn/linear_model/tests/test_bayes.py::test_return_std`'.",
+          "n_yes": 1,
+          "n_valid": 1,
+          "unanimous": true
+        },
+        {
+          "criterion_id": "R1",
+          "score": 0,
+          "evidence": "The review does not comment on code clarity, naming conventions, or function organization.",
+          "n_yes": 0,
+          "n_valid": 1,
+          "unanimous": true
+        },
+        {
+          "criterion_id": "R2",
+          "score": 0,
+          "evidence": "The review does not identify unnecessary complexity or suggest simplification.",
+          "n_yes": 0,
+          "n_valid": 1,
+          "unanimous": true
+        },
+        {
+          "criterion_id": "R3",
+          "score": 0,
+          "evidence": "The review does not check if code comments explain the 'why' behind decisions.",
+          "n_yes": 0,
+          "n_valid": 1,
+          "unanimous": true
+        },
+        {
+          "criterion_id": "M1",
+          "score": 1,
+          "evidence": "The review assesses the change against the existing `NotFittedError` design pattern: 'instead of the more informative `NotFittedError` typically raised by scikit-learn estimators.'",
+          "n_yes": 1,
+          "n_valid": 1,
+          "unanimous": true
+        },
+        {
+          "criterion_id": "M2",
+          "score": 0,
+          "evidence": "The review does not flag if the PR scope is too large or should be split.",
+          "n_yes": 0,
+          "n_valid": 1,
+          "unanimous": true
+        },
+        {
+          "criterion_id": "M3",
+          "score": 0,
+          "evidence": "The review does not check if public APIs or interfaces are properly documented.",
+          "n_yes": 0,
+          "n_valid": 1,
+          "unanimous": true
+        },
+        {
+          "criterion_id": "C1",
+          "score": 0,
+          "evidence": "The review does not check adherence to project style guides or coding conventions.",
+          "n_yes": 0,
+          "n_valid": 1,
+          "unanimous": true
+        },
+        {
+          "criterion_id": "C2",
+          "score": 1,
+          "evidence": "The review checks for consistency in error handling with existing patterns: 'instead of the more informative `NotFittedError` typically raised by scikit-learn estimators.'",
+          "n_yes": 1,
+          "n_valid": 1,
+          "unanimous": true
+        },
+        {
+          "criterion_id": "P1",
+          "score": 0,
+          "evidence": "The review does not identify potential performance issues or inefficiencies.",
+          "n_yes": 0,
+          "n_valid": 1,
+          "unanimous": true
+        },
+        {
+          "criterion_id": "P2",
+          "score": 0,
+          "evidence": "The review does not ask about benchmarks or performance testing for critical paths.",
+          "n_yes": 0,
+          "n_valid": 1,
+          "unanimous": true
+        },
+        {
+          "criterion_id": "S1",
+          "score": 1,
+          "evidence": "The review checks for proper state validation by recommending: 'Implement `_check_is_fitted` at the beginning of the `predict` methods... to ensure `self.X_offset_` and other attributes are initialized'.",
+          "n_yes": 1,
+          "n_valid": 1,
+          "unanimous": true
+        },
+        {
+          "criterion_id": "S2",
+          "score": 0,
+          "evidence": "The review does not flag hardcoded secrets, credentials, or sensitive data.",
+          "n_yes": 0,
+          "n_valid": 1,
+          "unanimous": true
+        },
+        {
+          "criterion_id": "S3",
+          "score": 1,
+          "evidence": "The review assesses error handling by discussing the `AttributeError` versus `NotFittedError` scenario: 'Potential for `AttributeError` if `predict` is called before `fit`' and 'Add `NotFittedError` checks'.",
+          "n_yes": 1,
+          "n_valid": 1,
+          "unanimous": true
+        },
+        {
+          "criterion_id": "Q1",
+          "score": 1,
+          "evidence": "The 'Scope' section provides an overall summary of the changes: 'This pull request fixes an issue in `BayesianRidge` and `ARDRegression` where `predict(return_std=True)` incorrectly computed predictive variance by not centering test features when `fit_intercept=True`.'",
+          "n_yes": 1,
+          "n_valid": 1,
+          "unanimous": true
+        },
+        {
+          "criterion_id": "Q2",
+          "score": 1,
+          "evidence": "The 'Evidence' section explicitly anchors comments to specific code locations: '`sklearn/linear_model/_bayes.py:397` (Addition of `X = X - self.X_offset_` in `BayesianRidge.predict`)'.",
+          "n_yes": 1,
+          "n_valid": 1,
+          "unanimous": true
+        },
+        {
+          "criterion_id": "Q3",
+          "score": 1,
+          "evidence": "The review clearly distinguishes between 'Problem' and 'Recommendation' sections, outlining significant issues that need to be addressed rather than minor suggestions.",
+          "n_yes": 1,
+          "n_valid": 1,
+          "unanimous": true
+        },
+        {
+          "criterion_id": "Q4",
+          "score": 0,
+          "evidence": "The review makes direct statements and recommendations rather than asking clarifying questions.",
+          "n_yes": 0,
+          "n_valid": 1,
+          "unanimous": true
+        },
+        {
+          "criterion_id": "Q5",
+          "score": 1,
+          "evidence": "The 'Impact' section clearly explains the reasoning behind the identified problems and implied suggestions: 'Problem 1: Potential for future regressions... to go unnoticed.' and 'Problem 2: Calling `predict` on an unfitted ... will result in a less helpful `AttributeError` instead of a `NotFittedError`, potentially confusing users or making debugging harder.'",
+          "n_yes": 1,
+          "n_valid": 1,
+          "unanimous": true
+        }
+      ],
+      "per_judge": [
+        {
+          "model": "gemini:gemini-2.5-flash",
+          "scores": {
+            "F1": 0,
+            "F2": 1,
+            "F3": 1,
+            "F4": 1,
+            "T1": 1,
+            "T2": 1,
+            "T3": 1,
+            "R1": 0,
+            "R2": 0,
+            "R3": 0,
+            "M1": 1,
+            "M2": 0,
+            "M3": 0,
+            "C1": 0,
+            "C2": 1,
+            "P1": 0,
+            "P2": 0,
+            "S1": 1,
+            "S2": 0,
+            "S3": 1,
+            "Q1": 1,
+            "Q2": 1,
+            "Q3": 1,
+            "Q4": 0,
+            "Q5": 1
+          },
+          "evidence": {
+            "F1": "The review's 'Scope' acknowledges the PR's stated fix, but the subsequent 'Problem' and 'Recommendation' sections focus on identifying *new* issues and *missing* test coverage rather than explicitly verifying that the original problem (centering X for `fit_intercept=True`) is correctly and fully addressed by the changes.",
+            "F2": "The review identifies 'Incomplete test coverage for `predict(return_std=True)` across `fit_intercept` configurations' (specifically `fit_intercept=False`) and 'Potential for `AttributeError` if `predict` is called before `fit`' as edge cases/boundary conditions.",
+            "F3": "The review discusses how the change (accessing `self.X_offset_`) interacts with the existing `NotFittedError` mechanism in scikit-learn estimators: 'If `predict` is called on an unfitted estimator, this would result in an `AttributeError` instead of the more informative `NotFittedError` typically raised by scikit-learn estimators.'",
+            "F4": "The review warns about the impact of the `AttributeError` on user experience: 'Calling `predict` on an unfitted `BayesianRidge` or `ARDRegression` estimator will result in a less helpful `AttributeError` instead of a `NotFittedError`, potentially confusing users or making debugging harder.'",
+            "T1": "The first problem identified is 'Incomplete test coverage for `predict(return_std=True)` across `fit_intercept` configurations,' directly discussing the need for more tests.",
+            "T2": "The review mentions testing the edge case of `fit_intercept=False` and the error path of calling `predict` before `fit`: 'Enhance Test Coverage for `fit_intercept=False`' and 'Add `NotFittedError` checks'.",
+            "T3": "The review references specific test files and suggests additions: 'Add a new test case within `sklearn/linear_model/tests/test_bayes.py` (e.g., extending `test_std_bayesian_ridge_noncentered` or a new dedicated test)' and 'Re-evaluate the assertions in `sklearn/linear_model/tests/test_bayes.py::test_return_std`'.",
+            "R1": "The review does not comment on code clarity, naming conventions, or function organization.",
+            "R2": "The review does not identify unnecessary complexity or suggest simplification.",
+            "R3": "The review does not check if code comments explain the 'why' behind decisions.",
+            "M1": "The review assesses the change against the existing `NotFittedError` design pattern: 'instead of the more informative `NotFittedError` typically raised by scikit-learn estimators.'",
+            "M2": "The review does not flag if the PR scope is too large or should be split.",
+            "M3": "The review does not check if public APIs or interfaces are properly documented.",
+            "C1": "The review does not check adherence to project style guides or coding conventions.",
+            "C2": "The review checks for consistency in error handling with existing patterns: 'instead of the more informative `NotFittedError` typically raised by scikit-learn estimators.'",
+            "P1": "The review does not identify potential performance issues or inefficiencies.",
+            "P2": "The review does not ask about benchmarks or performance testing for critical paths.",
+            "S1": "The review checks for proper state validation by recommending: 'Implement `_check_is_fitted` at the beginning of the `predict` methods... to ensure `self.X_offset_` and other attributes are initialized'.",
+            "S2": "The review does not flag hardcoded secrets, credentials, or sensitive data.",
+            "S3": "The review assesses error handling by discussing the `AttributeError` versus `NotFittedError` scenario: 'Potential for `AttributeError` if `predict` is called before `fit`' and 'Add `NotFittedError` checks'.",
+            "Q1": "The 'Scope' section provides an overall summary of the changes: 'This pull request fixes an issue in `BayesianRidge` and `ARDRegression` where `predict(return_std=True)` incorrectly computed predictive variance by not centering test features when `fit_intercept=True`.'",
+            "Q2": "The 'Evidence' section explicitly anchors comments to specific code locations: '`sklearn/linear_model/_bayes.py:397` (Addition of `X = X - self.X_offset_` in `BayesianRidge.predict`)'.",
+            "Q3": "The review clearly distinguishes between 'Problem' and 'Recommendation' sections, outlining significant issues that need to be addressed rather than minor suggestions.",
+            "Q4": "The review makes direct statements and recommendations rather than asking clarifying questions.",
+            "Q5": "The 'Impact' section clearly explains the reasoning behind the identified problems and implied suggestions: 'Problem 1: Potential for future regressions... to go unnoticed.' and 'Problem 2: Calling `predict` on an unfitted ... will result in a less helpful `AttributeError` instead of a `NotFittedError`, potentially confusing users or making debugging harder.'"
+          },
+          "error": ""
+        },
+        {
+          "model": "gemini:gemini-2.0-flash",
+          "scores": {},
+          "evidence": {},
+          "error": "api_error: API generation failed (https://generativelanguage.googleapis.com/v1beta/openai/): Error code: 404 - [{'error': {'code': 404, 'message': 'This model models/gemini-2.0-flash is no longer available to new users. Please update your code to use a newer model for the latest features and improvements.', 'status': 'NOT_FOUND'}}]"
+        }
+      ],
+      "evaluation_timestamp": "2026-05-15T16:21:54.285172Z"
+    },
+    {
+      "pr_id": 22,
+      "mode": "joern_kg",
+      "total_score": 12,
+      "max_score": 25,
+      "percentage": 48.0,
+      "kg_relevant_score": 7,
+      "kg_relevant_max": 9,
+      "kg_relevant_percentage": 77.8,
+      "criteria_scores": [
+        {
+          "criterion_id": "F1",
+          "score": 0,
+          "evidence": "The review identifies problems with the implementation of the change, rather than verifying the change successfully addresses the stated problem without issues. It focuses on what went wrong, not what went right.",
+          "n_yes": 0,
+          "n_valid": 1,
+          "unanimous": true
+        },
+        {
+          "criterion_id": "F2",
+          "score": 0,
+          "evidence": "The review identifies an unhandled dependency case (`FineGrainedAutoResetIntegrationTest`), but this is a structural oversight rather than an 'edge case' or 'boundary condition' in terms of data or logic.",
+          "n_yes": 0,
+          "n_valid": 1,
+          "unanimous": true
+        },
+        {
+          "criterion_id": "F3",
+          "score": 1,
+          "evidence": "The review explicitly checks module dependencies and identifies an integration failure: 'there is no corresponding `testImplementation project(':tools')` added to `project(':streams:integration-tests')`. This means `streams:integration-tests` cannot access classes in `tools`.'",
+          "n_yes": 1,
+          "n_valid": 1,
+          "unanimous": true
+        },
+        {
+          "criterion_id": "F4",
+          "score": 1,
+          "evidence": "The review clearly warns about the impact: 'The `streams:integration-tests` module will fail to compile, specifically `FineGrainedAutoResetIntegrationTest.java`, leading to a broken build...'",
+          "n_yes": 1,
+          "n_valid": 1,
+          "unanimous": true
+        },
+        {
+          "criterion_id": "T1",
+          "score": 1,
+          "evidence": "The review discusses the importance of the `FineGrainedAutoResetIntegrationTest` running: 'potential regression of the fine-grained auto-reset functionality if this test is not run.'",
+          "n_yes": 1,
+          "n_valid": 1,
+          "unanimous": true
+        },
+        {
+          "criterion_id": "T2",
+          "score": 0,
+          "evidence": "The review does not discuss testing specific edge cases, error paths, or failure scenarios within the application logic.",
+          "n_yes": 0,
+          "n_valid": 1,
+          "unanimous": true
+        },
+        {
+          "criterion_id": "T3",
+          "score": 1,
+          "evidence": "The review references a specific test file and suggests action: 'Move `streams/integration-tests/src/test/java/org/apache/kafka/streams/integration/FineGrainedAutoResetIntegrationTest.java` to `tools/src/test/java/org/apache/kafka/tools/`'",
+          "n_yes": 1,
+          "n_valid": 1,
+          "unanimous": true
+        },
+        {
+          "criterion_id": "R1",
+          "score": 0,
+          "evidence": "The review does not comment on code clarity, naming conventions, or function organization within the moved files.",
+          "n_yes": 0,
+          "n_valid": 1,
+          "unanimous": true
+        },
+        {
+          "criterion_id": "R2",
+          "score": 1,
+          "evidence": "The review identifies an 'Unnecessary `hamcrest` runtime dependency' and implicitly suggests its removal, which simplifies the build.",
+          "n_yes": 1,
+          "n_valid": 1,
+          "unanimous": true
+        },
+        {
+          "criterion_id": "R3",
+          "score": 0,
+          "evidence": "The review does not mention code comments or their explanation of decisions.",
+          "n_yes": 0,
+          "n_valid": 1,
+          "unanimous": true
+        },
+        {
+          "criterion_id": "M1",
+          "score": 1,
+          "evidence": "The review assesses how the module move impacts the overall architecture by identifying a dependency mismatch: 'This means `streams:integration-tests` cannot access classes in `tools`.'",
+          "n_yes": 1,
+          "n_valid": 1,
+          "unanimous": true
+        },
+        {
+          "criterion_id": "M2",
+          "score": 0,
+          "evidence": "The review does not comment on the scope of the PR or suggest splitting it.",
+          "n_yes": 0,
+          "n_valid": 1,
+          "unanimous": true
+        },
+        {
+          "criterion_id": "M3",
+          "score": 0,
+          "evidence": "The PR is about moving internal integration tests, and the review does not discuss public API documentation.",
+          "n_yes": 0,
+          "n_valid": 1,
+          "unanimous": true
+        },
+        {
+          "criterion_id": "C1",
+          "score": 0,
+          "evidence": "The review does not check adherence to project style guides or coding conventions.",
+          "n_yes": 0,
+          "n_valid": 1,
+          "unanimous": true
+        },
+        {
+          "criterion_id": "C2",
+          "score": 1,
+          "evidence": "The review points out an inconsistency in applying the 'move' pattern: 'This aligns it with its superclass and the other moved reset tests,' implying `FineGrainedAutoResetIntegrationTest` should have been moved consistently.",
+          "n_yes": 1,
+          "n_valid": 1,
+          "unanimous": true
+        },
+        {
+          "criterion_id": "P1",
+          "score": 1,
+          "evidence": "The review identifies a potential performance issue: 'an unnecessary `testRuntimeOnly` dependency can increase build times'.",
+          "n_yes": 1,
+          "n_valid": 1,
+          "unanimous": true
+        },
+        {
+          "criterion_id": "P2",
+          "score": 0,
+          "evidence": "The review mentions build times but does not ask about benchmarks or performance testing for critical application paths.",
+          "n_yes": 0,
+          "n_valid": 1,
+          "unanimous": true
+        },
+        {
+          "criterion_id": "S1",
+          "score": 0,
+          "evidence": "The review does not check for input validation or sanitization.",
+          "n_yes": 0,
+          "n_valid": 1,
+          "unanimous": true
+        },
+        {
+          "criterion_id": "S2",
+          "score": 0,
+          "evidence": "The review does not flag hardcoded secrets or sensitive data.",
+          "n_yes": 0,
+          "n_valid": 1,
+          "unanimous": true
+        },
+        {
+          "criterion_id": "S3",
+          "score": 0,
+          "evidence": "The review focuses on compilation failures and build dependencies, not runtime error handling or failure recovery within the application code.",
+          "n_yes": 0,
+          "n_valid": 1,
+          "unanimous": true
+        },
+        {
+          "criterion_id": "Q1",
+          "score": 1,
+          "evidence": "The 'Scope' section provides a clear summary: 'This pull request moves `AbstractResetIntegrationTest` and its subclasses... along with updating build dependencies and replacing Hamcrest assertions with JUnit assertions.'",
+          "n_yes": 1,
+          "n_valid": 1,
+          "unanimous": true
+        },
+        {
+          "criterion_id": "Q2",
+          "score": 1,
+          "evidence": "The 'Evidence' section uses specific file paths and line numbers: 'Diff: `build.gradle` (line 2516) adds `testRuntimeOnly libs.hamcrest` to `project(':tools')`.'",
+          "n_yes": 1,
+          "n_valid": 1,
+          "unanimous": true
+        },
+        {
+          "criterion_id": "Q3",
+          "score": 1,
+          "evidence": "The review distinguishes between critical and less critical issues: Problem 1 is a 'compilation failure' leading to a 'broken build', while Problem 2 is 'While not critical, an unnecessary `testRuntimeOnly` dependency...'",
+          "n_yes": 1,
+          "n_valid": 1,
+          "unanimous": true
+        },
+        {
+          "criterion_id": "Q4",
+          "score": 0,
+          "evidence": "The review makes direct statements about problems and their causes, backed by evidence, rather than asking clarifying questions.",
+          "n_yes": 0,
+          "n_valid": 1,
+          "unanimous": true
+        },
+        {
+          "criterion_id": "Q5",
+          "score": 1,
+          "evidence": "The review explains the reasoning for its suggestions, e.g., for Problem 1: 'This means `streams:integration-tests` cannot access classes in `tools`.' and for Problem 2: 'an unnecessary `testRuntimeOnly` dependency can increase build times...'",
+          "n_yes": 1,
+          "n_valid": 1,
+          "unanimous": true
+        }
+      ],
+      "per_judge": [
+        {
+          "model": "gemini:gemini-2.5-flash",
+          "scores": {
+            "F1": 0,
+            "F2": 0,
+            "F3": 1,
+            "F4": 1,
+            "T1": 1,
+            "T2": 0,
+            "T3": 1,
+            "R1": 0,
+            "R2": 1,
+            "R3": 0,
+            "M1": 1,
+            "M2": 0,
+            "M3": 0,
+            "C1": 0,
+            "C2": 1,
+            "P1": 1,
+            "P2": 0,
+            "S1": 0,
+            "S2": 0,
+            "S3": 0,
+            "Q1": 1,
+            "Q2": 1,
+            "Q3": 1,
+            "Q4": 0,
+            "Q5": 1
+          },
+          "evidence": {
+            "F1": "The review identifies problems with the implementation of the change, rather than verifying the change successfully addresses the stated problem without issues. It focuses on what went wrong, not what went right.",
+            "F2": "The review identifies an unhandled dependency case (`FineGrainedAutoResetIntegrationTest`), but this is a structural oversight rather than an 'edge case' or 'boundary condition' in terms of data or logic.",
+            "F3": "The review explicitly checks module dependencies and identifies an integration failure: 'there is no corresponding `testImplementation project(':tools')` added to `project(':streams:integration-tests')`. This means `streams:integration-tests` cannot access classes in `tools`.'",
+            "F4": "The review clearly warns about the impact: 'The `streams:integration-tests` module will fail to compile, specifically `FineGrainedAutoResetIntegrationTest.java`, leading to a broken build...'",
+            "T1": "The review discusses the importance of the `FineGrainedAutoResetIntegrationTest` running: 'potential regression of the fine-grained auto-reset functionality if this test is not run.'",
+            "T2": "The review does not discuss testing specific edge cases, error paths, or failure scenarios within the application logic.",
+            "T3": "The review references a specific test file and suggests action: 'Move `streams/integration-tests/src/test/java/org/apache/kafka/streams/integration/FineGrainedAutoResetIntegrationTest.java` to `tools/src/test/java/org/apache/kafka/tools/`'",
+            "R1": "The review does not comment on code clarity, naming conventions, or function organization within the moved files.",
+            "R2": "The review identifies an 'Unnecessary `hamcrest` runtime dependency' and implicitly suggests its removal, which simplifies the build.",
+            "R3": "The review does not mention code comments or their explanation of decisions.",
+            "M1": "The review assesses how the module move impacts the overall architecture by identifying a dependency mismatch: 'This means `streams:integration-tests` cannot access classes in `tools`.'",
+            "M2": "The review does not comment on the scope of the PR or suggest splitting it.",
+            "M3": "The PR is about moving internal integration tests, and the review does not discuss public API documentation.",
+            "C1": "The review does not check adherence to project style guides or coding conventions.",
+            "C2": "The review points out an inconsistency in applying the 'move' pattern: 'This aligns it with its superclass and the other moved reset tests,' implying `FineGrainedAutoResetIntegrationTest` should have been moved consistently.",
+            "P1": "The review identifies a potential performance issue: 'an unnecessary `testRuntimeOnly` dependency can increase build times'.",
+            "P2": "The review mentions build times but does not ask about benchmarks or performance testing for critical application paths.",
+            "S1": "The review does not check for input validation or sanitization.",
+            "S2": "The review does not flag hardcoded secrets or sensitive data.",
+            "S3": "The review focuses on compilation failures and build dependencies, not runtime error handling or failure recovery within the application code.",
+            "Q1": "The 'Scope' section provides a clear summary: 'This pull request moves `AbstractResetIntegrationTest` and its subclasses... along with updating build dependencies and replacing Hamcrest assertions with JUnit assertions.'",
+            "Q2": "The 'Evidence' section uses specific file paths and line numbers: 'Diff: `build.gradle` (line 2516) adds `testRuntimeOnly libs.hamcrest` to `project(':tools')`.'",
+            "Q3": "The review distinguishes between critical and less critical issues: Problem 1 is a 'compilation failure' leading to a 'broken build', while Problem 2 is 'While not critical, an unnecessary `testRuntimeOnly` dependency...'",
+            "Q4": "The review makes direct statements about problems and their causes, backed by evidence, rather than asking clarifying questions.",
+            "Q5": "The review explains the reasoning for its suggestions, e.g., for Problem 1: 'This means `streams:integration-tests` cannot access classes in `tools`.' and for Problem 2: 'an unnecessary `testRuntimeOnly` dependency can increase build times...'"
+          },
+          "error": ""
+        },
+        {
+          "model": "gemini:gemini-2.0-flash",
+          "scores": {},
+          "evidence": {},
+          "error": "api_error: API generation failed (https://generativelanguage.googleapis.com/v1beta/openai/): Error code: 404 - [{'error': {'code': 404, 'message': 'This model models/gemini-2.0-flash is no longer available to new users. Please update your code to use a newer model for the latest features and improvements.', 'status': 'NOT_FOUND'}}]"
+        }
+      ],
+      "evaluation_timestamp": "2026-05-15T16:22:18.675034Z"
+    },
+    {
+      "pr_id": 40,
+      "mode": "joern_kg",
+      "total_score": 14,
+      "max_score": 25,
+      "percentage": 56.0,
+      "kg_relevant_score": 8,
+      "kg_relevant_max": 9,
+      "kg_relevant_percentage": 88.9,
+      "criteria_scores": [
+        {
+          "criterion_id": "F1",
+          "score": 0,
+          "evidence": "The review focuses on identifying new problems introduced by the change rather than explicitly verifying that the change addresses the original stated problem or requirement.",
+          "n_yes": 0,
+          "n_valid": 1,
+          "unanimous": true
+        },
+        {
+          "criterion_id": "F2",
+          "score": 1,
+          "evidence": "Problem 1 identifies `Uuid.ZERO_UUID` as an unhandled edge case, especially for older clients or failed topic ID population: 'Integration Risk: Unhandled `Uuid.ZERO_UUID` in `TxnOffsetCommitRequest`'.",
+          "n_yes": 1,
+          "n_valid": 1,
+          "unanimous": true
+        },
+        {
+          "criterion_id": "F3",
+          "score": 1,
+          "evidence": "Problem 1 discusses how the change impacts `OffsetMetadataManager`'s interaction with `TxnOffsetCommitRequestData`, `CoordinatorMetadataImage`, and `CommitPartitionValidator`: 'The PR removes the `CoordinatorMetadataImage` lookup... Now, `OffsetMetadataManager` directly uses `topic.topicId()` from the `TxnOffsetCommitRequestData`.'",
+          "n_yes": 1,
+          "n_valid": 1,
+          "unanimous": true
+        },
+        {
+          "criterion_id": "F4",
+          "score": 1,
+          "evidence": "Problem 1 warns about the impact on dependent code by stating: 'This changes a previously guarded error condition into a potentially unhandled or incorrectly handled one.'",
+          "n_yes": 1,
+          "n_valid": 1,
+          "unanimous": true
+        },
+        {
+          "criterion_id": "T1",
+          "score": 1,
+          "evidence": "Problem 2 is titled 'Test Gap: Missing Validation for `Uuid.ZERO_UUID` with Active Validator', directly discussing the need for tests.",
+          "n_yes": 1,
+          "n_valid": 1,
+          "unanimous": true
+        },
+        {
+          "criterion_id": "T2",
+          "score": 1,
+          "evidence": "Problem 2 mentions testing edge cases and error paths: 'It does not explicitly assert the *validation behavior* of `CommitPartitionValidator` when `topicId` is `Uuid.ZERO_UUID` in the request'.",
+          "n_yes": 1,
+          "n_valid": 1,
+          "unanimous": true
+        },
+        {
+          "criterion_id": "T3",
+          "score": 1,
+          "evidence": "Problem 2 references specific test files and suggests updates: 'The test `testConsumerGroupTransactionalOffsetCommitWithUnresolvedTopicId` was removed... While `OffsetMetadataManagerTest.java` now parameterizes `topicId`... it does not explicitly assert the *validation behavior*'.",
+          "n_yes": 1,
+          "n_valid": 1,
+          "unanimous": true
+        },
+        {
+          "criterion_id": "R1",
+          "score": 0,
+          "evidence": "The review does not comment on code clarity, naming conventions, or function organization.",
+          "n_yes": 0,
+          "n_valid": 1,
+          "unanimous": true
+        },
+        {
+          "criterion_id": "R2",
+          "score": 0,
+          "evidence": "The review does not identify unnecessary complexity or suggest simplification.",
+          "n_yes": 0,
+          "n_valid": 1,
+          "unanimous": true
+        },
+        {
+          "criterion_id": "R3",
+          "score": 0,
+          "evidence": "The review does not check if code comments explain the 'why' behind decisions.",
+          "n_yes": 0,
+          "n_valid": 1,
+          "unanimous": true
+        },
+        {
+          "criterion_id": "M1",
+          "score": 1,
+          "evidence": "Problem 1 implicitly assesses the change's fit by discussing how it alters a previously guarded error condition and impacts the `CommitPartitionValidator`'s expected behavior, which is part of the existing architecture: 'The validator's internal logic (e.g., in `ConsumerGroup.validatePartitionAssignment` which is not in the diff but is a key dependency) expects valid topic IDs.'",
+          "n_yes": 1,
+          "n_valid": 1,
+          "unanimous": true
+        },
+        {
+          "criterion_id": "M2",
+          "score": 0,
+          "evidence": "The review does not flag if the PR scope is too large or should be split.",
+          "n_yes": 0,
+          "n_valid": 1,
+          "unanimous": true
+        },
+        {
+          "criterion_id": "M3",
+          "score": 0,
+          "evidence": "The review does not check if public APIs or interfaces are properly documented.",
+          "n_yes": 0,
+          "n_valid": 1,
+          "unanimous": true
+        },
+        {
+          "criterion_id": "C1",
+          "score": 0,
+          "evidence": "The review does not check adherence to project style guides or coding conventions.",
+          "n_yes": 0,
+          "n_valid": 1,
+          "unanimous": true
+        },
+        {
+          "criterion_id": "C2",
+          "score": 1,
+          "evidence": "Problem 1 highlights a deviation from an existing pattern for handling unresolved topic IDs: 'This changes a previously guarded error condition into a potentially unhandled or incorrectly handled one.'",
+          "n_yes": 1,
+          "n_valid": 1,
+          "unanimous": true
+        },
+        {
+          "criterion_id": "P1",
+          "score": 0,
+          "evidence": "The review does not identify potential performance issues or inefficiencies.",
+          "n_yes": 0,
+          "n_valid": 1,
+          "unanimous": true
+        },
+        {
+          "criterion_id": "P2",
+          "score": 0,
+          "evidence": "The review does not ask about benchmarks or performance testing for critical paths.",
+          "n_yes": 0,
+          "n_valid": 1,
+          "unanimous": true
+        },
+        {
+          "criterion_id": "S1",
+          "score": 1,
+          "evidence": "Problem 1 directly addresses input validation by discussing the handling of `Uuid.ZERO_UUID` as an input: 'If a client... sends `Uuid.ZERO_UUID` for a topic, this `ZERO_UUID` will be passed directly to the `CommitPartitionValidator` and persisted.'",
+          "n_yes": 1,
+          "n_valid": 1,
+          "unanimous": true
+        },
+        {
+          "criterion_id": "S2",
+          "score": 0,
+          "evidence": "The review does not flag hardcoded secrets, credentials, or sensitive data.",
+          "n_yes": 0,
+          "n_valid": 1,
+          "unanimous": true
+        },
+        {
+          "criterion_id": "S3",
+          "score": 1,
+          "evidence": "Problem 1 assesses error handling by discussing the removal of a specific error condition and the potential for 'incorrect validation outcomes or unexpected errors': 'This changes a previously guarded error condition into a potentially unhandled or incorrectly handled one.'",
+          "n_yes": 1,
+          "n_valid": 1,
+          "unanimous": true
+        },
+        {
+          "criterion_id": "Q1",
+          "score": 1,
+          "evidence": "The 'Scope' section provides a clear summary of the changes: 'This PR refactors `OffsetMetadataManager` to directly use topic IDs provided in `TxnOffsetCommitRequestData`, removing its dependency on `CoordinatorMetadataImage` for topic ID resolution.'",
+          "n_yes": 1,
+          "n_valid": 1,
+          "unanimous": true
+        },
+        {
+          "criterion_id": "Q2",
+          "score": 1,
+          "evidence": "The 'Evidence' section provides multiple specific code locations with file paths and line numbers: '`group-coordinator/src/main/java/org/apache/kafka/coordinator/group/OffsetMetadataManager.java:706-717`'.",
+          "n_yes": 1,
+          "n_valid": 1,
+          "unanimous": true
+        },
+        {
+          "criterion_id": "Q3",
+          "score": 1,
+          "evidence": "The review presents two 'Problem' sections, clearly indicating critical issues rather than minor suggestions.",
+          "n_yes": 1,
+          "n_valid": 1,
+          "unanimous": true
+        },
+        {
+          "criterion_id": "Q4",
+          "score": 0,
+          "evidence": "The review makes statements about potential issues and their consequences rather than asking clarifying questions.",
+          "n_yes": 0,
+          "n_valid": 1,
+          "unanimous": true
+        },
+        {
+          "criterion_id": "Q5",
+          "score": 1,
+          "evidence": "The review explains the reasoning behind its concerns, for example: 'This could lead to incorrect validation outcomes or unexpected errors within the `CommitPartitionValidator`... if it expects a valid, non-zero topic ID for its logic'.",
+          "n_yes": 1,
+          "n_valid": 1,
+          "unanimous": true
+        }
+      ],
+      "per_judge": [
+        {
+          "model": "gemini:gemini-2.5-flash",
+          "scores": {
+            "F1": 0,
+            "F2": 1,
+            "F3": 1,
+            "F4": 1,
+            "T1": 1,
+            "T2": 1,
+            "T3": 1,
+            "R1": 0,
+            "R2": 0,
+            "R3": 0,
+            "M1": 1,
+            "M2": 0,
+            "M3": 0,
+            "C1": 0,
+            "C2": 1,
+            "P1": 0,
+            "P2": 0,
+            "S1": 1,
+            "S2": 0,
+            "S3": 1,
+            "Q1": 1,
+            "Q2": 1,
+            "Q3": 1,
+            "Q4": 0,
+            "Q5": 1
+          },
+          "evidence": {
+            "F1": "The review focuses on identifying new problems introduced by the change rather than explicitly verifying that the change addresses the original stated problem or requirement.",
+            "F2": "Problem 1 identifies `Uuid.ZERO_UUID` as an unhandled edge case, especially for older clients or failed topic ID population: 'Integration Risk: Unhandled `Uuid.ZERO_UUID` in `TxnOffsetCommitRequest`'.",
+            "F3": "Problem 1 discusses how the change impacts `OffsetMetadataManager`'s interaction with `TxnOffsetCommitRequestData`, `CoordinatorMetadataImage`, and `CommitPartitionValidator`: 'The PR removes the `CoordinatorMetadataImage` lookup... Now, `OffsetMetadataManager` directly uses `topic.topicId()` from the `TxnOffsetCommitRequestData`.'",
+            "F4": "Problem 1 warns about the impact on dependent code by stating: 'This changes a previously guarded error condition into a potentially unhandled or incorrectly handled one.'",
+            "T1": "Problem 2 is titled 'Test Gap: Missing Validation for `Uuid.ZERO_UUID` with Active Validator', directly discussing the need for tests.",
+            "T2": "Problem 2 mentions testing edge cases and error paths: 'It does not explicitly assert the *validation behavior* of `CommitPartitionValidator` when `topicId` is `Uuid.ZERO_UUID` in the request'.",
+            "T3": "Problem 2 references specific test files and suggests updates: 'The test `testConsumerGroupTransactionalOffsetCommitWithUnresolvedTopicId` was removed... While `OffsetMetadataManagerTest.java` now parameterizes `topicId`... it does not explicitly assert the *validation behavior*'.",
+            "R1": "The review does not comment on code clarity, naming conventions, or function organization.",
+            "R2": "The review does not identify unnecessary complexity or suggest simplification.",
+            "R3": "The review does not check if code comments explain the 'why' behind decisions.",
+            "M1": "Problem 1 implicitly assesses the change's fit by discussing how it alters a previously guarded error condition and impacts the `CommitPartitionValidator`'s expected behavior, which is part of the existing architecture: 'The validator's internal logic (e.g., in `ConsumerGroup.validatePartitionAssignment` which is not in the diff but is a key dependency) expects valid topic IDs.'",
+            "M2": "The review does not flag if the PR scope is too large or should be split.",
+            "M3": "The review does not check if public APIs or interfaces are properly documented.",
+            "C1": "The review does not check adherence to project style guides or coding conventions.",
+            "C2": "Problem 1 highlights a deviation from an existing pattern for handling unresolved topic IDs: 'This changes a previously guarded error condition into a potentially unhandled or incorrectly handled one.'",
+            "P1": "The review does not identify potential performance issues or inefficiencies.",
+            "P2": "The review does not ask about benchmarks or performance testing for critical paths.",
+            "S1": "Problem 1 directly addresses input validation by discussing the handling of `Uuid.ZERO_UUID` as an input: 'If a client... sends `Uuid.ZERO_UUID` for a topic, this `ZERO_UUID` will be passed directly to the `CommitPartitionValidator` and persisted.'",
+            "S2": "The review does not flag hardcoded secrets, credentials, or sensitive data.",
+            "S3": "Problem 1 assesses error handling by discussing the removal of a specific error condition and the potential for 'incorrect validation outcomes or unexpected errors': 'This changes a previously guarded error condition into a potentially unhandled or incorrectly handled one.'",
+            "Q1": "The 'Scope' section provides a clear summary of the changes: 'This PR refactors `OffsetMetadataManager` to directly use topic IDs provided in `TxnOffsetCommitRequestData`, removing its dependency on `CoordinatorMetadataImage` for topic ID resolution.'",
+            "Q2": "The 'Evidence' section provides multiple specific code locations with file paths and line numbers: '`group-coordinator/src/main/java/org/apache/kafka/coordinator/group/OffsetMetadataManager.java:706-717`'.",
+            "Q3": "The review presents two 'Problem' sections, clearly indicating critical issues rather than minor suggestions.",
+            "Q4": "The review makes statements about potential issues and their consequences rather than asking clarifying questions.",
+            "Q5": "The review explains the reasoning behind its concerns, for example: 'This could lead to incorrect validation outcomes or unexpected errors within the `CommitPartitionValidator`... if it expects a valid, non-zero topic ID for its logic'."
+          },
+          "error": ""
+        },
+        {
+          "model": "gemini:gemini-2.0-flash",
+          "scores": {},
+          "evidence": {},
+          "error": "api_error: API generation failed (https://generativelanguage.googleapis.com/v1beta/openai/): Error code: 404 - [{'error': {'code': 404, 'message': 'This model models/gemini-2.0-flash is no longer available to new users. Please update your code to use a newer model for the latest features and improvements.', 'status': 'NOT_FOUND'}}]"
+        }
+      ],
+      "evaluation_timestamp": "2026-05-15T16:22:44.234718Z"
+    },
+    {
+      "pr_id": 41,
+      "mode": "joern_kg",
+      "total_score": 12,
+      "max_score": 25,
+      "percentage": 48.0,
+      "kg_relevant_score": 7,
+      "kg_relevant_max": 9,
+      "kg_relevant_percentage": 77.8,
+      "criteria_scores": [
+        {
+          "criterion_id": "F1",
+          "score": 0,
+          "evidence": "The review identifies new problems or failures in the PR's implementation rather than verifying that the PR addresses its stated problem or requirement.",
+          "n_yes": 0,
+          "n_valid": 1,
+          "unanimous": true
+        },
+        {
+          "criterion_id": "F2",
+          "score": 1,
+          "evidence": "Review mentions: 'if the DLQ topic already exists' and 'empty CreateTopicsRequestData', which are specific boundary conditions or edge cases.",
+          "n_yes": 1,
+          "n_valid": 1,
+          "unanimous": true
+        },
+        {
+          "criterion_id": "F3",
+          "score": 1,
+          "evidence": "Review checks how the new `ShareGroupDLQStateManager` interacts with existing Kafka APIs like `CreateTopicsRequest` and `ProduceRequest`, noting issues like sending requests to a 'random broker instead of the controller'.",
+          "n_yes": 1,
+          "n_valid": 1,
+          "unanimous": true
+        },
+        {
+          "criterion_id": "F4",
+          "score": 1,
+          "evidence": "Review warns: 'The primary function of the DLQ manager\u2014to dead-letter records\u2014will silently fail or hang indefinitely... This renders the DLQ feature non-functional in its current state.'",
+          "n_yes": 1,
+          "n_valid": 1,
+          "unanimous": true
+        },
+        {
+          "criterion_id": "T1",
+          "score": 1,
+          "evidence": "Review states: 'The `ShareGroupDLQStateManager` class... lacks dedicated unit or integration tests, leaving critical logic unverified.'",
+          "n_yes": 1,
+          "n_valid": 1,
+          "unanimous": true
+        },
+        {
+          "criterion_id": "T2",
+          "score": 1,
+          "evidence": "The identified problems (e.g., 'Produce Requests Are Never Sent', 'Incomplete DLQ Topic Creation Logic') are failure scenarios that implicitly require testing.",
+          "n_yes": 1,
+          "n_valid": 1,
+          "unanimous": true
+        },
+        {
+          "criterion_id": "T3",
+          "score": 1,
+          "evidence": "Review suggests: 'No new test file `server-common/src/test/java/org/apache/kafka/server/share/dlq/ShareGroupDLQStateManagerTest.java` is present' and notes existing tests 'cover only the helper and config manager, not the `ShareGroupDLQStateManager`'s operational logic.'",
+          "n_yes": 1,
+          "n_valid": 1,
+          "unanimous": true
+        },
+        {
+          "criterion_id": "R1",
+          "score": 0,
+          "evidence": "The review does not comment on code clarity, naming conventions, or function organization.",
+          "n_yes": 0,
+          "n_valid": 1,
+          "unanimous": true
+        },
+        {
+          "criterion_id": "R2",
+          "score": 0,
+          "evidence": "The review does not identify unnecessary complexity or suggest simplification.",
+          "n_yes": 0,
+          "n_valid": 1,
+          "unanimous": true
+        },
+        {
+          "criterion_id": "R3",
+          "score": 0,
+          "evidence": "The review does not check if code comments explain the 'why' behind decisions.",
+          "n_yes": 0,
+          "n_valid": 1,
+          "unanimous": true
+        },
+        {
+          "criterion_id": "M1",
+          "score": 0,
+          "evidence": "The review does not assess whether the change fits the existing architecture or design patterns.",
+          "n_yes": 0,
+          "n_valid": 1,
+          "unanimous": true
+        },
+        {
+          "criterion_id": "M2",
+          "score": 0,
+          "evidence": "The review does not flag if the PR scope is too large or should be split.",
+          "n_yes": 0,
+          "n_valid": 1,
+          "unanimous": true
+        },
+        {
+          "criterion_id": "M3",
+          "score": 0,
+          "evidence": "The review does not check if public APIs or interfaces are properly documented.",
+          "n_yes": 0,
+          "n_valid": 1,
+          "unanimous": true
+        },
+        {
+          "criterion_id": "C1",
+          "score": 0,
+          "evidence": "The review does not check adherence to project style guides or coding conventions.",
+          "n_yes": 0,
+          "n_valid": 1,
+          "unanimous": true
+        },
+        {
+          "criterion_id": "C2",
+          "score": 1,
+          "evidence": "Review notes sending `CreateTopicsRequest` to a 'random broker instead of the controller, which is less robust', implying a deviation from an existing, more robust pattern.",
+          "n_yes": 1,
+          "n_valid": 1,
+          "unanimous": true
+        },
+        {
+          "criterion_id": "P1",
+          "score": 0,
+          "evidence": "The review does not explicitly identify potential performance issues or inefficiencies, though 'hang indefinitely' could be interpreted as such, it's primarily a functional correctness issue.",
+          "n_yes": 0,
+          "n_valid": 1,
+          "unanimous": true
+        },
+        {
+          "criterion_id": "P2",
+          "score": 0,
+          "evidence": "The review does not ask about benchmarks or performance testing.",
+          "n_yes": 0,
+          "n_valid": 1,
+          "unanimous": true
+        },
+        {
+          "criterion_id": "S1",
+          "score": 0,
+          "evidence": "The review does not explicitly check for proper input validation or sanitization.",
+          "n_yes": 0,
+          "n_valid": 1,
+          "unanimous": true
+        },
+        {
+          "criterion_id": "S2",
+          "score": 0,
+          "evidence": "The review does not flag hardcoded secrets, credentials, or sensitive data.",
+          "n_yes": 0,
+          "n_valid": 1,
+          "unanimous": true
+        },
+        {
+          "criterion_id": "S3",
+          "score": 1,
+          "evidence": "Review assesses error handling: '`ProduceRequestHandler.onComplete()`: This method is empty, meaning the `CompletableFuture` returned by `dlq()` is never completed' and 'potentially `Errors.BROKER_NOT_AVAILABLE` exceptions being completed exceptionally'.",
+          "n_yes": 1,
+          "n_valid": 1,
+          "unanimous": true
+        },
+        {
+          "criterion_id": "Q1",
+          "score": 1,
+          "evidence": "The 'Scope' section provides a summary of changes, and the 'Impact' section provides an overall assessment of the problems.",
+          "n_yes": 1,
+          "n_valid": 1,
+          "unanimous": true
+        },
+        {
+          "criterion_id": "Q2",
+          "score": 1,
+          "evidence": "The 'Evidence' section provides specific file paths and line numbers for each identified problem.",
+          "n_yes": 1,
+          "n_valid": 1,
+          "unanimous": true
+        },
+        {
+          "criterion_id": "Q3",
+          "score": 1,
+          "evidence": "The identified 'Problems' are fundamental functional flaws with severe 'Impact', clearly distinguishing them as blocking issues rather than minor suggestions.",
+          "n_yes": 1,
+          "n_valid": 1,
+          "unanimous": true
+        },
+        {
+          "criterion_id": "Q4",
+          "score": 0,
+          "evidence": "The review makes direct statements about identified issues and provides evidence, rather than asking clarifying questions.",
+          "n_yes": 0,
+          "n_valid": 1,
+          "unanimous": true
+        },
+        {
+          "criterion_id": "Q5",
+          "score": 1,
+          "evidence": "The 'Impact' section clearly explains the reasoning behind the identified problems, e.g., 'This renders the DLQ feature non-functional in its current state.'",
+          "n_yes": 1,
+          "n_valid": 1,
+          "unanimous": true
+        }
+      ],
+      "per_judge": [
+        {
+          "model": "gemini:gemini-2.5-flash",
+          "scores": {
+            "F1": 0,
+            "F2": 1,
+            "F3": 1,
+            "F4": 1,
+            "T1": 1,
+            "T2": 1,
+            "T3": 1,
+            "R1": 0,
+            "R2": 0,
+            "R3": 0,
+            "M1": 0,
+            "M2": 0,
+            "M3": 0,
+            "C1": 0,
+            "C2": 1,
+            "P1": 0,
+            "P2": 0,
+            "S1": 0,
+            "S2": 0,
+            "S3": 1,
+            "Q1": 1,
+            "Q2": 1,
+            "Q3": 1,
+            "Q4": 0,
+            "Q5": 1
+          },
+          "evidence": {
+            "F1": "The review identifies new problems or failures in the PR's implementation rather than verifying that the PR addresses its stated problem or requirement.",
+            "F2": "Review mentions: 'if the DLQ topic already exists' and 'empty CreateTopicsRequestData', which are specific boundary conditions or edge cases.",
+            "F3": "Review checks how the new `ShareGroupDLQStateManager` interacts with existing Kafka APIs like `CreateTopicsRequest` and `ProduceRequest`, noting issues like sending requests to a 'random broker instead of the controller'.",
+            "F4": "Review warns: 'The primary function of the DLQ manager\u2014to dead-letter records\u2014will silently fail or hang indefinitely... This renders the DLQ feature non-functional in its current state.'",
+            "T1": "Review states: 'The `ShareGroupDLQStateManager` class... lacks dedicated unit or integration tests, leaving critical logic unverified.'",
+            "T2": "The identified problems (e.g., 'Produce Requests Are Never Sent', 'Incomplete DLQ Topic Creation Logic') are failure scenarios that implicitly require testing.",
+            "T3": "Review suggests: 'No new test file `server-common/src/test/java/org/apache/kafka/server/share/dlq/ShareGroupDLQStateManagerTest.java` is present' and notes existing tests 'cover only the helper and config manager, not the `ShareGroupDLQStateManager`'s operational logic.'",
+            "R1": "The review does not comment on code clarity, naming conventions, or function organization.",
+            "R2": "The review does not identify unnecessary complexity or suggest simplification.",
+            "R3": "The review does not check if code comments explain the 'why' behind decisions.",
+            "M1": "The review does not assess whether the change fits the existing architecture or design patterns.",
+            "M2": "The review does not flag if the PR scope is too large or should be split.",
+            "M3": "The review does not check if public APIs or interfaces are properly documented.",
+            "C1": "The review does not check adherence to project style guides or coding conventions.",
+            "C2": "Review notes sending `CreateTopicsRequest` to a 'random broker instead of the controller, which is less robust', implying a deviation from an existing, more robust pattern.",
+            "P1": "The review does not explicitly identify potential performance issues or inefficiencies, though 'hang indefinitely' could be interpreted as such, it's primarily a functional correctness issue.",
+            "P2": "The review does not ask about benchmarks or performance testing.",
+            "S1": "The review does not explicitly check for proper input validation or sanitization.",
+            "S2": "The review does not flag hardcoded secrets, credentials, or sensitive data.",
+            "S3": "Review assesses error handling: '`ProduceRequestHandler.onComplete()`: This method is empty, meaning the `CompletableFuture` returned by `dlq()` is never completed' and 'potentially `Errors.BROKER_NOT_AVAILABLE` exceptions being completed exceptionally'.",
+            "Q1": "The 'Scope' section provides a summary of changes, and the 'Impact' section provides an overall assessment of the problems.",
+            "Q2": "The 'Evidence' section provides specific file paths and line numbers for each identified problem.",
+            "Q3": "The identified 'Problems' are fundamental functional flaws with severe 'Impact', clearly distinguishing them as blocking issues rather than minor suggestions.",
+            "Q4": "The review makes direct statements about identified issues and provides evidence, rather than asking clarifying questions.",
+            "Q5": "The 'Impact' section clearly explains the reasoning behind the identified problems, e.g., 'This renders the DLQ feature non-functional in its current state.'"
+          },
+          "error": ""
+        },
+        {
+          "model": "gemini:gemini-2.0-flash",
+          "scores": {},
+          "evidence": {},
+          "error": "api_error: API generation failed (https://generativelanguage.googleapis.com/v1beta/openai/): Error code: 404 - [{'error': {'code': 404, 'message': 'This model models/gemini-2.0-flash is no longer available to new users. Please update your code to use a newer model for the latest features and improvements.', 'status': 'NOT_FOUND'}}]"
+        }
+      ],
+      "evaluation_timestamp": "2026-05-15T16:23:20.418707Z"
+    },
+    {
+      "pr_id": 15,
+      "mode": "joern_kg",
+      "total_score": 13,
+      "max_score": 25,
+      "percentage": 52.0,
+      "kg_relevant_score": 7,
+      "kg_relevant_max": 9,
+      "kg_relevant_percentage": 77.8,
+      "criteria_scores": [
+        {
+          "criterion_id": "F1",
+          "score": 1,
+          "evidence": "The review acknowledges the core refactoring: 'Changes TimePicker.fromField, TimePicker.toField, TimePicker.calendar.label, TimePicker.calendar.openButton, and TimePicker.calendar.closeButton from aria-label to data-testid values.'",
+          "n_yes": 1,
+          "n_valid": 1,
+          "unanimous": true
+        },
+        {
+          "criterion_id": "F2",
+          "score": 0,
+          "evidence": "The review identifies general issues (i18n, visual regressions) but does not delve into specific edge cases or boundary conditions for handling.",
+          "n_yes": 0,
+          "n_valid": 1,
+          "unanimous": true
+        },
+        {
+          "criterion_id": "F3",
+          "score": 1,
+          "evidence": "The review checks integration with E2E tests ('numerous critical E2E Playwright tests are listed as dependent but are not updated') and i18n system ('several other key locales have empty translations').",
+          "n_yes": 1,
+          "n_valid": 1,
+          "unanimous": true
+        },
+        {
+          "criterion_id": "F4",
+          "score": 1,
+          "evidence": "The review warns about the impact on dependent E2E tests: 'These tests will likely fail because they are still attempting to locate elements using the old aria-label attributes...'",
+          "n_yes": 1,
+          "n_valid": 1,
+          "unanimous": true
+        },
+        {
+          "criterion_id": "T1",
+          "score": 1,
+          "evidence": "The review discusses the need for tests: 'The change from a generic Button to an IconButton... also introduces styling and accessibility considerations that may not be fully covered by existing tests.'",
+          "n_yes": 1,
+          "n_valid": 1,
+          "unanimous": true
+        },
+        {
+          "criterion_id": "T2",
+          "score": 0,
+          "evidence": "The review does not specifically mention testing edge cases, error paths, or failure scenarios.",
+          "n_yes": 0,
+          "n_valid": 1,
+          "unanimous": true
+        },
+        {
+          "criterion_id": "T3",
+          "score": 1,
+          "evidence": "The review references specific test files that need updating: 'e2e-playwright/various-suite/explore.spec.ts, e2e-playwright/various-suite/navigation.spec.ts, ... are listed as files that depend on these changes but are not updated in the diff.'",
+          "n_yes": 1,
+          "n_valid": 1,
+          "unanimous": true
+        },
+        {
+          "criterion_id": "R1",
+          "score": 1,
+          "evidence": "The review comments on code clarity/quality by pointing out 'a 'lmao' comment indicating a hardcoded pixel adjustment.'",
+          "n_yes": 1,
+          "n_valid": 1,
+          "unanimous": true
+        },
+        {
+          "criterion_id": "R2",
+          "score": 0,
+          "evidence": "The review identifies complexity ('rats nest') but does not explicitly suggest simplification.",
+          "n_yes": 0,
+          "n_valid": 1,
+          "unanimous": true
+        },
+        {
+          "criterion_id": "R3",
+          "score": 0,
+          "evidence": "The review points out a problematic comment but does not assess whether comments explain the 'why' behind decisions in general.",
+          "n_yes": 0,
+          "n_valid": 1,
+          "unanimous": true
+        },
+        {
+          "criterion_id": "M1",
+          "score": 1,
+          "evidence": "The review assesses the change in design pattern for E2E selectors ('change E2E selectors from aria-label to data-testid') and the impact of component choice ('change from a generic Button to an IconButton').",
+          "n_yes": 1,
+          "n_valid": 1,
+          "unanimous": true
+        },
+        {
+          "criterion_id": "M2",
+          "score": 0,
+          "evidence": "The review does not flag the PR scope as too large or suggest splitting it.",
+          "n_yes": 0,
+          "n_valid": 1,
+          "unanimous": true
+        },
+        {
+          "criterion_id": "M3",
+          "score": 0,
+          "evidence": "The review does not mention documentation for public APIs or interfaces.",
+          "n_yes": 0,
+          "n_valid": 1,
+          "unanimous": true
+        },
+        {
+          "criterion_id": "C1",
+          "score": 1,
+          "evidence": "The review implicitly checks adherence to conventions by highlighting 'a 'lmao' comment indicating a hardcoded pixel adjustment,' which suggests a deviation from expected coding standards.",
+          "n_yes": 1,
+          "n_valid": 1,
+          "unanimous": true
+        },
+        {
+          "criterion_id": "C2",
+          "score": 1,
+          "evidence": "The review highlights an inconsistency in applying the new selector pattern: 'numerous critical E2E Playwright tests are listed as dependent but are not updated in the diff.'",
+          "n_yes": 1,
+          "n_valid": 1,
+          "unanimous": true
+        },
+        {
+          "criterion_id": "P1",
+          "score": 0,
+          "evidence": "The review does not identify any potential performance issues.",
+          "n_yes": 0,
+          "n_valid": 1,
+          "unanimous": true
+        },
+        {
+          "criterion_id": "P2",
+          "score": 0,
+          "evidence": "The review does not ask about benchmarks or performance testing.",
+          "n_yes": 0,
+          "n_valid": 1,
+          "unanimous": true
+        },
+        {
+          "criterion_id": "S1",
+          "score": 0,
+          "evidence": "The review does not check for input validation or sanitization.",
+          "n_yes": 0,
+          "n_valid": 1,
+          "unanimous": true
+        },
+        {
+          "criterion_id": "S2",
+          "score": 0,
+          "evidence": "The review does not flag hardcoded secrets or sensitive data.",
+          "n_yes": 0,
+          "n_valid": 1,
+          "unanimous": true
+        },
+        {
+          "criterion_id": "S3",
+          "score": 0,
+          "evidence": "The review does not assess error handling or failure recovery mechanisms within the code.",
+          "n_yes": 0,
+          "n_valid": 1,
+          "unanimous": true
+        },
+        {
+          "criterion_id": "Q1",
+          "score": 1,
+          "evidence": "The 'Scope' section provides an overall summary: 'This PR refactors the TimeRangePicker component to use data-testid for E2E selectors, updates the calendar's close button to an IconButton, and makes associated styling adjustments.'",
+          "n_yes": 1,
+          "n_valid": 1,
+          "unanimous": true
+        },
+        {
+          "criterion_id": "Q2",
+          "score": 1,
+          "evidence": "Review comments are anchored to specific code locations with file paths and line numbers, e.g., 'packages/grafana-ui/src/components/DateTimePickers/TimeRangePicker/TimeRangeContent.tsx:113'.",
+          "n_yes": 1,
+          "n_valid": 1,
+          "unanimous": true
+        },
+        {
+          "criterion_id": "Q3",
+          "score": 1,
+          "evidence": "The review clearly distinguishes blocking issues ('Widespread E2E Test Failures', 'Incomplete Internationalization', 'Potential Visual Regressions') which are critical and would prevent merging.",
+          "n_yes": 1,
+          "n_valid": 1,
+          "unanimous": true
+        },
+        {
+          "criterion_id": "Q4",
+          "score": 0,
+          "evidence": "The review makes assertive statements based on evidence rather than asking clarifying questions.",
+          "n_yes": 0,
+          "n_valid": 1,
+          "unanimous": true
+        },
+        {
+          "criterion_id": "Q5",
+          "score": 1,
+          "evidence": "The review explains the reasoning behind the identified problems, e.g., 'These tests will likely fail because they are still attempting to locate elements using the old aria-label attributes...'",
+          "n_yes": 1,
+          "n_valid": 1,
+          "unanimous": true
+        }
+      ],
+      "per_judge": [
+        {
+          "model": "gemini:gemini-2.5-flash",
+          "scores": {
+            "F1": 1,
+            "F2": 0,
+            "F3": 1,
+            "F4": 1,
+            "T1": 1,
+            "T2": 0,
+            "T3": 1,
+            "R1": 1,
+            "R2": 0,
+            "R3": 0,
+            "M1": 1,
+            "M2": 0,
+            "M3": 0,
+            "C1": 1,
+            "C2": 1,
+            "P1": 0,
+            "P2": 0,
+            "S1": 0,
+            "S2": 0,
+            "S3": 0,
+            "Q1": 1,
+            "Q2": 1,
+            "Q3": 1,
+            "Q4": 0,
+            "Q5": 1
+          },
+          "evidence": {
+            "F1": "The review acknowledges the core refactoring: 'Changes TimePicker.fromField, TimePicker.toField, TimePicker.calendar.label, TimePicker.calendar.openButton, and TimePicker.calendar.closeButton from aria-label to data-testid values.'",
+            "F2": "The review identifies general issues (i18n, visual regressions) but does not delve into specific edge cases or boundary conditions for handling.",
+            "F3": "The review checks integration with E2E tests ('numerous critical E2E Playwright tests are listed as dependent but are not updated') and i18n system ('several other key locales have empty translations').",
+            "F4": "The review warns about the impact on dependent E2E tests: 'These tests will likely fail because they are still attempting to locate elements using the old aria-label attributes...'",
+            "T1": "The review discusses the need for tests: 'The change from a generic Button to an IconButton... also introduces styling and accessibility considerations that may not be fully covered by existing tests.'",
+            "T2": "The review does not specifically mention testing edge cases, error paths, or failure scenarios.",
+            "T3": "The review references specific test files that need updating: 'e2e-playwright/various-suite/explore.spec.ts, e2e-playwright/various-suite/navigation.spec.ts, ... are listed as files that depend on these changes but are not updated in the diff.'",
+            "R1": "The review comments on code clarity/quality by pointing out 'a 'lmao' comment indicating a hardcoded pixel adjustment.'",
+            "R2": "The review identifies complexity ('rats nest') but does not explicitly suggest simplification.",
+            "R3": "The review points out a problematic comment but does not assess whether comments explain the 'why' behind decisions in general.",
+            "M1": "The review assesses the change in design pattern for E2E selectors ('change E2E selectors from aria-label to data-testid') and the impact of component choice ('change from a generic Button to an IconButton').",
+            "M2": "The review does not flag the PR scope as too large or suggest splitting it.",
+            "M3": "The review does not mention documentation for public APIs or interfaces.",
+            "C1": "The review implicitly checks adherence to conventions by highlighting 'a 'lmao' comment indicating a hardcoded pixel adjustment,' which suggests a deviation from expected coding standards.",
+            "C2": "The review highlights an inconsistency in applying the new selector pattern: 'numerous critical E2E Playwright tests are listed as dependent but are not updated in the diff.'",
+            "P1": "The review does not identify any potential performance issues.",
+            "P2": "The review does not ask about benchmarks or performance testing.",
+            "S1": "The review does not check for input validation or sanitization.",
+            "S2": "The review does not flag hardcoded secrets or sensitive data.",
+            "S3": "The review does not assess error handling or failure recovery mechanisms within the code.",
+            "Q1": "The 'Scope' section provides an overall summary: 'This PR refactors the TimeRangePicker component to use data-testid for E2E selectors, updates the calendar's close button to an IconButton, and makes associated styling adjustments.'",
+            "Q2": "Review comments are anchored to specific code locations with file paths and line numbers, e.g., 'packages/grafana-ui/src/components/DateTimePickers/TimeRangePicker/TimeRangeContent.tsx:113'.",
+            "Q3": "The review clearly distinguishes blocking issues ('Widespread E2E Test Failures', 'Incomplete Internationalization', 'Potential Visual Regressions') which are critical and would prevent merging.",
+            "Q4": "The review makes assertive statements based on evidence rather than asking clarifying questions.",
+            "Q5": "The review explains the reasoning behind the identified problems, e.g., 'These tests will likely fail because they are still attempting to locate elements using the old aria-label attributes...'"
+          },
+          "error": ""
+        },
+        {
+          "model": "gemini:gemini-2.0-flash",
+          "scores": {},
+          "evidence": {},
+          "error": "api_error: API generation failed (https://generativelanguage.googleapis.com/v1beta/openai/): Error code: 404 - [{'error': {'code': 404, 'message': 'This model models/gemini-2.0-flash is no longer available to new users. Please update your code to use a newer model for the latest features and improvements.', 'status': 'NOT_FOUND'}}]"
+        }
+      ],
+      "evaluation_timestamp": "2026-05-15T16:23:54.633223Z"
+    },
+    {
+      "pr_id": 38,
+      "mode": "joern_kg",
+      "total_score": 11,
+      "max_score": 25,
+      "percentage": 44.0,
+      "kg_relevant_score": 6,
+      "kg_relevant_max": 9,
+      "kg_relevant_percentage": 66.7,
+      "criteria_scores": [
+        {
+          "criterion_id": "F1",
+          "score": 0,
+          "evidence": "The review describes the scope of the PR but does not explicitly verify that the proposed change successfully addresses the original problem. It focuses on potential new problems introduced by the change.",
+          "n_yes": 0,
+          "n_valid": 1,
+          "unanimous": true
+        },
+        {
+          "criterion_id": "F2",
+          "score": 1,
+          "evidence": "The review identifies 'Relative Paths *with* Subpath Prefix' as a test gap and a scenario that needs specific handling, which is an edge case.",
+          "n_yes": 1,
+          "n_valid": 1,
+          "unanimous": true
+        },
+        {
+          "criterion_id": "F3",
+          "score": 1,
+          "evidence": "The review explicitly mentions 'public/app/core/navigation/patch/interceptLinkClicks.ts' and 'public/app/core/navigation/GrafanaRoute.tsx' as critical integration points for the change.",
+          "n_yes": 1,
+          "n_valid": 1,
+          "unanimous": true
+        },
+        {
+          "criterion_id": "F4",
+          "score": 1,
+          "evidence": "The review warns about 'Incorrect routing for internal Grafana links when `appSubUrl` is configured, leading to broken navigation, 404 errors, or unexpected redirects'.",
+          "n_yes": 1,
+          "n_valid": 1,
+          "unanimous": true
+        },
+        {
+          "criterion_id": "T1",
+          "score": 1,
+          "evidence": "The review identifies a 'Test Gap: Relative Paths *with* Subpath Prefix' and provides a recommendation to 'Add Test for Relative Path with Subpath'.",
+          "n_yes": 1,
+          "n_valid": 1,
+          "unanimous": true
+        },
+        {
+          "criterion_id": "T2",
+          "score": 1,
+          "evidence": "The review mentions testing the 'Relative Paths *with* Subpath Prefix' scenario, which is an edge case.",
+          "n_yes": 1,
+          "n_valid": 1,
+          "unanimous": true
+        },
+        {
+          "criterion_id": "T3",
+          "score": 1,
+          "evidence": "The review suggests adding a new test case to 'packages/grafana-data/src/utils/location.test.ts' within the `processRedirectUri` describe block.",
+          "n_yes": 1,
+          "n_valid": 1,
+          "unanimous": true
+        },
+        {
+          "criterion_id": "R1",
+          "score": 0,
+          "evidence": "The review does not comment on code clarity, naming conventions, or function organization.",
+          "n_yes": 0,
+          "n_valid": 1,
+          "unanimous": true
+        },
+        {
+          "criterion_id": "R2",
+          "score": 0,
+          "evidence": "The review does not identify unnecessary complexity or suggest simplification.",
+          "n_yes": 0,
+          "n_valid": 1,
+          "unanimous": true
+        },
+        {
+          "criterion_id": "R3",
+          "score": 0,
+          "evidence": "The review does not check if code comments explain the 'why' behind decisions.",
+          "n_yes": 0,
+          "n_valid": 1,
+          "unanimous": true
+        },
+        {
+          "criterion_id": "M1",
+          "score": 0,
+          "evidence": "While the review discusses integration points, it does not explicitly assess whether the change itself fits the existing architecture or design patterns.",
+          "n_yes": 0,
+          "n_valid": 1,
+          "unanimous": true
+        },
+        {
+          "criterion_id": "M2",
+          "score": 0,
+          "evidence": "The review does not flag if the PR scope is too large or should be split.",
+          "n_yes": 0,
+          "n_valid": 1,
+          "unanimous": true
+        },
+        {
+          "criterion_id": "M3",
+          "score": 0,
+          "evidence": "The review does not check if public APIs or interfaces are properly documented.",
+          "n_yes": 0,
+          "n_valid": 1,
+          "unanimous": true
+        },
+        {
+          "criterion_id": "C1",
+          "score": 0,
+          "evidence": "The review does not check adherence to project style guides or coding conventions.",
+          "n_yes": 0,
+          "n_valid": 1,
+          "unanimous": true
+        },
+        {
+          "criterion_id": "C2",
+          "score": 0,
+          "evidence": "The review points out a change in input type for an existing utility but does not explicitly check if similar problems are solved consistently with existing patterns.",
+          "n_yes": 0,
+          "n_valid": 1,
+          "unanimous": true
+        },
+        {
+          "criterion_id": "P1",
+          "score": 0,
+          "evidence": "The review does not identify potential performance issues or inefficiencies.",
+          "n_yes": 0,
+          "n_valid": 1,
+          "unanimous": true
+        },
+        {
+          "criterion_id": "P2",
+          "score": 0,
+          "evidence": "The review does not ask about benchmarks or performance testing for critical paths.",
+          "n_yes": 0,
+          "n_valid": 1,
+          "unanimous": true
+        },
+        {
+          "criterion_id": "S1",
+          "score": 1,
+          "evidence": "The review recommends to 'Verify `stripBaseFromUrl` Robustness' in handling different input types, which is related to input validation for functional correctness.",
+          "n_yes": 1,
+          "n_valid": 1,
+          "unanimous": true
+        },
+        {
+          "criterion_id": "S2",
+          "score": 0,
+          "evidence": "The review does not flag hardcoded secrets, credentials, or sensitive data.",
+          "n_yes": 0,
+          "n_valid": 1,
+          "unanimous": true
+        },
+        {
+          "criterion_id": "S3",
+          "score": 0,
+          "evidence": "The review describes the *impact* of failures (e.g., 404 errors) but does not assess the code's error handling or failure recovery mechanisms.",
+          "n_yes": 0,
+          "n_valid": 1,
+          "unanimous": true
+        },
+        {
+          "criterion_id": "Q1",
+          "score": 1,
+          "evidence": "The review provides an overall summary in the 'Scope' section: 'This PR fixes redirect logic for the `home_page` setting when Grafana is served under a subpath...'",
+          "n_yes": 1,
+          "n_valid": 1,
+          "unanimous": true
+        },
+        {
+          "criterion_id": "Q2",
+          "score": 1,
+          "evidence": "The 'Evidence' section provides specific code locations like 'packages/grafana-data/src/utils/location.ts:171'.",
+          "n_yes": 1,
+          "n_valid": 1,
+          "unanimous": true
+        },
+        {
+          "criterion_id": "Q3",
+          "score": 1,
+          "evidence": "The review clearly outlines 'Problem' and 'Impact' sections, followed by 'Recommendation', indicating that the identified issues are significant and require action, distinguishing them from minor suggestions.",
+          "n_yes": 1,
+          "n_valid": 1,
+          "unanimous": true
+        },
+        {
+          "criterion_id": "Q4",
+          "score": 0,
+          "evidence": "The review makes assertive statements about problems and recommendations rather than asking clarifying questions.",
+          "n_yes": 0,
+          "n_valid": 1,
+          "unanimous": true
+        },
+        {
+          "criterion_id": "Q5",
+          "score": 1,
+          "evidence": "The 'Problem' and 'Impact' sections clearly explain the reasoning behind the 'Recommendation' (e.g., 'Integration Risk' and 'Incorrect routing' justify verifying `stripBaseFromUrl` robustness).",
+          "n_yes": 1,
+          "n_valid": 1,
+          "unanimous": true
+        }
+      ],
+      "per_judge": [
+        {
+          "model": "gemini:gemini-2.5-flash",
+          "scores": {
+            "F1": 0,
+            "F2": 1,
+            "F3": 1,
+            "F4": 1,
+            "T1": 1,
+            "T2": 1,
+            "T3": 1,
+            "R1": 0,
+            "R2": 0,
+            "R3": 0,
+            "M1": 0,
+            "M2": 0,
+            "M3": 0,
+            "C1": 0,
+            "C2": 0,
+            "P1": 0,
+            "P2": 0,
+            "S1": 1,
+            "S2": 0,
+            "S3": 0,
+            "Q1": 1,
+            "Q2": 1,
+            "Q3": 1,
+            "Q4": 0,
+            "Q5": 1
+          },
+          "evidence": {
+            "F1": "The review describes the scope of the PR but does not explicitly verify that the proposed change successfully addresses the original problem. It focuses on potential new problems introduced by the change.",
+            "F2": "The review identifies 'Relative Paths *with* Subpath Prefix' as a test gap and a scenario that needs specific handling, which is an edge case.",
+            "F3": "The review explicitly mentions 'public/app/core/navigation/patch/interceptLinkClicks.ts' and 'public/app/core/navigation/GrafanaRoute.tsx' as critical integration points for the change.",
+            "F4": "The review warns about 'Incorrect routing for internal Grafana links when `appSubUrl` is configured, leading to broken navigation, 404 errors, or unexpected redirects'.",
+            "T1": "The review identifies a 'Test Gap: Relative Paths *with* Subpath Prefix' and provides a recommendation to 'Add Test for Relative Path with Subpath'.",
+            "T2": "The review mentions testing the 'Relative Paths *with* Subpath Prefix' scenario, which is an edge case.",
+            "T3": "The review suggests adding a new test case to 'packages/grafana-data/src/utils/location.test.ts' within the `processRedirectUri` describe block.",
+            "R1": "The review does not comment on code clarity, naming conventions, or function organization.",
+            "R2": "The review does not identify unnecessary complexity or suggest simplification.",
+            "R3": "The review does not check if code comments explain the 'why' behind decisions.",
+            "M1": "While the review discusses integration points, it does not explicitly assess whether the change itself fits the existing architecture or design patterns.",
+            "M2": "The review does not flag if the PR scope is too large or should be split.",
+            "M3": "The review does not check if public APIs or interfaces are properly documented.",
+            "C1": "The review does not check adherence to project style guides or coding conventions.",
+            "C2": "The review points out a change in input type for an existing utility but does not explicitly check if similar problems are solved consistently with existing patterns.",
+            "P1": "The review does not identify potential performance issues or inefficiencies.",
+            "P2": "The review does not ask about benchmarks or performance testing for critical paths.",
+            "S1": "The review recommends to 'Verify `stripBaseFromUrl` Robustness' in handling different input types, which is related to input validation for functional correctness.",
+            "S2": "The review does not flag hardcoded secrets, credentials, or sensitive data.",
+            "S3": "The review describes the *impact* of failures (e.g., 404 errors) but does not assess the code's error handling or failure recovery mechanisms.",
+            "Q1": "The review provides an overall summary in the 'Scope' section: 'This PR fixes redirect logic for the `home_page` setting when Grafana is served under a subpath...'",
+            "Q2": "The 'Evidence' section provides specific code locations like 'packages/grafana-data/src/utils/location.ts:171'.",
+            "Q3": "The review clearly outlines 'Problem' and 'Impact' sections, followed by 'Recommendation', indicating that the identified issues are significant and require action, distinguishing them from minor suggestions.",
+            "Q4": "The review makes assertive statements about problems and recommendations rather than asking clarifying questions.",
+            "Q5": "The 'Problem' and 'Impact' sections clearly explain the reasoning behind the 'Recommendation' (e.g., 'Integration Risk' and 'Incorrect routing' justify verifying `stripBaseFromUrl` robustness)."
+          },
+          "error": ""
+        },
+        {
+          "model": "gemini:gemini-2.0-flash",
+          "scores": {},
+          "evidence": {},
+          "error": "api_error: API generation failed (https://generativelanguage.googleapis.com/v1beta/openai/): Error code: 404 - [{'error': {'code': 404, 'message': 'This model models/gemini-2.0-flash is no longer available to new users. Please update your code to use a newer model for the latest features and improvements.', 'status': 'NOT_FOUND'}}]"
+        }
+      ],
+      "evaluation_timestamp": "2026-05-15T16:24:23.459857Z"
+    }
+  ],
+  "panel": [
+    "gemini:gemini-2.5-flash",
+    "gemini:gemini-2.0-flash"
+  ],
+  "generator": "gemini:gemini-2.5-flash"
+}

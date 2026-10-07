@@ -1,0 +1,432 @@
+{
+  "pr": {
+    "number": 33964,
+    "title": "MNT move test on pandas sparse dataframe to validation - where it belongs",
+    "body": "#### Reference Issues/PRs\r\nNone\r\n\r\n\r\n#### What does this implement/fix? Explain your changes.\r\n`check_array` is part of `sklearn.utils.validation`. Currently, the only test for the warning `\"pandas.DataFrame with sparse columns found.\"` is in linear models.\r\n\r\nThis PR moves the test where it belongs: to validation.\r\n\r\n#### AI usage disclosure\r\nNone\r\n\r\n#### Any other comments?\r\n",
+    "url": "https://github.com/scikit-learn/scikit-learn/pull/33964",
+    "repo": "scikit-learn/scikit-learn",
+    "base_branch": "main",
+    "head_branch": "mnt_pd_sparse_dataframe_warning",
+    "merged_at": "2026-05-11T20:13:03Z",
+    "state": "MERGED"
+  },
+  "changed_files": [
+    {
+      "path": "sklearn/linear_model/tests/test_base.py",
+      "language": "python",
+      "added": 0,
+      "deleted": 30
+    },
+    {
+      "path": "sklearn/utils/tests/test_validation.py",
+      "language": "python",
+      "added": 26,
+      "deleted": 0
+    }
+  ],
+  "nearest_tests": [],
+  "dependent_files": [
+    {
+      "path": "sklearn/ensemble/tests/test_base.py",
+      "relationship": "imports",
+      "source_file": "sklearn/linear_model/tests/test_base.py"
+    },
+    {
+      "path": "sklearn/tests/test_multioutput.py",
+      "relationship": "imports",
+      "source_file": "sklearn/linear_model/tests/test_base.py"
+    },
+    {
+      "path": "sklearn/impute/tests/test_base.py",
+      "relationship": "imports",
+      "source_file": "sklearn/linear_model/tests/test_base.py"
+    },
+    {
+      "path": "sklearn/neural_network/tests/test_stochastic_optimizers.py",
+      "relationship": "imports",
+      "source_file": "sklearn/linear_model/tests/test_base.py"
+    },
+    {
+      "path": "sklearn/model_selection/tests/test_successive_halving.py",
+      "relationship": "imports",
+      "source_file": "sklearn/linear_model/tests/test_base.py"
+    },
+    {
+      "path": "sklearn/metrics/tests/test_score_objects.py",
+      "relationship": "imports",
+      "source_file": "sklearn/utils/tests/test_validation.py"
+    },
+    {
+      "path": "sklearn/tests/test_metadata_routing.py",
+      "relationship": "imports",
+      "source_file": "sklearn/utils/tests/test_validation.py"
+    },
+    {
+      "path": "sklearn/linear_model/tests/test_sgd.py",
+      "relationship": "imports",
+      "source_file": "sklearn/utils/tests/test_validation.py"
+    },
+    {
+      "path": "sklearn/model_selection/tests/test_plot.py",
+      "relationship": "imports",
+      "source_file": "sklearn/utils/tests/test_validation.py"
+    },
+    {
+      "path": "sklearn/model_selection/tests/test_validation.py",
+      "relationship": "imports",
+      "source_file": "sklearn/utils/tests/test_validation.py"
+    }
+  ],
+  "diff_summary": "2 files changed",
+  "full_diff": "diff --git a/sklearn/linear_model/tests/test_base.py b/sklearn/linear_model/tests/test_base.py\nindex 0679c4debc009..88962f69b2380 100644\n--- a/sklearn/linear_model/tests/test_base.py\n+++ b/sklearn/linear_model/tests/test_base.py\n@@ -1,8 +1,6 @@\n # Authors: The scikit-learn developers\n # SPDX-License-Identifier: BSD-3-Clause\n \n-import warnings\n-\n import numpy as np\n import pytest\n from scipy import linalg, sparse\n@@ -371,34 +369,6 @@ def test_inplace_data_preprocessing(sparse_container, use_sw, global_random_seed\n         assert_allclose(sample_weight, original_sw_data)\n \n \n-def test_linear_regression_pd_sparse_dataframe_warning():\n-    pd = pytest.importorskip(\"pandas\")\n-\n-    # Warning is raised only when some of the columns is sparse\n-    df = pd.DataFrame({\"0\": np.random.randn(10)})\n-    for col in range(1, 4):\n-        arr = np.random.randn(10)\n-        arr[:8] = 0\n-        # all columns but the first column is sparse\n-        if col != 0:\n-            arr = pd.arrays.SparseArray(arr, fill_value=0)\n-        df[str(col)] = arr\n-\n-    msg = \"pandas.DataFrame with sparse columns found.\"\n-\n-    reg = LinearRegression()\n-    with pytest.warns(UserWarning, match=msg):\n-        reg.fit(df.iloc[:, 0:2], df.iloc[:, 3])\n-\n-    # does not warn when the whole dataframe is sparse\n-    df[\"0\"] = pd.arrays.SparseArray(df[\"0\"], fill_value=0)\n-    assert hasattr(df, \"sparse\")\n-\n-    with warnings.catch_warnings():\n-        warnings.simplefilter(\"error\", UserWarning)\n-        reg.fit(df.iloc[:, 0:2], df.iloc[:, 3])\n-\n-\n def test_preprocess_data(global_random_seed):\n     rng = np.random.RandomState(global_random_seed)\n     n_samples = 200\ndiff --git a/sklearn/utils/tests/test_validation.py b/sklearn/utils/tests/test_validation.py\nindex 9553c94f80912..f74b0baa2eaab 100644\n--- a/sklearn/utils/tests/test_validation.py\n+++ b/sklearn/utils/tests/test_validation.py\n@@ -1922,6 +1922,32 @@ def test_check_sparse_pandas_sp_format(sp_format):\n     assert_allclose_dense_sparse(sp_mat, result)\n \n \n+def test_check_array_pd_sparse_dataframe_warning():\n+    \"\"\"Test that check_array warns on pandas dataframe with sparse columns.\"\"\"\n+    pd = pytest.importorskip(\"pandas\")\n+\n+    # Warning is raised only when some of the columns are sparse, not all of them.\n+    # Construct a pandas.DataFrame with first column dense, all others sparse.\n+    df = pd.DataFrame({\"col_0\": np.linspace(0, 1, 10)})\n+    for i in range(1, 4):\n+        arr = np.zeros(10)\n+        arr[:4] = np.arange(4)\n+        arr = pd.arrays.SparseArray(arr, fill_value=0)\n+        df[f\"col_{i}\"] = arr\n+\n+    msg = \"pandas.DataFrame with sparse columns found.\"\n+    with pytest.warns(UserWarning, match=msg):\n+        check_array(df, accept_sparse=True)\n+\n+    # No warning when the whole dataframe is sparse\n+    df = df.drop(columns=\"col_0\")\n+    assert hasattr(df, \"sparse\")\n+\n+    with warnings.catch_warnings():\n+        warnings.simplefilter(\"error\", UserWarning)\n+        check_array(df, accept_sparse=True)\n+\n+\n @pytest.mark.parametrize(\n     \"ntype1, ntype2\",\n     [\n",
+  "metadata": {
+    "v2_fetcher_version": 1,
+    "v2_fetched_at_unix": 1778582615,
+    "v2_diff_cap_bytes": 50000,
+    "v2_body_cap_bytes": 8000,
+    "v2_diff_truncated": false,
+    "v2_raw_diff_chars": 3048,
+    "v2_raw_body_chars": 380,
+    "v2_rag_source": "fresh_for_v2_40pr_expansion",
+    "v2_rag_chunks_copied": 8,
+    "joern_enriched": true,
+    "joern_callers_count": 0,
+    "joern_functions_count": 25
+  },
+  "similar_chunks": [
+    {
+      "file": "sklearn/linear_model/tests/test_sparse_coordinate_descent.py",
+      "start_line": 1,
+      "end_line": 61,
+      "similarity": 0.7487,
+      "related_to": "sklearn/linear_model/tests/test_base.py",
+      "content_preview": "import numpy as np\nimport pytest\nimport scipy.sparse as sp\nfrom numpy.testing import assert_allclose\n\nfrom sklearn.datasets import make_regression\nfrom sklearn.exceptions import ConvergenceWarning\nfrom sklearn.linear_model import ElasticNet, ElasticNetCV, Lasso, LassoCV\nfrom sklearn.utils._testing import (\n    assert_almost_equal,\n    assert_array_almost_equal,\n    create_memmap_backed_data,\n    ignore_warnings,\n)\nfrom sklearn.utils.fixes import COO_CONTAINERS, CSC_CONTAINERS, LIL_CONTAINERS\n\n\ndef test_sparse_coef():\n    # Check that the sparse_coef property works\n    clf = ElasticNet()\n    clf.coef_ = [1, 2, 3]\n\n    assert sp.issparse(clf.sparse_coef_)\n    assert clf.sparse_coef_.toarray().tolist()[0] == clf.coef_\n\n\n@pytest.mark.parametrize(\"csc_container\", CSC_CONTAINERS)\ndef test_lasso_"
+    },
+    {
+      "file": "sklearn/linear_model/tests/test_logistic.py",
+      "start_line": 2291,
+      "end_line": 2351,
+      "similarity": 0.721,
+      "related_to": "sklearn/linear_model/tests/test_base.py",
+      "content_preview": "d(20, 10, random_state=global_random_seed))\n    for attr in [\"indices\", \"indptr\"]:\n        setattr(X, attr, getattr(X, attr).astype(\"int64\"))\n    rng = np.random.RandomState(global_random_seed)\n    y = rng.randint(2, size=X.shape[0])\n\n    if solver in [\"liblinear\", \"sag\", \"saga\"]:\n        msg = \"Only sparse matrices with 32-bit integer indices\"\n        with pytest.raises(ValueError, match=msg):\n            LogisticRegression(solver=solver).fit(X, y)\n    else:\n        LogisticRegression(solver=solver).fit(X, y)\n\n\ndef test_liblinear_with_large_values():\n    # Liblinear freezes when X.max() ~ 1e100, see issue #7486.\n    # We preemptively raise an error when X.max() > 1e30.\n\n    # generate sparse matrix with int64 indices\n    X = np.array([0, 1e100]).reshape(-1, 1)\n    y = np.array([0, 1])\n\n  "
+    },
+    {
+      "file": "sklearn/linear_model/tests/test_logistic.py",
+      "start_line": 202,
+      "end_line": 261,
+      "similarity": 0.7207,
+      "related_to": "sklearn/linear_model/tests/test_base.py",
+      "content_preview": "lr = LR(solver=solver, l1_ratios=(0.5,))\n        with pytest.raises(ValueError, match=msg):\n            lr.fit(X, y)\n\n    # liblinear does not support penalty='none'\n    # (LogisticRegressionCV does not supports penalty='none' at all)\n    if LR is LogisticRegression:\n        msg = \"penalty=None is not supported for the liblinear solver\"\n        lr = LR(C=np.inf, solver=\"liblinear\")\n        with pytest.raises(ValueError, match=msg):\n            lr.fit(X, y)\n\n\n# TODO(1.10): remove test with removal of penalty\n@pytest.mark.filterwarnings(\"ignore::FutureWarning\")\n@pytest.mark.parametrize(\n    [\"LR\", \"arg\"],\n    [(LogisticRegression, \"l1_ratio\"), (LogisticRegressionCV, \"l1_ratios\")],\n)\ndef test_elasticnet_l1_ratio_err_helpful(LR, arg):\n    # Check that an informative error message is raised whe"
+    },
+    {
+      "file": "sklearn/linear_model/tests/test_huber.py",
+      "start_line": 3,
+      "end_line": 63,
+      "similarity": 0.7198,
+      "related_to": "sklearn/linear_model/tests/test_base.py",
+      "content_preview": "\nimport numpy as np\nimport pytest\nfrom scipy import optimize\n\nfrom sklearn.datasets import make_regression\nfrom sklearn.linear_model import HuberRegressor, LinearRegression, Ridge, SGDRegressor\nfrom sklearn.linear_model._huber import _huber_loss_and_gradient\nfrom sklearn.utils._testing import (\n    assert_almost_equal,\n    assert_array_almost_equal,\n    assert_array_equal,\n)\nfrom sklearn.utils.fixes import CSR_CONTAINERS\n\n\ndef make_regression_with_outliers(n_samples=50, n_features=20):\n    rng = np.random.RandomState(0)\n    # Generate data with outliers by replacing 10% of the samples with noise.\n    X, y = make_regression(\n        n_samples=n_samples, n_features=n_features, random_state=0, noise=0.05\n    )\n\n    # Replace 10% of the sample with noise.\n    num_noise = int(0.1 * n_samples)\n "
+    },
+    {
+      "file": "sklearn/linear_model/tests/test_quantile.py",
+      "start_line": 3,
+      "end_line": 61,
+      "similarity": 0.7192,
+      "related_to": "sklearn/linear_model/tests/test_base.py",
+      "content_preview": "\nimport numpy as np\nimport pytest\nfrom pytest import approx\nfrom scipy.optimize import minimize\n\nfrom sklearn.datasets import make_regression\nfrom sklearn.exceptions import ConvergenceWarning\nfrom sklearn.linear_model import HuberRegressor, QuantileRegressor\nfrom sklearn.metrics import mean_pinball_loss\nfrom sklearn.utils._testing import assert_allclose\nfrom sklearn.utils.fixes import (\n    COO_CONTAINERS,\n    CSC_CONTAINERS,\n    CSR_CONTAINERS,\n    parse_version,\n    sp_version,\n)\n\n\n@pytest.fixture\ndef X_y_data():\n    X, y = make_regression(n_samples=10, n_features=1, random_state=0, noise=1)\n    return X, y\n\n\n@pytest.mark.skipif(\n    parse_version(sp_version.base_version) >= parse_version(\"1.11\"),\n    reason=\"interior-point solver is not available in SciPy 1.11\",\n)\n@pytest.mark.parametri"
+    },
+    {
+      "file": "sklearn/linear_model/tests/test_ransac.py",
+      "start_line": 1,
+      "end_line": 72,
+      "similarity": 0.7192,
+      "related_to": "sklearn/linear_model/tests/test_base.py",
+      "content_preview": "import numpy as np\nimport pytest\nfrom numpy.testing import assert_array_almost_equal, assert_array_equal\n\nfrom sklearn.datasets import make_regression\nfrom sklearn.exceptions import ConvergenceWarning\nfrom sklearn.linear_model import (\n    LinearRegression,\n    OrthogonalMatchingPursuit,\n    RANSACRegressor,\n    Ridge,\n)\nfrom sklearn.linear_model._ransac import _dynamic_max_trials\nfrom sklearn.utils import check_random_state\nfrom sklearn.utils._testing import assert_allclose\nfrom sklearn.utils.fixes import COO_CONTAINERS, CSC_CONTAINERS, CSR_CONTAINERS\n\n# Generate coordinates of line\nX = np.arange(-200, 200)\ny = 0.2 * X + 20\ndata = np.column_stack([X, y])\n\n# Add some faulty data\nrng = np.random.RandomState(1000)\noutliers = np.unique(rng.randint(len(X), size=200))\ndata[outliers, :] += 50 + "
+    },
+    {
+      "file": "sklearn/linear_model/tests/test_theil_sen.py",
+      "start_line": 1,
+      "end_line": 80,
+      "similarity": 0.7114,
+      "related_to": "sklearn/linear_model/tests/test_base.py",
+      "content_preview": "\"\"\"\nTesting for Theil-Sen module (sklearn.linear_model.theil_sen)\n\"\"\"\n\n# Authors: The scikit-learn developers\n# SPDX-License-Identifier: BSD-3-Clause\n\nimport os\nimport re\nimport sys\nfrom contextlib import contextmanager\n\nimport numpy as np\nimport pytest\nfrom numpy.testing import (\n    assert_array_almost_equal,\n    assert_array_equal,\n    assert_array_less,\n)\nfrom scipy.linalg import norm\nfrom scipy.optimize import fmin_bfgs\n\nfrom sklearn.exceptions import ConvergenceWarning\nfrom sklearn.linear_model import LinearRegression, TheilSenRegressor\nfrom sklearn.linear_model._theil_sen import (\n    _breakdown_point,\n    _modified_weiszfeld_step,\n    _spatial_median,\n)\nfrom sklearn.utils._testing import assert_almost_equal\n\n\n@contextmanager\ndef no_stdout_stderr():\n    old_stdout = sys.stdout\n    o"
+    },
+    {
+      "file": "sklearn/linear_model/tests/test_logistic.py",
+      "start_line": 255,
+      "end_line": 321,
+      "similarity": 0.7074,
+      "related_to": "sklearn/linear_model/tests/test_base.py",
+      "content_preview": "    # Test that an exception is raised on inconsistent input\n    rng = np.random.RandomState(0)\n    X_ = rng.random_sample((5, 10))\n    y_ = np.ones(X_.shape[0])\n    y_[0] = 0\n\n    clf = LogisticRegression(random_state=0)\n\n    # Wrong dimensions for training data\n    y_wrong = y_[:-1]\n\n    with pytest.raises(\n        ValueError, match=\"Found input variables with inconsistent number\"\n    ):\n        clf.fit(X, y_wrong)\n\n    # Wrong dimensions for test data\n    with pytest.raises(ValueError, match=\"X has 12 features, but\"):\n        clf.fit(X_, y_).predict(rng.random_sample((3, 12)))\n\n\ndef test_write_parameters():\n    # Test that we can write to coef_ and intercept_\n    clf = LogisticRegression()\n    clf.fit(X, Y1)\n    clf.coef_[:] = 0\n    clf.intercept_[:] = 0\n    assert_array_almost_equal(cl"
+    }
+  ],
+  "rag_evidence": {
+    "similar_code": [
+      {
+        "file": "sklearn/linear_model/tests/test_sparse_coordinate_descent.py",
+        "start_line": 1,
+        "end_line": 61,
+        "similarity": 0.7487,
+        "related_to": "sklearn/linear_model/tests/test_base.py",
+        "content_preview": "import numpy as np\nimport pytest\nimport scipy.sparse as sp\nfrom numpy.testing import assert_allclose\n\nfrom sklearn.datasets import make_regression\nfrom sklearn.exceptions import ConvergenceWarning\nfrom sklearn.linear_model import ElasticNet, ElasticNetCV, Lasso, LassoCV\nfrom sklearn.utils._testing import (\n    assert_almost_equal,\n    assert_array_almost_equal,\n    create_memmap_backed_data,\n    ignore_warnings,\n)\nfrom sklearn.utils.fixes import COO_CONTAINERS, CSC_CONTAINERS, LIL_CONTAINERS\n\n\ndef test_sparse_coef():\n    # Check that the sparse_coef property works\n    clf = ElasticNet()\n    clf.coef_ = [1, 2, 3]\n\n    assert sp.issparse(clf.sparse_coef_)\n    assert clf.sparse_coef_.toarray().tolist()[0] == clf.coef_\n\n\n@pytest.mark.parametrize(\"csc_container\", CSC_CONTAINERS)\ndef test_lasso_"
+      },
+      {
+        "file": "sklearn/linear_model/tests/test_logistic.py",
+        "start_line": 2291,
+        "end_line": 2351,
+        "similarity": 0.721,
+        "related_to": "sklearn/linear_model/tests/test_base.py",
+        "content_preview": "d(20, 10, random_state=global_random_seed))\n    for attr in [\"indices\", \"indptr\"]:\n        setattr(X, attr, getattr(X, attr).astype(\"int64\"))\n    rng = np.random.RandomState(global_random_seed)\n    y = rng.randint(2, size=X.shape[0])\n\n    if solver in [\"liblinear\", \"sag\", \"saga\"]:\n        msg = \"Only sparse matrices with 32-bit integer indices\"\n        with pytest.raises(ValueError, match=msg):\n            LogisticRegression(solver=solver).fit(X, y)\n    else:\n        LogisticRegression(solver=solver).fit(X, y)\n\n\ndef test_liblinear_with_large_values():\n    # Liblinear freezes when X.max() ~ 1e100, see issue #7486.\n    # We preemptively raise an error when X.max() > 1e30.\n\n    # generate sparse matrix with int64 indices\n    X = np.array([0, 1e100]).reshape(-1, 1)\n    y = np.array([0, 1])\n\n  "
+      },
+      {
+        "file": "sklearn/linear_model/tests/test_logistic.py",
+        "start_line": 202,
+        "end_line": 261,
+        "similarity": 0.7207,
+        "related_to": "sklearn/linear_model/tests/test_base.py",
+        "content_preview": "lr = LR(solver=solver, l1_ratios=(0.5,))\n        with pytest.raises(ValueError, match=msg):\n            lr.fit(X, y)\n\n    # liblinear does not support penalty='none'\n    # (LogisticRegressionCV does not supports penalty='none' at all)\n    if LR is LogisticRegression:\n        msg = \"penalty=None is not supported for the liblinear solver\"\n        lr = LR(C=np.inf, solver=\"liblinear\")\n        with pytest.raises(ValueError, match=msg):\n            lr.fit(X, y)\n\n\n# TODO(1.10): remove test with removal of penalty\n@pytest.mark.filterwarnings(\"ignore::FutureWarning\")\n@pytest.mark.parametrize(\n    [\"LR\", \"arg\"],\n    [(LogisticRegression, \"l1_ratio\"), (LogisticRegressionCV, \"l1_ratios\")],\n)\ndef test_elasticnet_l1_ratio_err_helpful(LR, arg):\n    # Check that an informative error message is raised whe"
+      },
+      {
+        "file": "sklearn/linear_model/tests/test_huber.py",
+        "start_line": 3,
+        "end_line": 63,
+        "similarity": 0.7198,
+        "related_to": "sklearn/linear_model/tests/test_base.py",
+        "content_preview": "\nimport numpy as np\nimport pytest\nfrom scipy import optimize\n\nfrom sklearn.datasets import make_regression\nfrom sklearn.linear_model import HuberRegressor, LinearRegression, Ridge, SGDRegressor\nfrom sklearn.linear_model._huber import _huber_loss_and_gradient\nfrom sklearn.utils._testing import (\n    assert_almost_equal,\n    assert_array_almost_equal,\n    assert_array_equal,\n)\nfrom sklearn.utils.fixes import CSR_CONTAINERS\n\n\ndef make_regression_with_outliers(n_samples=50, n_features=20):\n    rng = np.random.RandomState(0)\n    # Generate data with outliers by replacing 10% of the samples with noise.\n    X, y = make_regression(\n        n_samples=n_samples, n_features=n_features, random_state=0, noise=0.05\n    )\n\n    # Replace 10% of the sample with noise.\n    num_noise = int(0.1 * n_samples)\n "
+      },
+      {
+        "file": "sklearn/linear_model/tests/test_quantile.py",
+        "start_line": 3,
+        "end_line": 61,
+        "similarity": 0.7192,
+        "related_to": "sklearn/linear_model/tests/test_base.py",
+        "content_preview": "\nimport numpy as np\nimport pytest\nfrom pytest import approx\nfrom scipy.optimize import minimize\n\nfrom sklearn.datasets import make_regression\nfrom sklearn.exceptions import ConvergenceWarning\nfrom sklearn.linear_model import HuberRegressor, QuantileRegressor\nfrom sklearn.metrics import mean_pinball_loss\nfrom sklearn.utils._testing import assert_allclose\nfrom sklearn.utils.fixes import (\n    COO_CONTAINERS,\n    CSC_CONTAINERS,\n    CSR_CONTAINERS,\n    parse_version,\n    sp_version,\n)\n\n\n@pytest.fixture\ndef X_y_data():\n    X, y = make_regression(n_samples=10, n_features=1, random_state=0, noise=1)\n    return X, y\n\n\n@pytest.mark.skipif(\n    parse_version(sp_version.base_version) >= parse_version(\"1.11\"),\n    reason=\"interior-point solver is not available in SciPy 1.11\",\n)\n@pytest.mark.parametri"
+      },
+      {
+        "file": "sklearn/linear_model/tests/test_ransac.py",
+        "start_line": 1,
+        "end_line": 72,
+        "similarity": 0.7192,
+        "related_to": "sklearn/linear_model/tests/test_base.py",
+        "content_preview": "import numpy as np\nimport pytest\nfrom numpy.testing import assert_array_almost_equal, assert_array_equal\n\nfrom sklearn.datasets import make_regression\nfrom sklearn.exceptions import ConvergenceWarning\nfrom sklearn.linear_model import (\n    LinearRegression,\n    OrthogonalMatchingPursuit,\n    RANSACRegressor,\n    Ridge,\n)\nfrom sklearn.linear_model._ransac import _dynamic_max_trials\nfrom sklearn.utils import check_random_state\nfrom sklearn.utils._testing import assert_allclose\nfrom sklearn.utils.fixes import COO_CONTAINERS, CSC_CONTAINERS, CSR_CONTAINERS\n\n# Generate coordinates of line\nX = np.arange(-200, 200)\ny = 0.2 * X + 20\ndata = np.column_stack([X, y])\n\n# Add some faulty data\nrng = np.random.RandomState(1000)\noutliers = np.unique(rng.randint(len(X), size=200))\ndata[outliers, :] += 50 + "
+      },
+      {
+        "file": "sklearn/linear_model/tests/test_theil_sen.py",
+        "start_line": 1,
+        "end_line": 80,
+        "similarity": 0.7114,
+        "related_to": "sklearn/linear_model/tests/test_base.py",
+        "content_preview": "\"\"\"\nTesting for Theil-Sen module (sklearn.linear_model.theil_sen)\n\"\"\"\n\n# Authors: The scikit-learn developers\n# SPDX-License-Identifier: BSD-3-Clause\n\nimport os\nimport re\nimport sys\nfrom contextlib import contextmanager\n\nimport numpy as np\nimport pytest\nfrom numpy.testing import (\n    assert_array_almost_equal,\n    assert_array_equal,\n    assert_array_less,\n)\nfrom scipy.linalg import norm\nfrom scipy.optimize import fmin_bfgs\n\nfrom sklearn.exceptions import ConvergenceWarning\nfrom sklearn.linear_model import LinearRegression, TheilSenRegressor\nfrom sklearn.linear_model._theil_sen import (\n    _breakdown_point,\n    _modified_weiszfeld_step,\n    _spatial_median,\n)\nfrom sklearn.utils._testing import assert_almost_equal\n\n\n@contextmanager\ndef no_stdout_stderr():\n    old_stdout = sys.stdout\n    o"
+      },
+      {
+        "file": "sklearn/linear_model/tests/test_logistic.py",
+        "start_line": 255,
+        "end_line": 321,
+        "similarity": 0.7074,
+        "related_to": "sklearn/linear_model/tests/test_base.py",
+        "content_preview": "    # Test that an exception is raised on inconsistent input\n    rng = np.random.RandomState(0)\n    X_ = rng.random_sample((5, 10))\n    y_ = np.ones(X_.shape[0])\n    y_[0] = 0\n\n    clf = LogisticRegression(random_state=0)\n\n    # Wrong dimensions for training data\n    y_wrong = y_[:-1]\n\n    with pytest.raises(\n        ValueError, match=\"Found input variables with inconsistent number\"\n    ):\n        clf.fit(X, y_wrong)\n\n    # Wrong dimensions for test data\n    with pytest.raises(ValueError, match=\"X has 12 features, but\"):\n        clf.fit(X_, y_).predict(rng.random_sample((3, 12)))\n\n\ndef test_write_parameters():\n    # Test that we can write to coef_ and intercept_\n    clf = LogisticRegression()\n    clf.fit(X, Y1)\n    clf.coef_[:] = 0\n    clf.intercept_[:] = 0\n    assert_array_almost_equal(cl"
+      }
+    ]
+  },
+  "functions_in_changed_files": [
+    {
+      "name": "test_linear_regression",
+      "full_name": "tests/test_base.py:<module>.test_linear_regression",
+      "file": "tests/test_base.py",
+      "start_line": 33,
+      "end_line": 56,
+      "signature": ""
+    },
+    {
+      "name": "test_linear_regression_sample_weights",
+      "full_name": "tests/test_base.py:<module>.test_linear_regression_sample_weights",
+      "file": "tests/test_base.py",
+      "start_line": 59,
+      "end_line": 97,
+      "signature": ""
+    },
+    {
+      "name": "test_raises_value_error_if_positive_and_sparse",
+      "full_name": "tests/test_base.py:<module>.test_raises_value_error_if_positive_and_sparse",
+      "file": "tests/test_base.py",
+      "start_line": 98,
+      "end_line": 109,
+      "signature": ""
+    },
+    {
+      "name": "test_raises_value_error_if_sample_weights_greater_than_1d",
+      "full_name": "tests/test_base.py:<module>.test_raises_value_error_if_sample_weights_greater_than_1d",
+      "file": "tests/test_base.py",
+      "start_line": 111,
+      "end_line": 127,
+      "signature": ""
+    },
+    {
+      "name": "test_fit_intercept",
+      "full_name": "tests/test_base.py:<module>.test_fit_intercept",
+      "file": "tests/test_base.py",
+      "start_line": 128,
+      "end_line": 146,
+      "signature": ""
+    },
+    {
+      "name": "test_linear_regression_sparse",
+      "full_name": "tests/test_base.py:<module>.test_linear_regression_sparse",
+      "file": "tests/test_base.py",
+      "start_line": 147,
+      "end_line": 161,
+      "signature": ""
+    },
+    {
+      "name": "test_linear_regression_sparse_equal_dense",
+      "full_name": "tests/test_base.py:<module>.test_linear_regression_sparse_equal_dense",
+      "file": "tests/test_base.py",
+      "start_line": 164,
+      "end_line": 181,
+      "signature": ""
+    },
+    {
+      "name": "test_linear_regression_multiple_outcome",
+      "full_name": "tests/test_base.py:<module>.test_linear_regression_multiple_outcome",
+      "file": "tests/test_base.py",
+      "start_line": 182,
+      "end_line": 198,
+      "signature": ""
+    },
+    {
+      "name": "test_linear_regression_sparse_multiple_outcome",
+      "full_name": "tests/test_base.py:<module>.test_linear_regression_sparse_multiple_outcome",
+      "file": "tests/test_base.py",
+      "start_line": 200,
+      "end_line": 216,
+      "signature": ""
+    },
+    {
+      "name": "test_linear_regression_positive",
+      "full_name": "tests/test_base.py:<module>.test_linear_regression_positive",
+      "file": "tests/test_base.py",
+      "start_line": 217,
+      "end_line": 239,
+      "signature": ""
+    },
+    {
+      "name": "test_linear_regression_positive_multiple_outcome",
+      "full_name": "tests/test_base.py:<module>.test_linear_regression_positive_multiple_outcome",
+      "file": "tests/test_base.py",
+      "start_line": 240,
+      "end_line": 256,
+      "signature": ""
+    },
+    {
+      "name": "test_linear_regression_positive_vs_nonpositive",
+      "full_name": "tests/test_base.py:<module>.test_linear_regression_positive_vs_nonpositive",
+      "file": "tests/test_base.py",
+      "start_line": 257,
+      "end_line": 269,
+      "signature": ""
+    },
+    {
+      "name": "test_linear_regression_positive_vs_nonpositive_when_positive",
+      "full_name": "tests/test_base.py:<module>.test_linear_regression_positive_vs_nonpositive_when_positive",
+      "file": "tests/test_base.py",
+      "start_line": 270,
+      "end_line": 286,
+      "signature": ""
+    },
+    {
+      "name": "test_inplace_data_preprocessing",
+      "full_name": "tests/test_base.py:<module>.test_inplace_data_preprocessing",
+      "file": "tests/test_base.py",
+      "start_line": 289,
+      "end_line": 342,
+      "signature": ""
+    },
+    {
+      "name": "test_linear_regression_pd_sparse_dataframe_warning",
+      "full_name": "tests/test_base.py:<module>.test_linear_regression_pd_sparse_dataframe_warning",
+      "file": "tests/test_base.py",
+      "start_line": 343,
+      "end_line": 370,
+      "signature": ""
+    },
+    {
+      "name": "test_preprocess_data",
+      "full_name": "tests/test_base.py:<module>.test_preprocess_data",
+      "file": "tests/test_base.py",
+      "start_line": 371,
+      "end_line": 400,
+      "signature": ""
+    },
+    {
+      "name": "test_preprocess_data_multioutput",
+      "full_name": "tests/test_base.py:<module>.test_preprocess_data_multioutput",
+      "file": "tests/test_base.py",
+      "start_line": 402,
+      "end_line": 422,
+      "signature": ""
+    },
+    {
+      "name": "test_preprocess_data_weighted",
+      "full_name": "tests/test_base.py:<module>.test_preprocess_data_weighted",
+      "file": "tests/test_base.py",
+      "start_line": 425,
+      "end_line": 497,
+      "signature": ""
+    },
+    {
+      "name": "test_sparse_preprocess_data_offsets",
+      "full_name": "tests/test_base.py:<module>.test_sparse_preprocess_data_offsets",
+      "file": "tests/test_base.py",
+      "start_line": 499,
+      "end_line": 528,
+      "signature": ""
+    },
+    {
+      "name": "test_csr_preprocess_data",
+      "full_name": "tests/test_base.py:<module>.test_csr_preprocess_data",
+      "file": "tests/test_base.py",
+      "start_line": 530,
+      "end_line": 538,
+      "signature": ""
+    },
+    {
+      "name": "test_preprocess_copy_data_no_checks",
+      "full_name": "tests/test_base.py:<module>.test_preprocess_copy_data_no_checks",
+      "file": "tests/test_base.py",
+      "start_line": 541,
+      "end_line": 561,
+      "signature": ""
+    },
+    {
+      "name": "test_dtype_preprocess_data",
+      "full_name": "tests/test_base.py:<module>.test_dtype_preprocess_data",
+      "file": "tests/test_base.py",
+      "start_line": 564,
+      "end_line": 660,
+      "signature": ""
+    },
+    {
+      "name": "test_rescale_data",
+      "full_name": "tests/test_base.py:<module>.test_rescale_data",
+      "file": "tests/test_base.py",
+      "start_line": 663,
+      "end_line": 703,
+      "signature": ""
+    },
+    {
+      "name": "test_fused_types_make_dataset",
+      "full_name": "tests/test_base.py:<module>.test_fused_types_make_dataset",
+      "file": "tests/test_base.py",
+      "start_line": 705,
+      "end_line": 749,
+      "signature": ""
+    },
+    {
+      "name": "test_linear_regression_sample_weight_consistency",
+      "full_name": "tests/test_base.py:<module>.test_linear_regression_sample_weight_consistency",
+      "file": "tests/test_base.py",
+      "start_line": 765,
+      "end_line": 846,
+      "signature": ""
+    }
+  ]
+}

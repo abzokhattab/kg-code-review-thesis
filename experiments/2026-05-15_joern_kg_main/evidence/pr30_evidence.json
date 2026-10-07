@@ -1,0 +1,173 @@
+{
+  "pr": {
+    "number": 119132,
+    "title": "Add unit tests for `TextureRect`",
+    "body": "Contributes to #43440\r\n\r\nAdds unit tests for `TextureRect` covering:\r\n\r\n- Default property values (`texture`, `expand_mode`, `stretch_mode`, `flip_h`, `flip_v`, `mouse_filter`)\r\n- `set_texture` / `get_texture` round-trip and clearing\r\n- All `ExpandMode` values (6) and `StretchMode` values (7)\r\n- `flip_h` and `flip_v` toggling and independence\r\n- Minimum size with `EXPAND_KEEP_SIZE` and `EXPAND_IGNORE_SIZE` using a real `ImageTexture` of known dimensions (in-tree with `process(0)` to flush the minimum size cache)\r\n- Configuration warnings for `STRETCH_TILE` with an `AtlasTexture` that has a non-zero margin\r\n\r\nAI disclosure: I designed the test plan, wrote every line, and ran pre-commit and the test suite locally. Claude Sonnet 4.6 helped with initial research and drafting.",
+    "url": "https://github.com/godotengine/godot/pull/119132",
+    "repo": "godotengine/godot",
+    "base_branch": "master",
+    "head_branch": "test-texture-rect",
+    "merged_at": "2026-05-04T17:46:51Z",
+    "state": "MERGED"
+  },
+  "changed_files": [
+    {
+      "path": "tests/scene/test_texture_rect.cpp",
+      "language": "cpp",
+      "added": 222,
+      "deleted": 0
+    }
+  ],
+  "nearest_tests": [],
+  "dependent_files": [],
+  "diff_summary": "1 files changed",
+  "full_diff": "diff --git a/tests/scene/test_texture_rect.cpp b/tests/scene/test_texture_rect.cpp\nnew file mode 100644\nindex 000000000000..10f0c8aa7fab\n--- /dev/null\n+++ b/tests/scene/test_texture_rect.cpp\n@@ -0,0 +1,222 @@\n+/**************************************************************************/\n+/*  test_texture_rect.cpp                                                 */\n+/**************************************************************************/\n+/*                         This file is part of:                          */\n+/*                             GODOT ENGINE                               */\n+/*                        https://godotengine.org                         */\n+/**************************************************************************/\n+/* Copyright (c) 2014-present Godot Engine contributors (see AUTHORS.md). */\n+/* Copyright (c) 2007-2014 Juan Linietsky, Ariel Manzur.                  */\n+/*                                                                        */\n+/* Permission is hereby granted, free of charge, to any person obtaining  */\n+/* a copy of this software and associated documentation files (the        */\n+/* \"Software\"), to deal in the Software without restriction, including    */\n+/* without limitation the rights to use, copy, modify, merge, publish,    */\n+/* distribute, sublicense, and/or sell copies of the Software, and to     */\n+/* permit persons to whom the Software is furnished to do so, subject to  */\n+/* the following conditions:                                              */\n+/*                                                                        */\n+/* The above copyright notice and this permission notice shall be         */\n+/* included in all copies or substantial portions of the Software.        */\n+/*                                                                        */\n+/* THE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND,        */\n+/* EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF     */\n+/* MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. */\n+/* IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY   */\n+/* CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,   */\n+/* TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE      */\n+/* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */\n+/**************************************************************************/\n+\n+#include \"tests/test_macros.h\"\n+\n+TEST_FORCE_LINK(test_texture_rect)\n+\n+#include \"core/io/image.h\"\n+#include \"scene/gui/texture_rect.h\"\n+#include \"scene/main/scene_tree.h\"\n+#include \"scene/main/window.h\"\n+#include \"scene/resources/atlas_texture.h\"\n+#include \"scene/resources/image_texture.h\"\n+\n+namespace TestTextureRect {\n+\n+TEST_CASE(\"[SceneTree][TextureRect] Default properties\") {\n+\tTextureRect *texture_rect = memnew(TextureRect);\n+\n+\tCHECK(texture_rect->get_texture().is_null());\n+\tCHECK(texture_rect->get_expand_mode() == TextureRect::EXPAND_KEEP_SIZE);\n+\tCHECK(texture_rect->get_stretch_mode() == TextureRect::STRETCH_SCALE);\n+\tCHECK_FALSE(texture_rect->is_flipped_h());\n+\tCHECK_FALSE(texture_rect->is_flipped_v());\n+\n+\t// Set in the TextureRect constructor, unlike the Control default.\n+\tCHECK(texture_rect->get_mouse_filter() == Control::MOUSE_FILTER_PASS);\n+\n+\tCHECK(texture_rect->get_combined_minimum_size() == Size2(0, 0));\n+\n+\tmemdelete(texture_rect);\n+}\n+\n+TEST_CASE(\"[SceneTree][TextureRect] Set/get texture\") {\n+\tTextureRect *texture_rect = memnew(TextureRect);\n+\n+\tRef<Image> image = memnew(Image(8, 8, false, Image::FORMAT_RGB8));\n+\tRef<ImageTexture> tex = ImageTexture::create_from_image(image);\n+\n+\ttexture_rect->set_texture(tex);\n+\tCHECK(texture_rect->get_texture() == tex);\n+\n+\ttexture_rect->set_texture(Ref<Texture2D>());\n+\tCHECK(texture_rect->get_texture().is_null());\n+\n+\tmemdelete(texture_rect);\n+}\n+\n+TEST_CASE(\"[SceneTree][TextureRect] Expand mode\") {\n+\tTextureRect *texture_rect = memnew(TextureRect);\n+\n+\ttexture_rect->set_expand_mode(TextureRect::EXPAND_IGNORE_SIZE);\n+\tCHECK(texture_rect->get_expand_mode() == TextureRect::EXPAND_IGNORE_SIZE);\n+\n+\ttexture_rect->set_expand_mode(TextureRect::EXPAND_FIT_WIDTH);\n+\tCHECK(texture_rect->get_expand_mode() == TextureRect::EXPAND_FIT_WIDTH);\n+\n+\ttexture_rect->set_expand_mode(TextureRect::EXPAND_FIT_WIDTH_PROPORTIONAL);\n+\tCHECK(texture_rect->get_expand_mode() == TextureRect::EXPAND_FIT_WIDTH_PROPORTIONAL);\n+\n+\ttexture_rect->set_expand_mode(TextureRect::EXPAND_FIT_HEIGHT);\n+\tCHECK(texture_rect->get_expand_mode() == TextureRect::EXPAND_FIT_HEIGHT);\n+\n+\ttexture_rect->set_expand_mode(TextureRect::EXPAND_FIT_HEIGHT_PROPORTIONAL);\n+\tCHECK(texture_rect->get_expand_mode() == TextureRect::EXPAND_FIT_HEIGHT_PROPORTIONAL);\n+\n+\ttexture_rect->set_expand_mode(TextureRect::EXPAND_KEEP_SIZE);\n+\tCHECK(texture_rect->get_expand_mode() == TextureRect::EXPAND_KEEP_SIZE);\n+\n+\tmemdelete(texture_rect);\n+}\n+\n+TEST_CASE(\"[SceneTree][TextureRect] Stretch mode\") {\n+\tTextureRect *texture_rect = memnew(TextureRect);\n+\n+\ttexture_rect->set_stretch_mode(TextureRect::STRETCH_TILE);\n+\tCHECK(texture_rect->get_stretch_mode() == TextureRect::STRETCH_TILE);\n+\n+\ttexture_rect->set_stretch_mode(TextureRect::STRETCH_KEEP);\n+\tCHECK(texture_rect->get_stretch_mode() == TextureRect::STRETCH_KEEP);\n+\n+\ttexture_rect->set_stretch_mode(TextureRect::STRETCH_KEEP_CENTERED);\n+\tCHECK(texture_rect->get_stretch_mode() == TextureRect::STRETCH_KEEP_CENTERED);\n+\n+\ttexture_rect->set_stretch_mode(TextureRect::STRETCH_KEEP_ASPECT);\n+\tCHECK(texture_rect->get_stretch_mode() == TextureRect::STRETCH_KEEP_ASPECT);\n+\n+\ttexture_rect->set_stretch_mode(TextureRect::STRETCH_KEEP_ASPECT_CENTERED);\n+\tCHECK(texture_rect->get_stretch_mode() == TextureRect::STRETCH_KEEP_ASPECT_CENTERED);\n+\n+\ttexture_rect->set_stretch_mode(TextureRect::STRETCH_KEEP_ASPECT_COVERED);\n+\tCHECK(texture_rect->get_stretch_mode() == TextureRect::STRETCH_KEEP_ASPECT_COVERED);\n+\n+\ttexture_rect->set_stretch_mode(TextureRect::STRETCH_SCALE);\n+\tCHECK(texture_rect->get_stretch_mode() == TextureRect::STRETCH_SCALE);\n+\n+\tmemdelete(texture_rect);\n+}\n+\n+TEST_CASE(\"[SceneTree][TextureRect] Flip flags\") {\n+\tTextureRect *texture_rect = memnew(TextureRect);\n+\n+\tSUBCASE(\"flip_h can be toggled\") {\n+\t\ttexture_rect->set_flip_h(true);\n+\t\tCHECK(texture_rect->is_flipped_h());\n+\n+\t\ttexture_rect->set_flip_h(false);\n+\t\tCHECK_FALSE(texture_rect->is_flipped_h());\n+\t}\n+\n+\tSUBCASE(\"flip_v can be toggled\") {\n+\t\ttexture_rect->set_flip_v(true);\n+\t\tCHECK(texture_rect->is_flipped_v());\n+\n+\t\ttexture_rect->set_flip_v(false);\n+\t\tCHECK_FALSE(texture_rect->is_flipped_v());\n+\t}\n+\n+\tSUBCASE(\"flip_h and flip_v are independent\") {\n+\t\ttexture_rect->set_flip_h(true);\n+\t\ttexture_rect->set_flip_v(false);\n+\n+\t\tCHECK(texture_rect->is_flipped_h());\n+\t\tCHECK_FALSE(texture_rect->is_flipped_v());\n+\t}\n+\n+\tmemdelete(texture_rect);\n+}\n+\n+TEST_CASE(\"[SceneTree][TextureRect] Minimum size\") {\n+\tTextureRect *texture_rect = memnew(TextureRect);\n+\tWindow *root = SceneTree::get_singleton()->get_root();\n+\troot->add_child(texture_rect);\n+\n+\tRef<Image> image = memnew(Image(64, 32, false, Image::FORMAT_RGB8));\n+\tRef<ImageTexture> tex = ImageTexture::create_from_image(image);\n+\n+\tSUBCASE(\"EXPAND_KEEP_SIZE reports the texture's pixel dimensions\") {\n+\t\ttexture_rect->set_texture(tex);\n+\t\tSceneTree::get_singleton()->process(0);\n+\n+\t\tCHECK(texture_rect->get_combined_minimum_size() == Size2(64, 32));\n+\t}\n+\n+\tSUBCASE(\"EXPAND_IGNORE_SIZE reports zero even with a texture\") {\n+\t\ttexture_rect->set_expand_mode(TextureRect::EXPAND_IGNORE_SIZE);\n+\t\ttexture_rect->set_texture(tex);\n+\t\tSceneTree::get_singleton()->process(0);\n+\n+\t\tCHECK(texture_rect->get_combined_minimum_size() == Size2(0, 0));\n+\t}\n+\n+\tSUBCASE(\"Clearing the texture resets minimum size to zero\") {\n+\t\ttexture_rect->set_texture(tex);\n+\t\tSceneTree::get_singleton()->process(0);\n+\n+\t\ttexture_rect->set_texture(Ref<Texture2D>());\n+\t\tSceneTree::get_singleton()->process(0);\n+\n+\t\tCHECK(texture_rect->get_combined_minimum_size() == Size2(0, 0));\n+\t}\n+\n+\tmemdelete(texture_rect);\n+}\n+\n+TEST_CASE(\"[SceneTree][TextureRect] Configuration warnings\") {\n+\tTextureRect *texture_rect = memnew(TextureRect);\n+\n+\tSUBCASE(\"No warnings by default\") {\n+\t\tCHECK(texture_rect->get_configuration_warnings().is_empty());\n+\t}\n+\n+\tSUBCASE(\"STRETCH_TILE with a plain texture produces no warning\") {\n+\t\tRef<Image> image = memnew(Image(4, 4, false, Image::FORMAT_RGB8));\n+\t\ttexture_rect->set_texture(ImageTexture::create_from_image(image));\n+\t\ttexture_rect->set_stretch_mode(TextureRect::STRETCH_TILE);\n+\n+\t\tCHECK(texture_rect->get_configuration_warnings().is_empty());\n+\t}\n+\n+\tSUBCASE(\"STRETCH_TILE with an AtlasTexture with non-zero margin produces a warning\") {\n+\t\tRef<AtlasTexture> at;\n+\t\tat.instantiate();\n+\t\tat->set_margin(Rect2(1, 0, 0, 0));\n+\n+\t\ttexture_rect->set_texture(at);\n+\t\ttexture_rect->set_stretch_mode(TextureRect::STRETCH_TILE);\n+\n+\t\tCHECK(texture_rect->get_configuration_warnings().size() == 1);\n+\t}\n+\n+\tmemdelete(texture_rect);\n+}\n+\n+} // namespace TestTextureRect\n",
+  "metadata": {
+    "v2_fetcher_version": 1,
+    "v2_fetched_at_unix": 1777987710,
+    "v2_diff_cap_bytes": 50000,
+    "v2_body_cap_bytes": 8000,
+    "v2_diff_truncated": false,
+    "v2_raw_diff_chars": 9054,
+    "v2_raw_body_chars": 782,
+    "v2_rag_source": "fresh_for_v2_25pr_expansion",
+    "v2_rag_chunks_copied": 8,
+    "joern_enriched": true,
+    "joern_callers_count": 0,
+    "joern_functions_count": 0
+  },
+  "similar_chunks": [
+    {
+      "file": "tests/scene/test_style_box_texture.h",
+      "start_line": 188,
+      "end_line": 192,
+      "similarity": 0.6909,
+      "related_to": "tests/scene/test_texture_rect.cpp",
+      "content_preview": "_box_texture->get_draw_rect(Rect2(0, 0, 1, 1)) == Rect2(-5, -5, 11, 11));\n}\n\n} // namespace TestStyleBoxTexture\n"
+    },
+    {
+      "file": "tests/scene/test_image_texture_3d.h",
+      "start_line": 24,
+      "end_line": 74,
+      "similarity": 0.6437,
+      "related_to": "tests/scene/test_texture_rect.cpp",
+      "content_preview": "OR A PARTICULAR PURPOSE AND NONINFRINGEMENT. */\n/* IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY   */\n/* CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,   */\n/* TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE      */\n/* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */\n/**************************************************************************/\n\n#pragma once\n\n#include \"core/io/image.h\"\n#include \"scene/resources/image_texture.h\"\n\n#include \"tests/test_macros.h\"\n#include \"tests/test_utils.h\"\n\nnamespace TestImageTexture3D {\n\n// [SceneTree] in a test case name enables initializing a mock render server,\n// which ImageTexture3D is dependent on.\nTEST_CASE(\"[SceneTree][ImageTexture3D] Constructor\") {\n\tRef<ImageTex"
+    },
+    {
+      "file": "tests/scene/test_image_texture.h",
+      "start_line": 24,
+      "end_line": 71,
+      "similarity": 0.6334,
+      "related_to": "tests/scene/test_texture_rect.cpp",
+      "content_preview": "OR A PARTICULAR PURPOSE AND NONINFRINGEMENT. */\n/* IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY   */\n/* CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,   */\n/* TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE      */\n/* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */\n/**************************************************************************/\n\n#pragma once\n\n#include \"core/io/image.h\"\n#include \"scene/resources/image_texture.h\"\n\n#include \"tests/test_macros.h\"\n#include \"tests/test_utils.h\"\n\nnamespace TestImageTexture {\n\n// [SceneTree] in a test case name enables initializing a mock render server,\n// which ImageTexture is dependent on.\nTEST_CASE(\"[SceneTree][ImageTexture] constructor\") {\n\tRef<ImageTexture> "
+    },
+    {
+      "file": "tests/core/math/test_rect2.h",
+      "start_line": 1,
+      "end_line": 26,
+      "similarity": 0.633,
+      "related_to": "tests/scene/test_texture_rect.cpp",
+      "content_preview": "/**************************************************************************/\n/*  test_rect2.h                                                          */\n/**************************************************************************/\n/*                         This file is part of:                          */\n/*                             GODOT ENGINE                               */\n/*                        https://godotengine.org                         */\n/**************************************************************************/\n/* Copyright (c) 2014-present Godot Engine contributors (see AUTHORS.md). */\n/* Copyright (c) 2007-2014 Juan Linietsky, Ariel Manzur.                  */\n/*                                                                        */\n/* Permission is hereby grante"
+    },
+    {
+      "file": "tests/scene/test_image_texture.h",
+      "start_line": 67,
+      "end_line": 109,
+      "similarity": 0.6328,
+      "related_to": "tests/scene/test_texture_rect.cpp",
+      "content_preview": ");\n\tCHECK(image_texture->get_format() == Image::FORMAT_RGB8);\n\tCHECK(image_texture->has_alpha() == false);\n\tCHECK(image_texture->get_width() == image_texture->get_image()->get_width());\n\tCHECK(image_texture->get_height() == image_texture->get_image()->get_height());\n\tCHECK(image_texture->get_format() == image_texture->get_image()->get_format());\n}\n\nTEST_CASE(\"[SceneTree][ImageTexture] set_size_override\") {\n\tRef<Image> image = memnew(Image(16, 8, false, Image::FORMAT_RGB8));\n\tRef<ImageTexture> image_texture = ImageTexture::create_from_image(image);\n\tCHECK(image_texture->get_width() == 16);\n\tCHECK(image_texture->get_height() == 8);\n\timage_texture->set_size_override(Size2i(32, 16));\n\tCHECK(image_texture->get_width() == 32);\n\tCHECK(image_texture->get_height() == 16);\n}\n\nTEST_CASE(\"[SceneTree]["
+    },
+    {
+      "file": "tests/scene/test_style_box_texture.h",
+      "start_line": 24,
+      "end_line": 69,
+      "similarity": 0.6222,
+      "related_to": "tests/scene/test_texture_rect.cpp",
+      "content_preview": "OR A PARTICULAR PURPOSE AND NONINFRINGEMENT. */\n/* IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY   */\n/* CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,   */\n/* TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE      */\n/* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */\n/**************************************************************************/\n\n#pragma once\n\n#include \"scene/resources/style_box_texture.h\"\n\n#include \"tests/test_macros.h\"\n\nnamespace TestStyleBoxTexture {\n\nTEST_CASE(\"[StyleBoxTexture] Constructor\") {\n\tRef<StyleBoxTexture> style_box_texture = memnew(StyleBoxTexture);\n\n\tCHECK(style_box_texture->get_h_axis_stretch_mode() == style_box_texture->AXIS_STRETCH_MODE_STRETCH);\n\tCHECK(style_box_texture"
+    },
+    {
+      "file": "tests/scene/test_gradient_texture.h",
+      "start_line": 24,
+      "end_line": 78,
+      "similarity": 0.6185,
+      "related_to": "tests/scene/test_texture_rect.cpp",
+      "content_preview": "OR A PARTICULAR PURPOSE AND NONINFRINGEMENT. */\n/* IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY   */\n/* CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,   */\n/* TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE      */\n/* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */\n/**************************************************************************/\n\n#pragma once\n\n#include \"scene/resources/gradient_texture.h\"\n\n#include \"tests/test_macros.h\"\n\nnamespace TestGradientTexture {\n\n// [SceneTree] in a test case name enables initializing a mock render server,\n// which ImageTexture is dependent on.\nTEST_CASE(\"[SceneTree][GradientTexture1D] Create GradientTexture1D\") {\n\tRef<GradientTexture1D> gradient_texture = memnew(Gr"
+    },
+    {
+      "file": "tests/scene/test_image_texture.h",
+      "start_line": 1,
+      "end_line": 26,
+      "similarity": 0.6155,
+      "related_to": "tests/scene/test_texture_rect.cpp",
+      "content_preview": "/**************************************************************************/\n/*  test_image_texture.h                                                  */\n/**************************************************************************/\n/*                         This file is part of:                          */\n/*                             GODOT ENGINE                               */\n/*                        https://godotengine.org                         */\n/**************************************************************************/\n/* Copyright (c) 2014-present Godot Engine contributors (see AUTHORS.md). */\n/* Copyright (c) 2007-2014 Juan Linietsky, Ariel Manzur.                  */\n/*                                                                        */\n/* Permission is hereby grante"
+    }
+  ],
+  "rag_evidence": {
+    "similar_code": [
+      {
+        "file": "tests/scene/test_style_box_texture.h",
+        "start_line": 188,
+        "end_line": 192,
+        "similarity": 0.6909,
+        "related_to": "tests/scene/test_texture_rect.cpp",
+        "content_preview": "_box_texture->get_draw_rect(Rect2(0, 0, 1, 1)) == Rect2(-5, -5, 11, 11));\n}\n\n} // namespace TestStyleBoxTexture\n"
+      },
+      {
+        "file": "tests/scene/test_image_texture_3d.h",
+        "start_line": 24,
+        "end_line": 74,
+        "similarity": 0.6437,
+        "related_to": "tests/scene/test_texture_rect.cpp",
+        "content_preview": "OR A PARTICULAR PURPOSE AND NONINFRINGEMENT. */\n/* IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY   */\n/* CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,   */\n/* TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE      */\n/* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */\n/**************************************************************************/\n\n#pragma once\n\n#include \"core/io/image.h\"\n#include \"scene/resources/image_texture.h\"\n\n#include \"tests/test_macros.h\"\n#include \"tests/test_utils.h\"\n\nnamespace TestImageTexture3D {\n\n// [SceneTree] in a test case name enables initializing a mock render server,\n// which ImageTexture3D is dependent on.\nTEST_CASE(\"[SceneTree][ImageTexture3D] Constructor\") {\n\tRef<ImageTex"
+      },
+      {
+        "file": "tests/scene/test_image_texture.h",
+        "start_line": 24,
+        "end_line": 71,
+        "similarity": 0.6334,
+        "related_to": "tests/scene/test_texture_rect.cpp",
+        "content_preview": "OR A PARTICULAR PURPOSE AND NONINFRINGEMENT. */\n/* IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY   */\n/* CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,   */\n/* TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE      */\n/* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */\n/**************************************************************************/\n\n#pragma once\n\n#include \"core/io/image.h\"\n#include \"scene/resources/image_texture.h\"\n\n#include \"tests/test_macros.h\"\n#include \"tests/test_utils.h\"\n\nnamespace TestImageTexture {\n\n// [SceneTree] in a test case name enables initializing a mock render server,\n// which ImageTexture is dependent on.\nTEST_CASE(\"[SceneTree][ImageTexture] constructor\") {\n\tRef<ImageTexture> "
+      },
+      {
+        "file": "tests/core/math/test_rect2.h",
+        "start_line": 1,
+        "end_line": 26,
+        "similarity": 0.633,
+        "related_to": "tests/scene/test_texture_rect.cpp",
+        "content_preview": "/**************************************************************************/\n/*  test_rect2.h                                                          */\n/**************************************************************************/\n/*                         This file is part of:                          */\n/*                             GODOT ENGINE                               */\n/*                        https://godotengine.org                         */\n/**************************************************************************/\n/* Copyright (c) 2014-present Godot Engine contributors (see AUTHORS.md). */\n/* Copyright (c) 2007-2014 Juan Linietsky, Ariel Manzur.                  */\n/*                                                                        */\n/* Permission is hereby grante"
+      },
+      {
+        "file": "tests/scene/test_image_texture.h",
+        "start_line": 67,
+        "end_line": 109,
+        "similarity": 0.6328,
+        "related_to": "tests/scene/test_texture_rect.cpp",
+        "content_preview": ");\n\tCHECK(image_texture->get_format() == Image::FORMAT_RGB8);\n\tCHECK(image_texture->has_alpha() == false);\n\tCHECK(image_texture->get_width() == image_texture->get_image()->get_width());\n\tCHECK(image_texture->get_height() == image_texture->get_image()->get_height());\n\tCHECK(image_texture->get_format() == image_texture->get_image()->get_format());\n}\n\nTEST_CASE(\"[SceneTree][ImageTexture] set_size_override\") {\n\tRef<Image> image = memnew(Image(16, 8, false, Image::FORMAT_RGB8));\n\tRef<ImageTexture> image_texture = ImageTexture::create_from_image(image);\n\tCHECK(image_texture->get_width() == 16);\n\tCHECK(image_texture->get_height() == 8);\n\timage_texture->set_size_override(Size2i(32, 16));\n\tCHECK(image_texture->get_width() == 32);\n\tCHECK(image_texture->get_height() == 16);\n}\n\nTEST_CASE(\"[SceneTree]["
+      },
+      {
+        "file": "tests/scene/test_style_box_texture.h",
+        "start_line": 24,
+        "end_line": 69,
+        "similarity": 0.6222,
+        "related_to": "tests/scene/test_texture_rect.cpp",
+        "content_preview": "OR A PARTICULAR PURPOSE AND NONINFRINGEMENT. */\n/* IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY   */\n/* CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,   */\n/* TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE      */\n/* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */\n/**************************************************************************/\n\n#pragma once\n\n#include \"scene/resources/style_box_texture.h\"\n\n#include \"tests/test_macros.h\"\n\nnamespace TestStyleBoxTexture {\n\nTEST_CASE(\"[StyleBoxTexture] Constructor\") {\n\tRef<StyleBoxTexture> style_box_texture = memnew(StyleBoxTexture);\n\n\tCHECK(style_box_texture->get_h_axis_stretch_mode() == style_box_texture->AXIS_STRETCH_MODE_STRETCH);\n\tCHECK(style_box_texture"
+      },
+      {
+        "file": "tests/scene/test_gradient_texture.h",
+        "start_line": 24,
+        "end_line": 78,
+        "similarity": 0.6185,
+        "related_to": "tests/scene/test_texture_rect.cpp",
+        "content_preview": "OR A PARTICULAR PURPOSE AND NONINFRINGEMENT. */\n/* IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY   */\n/* CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,   */\n/* TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE      */\n/* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */\n/**************************************************************************/\n\n#pragma once\n\n#include \"scene/resources/gradient_texture.h\"\n\n#include \"tests/test_macros.h\"\n\nnamespace TestGradientTexture {\n\n// [SceneTree] in a test case name enables initializing a mock render server,\n// which ImageTexture is dependent on.\nTEST_CASE(\"[SceneTree][GradientTexture1D] Create GradientTexture1D\") {\n\tRef<GradientTexture1D> gradient_texture = memnew(Gr"
+      },
+      {
+        "file": "tests/scene/test_image_texture.h",
+        "start_line": 1,
+        "end_line": 26,
+        "similarity": 0.6155,
+        "related_to": "tests/scene/test_texture_rect.cpp",
+        "content_preview": "/**************************************************************************/\n/*  test_image_texture.h                                                  */\n/**************************************************************************/\n/*                         This file is part of:                          */\n/*                             GODOT ENGINE                               */\n/*                        https://godotengine.org                         */\n/**************************************************************************/\n/* Copyright (c) 2014-present Godot Engine contributors (see AUTHORS.md). */\n/* Copyright (c) 2007-2014 Juan Linietsky, Ariel Manzur.                  */\n/*                                                                        */\n/* Permission is hereby grante"
+      }
+    ]
+  }
+}

@@ -1,0 +1,272 @@
+[19:03:18] ============================================================
+[19:03:18] JOERN-KG MAIN EXPERIMENT
+[19:03:18] PRs: [9, 31, 22, 40, 41, 47, 15, 33, 37, 38]
+[19:03:18] Generator: gemini:gemini-2.5-flash
+[19:03:18] Judges: ['gemini:gemini-2.5-flash', 'gemini:gemini-2.0-flash']
+[19:03:18] ============================================================
+[19:03:18] 
+━━━ STEP 1: Generate CPGs ━━━
+[19:03:18]   PR9: generating CPG from ['pkg/']...
+[19:03:22]   PR9: ERROR - joern-parse failed: :46)
+	at io.joern.console.cpgcreation.CpgGenerator.runShellCommand$$anonfun$adapted$1(CpgGenerator.scala:47)
+	at scala.util.Try$.apply(Try.scala:217)
+	at io.joern.console.cpgcreation.CpgGenerator.runShellCommand(CpgGenerator.scala:47)
+	at io.joern.console.cpgcreation.GoCpgGenerator.goSrc2CpgGenerate(GoCpgGenerator.scala:34)
+	at io.joern.console.cpgcreation.GoCpgGenerator.generate(GoCpgGenerator.scala:17)
+	at io.joern.joerncli.JoernParse$.generateCpg$$anonfun$2(JoernParse.scala:143)
+	... 12 more
+
+[19:03:22]   PR31: generating CPG from ['sklearn/linear_model/']...
+[19:03:36]   PR31: CPG generated (7.0 MB)
+[19:03:36]   PR22: generating CPG from ['tools/src/']...
+[19:04:04]   PR22: CPG generated (4.1 MB)
+[19:04:04]   PR40: generating CPG from ['clients/src/']...
+[19:04:55]   PR40: CPG generated (18.5 MB)
+[19:04:55]   PR41: generating CPG from ['streams/src/']...
+[19:05:53]   PR41: CPG generated (11.5 MB)
+[19:05:53]   PR47: generating CPG from ['core/src/', 'test/src/']...
+[19:05:54]   PR47: ERROR - joern-parse failed: `
+	at io.joern.joerncli.JoernParse$.parseConfig$$anonfun$1$$anonfun$1(JoernParse.scala:182)
+	at scala.Option.getOrElse(Option.scala:201)
+	at io.joern.joerncli.JoernParse$.parseConfig$$anonfun$1(JoernParse.scala:182)
+	at scala.util.Try$.apply(Try.scala:217)
+	at io.joern.joerncli.JoernParse$.parseConfig(JoernParse.scala:184)
+	at io.joern.joerncli.JoernParse$.run(JoernParse.scala:73)
+	at io.joern.joerncli.JoernParse$.main(JoernParse.scala:19)
+	at io.joern.joerncli.JoernParse.main(JoernParse.scala)
+
+[19:05:54]   PR15: generating CPG from ['public/app/']...
+[19:08:58]   PR15: CPG generated (123.4 MB)
+[19:08:58]   PR33: generating CPG from ['core/src/', 'test/src/']...
+[19:08:59]   PR33: ERROR - joern-parse failed: `
+	at io.joern.joerncli.JoernParse$.parseConfig$$anonfun$1$$anonfun$1(JoernParse.scala:182)
+	at scala.Option.getOrElse(Option.scala:201)
+	at io.joern.joerncli.JoernParse$.parseConfig$$anonfun$1(JoernParse.scala:182)
+	at scala.util.Try$.apply(Try.scala:217)
+	at io.joern.joerncli.JoernParse$.parseConfig(JoernParse.scala:184)
+	at io.joern.joerncli.JoernParse$.run(JoernParse.scala:73)
+	at io.joern.joerncli.JoernParse$.main(JoernParse.scala:19)
+	at io.joern.joerncli.JoernParse.main(JoernParse.scala)
+
+[19:08:59]   PR37: generating CPG from ['pkg/']...
+[19:09:01]   PR37: ERROR - joern-parse failed: :46)
+	at io.joern.console.cpgcreation.CpgGenerator.runShellCommand$$anonfun$adapted$1(CpgGenerator.scala:47)
+	at scala.util.Try$.apply(Try.scala:217)
+	at io.joern.console.cpgcreation.CpgGenerator.runShellCommand(CpgGenerator.scala:47)
+	at io.joern.console.cpgcreation.GoCpgGenerator.goSrc2CpgGenerate(GoCpgGenerator.scala:34)
+	at io.joern.console.cpgcreation.GoCpgGenerator.generate(GoCpgGenerator.scala:17)
+	at io.joern.joerncli.JoernParse$.generateCpg$$anonfun$2(JoernParse.scala:143)
+	... 12 more
+
+[19:09:01]   PR38: generating CPG from ['public/app/']...
+[19:12:12]   PR38: CPG generated (123.4 MB)
+[19:12:12] 
+━━━ STEP 2: Export CPGs to CSV ━━━
+[19:12:12]   PR31: exporting CPG to CSV...
+[19:12:21]   PR31: export done
+[19:12:21]   PR22: exporting CPG to CSV...
+[19:12:26]   PR22: export done
+[19:12:26]   PR40: exporting CPG to CSV...
+[19:12:44]   PR40: export done
+[19:12:44]   PR41: exporting CPG to CSV...
+[19:12:56]   PR41: export done
+[19:12:56]   PR15: exporting CPG to CSV...
+[19:15:08]   PR15: export done
+[19:15:08]   PR38: exporting CPG to CSV...
+[19:18:23]   PR38: export done
+[19:18:23] 
+━━━ STEP 3: Extract call graphs ━━━
+[19:18:23]   PR31: extracting call graph for ['_bayes.py', 'test_bayes.py']...
+[19:18:23]   PR31: found 29 target methods in changed files
+[19:18:23]   PR31: 12 callers, 29 functions extracted
+[19:18:23]   PR22: extracting call graph for ['AbstractResetIntegrationTest.java', 'ResetIntegrationTest.java', 'ResetIntegrationWithSslTest.java']...
+[19:18:23]   PR22: found 0 target methods in changed files
+[19:18:23]   PR22: 0 callers, 0 functions extracted
+[19:18:23]   PR40: extracting call graph for ['GroupCoordinatorShard.java', 'OffsetMetadataManager.java', 'GroupCoordinatorShardTest.java', 'OffsetMetadataManagerTest.java', 'TransactionalOffsetFetchBenchmark.java']...
+[19:18:23]   PR40: found 0 target methods in changed files
+[19:18:24]   PR40: 0 callers, 0 functions extracted
+[19:18:24]   PR41: extracting call graph for ['ShareCoordinatorMetadataCacheHelperImpl.java', 'BrokerServer.scala', 'ShareCoordinatorMetadataCacheHelperImplTest.java', 'GroupConfigManager.java', 'GroupConfigManagerTest.java', 'ShareGroupDLQMetadataCacheHelper.java', 'ShareGroupDLQStateManager.java']...
+[19:18:24]   PR41: found 0 target methods in changed files
+[19:18:24]   PR41: 0 callers, 0 functions extracted
+[19:18:24]   PR15: extracting call graph for ['components.ts', 'CalendarFooter.tsx', 'CalendarHeader.tsx', 'TimePickerCalendar.tsx', 'TimePickerContent.test.tsx', 'TimePickerFooter.tsx', 'TimeRangeContent.test.tsx', 'TimeRangeContent.tsx', 'TimePickerWithHistory.test.tsx']...
+[19:18:25]   PR15: found 0 target methods in changed files
+[19:18:25]   PR15: found 12026 target methods (partial match)
+[19:18:30]   PR15: 3605 callers, 12026 functions extracted
+[19:18:30]   PR38: extracting call graph for ['location.test.ts', 'location.ts']...
+[19:18:30]   PR38: found 15 target methods in changed files
+[19:18:37]   PR38: 6 callers, 15 functions extracted
+[19:18:37] 
+━━━ STEP 4: Build enriched evidence ━━━
+[19:18:37]   PR31: evidence built (12 callers, 29 functions)
+[19:18:37]   PR22: evidence built (0 callers, 0 functions)
+[19:18:37]   PR40: evidence built (0 callers, 0 functions)
+[19:18:37]   PR41: evidence built (0 callers, 0 functions)
+[19:18:37]   PR15: evidence built (3605 callers, 12026 functions)
+[19:18:37]   PR38: evidence built (6 callers, 15 functions)
+[19:18:37] 
+━━━ STEP 5: Generate reviews ━━━
+[19:18:37]   PR31: generating review (gemini:gemini-2.5-flash)...
+[19:19:03]   PR31: review generated (3944 chars)
+[19:19:03]   PR22: generating review (gemini:gemini-2.5-flash)...
+[19:19:29]   PR22: review generated (4445 chars)
+[19:19:29]   PR40: generating review (gemini:gemini-2.5-flash)...
+[19:20:00]   PR40: review generated (6762 chars)
+[19:20:00]   PR41: generating review (gemini:gemini-2.5-flash)...
+[19:20:22]   PR41: review generated (7131 chars)
+[19:20:22]   PR15: generating review (gemini:gemini-2.5-flash)...
+[19:20:52]   PR15: review generated (7781 chars)
+[19:20:52]   PR38: generating review (gemini:gemini-2.5-flash)...
+[19:21:29]   PR38: review generated (3677 chars)
+[19:21:29] 
+━━━ STEP 6: Evaluate reviews ━━━
+[19:21:29]   PR31: evaluating with ['gemini:gemini-2.5-flash', 'gemini:gemini-2.0-flash']...
+[19:21:54]   PR31: total=14/25, KG-rel=8/9
+[19:21:54]   PR22: evaluating with ['gemini:gemini-2.5-flash', 'gemini:gemini-2.0-flash']...
+[19:22:18]   PR22: total=12/25, KG-rel=7/9
+[19:22:18]   PR40: evaluating with ['gemini:gemini-2.5-flash', 'gemini:gemini-2.0-flash']...
+[19:22:44]   PR40: total=14/25, KG-rel=8/9
+[19:22:44]   PR41: evaluating with ['gemini:gemini-2.5-flash', 'gemini:gemini-2.0-flash']...
+[19:23:20]   PR41: total=12/25, KG-rel=7/9
+[19:23:20]   PR15: evaluating with ['gemini:gemini-2.5-flash', 'gemini:gemini-2.0-flash']...
+[19:23:54]   PR15: total=13/25, KG-rel=7/9
+[19:23:54]   PR38: evaluating with ['gemini:gemini-2.5-flash', 'gemini:gemini-2.0-flash']...
+[19:24:23]   PR38: total=11/25, KG-rel=6/9
+[19:24:23] 
+Compiling results...
+
+================================================================================
+JOERN-KG MAIN EXPERIMENT — RESULTS (n=10)
+================================================================================
+
+Generator: gemini:gemini-2.5-flash
+Judges: gemini:gemini-2.5-flash, gemini:gemini-2.0-flash
+
+|  PR | Mode         |  KG-rel |  Total | F3 | F4 | T3 | M1 | C2 |
+| ---|---          |     ---|    ---| --| --| --| --| --|
+|   9 | baseline     |       2 |     12 |  0 |  1 |  1 |  0 |  0 |
+|   9 | grep-KG      |       5 |     12 |  1 |  1 |  1 |  1 |  1 |
+|   9 | joern-KG     |       ? |      ? |  ? |  ? |  ? |  ? |  ? |
+| ---|---          |     ---|    ---| --| --| --| --| --|
+|  31 | baseline     |       2 |      9 |  0 |  1 |  1 |  0 |  0 |
+|  31 | grep-KG      |       5 |     13 |  1 |  1 |  1 |  1 |  1 |
+|  31 | **joern-KG** |       5 |     14 |  1 |  1 |  1 |  1 |  1 |
+| ---|---          |     ---|    ---| --| --| --| --| --|
+|  22 | baseline     |       3 |      8 |  1 |  1 |  1 |  0 |  0 |
+|  22 | grep-KG      |       5 |     12 |  1 |  1 |  1 |  1 |  1 |
+|  22 | **joern-KG** |       5 |     12 |  1 |  1 |  1 |  1 |  1 |
+| ---|---          |     ---|    ---| --| --| --| --| --|
+|  40 | baseline     |       2 |      8 |  0 |  1 |  1 |  0 |  0 |
+|  40 | grep-KG      |       4 |     11 |  1 |  1 |  1 |  1 |  0 |
+|  40 | **joern-KG** |       5 |     14 |  1 |  1 |  1 |  1 |  1 |
+| ---|---          |     ---|    ---| --| --| --| --| --|
+|  41 | baseline     |       2 |     11 |  1 |  0 |  1 |  0 |  0 |
+|  41 | grep-KG      |       4 |     13 |  1 |  1 |  1 |  1 |  0 |
+|  41 | **joern-KG** |       4 |     12 |  1 |  1 |  1 |  0 |  1 |
+| ---|---          |     ---|    ---| --| --| --| --| --|
+|  47 | baseline     |       2 |      9 |  0 |  1 |  1 |  0 |  0 |
+|  47 | grep-KG      |       4 |     12 |  1 |  1 |  1 |  1 |  0 |
+|  47 | joern-KG     |       ? |      ? |  ? |  ? |  ? |  ? |  ? |
+| ---|---          |     ---|    ---| --| --| --| --| --|
+|  15 | baseline     |       1 |      7 |  0 |  1 |  0 |  0 |  0 |
+|  15 | grep-KG      |       3 |      8 |  1 |  1 |  1 |  0 |  0 |
+|  15 | **joern-KG** |       5 |     13 |  1 |  1 |  1 |  1 |  1 |
+| ---|---          |     ---|    ---| --| --| --| --| --|
+|  33 | baseline     |       1 |      8 |  0 |  1 |  0 |  0 |  0 |
+|  33 | grep-KG      |       3 |     10 |  1 |  1 |  1 |  0 |  0 |
+|  33 | joern-KG     |       ? |      ? |  ? |  ? |  ? |  ? |  ? |
+| ---|---          |     ---|    ---| --| --| --| --| --|
+|  37 | baseline     |       1 |     11 |  0 |  1 |  0 |  0 |  0 |
+|  37 | grep-KG      |       3 |     13 |  1 |  1 |  1 |  0 |  0 |
+|  37 | joern-KG     |       ? |      ? |  ? |  ? |  ? |  ? |  ? |
+| ---|---          |     ---|    ---| --| --| --| --| --|
+|  38 | baseline     |       1 |      8 |  0 |  0 |  1 |  0 |  0 |
+|  38 | grep-KG      |       3 |     10 |  1 |  1 |  1 |  0 |  0 |
+|  38 | **joern-KG** |       3 |     11 |  1 |  1 |  1 |  0 |  0 |
+| ---|---          |     ---|    ---| --| --| --| --| --|
+
+## Summary Statistics
+
+n = 6 PRs evaluated
+
+Metric               |   Baseline |    grep-KG |   Joern-KG
+---------------------+------------+------------+-----------
+Mean Total.......... |       9.10 |      11.40 |      12.67
+Mean KG-rel......... |       1.70 |       3.90 |       4.50
+Δ vs baseline (tot). |          — |      +2.30 |      +3.57
+Δ vs baseline (KG).. |          — |      +2.20 |      +2.80
+Δ vs grep-KG (tot).. |          — |          — |      +1.27
+Δ vs grep-KG (KG)... |          — |          — |      +0.60
+[19:24:23] 
+Results compiled!
+[19:24:23] 
+============================================================
+[19:24:23] DONE: 36/60 steps completed, 4 errors
+[19:24:23] Errors:
+[19:24:23]   cpg_pr9: joern-parse failed: :46)
+	at io.joern.console.cpgcreation.CpgGenerator.runShellCommand$$anonfun$adap
+[19:24:23]   cpg_pr47: joern-parse failed: `
+	at io.joern.joerncli.JoernParse$.parseConfig$$anonfun$1$$anonfun$1(JoernParse
+[19:24:23]   cpg_pr33: joern-parse failed: `
+	at io.joern.joerncli.JoernParse$.parseConfig$$anonfun$1$$anonfun$1(JoernParse
+[19:24:23]   cpg_pr37: joern-parse failed: :46)
+	at io.joern.console.cpgcreation.CpgGenerator.runShellCommand$$anonfun$adap
+[19:24:23] ============================================================
+[19:29:26] Fixing 4 failed PRs: 21 (replaces 9), 34 (replaces 37), 47, 33
+[19:29:26] 
+======================================== PR21 ========================================
+[19:29:26]   PR21: generating CPG...
+[19:30:23]   PR21: CPG done (18.5 MB)
+[19:30:23]   PR21: exporting CPG...
+[19:30:53]   PR21: export done
+[19:30:53]   PR21: extracting call graph for ['SslConfigs.java', 'KafkaCompletableFuture.java', 'ByteBufferUnmapper.java', 'Checksums.java', 'Crc32C.java', 'Java.java', 'KafkaFutureTest.java', 'SslTransportLayerTest.java', 'SslVersionsTransportLayerTest.java', 'JavaTest.java', 'SslEndToEndAuthorizationTest.scala']...
+[19:30:53]   PR21: 22 target methods
+[19:30:53]   PR21: 22 callers, 22 functions
+[19:30:53]   PR21: evidence built (22 callers)
+[19:30:53]   PR21: generating review...
+[19:31:24]   PR21: review done (7272 chars)
+[19:31:24]   PR21: evaluating...
+[19:31:50]   PR21: total=11/25, KG-rel=6/9
+[19:31:50] 
+======================================== PR34 ========================================
+[19:31:50]   PR34: generating CPG...
+[19:33:20]   PR34: CPG done (79.1 MB)
+[19:33:20]   PR34: exporting CPG...
+[19:35:22]   PR34: export done
+[19:35:22]   PR34: extracting call graph for ['DashboardSceneRenderer.tsx', 'editMode.test.ts']...
+[19:35:23]   PR34: 8 target methods
+[19:35:26]   PR34: 1 callers, 8 functions
+[19:35:26]   PR34: evidence built (1 callers)
+[19:35:26]   PR34: generating review...
+[19:35:56]   PR34: review done (3990 chars)
+[19:35:56]   PR34: evaluating...
+[19:36:17]   PR34: total=12/25, KG-rel=6/9
+[19:36:18] 
+======================================== PR47 ========================================
+[19:36:18]   PR47: generating CPG...
+[19:37:21]   PR47: CPG done (18.4 MB)
+[19:37:21]   PR47: exporting CPG...
+[19:37:47]   PR47: export done
+[19:37:47]   PR47: extracting call graph for ['Node.java', 'Nodes.java', 'NodesTest.java']...
+[19:37:47]   PR47: 97 target methods
+[19:37:48]   PR47: 266 callers, 97 functions
+[19:37:48]   PR47: evidence built (266 callers)
+[19:37:48]   PR47: generating review...
+[19:38:15]   PR47: review done (5630 chars)
+[19:38:15]   PR47: evaluating...
+[19:38:36]   PR47: total=12/25, KG-rel=7/9
+[19:38:36] 
+======================================== PR33 ========================================
+[19:38:36]   PR33: generating CPG...
+[19:39:32]   PR33: CPG done (18.4 MB)
+[19:39:32]   PR33: exporting CPG...
+[19:39:59]   PR33: export done
+[19:39:59]   PR33: extracting call graph for ['OldDataMonitor.java', 'OldDataMonitorTest.java', 'ComputerTest.java', 'FreeStyleProjectTest.java', 'ItemGroupMixInTest.java', 'ViewTest.java']...
+[19:39:59]   PR33: 36 target methods
+[19:40:00]   PR33: 38 callers, 36 functions
+[19:40:00]   PR33: evidence built (38 callers)
+[19:40:00]   PR33: generating review...
+[19:40:26]   PR33: review done (6871 chars)
+[19:40:26]   PR33: evaluating...
+[19:40:52]   PR33: total=14/25, KG-rel=8/9
+[19:40:52] 
+Done fixing failures!

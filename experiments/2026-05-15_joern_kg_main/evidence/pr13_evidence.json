@@ -1,0 +1,1491 @@
+{
+  "pr": {
+    "number": 89111,
+    "title": "Use `Vector*` component-wise `min/max/clamp` functions where applicable",
+    "body": "Improves readability and safety, separated off the `clamp` changes as they might be less clear\r\n<!--\r\nPlease target the `master` branch in priority.\r\n\r\nRelevant fixes are cherry-picked for stable branches as needed by maintainers.\r\n\r\nTo speed up the contribution process and avoid CI errors, please set up pre-commit hooks locally:\r\nhttps://docs.godotengine.org/en/latest/contributing/development/code_style_guidelines.html\r\n-->\r\n",
+    "url": "https://github.com/godotengine/godot/pull/89111",
+    "repo": "godotengine/godot",
+    "base_branch": "master",
+    "head_branch": "vec_use",
+    "merged_at": "2024-03-24T00:28:52Z",
+    "state": "MERGED"
+  },
+  "changed_files": [
+    {
+      "path": "core/math/aabb.h",
+      "language": "cpp",
+      "added": 1,
+      "deleted": 1
+    },
+    {
+      "path": "core/math/delaunay_3d.h",
+      "language": "cpp",
+      "added": 3,
+      "deleted": 9
+    },
+    {
+      "path": "core/math/dynamic_bvh.h",
+      "language": "cpp",
+      "added": 2,
+      "deleted": 7
+    },
+    {
+      "path": "core/math/geometry_2d.h",
+      "language": "cpp",
+      "added": 2,
+      "deleted": 4
+    },
+    {
+      "path": "core/math/rect2.h",
+      "language": "cpp",
+      "added": 5,
+      "deleted": 9
+    },
+    {
+      "path": "core/math/rect2i.h",
+      "language": "cpp",
+      "added": 5,
+      "deleted": 9
+    },
+    {
+      "path": "drivers/gles3/storage/texture_storage.cpp",
+      "language": "cpp",
+      "added": 1,
+      "deleted": 2
+    },
+    {
+      "path": "drivers/vulkan/rendering_device_driver_vulkan.cpp",
+      "language": "cpp",
+      "added": 1,
+      "deleted": 2
+    },
+    {
+      "path": "editor/editor_atlas_packer.cpp",
+      "language": "cpp",
+      "added": 1,
+      "deleted": 2
+    },
+    {
+      "path": "editor/editor_inspector.cpp",
+      "language": "cpp",
+      "added": 2,
+      "deleted": 4
+    },
+    {
+      "path": "editor/editor_resource_picker.cpp",
+      "language": "cpp",
+      "added": 1,
+      "deleted": 1
+    },
+    {
+      "path": "editor/plugins/animation_state_machine_editor.cpp",
+      "language": "cpp",
+      "added": 2,
+      "deleted": 8
+    },
+    {
+      "path": "editor/plugins/editor_preview_plugins.cpp",
+      "language": "cpp",
+      "added": 1,
+      "deleted": 1
+    },
+    {
+      "path": "editor/plugins/skeleton_3d_editor_plugin.cpp",
+      "language": "cpp",
+      "added": 2,
+      "deleted": 4
+    },
+    {
+      "path": "editor/plugins/tiles/tile_atlas_view.cpp",
+      "language": "cpp",
+      "added": 1,
+      "deleted": 2
+    },
+    {
+      "path": "editor/plugins/version_control_editor_plugin.cpp",
+      "language": "cpp",
+      "added": 1,
+      "deleted": 2
+    },
+    {
+      "path": "modules/lightmapper_rd/lightmapper_rd.cpp",
+      "language": "cpp",
+      "added": 1,
+      "deleted": 2
+    },
+    {
+      "path": "platform/linuxbsd/x11/display_server_x11.cpp",
+      "language": "cpp",
+      "added": 3,
+      "deleted": 6
+    },
+    {
+      "path": "platform/macos/display_server_macos.mm",
+      "language": "objc",
+      "added": 3,
+      "deleted": 6
+    },
+    {
+      "path": "platform/windows/display_server_windows.cpp",
+      "language": "cpp",
+      "added": 3,
+      "deleted": 6
+    },
+    {
+      "path": "scene/2d/sprite_2d.cpp",
+      "language": "cpp",
+      "added": 1,
+      "deleted": 2
+    },
+    {
+      "path": "scene/3d/decal.cpp",
+      "language": "cpp",
+      "added": 1,
+      "deleted": 1
+    },
+    {
+      "path": "scene/3d/fog_volume.cpp",
+      "language": "cpp",
+      "added": 1,
+      "deleted": 3
+    },
+    {
+      "path": "scene/3d/gpu_particles_collision_3d.cpp",
+      "language": "cpp",
+      "added": 3,
+      "deleted": 7
+    },
+    {
+      "path": "scene/3d/occluder_instance_3d.cpp",
+      "language": "cpp",
+      "added": 1,
+      "deleted": 1
+    },
+    {
+      "path": "scene/3d/voxel_gi.cpp",
+      "language": "cpp",
+      "added": 1,
+      "deleted": 1
+    },
+    {
+      "path": "scene/gui/aspect_ratio_container.cpp",
+      "language": "cpp",
+      "added": 2,
+      "deleted": 4
+    },
+    {
+      "path": "scene/gui/center_container.cpp",
+      "language": "cpp",
+      "added": 1,
+      "deleted": 2
+    },
+    {
+      "path": "scene/gui/check_box.cpp",
+      "language": "cpp",
+      "added": 8,
+      "deleted": 8
+    },
+    {
+      "path": "scene/gui/check_button.cpp",
+      "language": "cpp",
+      "added": 2,
+      "deleted": 2
+    },
+    {
+      "path": "scene/gui/control.cpp",
+      "language": "cpp",
+      "added": 1,
+      "deleted": 2
+    },
+    {
+      "path": "scene/gui/dialogs.cpp",
+      "language": "cpp",
+      "added": 1,
+      "deleted": 2
+    },
+    {
+      "path": "scene/gui/graph_edit.cpp",
+      "language": "cpp",
+      "added": 1,
+      "deleted": 2
+    },
+    {
+      "path": "scene/gui/graph_element.cpp",
+      "language": "cpp",
+      "added": 1,
+      "deleted": 2
+    },
+    {
+      "path": "scene/gui/panel_container.cpp",
+      "language": "cpp",
+      "added": 1,
+      "deleted": 2
+    },
+    {
+      "path": "scene/gui/popup.cpp",
+      "language": "cpp",
+      "added": 1,
+      "deleted": 2
+    },
+    {
+      "path": "scene/gui/progress_bar.cpp",
+      "language": "cpp",
+      "added": 2,
+      "deleted": 4
+    },
+    {
+      "path": "scene/gui/rich_text_label.cpp",
+      "language": "cpp",
+      "added": 1,
+      "deleted": 1
+    },
+    {
+      "path": "scene/gui/scroll_container.cpp",
+      "language": "cpp",
+      "added": 1,
+      "deleted": 2
+    },
+    {
+      "path": "scene/gui/subviewport_container.cpp",
+      "language": "cpp",
+      "added": 1,
+      "deleted": 2
+    },
+    {
+      "path": "scene/gui/tab_container.cpp",
+      "language": "cpp",
+      "added": 1,
+      "deleted": 2
+    },
+    {
+      "path": "scene/gui/texture_button.cpp",
+      "language": "cpp",
+      "added": 2,
+      "deleted": 2
+    },
+    {
+      "path": "scene/gui/texture_progress_bar.cpp",
+      "language": "cpp",
+      "added": 1,
+      "deleted": 2
+    },
+    {
+      "path": "scene/main/viewport.cpp",
+      "language": "cpp",
+      "added": 2,
+      "deleted": 4
+    },
+    {
+      "path": "scene/main/window.cpp",
+      "language": "cpp",
+      "added": 3,
+      "deleted": 5
+    },
+    {
+      "path": "scene/resources/2d/polygon_path_finder.cpp",
+      "language": "cpp",
+      "added": 1,
+      "deleted": 2
+    },
+    {
+      "path": "scene/resources/2d/tile_set.cpp",
+      "language": "cpp",
+      "added": 3,
+      "deleted": 3
+    },
+    {
+      "path": "scene/resources/3d/primitive_meshes.cpp",
+      "language": "cpp",
+      "added": 2,
+      "deleted": 4
+    },
+    {
+      "path": "scene/resources/navigation_polygon.cpp",
+      "language": "cpp",
+      "added": 1,
+      "deleted": 2
+    },
+    {
+      "path": "servers/physics_3d/godot_shape_3d.cpp",
+      "language": "cpp",
+      "added": 1,
+      "deleted": 3
+    },
+    {
+      "path": "servers/rendering/renderer_rd/environment/fog.cpp",
+      "language": "cpp",
+      "added": 3,
+      "deleted": 5
+    },
+    {
+      "path": "servers/rendering/renderer_rd/storage_rd/texture_storage.cpp",
+      "language": "cpp",
+      "added": 1,
+      "deleted": 2
+    },
+    {
+      "path": "servers/rendering/renderer_scene_occlusion_cull.h",
+      "language": "cpp",
+      "added": 1,
+      "deleted": 1
+    }
+  ],
+  "nearest_tests": [],
+  "dependent_files": [],
+  "diff_summary": "53 files changed",
+  "full_diff": "diff --git a/core/math/aabb.h b/core/math/aabb.h\nindex 7927c431eb32..48a883e64c95 100644\n--- a/core/math/aabb.h\n+++ b/core/math/aabb.h\n@@ -101,7 +101,7 @@ struct _NO_DISCARD_ AABB {\n \t_FORCE_INLINE_ void expand_to(const Vector3 &p_vector); /** expand to contain a point if necessary */\n \n \t_FORCE_INLINE_ AABB abs() const {\n-\t\treturn AABB(Vector3(position.x + MIN(size.x, (real_t)0), position.y + MIN(size.y, (real_t)0), position.z + MIN(size.z, (real_t)0)), size.abs());\n+\t\treturn AABB(position + size.min(Vector3()), size.abs());\n \t}\n \n \tVariant intersects_segment_bind(const Vector3 &p_from, const Vector3 &p_to) const;\ndiff --git a/core/math/delaunay_3d.h b/core/math/delaunay_3d.h\nindex 7df8c37e3ca1..846acdecc376 100644\n--- a/core/math/delaunay_3d.h\n+++ b/core/math/delaunay_3d.h\n@@ -281,9 +281,7 @@ class Delaunay3D {\n \t\t\t}\n \n \t\t\tVector3i grid_pos = Vector3i(points[i] * ACCEL_GRID_SIZE);\n-\t\t\tgrid_pos.x = CLAMP(grid_pos.x, 0, ACCEL_GRID_SIZE - 1);\n-\t\t\tgrid_pos.y = CLAMP(grid_pos.y, 0, ACCEL_GRID_SIZE - 1);\n-\t\t\tgrid_pos.z = CLAMP(grid_pos.z, 0, ACCEL_GRID_SIZE - 1);\n+\t\t\tgrid_pos = grid_pos.clamp(Vector3i(), Vector3i(ACCEL_GRID_SIZE - 1, ACCEL_GRID_SIZE - 1, ACCEL_GRID_SIZE - 1));\n \n \t\t\tfor (List<Simplex *>::Element *E = acceleration_grid[grid_pos.x][grid_pos.y][grid_pos.z].front(); E;) {\n \t\t\t\tList<Simplex *>::Element *N = E->next(); //may be deleted\n@@ -339,12 +337,8 @@ class Delaunay3D {\n \t\t\t\t\tVector3 extents = Vector3(radius2, radius2, radius2);\n \t\t\t\t\tVector3i from = Vector3i((center - extents) * ACCEL_GRID_SIZE);\n \t\t\t\t\tVector3i to = Vector3i((center + extents) * ACCEL_GRID_SIZE);\n-\t\t\t\t\tfrom.x = CLAMP(from.x, 0, ACCEL_GRID_SIZE - 1);\n-\t\t\t\t\tfrom.y = CLAMP(from.y, 0, ACCEL_GRID_SIZE - 1);\n-\t\t\t\t\tfrom.z = CLAMP(from.z, 0, ACCEL_GRID_SIZE - 1);\n-\t\t\t\t\tto.x = CLAMP(to.x, 0, ACCEL_GRID_SIZE - 1);\n-\t\t\t\t\tto.y = CLAMP(to.y, 0, ACCEL_GRID_SIZE - 1);\n-\t\t\t\t\tto.z = CLAMP(to.z, 0, ACCEL_GRID_SIZE - 1);\n+\t\t\t\t\tfrom = from.clamp(Vector3i(), Vector3i(ACCEL_GRID_SIZE - 1, ACCEL_GRID_SIZE - 1, ACCEL_GRID_SIZE - 1));\n+\t\t\t\t\tto = to.clamp(Vector3i(), Vector3i(ACCEL_GRID_SIZE - 1, ACCEL_GRID_SIZE - 1, ACCEL_GRID_SIZE - 1));\n \n \t\t\t\t\tfor (int32_t x = from.x; x <= to.x; x++) {\n \t\t\t\t\t\tfor (int32_t y = from.y; y <= to.y; y++) {\ndiff --git a/core/math/dynamic_bvh.h b/core/math/dynamic_bvh.h\nindex f586b845c38d..26fc517f7f94 100644\n--- a/core/math/dynamic_bvh.h\n+++ b/core/math/dynamic_bvh.h\n@@ -376,13 +376,8 @@ void DynamicBVH::convex_query(const Plane *p_planes, int p_plane_count, const Ve\n \t\t\tvolume.min = p_points[0];\n \t\t\tvolume.max = p_points[0];\n \t\t} else {\n-\t\t\tvolume.min.x = MIN(volume.min.x, p_points[i].x);\n-\t\t\tvolume.min.y = MIN(volume.min.y, p_points[i].y);\n-\t\t\tvolume.min.z = MIN(volume.min.z, p_points[i].z);\n-\n-\t\t\tvolume.max.x = MAX(volume.max.x, p_points[i].x);\n-\t\t\tvolume.max.y = MAX(volume.max.y, p_points[i].y);\n-\t\t\tvolume.max.z = MAX(volume.max.z, p_points[i].z);\n+\t\t\tvolume.min = volume.min.min(p_points[i]);\n+\t\t\tvolume.max = volume.max.max(p_points[i]);\n \t\t}\n \t}\n \ndiff --git a/core/math/geometry_2d.h b/core/math/geometry_2d.h\nindex fbcaa018a8ac..1502b2807c97 100644\n--- a/core/math/geometry_2d.h\n+++ b/core/math/geometry_2d.h\n@@ -377,10 +377,8 @@ class Geometry2D {\n \t\tVector2 further_away_opposite(1e20, 1e20);\n \n \t\tfor (int i = 0; i < c; i++) {\n-\t\t\tfurther_away.x = MAX(p[i].x, further_away.x);\n-\t\t\tfurther_away.y = MAX(p[i].y, further_away.y);\n-\t\t\tfurther_away_opposite.x = MIN(p[i].x, further_away_opposite.x);\n-\t\t\tfurther_away_opposite.y = MIN(p[i].y, further_away_opposite.y);\n+\t\t\tfurther_away = further_away.max(p[i]);\n+\t\t\tfurther_away_opposite = further_away_opposite.min(p[i]);\n \t\t}\n \n \t\t// Make point outside that won't intersect with points in segment from p_point.\ndiff --git a/core/math/rect2.h b/core/math/rect2.h\nindex 0f874d4857f7..497ed8cf04a5 100644\n--- a/core/math/rect2.h\n+++ b/core/math/rect2.h\n@@ -152,14 +152,12 @@ struct _NO_DISCARD_ Rect2 {\n \t\t\treturn Rect2();\n \t\t}\n \n-\t\tnew_rect.position.x = MAX(p_rect.position.x, position.x);\n-\t\tnew_rect.position.y = MAX(p_rect.position.y, position.y);\n+\t\tnew_rect.position = p_rect.position.max(position);\n \n \t\tPoint2 p_rect_end = p_rect.position + p_rect.size;\n \t\tPoint2 end = position + size;\n \n-\t\tnew_rect.size.x = MIN(p_rect_end.x, end.x) - new_rect.position.x;\n-\t\tnew_rect.size.y = MIN(p_rect_end.y, end.y) - new_rect.position.y;\n+\t\tnew_rect.size = p_rect_end.min(end) - new_rect.position;\n \n \t\treturn new_rect;\n \t}\n@@ -172,11 +170,9 @@ struct _NO_DISCARD_ Rect2 {\n #endif\n \t\tRect2 new_rect;\n \n-\t\tnew_rect.position.x = MIN(p_rect.position.x, position.x);\n-\t\tnew_rect.position.y = MIN(p_rect.position.y, position.y);\n+\t\tnew_rect.position = p_rect.position.min(position);\n \n-\t\tnew_rect.size.x = MAX(p_rect.position.x + p_rect.size.x, position.x + size.x);\n-\t\tnew_rect.size.y = MAX(p_rect.position.y + p_rect.size.y, position.y + size.y);\n+\t\tnew_rect.size = (p_rect.position + p_rect.size).max(position + size);\n \n \t\tnew_rect.size = new_rect.size - new_rect.position; // Make relative again.\n \n@@ -282,7 +278,7 @@ struct _NO_DISCARD_ Rect2 {\n \t}\n \n \t_FORCE_INLINE_ Rect2 abs() const {\n-\t\treturn Rect2(Point2(position.x + MIN(size.x, (real_t)0), position.y + MIN(size.y, (real_t)0)), size.abs());\n+\t\treturn Rect2(position + size.min(Point2()), size.abs());\n \t}\n \n \t_FORCE_INLINE_ Rect2 round() const {\ndiff --git a/core/math/rect2i.h b/core/math/rect2i.h\nindex 205b2c7198db..64806414c771 100644\n--- a/core/math/rect2i.h\n+++ b/core/math/rect2i.h\n@@ -95,14 +95,12 @@ struct _NO_DISCARD_ Rect2i {\n \t\t\treturn Rect2i();\n \t\t}\n \n-\t\tnew_rect.position.x = MAX(p_rect.position.x, position.x);\n-\t\tnew_rect.position.y = MAX(p_rect.position.y, position.y);\n+\t\tnew_rect.position = p_rect.position.max(position);\n \n \t\tPoint2i p_rect_end = p_rect.position + p_rect.size;\n \t\tPoint2i end = position + size;\n \n-\t\tnew_rect.size.x = MIN(p_rect_end.x, end.x) - new_rect.position.x;\n-\t\tnew_rect.size.y = MIN(p_rect_end.y, end.y) - new_rect.position.y;\n+\t\tnew_rect.size = p_rect_end.min(end) - new_rect.position;\n \n \t\treturn new_rect;\n \t}\n@@ -115,11 +113,9 @@ struct _NO_DISCARD_ Rect2i {\n #endif\n \t\tRect2i new_rect;\n \n-\t\tnew_rect.position.x = MIN(p_rect.position.x, position.x);\n-\t\tnew_rect.position.y = MIN(p_rect.position.y, position.y);\n+\t\tnew_rect.position = p_rect.position.min(position);\n \n-\t\tnew_rect.size.x = MAX(p_rect.position.x + p_rect.size.x, position.x + size.x);\n-\t\tnew_rect.size.y = MAX(p_rect.position.y + p_rect.size.y, position.y + size.y);\n+\t\tnew_rect.size = (p_rect.position + p_rect.size).max(position + size);\n \n \t\tnew_rect.size = new_rect.size - new_rect.position; // Make relative again.\n \n@@ -217,7 +213,7 @@ struct _NO_DISCARD_ Rect2i {\n \t}\n \n \t_FORCE_INLINE_ Rect2i abs() const {\n-\t\treturn Rect2i(Point2i(position.x + MIN(size.x, 0), position.y + MIN(size.y, 0)), size.abs());\n+\t\treturn Rect2i(position + size.min(Point2i()), size.abs());\n \t}\n \n \t_FORCE_INLINE_ void set_end(const Vector2i &p_end) {\ndiff --git a/drivers/gles3/storage/texture_storage.cpp b/drivers/gles3/storage/texture_storage.cpp\nindex a03253582758..c955b3f70800 100644\n--- a/drivers/gles3/storage/texture_storage.cpp\n+++ b/drivers/gles3/storage/texture_storage.cpp\n@@ -2812,8 +2812,7 @@ void TextureStorage::_render_target_allocate_sdf(RenderTarget *rt) {\n \t}\n \n \trt->process_size = size * scale / 100;\n-\trt->process_size.x = MAX(rt->process_size.x, 1);\n-\trt->process_size.y = MAX(rt->process_size.y, 1);\n+\trt->process_size = rt->process_size.max(Size2i(1, 1));\n \n \tglGenTextures(2, rt->sdf_texture_process);\n \tglBindTexture(GL_TEXTURE_2D, rt->sdf_texture_process[0]);\ndiff --git a/drivers/vulkan/rendering_device_driver_vulkan.cpp b/drivers/vulkan/rendering_device_driver_vulkan.cpp\nindex 297407da41ba..1906d168fe5a 100644\n--- a/drivers/vulkan/rendering_device_driver_vulkan.cpp\n+++ b/drivers/vulkan/rendering_device_driver_vulkan.cpp\n@@ -760,8 +760,7 @@ Error RenderingDeviceDriverVulkan::_check_device_capabilities() {\n \t\t\t\tvrs_capabilities.max_texel_size.y = vrs_properties.maxFragmentShadingRateAttachmentTexelSize.height;\n \n \t\t\t\t// We'll attempt to default to a texel size of 16x16.\n-\t\t\t\tvrs_capabilities.texel_size.x = CLAMP(16, vrs_capabilities.min_texel_size.x, vrs_capabilities.max_texel_size.x);\n-\t\t\t\tvrs_capabilities.texel_size.y = CLAMP(16, vrs_capabilities.min_texel_size.y, vrs_capabilities.max_texel_size.y);\n+\t\t\t\tvrs_capabilities.texel_size = Vector2i(16, 16).clamp(vrs_capabilities.min_texel_size, vrs_capabilities.max_texel_size);\n \n \t\t\t\tprint_verbose(String(\"  Attachment fragment shading rate\") + String(\", min texel size: (\") + itos(vrs_capabilities.min_texel_size.x) + String(\", \") + itos(vrs_capabilities.min_texel_size.y) + String(\")\") + String(\", max texel size: (\") + itos(vrs_capabilities.max_texel_size.x) + String(\", \") + itos(vrs_capabilities.max_texel_size.y) + String(\")\"));\n \t\t\t}\ndiff --git a/editor/editor_atlas_packer.cpp b/editor/editor_atlas_packer.cpp\nindex 5de4869c8825..a0f5f1bf1186 100644\n--- a/editor/editor_atlas_packer.cpp\n+++ b/editor/editor_atlas_packer.cpp\n@@ -72,8 +72,7 @@ void EditorAtlasPacker::chart_pack(Vector<Chart> &charts, int &r_width, int &r_h\n \t\t\t\tVector2 vtx = chart.vertices[chart.faces[j].vertex[k]];\n \t\t\t\tvtx -= aabb.position;\n \t\t\t\tvtx /= divide_by;\n-\t\t\t\tvtx.x = MIN(vtx.x, w - 1);\n-\t\t\t\tvtx.y = MIN(vtx.y, h - 1);\n+\t\t\t\tvtx = vtx.min(Vector2(w - 1, h - 1));\n \t\t\t\tv[k] = vtx;\n \t\t\t}\n \ndiff --git a/editor/editor_inspector.cpp b/editor/editor_inspector.cpp\nindex a14c6e846231..ff2b305a4647 100644\n--- a/editor/editor_inspector.cpp\n+++ b/editor/editor_inspector.cpp\n@@ -86,8 +86,7 @@ Size2 EditorProperty::get_minimum_size() const {\n \t\t}\n \n \t\tSize2 minsize = c->get_combined_minimum_size();\n-\t\tms.width = MAX(ms.width, minsize.width);\n-\t\tms.height = MAX(ms.height, minsize.height);\n+\t\tms = ms.max(minsize);\n \t}\n \n \tif (keying) {\n@@ -1463,8 +1462,7 @@ Size2 EditorInspectorSection::get_minimum_size() const {\n \t\t\tcontinue;\n \t\t}\n \t\tSize2 minsize = c->get_combined_minimum_size();\n-\t\tms.width = MAX(ms.width, minsize.width);\n-\t\tms.height = MAX(ms.height, minsize.height);\n+\t\tms = ms.max(minsize);\n \t}\n \n \tRef<Font> font = get_theme_font(SNAME(\"font\"), SNAME(\"Tree\"));\ndiff --git a/editor/editor_resource_picker.cpp b/editor/editor_resource_picker.cpp\nindex a9225a305748..5450040bea38 100644\n--- a/editor/editor_resource_picker.cpp\n+++ b/editor/editor_resource_picker.cpp\n@@ -112,7 +112,7 @@ void EditorResourcePicker::_update_resource_preview(const String &p_path, const\n \t\t\t\tpreview_rect->set_stretch_mode(TextureRect::STRETCH_KEEP_ASPECT_CENTERED);\n \t\t\t\tint thumbnail_size = EDITOR_GET(\"filesystem/file_dialog/thumbnail_size\");\n \t\t\t\tthumbnail_size *= EDSCALE;\n-\t\t\t\tassign_button->set_custom_minimum_size(Size2(MAX(1, assign_button_min_size.x), MAX(thumbnail_size, assign_button_min_size.y)));\n+\t\t\t\tassign_button->set_custom_minimum_size(assign_button_min_size.max(Size2(1, thumbnail_size)));\n \t\t\t}\n \n \t\t\tpreview_rect->set_texture(p_preview);\ndiff --git a/editor/plugins/animation_state_machine_editor.cpp b/editor/plugins/animation_state_machine_editor.cpp\nindex dbfb143b2270..15dc518a675d 100644\n--- a/editor/plugins/animation_state_machine_editor.cpp\n+++ b/editor/plugins/animation_state_machine_editor.cpp\n@@ -337,10 +337,7 @@ void AnimationNodeStateMachineEditor::_state_machine_gui_input(const Ref<InputEv\n \tif (mb.is_valid() && mb->is_pressed() && mb->get_button_index() == MouseButton::LEFT && tool_select->is_pressed()) {\n \t\tbox_selecting = true;\n \t\tbox_selecting_from = box_selecting_to = state_machine_draw->get_local_mouse_position();\n-\t\tbox_selecting_rect = Rect2(MIN(box_selecting_from.x, box_selecting_to.x),\n-\t\t\t\tMIN(box_selecting_from.y, box_selecting_to.y),\n-\t\t\t\tABS(box_selecting_from.x - box_selecting_to.x),\n-\t\t\t\tABS(box_selecting_from.y - box_selecting_to.y));\n+\t\tbox_selecting_rect = Rect2(box_selecting_from.min(box_selecting_to), (box_selecting_from - box_selecting_to).abs());\n \n \t\tif (mb->is_command_or_control_pressed() || mb->is_shift_pressed()) {\n \t\t\tprevious_selected = selected_nodes;\n@@ -423,10 +420,7 @@ void AnimationNodeStateMachineEditor::_state_machine_gui_input(const Ref<InputEv\n \tif (mm.is_valid() && box_selecting) {\n \t\tbox_selecting_to = state_machine_draw->get_local_mouse_position();\n \n-\t\tbox_selecting_rect = Rect2(MIN(box_selecting_from.x, box_selecting_to.x),\n-\t\t\t\tMIN(box_selecting_from.y, box_selecting_to.y),\n-\t\t\t\tABS(box_selecting_from.x - box_selecting_to.x),\n-\t\t\t\tABS(box_selecting_from.y - box_selecting_to.y));\n+\t\tbox_selecting_rect = Rect2(box_selecting_from.min(box_selecting_to), (box_selecting_from - box_selecting_to).abs());\n \n \t\tfor (int i = 0; i < node_rects.size(); i++) {\n \t\t\tbool in_box = node_rects[i].node.intersects(box_selecting_rect);\ndiff --git a/editor/plugins/editor_preview_plugins.cpp b/editor/plugins/editor_preview_plugins.cpp\nindex e8804fdf1241..70213b280cac 100644\n--- a/editor/plugins/editor_preview_plugins.cpp\n+++ b/editor/plugins/editor_preview_plugins.cpp\n@@ -130,7 +130,7 @@ Ref<Texture2D> EditorTexturePreviewPlugin::generate(const Ref<Resource> &p_from,\n \tif (new_size.y > p_size.y) {\n \t\tnew_size = Vector2(new_size.x * p_size.y / new_size.y, p_size.y);\n \t}\n-\tVector2i new_size_i(MAX(1, (int)new_size.x), MAX(1, (int)new_size.y));\n+\tVector2i new_size_i = Vector2i(new_size).max(Vector2i(1, 1));\n \timg->resize(new_size_i.x, new_size_i.y, Image::INTERPOLATE_CUBIC);\n \tpost_process_preview(img);\n \ndiff --git a/editor/plugins/skeleton_3d_editor_plugin.cpp b/editor/plugins/skeleton_3d_editor_plugin.cpp\nindex ffc59a34292b..6a66a984c0b0 100644\n--- a/editor/plugins/skeleton_3d_editor_plugin.cpp\n+++ b/editor/plugins/skeleton_3d_editor_plugin.cpp\n@@ -505,10 +505,8 @@ void Skeleton3DEditor::_file_selected(const String &p_file) {\n \t\t\tposition_max = Vector2(grest.origin.x, grest.origin.y);\n \t\t\tposition_min = Vector2(grest.origin.x, grest.origin.y);\n \t\t} else {\n-\t\t\tposition_max.x = MAX(grest.origin.x, position_max.x);\n-\t\t\tposition_max.y = MAX(grest.origin.y, position_max.y);\n-\t\t\tposition_min.x = MIN(grest.origin.x, position_min.x);\n-\t\t\tposition_min.y = MIN(grest.origin.y, position_min.y);\n+\t\t\tposition_max = position_max.max(Vector2(grest.origin.x, grest.origin.y));\n+\t\t\tposition_min = position_min.min(Vector2(grest.origin.x, grest.origin.y));\n \t\t}\n \t}\n \ndiff --git a/editor/plugins/tiles/tile_atlas_view.cpp b/editor/plugins/tiles/tile_atlas_view.cpp\nindex 8c2cb68413e9..c3900b823561 100644\n--- a/editor/plugins/tiles/tile_atlas_view.cpp\n+++ b/editor/plugins/tiles/tile_atlas_view.cpp\n@@ -501,8 +501,7 @@ Vector2i TileAtlasView::get_atlas_tile_coords_at_pos(const Vector2 p_pos, bool p\n \t// Clamp.\n \tif (p_clamp) {\n \t\tVector2i size = tile_set_atlas_source->get_atlas_grid_size();\n-\t\tret.x = CLAMP(ret.x, 0, size.x - 1);\n-\t\tret.y = CLAMP(ret.y, 0, size.y - 1);\n+\t\tret = ret.clamp(Vector2i(), size - Vector2i(1, 1));\n \t}\n \n \treturn ret;\ndiff --git a/editor/plugins/version_control_editor_plugin.cpp b/editor/plugins/version_control_editor_plugin.cpp\nindex 9460f9fef2cc..1a602568fe04 100644\n--- a/editor/plugins/version_control_editor_plugin.cpp\n+++ b/editor/plugins/version_control_editor_plugin.cpp\n@@ -93,8 +93,7 @@ void VersionControlEditorPlugin::popup_vcs_set_up_dialog(const Control *p_gui_ba\n \tif (!available_plugins.is_empty()) {\n \t\tSize2 popup_size = Size2(400, 100);\n \t\tSize2 window_size = p_gui_base->get_viewport_rect().size;\n-\t\tpopup_size.x = MIN(window_size.x * 0.5, popup_size.x);\n-\t\tpopup_size.y = MIN(window_size.y * 0.5, popup_size.y);\n+\t\tpopup_size = popup_size.min(window_size * 0.5);\n \n \t\t_populate_available_vcs_names();\n \ndiff --git a/modules/lightmapper_rd/lightmapper_rd.cpp b/modules/lightmapper_rd/lightmapper_rd.cpp\nindex 5d22cb1301c3..b6f5d6ce57eb 100644\n--- a/modules/lightmapper_rd/lightmapper_rd.cpp\n+++ b/modules/lightmapper_rd/lightmapper_rd.cpp\n@@ -233,8 +233,7 @@ Lightmapper::BakeError LightmapperRD::_blit_meshes_into_atlas(int p_max_texture_\n \t\tMeshInstance &mi = mesh_instances.write[m_i];\n \t\tSize2i s = Size2i(mi.data.albedo_on_uv2->get_width(), mi.data.albedo_on_uv2->get_height());\n \t\tsizes.push_back(s);\n-\t\tatlas_size.width = MAX(atlas_size.width, s.width + 2);\n-\t\tatlas_size.height = MAX(atlas_size.height, s.height + 2);\n+\t\tatlas_size = atlas_size.max(s + Size2i(2, 2));\n \t}\n \n \tint max = nearest_power_of_2_templated(atlas_size.width);\ndiff --git a/platform/linuxbsd/x11/display_server_x11.cpp b/platform/linuxbsd/x11/display_server_x11.cpp\nindex 34aa15abbb7a..226e1236488b 100644\n--- a/platform/linuxbsd/x11/display_server_x11.cpp\n+++ b/platform/linuxbsd/x11/display_server_x11.cpp\n@@ -1995,8 +1995,7 @@ void DisplayServerX11::window_set_current_screen(int p_screen, WindowID p_window\n \t\tSize2i wsize = window_get_size(p_window);\n \t\twpos += srect.position;\n \t\tif (srect != Rect2i()) {\n-\t\t\twpos.x = CLAMP(wpos.x, srect.position.x, srect.position.x + srect.size.width - wsize.width / 3);\n-\t\t\twpos.y = CLAMP(wpos.y, srect.position.y, srect.position.y + srect.size.height - wsize.height / 3);\n+\t\t\twpos = wpos.clamp(srect.position, srect.position + srect.size - wsize / 3);\n \t\t}\n \t\twindow_set_position(wpos, p_window);\n \t}\n@@ -2224,8 +2223,7 @@ void DisplayServerX11::window_set_size(const Size2i p_size, WindowID p_window) {\n \tERR_FAIL_COND(!windows.has(p_window));\n \n \tSize2i size = p_size;\n-\tsize.x = MAX(1, size.x);\n-\tsize.y = MAX(1, size.y);\n+\tsize = size.max(Size2i(1, 1));\n \n \tWindowData &wd = windows[p_window];\n \n@@ -5451,8 +5449,7 @@ DisplayServerX11::WindowID DisplayServerX11::_create_window(WindowMode p_mode, V\n \t} else {\n \t\tRect2i srect = screen_get_usable_rect(rq_screen);\n \t\tPoint2i wpos = p_rect.position;\n-\t\twpos.x = CLAMP(wpos.x, srect.position.x, srect.position.x + srect.size.width - p_rect.size.width / 3);\n-\t\twpos.y = CLAMP(wpos.y, srect.position.y, srect.position.y + srect.size.height - p_rect.size.height / 3);\n+\t\twpos = wpos.clamp(srect.position, srect.position + srect.size - p_rect.size / 3);\n \n \t\twin_rect.position = wpos;\n \t}\ndiff --git a/platform/macos/display_server_macos.mm b/platform/macos/display_server_macos.mm\nindex c52ed00b3d9b..99e9d20f2bed 100644\n--- a/platform/macos/display_server_macos.mm\n+++ b/platform/macos/display_server_macos.mm\n@@ -83,8 +83,7 @@\n \t\tRect2i srect = screen_get_usable_rect(rq_screen);\n \t\tPoint2i wpos = p_rect.position;\n \t\tif (srect != Rect2i()) {\n-\t\t\twpos.x = CLAMP(wpos.x, srect.position.x, srect.position.x + srect.size.width - p_rect.size.width / 3);\n-\t\t\twpos.y = CLAMP(wpos.y, srect.position.y, srect.position.y + srect.size.height - p_rect.size.height / 3);\n+\t\t\twpos = wpos.clamp(srect.position, srect.position + srect.size - p_rect.size / 3);\n \t\t}\n \t\t// macOS native y-coordinate relative to _get_screens_origin() is negative,\n \t\t// Godot passes a positive value.\n@@ -1877,8 +1876,7 @@\n \tSize2i wsize = window_get_size(p_window);\n \twpos += srect.position;\n \n-\twpos.x = CLAMP(wpos.x, srect.position.x, srect.position.x + srect.size.width - wsize.width / 3);\n-\twpos.y = CLAMP(wpos.y, srect.position.y, srect.position.y + srect.size.height - wsize.height / 3);\n+\twpos = wpos.clamp(srect.position, srect.position + srect.size - wsize / 3);\n \twindow_set_position(wpos, p_window);\n \n \tif (was_fullscreen) {\n@@ -2309,8 +2307,7 @@\n \tWindowData &wd = windows[p_window];\n \tfloat scale = screen_get_max_scale();\n \twd.wb_offset = p_offset / scale;\n-\twd.wb_offset.x = MAX(wd.wb_offset.x, 12);\n-\twd.wb_offset.y = MAX(wd.wb_offset.y, 12);\n+\twd.wb_offset = wd.wb_offset.max(Vector2i(12, 12));\n \tif (wd.window_button_view) {\n \t\t[wd.window_button_view setOffset:NSMakePoint(wd.wb_offset.x, wd.wb_offset.y)];\n \t}\ndiff --git a/platform/windows/display_server_windows.cpp b/platform/windows/display_server_windows.cpp\nindex 074d40bf4bd2..79078456a56d 100644\n--- a/platform/windows/display_server_windows.cpp\n+++ b/platform/windows/display_server_windows.cpp\n@@ -903,8 +903,7 @@ static BOOL CALLBACK _MonitorEnumProcPos(HMONITOR hMonitor, HDC hdcMonitor, LPRE\n \n static BOOL CALLBACK _MonitorEnumProcOrigin(HMONITOR hMonitor, HDC hdcMonitor, LPRECT lprcMonitor, LPARAM dwData) {\n \tEnumPosData *data = (EnumPosData *)dwData;\n-\tdata->pos.x = MIN(data->pos.x, lprcMonitor->left);\n-\tdata->pos.y = MIN(data->pos.y, lprcMonitor->top);\n+\tdata->pos = data->pos.min(Point2(lprcMonitor->left, lprcMonitor->top));\n \n \treturn TRUE;\n }\n@@ -1637,8 +1636,7 @@ void DisplayServerWindows::window_set_current_screen(int p_screen, WindowID p_wi\n \t\tSize2i wsize = window_get_size(p_window);\n \t\twpos += srect.position;\n \n-\t\twpos.x = CLAMP(wpos.x, srect.position.x, srect.position.x + srect.size.width - wsize.width / 3);\n-\t\twpos.y = CLAMP(wpos.y, srect.position.y, srect.position.y + srect.size.height - wsize.height / 3);\n+\t\twpos = wpos.clamp(srect.position, srect.position + srect.size - wsize / 3);\n \t\twindow_set_position(wpos, p_window);\n \t}\n }\n@@ -5076,8 +5074,7 @@ DisplayServer::WindowID DisplayServerWindows::_create_window(WindowMode p_mode,\n \t\tRect2i srect = screen_get_usable_rect(rq_screen);\n \t\tPoint2i wpos = p_rect.position;\n \t\tif (srect != Rect2i()) {\n-\t\t\twpos.x = CLAMP(wpos.x, srect.position.x, srect.position.x + srect.size.width - p_rect.size.width / 3);\n-\t\t\twpos.y = CLAMP(wpos.y, srect.position.y, srect.position.y + srect.size.height - p_rect.size.height / 3);\n+\t\t\twpos = wpos.clamp(srect.position, srect.position + srect.size - p_rect.size / 3);\n \t\t}\n \n \t\tWindowRect.left = wpos.x;\ndiff --git a/scene/2d/sprite_2d.cpp b/scene/2d/sprite_2d.cpp\nindex 3c19dd002091..5745a5929721 100644\n--- a/scene/2d/sprite_2d.cpp\n+++ b/scene/2d/sprite_2d.cpp\n@@ -374,8 +374,7 @@ bool Sprite2D::is_pixel_opaque(const Point2 &p_point) const {\n \t\t\tq.y = texture->get_size().height - q.y - 1;\n \t\t}\n \t} else {\n-\t\tq.x = MIN(q.x, texture->get_size().width - 1);\n-\t\tq.y = MIN(q.y, texture->get_size().height - 1);\n+\t\tq = q.min(texture->get_size() - Vector2(1, 1));\n \t}\n \n \treturn texture->is_pixel_opaque((int)q.x, (int)q.y);\ndiff --git a/scene/3d/decal.cpp b/scene/3d/decal.cpp\nindex 6878df21d8ef..caabb4225f32 100644\n--- a/scene/3d/decal.cpp\n+++ b/scene/3d/decal.cpp\n@@ -31,7 +31,7 @@\n #include \"decal.h\"\n \n void Decal::set_size(const Vector3 &p_size) {\n-\tsize = Vector3(MAX(0.001, p_size.x), MAX(0.001, p_size.y), MAX(0.001, p_size.z));\n+\tsize = p_size.max(Vector3(0.001, 0.001, 0.001));\n \tRS::get_singleton()->decal_set_size(decal, size);\n \tupdate_gizmos();\n }\ndiff --git a/scene/3d/fog_volume.cpp b/scene/3d/fog_volume.cpp\nindex 12ca1888c47f..8af386f282b8 100644\n--- a/scene/3d/fog_volume.cpp\n+++ b/scene/3d/fog_volume.cpp\n@@ -73,9 +73,7 @@ bool FogVolume::_get(const StringName &p_name, Variant &r_property) const {\n \n void FogVolume::set_size(const Vector3 &p_size) {\n \tsize = p_size;\n-\tsize.x = MAX(0.0, size.x);\n-\tsize.y = MAX(0.0, size.y);\n-\tsize.z = MAX(0.0, size.z);\n+\tsize = size.max(Vector3());\n \tRS::get_singleton()->fog_volume_set_size(_get_volume(), size);\n \tupdate_gizmos();\n }\ndiff --git a/scene/3d/gpu_particles_collision_3d.cpp b/scene/3d/gpu_particles_collision_3d.cpp\nindex cbc75801b0a9..8fd5f25749cc 100644\n--- a/scene/3d/gpu_particles_collision_3d.cpp\n+++ b/scene/3d/gpu_particles_collision_3d.cpp\n@@ -330,7 +330,7 @@ void GPUParticlesCollisionSDF3D::_find_closest_distance(const Vector3 &p_pos, co\n \t\t\tVector3 center = p_bvh[p_bvh_cell].bounds.position + he;\n \n \t\t\tVector3 rel = (p_pos - center).abs();\n-\t\t\tVector3 closest(MIN(rel.x, he.x), MIN(rel.y, he.y), MIN(rel.z, he.z));\n+\t\t\tVector3 closest = rel.min(he);\n \t\t\tfloat d = rel.distance_to(closest);\n \n \t\t\tif (d >= r_closest_distance) {\n@@ -382,9 +382,7 @@ Vector3i GPUParticlesCollisionSDF3D::get_estimated_cell_size() const {\n \tfloat cell_size = aabb.get_longest_axis_size() / float(subdiv);\n \n \tVector3i sdf_size = Vector3i(aabb.size / cell_size);\n-\tsdf_size.x = MAX(1, sdf_size.x);\n-\tsdf_size.y = MAX(1, sdf_size.y);\n-\tsdf_size.z = MAX(1, sdf_size.z);\n+\tsdf_size = sdf_size.max(Vector3i(1, 1, 1));\n \treturn sdf_size;\n }\n \n@@ -397,9 +395,7 @@ Ref<Image> GPUParticlesCollisionSDF3D::bake() {\n \tfloat cell_size = aabb.get_longest_axis_size() / float(subdiv);\n \n \tVector3i sdf_size = Vector3i(aabb.size / cell_size);\n-\tsdf_size.x = MAX(1, sdf_size.x);\n-\tsdf_size.y = MAX(1, sdf_size.y);\n-\tsdf_size.z = MAX(1, sdf_size.z);\n+\tsdf_size = sdf_size.max(Vector3i(1, 1, 1));\n \n \tif (bake_begin_function) {\n \t\tbake_begin_function(100);\ndiff --git a/scene/3d/occluder_instance_3d.cpp b/scene/3d/occluder_instance_3d.cpp\nindex 8d995a87850e..2f77185d0dae 100644\n--- a/scene/3d/occluder_instance_3d.cpp\n+++ b/scene/3d/occluder_instance_3d.cpp\n@@ -236,7 +236,7 @@ void BoxOccluder3D::set_size(const Vector3 &p_size) {\n \t\treturn;\n \t}\n \n-\tsize = Vector3(MAX(p_size.x, 0.0f), MAX(p_size.y, 0.0f), MAX(p_size.z, 0.0f));\n+\tsize = p_size.max(Vector3());\n \t_update();\n }\n \ndiff --git a/scene/3d/voxel_gi.cpp b/scene/3d/voxel_gi.cpp\nindex eb8569fa30fa..938d6e569903 100644\n--- a/scene/3d/voxel_gi.cpp\n+++ b/scene/3d/voxel_gi.cpp\n@@ -294,7 +294,7 @@ VoxelGI::Subdiv VoxelGI::get_subdiv() const {\n \n void VoxelGI::set_size(const Vector3 &p_size) {\n \t// Prevent very small size dimensions as these breaks baking if other size dimensions are set very high.\n-\tsize = Vector3(MAX(1.0, p_size.x), MAX(1.0, p_size.y), MAX(1.0, p_size.z));\n+\tsize = p_size.max(Vector3(1.0, 1.0, 1.0));\n \tupdate_gizmos();\n }\n \ndiff --git a/scene/gui/aspect_ratio_container.cpp b/scene/gui/aspect_ratio_container.cpp\nindex 94240cceadd1..711dd137813c 100644\n--- a/scene/gui/aspect_ratio_container.cpp\n+++ b/scene/gui/aspect_ratio_container.cpp\n@@ -46,8 +46,7 @@ Size2 AspectRatioContainer::get_minimum_size() const {\n \t\t\tcontinue;\n \t\t}\n \t\tSize2 minsize = c->get_combined_minimum_size();\n-\t\tms.width = MAX(ms.width, minsize.width);\n-\t\tms.height = MAX(ms.height, minsize.height);\n+\t\tms = ms.max(minsize);\n \t}\n \treturn ms;\n }\n@@ -144,8 +143,7 @@ void AspectRatioContainer::_notification(int p_what) {\n \t\t\t\t\t} break;\n \t\t\t\t}\n \t\t\t\tchild_size *= scale_factor;\n-\t\t\t\tchild_size.x = MAX(child_size.x, child_minsize.x);\n-\t\t\t\tchild_size.y = MAX(child_size.y, child_minsize.y);\n+\t\t\t\tchild_size = child_size.max(child_minsize);\n \n \t\t\t\tfloat align_x = 0.5;\n \t\t\t\tswitch (alignment_horizontal) {\ndiff --git a/scene/gui/center_container.cpp b/scene/gui/center_container.cpp\nindex 7a860cdea7d3..acdeae289b92 100644\n--- a/scene/gui/center_container.cpp\n+++ b/scene/gui/center_container.cpp\n@@ -47,8 +47,7 @@ Size2 CenterContainer::get_minimum_size() const {\n \t\t\tcontinue;\n \t\t}\n \t\tSize2 minsize = c->get_combined_minimum_size();\n-\t\tms.width = MAX(ms.width, minsize.width);\n-\t\tms.height = MAX(ms.height, minsize.height);\n+\t\tms = ms.max(minsize);\n \t}\n \n \treturn ms;\ndiff --git a/scene/gui/check_box.cpp b/scene/gui/check_box.cpp\nindex 46c20e4a1c0f..af6696834ecb 100644\n--- a/scene/gui/check_box.cpp\n+++ b/scene/gui/check_box.cpp\n@@ -36,28 +36,28 @@\n Size2 CheckBox::get_icon_size() const {\n \tSize2 tex_size = Size2(0, 0);\n \tif (!theme_cache.checked.is_null()) {\n-\t\ttex_size = Size2(theme_cache.checked->get_width(), theme_cache.checked->get_height());\n+\t\ttex_size = theme_cache.checked->get_size();\n \t}\n \tif (!theme_cache.unchecked.is_null()) {\n-\t\ttex_size = Size2(MAX(tex_size.width, theme_cache.unchecked->get_width()), MAX(tex_size.height, theme_cache.unchecked->get_height()));\n+\t\ttex_size = tex_size.max(theme_cache.unchecked->get_size());\n \t}\n \tif (!theme_cache.radio_checked.is_null()) {\n-\t\ttex_size = Size2(MAX(tex_size.width, theme_cache.radio_checked->get_width()), MAX(tex_size.height, theme_cache.radio_checked->get_height()));\n+\t\ttex_size = tex_size.max(theme_cache.radio_checked->get_size());\n \t}\n \tif (!theme_cache.radio_unchecked.is_null()) {\n-\t\ttex_size = Size2(MAX(tex_size.width, theme_cache.radio_unchecked->get_width()), MAX(tex_size.height, theme_cache.radio_unchecked->get_height()));\n+\t\ttex_size = tex_size.max(theme_cache.radio_unchecked->get_size());\n \t}\n \tif (!theme_cache.checked_disabled.is_null()) {\n-\t\ttex_size = Size2(MAX(tex_size.width, theme_cache.checked_disabled->get_width()), MAX(tex_size.height, theme_cache.checked_disabled->get_height()));\n+\t\ttex_size = tex_size.max(theme_cache.checked_disabled->get_size());\n \t}\n \tif (!theme_cache.unchecked_disabled.is_null()) {\n-\t\ttex_size = Size2(MAX(tex_size.width, theme_cache.unchecked_disabled->get_width()), MAX(tex_size.height, theme_cache.unchecked_disabled->get_height()));\n+\t\ttex_size = tex_size.max(theme_cache.unchecked_disabled->get_size());\n \t}\n \tif (!theme_cache.radio_checked_disabled.is_null()) {\n-\t\ttex_size = Size2(MAX(tex_size.width, theme_cache.radio_checked_disabled->get_width()), MAX(tex_size.height, theme_cache.radio_checked_disabled->get_height()));\n+\t\ttex_size = tex_size.max(theme_cache.radio_checked_disabled->get_size());\n \t}\n \tif (!theme_cache.radio_unchecked_disabled.is_null()) {\n-\t\ttex_size = Size2(MAX(tex_size.width, theme_cache.radio_unchecked_disabled->get_width()), MAX(tex_size.height, theme_cache.radio_unchecked_disabled->get_height()));\n+\t\ttex_size = tex_size.max(theme_cache.radio_unchecked_disabled->get_size());\n \t}\n \treturn tex_size;\n }\ndiff --git a/scene/gui/check_button.cpp b/scene/gui/check_button.cpp\nindex ca2ef220fdf1..ab3b74a3c37a 100644\n--- a/scene/gui/check_button.cpp\n+++ b/scene/gui/check_button.cpp\n@@ -57,10 +57,10 @@ Size2 CheckButton::get_icon_size() const {\n \n \tSize2 tex_size = Size2(0, 0);\n \tif (!on_tex.is_null()) {\n-\t\ttex_size = Size2(on_tex->get_width(), on_tex->get_height());\n+\t\ttex_size = on_tex->get_size();\n \t}\n \tif (!off_tex.is_null()) {\n-\t\ttex_size = Size2(MAX(tex_size.width, off_tex->get_width()), MAX(tex_size.height, off_tex->get_height()));\n+\t\ttex_size = tex_size.max(off_tex->get_size());\n \t}\n \n \treturn tex_size;\ndiff --git a/scene/gui/control.cpp b/scene/gui/control.cpp\nindex d65399446ca1..342b90bb5252 100644\n--- a/scene/gui/control.cpp\n+++ b/scene/gui/control.cpp\n@@ -1653,8 +1653,7 @@ Size2 Control::get_custom_minimum_size() const {\n \n void Control::_update_minimum_size_cache() {\n \tSize2 minsize = get_minimum_size();\n-\tminsize.x = MAX(minsize.x, data.custom_minimum_size.x);\n-\tminsize.y = MAX(minsize.y, data.custom_minimum_size.y);\n+\tminsize = minsize.max(data.custom_minimum_size);\n \n \tdata.minimum_size_cache = minsize;\n \tdata.minimum_size_valid = true;\ndiff --git a/scene/gui/dialogs.cpp b/scene/gui/dialogs.cpp\nindex 3746b667f683..c13a2e281a67 100644\n--- a/scene/gui/dialogs.cpp\n+++ b/scene/gui/dialogs.cpp\n@@ -252,8 +252,7 @@ Size2 AcceptDialog::_get_contents_minimum_size() const {\n \t\t}\n \n \t\tSize2 child_minsize = c->get_combined_minimum_size();\n-\t\tcontent_minsize.x = MAX(child_minsize.x, content_minsize.x);\n-\t\tcontent_minsize.y = MAX(child_minsize.y, content_minsize.y);\n+\t\tcontent_minsize = child_minsize.max(content_minsize);\n \t}\n \n \t// Then we take the background panel as it provides the offsets,\ndiff --git a/scene/gui/graph_edit.cpp b/scene/gui/graph_edit.cpp\nindex 056872a4fe42..8bce5c0caa32 100644\n--- a/scene/gui/graph_edit.cpp\n+++ b/scene/gui/graph_edit.cpp\n@@ -181,8 +181,7 @@ void GraphEditMinimap::gui_input(const Ref<InputEvent> &p_ev) {\n \t\tif (is_resizing) {\n \t\t\t// Prevent setting minimap wider than GraphEdit.\n \t\t\tVector2 new_minimap_size;\n-\t\t\tnew_minimap_size.width = MIN(get_size().width - mm->get_relative().x, ge->get_size().width - 2.0 * minimap_padding.x);\n-\t\t\tnew_minimap_size.height = MIN(get_size().height - mm->get_relative().y, ge->get_size().height - 2.0 * minimap_padding.y);\n+\t\t\tnew_minimap_size = (get_size() - mm->get_relative()).min(ge->get_size() - 2.0 * minimap_padding);\n \t\t\tge->set_minimap_size(new_minimap_size);\n \n \t\t\tqueue_redraw();\ndiff --git a/scene/gui/graph_element.cpp b/scene/gui/graph_element.cpp\nindex 7fa5b0ceec92..9eb9578b2ca2 100644\n--- a/scene/gui/graph_element.cpp\n+++ b/scene/gui/graph_element.cpp\n@@ -74,8 +74,7 @@ Size2 GraphElement::get_minimum_size() const {\n \n \t\tSize2i size = child->get_combined_minimum_size();\n \n-\t\tminsize.width = MAX(minsize.width, size.width);\n-\t\tminsize.height = MAX(minsize.height, size.height);\n+\t\tminsize = minsize.max(size);\n \t}\n \n \treturn minsize;\ndiff --git a/scene/gui/panel_container.cpp b/scene/gui/panel_container.cpp\nindex 306ef4936f6a..ef8591985953 100644\n--- a/scene/gui/panel_container.cpp\n+++ b/scene/gui/panel_container.cpp\n@@ -44,8 +44,7 @@ Size2 PanelContainer::get_minimum_size() const {\n \t\t}\n \n \t\tSize2 minsize = c->get_combined_minimum_size();\n-\t\tms.width = MAX(ms.width, minsize.width);\n-\t\tms.height = MAX(ms.height, minsize.height);\n+\t\tms = ms.max(minsize);\n \t}\n \n \tif (theme_cache.panel_style.is_valid()) {\ndiff --git a/scene/gui/popup.cpp b/scene/gui/popup.cpp\nindex 0c5a882044fb..092740494746 100644\n--- a/scene/gui/popup.cpp\n+++ b/scene/gui/popup.cpp\n@@ -224,8 +224,7 @@ Size2 PopupPanel::_get_contents_minimum_size() const {\n \t\t}\n \n \t\tSize2 cms = c->get_combined_minimum_size();\n-\t\tms.x = MAX(cms.x, ms.x);\n-\t\tms.y = MAX(cms.y, ms.y);\n+\t\tms = cms.max(ms);\n \t}\n \n \treturn ms + theme_cache.panel_style->get_minimum_size();\ndiff --git a/scene/gui/progress_bar.cpp b/scene/gui/progress_bar.cpp\nindex c66b30f130bf..b2617e6fc746 100644\n--- a/scene/gui/progress_bar.cpp\n+++ b/scene/gui/progress_bar.cpp\n@@ -35,15 +35,13 @@\n \n Size2 ProgressBar::get_minimum_size() const {\n \tSize2 minimum_size = theme_cache.background_style->get_minimum_size();\n-\tminimum_size.height = MAX(minimum_size.height, theme_cache.fill_style->get_minimum_size().height);\n-\tminimum_size.width = MAX(minimum_size.width, theme_cache.fill_style->get_minimum_size().width);\n+\tminimum_size = minimum_size.max(theme_cache.fill_style->get_minimum_size());\n \tif (show_percentage) {\n \t\tString txt = \"100%\";\n \t\tTextLine tl = TextLine(txt, theme_cache.font, theme_cache.font_size);\n \t\tminimum_size.height = MAX(minimum_size.height, theme_cache.background_style->get_minimum_size().height + tl.get_size().y);\n \t} else { // this is needed, else the progressbar will collapse\n-\t\tminimum_size.width = MAX(minimum_size.width, 1);\n-\t\tminimum_size.height = MAX(minimum_size.height, 1);\n+\t\tminimum_size = minimum_size.max(Size2(1, 1));\n \t}\n \treturn minimum_size;\n }\ndiff --git a/scene/gui/rich_text_label.cpp b/scene/gui/rich_text_label.cpp\nindex cb7ccb583e8f..1baf71dd075f 100644\n--- a/scene/gui/rich_text_label.cpp\n+++ b/scene/gui/rich_text_label.cpp\n@@ -951,7 +951,7 @@ int RichTextLabel::_draw_line(ItemFrame *p_frame, int p_line, const Vector2 &p_o\n \t\t\t\t\tcase ITEM_IMAGE: {\n \t\t\t\t\t\tItemImage *img = static_cast<ItemImage *>(it);\n \t\t\t\t\t\tif (img->pad) {\n-\t\t\t\t\t\t\tSize2 pad_size = Size2(MIN(rect.size.x, img->image->get_width()), MIN(rect.size.y, img->image->get_height()));\n+\t\t\t\t\t\t\tSize2 pad_size = rect.size.min(img->image->get_size());\n \t\t\t\t\t\t\tVector2 pad_off = (rect.size - pad_size) / 2;\n \t\t\t\t\t\t\timg->image->draw_rect(ci, Rect2(p_ofs + rect.position + off + pad_off, pad_size), false, img->color);\n \t\t\t\t\t\t} else {\ndiff --git a/scene/gui/scroll_container.cpp b/scene/gui/scroll_container.cpp\nindex 89d308de3f6a..1447d2f00235 100644\n--- a/scene/gui/scroll_container.cpp\n+++ b/scene/gui/scroll_container.cpp\n@@ -56,8 +56,7 @@ Size2 ScrollContainer::get_minimum_size() const {\n \n \t\tSize2 child_min_size = c->get_combined_minimum_size();\n \n-\t\tlargest_child_min_size.x = MAX(largest_child_min_size.x, child_min_size.x);\n-\t\tlargest_child_min_size.y = MAX(largest_child_min_size.y, child_min_size.y);\n+\t\tlargest_child_min_size = largest_child_min_size.max(child_min_size);\n \t}\n \n \tif (horizontal_scroll_mode == SCROLL_MODE_DISABLED) {\ndiff --git a/scene/gui/subviewport_container.cpp b/scene/gui/subviewport_container.cpp\nindex 0d33774e2087..f6cfe6ab184c 100644\n--- a/scene/gui/subviewport_container.cpp\n+++ b/scene/gui/subviewport_container.cpp\n@@ -45,8 +45,7 @@ Size2 SubViewportContainer::get_minimum_size() const {\n \t\t}\n \n \t\tSize2 minsize = c->get_size();\n-\t\tms.width = MAX(ms.width, minsize.width);\n-\t\tms.height = MAX(ms.height, minsize.height);\n+\t\tms = ms.max(minsize);\n \t}\n \n \treturn ms;\ndiff --git a/scene/gui/tab_container.cpp b/scene/gui/tab_container.cpp\nindex 741b38a35ae0..df3c9631f9ef 100644\n--- a/scene/gui/tab_container.cpp\n+++ b/scene/gui/tab_container.cpp\n@@ -871,8 +871,7 @@ Size2 TabContainer::get_minimum_size() const {\n \t\t}\n \n \t\tSize2 cms = c->get_combined_minimum_size();\n-\t\tlargest_child_min_size.x = MAX(largest_child_min_size.x, cms.x);\n-\t\tlargest_child_min_size.y = MAX(largest_child_min_size.y, cms.y);\n+\t\tlargest_child_min_size = largest_child_min_size.max(cms);\n \t}\n \tms.y += largest_child_min_size.y;\n \ndiff --git a/scene/gui/texture_button.cpp b/scene/gui/texture_button.cpp\nindex dcbb25c41d9f..0b197c8c0236 100644\n--- a/scene/gui/texture_button.cpp\n+++ b/scene/gui/texture_button.cpp\n@@ -103,8 +103,8 @@ bool TextureButton::has_point(const Point2 &p_point) const {\n \t\t\tpoint *= scale;\n \n \t\t\t// finally, we need to check if the point is inside a rectangle with a position >= 0,0 and a size <= mask_size\n-\t\t\trect.position = Point2(MAX(0, _texture_region.position.x), MAX(0, _texture_region.position.y));\n-\t\t\trect.size = Size2(MIN(mask_size.x, _texture_region.size.x), MIN(mask_size.y, _texture_region.size.y));\n+\t\t\trect.position = Point2().max(_texture_region.position);\n+\t\t\trect.size = mask_size.min(_texture_region.size);\n \t\t}\n \n \t\tif (!rect.has_point(point)) {\ndiff --git a/scene/gui/texture_progress_bar.cpp b/scene/gui/texture_progress_bar.cpp\nindex 248260a7d2fb..5261cbe3eb56 100644\n--- a/scene/gui/texture_progress_bar.cpp\n+++ b/scene/gui/texture_progress_bar.cpp\n@@ -249,8 +249,7 @@ Point2 TextureProgressBar::get_relative_center() {\n \tp += rad_center_off;\n \tp.x /= progress->get_width();\n \tp.y /= progress->get_height();\n-\tp.x = CLAMP(p.x, 0, 1);\n-\tp.y = CLAMP(p.y, 0, 1);\n+\tp = p.clamp(Point2(), Point2(1, 1));\n \treturn p;\n }\n \ndiff --git a/scene/main/viewport.cpp b/scene/main/viewport.cpp\nindex c8d2d71c2afa..41f3ff108cda 100644\n--- a/scene/main/viewport.cpp\n+++ b/scene/main/viewport.cpp\n@@ -2747,8 +2747,7 @@ bool Viewport::_sub_windows_forward_input(const Ref<InputEvent> &p_event) {\n \t\t\t\tSize2i min_size = gui.currently_dragged_subwindow->get_min_size();\n \t\t\t\tSize2i min_size_clamped = gui.currently_dragged_subwindow->get_clamped_minimum_size();\n \n-\t\t\t\tmin_size_clamped.x = MAX(min_size_clamped.x, 1);\n-\t\t\t\tmin_size_clamped.y = MAX(min_size_clamped.y, 1);\n+\t\t\t\tmin_size_clamped = min_size_clamped.max(Size2i(1, 1));\n \n \t\t\t\tRect2i r = gui.subwindow_resize_from_rect;\n \n@@ -2809,8 +2808,7 @@ bool Viewport::_sub_windows_forward_input(const Ref<InputEvent> &p_event) {\n \n \t\t\t\tSize2i max_size = gui.currently_dragged_subwindow->get_max_size();\n \t\t\t\tif ((max_size.x > 0 || max_size.y > 0) && (max_size.x >= min_size.x && max_size.y >= min_size.y)) {\n-\t\t\t\t\tmax_size.x = MAX(max_size.x, 1);\n-\t\t\t\t\tmax_size.y = MAX(max_size.y, 1);\n+\t\t\t\t\tmax_size = max_size.max(Size2i(1, 1));\n \n \t\t\t\t\tif (r.size.x > max_size.x) {\n \t\t\t\t\t\tr.size.x = max_size.x;\ndiff --git a/scene/main/window.cpp b/scene/main/window.cpp\nindex 6632dd903394..bced493d9866 100644\n--- a/scene/main/window.cpp\n+++ b/scene/main/window.cpp\n@@ -1033,8 +1033,7 @@ void Window::_update_window_size() {\n \t}\n \n \tif (embedder) {\n-\t\tsize.x = MAX(size.x, 1);\n-\t\tsize.y = MAX(size.y, 1);\n+\t\tsize = size.max(Size2i(1, 1));\n \n \t\tembedder->_sub_window_update(this);\n \t} else if (window_id != DisplayServer::INVALID_WINDOW_ID) {\n@@ -1545,8 +1544,7 @@ Size2 Window::_get_contents_minimum_size() const {\n \t\t\tPoint2i pos = c->get_position();\n \t\t\tSize2i min = c->get_combined_minimum_size();\n \n-\t\t\tmax.x = MAX(pos.x + min.x, max.x);\n-\t\t\tmax.y = MAX(pos.y + min.y, max.y);\n+\t\t\tmax = max.max(pos + min);\n \t\t}\n \t}\n \n@@ -1703,7 +1701,7 @@ void Window::popup_centered_clamped(const Size2i &p_size, float p_fallback_ratio\n \tVector2i size_ratio = parent_rect.size * p_fallback_ratio;\n \n \tRect2i popup_rect;\n-\tpopup_rect.size = Vector2i(MIN(size_ratio.x, expected_size.x), MIN(size_ratio.y, expected_size.y));\n+\tpopup_rect.size = size_ratio.min(expected_size);\n \tpopup_rect.size = _clamp_window_size(popup_rect.size);\n \n \tif (parent_rect != Rect2()) {\ndiff --git a/scene/resources/2d/polygon_path_finder.cpp b/scene/resources/2d/polygon_path_finder.cpp\nindex 617a53f0a3d0..3aa292431d9d 100644\n--- a/scene/resources/2d/polygon_path_finder.cpp\n+++ b/scene/resources/2d/polygon_path_finder.cpp\n@@ -64,8 +64,7 @@ void PolygonPathFinder::setup(const Vector<Vector2> &p_points, const Vector<int>\n \t\tpoints.write[i].pos = p_points[i];\n \t\tpoints.write[i].penalty = 0;\n \n-\t\toutside_point.x = i == 0 ? p_points[0].x : (MAX(p_points[i].x, outside_point.x));\n-\t\toutside_point.y = i == 0 ? p_points[0].y : (MAX(p_points[i].y, outside_point.y));\n+\t\toutside_point = i == 0 ? p_points[0] : p_points[i].max(outside_point);\n \n \t\tif (i == 0) {\n \t\t\tbounds.position = points[i].pos;\ndiff --git a/scene/resources/2d/tile_set.cpp b/scene/resources/2d/tile_set.cpp\nindex d09723d76526..66d97398b9fa 100644\n--- a/scene/resources/2d/tile_set.cpp\n+++ b/scene/resources/2d/tile_set.cpp\n@@ -4650,7 +4650,7 @@ Ref<Texture2D> TileSetAtlasSource::get_texture() const {\n void TileSetAtlasSource::set_margins(Vector2i p_margins) {\n \tif (p_margins.x < 0 || p_margins.y < 0) {\n \t\tWARN_PRINT(\"Atlas source margins should be positive.\");\n-\t\tmargins = Vector2i(MAX(0, p_margins.x), MAX(0, p_margins.y));\n+\t\tmargins = p_margins.max(Vector2i());\n \t} else {\n \t\tmargins = p_margins;\n \t}\n@@ -4666,7 +4666,7 @@ Vector2i TileSetAtlasSource::get_margins() const {\n void TileSetAtlasSource::set_separation(Vector2i p_separation) {\n \tif (p_separation.x < 0 || p_separation.y < 0) {\n \t\tWARN_PRINT(\"Atlas source separation should be positive.\");\n-\t\tseparation = Vector2i(MAX(0, p_separation.x), MAX(0, p_separation.y));\n+\t\tseparation = p_separation.max(Vector2i());\n \t} else {\n \t\tseparation = p_separation;\n \t}\n@@ -4682,7 +4682,7 @@ Vector2i TileSetAtlasSource::get_separation() const {\n void TileSetAtlasSource::set_texture_region_size(Vector2i p_tile_size) {\n \tif (p_tile_size.x <= 0 || p_tile_size.y <= 0) {\n \t\tWARN_PRINT(\"Atlas source tile_size should be strictly positive.\");\n-\t\ttexture_region_size = Vector2i(MAX(1, p_tile_size.x), MAX(1, p_tile_size.y));\n+\t\ttexture_region_size = p_tile_size.max(Vector2i(1, 1));\n \t} else {\n \t\ttexture_region_size = p_tile_size;\n \t}\ndiff --git a/scene/resources/3d/primitive_meshes.cpp b/scene/resources/3d/primitive_meshes.cpp\nindex c2b2a6d68bb1..ee772f960a00 100644\n--- a/scene/resources/3d/primitive_meshes.cpp\n+++ b/scene/resources/3d/primitive_meshes.cpp\n@@ -2845,10 +2845,8 @@ void TextMesh::_generate_glyph_mesh_data(const GlyphMeshKey &p_key, const Glyph\n \t\tfor (int j = 0; j < gl_data.contours[i].size(); j++) {\n \t\t\tint next = (j + 1 == gl_data.contours[i].size()) ? 0 : (j + 1);\n \n-\t\t\tgl_data.min_p.x = MIN(gl_data.min_p.x, gl_data.contours[i][j].point.x);\n-\t\t\tgl_data.min_p.y = MIN(gl_data.min_p.y, gl_data.contours[i][j].point.y);\n-\t\t\tgl_data.max_p.x = MAX(gl_data.max_p.x, gl_data.contours[i][j].point.x);\n-\t\t\tgl_data.max_p.y = MAX(gl_data.max_p.y, gl_data.contours[i][j].point.y);\n+\t\t\tgl_data.min_p = gl_data.min_p.min(gl_data.contours[i][j].point);\n+\t\t\tgl_data.max_p = gl_data.max_p.max(gl_data.contours[i][j].point);\n \t\t\tlength += (gl_data.contours[i][next].point - gl_data.contours[i][j].point).length();\n \n \t\t\tinp.GetPoint(j) = gl_data.contours[i][j].point;\ndiff --git a/scene/resources/navigation_polygon.cpp b/scene/resources/navigation_polygon.cpp\nindex e830153330ad..274b13a487e2 100644\n--- a/scene/resources/navigation_polygon.cpp\n+++ b/scene/resources/navigation_polygon.cpp\n@@ -251,8 +251,7 @@ void NavigationPolygon::make_polygons_from_outlines() {\n \t\t}\n \t\tconst Vector2 *r = ol.ptr();\n \t\tfor (int j = 0; j < olsize; j++) {\n-\t\t\toutside_point.x = MAX(r[j].x, outside_point.x);\n-\t\t\toutside_point.y = MAX(r[j].y, outside_point.y);\n+\t\t\toutside_point = outside_point.max(r[j]);\n \t\t}\n \t}\n \ndiff --git a/servers/physics_3d/godot_shape_3d.cpp b/servers/physics_3d/godot_shape_3d.cpp\nindex 872d26aff648..ea389ff59cd5 100644\n--- a/servers/physics_3d/godot_shape_3d.cpp\n+++ b/servers/physics_3d/godot_shape_3d.cpp\n@@ -2016,9 +2016,7 @@ void GodotHeightMapShape3D::_get_cell(const Vector3 &p_point, int &r_x, int &r_y\n \tVector3 pos_local = shape_aabb.position + local_origin;\n \n \tVector3 clamped_point(p_point);\n-\tclamped_point.x = CLAMP(p_point.x, pos_local.x, pos_local.x + shape_aabb.size.x);\n-\tclamped_point.y = CLAMP(p_point.y, pos_local.y, pos_local.y + shape_aabb.size.y);\n-\tclamped_point.z = CLAMP(p_point.z, pos_local.z, pos_local.z + shape_aabb.size.z);\n+\tclamped_point = p_point.clamp(pos_local, pos_local + shape_aabb.size);\n \n \tr_x = (clamped_point.x < 0.0) ? (clamped_point.x - 0.5) : (clamped_point.x + 0.5);\n \tr_y = (clamped_point.y < 0.0) ? (clamped_point.y - 0.5) : (clamped_point.y + 0.5);\ndiff --git a/servers/rendering/renderer_rd/environment/fog.cpp b/servers/rendering/renderer_rd/environment/fog.cpp\nindex 1d144bedcff0..48537a97d9fe 100644\n--- a/servers/rendering/renderer_rd/environment/fog.cpp\n+++ b/servers/rendering/renderer_rd/environment/fog.cpp\n@@ -509,9 +509,7 @@ Vector3i Fog::_point_get_position_in_froxel_volume(const Vector3 &p_point, float\n \tfog_position.z = Math::pow(float(fog_position.z), float(1.0 / volumetric_fog_detail_spread));\n \tfog_position = fog_position * fog_size - Vector3(0.5, 0.5, 0.5);\n \n-\tfog_position.x = CLAMP(fog_position.x, 0.0, fog_size.x);\n-\tfog_position.y = CLAMP(fog_position.y, 0.0, fog_size.y);\n-\tfog_position.z = CLAMP(fog_position.z, 0.0, fog_size.z);\n+\tfog_position = fog_position.clamp(Vector3(), fog_size);\n \n \treturn Vector3i(fog_position);\n }\n@@ -680,8 +678,8 @@ void Fog::volumetric_fog_update(const VolumetricFogSettings &p_settings, const P\n \t\t\t\tmax = Vector3i(1, 1, 1);\n \n \t\t\t\tfor (int j = 0; j < 8; j++) {\n-\t\t\t\t\tmin = Vector3i(MIN(min.x, points[j].x), MIN(min.y, points[j].y), MIN(min.z, points[j].z));\n-\t\t\t\t\tmax = Vector3i(MAX(max.x, points[j].x), MAX(max.y, points[j].y), MAX(max.z, points[j].z));\n+\t\t\t\t\tmin = min.min(points[j]);\n+\t\t\t\t\tmax = max.max(points[j]);\n \t\t\t\t}\n \n \t\t\t\tkernel_size = max - min;\ndiff --git a/servers/rendering/renderer_rd/storage_rd/texture_storage.cpp b/servers/rendering/renderer_rd/storage_rd/texture_storage.cpp\nindex dd94982f1aab..f3ce432495c3 100644\n--- a/servers/rendering/renderer_rd/storage_rd/texture_storage.cpp\n+++ b/servers/rendering/renderer_rd/storage_rd/texture_storage.cpp\n@@ -3637,8 +3637,7 @@ void TextureStorage::_render_target_allocate_sdf(RenderTarget *rt) {\n \t}\n \n \trt->process_size = size * scale / 100;\n-\trt->process_size.x = MAX(rt->process_size.x, 1);\n-\trt->process_size.y = MAX(rt->process_size.y, 1);\n+\trt->process_size = rt->process_size.max(Size2i(1, 1));\n \n \ttformat.format = RD::DATA_FORMAT_R16G16_SINT;\n \ttformat.width = rt->process_size.width;\ndiff --git a/servers/rendering/renderer_scene_occlusion_cull.h b/servers/rendering/renderer_scene_occlusion_cull.h\nindex 565b39309483..149d7b1cdb50 100644\n--- a/servers/rendering/renderer_scene_occlusion_cull.h\n+++ b/servers/rendering/renderer_scene_occlusion_cull.h\n@@ -65,7 +65,7 @@ class RendererSceneOcclusionCull {\n \t\t\t\treturn false;\n \t\t\t}\n \n-\t\t\tVector3 closest_point = Vector3(CLAMP(p_cam_position.x, p_bounds[0], p_bounds[3]), CLAMP(p_cam_position.y, p_bounds[1], p_bounds[4]), CLAMP(p_cam_position.z, p_bounds[2], p_bounds[5]));\n+\t\t\tVector3 closest_point = p_cam_position.clamp(Vector3(p_bounds[0], p_bounds[1], p_bounds[2]), Vector3(p_bounds[3], p_bounds[4], p_bounds[5]));\n \n \t\t\tif (closest_point == p_cam_position) {\n \t\t\t\treturn false;\n",
+  "metadata": {
+    "v2_fetcher_version": 1,
+    "v2_fetched_at_unix": 1777501232,
+    "v2_diff_cap_bytes": 50000,
+    "v2_body_cap_bytes": 8000,
+    "v2_diff_truncated": false,
+    "v2_raw_diff_chars": 46930,
+    "v2_raw_body_chars": 430,
+    "v2_rag_source": "rebuilt_v2_clean_changed_files",
+    "v2_rag_chunks_copied": 8,
+    "joern_enriched": true,
+    "joern_callers_count": 50,
+    "joern_functions_count": 50
+  },
+  "similar_chunks": [
+    {
+      "file": "core/math/geometry_3d.cpp",
+      "start_line": 24,
+      "end_line": 99,
+      "similarity": 0.8539,
+      "related_to": "core/math/geometry_2d.h",
+      "content_preview": "OR A PARTICULAR PURPOSE AND NONINFRINGEMENT. */\n/* IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY   */\n/* CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,   */\n/* TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE      */\n/* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */\n/**************************************************************************/\n\n#include \"geometry_3d.h\"\n\n#include \"core/templates/hash_map.h\"\n\nvoid Geometry3D::get_closest_points_between_segments(const Vector3 &p_p0, const Vector3 &p_p1, const Vector3 &p_q0, const Vector3 &p_q1, Vector3 &r_ps, Vector3 &r_qt) {\n\t// Based on David Eberly's Computation of Distance Between Line Segments algorithm.\n\n\tVector3 p = p_p1 - p_p0;\n\tVector3 q = p_q1 - p"
+    },
+    {
+      "file": "platform/macos/display_server_macos.h",
+      "start_line": 24,
+      "end_line": 95,
+      "similarity": 0.846,
+      "related_to": "platform/macos/display_server_macos.mm",
+      "content_preview": "OR A PARTICULAR PURPOSE AND NONINFRINGEMENT. */\n/* IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY   */\n/* CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,   */\n/* TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE      */\n/* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */\n/**************************************************************************/\n\n#pragma once\n\n#include \"display_server_macos_base.h\"\n\n#if defined(GLES3_ENABLED)\n#include \"gl_manager_macos_angle.h\"\n#include \"gl_manager_macos_legacy.h\"\n#endif // GLES3_ENABLED\n\n#import \"native_menu_macos.h\"\n\n#if defined(RD_ENABLED)\n#include \"servers/rendering/rendering_device.h\"\n\n#if defined(VULKAN_ENABLED)\n#import \"rendering_context_driver_vulkan_macos.h\"\n#endi"
+    },
+    {
+      "file": "core/math/geometry_3d.h",
+      "start_line": 24,
+      "end_line": 85,
+      "similarity": 0.8449,
+      "related_to": "core/math/geometry_2d.h",
+      "content_preview": "OR A PARTICULAR PURPOSE AND NONINFRINGEMENT. */\n/* IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY   */\n/* CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,   */\n/* TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE      */\n/* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */\n/**************************************************************************/\n\n#pragma once\n\n#include \"core/math/color.h\"\n#include \"core/math/delaunay_3d.h\"\n#include \"core/math/face3.h\"\n#include \"core/math/vector2.h\"\n#include \"core/templates/local_vector.h\"\n#include \"core/templates/vector.h\"\n\nclass Geometry3D {\npublic:\n\tstatic void get_closest_points_between_segments(const Vector3 &p_p0, const Vector3 &p_p1, const Vector3 &p_q0, const Vector"
+    },
+    {
+      "file": "core/math/aabb.cpp",
+      "start_line": 24,
+      "end_line": 82,
+      "similarity": 0.8058,
+      "related_to": "core/math/aabb.h",
+      "content_preview": "OR A PARTICULAR PURPOSE AND NONINFRINGEMENT. */\n/* IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY   */\n/* CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,   */\n/* TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE      */\n/* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */\n/**************************************************************************/\n\n#include \"aabb.h\"\n\n#include \"core/string/ustring.h\"\n#include \"core/variant/variant.h\"\n\nreal_t AABB::get_volume() const {\n\treturn size.x * size.y * size.z;\n}\n\nvoid AABB::merge_with(const AABB &p_aabb) {\n#ifdef MATH_CHECKS\n\tif (unlikely(size.x < 0 || size.y < 0 || size.z < 0 || p_aabb.size.x < 0 || p_aabb.size.y < 0 || p_aabb.size.z < 0)) {\n\t\tERR_PRINT(\"AABB size is"
+    },
+    {
+      "file": "core/math/bvh_abb.h",
+      "start_line": 24,
+      "end_line": 98,
+      "similarity": 0.8,
+      "related_to": "core/math/aabb.h",
+      "content_preview": "OR A PARTICULAR PURPOSE AND NONINFRINGEMENT. */\n/* IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY   */\n/* CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,   */\n/* TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE      */\n/* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */\n/**************************************************************************/\n\n#pragma once\n\n#include \"core/math/aabb.h\"\n\n// special optimized version of axis aligned bounding box\ntemplate <typename BOUNDS = AABB, typename POINT = Vector3>\nstruct BVH_ABB {\n\tstruct ConvexHull {\n\t\t// convex hulls (optional)\n\t\tconst Plane *planes;\n\t\tint num_planes;\n\t\tconst Vector3 *points;\n\t\tint num_points;\n\t};\n\n\tstruct Segment {\n\t\tPOINT from;\n\t\tPOINT to;\n\t};\n\n"
+    },
+    {
+      "file": "core/math/bvh_tree.h",
+      "start_line": 24,
+      "end_line": 89,
+      "similarity": 0.7943,
+      "related_to": "core/math/dynamic_bvh.h",
+      "content_preview": "OR A PARTICULAR PURPOSE AND NONINFRINGEMENT. */\n/* IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY   */\n/* CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,   */\n/* TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE      */\n/* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */\n/**************************************************************************/\n\n#pragma once\n\n// BVH Tree\n// This is an implementation of a dynamic BVH with templated leaf size.\n// This differs from most dynamic BVH in that it can handle more than 1 object\n// in leaf nodes. This can make it far more efficient in certain circumstances.\n// It also means that the splitting logic etc have to be completely different\n// to a simpler tree.\n// Note t"
+    },
+    {
+      "file": "core/math/rect2i.cpp",
+      "start_line": 24,
+      "end_line": 43,
+      "similarity": 0.7942,
+      "related_to": "core/math/rect2i.h",
+      "content_preview": "OR A PARTICULAR PURPOSE AND NONINFRINGEMENT. */\n/* IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY   */\n/* CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,   */\n/* TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE      */\n/* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */\n/**************************************************************************/\n\n#include \"rect2i.h\"\n\n#include \"core/math/rect2.h\"\n#include \"core/string/ustring.h\"\n\nRect2i::operator String() const {\n\treturn \"[P: \" + String(position) + \", S: \" + String(size) + \"]\";\n}\n\nRect2i::operator Rect2() const {\n\treturn Rect2(position, size);\n}\n"
+    },
+    {
+      "file": "drivers/vulkan/rendering_device_driver_vulkan.h",
+      "start_line": 24,
+      "end_line": 87,
+      "similarity": 0.7886,
+      "related_to": "drivers/vulkan/rendering_device_driver_vulkan.cpp",
+      "content_preview": "OR A PARTICULAR PURPOSE AND NONINFRINGEMENT. */\n/* IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY   */\n/* CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,   */\n/* TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE      */\n/* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */\n/**************************************************************************/\n\n#pragma once\n\n#include \"core/templates/hash_map.h\"\n#include \"core/templates/paged_allocator.h\"\n#include \"drivers/vulkan/rendering_context_driver_vulkan.h\"\n#include \"drivers/vulkan/rendering_shader_container_vulkan.h\"\n#include \"servers/rendering/rendering_device_driver.h\"\n\n#ifdef DEBUG_ENABLED\n#ifndef _MSC_VER\n#define _DEBUG\n#endif\n#endif\n#include \"thirdparty/vulka"
+    }
+  ],
+  "rag_evidence": {
+    "similar_code": [
+      {
+        "file": "core/math/geometry_3d.cpp",
+        "start_line": 24,
+        "end_line": 99,
+        "similarity": 0.8539,
+        "related_to": "core/math/geometry_2d.h",
+        "content_preview": "OR A PARTICULAR PURPOSE AND NONINFRINGEMENT. */\n/* IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY   */\n/* CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,   */\n/* TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE      */\n/* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */\n/**************************************************************************/\n\n#include \"geometry_3d.h\"\n\n#include \"core/templates/hash_map.h\"\n\nvoid Geometry3D::get_closest_points_between_segments(const Vector3 &p_p0, const Vector3 &p_p1, const Vector3 &p_q0, const Vector3 &p_q1, Vector3 &r_ps, Vector3 &r_qt) {\n\t// Based on David Eberly's Computation of Distance Between Line Segments algorithm.\n\n\tVector3 p = p_p1 - p_p0;\n\tVector3 q = p_q1 - p"
+      },
+      {
+        "file": "platform/macos/display_server_macos.h",
+        "start_line": 24,
+        "end_line": 95,
+        "similarity": 0.846,
+        "related_to": "platform/macos/display_server_macos.mm",
+        "content_preview": "OR A PARTICULAR PURPOSE AND NONINFRINGEMENT. */\n/* IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY   */\n/* CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,   */\n/* TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE      */\n/* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */\n/**************************************************************************/\n\n#pragma once\n\n#include \"display_server_macos_base.h\"\n\n#if defined(GLES3_ENABLED)\n#include \"gl_manager_macos_angle.h\"\n#include \"gl_manager_macos_legacy.h\"\n#endif // GLES3_ENABLED\n\n#import \"native_menu_macos.h\"\n\n#if defined(RD_ENABLED)\n#include \"servers/rendering/rendering_device.h\"\n\n#if defined(VULKAN_ENABLED)\n#import \"rendering_context_driver_vulkan_macos.h\"\n#endi"
+      },
+      {
+        "file": "core/math/geometry_3d.h",
+        "start_line": 24,
+        "end_line": 85,
+        "similarity": 0.8449,
+        "related_to": "core/math/geometry_2d.h",
+        "content_preview": "OR A PARTICULAR PURPOSE AND NONINFRINGEMENT. */\n/* IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY   */\n/* CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,   */\n/* TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE      */\n/* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */\n/**************************************************************************/\n\n#pragma once\n\n#include \"core/math/color.h\"\n#include \"core/math/delaunay_3d.h\"\n#include \"core/math/face3.h\"\n#include \"core/math/vector2.h\"\n#include \"core/templates/local_vector.h\"\n#include \"core/templates/vector.h\"\n\nclass Geometry3D {\npublic:\n\tstatic void get_closest_points_between_segments(const Vector3 &p_p0, const Vector3 &p_p1, const Vector3 &p_q0, const Vector"
+      },
+      {
+        "file": "core/math/aabb.cpp",
+        "start_line": 24,
+        "end_line": 82,
+        "similarity": 0.8058,
+        "related_to": "core/math/aabb.h",
+        "content_preview": "OR A PARTICULAR PURPOSE AND NONINFRINGEMENT. */\n/* IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY   */\n/* CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,   */\n/* TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE      */\n/* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */\n/**************************************************************************/\n\n#include \"aabb.h\"\n\n#include \"core/string/ustring.h\"\n#include \"core/variant/variant.h\"\n\nreal_t AABB::get_volume() const {\n\treturn size.x * size.y * size.z;\n}\n\nvoid AABB::merge_with(const AABB &p_aabb) {\n#ifdef MATH_CHECKS\n\tif (unlikely(size.x < 0 || size.y < 0 || size.z < 0 || p_aabb.size.x < 0 || p_aabb.size.y < 0 || p_aabb.size.z < 0)) {\n\t\tERR_PRINT(\"AABB size is"
+      },
+      {
+        "file": "core/math/bvh_abb.h",
+        "start_line": 24,
+        "end_line": 98,
+        "similarity": 0.8,
+        "related_to": "core/math/aabb.h",
+        "content_preview": "OR A PARTICULAR PURPOSE AND NONINFRINGEMENT. */\n/* IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY   */\n/* CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,   */\n/* TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE      */\n/* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */\n/**************************************************************************/\n\n#pragma once\n\n#include \"core/math/aabb.h\"\n\n// special optimized version of axis aligned bounding box\ntemplate <typename BOUNDS = AABB, typename POINT = Vector3>\nstruct BVH_ABB {\n\tstruct ConvexHull {\n\t\t// convex hulls (optional)\n\t\tconst Plane *planes;\n\t\tint num_planes;\n\t\tconst Vector3 *points;\n\t\tint num_points;\n\t};\n\n\tstruct Segment {\n\t\tPOINT from;\n\t\tPOINT to;\n\t};\n\n"
+      },
+      {
+        "file": "core/math/bvh_tree.h",
+        "start_line": 24,
+        "end_line": 89,
+        "similarity": 0.7943,
+        "related_to": "core/math/dynamic_bvh.h",
+        "content_preview": "OR A PARTICULAR PURPOSE AND NONINFRINGEMENT. */\n/* IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY   */\n/* CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,   */\n/* TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE      */\n/* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */\n/**************************************************************************/\n\n#pragma once\n\n// BVH Tree\n// This is an implementation of a dynamic BVH with templated leaf size.\n// This differs from most dynamic BVH in that it can handle more than 1 object\n// in leaf nodes. This can make it far more efficient in certain circumstances.\n// It also means that the splitting logic etc have to be completely different\n// to a simpler tree.\n// Note t"
+      },
+      {
+        "file": "core/math/rect2i.cpp",
+        "start_line": 24,
+        "end_line": 43,
+        "similarity": 0.7942,
+        "related_to": "core/math/rect2i.h",
+        "content_preview": "OR A PARTICULAR PURPOSE AND NONINFRINGEMENT. */\n/* IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY   */\n/* CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,   */\n/* TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE      */\n/* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */\n/**************************************************************************/\n\n#include \"rect2i.h\"\n\n#include \"core/math/rect2.h\"\n#include \"core/string/ustring.h\"\n\nRect2i::operator String() const {\n\treturn \"[P: \" + String(position) + \", S: \" + String(size) + \"]\";\n}\n\nRect2i::operator Rect2() const {\n\treturn Rect2(position, size);\n}\n"
+      },
+      {
+        "file": "drivers/vulkan/rendering_device_driver_vulkan.h",
+        "start_line": 24,
+        "end_line": 87,
+        "similarity": 0.7886,
+        "related_to": "drivers/vulkan/rendering_device_driver_vulkan.cpp",
+        "content_preview": "OR A PARTICULAR PURPOSE AND NONINFRINGEMENT. */\n/* IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY   */\n/* CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,   */\n/* TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE      */\n/* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */\n/**************************************************************************/\n\n#pragma once\n\n#include \"core/templates/hash_map.h\"\n#include \"core/templates/paged_allocator.h\"\n#include \"drivers/vulkan/rendering_context_driver_vulkan.h\"\n#include \"drivers/vulkan/rendering_shader_container_vulkan.h\"\n#include \"servers/rendering/rendering_device_driver.h\"\n\n#ifdef DEBUG_ENABLED\n#ifndef _MSC_VER\n#define _DEBUG\n#endif\n#endif\n#include \"thirdparty/vulka"
+      }
+    ]
+  },
+  "callers": [
+    {
+      "path": "aabb.cpp",
+      "from_function": "expand",
+      "calls_function": "expand_to",
+      "caller_line": 345,
+      "callee_file": "aabb.h",
+      "callee_line": 356
+    },
+    {
+      "path": "convex_hull.cpp",
+      "from_function": "compute",
+      "calls_function": "AABB",
+      "caller_line": 1576,
+      "callee_file": "aabb.h",
+      "callee_line": 147
+    },
+    {
+      "path": "convex_hull.cpp",
+      "from_function": "compute",
+      "calls_function": "expand_to",
+      "caller_line": 1576,
+      "callee_file": "aabb.h",
+      "callee_line": 356
+    },
+    {
+      "path": "dynamic_bvh.cpp",
+      "from_function": "_recurse_delete_node",
+      "calls_function": "is_leaf",
+      "caller_line": 37,
+      "callee_file": "dynamic_bvh.h",
+      "callee_line": 188
+    },
+    {
+      "path": "dynamic_bvh.cpp",
+      "from_function": "_insert_leaf",
+      "calls_function": "is_leaf",
+      "caller_line": 61,
+      "callee_file": "dynamic_bvh.h",
+      "callee_line": 188
+    },
+    {
+      "path": "dynamic_bvh.cpp",
+      "from_function": "_insert_leaf",
+      "calls_function": "select_by_proximity",
+      "caller_line": 61,
+      "callee_file": "dynamic_bvh.h",
+      "callee_line": 123
+    },
+    {
+      "path": "dynamic_bvh.cpp",
+      "from_function": "_insert_leaf",
+      "calls_function": "merge",
+      "caller_line": 61,
+      "callee_file": "dynamic_bvh.h",
+      "callee_line": 86
+    },
+    {
+      "path": "dynamic_bvh.cpp",
+      "from_function": "_insert_leaf",
+      "calls_function": "get_index_in_parent",
+      "caller_line": 61,
+      "callee_file": "dynamic_bvh.h",
+      "callee_line": 191
+    },
+    {
+      "path": "dynamic_bvh.cpp",
+      "from_function": "_insert_leaf",
+      "calls_function": "contains",
+      "caller_line": 61,
+      "callee_file": "dynamic_bvh.h",
+      "callee_line": 77
+    },
+    {
+      "path": "dynamic_bvh.cpp",
+      "from_function": "_remove_leaf",
+      "calls_function": "get_index_in_parent",
+      "caller_line": 99,
+      "callee_file": "dynamic_bvh.h",
+      "callee_line": 191
+    },
+    {
+      "path": "dynamic_bvh.cpp",
+      "from_function": "_remove_leaf",
+      "calls_function": "merge",
+      "caller_line": 99,
+      "callee_file": "dynamic_bvh.h",
+      "callee_line": 86
+    },
+    {
+      "path": "dynamic_bvh.cpp",
+      "from_function": "_remove_leaf",
+      "calls_function": "is_not_equal_to",
+      "caller_line": 99,
+      "callee_file": "dynamic_bvh.h",
+      "callee_line": 109
+    },
+    {
+      "path": "dynamic_bvh.cpp",
+      "from_function": "_fetch_leaves",
+      "calls_function": "is_internal",
+      "caller_line": 130,
+      "callee_file": "dynamic_bvh.h",
+      "callee_line": 189
+    },
+    {
+      "path": "dynamic_bvh.cpp",
+      "from_function": "_split",
+      "calls_function": "is_left_of_axis",
+      "caller_line": 143,
+      "callee_file": "dynamic_bvh.h",
+      "callee_line": 213
+    },
+    {
+      "path": "dynamic_bvh.cpp",
+      "from_function": "_bounds",
+      "calls_function": "merge",
+      "caller_line": 174,
+      "callee_file": "dynamic_bvh.h",
+      "callee_line": 86
+    },
+    {
+      "path": "dynamic_bvh.cpp",
+      "from_function": "_bottom_up",
+      "calls_function": "get_size",
+      "caller_line": 182,
+      "callee_file": "dynamic_bvh.h",
+      "callee_line": 103
+    },
+    {
+      "path": "dynamic_bvh.cpp",
+      "from_function": "_bottom_up",
+      "calls_function": "merge",
+      "caller_line": 182,
+      "callee_file": "dynamic_bvh.h",
+      "callee_line": 86
+    },
+    {
+      "path": "dynamic_bvh.cpp",
+      "from_function": "_top_down",
+      "calls_function": "get_center",
+      "caller_line": 208,
+      "callee_file": "dynamic_bvh.h",
+      "callee_line": 74
+    },
+    {
+      "path": "dynamic_bvh.cpp",
+      "from_function": "_node_sort",
+      "calls_function": "is_internal",
+      "caller_line": 257,
+      "callee_file": "dynamic_bvh.h",
+      "callee_line": 189
+    },
+    {
+      "path": "dynamic_bvh.cpp",
+      "from_function": "_node_sort",
+      "calls_function": "get_index_in_parent",
+      "caller_line": 257,
+      "callee_file": "dynamic_bvh.h",
+      "callee_line": 191
+    },
+    {
+      "path": "dynamic_bvh.cpp",
+      "from_function": "optimize_incremental",
+      "calls_function": "is_internal",
+      "caller_line": 311,
+      "callee_file": "dynamic_bvh.h",
+      "callee_line": 189
+    },
+    {
+      "path": "dynamic_bvh.cpp",
+      "from_function": "update",
+      "calls_function": "is_valid",
+      "caller_line": 361,
+      "callee_file": "dynamic_bvh.h",
+      "callee_line": 67
+    },
+    {
+      "path": "dynamic_bvh.cpp",
+      "from_function": "remove",
+      "calls_function": "is_valid",
+      "caller_line": 389,
+      "callee_file": "dynamic_bvh.h",
+      "callee_line": 67
+    },
+    {
+      "path": "dynamic_bvh.cpp",
+      "from_function": "_extract_leaves",
+      "calls_function": "is_internal",
+      "caller_line": 397,
+      "callee_file": "dynamic_bvh.h",
+      "callee_line": 189
+    },
+    {
+      "path": "dynamic_bvh.cpp",
+      "from_function": "get_max_depth",
+      "calls_function": "get_max_depth",
+      "caller_line": 426,
+      "callee_file": "dynamic_bvh.h",
+      "callee_line": 195
+    },
+    {
+      "path": "geometry_3d.cpp",
+      "from_function": "wrap_geometry",
+      "calls_function": "AABB",
+      "caller_line": 450,
+      "callee_file": "aabb.h",
+      "callee_line": 147
+    },
+    {
+      "path": "quick_hull.cpp",
+      "from_function": "build",
+      "calls_function": "AABB",
+      "caller_line": 38,
+      "callee_file": "aabb.h",
+      "callee_line": 147
+    },
+    {
+      "path": "triangle_mesh.cpp",
+      "from_function": "_create_bvh",
+      "calls_function": "AABB",
+      "caller_line": 35,
+      "callee_file": "aabb.h",
+      "callee_line": 147
+    },
+    {
+      "path": "triangle_mesh.cpp",
+      "from_function": "_create_bvh",
+      "calls_function": "get_center",
+      "caller_line": 35,
+      "callee_file": "aabb.h",
+      "callee_line": 131
+    },
+    {
+      "path": "triangle_mesh.cpp",
+      "from_function": "create",
+      "calls_function": "expand_to",
+      "caller_line": 107,
+      "callee_file": "aabb.h",
+      "callee_line": 356
+    },
+    {
+      "path": "triangle_mesh.cpp",
+      "from_function": "create",
+      "calls_function": "get_center",
+      "caller_line": 107,
+      "callee_file": "aabb.h",
+      "callee_line": 131
+    },
+    {
+      "path": "triangle_mesh.cpp",
+      "from_function": "intersect_ray",
+      "calls_function": "intersects_ray",
+      "caller_line": 293,
+      "callee_file": "aabb.h",
+      "callee_line": 82
+    },
+    {
+      "path": "triangle_mesh.cpp",
+      "from_function": "inside_convex_shape",
+      "calls_function": "intersects_convex_shape",
+      "caller_line": 401,
+      "callee_file": "aabb.h",
+      "callee_line": 267
+    },
+    {
+      "path": "triangle_mesh.cpp",
+      "from_function": "inside_convex_shape",
+      "calls_function": "inside_convex_shape",
+      "caller_line": 401,
+      "callee_file": "aabb.h",
+      "callee_line": 309
+    },
+    {
+      "path": "delaunay_2d.h",
+      "from_function": "triangulate",
+      "calls_function": "get_center",
+      "caller_line": 81,
+      "callee_file": "rect2.h",
+      "callee_line": 52
+    },
+    {
+      "path": "delaunay_3d.h",
+      "from_function": "tetrahedralize",
+      "calls_function": "AABB",
+      "caller_line": 202,
+      "callee_file": "aabb.h",
+      "callee_line": 147
+    },
+    {
+      "path": "delaunay_3d.h",
+      "from_function": "tetrahedralize",
+      "calls_function": "expand_to",
+      "caller_line": 202,
+      "callee_file": "aabb.h",
+      "callee_line": 356
+    },
+    {
+      "path": "delaunay_3d.h",
+      "from_function": "tetrahedralize",
+      "calls_function": "circum_sphere_compute",
+      "caller_line": 202,
+      "callee_file": "delaunay_3d.h",
+      "callee_line": 107
+    },
+    {
+      "path": "delaunay_3d.h",
+      "from_function": "tetrahedralize",
+      "calls_function": "simplex_is_coplanar",
+      "caller_line": 202,
+      "callee_file": "delaunay_3d.h",
+      "callee_line": 181
+    },
+    {
+      "path": "dynamic_bvh.h",
+      "from_function": "is_left_of_axis",
+      "calls_function": "get_center",
+      "caller_line": 213,
+      "callee_file": "dynamic_bvh.h",
+      "callee_line": 74
+    },
+    {
+      "path": "dynamic_bvh.h",
+      "from_function": "aabb_query",
+      "calls_function": "intersects",
+      "caller_line": 321,
+      "callee_file": "dynamic_bvh.h",
+      "callee_line": 128
+    },
+    {
+      "path": "dynamic_bvh.h",
+      "from_function": "aabb_query",
+      "calls_function": "is_internal",
+      "caller_line": 321,
+      "callee_file": "dynamic_bvh.h",
+      "callee_line": 189
+    },
+    {
+      "path": "dynamic_bvh.h",
+      "from_function": "convex_query",
+      "calls_function": "intersects",
+      "caller_line": 366,
+      "callee_file": "dynamic_bvh.h",
+      "callee_line": 128
+    },
+    {
+      "path": "dynamic_bvh.h",
+      "from_function": "convex_query",
+      "calls_function": "intersects_convex",
+      "caller_line": 366,
+      "callee_file": "dynamic_bvh.h",
+      "callee_line": 137
+    },
+    {
+      "path": "dynamic_bvh.h",
+      "from_function": "convex_query",
+      "calls_function": "is_internal",
+      "caller_line": 366,
+      "callee_file": "dynamic_bvh.h",
+      "callee_line": 189
+    },
+    {
+      "path": "dynamic_bvh.h",
+      "from_function": "ray_query",
+      "calls_function": "is_internal",
+      "caller_line": 418,
+      "callee_file": "dynamic_bvh.h",
+      "callee_line": 189
+    },
+    {
+      "path": "face3.h",
+      "from_function": "get_aabb",
+      "calls_function": "expand_to",
+      "caller_line": 70,
+      "callee_file": "aabb.h",
+      "callee_line": 356
+    },
+    {
+      "path": "geometry_2d.h",
+      "from_function": "get_closest_point_to_segment",
+      "calls_function": "get_closest_point_to_segment",
+      "caller_line": 103,
+      "callee_file": "geometry_2d.h",
+      "callee_line": 108
+    },
+    {
+      "path": "geometry_2d.h",
+      "from_function": "get_distance_to_segment",
+      "calls_function": "get_distance_to_segment",
+      "caller_line": 128,
+      "callee_file": "geometry_2d.h",
+      "callee_line": 133
+    },
+    {
+      "path": "geometry_2d.h",
+      "from_function": "get_distance_to_segment",
+      "calls_function": "get_closest_point_to_segment",
+      "caller_line": 133,
+      "callee_file": "geometry_2d.h",
+      "callee_line": 108
+    }
+  ],
+  "call_graph_edges": [
+    {
+      "from": "aabb.cpp::expand",
+      "to": "aabb.h::expand_to"
+    },
+    {
+      "from": "convex_hull.cpp::compute",
+      "to": "aabb.h::AABB"
+    },
+    {
+      "from": "convex_hull.cpp::compute",
+      "to": "aabb.h::expand_to"
+    },
+    {
+      "from": "dynamic_bvh.cpp::_recurse_delete_node",
+      "to": "dynamic_bvh.h::is_leaf"
+    },
+    {
+      "from": "dynamic_bvh.cpp::_insert_leaf",
+      "to": "dynamic_bvh.h::is_leaf"
+    },
+    {
+      "from": "dynamic_bvh.cpp::_insert_leaf",
+      "to": "dynamic_bvh.h::select_by_proximity"
+    },
+    {
+      "from": "dynamic_bvh.cpp::_insert_leaf",
+      "to": "dynamic_bvh.h::merge"
+    },
+    {
+      "from": "dynamic_bvh.cpp::_insert_leaf",
+      "to": "dynamic_bvh.h::get_index_in_parent"
+    },
+    {
+      "from": "dynamic_bvh.cpp::_insert_leaf",
+      "to": "dynamic_bvh.h::contains"
+    },
+    {
+      "from": "dynamic_bvh.cpp::_remove_leaf",
+      "to": "dynamic_bvh.h::get_index_in_parent"
+    },
+    {
+      "from": "dynamic_bvh.cpp::_remove_leaf",
+      "to": "dynamic_bvh.h::merge"
+    },
+    {
+      "from": "dynamic_bvh.cpp::_remove_leaf",
+      "to": "dynamic_bvh.h::is_not_equal_to"
+    },
+    {
+      "from": "dynamic_bvh.cpp::_fetch_leaves",
+      "to": "dynamic_bvh.h::is_internal"
+    },
+    {
+      "from": "dynamic_bvh.cpp::_split",
+      "to": "dynamic_bvh.h::is_left_of_axis"
+    },
+    {
+      "from": "dynamic_bvh.cpp::_bounds",
+      "to": "dynamic_bvh.h::merge"
+    },
+    {
+      "from": "dynamic_bvh.cpp::_bottom_up",
+      "to": "dynamic_bvh.h::get_size"
+    },
+    {
+      "from": "dynamic_bvh.cpp::_bottom_up",
+      "to": "dynamic_bvh.h::merge"
+    },
+    {
+      "from": "dynamic_bvh.cpp::_top_down",
+      "to": "dynamic_bvh.h::get_center"
+    },
+    {
+      "from": "dynamic_bvh.cpp::_node_sort",
+      "to": "dynamic_bvh.h::is_internal"
+    },
+    {
+      "from": "dynamic_bvh.cpp::_node_sort",
+      "to": "dynamic_bvh.h::get_index_in_parent"
+    },
+    {
+      "from": "dynamic_bvh.cpp::optimize_incremental",
+      "to": "dynamic_bvh.h::is_internal"
+    },
+    {
+      "from": "dynamic_bvh.cpp::update",
+      "to": "dynamic_bvh.h::is_valid"
+    },
+    {
+      "from": "dynamic_bvh.cpp::remove",
+      "to": "dynamic_bvh.h::is_valid"
+    },
+    {
+      "from": "dynamic_bvh.cpp::_extract_leaves",
+      "to": "dynamic_bvh.h::is_internal"
+    },
+    {
+      "from": "dynamic_bvh.cpp::get_max_depth",
+      "to": "dynamic_bvh.h::get_max_depth"
+    },
+    {
+      "from": "geometry_3d.cpp::wrap_geometry",
+      "to": "aabb.h::AABB"
+    },
+    {
+      "from": "quick_hull.cpp::build",
+      "to": "aabb.h::AABB"
+    },
+    {
+      "from": "triangle_mesh.cpp::_create_bvh",
+      "to": "aabb.h::AABB"
+    },
+    {
+      "from": "triangle_mesh.cpp::_create_bvh",
+      "to": "aabb.h::get_center"
+    },
+    {
+      "from": "triangle_mesh.cpp::create",
+      "to": "aabb.h::expand_to"
+    },
+    {
+      "from": "triangle_mesh.cpp::create",
+      "to": "aabb.h::get_center"
+    },
+    {
+      "from": "triangle_mesh.cpp::intersect_ray",
+      "to": "aabb.h::intersects_ray"
+    },
+    {
+      "from": "triangle_mesh.cpp::inside_convex_shape",
+      "to": "aabb.h::intersects_convex_shape"
+    },
+    {
+      "from": "triangle_mesh.cpp::inside_convex_shape",
+      "to": "aabb.h::inside_convex_shape"
+    },
+    {
+      "from": "delaunay_2d.h::triangulate",
+      "to": "rect2.h::get_center"
+    },
+    {
+      "from": "delaunay_3d.h::tetrahedralize",
+      "to": "aabb.h::AABB"
+    },
+    {
+      "from": "delaunay_3d.h::tetrahedralize",
+      "to": "aabb.h::expand_to"
+    },
+    {
+      "from": "delaunay_3d.h::tetrahedralize",
+      "to": "delaunay_3d.h::circum_sphere_compute"
+    },
+    {
+      "from": "delaunay_3d.h::tetrahedralize",
+      "to": "delaunay_3d.h::simplex_is_coplanar"
+    },
+    {
+      "from": "dynamic_bvh.h::is_left_of_axis",
+      "to": "dynamic_bvh.h::get_center"
+    },
+    {
+      "from": "dynamic_bvh.h::aabb_query",
+      "to": "dynamic_bvh.h::intersects"
+    },
+    {
+      "from": "dynamic_bvh.h::aabb_query",
+      "to": "dynamic_bvh.h::is_internal"
+    },
+    {
+      "from": "dynamic_bvh.h::convex_query",
+      "to": "dynamic_bvh.h::intersects"
+    },
+    {
+      "from": "dynamic_bvh.h::convex_query",
+      "to": "dynamic_bvh.h::intersects_convex"
+    },
+    {
+      "from": "dynamic_bvh.h::convex_query",
+      "to": "dynamic_bvh.h::is_internal"
+    },
+    {
+      "from": "dynamic_bvh.h::ray_query",
+      "to": "dynamic_bvh.h::is_internal"
+    },
+    {
+      "from": "face3.h::get_aabb",
+      "to": "aabb.h::expand_to"
+    },
+    {
+      "from": "geometry_2d.h::get_closest_point_to_segment",
+      "to": "geometry_2d.h::get_closest_point_to_segment"
+    },
+    {
+      "from": "geometry_2d.h::get_distance_to_segment",
+      "to": "geometry_2d.h::get_distance_to_segment"
+    },
+    {
+      "from": "geometry_2d.h::get_distance_to_segment",
+      "to": "geometry_2d.h::get_closest_point_to_segment"
+    }
+  ],
+  "functions_in_changed_files": [
+    {
+      "name": "has_volume",
+      "full_name": "AABB.has_volume:bool()<const>",
+      "file": "aabb.h",
+      "start_line": 49,
+      "end_line": 51,
+      "signature": "bool()<const>"
+    },
+    {
+      "name": "has_surface",
+      "full_name": "AABB.has_surface:bool()<const>",
+      "file": "aabb.h",
+      "start_line": 53,
+      "end_line": 55,
+      "signature": "bool()<const>"
+    },
+    {
+      "name": "get_position",
+      "full_name": "AABB.get_position:Vector3&()<const>",
+      "file": "aabb.h",
+      "start_line": 57,
+      "end_line": 57,
+      "signature": "Vector3&()<const>"
+    },
+    {
+      "name": "set_position",
+      "full_name": "AABB.set_position:void(Vector3&)",
+      "file": "aabb.h",
+      "start_line": 58,
+      "end_line": 58,
+      "signature": "void(Vector3&)"
+    },
+    {
+      "name": "get_size",
+      "full_name": "AABB.get_size:Vector3&()<const>",
+      "file": "aabb.h",
+      "start_line": 59,
+      "end_line": 59,
+      "signature": "Vector3&()<const>"
+    },
+    {
+      "name": "set_size",
+      "full_name": "AABB.set_size:void(Vector3&)",
+      "file": "aabb.h",
+      "start_line": 60,
+      "end_line": 60,
+      "signature": "void(Vector3&)"
+    },
+    {
+      "name": "==",
+      "full_name": "AABB.==:bool(AABB&)<const>",
+      "file": "aabb.h",
+      "start_line": 62,
+      "end_line": 64,
+      "signature": "bool(AABB&)<const>"
+    },
+    {
+      "name": "!=",
+      "full_name": "AABB.!=:bool(AABB&)<const>",
+      "file": "aabb.h",
+      "start_line": 65,
+      "end_line": 67,
+      "signature": "bool(AABB&)<const>"
+    },
+    {
+      "name": "intersects_ray",
+      "full_name": "AABB.intersects_ray:bool(Vector3&,Vector3&)<const>",
+      "file": "aabb.h",
+      "start_line": 82,
+      "end_line": 85,
+      "signature": "bool(Vector3&,Vector3&)<const>"
+    },
+    {
+      "name": "abs",
+      "full_name": "AABB.abs:AABB()<const>",
+      "file": "aabb.h",
+      "start_line": 113,
+      "end_line": 115,
+      "signature": "AABB()<const>"
+    },
+    {
+      "name": "set_end",
+      "full_name": "AABB.set_end:void(Vector3&)",
+      "file": "aabb.h",
+      "start_line": 123,
+      "end_line": 125,
+      "signature": "void(Vector3&)"
+    },
+    {
+      "name": "get_end",
+      "full_name": "AABB.get_end:Vector3()<const>",
+      "file": "aabb.h",
+      "start_line": 127,
+      "end_line": 129,
+      "signature": "Vector3()<const>"
+    },
+    {
+      "name": "get_center",
+      "full_name": "AABB.get_center:Vector3()<const>",
+      "file": "aabb.h",
+      "start_line": 131,
+      "end_line": 133,
+      "signature": "Vector3()<const>"
+    },
+    {
+      "name": "hash",
+      "full_name": "AABB.hash:uint32_t()<const>",
+      "file": "aabb.h",
+      "start_line": 135,
+      "end_line": 143,
+      "signature": "uint32_t()<const>"
+    },
+    {
+      "name": "AABB",
+      "full_name": "AABB.AABB:void()",
+      "file": "aabb.h",
+      "start_line": 147,
+      "end_line": 147,
+      "signature": "void()"
+    },
+    {
+      "name": "AABB",
+      "full_name": "AABB.AABB:void(Vector3&,Vector3&)",
+      "file": "aabb.h",
+      "start_line": 148,
+      "end_line": 151,
+      "signature": "void(Vector3&,Vector3&)"
+    },
+    {
+      "name": "intersects",
+      "full_name": "AABB.intersects:bool(AABB&)<const>",
+      "file": "aabb.h",
+      "start_line": 154,
+      "end_line": 180,
+      "signature": "bool(AABB&)<const>"
+    },
+    {
+      "name": "intersects_inclusive",
+      "full_name": "AABB.intersects_inclusive:bool(AABB&)<const>",
+      "file": "aabb.h",
+      "start_line": 182,
+      "end_line": 208,
+      "signature": "bool(AABB&)<const>"
+    },
+    {
+      "name": "encloses",
+      "full_name": "AABB.encloses:bool(AABB&)<const>",
+      "file": "aabb.h",
+      "start_line": 210,
+      "end_line": 228,
+      "signature": "bool(AABB&)<const>"
+    },
+    {
+      "name": "get_support",
+      "full_name": "AABB.get_support:Vector3(Vector3&)<const>",
+      "file": "aabb.h",
+      "start_line": 230,
+      "end_line": 242,
+      "signature": "Vector3(Vector3&)<const>"
+    },
+    {
+      "name": "get_endpoint",
+      "full_name": "AABB.get_endpoint:Vector3(int)<const>",
+      "file": "aabb.h",
+      "start_line": 244,
+      "end_line": 265,
+      "signature": "Vector3(int)<const>"
+    },
+    {
+      "name": "intersects_convex_shape",
+      "full_name": "AABB.intersects_convex_shape:bool(Plane*,int,Vector3*,int)<const>",
+      "file": "aabb.h",
+      "start_line": 267,
+      "end_line": 307,
+      "signature": "bool(Plane*,int,Vector3*,int)<const>"
+    },
+    {
+      "name": "inside_convex_shape",
+      "full_name": "AABB.inside_convex_shape:bool(Plane*,int)<const>",
+      "file": "aabb.h",
+      "start_line": 309,
+      "end_line": 326,
+      "signature": "bool(Plane*,int)<const>"
+    },
+    {
+      "name": "has_point",
+      "full_name": "AABB.has_point:bool(Vector3&)<const>",
+      "file": "aabb.h",
+      "start_line": 328,
+      "end_line": 354,
+      "signature": "bool(Vector3&)<const>"
+    },
+    {
+      "name": "expand_to",
+      "full_name": "AABB.expand_to:void(Vector3&)",
+      "file": "aabb.h",
+      "start_line": 356,
+      "end_line": 387,
+      "signature": "void(Vector3&)"
+    },
+    {
+      "name": "project_range_in_plane",
+      "full_name": "AABB.project_range_in_plane:void(Plane&,real_t&,real_t&)<const>",
+      "file": "aabb.h",
+      "start_line": 389,
+      "end_line": 397,
+      "signature": "void(Plane&,real_t&,real_t&)<const>"
+    },
+    {
+      "name": "get_longest_axis_size",
+      "full_name": "AABB.get_longest_axis_size:float()<const>",
+      "file": "aabb.h",
+      "start_line": 399,
+      "end_line": 411,
+      "signature": "float()<const>"
+    },
+    {
+      "name": "get_shortest_axis_size",
+      "full_name": "AABB.get_shortest_axis_size:float()<const>",
+      "file": "aabb.h",
+      "start_line": 413,
+      "end_line": 425,
+      "signature": "float()<const>"
+    },
+    {
+      "name": "smits_intersect_ray",
+      "full_name": "AABB.smits_intersect_ray:bool(Vector3&,Vector3&,real_t,real_t)<const>",
+      "file": "aabb.h",
+      "start_line": 427,
+      "end_line": 479,
+      "signature": "bool(Vector3&,Vector3&,real_t,real_t)<const>"
+    },
+    {
+      "name": "grow_by",
+      "full_name": "AABB.grow_by:void(real_t)",
+      "file": "aabb.h",
+      "start_line": 481,
+      "end_line": 488,
+      "signature": "void(real_t)"
+    },
+    {
+      "name": "quantize",
+      "full_name": "AABB.quantize:void(real_t)",
+      "file": "aabb.h",
+      "start_line": 490,
+      "end_line": 506,
+      "signature": "void(real_t)"
+    },
+    {
+      "name": "quantized",
+      "full_name": "AABB.quantized:AABB(real_t)<const>",
+      "file": "aabb.h",
+      "start_line": 508,
+      "end_line": 512,
+      "signature": "AABB(real_t)<const>"
+    },
+    {
+      "name": "Simplex",
+      "full_name": "Delaunay3D.Simplex.Simplex:ANY()",
+      "file": "delaunay_3d.h",
+      "start_line": 65,
+      "end_line": 65,
+      "signature": "_FORCE_INLINE_()"
+    },
+    {
+      "name": "Simplex",
+      "full_name": "Delaunay3D.Simplex.Simplex:ANY(uint32_t,uint32_t,uint32_t,uint32_t)",
+      "file": "delaunay_3d.h",
+      "start_line": 66,
+      "end_line": 71,
+      "signature": "_FORCE_INLINE_(uint32_t,uint32_t,uint32_t,uint32_t)"
+    },
+    {
+      "name": "==",
+      "full_name": "Delaunay3D.Triangle.==:bool(Delaunay3D.Triangle&)<const>",
+      "file": "delaunay_3d.h",
+      "start_line": 77,
+      "end_line": 79,
+      "signature": "bool(Delaunay3D.Triangle&)<const>"
+    },
+    {
+      "name": "Triangle",
+      "full_name": "Delaunay3D.Triangle.Triangle:ANY()",
+      "file": "delaunay_3d.h",
+      "start_line": 81,
+      "end_line": 81,
+      "signature": "_FORCE_INLINE_()"
+    },
+    {
+      "name": "Triangle",
+      "full_name": "Delaunay3D.Triangle.Triangle:ANY(uint32_t,uint32_t,uint32_t)",
+      "file": "delaunay_3d.h",
+      "start_line": 82,
+      "end_line": 96,
+      "signature": "_FORCE_INLINE_(uint32_t,uint32_t,uint32_t)"
+    },
+    {
+      "name": "hash",
+      "full_name": "Delaunay3D.TriangleHasher.hash:uint32_t(Delaunay3D.Triangle&)",
+      "file": "delaunay_3d.h",
+      "start_line": 100,
+      "end_line": 104,
+      "signature": "uint32_t(Delaunay3D.Triangle&)"
+    },
+    {
+      "name": "circum_sphere_compute",
+      "full_name": "Delaunay3D.circum_sphere_compute:void(Vector3*,Delaunay3D.Simplex*)",
+      "file": "delaunay_3d.h",
+      "start_line": 107,
+      "end_line": 163,
+      "signature": "void(Vector3*,Delaunay3D.Simplex*)"
+    },
+    {
+      "name": "simplex_contains",
+      "full_name": "Delaunay3D.simplex_contains:bool(Vector3*,Delaunay3D.Simplex&,uint32_t)",
+      "file": "delaunay_3d.h",
+      "start_line": 165,
+      "end_line": 179,
+      "signature": "bool(Vector3*,Delaunay3D.Simplex&,uint32_t)"
+    },
+    {
+      "name": "simplex_is_coplanar",
+      "full_name": "Delaunay3D.simplex_is_coplanar:bool(Vector3*,Delaunay3D.Simplex&)",
+      "file": "delaunay_3d.h",
+      "start_line": 181,
+      "end_line": 195,
+      "signature": "bool(Vector3*,Delaunay3D.Simplex&)"
+    },
+    {
+      "name": "tetrahedralize",
+      "full_name": "Delaunay3D.tetrahedralize:Vector(Vector&)",
+      "file": "delaunay_3d.h",
+      "start_line": 202,
+      "end_line": 389,
+      "signature": "Vector(Vector&)"
+    },
+    {
+      "name": "is_valid",
+      "full_name": "DynamicBVH.ID.is_valid:bool()<const>",
+      "file": "dynamic_bvh.h",
+      "start_line": 67,
+      "end_line": 67,
+      "signature": "bool()<const>"
+    },
+    {
+      "name": "get_center",
+      "full_name": "DynamicBVH.Volume.get_center:Vector3()<const>",
+      "file": "dynamic_bvh.h",
+      "start_line": 74,
+      "end_line": 74,
+      "signature": "Vector3()<const>"
+    },
+    {
+      "name": "get_length",
+      "full_name": "DynamicBVH.Volume.get_length:Vector3()<const>",
+      "file": "dynamic_bvh.h",
+      "start_line": 75,
+      "end_line": 75,
+      "signature": "Vector3()<const>"
+    },
+    {
+      "name": "contains",
+      "full_name": "DynamicBVH.Volume.contains:bool(DynamicBVH.Volume&)<const>",
+      "file": "dynamic_bvh.h",
+      "start_line": 77,
+      "end_line": 84,
+      "signature": "bool(DynamicBVH.Volume&)<const>"
+    },
+    {
+      "name": "merge",
+      "full_name": "DynamicBVH.Volume.merge:DynamicBVH.Volume(DynamicBVH.Volume&)<const>",
+      "file": "dynamic_bvh.h",
+      "start_line": 86,
+      "end_line": 101,
+      "signature": "DynamicBVH.Volume(DynamicBVH.Volume&)<const>"
+    },
+    {
+      "name": "get_size",
+      "full_name": "DynamicBVH.Volume.get_size:float()<const>",
+      "file": "dynamic_bvh.h",
+      "start_line": 103,
+      "end_line": 107,
+      "signature": "float()<const>"
+    },
+    {
+      "name": "is_not_equal_to",
+      "full_name": "DynamicBVH.Volume.is_not_equal_to:bool(DynamicBVH.Volume&)<const>",
+      "file": "dynamic_bvh.h",
+      "start_line": 109,
+      "end_line": 116,
+      "signature": "bool(DynamicBVH.Volume&)<const>"
+    },
+    {
+      "name": "get_proximity_to",
+      "full_name": "DynamicBVH.Volume.get_proximity_to:float(DynamicBVH.Volume&)<const>",
+      "file": "dynamic_bvh.h",
+      "start_line": 118,
+      "end_line": 121,
+      "signature": "float(DynamicBVH.Volume&)<const>"
+    }
+  ]
+}
