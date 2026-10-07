@@ -13,6 +13,6 @@ final pipeline consumes.
 | `evidence/` | The 36 Joern-enriched evidence packs (`pr*_evidence.json`) with `callers` and `functions_in_changed_files`. **Consumed by** `../2026-09-19_joern_replace_grep/run.py`, which turns the caller files into the KG block's dependent list and generates the 35 KG reviews scored in the thesis. |
 | `pr_config.json`, `progress*.json`, `*_log.txt` | Run configuration and logs. |
 
-Not in the repository (on Drive, see `../../DRIVE_UPLOAD_LIST.md`): `cpgs/`
+Not in the repository (on Drive, see `../../LARGE_ASSETS.md`): `cpgs/`
 (CPG binaries, 1.0 GB), `exports/` (Neo4j-CSV exports, 6.5 GB), `cache/`.
 Rebuilding them requires Joern and the repositories at the PR head SHAs.

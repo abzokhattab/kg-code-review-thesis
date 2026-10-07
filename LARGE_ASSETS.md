@@ -1,9 +1,10 @@
-# Artefacts not in this repository (too large for GitHub)
+# Large assets (hosted on Zenodo, not in this repository)
 
 These are available on Drive under the same relative paths as the lab
 repository (e.g. `experiments/2026-05-15_joern_kg_main/exports/`).
 
-**Drive folder:** _link to be added_ Nothing in the thesis *depends* on them being here: every
+**Zenodo record:** https://zenodo.org/records/23215802
+(DOI `10.5281/zenodo.23215802`) Nothing in the thesis *depends* on them being here: every
 number is recomputable from the JSON/Markdown result files that are in this
 repository. They are needed only to re-run generation or re-build graphs from
 scratch.
