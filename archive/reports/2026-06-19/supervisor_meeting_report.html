@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>KG-Augmented LLM Code Review — Supervisor Briefing</title>
+<style>
+  :root{
+    --bg:#ffffff; --panel:#f6f8fa; --ink:#1f2328; --ink2:#475059; --ink3:#6e7781;
+    --line:#d8dee4; --blue:#0969da; --bluebg:#ddf4ff; --green:#1a7f37; --greenbg:#dafbe1;
+    --amber:#9a6700; --amberbg:#fff8c5; --red:#cf222e; --redbg:#ffebe9; --accent:#0969da;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);
+    font:15px/1.6 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;}
+  .wrap{max-width:980px;margin:0 auto;padding:34px 26px 90px;}
+  h1{font-size:1.85rem;margin:0 0 4px;letter-spacing:-.02em}
+  h2{font-size:1.3rem;margin:38px 0 8px;padding-bottom:6px;border-bottom:2px solid var(--line)}
+  h3{font-size:1.04rem;margin:18px 0 6px}
+  p{margin:7px 0}
+  .sub{color:var(--ink3);font-size:.92rem;margin:0 0 2px}
+  .lead{font-size:1.02rem;color:var(--ink2)}
+  code{background:#eaeef2;padding:1px 6px;border-radius:5px;font-size:.85em}
+  table{border-collapse:collapse;width:100%;margin:12px 0;font-size:.9rem}
+  th,td{border:1px solid var(--line);padding:7px 10px;text-align:left;vertical-align:top}
+  th{background:var(--panel);font-weight:700}
+  td.r,th.r{text-align:right}
+  .tg{color:var(--green);font-weight:700}.tr{color:var(--red);font-weight:700}
+  .callout{border-radius:10px;padding:12px 16px;margin:14px 0;border:1px solid var(--line)}
+  .green{background:var(--greenbg);border-color:#aceebb}
+  .amber{background:var(--amberbg);border-color:#eed888}
+  .blue{background:var(--bluebg);border-color:#a6d8ff}
+  .grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:14px 0}
+  .sc{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:13px}
+  .sc .n{font-size:1.5rem;font-weight:800;letter-spacing:-.02em}
+  .sc .l{color:var(--ink3);font-size:.8rem;margin-top:2px}
+
+  /* ── pipeline ── */
+  .pipe{display:flex;flex-direction:column;align-items:center;gap:0;margin:18px 0 6px}
+  .node{width:100%;max-width:760px;border:1.5px solid var(--line);border-radius:10px;
+    background:var(--panel);padding:12px 16px;text-align:center}
+  .node .t{font-weight:700;font-size:.98rem}
+  .node .d{color:var(--ink3);font-size:.82rem;margin-top:2px}
+  .node.start{background:#eef2ff;border-color:#b9c4ff}
+  .node.gen{background:#eef6ff;border-color:#a6d8ff}
+  .node.filter{background:var(--amberbg);border-color:#e3a008;border-width:2.5px}
+  .node.judge{background:#f3f0ff;border-color:#c9b8ff}
+  .node.result{background:var(--greenbg);border-color:#5fce7e;border-width:2px}
+  .node.human{background:#fff0f6;border-color:#f0a6d0}
+  .arrow{width:2px;height:20px;background:var(--ink3);position:relative}
+  .arrow:after{content:"";position:absolute;bottom:-2px;left:-4px;border:5px solid transparent;border-top-color:var(--ink3)}
+  .ftag{display:inline-block;background:#e3a008;color:#3d2c00;font-size:.68rem;font-weight:800;
+    padding:1px 8px;border-radius:20px;letter-spacing:.04em;margin-bottom:4px;text-transform:uppercase}
+  .legend{font-size:.8rem;color:var(--ink3);margin-top:8px;text-align:center}
+  .pill{display:inline-block;font-size:.72rem;font-weight:700;padding:2px 9px;border-radius:20px}
+  .p-ok{background:var(--greenbg);color:var(--green)}
+  .p-block{background:var(--redbg);color:var(--red)}
+  .src{color:var(--ink3);font-size:.78rem;font-family:ui-monospace,monospace}
+  ul.clean{margin:6px 0;padding-left:20px}ul.clean li{margin:4px 0}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<h1>Knowledge-Graph-Augmented LLM Code Review</h1>
+<p class="sub">Supervisor briefing &middot; 2026-06-19 &middot; RQ1 done &middot; RQ2 done &middot; RQ3 instrument ready</p>
+
+<div class="grid3">
+  <div class="sc"><div class="n tg">+0.47</div><div class="l">KG effect (d_z) on KG-relevant criteria, p=0.007, n=40 &mdash; pre-registered headline</div></div>
+  <div class="sc"><div class="n">40 PRs</div><div class="l">5 repos &middot; 5 languages &middot; 3-judge panel &middot; 12,000 scored cells</div></div>
+  <div class="sc"><div class="n tg">+0.58</div><div class="l">Clean Joern KG (normal prompt), p=0.003 &mdash; confirms the headline with the production KG</div></div>
+</div>
+
+<h2>The experimental pipeline</h2>
+<p class="lead">End-to-end flow from raw pull request to statistical result and the human validation study. The highlighted step removes non-comparable review pairs before any scoring.</p>
+
+<div class="pipe">
+
+  <div class="node start">
+    <div class="t">1 &middot; 40 merged pull requests</div>
+    <div class="d">grafana (13) &middot; scikit-learn (8) &middot; kafka (8) &middot; godot (6) &middot; jenkins (5) &middot; 8 pre-registered selection filters</div>
+  </div>
+  <div class="arrow"></div>
+
+  <div class="node">
+    <div class="t">2 &middot; Context extraction</div>
+    <div class="d">Knowledge graph (tree-sitter AST / Joern call graph: callers, dependents, test files) &nbsp;+&nbsp; RAG (top-k similar code chunks)</div>
+  </div>
+  <div class="arrow"></div>
+
+  <div class="node gen">
+    <div class="t">3 &middot; Review generation &mdash; GPT-4o (T=0.4, seed=42)</div>
+    <div class="d">4 modes per PR: <strong>baseline</strong> (diff only) &middot; <strong>kg</strong> &middot; <strong>rag</strong> &middot; <strong>hybrid</strong></div>
+  </div>
+  <div class="arrow"></div>
+
+  <div class="node filter">
+    <div class="ftag">comparability filter</div>
+    <div class="t">4 &middot; Divergence filter &mdash; drop non-comparable review pairs</div>
+    <div class="d">For each PR, check whether the two reviews being compared address the <strong>same core PR concern</strong>.
+    If they discuss <strong>completely different</strong> things, a head-to-head score is <strong>misleading</strong> &mdash; that pair is excluded.
+    <strong>Result: 40 / 40 pairs retained</strong> (all addressed the same concern).</div>
+  </div>
+  <div class="arrow"></div>
+
+  <div class="node judge">
+    <div class="t">5 &middot; 3-judge LLM panel</div>
+    <div class="d">GPT-4o-mini + GPT-4o + Gemini 2.5 Flash &middot; 25-criterion rubric &middot; majority vote &middot; inter-judge &kappa; = 0.59&ndash;0.72 (substantial)</div>
+  </div>
+  <div class="arrow"></div>
+
+  <div class="node">
+    <div class="t">6 &middot; Statistics</div>
+    <div class="d">Paired permutation test (B=20,000) + bootstrap CIs + Cohen's d_z, on per-PR deltas vs baseline</div>
+  </div>
+  <div class="arrow"></div>
+
+  <div class="node result">
+    <div class="t">7 &middot; RQ2 result &mdash; complementarity</div>
+    <div class="d">KG &uarr; KG-relevant criteria (p=0.007) &middot; RAG &uarr; total coverage (p=0.007) &middot; Hybrid &uarr; both</div>
+  </div>
+  <div class="arrow"></div>
+
+  <div class="node human">
+    <div class="t">8 &middot; RQ3 human study</div>
+    <div class="d">6 balanced PRs &middot; rate both reviews on 6 criteria, then state a preference &middot; Kendall's &tau; (human rank vs LLM-judge rank)</div>
+  </div>
+
+</div>
+<p class="legend">Highlighted in amber: the divergence / comparability filter &mdash; the safeguard against scoring review pairs that are too different to compare fairly.</p>
+
+<div class="callout amber">
+  <strong>Why the divergence filter matters (step 4).</strong> If the baseline review talks about, say, error handling while the KG review talks about a completely unrelated architectural concern, then "which is better" is not a meaningful question &mdash; the two are not answering the same thing, and scoring them head-to-head would inflate or distort the measured difference. The filter keeps only pairs where both reviews engage the same underlying PR concern, so every comparison is apples-to-apples. On this dataset all 40 pairs passed, which is itself evidence the modes stay on-topic.
+</div>
+
+<h2>RQ2 &mdash; the headline result</h2>
+<p class="sub">Source: <span class="src">results/BOOTSTRAP_STATS_v2.md</span> &middot; n=40 &middot; paired permutation test</p>
+<table>
+  <tr><th>Mode vs baseline</th><th class="r">Total &Delta; /25</th><th class="r">p</th><th class="r">d_z</th><th class="r">KG-relevant &Delta; /9</th><th class="r">p</th><th class="r">d_z</th></tr>
+  <tr><td><strong>kg</strong></td><td class="r">+0.62</td><td class="r">0.054</td><td class="r">+0.33</td><td class="r tg">+0.60</td><td class="r tg">0.007</td><td class="r tg">+0.47</td></tr>
+  <tr><td><strong>rag</strong></td><td class="r tg">+0.88</td><td class="r tg">0.007</td><td class="r tg">+0.47</td><td class="r">+0.42</td><td class="r">0.057</td><td class="r">+0.33</td></tr>
+  <tr><td><strong>hybrid</strong></td><td class="r tg">+0.72</td><td class="r tg">0.037</td><td class="r">+0.36</td><td class="r tg">+0.53</td><td class="r tg">0.008</td><td class="r">+0.46</td></tr>
+</table>
+<div class="callout green">
+  <strong>Reading it:</strong> KG significantly improves the criteria that need structural knowledge (callers, tests, dependents); RAG significantly improves overall coverage; hybrid improves both. <strong>Neither dominates &mdash; they are complementary.</strong> A clean Joern call-graph KG under the same prompt confirms the direction at a slightly larger, also-significant effect (KG-relevant d_z=+0.58, p=0.003; <span class="src">experiments/2026-06-11_joern_normal_prompt/</span>).
+</div>
+
+<h2>RQ3 &mdash; human validation study (ready)</h2>
+<p>Validates whether human reviewers track the LLM-judge ranking (convergent validity).</p>
+<ul class="clean">
+  <li><strong>Comparison:</strong> <code>baseline</code> vs <code>kg</code> under the normal prompt &mdash; i.e. it validates the pre-registered headline directly (no prompt confound).</li>
+  <li><strong>Task per PR:</strong> the rater scores both reviews on the 6 criteria (F3*, F2*, T3, Q5, R1, C6), then gives an overall preference and a difficulty rating.</li>
+  <li><strong>6 PRs, deliberately balanced:</strong> 3 wins / 1 tie / 2 losses under the LLM judge &mdash; so the study can <em>fail</em>, which is what makes the validation meaningful.</li>
+  <li><strong>Primary metric:</strong> Kendall's &tau; between human preference rank and LLM-judge KG-relevant delta rank.</li>
+  <li><strong>Status:</strong> instrument built, verified, running locally. <span class="pill p-block">1 blocker</span> the data-collection webhook needs a 5-minute redeploy before raters can submit.</li>
+</ul>
+
+<h2>What is left</h2>
+<ul class="clean">
+  <li>Redeploy the human-study webhook (HTTP 405) &rarr; recruit raters.</li>
+  <li>Decide headline KG: keep pre-registered tree-sitter (d_z=0.47) as primary, present clean Joern (d_z=0.58) as the production-KG confirmation.</li>
+  <li>Write Methods / Results / Discussion &mdash; all inputs exist; this is writing, not new analysis.</li>
+</ul>
+
+<p class="src" style="margin-top:24px">All figures traceable to files under <code>results/</code> and <code>experiments/</code>. KG-relevant subscale = 9 pre-registered criteria; a psychometrically refined 5-item subscale (d_z&asymp;0.58) is reported as a robustness check.</p>
+
+</div>
+</body>
+</html>

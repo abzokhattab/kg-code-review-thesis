@@ -1,0 +1,331 @@
+{
+  "pr_id": 7,
+  "mode": "kg",
+  "total_score": 12,
+  "max_score": 25,
+  "percentage": 48.0,
+  "kg_relevant_score": 6,
+  "kg_relevant_max": 9,
+  "kg_relevant_percentage": 66.7,
+  "criteria_scores": [
+    {
+      "criterion_id": "F1",
+      "score": 1,
+      "evidence": "Review states: 'This PR introduces fixes for callback management, specifically addressing `sample_weight` inconsistencies, robust callback teardown, and ensuring `on_fit_task_end` is always called...'",
+      "n_yes": 2,
+      "n_valid": 2,
+      "unanimous": true
+    },
+    {
+      "criterion_id": "F2",
+      "score": 1,
+      "evidence": "Review mentions: 'preventing `AttributeError` if the attribute doesn't exist' and 'The new `ExceptionGroup` for multiple teardown errors is also a more robust error handling mechanism.'",
+      "n_yes": 2,
+      "n_valid": 2,
+      "unanimous": true
+    },
+    {
+      "criterion_id": "F3",
+      "score": 1,
+      "evidence": "The entire 'Integration Risk' section details how the change integrates with various files like `sklearn/linear_model/tests/test_logistic.py`, `sklearn/neural_network/_base.py`, etc.",
+      "n_yes": 2,
+      "n_valid": 2,
+      "unanimous": true
+    },
+    {
+      "criterion_id": "F4",
+      "score": 1,
+      "evidence": "Review states: 'This is a bug fix and should not break existing tests' and 'There's a minor risk of performance regression... but it's unlikely to be significant.'",
+      "n_yes": 2,
+      "n_valid": 2,
+      "unanimous": true
+    },
+    {
+      "criterion_id": "T1",
+      "score": 1,
+      "evidence": "Review identifies a 'Coverage Gap' for `test_logistic.py` regarding the `sample_weight` typo fix, implying a need for a test.",
+      "n_yes": 2,
+      "n_valid": 2,
+      "unanimous": true
+    },
+    {
+      "criterion_id": "T2",
+      "score": 1,
+      "evidence": "Review mentions: 'test_search_callbacks_with_partial_fit_failures' which covers failure scenarios.",
+      "n_yes": 2,
+      "n_valid": 2,
+      "unanimous": true
+    },
+    {
+      "criterion_id": "T3",
+      "score": 1,
+      "evidence": "Review references specific test files: `test_logistic.py` (suggesting a missing test) and `sklearn/model_selection/tests/test_search.py` (mentioning new tests).",
+      "n_yes": 2,
+      "n_valid": 2,
+      "unanimous": true
+    },
+    {
+      "criterion_id": "R1",
+      "score": 0,
+      "evidence": "Review does not comment on code clarity, naming conventions, or function organization.",
+      "n_yes": 0,
+      "n_valid": 2,
+      "unanimous": true
+    },
+    {
+      "criterion_id": "R2",
+      "score": 0,
+      "evidence": "Review does not identify unnecessary complexity or suggest simplification.",
+      "n_yes": 0,
+      "n_valid": 2,
+      "unanimous": true
+    },
+    {
+      "criterion_id": "R3",
+      "score": 0,
+      "evidence": "Review does not check if code comments explain the 'why' behind decisions.",
+      "n_yes": 0,
+      "n_valid": 2,
+      "unanimous": true
+    },
+    {
+      "criterion_id": "M1",
+      "score": 0,
+      "evidence": "Review does not assess whether changes fit existing architecture or design patterns",
+      "n_yes": 1,
+      "n_valid": 2,
+      "unanimous": false
+    },
+    {
+      "criterion_id": "M2",
+      "score": 0,
+      "evidence": "Review does not flag if the PR scope is too large or should be split.",
+      "n_yes": 0,
+      "n_valid": 2,
+      "unanimous": true
+    },
+    {
+      "criterion_id": "M3",
+      "score": 0,
+      "evidence": "Review does not check if public APIs or interfaces are properly documented.",
+      "n_yes": 0,
+      "n_valid": 2,
+      "unanimous": true
+    },
+    {
+      "criterion_id": "C1",
+      "score": 0,
+      "evidence": "Review does not check adherence to project style guides or coding conventions.",
+      "n_yes": 0,
+      "n_valid": 2,
+      "unanimous": true
+    },
+    {
+      "criterion_id": "C2",
+      "score": 0,
+      "evidence": "Review mentions 'robustness improvement' but does not explicitly check consistency with existing patterns for similar problems within the codebase.",
+      "n_yes": 0,
+      "n_valid": 2,
+      "unanimous": true
+    },
+    {
+      "criterion_id": "P1",
+      "score": 1,
+      "evidence": "Review identifies: 'There's a minor risk of performance regression due to `ExceptionGroup` overhead or more complex callback teardown logic...'",
+      "n_yes": 2,
+      "n_valid": 2,
+      "unanimous": true
+    },
+    {
+      "criterion_id": "P2",
+      "score": 0,
+      "evidence": "Review identifies a performance risk but does not ask about benchmarks or performance testing.",
+      "n_yes": 0,
+      "n_valid": 2,
+      "unanimous": true
+    },
+    {
+      "criterion_id": "S1",
+      "score": 0,
+      "evidence": "Review does not check for proper input validation or sanitization.",
+      "n_yes": 0,
+      "n_valid": 2,
+      "unanimous": true
+    },
+    {
+      "criterion_id": "S2",
+      "score": 0,
+      "evidence": "Review does not flag hardcoded secrets, credentials, or sensitive data.",
+      "n_yes": 0,
+      "n_valid": 2,
+      "unanimous": true
+    },
+    {
+      "criterion_id": "S3",
+      "score": 1,
+      "evidence": "Review assesses error handling by mentioning 'preventing `AttributeError`', 'new `ExceptionGroup` for multiple teardown errors', and ensuring `on_fit_task_end` is 'always called... even if scoring... fails'.",
+      "n_yes": 2,
+      "n_valid": 2,
+      "unanimous": true
+    },
+    {
+      "criterion_id": "Q1",
+      "score": 1,
+      "evidence": "The 'Scope' section provides an overall summary: 'This PR introduces fixes for callback management, specifically addressing `sample_weight` inconsistencies, robust callback teardown, and ensuring `on_fit_task_end` is always called...'",
+      "n_yes": 2,
+      "n_valid": 2,
+      "unanimous": true
+    },
+    {
+      "criterion_id": "Q2",
+      "score": 1,
+      "evidence": "Review comments are anchored to specific file paths, e.g., '`sklearn/linear_model/tests/test_logistic.py`', '`sklearn/neural_network/_base.py`'.",
+      "n_yes": 2,
+      "n_valid": 2,
+      "unanimous": true
+    },
+    {
+      "criterion_id": "Q3",
+      "score": 0,
+      "evidence": "Review does not explicitly distinguish between blocking issues and minor suggestions using such terminology.",
+      "n_yes": 1,
+      "n_valid": 2,
+      "unanimous": false
+    },
+    {
+      "criterion_id": "Q4",
+      "score": 0,
+      "evidence": "Review makes statements and assessments rather than asking clarifying questions.",
+      "n_yes": 0,
+      "n_valid": 2,
+      "unanimous": true
+    },
+    {
+      "criterion_id": "Q5",
+      "score": 1,
+      "evidence": "Review explains the reasoning, e.g., 'preventing `AttributeError` if the attribute doesn't exist' and 'ensures it's always called, even if scoring... fails'.",
+      "n_yes": 2,
+      "n_valid": 2,
+      "unanimous": true
+    }
+  ],
+  "per_judge": [
+    {
+      "model": "gemini:gemini-2.5-flash",
+      "scores": {
+        "F1": 1,
+        "F2": 1,
+        "F3": 1,
+        "F4": 1,
+        "T1": 1,
+        "T2": 1,
+        "T3": 1,
+        "R1": 0,
+        "R2": 0,
+        "R3": 0,
+        "M1": 1,
+        "M2": 0,
+        "M3": 0,
+        "C1": 0,
+        "C2": 0,
+        "P1": 1,
+        "P2": 0,
+        "S1": 0,
+        "S2": 0,
+        "S3": 1,
+        "Q1": 1,
+        "Q2": 1,
+        "Q3": 0,
+        "Q4": 0,
+        "Q5": 1
+      },
+      "evidence": {
+        "F1": "Review states: 'This PR introduces fixes for callback management, specifically addressing `sample_weight` inconsistencies, robust callback teardown, and ensuring `on_fit_task_end` is always called...'",
+        "F2": "Review mentions: 'preventing `AttributeError` if the attribute doesn't exist' and 'The new `ExceptionGroup` for multiple teardown errors is also a more robust error handling mechanism.'",
+        "F3": "The entire 'Integration Risk' section details how the change integrates with various files like `sklearn/linear_model/tests/test_logistic.py`, `sklearn/neural_network/_base.py`, etc.",
+        "F4": "Review states: 'This is a bug fix and should not break existing tests' and 'There's a minor risk of performance regression... but it's unlikely to be significant.'",
+        "T1": "Review identifies a 'Coverage Gap' for `test_logistic.py` regarding the `sample_weight` typo fix, implying a need for a test.",
+        "T2": "Review mentions: 'test_search_callbacks_with_partial_fit_failures' which covers failure scenarios.",
+        "T3": "Review references specific test files: `test_logistic.py` (suggesting a missing test) and `sklearn/model_selection/tests/test_search.py` (mentioning new tests).",
+        "R1": "Review does not comment on code clarity, naming conventions, or function organization.",
+        "R2": "Review does not identify unnecessary complexity or suggest simplification.",
+        "R3": "Review does not check if code comments explain the 'why' behind decisions.",
+        "M1": "Review implicitly assesses fit by describing the changes as 'fixes for callback management' and 'robustness improvement' within the existing callback system.",
+        "M2": "Review does not flag if the PR scope is too large or should be split.",
+        "M3": "Review does not check if public APIs or interfaces are properly documented.",
+        "C1": "Review does not check adherence to project style guides or coding conventions.",
+        "C2": "Review mentions 'robustness improvement' but does not explicitly check consistency with existing patterns for similar problems within the codebase.",
+        "P1": "Review identifies: 'There's a minor risk of performance regression due to `ExceptionGroup` overhead or more complex callback teardown logic...'",
+        "P2": "Review identifies a performance risk but does not ask about benchmarks or performance testing.",
+        "S1": "Review does not check for proper input validation or sanitization.",
+        "S2": "Review does not flag hardcoded secrets, credentials, or sensitive data.",
+        "S3": "Review assesses error handling by mentioning 'preventing `AttributeError`', 'new `ExceptionGroup` for multiple teardown errors', and ensuring `on_fit_task_end` is 'always called... even if scoring... fails'.",
+        "Q1": "The 'Scope' section provides an overall summary: 'This PR introduces fixes for callback management, specifically addressing `sample_weight` inconsistencies, robust callback teardown, and ensuring `on_fit_task_end` is always called...'",
+        "Q2": "Review comments are anchored to specific file paths, e.g., '`sklearn/linear_model/tests/test_logistic.py`', '`sklearn/neural_network/_base.py`'.",
+        "Q3": "Review does not explicitly distinguish between blocking issues and minor suggestions using such terminology.",
+        "Q4": "Review makes statements and assessments rather than asking clarifying questions.",
+        "Q5": "Review explains the reasoning, e.g., 'preventing `AttributeError` if the attribute doesn't exist' and 'ensures it's always called, even if scoring... fails'."
+      },
+      "error": ""
+    },
+    {
+      "model": "anthropic:claude-sonnet-4-20250514",
+      "scores": {
+        "F1": 1,
+        "F2": 1,
+        "F3": 1,
+        "F4": 1,
+        "T1": 1,
+        "T2": 1,
+        "T3": 1,
+        "R1": 0,
+        "R2": 0,
+        "R3": 0,
+        "M1": 0,
+        "M2": 0,
+        "M3": 0,
+        "C1": 0,
+        "C2": 0,
+        "P1": 1,
+        "P2": 0,
+        "S1": 0,
+        "S2": 0,
+        "S3": 1,
+        "Q1": 1,
+        "Q2": 1,
+        "Q3": 1,
+        "Q4": 0,
+        "Q5": 1
+      },
+      "evidence": {
+        "F1": "Review describes fixes for 'callback management, specifically addressing `sample_weight` inconsistencies, robust callback teardown, and ensuring `on_fit_task_end` is always called'",
+        "F2": "Review identifies edge cases like 'preventing `AttributeError` if the attribute doesn't exist' and discusses callback teardown failures",
+        "F3": "Review systematically analyzes integration with each affected file, stating 'No direct integration risk' or 'Low integration risk' with specific reasoning",
+        "F4": "Review explicitly assesses breaking changes: 'This is a bug fix and should not break existing tests' and 'These changes are unlikely to break existing callback usage'",
+        "T1": "Review discusses test coverage under 'Test Coverage Assessment' section and mentions 'The new tests in `sklearn/model_selection/tests/test_search.py`'",
+        "T2": "Review mentions testing failure scenarios: 'test_search_callbacks_with_partial_fit_failures' and discusses error handling in callbacks",
+        "T3": "Review references specific test files like 'sklearn/linear_model/tests/test_logistic.py' and 'sklearn/model_selection/tests/test_search.py'",
+        "R1": "Review does not comment on code clarity, naming conventions, or function organization",
+        "R2": "Review does not identify unnecessary complexity or suggest simplification",
+        "R3": "Review does not check if code comments explain the 'why' behind decisions",
+        "M1": "Review does not assess whether changes fit existing architecture or design patterns",
+        "M2": "Review does not comment on whether PR scope is appropriate or should be split",
+        "M3": "Review does not check if public APIs or interfaces are properly documented",
+        "C1": "Review does not check adherence to project style guides or coding conventions",
+        "C2": "Review does not check if similar problems are solved consistently with existing patterns",
+        "P1": "Review mentions 'minor risk of performance regression due to `ExceptionGroup` overhead or more complex callback teardown logic'",
+        "P2": "Review does not ask about benchmarks or performance testing",
+        "S1": "Review does not check for proper input validation or sanitization",
+        "S2": "Review does not flag hardcoded secrets, credentials, or sensitive data",
+        "S3": "Review assesses error handling: 'The new `ExceptionGroup` for multiple teardown errors is also a more robust error handling mechanism'",
+        "Q1": "Review provides overall assessment in 'Scope' section summarizing the key changes and their purpose",
+        "Q2": "Review systematically anchors comments to specific files like 'sklearn/linear_model/tests/test_logistic.py', 'sklearn/neural_network/_base.py'",
+        "Q3": "Review distinguishes severity levels using terms like 'No integration risk', 'Low integration risk' to categorize issues",
+        "Q4": "Review does not ask clarifying questions, mostly makes statements about risk assessment",
+        "Q5": "Review explains reasoning: 'This is a bug fix and should not break existing tests, but rather enable correct behavior for callbacks that inspect `sample_weight`'"
+      },
+      "error": ""
+    }
+  ],
+  "evaluation_timestamp": "2026-05-14T17:50:44.152673Z"
+}

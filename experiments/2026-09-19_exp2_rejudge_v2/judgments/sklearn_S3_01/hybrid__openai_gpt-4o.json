@@ -1,0 +1,41 @@
+{
+  "candidate_mentions": [
+    {
+      "basename_collision": false,
+      "end": 595,
+      "evidence_id": "M002",
+      "excerpt": "re of `_fit_context`.\n\n## Evidence\n- `sklearn/base.py:1348`: The return statement is modified to return a tuple `(decorator, None)`.\n- Dependent files such as `sklearn/cluster/_agglomerative.py`, `sklearn/cluster/_optics.py`, and others rely on `_fit_context` but are not updated to handle the tuple return.\n\n## Impact\n- The change can lead to `TypeError` or `ValueError` in the dependent modules if they are not expecting a tuple. This could break clus",
+      "match_kind": "full_path",
+      "match_text": "sklearn/cluster/_agglomerative.py",
+      "oracle_path": "sklearn/cluster/_agglomerative.py",
+      "start": 562
+    },
+    {
+      "basename_collision": false,
+      "end": 625,
+      "evidence_id": "M010",
+      "excerpt": "`sklearn/base.py:1348`: The return statement is modified to return a tuple `(decorator, None)`.\n- Dependent files such as `sklearn/cluster/_agglomerative.py`, `sklearn/cluster/_optics.py`, and others rely on `_fit_context` but are not updated to handle the tuple return.\n\n## Impact\n- The change can lead to `TypeError` or `ValueError` in the dependent modules if they are not expecting a tuple. This could break clustering algorithms that rely on",
+      "match_kind": "full_path",
+      "match_text": "sklearn/cluster/_optics.py",
+      "oracle_path": "sklearn/cluster/_optics.py",
+      "start": 599
+    }
+  ],
+  "causal_quote": "The change can lead to `TypeError` or `ValueError` in the dependent modules if they are not expecting a tuple. This could break clustering algorithms that rely on `_fit_context`, affecting model training and predictions.",
+  "decision_source": "llm_causal_adjudication",
+  "detected": true,
+  "evidence_id": "M002",
+  "executed_at_utc": "2026-09-19T15:04:20.529743+00:00",
+  "finding_quote": "Dependent files such as `sklearn/cluster/_agglomerative.py`, `sklearn/cluster/_optics.py`, and others rely on `_fit_context` but are not updated to handle the tuple return.",
+  "judge": "openai:gpt-4o",
+  "manifest_sha256": "5d4371a93d1b09f0491ecc12279f9f3ff5de23053b7a5e74650a749f58b472b0",
+  "model_alias": "openai:gpt-4o",
+  "model_snapshot": "unavailable-from-original-wrapper",
+  "original_verdict": true,
+  "prompt_sha256": "6cb9296a9545ce6997f93636240e009260ae7fefc2259eb38774a54f5dbd5353",
+  "reason_code": "specific_cross_file_link",
+  "review_sha256": "e7f3b1b3c894d38aeb08721ce1885b6c3ed396e5048b700353ac22f9e4d825a1",
+  "schema_sha256": "6a22fcb256437ebed904ab2d879b36be1234fb2e06add1127ac8ea2ab46f60f0",
+  "schema_version": "exp2-adjudication-v2",
+  "system_sha256": "3634314a8fc4231391e4c51174e5c32d7346b0e2ceb5f8c4641e6ba866bd5939"
+}

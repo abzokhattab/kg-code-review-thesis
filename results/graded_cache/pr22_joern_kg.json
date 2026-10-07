@@ -1,0 +1,51 @@
+{
+  "pr_id": 22,
+  "mode": "joern_kg",
+  "mean_scores": {
+    "F3": 3.0,
+    "F4": 2.5,
+    "P1": 0.0,
+    "R2": 2.5,
+    "T3": 2.0
+  },
+  "mean_graded_total": 10.0,
+  "per_judge": [
+    {
+      "model": "gemini:gemini-2.5-flash",
+      "scores": {
+        "F3": 3,
+        "F4": 3,
+        "P1": 0,
+        "R2": 3,
+        "T3": 2
+      },
+      "evidence": {
+        "F3": "The review names `streams/integration-tests/src/test/java/org/apache/kafka/streams/integration/FineGrainedAutoResetIntegrationTest.java` as a specific dependent file, and identifies the `streams` and `streams:integration-tests` modules as components that `tools` now depends on. It explains concrete integration risks such as 'compilation failures or runtime errors' and 'increases coupling, potentially complicates future refactoring'.",
+        "F4": "The review identifies multiple specific contract violations: 1) The package change for `AbstractResetIntegrationTest` breaks `FineGrainedAutoResetIntegrationTest.java`, causing it to 'fail to compile or run due to unresolved imports or superclass references'. 2) The 'Inconsistent Assertion Style' leads to 'Test failure messages may become less informative' and an 'inconsistent testing style'. 3) The 'Architectural Dependency Smell' violates the `tools` module's intended contract, leading to 'inc",
+        "P1": "The review does not mention any potential performance issues or inefficiencies in the changed code.",
+        "R2": "The review identifies multiple instances of unnecessary complexity: 1) 'Inconsistent Assertion Style' (with references to specific lines in test files and `build.gradle`) which makes it 'harder for developers to maintain', and suggests 'Standardize Assertion Style' by removing Hamcrest or reverting changes. 2) 'Architectural Dependency Smell' (with `build.gradle` and `checkstyle/import-control.xml` references) which 'increases coupling, potentially complicates future refactoring'.",
+        "T3": "The review names multiple specific test file paths: `streams/integration-tests/src/test/java/org/apache/kafka/streams/integration/FineGrainedAutoResetIntegrationTest.java`, `clients/clients-integration-tests` (e.g., `GroupAuthorizerIntegrationTest.java`, `ListOffsetsIntegrationTest.java`). It explains what needs to be done (fix compilation/runtime errors, follow chosen assertion style), but does not explicitly reference exact test scenarios that *need coverage* or explain *what edge cases are cu"
+      },
+      "error": ""
+    },
+    {
+      "model": "gemini:gemini-2.5-pro",
+      "scores": {
+        "F3": 3,
+        "F4": 2,
+        "P1": 0,
+        "R2": 2,
+        "T3": 2
+      },
+      "evidence": {
+        "F3": "Names multiple specific callers or dependent components: the `tools` module, the `streams` and `streams:integration-tests` modules, and `streams/integration-tests/src/test/java/org/apache/kafka/streams/integration/FineGrainedAutoResetIntegrationTest.java`. It explains the concrete integration risk for each (e.g., 'creates a potentially tight coupling', 'will fail to compile or run due to unresolved imports').",
+        "F4": "Identifies a specific contract that could break: the package and module location of `AbstractResetIntegrationTest`. It names a specific dependent test class that would be affected: `streams/integration-tests/src/test/java/org/apache/kafka/streams/integration/FineGrainedAutoResetIntegrationTest.java`.",
+        "P1": "The review does not mention performance, efficiency, or bottlenecks.",
+        "R2": "Points to a specific issue of unnecessary complexity: 'Inconsistent Assertion Style and Redundant Hamcrest Dependency'. It suggests a concrete simplification: 'Decide on a consistent assertion style for the project. If the intent is to move away from Hamcrest, remove `testRuntimeOnly libs.hamcrest`... If Hamcrest is to be retained, revert the `assertEquals` changes...'",
+        "T3": "Names multiple specific test file paths from the repository that should be updated, including `streams/integration-tests/src/test/java/org/apache/kafka/streams/integration/FineGrainedAutoResetIntegrationTest.java`, `GroupAuthorizerIntegrationTest.java`, and `ListOffsetsIntegrationTest.java`."
+      },
+      "error": ""
+    }
+  ],
+  "timestamp": "2026-06-01T18:58:23.719928+00:00"
+}

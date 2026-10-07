@@ -1,0 +1,98 @@
+\section{Positioning}
+\label{sec:sota-positioning}
+
+The four preceding sections leave four separate openings. Review-comment
+generation is studied with the diff as input, and the benchmarks that enrich
+context do not vary how it is selected. Review-comment evaluation has moved to
+criterion-based and reference-free scoring but scores with a single instrument
+whose reliability is not reported. The LLM-as-a-judge literature has developed the
+countermeasures for exactly that problem but they have not been applied in this
+setting. And repository graphs have been shown to help on tasks with checkable
+outcomes, but review-comment generation remains unexamined.
+
+Table~\ref{tab:sota-positioning} places this thesis against the four most directly
+comparable systems: the two closest works on evaluating review comments, and the
+two closest on graph-structured repository context.
+
+\begin{table}[htbp]
+    \centering
+    \caption{Positioning against the closest prior work. \textbf{DC} =
+             DeepCRCEval~\cite{hong2024deepcrceval} and \textbf{CR} =
+             CRScore~\cite{naik2025crscore} are the closest work on
+             \emph{evaluating} review comments; \textbf{GC} =
+             GraphCoder~\cite{liu2024graphcoder} and \textbf{KGC} =
+             KGCompass~\cite{yang2025kgcompass} are the closest work on
+             \emph{graph-structured} repository context. ``n/a'' marks a dimension
+             that does not apply because the system is scored by program execution
+             rather than by judgement.}
+    \label{tab:sota-positioning}
+    \small
+    \begin{tabularx}{\textwidth}{@{}Xccccc@{}}
+        \toprule
+          & DC & CR & GC & KGC & \textbf{This thesis} \\
+        \midrule
+        Task is review comments
+          & $\bullet$ & $\bullet$ & --- & --- & $\bullet$ \\
+        Adds out-of-diff context
+          & --- & --- & $\bullet$ & $\bullet$ & $\bullet$ \\
+        Structural (graph) context
+          & --- & --- & $\bullet$ & $\bullet$ & $\bullet$ \\
+        Retrieval and structure as matched arms
+          & --- & --- & $\bullet$ & --- & $\bullet$ \\
+        Independent LLM scorers
+          & 1 & 1 & n/a & n/a & \textbf{5} \\
+        Inter-scorer agreement reported
+          & --- & --- & n/a & n/a & $\bullet$ \\
+        Detection adjudication checked against oracle
+          & --- & --- & n/a & n/a & $\bullet$ \\
+        Human corroboration of targeted criterion
+          & $\bullet$ & $\bullet$ & --- & --- & $\bullet$ \\
+        \bottomrule
+    \end{tabularx}
+\end{table}
+
+One row deserves comment, because it is the row on which this thesis is least
+novel. GraphCoder does compare structural retrieval against similarity retrieval
+as matched arms, evaluating its code-context-graph retrieval against vanilla,
+shifted and iterative sequence-based retrieval with the same models on the same
+completion tasks~\cite{liu2024graphcoder}. The comparison this thesis makes is
+therefore not new as a study design; what is new is the task it is applied to and
+the instrument used to read it. That distinction narrows the claim below to
+what the evidence supports.
+
+\subsection*{Research Gap}
+
+No existing study compares structural and similarity-based out-of-diff context
+for generating code-review comments within one matched generation and
+evaluation pipeline, while also measuring sensitivity to the evaluator.
+GraphCoder runs a matched comparison on a task with a checkable outcome, while
+DeepCRCEval and CRScore evaluate review comments but do not vary context or
+report scorer sensitivity.
+
+This thesis occupies that position along four dimensions that the table makes
+visible.
+
+It compares selection strategies rather than proposing one. Structural context and
+similarity retrieval are supplied to the same model, on the same pull requests,
+inside a matched prompt template, and are also supplied together. The arms vary
+both the selected material and the instruction sentence that names it; this
+confound is described in Chapter~\ref{chap:approach} and treated explicitly in
+Chapter~\ref{chap:results}.
+
+It treats the evaluation instrument as an object of study. The rubric is scored by
+a panel drawn from more than one provider rather than by a single judge.
+Chapter~\ref{chap:results} reports how much the conclusion moves across
+individual judges and generators, a sensitivity analysis that the
+single-judge protocols cannot perform.
+
+Its structural context is derived from a code property graph with resolved
+call and data-flow edges; the practitioner study additionally evaluates a
+lightweight import resolver to assess whether the benefit holds under reduced
+analysis depth.
+
+It corroborates a coverage rubric with two instruments that can see what coverage
+cannot. A controlled defect-injection experiment scores detection against a
+deterministic oracle rather than a judge, and a human study asks practitioners
+which review they would rather receive. Where the three instruments
+agree, the finding is stronger than any of them alone; where they disagree,
+Chapter~\ref{chap:results} says so.

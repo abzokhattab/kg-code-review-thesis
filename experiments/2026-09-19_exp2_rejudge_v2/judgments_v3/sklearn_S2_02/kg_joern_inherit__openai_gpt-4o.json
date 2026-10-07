@@ -1,0 +1,44 @@
+{
+  "candidate_mentions": [
+    {
+      "basename_collision": false,
+      "end": 824,
+      "evidence_id": "M001",
+      "excerpt": "optics.py`, `sklearn/cluster/_dbscan.py`, and other dependent files: These files depend on the `clone` function and may be impacted by the signature change.\n- `sklearn/linear_model/_ransac.py:fit` and `sklearn/linear_model/_stochastic_gradient.py::__init__`: These functions call `clone` and may require updates to handle the new parameter.\n\n## Impact\n- The change in the function signature can lead to runtime errors in any code that calls `clone` wi",
+      "finding_passage_id": "P009",
+      "match_kind": "full_path",
+      "match_text": "sklearn/linear_model/_ransac.py",
+      "oracle_path": "sklearn/linear_model/_ransac.py",
+      "start": 793
+    },
+    {
+      "basename_collision": false,
+      "end": 879,
+      "evidence_id": "M002",
+      "excerpt": "and other dependent files: These files depend on the `clone` function and may be impacted by the signature change.\n- `sklearn/linear_model/_ransac.py:fit` and `sklearn/linear_model/_stochastic_gradient.py::__init__`: These functions call `clone` and may require updates to handle the new parameter.\n\n## Impact\n- The change in the function signature can lead to runtime errors in any code that calls `clone` without the new `required_ctx` parameter, potentially bre",
+      "finding_passage_id": "P009",
+      "match_kind": "full_path",
+      "match_text": "sklearn/linear_model/_stochastic_gradient.py",
+      "oracle_path": "sklearn/linear_model/_stochastic_gradient.py",
+      "start": 835
+    }
+  ],
+  "causal_passage_id": "P011",
+  "decision_source": "llm_causal_adjudication",
+  "detected": true,
+  "evidence_id": "M001",
+  "executed_at_utc": "2026-09-19T15:09:07.077516+00:00",
+  "finding_passage_id": "P009",
+  "judge": "openai:gpt-4o",
+  "manifest_sha256": "5d4371a93d1b09f0491ecc12279f9f3ff5de23053b7a5e74650a749f58b472b0",
+  "model_alias": "openai:gpt-4o",
+  "model_snapshot": "unavailable-from-original-wrapper",
+  "original_verdict": true,
+  "prompt_sha256": "d6df7aec1e40fa1032376587c0b5e69957a48a8fc03479e5e2c9d4cb89f9f162",
+  "reason_code": "specific_cross_file_link",
+  "response_wrapper": "bare",
+  "review_sha256": "9067b76663225db8ff56dd56160bba9a3d47f51d991e1b29330a4f37864f6f91",
+  "schema_sha256": "f70f714868ecd3d25508bb3e00b32ecbe6761b0ebc05f454ee10fa4d28efd013",
+  "schema_version": "exp2-adjudication-v3",
+  "system_sha256": "030b5e701c798b32afdabbbeb22db38f664db8c8fd8b862d2fcb98df63b6fb6b"
+}

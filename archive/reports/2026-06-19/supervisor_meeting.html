@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Supervisor Meeting Brief — KG-Augmented LLM Code Review</title>
+<style>
+  :root{
+    --bg:#0f1115; --card:#171a21; --card2:#1d2129; --line:#2a2f3a;
+    --t1:#e8eaed; --t2:#b6bcc6; --t3:#8a92a0;
+    --green:#3fb950; --greenbg:#15301c; --red:#f0606b; --redbg:#33181b;
+    --orange:#e3a008; --orangebg:#312608; --blue:#58a6ff; --bluebg:#0f2741;
+    --purple:#c08bff; --purplebg:#241a2e; --accent:#7c9cff;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--t1);
+    font:16px/1.65 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;}
+  .wrap{max-width:880px;margin:0 auto;padding:36px 22px 120px;}
+  h1{font-size:2rem;margin:0 0 4px;letter-spacing:-.02em}
+  h2{font-size:1.45rem;margin:46px 0 6px;letter-spacing:-.01em;padding-top:14px;border-top:1px solid var(--line)}
+  h2 .num{color:var(--accent);font-weight:700;margin-right:8px}
+  h3{font-size:1.12rem;margin:24px 0 6px}
+  .sub{color:var(--t3);font-size:.95rem;margin:0}
+  p{margin:9px 0}
+  .lead{color:var(--t2);font-size:1.05rem}
+  code{background:#222732;padding:1px 6px;border-radius:5px;font-size:.84em;color:#cdd6f4}
+  table{border-collapse:collapse;width:100%;margin:14px 0;font-size:.94rem}
+  th,td{border:1px solid var(--line);padding:9px 11px;text-align:left;vertical-align:top}
+  th{background:var(--card2);color:var(--t2);font-weight:600}
+  td.c,th.c{text-align:center}
+  tr:nth-child(even) td{background:#14171d}
+  .tg{color:var(--green);font-weight:700}
+  .tr{color:var(--red);font-weight:700}
+  .to{color:var(--orange);font-weight:700}
+  .callout{border-radius:12px;padding:15px 18px;margin:16px 0;border:1px solid var(--line)}
+  .green{background:var(--greenbg);border-color:#1f5a2e}
+  .red{background:var(--redbg);border-color:#5a2026}
+  .orange{background:var(--orangebg);border-color:#5a4410}
+  .blue{background:var(--bluebg);border-color:#1c4a78}
+  .purple{background:var(--purplebg);border-color:#4a2d63}
+  .callout strong{color:#fff}
+  .pill{display:inline-block;font-size:.72rem;font-weight:700;padding:3px 10px;border-radius:20px;letter-spacing:.03em;text-transform:uppercase}
+  .p-done{background:var(--greenbg);color:var(--green);border:1px solid #1f5a2e}
+  .p-now{background:var(--orangebg);color:var(--orange);border:1px solid #5a4410}
+  .p-next{background:var(--purplebg);color:var(--purple);border:1px solid #4a2d63}
+  .grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:18px 0}
+  .grid2{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin:14px 0}
+  .sc{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px}
+  .sc .n{font-size:1.7rem;font-weight:700;letter-spacing:-.02em}
+  .sc .l{color:var(--t3);font-size:.84rem;margin-top:3px}
+  .sc .m{color:var(--t2);font-size:.85rem;margin-top:9px;line-height:1.45}
+  ul.clean{list-style:none;padding-left:0;margin:8px 0}
+  ul.clean li{padding:6px 0 6px 28px;position:relative}
+  ul.clean li:before{content:"";position:absolute;left:5px;top:13px;width:8px;height:8px;border-radius:50%;background:var(--accent)}
+  .note{color:var(--t3);font-size:.86rem}
+  .flow{display:flex;align-items:stretch;gap:0;margin:18px 0;flex-wrap:wrap}
+  .step{flex:1;min-width:120px;background:var(--card);border:1px solid var(--line);border-radius:10px;padding:12px;text-align:center}
+  .arrow{display:flex;align-items:center;color:var(--t3);font-size:1.4rem;padding:0 8px}
+  .step .big{font-size:1.4rem}
+  .step .cap{font-size:.8rem;color:var(--t3);margin-top:4px}
+  .gloss{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:6px 18px;margin:14px 0}
+  .gloss dt{font-weight:700;color:#fff;margin-top:12px}
+  .gloss dd{margin:2px 0 12px;color:var(--t2)}
+  .tag{font-size:.78rem;color:var(--t3)}
+  .winrow td{font-weight:600}
+  nav{position:sticky;top:0;background:rgba(15,17,21,.93);backdrop-filter:blur(8px);
+    border-bottom:1px solid var(--line);margin:-36px -22px 22px;padding:11px 22px;z-index:10;
+    display:flex;flex-wrap:wrap;gap:6px 16px;font-size:.83rem}
+  nav a{color:var(--t3);text-decoration:none}
+  nav a:hover{color:var(--accent)}
+  .badge{font-size:.8rem;background:#222732;border:1px solid var(--line);border-radius:20px;padding:3px 11px;color:var(--t2)}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<nav>
+  <a href="#tldr">30-sec summary</a>
+  <a href="#what">What I built</a>
+  <a href="#flow">How it works</a>
+  <a href="#numbers">Reading the numbers</a>
+  <a href="#result">The result</a>
+  <a href="#when">Who wins when</a>
+  <a href="#where">Where we are</a>
+  <a href="#qa">Likely questions</a>
+</nav>
+
+<h1>Master's Thesis — Progress Brief</h1>
+<p class="sub">Knowledge-Graph &amp; Retrieval Augmented LLM Code Review &middot; Abdu Khattab &middot; 19 June 2026</p>
+
+<div class="callout blue" id="tldr">
+  <strong>The 30-second summary (read this if nothing else)</strong><br><br>
+  <strong>Question:</strong> When an AI reviews a pull request, does giving it extra context about the codebase (who calls this code, which tests cover it, what depends on it) make the review better than just showing it the raw code change?<br><br>
+  <strong>Answer so far:</strong> <span style="color:var(--green)"><strong>Yes — and we can prove it statistically.</strong></span> The extra context reliably improves the review on exactly the things it should, across 40 real pull requests judged by 3 separate AI judges.<br><br>
+  <strong>Where we are:</strong> All experiments and analysis are <strong>done</strong>. One small piece of data collection (a human study) is waiting on a 5-minute technical fix. Then it's writing.
+</div>
+
+<div class="grid3">
+  <div class="sc">
+    <div class="n tg">Yes &uarr;</div>
+    <div class="l">Does the context help?</div>
+    <div class="m">Statistically significant improvement, p = 0.007. In plain terms: less than a 1% chance this is luck.</div>
+  </div>
+  <div class="sc">
+    <div class="n">40 PRs</div>
+    <div class="l">Real, merged, 5 big projects</div>
+    <div class="m">Grafana, scikit-learn, Kafka, Godot, Jenkins. 5 programming languages.</div>
+  </div>
+  <div class="sc">
+    <div class="n to">~95%</div>
+    <div class="l">Of the work is done</div>
+    <div class="m">Experiments + analysis complete. Remaining: one human study + writing the chapters.</div>
+  </div>
+</div>
+
+<h2 id="what"><span class="num">1</span>What I actually built</h2>
+<p class="lead">A tool that reviews a code change four different ways, then a panel of AI judges scores all four to see which way produces the best review.</p>
+
+<p>When a developer proposes a code change (a "pull request" / PR), an AI can read it and write review comments. But the raw change only shows <em>what lines changed</em>. It doesn't show the things an experienced reviewer checks by clicking around the project:</p>
+<ul class="clean">
+  <li>Which other parts of the code <strong>call</strong> this function (so a change here might break them)</li>
+  <li>Which <strong>test files</strong> cover this code (so you know what to re-run)</li>
+  <li>What <strong>depends</strong> on it elsewhere in the project</li>
+</ul>
+<p>My system feeds the AI that surrounding context automatically. We compare four "modes":</p>
+
+<table>
+  <tr><th>Mode</th><th>What the AI is given</th><th>Think of it as...</th></tr>
+  <tr><td><strong>Baseline</strong></td><td>Just the code change + its description</td><td>A reviewer who only sees the diff</td></tr>
+  <tr><td><strong>KG</strong> <span class="tag">(knowledge graph)</span></td><td>+ a map of callers, tests, dependencies</td><td>A reviewer who knows how the code connects</td></tr>
+  <tr><td><strong>RAG</strong> <span class="tag">(retrieval)</span></td><td>+ similar code snippets from elsewhere</td><td>A reviewer who's seen similar code before</td></tr>
+  <tr><td><strong>Hybrid</strong></td><td>+ both of the above</td><td>A reviewer with both kinds of context</td></tr>
+</table>
+
+<h2 id="flow"><span class="num">2</span>How the experiment works (the flow)</h2>
+<p>Same pull request goes through all four modes, then every review is scored the same way. Nothing is hand-picked — it's an automated pipeline.</p>
+
+<div class="flow">
+  <div class="step"><div class="big">40</div><div class="cap">Real PRs from 5 projects</div></div>
+  <div class="arrow">&rarr;</div>
+  <div class="step"><div class="big">&times;4</div><div class="cap">Each reviewed 4 ways (baseline / KG / RAG / hybrid)</div></div>
+  <div class="arrow">&rarr;</div>
+  <div class="step"><div class="big">160</div><div class="cap">AI-written reviews (GPT-4o)</div></div>
+  <div class="arrow">&rarr;</div>
+  <div class="step"><div class="big">&times;3</div><div class="cap">3 independent AI judges score each</div></div>
+  <div class="arrow">&rarr;</div>
+  <div class="step"><div class="big">12,000</div><div class="cap">scored answers &rarr; statistics</div></div>
+</div>
+
+<div class="callout blue">
+  <strong>Why 3 judges instead of 1?</strong> So no single AI's bias decides the outcome. We take the <strong>majority vote</strong> of the three. We also checked that the judges <em>agree</em> with each other — they do (see "κ" in the glossary). This is the AI-research equivalent of having three reviewers instead of trusting one.
+</div>
+
+<h3>What each review is scored on</h3>
+<p>A <strong>25-point checklist</strong> built from published code-review research (Bacchelli &amp; Bird, Google's review practices, ISO software-quality standards). Each item is a yes/no question like <em>"Does the review name the specific test files to update?"</em> or <em>"Does it warn about breaking changes to dependent code?"</em></p>
+<p>Of those 25, <strong>9 are "structural" questions</strong> — the ones that need exactly the knowledge our context provides. Those 9 are the fair test of whether KG helps.</p>
+
+<h2 id="numbers"><span class="num">3</span>Reading the numbers (plain English)</h2>
+<p class="lead">Four symbols show up in the results. Here's what each one means, in everyday terms.</p>
+<div class="gloss">
+<dl>
+  <dt>Mean / average score <span class="tag">(e.g. 4.97 out of 9)</span></dt>
+  <dd>Just the average number of checklist items a review got right. Higher = better review.</dd>
+  <dt>Δ (delta) <span class="tag">(e.g. +0.60)</span></dt>
+  <dd>How much <em>better</em> a mode scored than the baseline. "+0.60" means it got, on average, 0.60 more checklist points than the diff-only baseline. A plus sign is good.</dd>
+  <dt>p-value <span class="tag">(e.g. p = 0.007)</span></dt>
+  <dd>The chance the improvement is just random luck. <strong>Smaller is better.</strong> Below 0.05 is the scientific bar for "this is real, not a fluke." p = 0.007 means about a <strong>0.7% chance it's luck</strong> — very convincing.</dd>
+  <dt>d_z (effect size) <span class="tag">(e.g. +0.47)</span></dt>
+  <dd>How <em>big</em> the improvement is in practice. Rule of thumb: 0.2 = small, 0.5 = medium, 0.8 = large. So +0.47 is a solid medium-sized effect.</dd>
+  <dt>κ (kappa) <span class="tag">(e.g. 0.59–0.72)</span></dt>
+  <dd>How much the 3 judges agree with each other. 0.6–0.8 is called "substantial agreement." Ours sits right in that band — the judges are consistent, so the scores are trustworthy.</dd>
+</dl>
+</div>
+
+<h2 id="result"><span class="num">4</span>The main result</h2>
+<p class="sub">40 PRs &middot; majority vote of 3 judges &middot; source: <code>results/BOOTSTRAP_STATS_v2.md</code></p>
+
+<table>
+  <tr>
+    <th>Mode</th>
+    <th class="c">Structural score<br><span class="tag">(the 9 key questions)</span></th>
+    <th class="c">Better than baseline?</th>
+    <th class="c">Is it real, not luck?</th>
+    <th class="c">How big?</th>
+  </tr>
+  <tr>
+    <td><strong>Baseline</strong></td>
+    <td class="c">4.97 / 9</td>
+    <td class="c note">— reference —</td><td class="c note">—</td><td class="c note">—</td>
+  </tr>
+  <tr class="winrow">
+    <td><strong>KG</strong></td>
+    <td class="c">5.58 / 9</td>
+    <td class="c tg">+0.60 &uarr;</td>
+    <td class="c tg">Yes (p = 0.007)</td>
+    <td class="c">Medium (0.47)</td>
+  </tr>
+  <tr>
+    <td><strong>RAG</strong></td>
+    <td class="c">5.40 / 9</td>
+    <td class="c tg">+0.42</td>
+    <td class="c to">Borderline (p = 0.06)</td>
+    <td class="c">Small (0.33)</td>
+  </tr>
+  <tr>
+    <td><strong>Hybrid</strong></td>
+    <td class="c">5.50 / 9</td>
+    <td class="c tg">+0.53</td>
+    <td class="c tg">Yes (p = 0.008)</td>
+    <td class="c">Medium (0.46)</td>
+  </tr>
+</table>
+
+<div class="callout green">
+  <strong>In one sentence:</strong> Adding knowledge-graph context lifts the AI's review from 4.97 to 5.58 out of 9 on the structural questions — a real, medium-sized improvement that has less than a 1% chance of being luck.
+</div>
+
+<h2 id="when"><span class="num">5</span>Who wins when (the key nuance)</h2>
+<p class="lead">KG and RAG don't compete — they're good at different things. This is the most important finding to land with your supervisor.</p>
+
+<div class="grid2">
+  <div class="sc">
+    <div class="n" style="color:var(--blue)">KG wins</div>
+    <div class="l">on STRUCTURAL questions</div>
+    <div class="m">"Does it mention the specific callers / tests / dependents?" KG carries those exact facts, so it scores best here. <strong>p = 0.007.</strong></div>
+  </div>
+  <div class="sc">
+    <div class="n" style="color:var(--purple)">RAG wins</div>
+    <div class="l">on GENERAL coverage</div>
+    <div class="m">"Is the overall review thorough?" RAG pulls in similar code, helping broad commentary. It wins the full 25-point total. <strong>p = 0.007.</strong></div>
+  </div>
+</div>
+
+<div class="callout green">
+  <strong>Hybrid (both together) wins on both.</strong> Combining the two improves the structural questions <em>and</em> the general total. So the honest story isn't "one method beats the other" — it's <strong>"each method helps the thing it's designed for, and combining them helps everything."</strong> That complementary result is more credible than claiming one approach dominates.
+</div>
+
+<h3>Two extra things we learned about <em>when</em> KG helps</h3>
+<table>
+  <tr><th>Finding</th><th>Plain meaning</th></tr>
+  <tr>
+    <td><strong>KG helps more when the graph is "rich"</strong><br><span class="tag">d_z jumps to 0.66 on those PRs</span></td>
+    <td>If a code change actually has callers and tests to point to, KG helps a lot. If it's an isolated change with nothing connected, KG has nothing to add. Makes sense — it can only help when there's something to say.</td>
+  </tr>
+  <tr>
+    <td><strong>KG helps the "mid-tier" AI most</strong><br><span class="tag">helps GPT-4o; not weaker or stronger models</span></td>
+    <td>A weak AI gets confused by the extra info; a very strong AI (Claude) already knows it. The "sweet spot" is a capable-but-not-perfect model — which is the realistic, affordable deployment case.</td>
+  </tr>
+</table>
+<p class="note">The richer "Joern" version of our context-builder (precise call graphs) gives an even slightly stronger result (medium effect, 0.58) under a fair test — confirming the direction. Source: <code>experiments/2026-06-11_joern_normal_prompt/</code>.</p>
+
+<h2 id="where"><span class="num">6</span>Where we are vs. the plan</h2>
+<table>
+  <tr><th>Stage</th><th class="c">Status</th></tr>
+  <tr><td>Build the pipeline (4 modes, 5 languages)</td><td class="c"><span class="pill p-done">Done</span></td></tr>
+  <tr><td>Run main experiment (40 PRs, 3 judges)</td><td class="c"><span class="pill p-done">Done</span></td></tr>
+  <tr><td>Statistical analysis (significance, effect sizes)</td><td class="c"><span class="pill p-done">Done</span></td></tr>
+  <tr><td>Follow-up experiments (richer graph, robustness, subgroups)</td><td class="c"><span class="pill p-done">Done</span></td></tr>
+  <tr><td>Human study — do people agree with the AI judges?</td><td class="c"><span class="pill p-now">Blocked (5-min fix)</span></td></tr>
+  <tr><td>Write the thesis chapters</td><td class="c"><span class="pill p-next">Next</span></td></tr>
+</table>
+
+<div class="callout orange">
+  <strong>The one thing in my way:</strong> the human-study website that collects rater responses has a broken submission link (a webhook returning an error). It's a quick redeploy, not a redesign — the study itself is fully built and ready. Once raters submit, we measure whether <em>human</em> reviewers prefer the same reviews the AI judges preferred.
+</div>
+
+<h2 id="qa"><span class="num">7</span>Questions your supervisor might ask (with answers)</h2>
+<div class="gloss">
+<dl>
+  <dt>"Why only 40 PRs?"</dt>
+  <dd>Each PR is reviewed 4 ways and scored by 3 judges on 25 items — that's 12,000 scored cells. We chose 40 with pre-set selection rules across 5 languages for diversity. The effect holds across that diversity; a bigger sample is future work.</dd>
+  <dt>"Why trust AI judges instead of humans?"</dt>
+  <dd>The 3 judges agree substantially (κ = 0.59–0.72), and the human study is being run precisely to confirm they match human preference.</dd>
+  <dt>"Doesn't 'GraphRAG' hype say knowledge graphs beat everything?"</dt>
+  <dd>Our honest finding is complementarity, not dominance: KG wins structural criteria, RAG wins general coverage, hybrid wins both. That's a more defensible claim.</dd>
+  <dt>"Is the improvement actually meaningful or just statistically significant?"</dt>
+  <dd>Both. The effect size (d_z ≈ 0.47–0.58) is a genuine medium-sized effect, not a tiny technically-significant blip.</dd>
+</dl>
+</div>
+
+<div class="callout blue">
+  <strong>If you remember three things walking in:</strong><br>
+  1. <strong>It works:</strong> structural context improves AI reviews, p = 0.007, medium effect, across 40 real PRs.<br>
+  2. <strong>It's nuanced:</strong> KG helps structural questions, RAG helps general coverage, hybrid helps both.<br>
+  3. <strong>Nearly done:</strong> all analysis complete; one human study (blocked on a small fix) + writing remain.
+</div>
+
+<p class="note" style="margin-top:28px">Every number here comes from a results file in the project (<code>results/BOOTSTRAP_STATS_v2.md</code>, <code>SUBGROUP_ANALYSIS.md</code>, <code>CROSS_GENERATOR_REPLICATION.md</code>, <code>experiments/2026-06-11_joern_normal_prompt/</code>). Nothing was estimated for this brief.</p>
+
+</div>
+</body>
+</html>

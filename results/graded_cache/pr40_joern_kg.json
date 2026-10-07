@@ -1,0 +1,51 @@
+{
+  "pr_id": 40,
+  "mode": "joern_kg",
+  "mean_scores": {
+    "F3": 3.0,
+    "F4": 3.0,
+    "P1": 0.0,
+    "R2": 0.0,
+    "T3": 2.5
+  },
+  "mean_graded_total": 8.5,
+  "per_judge": [
+    {
+      "model": "gemini:gemini-2.5-flash",
+      "scores": {
+        "F3": 3,
+        "F4": 3,
+        "P1": 0,
+        "R2": 0,
+        "T3": 3
+      },
+      "evidence": {
+        "F3": "The change implicitly requires callers of `OffsetMetadataManager.commitTransactionalOffset` to provide a valid `topicId` in the `TxnOffsetCommitRequest`. If `KafkaApis` (the entry point for client requests) does not correctly populate this field for all API versions, it could lead to `Uuid.ZERO_UUID` being passed, resulting in the issue described in point 1. ... Older clients or `KafkaApis` implementations that do not populate the `topicId` field in `TxnOffsetCommitRequest` (or populate it with ",
+        "F4": "API Contract Violation Risk for Callers: The change implicitly requires callers of `OffsetMetadataManager.commitTransactionalOffset` to provide a valid `topicId` in the `TxnOffsetCommitRequest`. ... Backward Compatibility Issues: Older clients or `KafkaApis` implementations that do not populate the `topicId` field in `TxnOffsetCommitRequest` (or populate it with `Uuid.ZERO_UUID` by default) will now have their offsets stored with `Uuid.ZERO_UUID` without the previous `ILLEGAL_GENERATION` error, ",
+        "P1": "The review does not mention any potential performance issues.",
+        "R2": "The review does not comment on the complexity of the changed code or suggest simplification.",
+        "T3": "Create a new parameterized test case in `group-coordinator/src/test/java/org/apache/kafka/coordinator/group/OffsetMetadataManagerTest.java` that explicitly passes `Uuid.ZERO_UUID` as the `topicId` in `TxnOffsetCommitRequestData.TxnOffsetCommitRequestTopic`. Assert the expected behavior... The removed test `testConsumerGroupTransactionalOffsetCommitWithUnresolvedTopicId` specifically covered the scenario where a topic ID could not be resolved (effectively `Uuid.ZERO_UUID`). The current parameteri"
+      },
+      "error": ""
+    },
+    {
+      "model": "gemini:gemini-2.5-pro",
+      "scores": {
+        "F3": 3,
+        "F4": 3,
+        "P1": 0,
+        "R2": 0,
+        "T3": 2
+      },
+      "evidence": {
+        "F3": "Names multiple specific callers/dependents (`KafkaApis`, `older clients`) and the function (`OffsetMetadataManager.commitTransactionalOffset`), and explains the concrete integration risk: \"If `KafkaApis` (the entry point for client requests) does not correctly populate this field for all API versions, it could lead to `Uuid.ZERO_UUID` being passed...\"",
+        "F4": "Identifies multiple specific contract violations: 1) The implicit requirement for callers of `OffsetMetadataManager.commitTransactionalOffset` to provide a valid `topicId`, and 2) The change in error handling for older clients who will no longer get an `ILLEGAL_GENERATION` error. It explains the downstream behavior change: \"offsets stored with `Uuid.ZERO_UUID` without the previous `ILLEGAL_GENERATION` error, potentially masking a compatibility problem.\"",
+        "P1": "The review does not mention performance.",
+        "R2": "The review does not comment on complexity or suggest simplifications.",
+        "T3": "The review names one specific test file path that should be updated: \"Create a new parameterized test case in `group-coordinator/src/test/java/org/apache/kafka/coordinator/group/OffsetMetadataManagerTest.java`...\""
+      },
+      "error": ""
+    }
+  ],
+  "timestamp": "2026-06-01T18:58:41.307591+00:00"
+}

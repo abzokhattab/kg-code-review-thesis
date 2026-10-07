@@ -1,0 +1,379 @@
+{
+  "pr": {
+    "number": 124572,
+    "title": "Unified Storage: support cross-namespace ListModifiedSince",
+    "body": "## Summary\n\nAllows `StorageBackend.ListModifiedSince` to be called with an empty namespace, returning rows across all namespaces for a given `(group, resource)`. Single-namespace callers are unchanged; the SQL template keeps namespace first when present so existing query plans are preserved.\n\n- KV backend (`pkg/storage/unified/resource/storage_backend.go`): validation now requires only `group`/`resource`; data-store path detects boundaries on `(namespace, name)`; event-store path filters by `(group, resource)` always and applies the namespace filter only when set. Both paths dedup on `namespace + \"/\" + name` so same-named resources in different namespaces each yield once.\n- SQL backend (`pkg/storage/unified/sql/backend.go` + `data/resource_history_list_since_modified.sql`): the `namespace = ?` predicate is conditional on a non-empty namespace argument; dedup mirrors the KV change. Removes the namespace-required check from `sqlResourceListModifiedSinceRequest.Validate()`.\n- Tests: new cross-namespace subtest in `storage_backend_test.go` covering both event-store and data-store paths plus a missing-group/resource rejection case; new shared integration subtest in `testing/storage_backend.go`; new `cross-namespace` golden snapshot for mysql / postgres / sqlite dialects, single-namespace goldens updated for the reformatted `WHERE` clause.\n\n## Test plan\n\n- [x] `go test ./pkg/storage/unified/resource/ ./pkg/storage/unified/sql/`\n- [x] Snapshot tests pass across mysql / postgres / sqlite dialects\n\n\ud83e\udd16 Generated with [Claude Code](https://claude.com/claude-code)",
+    "url": "https://github.com/grafana/grafana/pull/124572",
+    "repo": "grafana/grafana",
+    "base_branch": "main",
+    "head_branch": "RafaelPaulovic/cross-namespace-list-modified-since",
+    "merged_at": "2026-05-11T13:52:13Z",
+    "state": "MERGED"
+  },
+  "changed_files": [
+    {
+      "path": "pkg/storage/unified/resource/storage_backend.go",
+      "language": "go",
+      "added": 20,
+      "deleted": 7
+    },
+    {
+      "path": "pkg/storage/unified/resource/storage_backend_test.go",
+      "language": "go",
+      "added": 125,
+      "deleted": 21
+    },
+    {
+      "path": "pkg/storage/unified/sql/backend.go",
+      "language": "go",
+      "added": 7,
+      "deleted": 4
+    },
+    {
+      "path": "pkg/storage/unified/sql/data/resource_history_list_since_modified.sql",
+      "language": "unknown",
+      "added": 3,
+      "deleted": 2
+    },
+    {
+      "path": "pkg/storage/unified/sql/queries.go",
+      "language": "go",
+      "added": 0,
+      "deleted": 3
+    },
+    {
+      "path": "pkg/storage/unified/sql/queries_test.go",
+      "language": "go",
+      "added": 11,
+      "deleted": 0
+    },
+    {
+      "path": "pkg/storage/unified/sql/testdata/mysql--resource_history_list_since_modified-cross-namespace.sql",
+      "language": "unknown",
+      "added": 15,
+      "deleted": 0
+    },
+    {
+      "path": "pkg/storage/unified/sql/testdata/mysql--resource_history_list_since_modified-single path.sql",
+      "language": "unknown",
+      "added": 2,
+      "deleted": 1
+    },
+    {
+      "path": "pkg/storage/unified/sql/testdata/postgres--resource_history_list_since_modified-cross-namespace.sql",
+      "language": "unknown",
+      "added": 15,
+      "deleted": 0
+    },
+    {
+      "path": "pkg/storage/unified/sql/testdata/postgres--resource_history_list_since_modified-single path.sql",
+      "language": "unknown",
+      "added": 2,
+      "deleted": 1
+    },
+    {
+      "path": "pkg/storage/unified/sql/testdata/sqlite--resource_history_list_since_modified-cross-namespace.sql",
+      "language": "unknown",
+      "added": 15,
+      "deleted": 0
+    },
+    {
+      "path": "pkg/storage/unified/sql/testdata/sqlite--resource_history_list_since_modified-single path.sql",
+      "language": "unknown",
+      "added": 2,
+      "deleted": 1
+    },
+    {
+      "path": "pkg/storage/unified/testing/storage_backend.go",
+      "language": "go",
+      "added": 34,
+      "deleted": 0
+    }
+  ],
+  "nearest_tests": [
+    {
+      "path": "pkg/storage/unified/testing/storage_backend_test.go",
+      "relationship": "tests",
+      "source_file": "pkg/storage/unified/resource/storage_backend.go"
+    },
+    {
+      "path": "pkg/storage/unified/resource/storage_backend_test.go",
+      "relationship": "tests",
+      "source_file": "pkg/storage/unified/resource/storage_backend.go"
+    },
+    {
+      "path": "pkg/registry/apis/iam/resourcepermission/storage_backend_test.go",
+      "relationship": "tests",
+      "source_file": "pkg/storage/unified/resource/storage_backend.go"
+    },
+    {
+      "path": "public/app/core/specs/backend_srv.test.ts",
+      "relationship": "tests",
+      "source_file": "pkg/storage/unified/sql/backend.go"
+    },
+    {
+      "path": "public/app/plugins/datasource/loki/backendResultTransformer.test.ts",
+      "relationship": "tests",
+      "source_file": "pkg/storage/unified/sql/backend.go"
+    },
+    {
+      "path": ".github/workflows/backend-unit-tests.yml",
+      "relationship": "tests",
+      "source_file": "pkg/storage/unified/sql/backend.go"
+    },
+    {
+      "path": "pkg/tests/api/plugins/backendplugin/backendplugin_test.go",
+      "relationship": "tests",
+      "source_file": "pkg/storage/unified/sql/backend.go"
+    },
+    {
+      "path": "pkg/storage/unified/sql/queries_test.go",
+      "relationship": "tests",
+      "source_file": "pkg/storage/unified/sql/queries.go"
+    },
+    {
+      "path": "pkg/registry/apis/preferences/legacy/queries_test.go",
+      "relationship": "tests",
+      "source_file": "pkg/storage/unified/sql/queries.go"
+    },
+    {
+      "path": "pkg/registry/apis/dashboard/legacy/queries_test.go",
+      "relationship": "tests",
+      "source_file": "pkg/storage/unified/sql/queries.go"
+    },
+    {
+      "path": "pkg/registry/apis/collections/legacy/queries_test.go",
+      "relationship": "tests",
+      "source_file": "pkg/storage/unified/sql/queries.go"
+    },
+    {
+      "path": "e2e-playwright/panels-suite/panelEdit_queries.spec.ts",
+      "relationship": "tests",
+      "source_file": "pkg/storage/unified/sql/queries.go"
+    }
+  ],
+  "dependent_files": [
+    {
+      "path": "pkg/storage/unified/resource/sqlkv.go",
+      "relationship": "imports",
+      "source_file": "pkg/storage/unified/resource/storage_backend.go"
+    },
+    {
+      "path": "pkg/storage/unified/resource/datastore.go",
+      "relationship": "imports",
+      "source_file": "pkg/storage/unified/resource/storage_backend.go"
+    },
+    {
+      "path": "pkg/registry/apis/iam/resourcepermission/storage_backend.go",
+      "relationship": "imports",
+      "source_file": "pkg/storage/unified/resource/storage_backend.go"
+    },
+    {
+      "path": "e2e-playwright/various-suite/migrate-to-cloud.spec.ts",
+      "relationship": "imports",
+      "source_file": "pkg/storage/unified/sql/backend.go"
+    },
+    {
+      "path": "e2e-playwright/various-suite/grafana-datasource-random-walk.spec.ts",
+      "relationship": "imports",
+      "source_file": "pkg/storage/unified/sql/backend.go"
+    },
+    {
+      "path": "e2e-playwright/test-plugins/grafana-test-datasource/types.ts",
+      "relationship": "imports",
+      "source_file": "pkg/storage/unified/sql/backend.go"
+    },
+    {
+      "path": "e2e-playwright/test-plugins/grafana-test-datasource/components/ConfigEditor.tsx",
+      "relationship": "imports",
+      "source_file": "pkg/storage/unified/sql/backend.go"
+    },
+    {
+      "path": "e2e-playwright/utils/prometheus-helpers.ts",
+      "relationship": "imports",
+      "source_file": "pkg/storage/unified/sql/backend.go"
+    },
+    {
+      "path": "public/app/core/profiler.ts",
+      "relationship": "imports",
+      "source_file": "pkg/storage/unified/sql/backend.go"
+    },
+    {
+      "path": "public/app/core/internationalization/loadTranslations.ts",
+      "relationship": "imports",
+      "source_file": "pkg/storage/unified/sql/backend.go"
+    },
+    {
+      "path": "public/app/core/context/GrafanaContext.ts",
+      "relationship": "imports",
+      "source_file": "pkg/storage/unified/sql/backend.go"
+    },
+    {
+      "path": "public/app/core/specs/backend_srv.test.ts",
+      "relationship": "imports",
+      "source_file": "pkg/storage/unified/sql/backend.go"
+    },
+    {
+      "path": "public/app/core/utils/navBarItem-translations.ts",
+      "relationship": "imports",
+      "source_file": "pkg/storage/unified/sql/backend.go"
+    },
+    {
+      "path": "e2e-playwright/various-suite/solo-route.spec.ts",
+      "relationship": "imports",
+      "source_file": "pkg/storage/unified/sql/queries.go"
+    },
+    {
+      "path": "e2e-playwright/various-suite/exemplars.spec.ts",
+      "relationship": "imports",
+      "source_file": "pkg/storage/unified/sql/queries.go"
+    }
+  ],
+  "diff_summary": "13 files changed",
+  "full_diff": "diff --git a/pkg/storage/unified/resource/storage_backend.go b/pkg/storage/unified/resource/storage_backend.go\nindex a76fafbc2a74a..20125dae40efa 100644\n--- a/pkg/storage/unified/resource/storage_backend.go\n+++ b/pkg/storage/unified/resource/storage_backend.go\n@@ -1559,9 +1559,12 @@ func applyPagination(keys []DataKey, lastSeenRV int64) []DataKey {\n // before sinceRv. If a `lastCalledWithSinceRv` parameter is passed, the\n // lookback may be skipped as an optimization.\n func (k *kvStorageBackend) ListModifiedSince(ctx context.Context, key NamespacedResource, sinceRv int64, lastCalledWithSinceRv *time.Time) (int64, iter.Seq2[*ModifiedResource, error]) {\n-\tif !key.Valid() {\n+\t// Empty namespace is allowed: the underlying datastore.Keys handles\n+\t// it via Prefix() and the write-path scanner uses cross-namespace\n+\t// scans to discover everything past its checkpoint in one call.\n+\tif key.Group == \"\" || key.Resource == \"\" {\n \t\treturn 0, func(yield func(*ModifiedResource, error) bool) {\n-\t\t\tyield(nil, fmt.Errorf(\"group, resource, and namespace are required\"))\n+\t\t\tyield(nil, fmt.Errorf(\"group and resource are required\"))\n \t\t}\n \t}\n \n@@ -1687,7 +1690,13 @@ func (k *kvStorageBackend) listModifiedSinceDataStore(ctx context.Context, key N\n \t\t\t\tlastSeenDataKey = dataKey\n \t\t\t}\n \n-\t\t\tif lastSeenResource.Key.Name != dataKey.Name {\n+\t\t\t// Boundary detection on (namespace, name) so cross-namespace\n+\t\t\t// scans yield same-named resources from different namespaces\n+\t\t\t// separately. Correctness assumes dataStore.Keys returns\n+\t\t\t// keys in ascending lex order with the shape\n+\t\t\t// `group/resource/ns/name/rv`, so all rows for a given\n+\t\t\t// (namespace, name) are contiguous.\n+\t\t\tif lastSeenResource.Key.Namespace != dataKey.Namespace || lastSeenResource.Key.Name != dataKey.Name {\n \t\t\t\tvalue, err := k.getValueFromDataStore(ctx, lastSeenDataKey)\n \t\t\t\tif err != nil {\n \t\t\t\t\tyield(&ModifiedResource{}, err)\n@@ -1744,15 +1753,19 @@ func (k *kvStorageBackend) listModifiedSinceEventStore(ctx context.Context, key\n \t\t\t\treturn\n \t\t\t}\n \n-\t\t\tif evtKey.Group != key.Group || evtKey.Resource != key.Resource || evtKey.Namespace != key.Namespace {\n+\t\t\tif evtKey.Group != key.Group || evtKey.Resource != key.Resource {\n \t\t\t\tcontinue\n \t\t\t}\n-\n-\t\t\tif _, ok := seen[evtKey.Name]; ok {\n+\t\t\t// Empty key.Namespace = cross-namespace scan; otherwise filter to one namespace.\n+\t\t\tif key.Namespace != \"\" && evtKey.Namespace != key.Namespace {\n \t\t\t\tcontinue\n \t\t\t}\n \n-\t\t\tseen[evtKey.Name] = struct{}{}\n+\t\t\tdedupKey := evtKey.Namespace + \"/\" + evtKey.Name\n+\t\t\tif _, ok := seen[dedupKey]; ok {\n+\t\t\t\tcontinue\n+\t\t\t}\n+\t\t\tseen[dedupKey] = struct{}{}\n \t\t\tvalue, err := k.getValueFromDataStore(ctx, DataKey(evtKey))\n \t\t\tif err != nil {\n \t\t\t\tyield(&ModifiedResource{}, err)\ndiff --git a/pkg/storage/unified/resource/storage_backend_test.go b/pkg/storage/unified/resource/storage_backend_test.go\nindex 0bd5c32a65162..a1b81af44ff41 100644\n--- a/pkg/storage/unified/resource/storage_backend_test.go\n+++ b/pkg/storage/unified/resource/storage_backend_test.go\n@@ -1078,32 +1078,136 @@ func TestKvStorageBackend_ListModifiedSince(t *testing.T) {\n \t\tResource:  \"resources\",\n \t}\n \n-\texpectations := seedBackend(t, backend, ctx, ns)\n-\tfor _, expectation := range expectations {\n-\t\t_, seq := backend.ListModifiedSince(ctx, ns, expectation.rv, nil)\n+\tt.Run(\"randomized seed in a single namespace\", func(t *testing.T) {\n+\t\texpectations := seedBackend(t, backend, ctx, ns)\n+\t\tfor _, expectation := range expectations {\n+\t\t\t_, seq := backend.ListModifiedSince(ctx, ns, expectation.rv, nil)\n \n-\t\tfor mr, err := range seq {\n-\t\t\trequire.NoError(t, err)\n-\t\t\trequire.Equal(t, mr.Key.Group, ns.Group)\n-\t\t\trequire.Equal(t, mr.Key.Namespace, ns.Namespace)\n-\t\t\trequire.Equal(t, mr.Key.Resource, ns.Resource)\n+\t\t\tfor mr, err := range seq {\n+\t\t\t\trequire.NoError(t, err)\n+\t\t\t\trequire.Equal(t, mr.Key.Group, ns.Group)\n+\t\t\t\trequire.Equal(t, mr.Key.Namespace, ns.Namespace)\n+\t\t\t\trequire.Equal(t, mr.Key.Resource, ns.Resource)\n+\n+\t\t\t\texpectedMr, ok := expectation.changes[mr.Key.Name]\n+\t\t\t\trequire.True(t, ok, \"ListModifiedSince yielded unexpected resource: %s\", mr.Key.String())\n+\t\t\t\trequire.Equal(t, mr.ResourceVersion, expectedMr.ResourceVersion)\n+\t\t\t\trequire.Equal(t, mr.Action, expectedMr.Action)\n+\t\t\t\trequire.Equal(t, string(mr.Value), string(expectedMr.Value))\n+\t\t\t\tdelete(expectation.changes, mr.Key.Name)\n+\t\t\t}\n \n-\t\t\texpectedMr, ok := expectation.changes[mr.Key.Name]\n-\t\t\trequire.True(t, ok, \"ListModifiedSince yielded unexpected resource: %s\", mr.Key.String())\n-\t\t\trequire.Equal(t, mr.ResourceVersion, expectedMr.ResourceVersion)\n-\t\t\trequire.Equal(t, mr.Action, expectedMr.Action)\n-\t\t\trequire.Equal(t, string(mr.Value), string(expectedMr.Value))\n-\t\t\tdelete(expectation.changes, mr.Key.Name)\n+\t\t\t// Events with RV >= sinceRv are required and must have been returned.\n+\t\t\t// Lookback events (RV < sinceRv) are optional \u2014 they may or may not\n+\t\t\t// be returned depending on timing.\n+\t\t\tfor name, mr := range expectation.changes {\n+\t\t\t\trequire.Less(t, mr.ResourceVersion, expectation.rv,\n+\t\t\t\t\t\"required event for %s (rv=%d >= sinceRv=%d) was not returned\", name, mr.ResourceVersion, expectation.rv)\n+\t\t\t}\n \t\t}\n+\t})\n+\n+\tt.Run(\"cross-namespace scan with empty namespace\", func(t *testing.T) {\n+\t\t// Same name in two namespaces \u2014 the cross-namespace scan must\n+\t\t// yield both rather than collapsing them through name-based\n+\t\t// dedup. Uses its own group/resource to stay isolated from the\n+\t\t// randomized seed above.\n+\t\tgroup := \"test.cross.app\"\n+\t\tresource := \"test-resources\"\n+\t\tnsA := NamespacedResource{Namespace: \"cross-a\", Group: group, Resource: resource}\n+\t\tnsB := NamespacedResource{Namespace: \"cross-b\", Group: group, Resource: resource}\n+\t\tnsOther := NamespacedResource{Namespace: \"cross-a\", Group: \"other.app\", Resource: \"other-resources\"}\n+\n+\t\tobjA, err := createTestObjectWithName(\"shared\", nsA, \"value-a\")\n+\t\trequire.NoError(t, err)\n+\t\tmetaA, err := utils.MetaAccessor(objA)\n+\t\trequire.NoError(t, err)\n+\n+\t\tobjB, err := createTestObjectWithName(\"shared\", nsB, \"value-b\")\n+\t\trequire.NoError(t, err)\n+\t\tmetaB, err := utils.MetaAccessor(objB)\n+\t\trequire.NoError(t, err)\n+\n+\t\tobjOther, err := createTestObjectWithName(\"ignored\", nsOther, \"value-other\")\n+\t\trequire.NoError(t, err)\n+\t\tmetaOther, err := utils.MetaAccessor(objOther)\n+\t\trequire.NoError(t, err)\n+\n+\t\trvA, err := backend.WriteEvent(ctx, WriteEvent{\n+\t\t\tType:   resourcepb.WatchEvent_ADDED,\n+\t\t\tKey:    &resourcepb.ResourceKey{Namespace: nsA.Namespace, Group: nsA.Group, Resource: nsA.Resource, Name: \"shared\"},\n+\t\t\tValue:  objectToJSONBytes(t, objA),\n+\t\t\tObject: metaA,\n+\t\t})\n+\t\trequire.NoError(t, err)\n \n-\t\t// Events with RV >= sinceRv are required and must have been returned.\n-\t\t// Lookback events (RV < sinceRv) are optional \u2014 they may or may not\n-\t\t// be returned depending on timing.\n-\t\tfor name, mr := range expectation.changes {\n-\t\t\trequire.Less(t, mr.ResourceVersion, expectation.rv,\n-\t\t\t\t\"required event for %s (rv=%d >= sinceRv=%d) was not returned\", name, mr.ResourceVersion, expectation.rv)\n+\t\trvB, err := backend.WriteEvent(ctx, WriteEvent{\n+\t\t\tType:   resourcepb.WatchEvent_ADDED,\n+\t\t\tKey:    &resourcepb.ResourceKey{Namespace: nsB.Namespace, Group: nsB.Group, Resource: nsB.Resource, Name: \"shared\"},\n+\t\t\tValue:  objectToJSONBytes(t, objB),\n+\t\t\tObject: metaB,\n+\t\t})\n+\t\trequire.NoError(t, err)\n+\n+\t\t_, err = backend.WriteEvent(ctx, WriteEvent{\n+\t\t\tType:   resourcepb.WatchEvent_ADDED,\n+\t\t\tKey:    &resourcepb.ResourceKey{Namespace: nsOther.Namespace, Group: nsOther.Group, Resource: nsOther.Resource, Name: \"ignored\"},\n+\t\t\tValue:  objectToJSONBytes(t, objOther),\n+\t\t\tObject: metaOther,\n+\t\t})\n+\t\trequire.NoError(t, err)\n+\n+\t\tcrossNs := NamespacedResource{Group: group, Resource: resource}\n+\n+\t\tpaths := []struct {\n+\t\t\tname    string\n+\t\t\tsinceRV func() int64\n+\t\t}{\n+\t\t\t{name: \"via event store (recent RV < 1 hour)\", sinceRV: func() int64 { return rvA - 1 }},\n+\t\t\t{name: \"via data store (old RV > 1 hour)\", sinceRV: func() int64 { return generateOldSnowflake(t) }},\n+\t\t}\n+\t\tfor _, p := range paths {\n+\t\t\tt.Run(p.name, func(t *testing.T) {\n+\t\t\t\trv, seq := backend.ListModifiedSince(ctx, crossNs, p.sinceRV(), nil)\n+\n+\t\t\t\tseen := map[string]*ModifiedResource{}\n+\t\t\t\tfor mr, err := range seq {\n+\t\t\t\t\trequire.NoError(t, err)\n+\t\t\t\t\trequire.Equal(t, group, mr.Key.Group)\n+\t\t\t\t\trequire.Equal(t, resource, mr.Key.Resource)\n+\t\t\t\t\trequire.NotEqual(t, \"ignored\", mr.Key.Name, \"cross-namespace scan must filter by (group, resource)\")\n+\t\t\t\t\tseen[mr.Key.Namespace+\"/\"+mr.Key.Name] = mr\n+\t\t\t\t}\n+\n+\t\t\t\trequire.Greater(t, rv, p.sinceRV())\n+\t\t\t\trequire.Contains(t, seen, nsA.Namespace+\"/shared\")\n+\t\t\t\trequire.Contains(t, seen, nsB.Namespace+\"/shared\")\n+\t\t\t\trequire.Equal(t, rvA, seen[nsA.Namespace+\"/shared\"].ResourceVersion)\n+\t\t\t\trequire.Equal(t, rvB, seen[nsB.Namespace+\"/shared\"].ResourceVersion)\n+\t\t\t})\n \t\t}\n-\t}\n+\t})\n+\n+\tt.Run(\"rejects missing group or resource\", func(t *testing.T) {\n+\t\tfor _, tc := range []struct {\n+\t\t\tname string\n+\t\t\tkey  NamespacedResource\n+\t\t}{\n+\t\t\t{name: \"missing group\", key: NamespacedResource{Resource: \"x\"}},\n+\t\t\t{name: \"missing resource\", key: NamespacedResource{Group: \"x\"}},\n+\t\t} {\n+\t\t\tt.Run(tc.name, func(t *testing.T) {\n+\t\t\t\t_, seq := backend.ListModifiedSince(ctx, tc.key, 0, nil)\n+\t\t\t\tvar gotErr error\n+\t\t\t\tfor _, err := range seq {\n+\t\t\t\t\tgotErr = err\n+\t\t\t\t\tbreak\n+\t\t\t\t}\n+\t\t\t\trequire.Error(t, gotErr)\n+\t\t\t\trequire.Contains(t, gotErr.Error(), \"group and resource are required\")\n+\t\t\t})\n+\t\t}\n+\t})\n }\n \n type expectation struct {\ndiff --git a/pkg/storage/unified/sql/backend.go b/pkg/storage/unified/sql/backend.go\nindex 26b2803ceaa30..52bcb499569ec 100644\n--- a/pkg/storage/unified/sql/backend.go\n+++ b/pkg/storage/unified/sql/backend.go\n@@ -1139,12 +1139,15 @@ func (b *backend) ListModifiedSince(ctx context.Context, key resource.Namespaced\n \t\t\t\tcontinue\n \t\t\t}\n \n-\t\t\t// Deduplicate by name (namespace, group, and resource are always the same in the result set)\n-\t\t\tif _, ok := seen[mr.Key.Name]; ok {\n+\t\t\t// Deduplicate by (namespace, name). The query may run\n+\t\t\t// cross-namespace (empty Namespace argument) for the\n+\t\t\t// write-path scanner, so two resources with the same name\n+\t\t\t// in different namespaces must each yield once.\n+\t\t\tdedupKey := mr.Key.Namespace + \"/\" + mr.Key.Name\n+\t\t\tif _, ok := seen[dedupKey]; ok {\n \t\t\t\tcontinue\n \t\t\t}\n-\n-\t\t\tseen[mr.Key.Name] = struct{}{}\n+\t\t\tseen[dedupKey] = struct{}{}\n \t\t\tif !yield(mr, nil) {\n \t\t\t\treturn\n \t\t\t}\ndiff --git a/pkg/storage/unified/sql/data/resource_history_list_since_modified.sql b/pkg/storage/unified/sql/data/resource_history_list_since_modified.sql\nindex ffbd020bd0ce7..feb440807ae6e 100644\n--- a/pkg/storage/unified/sql/data/resource_history_list_since_modified.sql\n+++ b/pkg/storage/unified/sql/data/resource_history_list_since_modified.sql\n@@ -7,8 +7,9 @@ SELECT\n     {{.Ident \"action\"}},\n     {{.Ident \"value\"}}\n FROM resource_history\n-WHERE {{.Ident \"namespace\" }} = {{.Arg .Namespace }}\n-  AND {{.Ident \"group\" }} = {{.Arg .Group }}\n+WHERE\n+  {{ if .Namespace }}{{.Ident \"namespace\" }} = {{.Arg .Namespace }}\n+  AND {{ end }}{{.Ident \"group\" }} = {{.Arg .Group }}\n   AND {{.Ident \"resource\" }} = {{.Arg .Resource }}\n   AND {{.Ident \"resource_version\" }} > {{.Arg .SinceRv }} {{/* needs to exclude SinceRv */}}\n   AND {{.Ident \"resource_version\" }} <= {{.Arg .LatestRv }} {{/* needs to include LatestRv */}}\ndiff --git a/pkg/storage/unified/sql/queries.go b/pkg/storage/unified/sql/queries.go\nindex 17685062aa4ff..71096263d1f90 100644\n--- a/pkg/storage/unified/sql/queries.go\n+++ b/pkg/storage/unified/sql/queries.go\n@@ -464,9 +464,6 @@ type sqlResourceListModifiedSinceRequest struct {\n }\n \n func (r sqlResourceListModifiedSinceRequest) Validate() error {\n-\tif r.Namespace == \"\" {\n-\t\treturn fmt.Errorf(\"missing namespace\")\n-\t}\n \tif r.Group == \"\" {\n \t\treturn fmt.Errorf(\"missing group\")\n \t}\ndiff --git a/pkg/storage/unified/sql/queries_test.go b/pkg/storage/unified/sql/queries_test.go\nindex b74d58cfb25d6..af984880e3c57 100644\n--- a/pkg/storage/unified/sql/queries_test.go\n+++ b/pkg/storage/unified/sql/queries_test.go\n@@ -149,6 +149,17 @@ func TestUnifiedStorageQueries(t *testing.T) {\n \t\t\t\t\t\tLatestRv:    20000,\n \t\t\t\t\t},\n \t\t\t\t},\n+\t\t\t\t{\n+\t\t\t\t\tName: \"cross-namespace\",\n+\t\t\t\t\tData: &sqlResourceListModifiedSinceRequest{\n+\t\t\t\t\t\tSQLTemplate: mocks.NewTestingSQLTemplate(),\n+\t\t\t\t\t\tNamespace:   \"\",\n+\t\t\t\t\t\tGroup:       \"group\",\n+\t\t\t\t\t\tResource:    \"res\",\n+\t\t\t\t\t\tSinceRv:     10000,\n+\t\t\t\t\t\tLatestRv:    20000,\n+\t\t\t\t\t},\n+\t\t\t\t},\n \t\t\t},\n \t\t\tsqlResourceHistoryGarbageGetCandidates: {\n \t\t\t\t{\ndiff --git a/pkg/storage/unified/sql/testdata/mysql--resource_history_list_since_modified-cross-namespace.sql b/pkg/storage/unified/sql/testdata/mysql--resource_history_list_since_modified-cross-namespace.sql\nnew file mode 100755\nindex 0000000000000..db16860dfe9fd\n--- /dev/null\n+++ b/pkg/storage/unified/sql/testdata/mysql--resource_history_list_since_modified-cross-namespace.sql\n@@ -0,0 +1,15 @@\n+SELECT\n+    `namespace`,\n+    `group`,\n+    `resource`,\n+    `name`,\n+    `resource_version`,\n+    `action`,\n+    `value`\n+FROM resource_history\n+WHERE\n+  `group` = 'group'\n+  AND `resource` = 'res'\n+  AND `resource_version` > 10000 \n+  AND `resource_version` <= 20000 \n+ORDER BY `resource_version` DESC\ndiff --git a/pkg/storage/unified/sql/testdata/mysql--resource_history_list_since_modified-single path.sql b/pkg/storage/unified/sql/testdata/mysql--resource_history_list_since_modified-single path.sql\nindex a4ff76be3c49e..0d4bba9ab0c8a 100755\n--- a/pkg/storage/unified/sql/testdata/mysql--resource_history_list_since_modified-single path.sql\t\n+++ b/pkg/storage/unified/sql/testdata/mysql--resource_history_list_since_modified-single path.sql\t\n@@ -7,7 +7,8 @@ SELECT\n     `action`,\n     `value`\n FROM resource_history\n-WHERE `namespace` = 'ns'\n+WHERE\n+  `namespace` = 'ns'\n   AND `group` = 'group'\n   AND `resource` = 'res'\n   AND `resource_version` > 10000 \ndiff --git a/pkg/storage/unified/sql/testdata/postgres--resource_history_list_since_modified-cross-namespace.sql b/pkg/storage/unified/sql/testdata/postgres--resource_history_list_since_modified-cross-namespace.sql\nnew file mode 100755\nindex 0000000000000..78409204c6e52\n--- /dev/null\n+++ b/pkg/storage/unified/sql/testdata/postgres--resource_history_list_since_modified-cross-namespace.sql\n@@ -0,0 +1,15 @@\n+SELECT\n+    \"namespace\",\n+    \"group\",\n+    \"resource\",\n+    \"name\",\n+    \"resource_version\",\n+    \"action\",\n+    \"value\"\n+FROM resource_history\n+WHERE\n+  \"group\" = 'group'\n+  AND \"resource\" = 'res'\n+  AND \"resource_version\" > 10000 \n+  AND \"resource_version\" <= 20000 \n+ORDER BY \"resource_version\" DESC\ndiff --git a/pkg/storage/unified/sql/testdata/postgres--resource_history_list_since_modified-single path.sql b/pkg/storage/unified/sql/testdata/postgres--resource_history_list_since_modified-single path.sql\nindex 04a9666dcff1d..e6da83ab26630 100755\n--- a/pkg/storage/unified/sql/testdata/postgres--resource_history_list_since_modified-single path.sql\t\n+++ b/pkg/storage/unified/sql/testdata/postgres--resource_history_list_since_modified-single path.sql\t\n@@ -7,7 +7,8 @@ SELECT\n     \"action\",\n     \"value\"\n FROM resource_history\n-WHERE \"namespace\" = 'ns'\n+WHERE\n+  \"namespace\" = 'ns'\n   AND \"group\" = 'group'\n   AND \"resource\" = 'res'\n   AND \"resource_version\" > 10000 \ndiff --git a/pkg/storage/unified/sql/testdata/sqlite--resource_history_list_since_modified-cross-namespace.sql b/pkg/storage/unified/sql/testdata/sqlite--resource_history_list_since_modified-cross-namespace.sql\nnew file mode 100755\nindex 0000000000000..78409204c6e52\n--- /dev/null\n+++ b/pkg/storage/unified/sql/testdata/sqlite--resource_history_list_since_modified-cross-namespace.sql\n@@ -0,0 +1,15 @@\n+SELECT\n+    \"namespace\",\n+    \"group\",\n+    \"resource\",\n+    \"name\",\n+    \"resource_version\",\n+    \"action\",\n+    \"value\"\n+FROM resource_history\n+WHERE\n+  \"group\" = 'group'\n+  AND \"resource\" = 'res'\n+  AND \"resource_version\" > 10000 \n+  AND \"resource_version\" <= 20000 \n+ORDER BY \"resource_version\" DESC\ndiff --git a/pkg/storage/unified/sql/testdata/sqlite--resource_history_list_since_modified-single path.sql b/pkg/storage/unified/sql/testdata/sqlite--resource_history_list_since_modified-single path.sql\nindex 04a9666dcff1d..e6da83ab26630 100755\n--- a/pkg/storage/unified/sql/testdata/sqlite--resource_history_list_since_modified-single path.sql\t\n+++ b/pkg/storage/unified/sql/testdata/sqlite--resource_history_list_since_modified-single path.sql\t\n@@ -7,7 +7,8 @@ SELECT\n     \"action\",\n     \"value\"\n FROM resource_history\n-WHERE \"namespace\" = 'ns'\n+WHERE\n+  \"namespace\" = 'ns'\n   AND \"group\" = 'group'\n   AND \"resource\" = 'res'\n   AND \"resource_version\" > 10000 \ndiff --git a/pkg/storage/unified/testing/storage_backend.go b/pkg/storage/unified/testing/storage_backend.go\nindex f75e7ce9b00f6..72ae7868989ee 100644\n--- a/pkg/storage/unified/testing/storage_backend.go\n+++ b/pkg/storage/unified/testing/storage_backend.go\n@@ -686,6 +686,40 @@ func runTestIntegrationBackendListModifiedSince(t *testing.T, backend resource.S\n \t\t\trequire.Equal(t, expectedRv, actualRv, \"wrong RV for %s\", name)\n \t\t}\n \t})\n+\n+\tt.Run(\"cross-namespace scan with empty namespace\", func(t *testing.T) {\n+\t\t// Two namespaces, each with a resource named \"shared\". The\n+\t\t// cross-namespace scan must yield both rather than collapsing\n+\t\t// them through name-based dedup.\n+\t\tnsA := nsPrefix + \"-cross-a\"\n+\t\tnsB := nsPrefix + \"-cross-b\"\n+\t\tstartRv, err := WriteEvent(ctx, backend, \"shared\", resourcepb.WatchEvent_ADDED, WithNamespace(nsA))\n+\t\trequire.NoError(t, err)\n+\t\trvA, err := WriteEvent(ctx, backend, \"shared\", resourcepb.WatchEvent_MODIFIED, WithNamespaceAndRV(nsA, startRv))\n+\t\trequire.NoError(t, err)\n+\t\trvB, err := WriteEvent(ctx, backend, \"shared\", resourcepb.WatchEvent_ADDED, WithNamespace(nsB))\n+\t\trequire.NoError(t, err)\n+\n+\t\tkey := resource.NamespacedResource{\n+\t\t\tGroup:    \"group\",\n+\t\t\tResource: \"resource\",\n+\t\t}\n+\t\t_, seq := backend.ListModifiedSince(ctx, key, startRv-1, nil)\n+\n+\t\tseen := map[string]int64{}\n+\t\tfor res, err := range seq {\n+\t\t\trequire.NoError(t, err)\n+\t\t\tif res.Key.Name != \"shared\" {\n+\t\t\t\tcontinue\n+\t\t\t}\n+\t\t\tif res.Key.Namespace != nsA && res.Key.Namespace != nsB {\n+\t\t\t\tcontinue\n+\t\t\t}\n+\t\t\tseen[res.Key.Namespace] = res.ResourceVersion\n+\t\t}\n+\t\trequire.Equal(t, rvA, seen[nsA], \"namespace A should yield latest rv for shared\")\n+\t\trequire.Equal(t, rvB, seen[nsB], \"namespace B should yield latest rv for shared\")\n+\t})\n }\n \n func runTestIntegrationBackendListHistory(t *testing.T, backend resource.StorageBackend, nsPrefix string) {\n",
+  "metadata": {
+    "v2_fetcher_version": 1,
+    "v2_fetched_at_unix": 1778582568,
+    "v2_diff_cap_bytes": 50000,
+    "v2_body_cap_bytes": 8000,
+    "v2_diff_truncated": false,
+    "v2_raw_diff_chars": 18489,
+    "v2_raw_body_chars": 1577,
+    "v2_rag_source": "fresh_for_v2_40pr_expansion",
+    "v2_rag_chunks_copied": 8
+  },
+  "similar_chunks": [
+    {
+      "file": "pkg/storage/unified/testing/server.go",
+      "start_line": 1,
+      "end_line": 66,
+      "similarity": 0.8315,
+      "related_to": "pkg/storage/unified/testing/storage_backend.go",
+      "content_preview": "package test\n\nimport (\n\t\"context\"\n\t\"encoding/json\"\n\t\"fmt\"\n\t\"net/http\"\n\t\"testing\"\n\n\t\"github.com/grafana/authlib/types\"\n\n\t\"github.com/grafana/grafana/pkg/apimachinery/identity\"\n\t\"github.com/grafana/grafana/pkg/apimachinery/utils\"\n\t\"github.com/grafana/grafana/pkg/storage/unified/resource\"\n\t\"github.com/grafana/grafana/pkg/storage/unified/resourcepb\"\n\n\t\"github.com/stretchr/testify/require\"\n)\n\n// RunStorageServerTest runs the storage server test suite\nfunc RunStorageServerTest(t *testing.T, newBackend NewBackendFunc) {\n\trunTestResourcePermissionScenarios(t, newBackend(context.Background()), GenerateRandomNSPrefix())\n\trunTestListTrashAccessControl(t, newBackend(context.Background()), GenerateRandomNSPrefix())\n}\n\n// func runTestIntegrationBackendHappyPath(t *testing.T, backend resource.StorageBack"
+    },
+    {
+      "file": "pkg/storage/unified/testing/storage_backend_sql_compatibility.go",
+      "start_line": 1,
+      "end_line": 74,
+      "similarity": 0.8127,
+      "related_to": "pkg/storage/unified/testing/storage_backend.go",
+      "content_preview": "package test\n\nimport (\n\t\"context\"\n\t\"encoding/json\"\n\t\"fmt\"\n\t\"strings\"\n\t\"sync\"\n\t\"testing\"\n\t\"time\"\n\n\t\"github.com/stretchr/testify/require\"\n\n\tclaims \"github.com/grafana/authlib/types\"\n\t\"github.com/grafana/grafana/pkg/infra/db\"\n\t\"github.com/grafana/grafana/pkg/setting\"\n\t\"github.com/grafana/grafana/pkg/storage/unified/resource\"\n\t\"github.com/grafana/grafana/pkg/storage/unified/resourcepb\"\n\tsqldb \"github.com/grafana/grafana/pkg/storage/unified/sql/db\"\n\t\"github.com/grafana/grafana/pkg/storage/unified/sql/db/dbimpl\"\n\t\"github.com/grafana/grafana/pkg/storage/unified/sql/rvmanager\"\n\t\"github.com/grafana/grafana/pkg/storage/unified/sql/sqltemplate\"\n\t\"github.com/grafana/grafana/pkg/util/testutil\"\n)\n\nfunc NewTestSqlKvBackend(t *testing.T, ctx context.Context, withRvManager bool) (resource.KVBackend, sqldb."
+    },
+    {
+      "file": "pkg/storage/unified/testing/search_backend.go",
+      "start_line": 1,
+      "end_line": 71,
+      "similarity": 0.7954,
+      "related_to": "pkg/storage/unified/testing/storage_backend.go",
+      "content_preview": "package test\n\nimport (\n\t\"context\"\n\t\"testing\"\n\t\"time\"\n\n\t\"github.com/stretchr/testify/require\"\n\n\t\"github.com/grafana/grafana/pkg/storage/unified/resource\"\n\t\"github.com/grafana/grafana/pkg/storage/unified/resourcepb\"\n\t\"github.com/grafana/grafana/pkg/util/testutil\"\n)\n\n// Test names for the search backend test suite\nconst (\n\tTestBuildIndex    = \"build index\"\n\tTestTotalDocs     = \"total docs\"\n\tTestResourceIndex = \"resource index\"\n)\n\n// NewSearchBackendFunc is a function that creates a new SearchBackend instance\ntype NewSearchBackendFunc func(ctx context.Context) resource.SearchBackend\n\n// RunSearchBackendTest runs the search backend test suite\nfunc RunSearchBackendTest(t *testing.T, newBackend NewSearchBackendFunc, opts *TestOptions) {\n\tif opts == nil {\n\t\topts = &TestOptions{}\n\t}\n\n\tif opts.NSPre"
+    },
+    {
+      "file": "pkg/storage/unified/testing/storage_backend_sql_compatibility.go",
+      "start_line": 68,
+      "end_line": 122,
+      "similarity": 0.7922,
+      "related_to": "pkg/storage/unified/testing/storage_backend.go",
+      "content_preview": "gf(\"Running tests with namespace prefix: %s\", opts.NSPrefix)\n\n\tcases := []struct {\n\t\tname string\n\t\tfn   func(*testing.T, resource.StorageBackend, resource.StorageBackend, string, sqldb.DB)\n\t}{\n\t\t{\"key_path generation\", runTestIntegrationBackendKeyPathGeneration},\n\t\t{\"sql backend fields compatibility\", runTestSQLBackendFieldsCompatibility},\n\t\t{\"cross backend consistency\", runTestCrossBackendConsistency},\n\t\t{\"concurrent operations stress\", runTestConcurrentOperationsStress},\n\t}\n\n\tfor _, tc := range cases {\n\t\tt.Run(tc.name, func(t *testing.T) {\n\t\t\tif opts.SkipTests[tc.name] {\n\t\t\t\tt.Skip()\n\t\t\t}\n\n\t\t\tkvbackend, db := newKvBackend(t.Context())\n\t\t\tsqlbackend, _ := newSqlBackend(t.Context())\n\n\t\t\ttc.fn(t, sqlbackend, kvbackend, opts.NSPrefix, db)\n\t\t})\n\t}\n\n\t// Search operations compatibility test (ha"
+    },
+    {
+      "file": "pkg/storage/unified/sql/test/integration_test.go",
+      "start_line": 1,
+      "end_line": 50,
+      "similarity": 0.7888,
+      "related_to": "pkg/storage/unified/testing/storage_backend.go",
+      "content_preview": "package test\n\nimport (\n\t\"context\"\n\t\"sync\"\n\t\"testing\"\n\t\"time\"\n\n\tindex \"github.com/blevesearch/bleve_index_api\"\n\t\"github.com/go-jose/go-jose/v4/jwt\"\n\t\"github.com/prometheus/client_golang/prometheus\"\n\t\"github.com/stretchr/testify/require\"\n\n\t\"github.com/grafana/authlib/authn\"\n\t\"github.com/grafana/authlib/types\"\n\t\"github.com/grafana/dskit/kv\"\n\t\"github.com/grafana/dskit/services\"\n\n\t\"github.com/grafana/grafana/pkg/infra/db\"\n\t\"github.com/grafana/grafana/pkg/infra/tracing\"\n\t\"github.com/grafana/grafana/pkg/services/featuremgmt\"\n\t\"github.com/grafana/grafana/pkg/setting\"\n\t\"github.com/grafana/grafana/pkg/storage/unified\"\n\t\"github.com/grafana/grafana/pkg/storage/unified/resource\"\n\t\"github.com/grafana/grafana/pkg/storage/unified/resourcepb\"\n\t\"github.com/grafana/grafana/pkg/storage/unified/search\"\n\t\"githu"
+    },
+    {
+      "file": "pkg/storage/unified/sql/test/integration_test.go",
+      "start_line": 44,
+      "end_line": 111,
+      "similarity": 0.7655,
+      "related_to": "pkg/storage/unified/testing/storage_backend.go",
+      "content_preview": "block is atomic.\n\tinitMutex.Lock()\n\t// Unlock once the function returns the initialized backend.\n\tdefer initMutex.Unlock()\n\n\tdbstore := db.InitTestDB(t)\n\teDB, err := dbimpl.ProvideResourceDB(dbstore, setting.NewCfg(), nil)\n\trequire.NoError(t, err)\n\trequire.NotNil(t, eDB)\n\n\tbackend, err := sql.NewBackend(sql.BackendOptions{\n\t\tDBProvider:              eDB,\n\t\tIsHA:                    isHA,\n\t\tSimulatedNetworkLatency: simulatedNetworkLatency,\n\t\tLastImportTimeMaxAge:    24 * time.Hour,\n\t})\n\trequire.NoError(t, err)\n\trequire.NotNil(t, backend)\n\n\t// Use a context with a reasonable timeout for migrations.\n\terr = backend.Init(testutil.NewTestContext(t, time.Now().Add(1*time.Minute)))\n\trequire.NoError(t, err)\n\n\tsqlDB, err := eDB.Init(testutil.NewTestContext(t, time.Now().Add(1*time.Minute)))\n\trequire."
+    },
+    {
+      "file": "pkg/storage/unified/testing/storage_backend_test.go",
+      "start_line": 1,
+      "end_line": 67,
+      "similarity": 0.7649,
+      "related_to": "pkg/storage/unified/testing/storage_backend.go",
+      "content_preview": "package test\n\nimport (\n\t\"context\"\n\t\"testing\"\n\n\tbadger \"github.com/dgraph-io/badger/v4\"\n\t\"github.com/stretchr/testify/require\"\n\n\t\"github.com/grafana/grafana/pkg/storage/unified/resource\"\n\t\"github.com/grafana/grafana/pkg/util/testutil\"\n)\n\nfunc TestBadgerKVStorageBackend(t *testing.T) {\n\tRunStorageBackendTest(t, func(ctx context.Context) resource.StorageBackend {\n\t\topts := badger.DefaultOptions(\"\").WithInMemory(true).WithLogger(nil)\n\t\tdb, err := badger.Open(opts)\n\t\trequire.NoError(t, err)\n\t\tt.Cleanup(func() {\n\t\t\t_ = db.Close()\n\t\t})\n\t\tkvOpts := resource.KVBackendOptions{\n\t\t\tKvStore: resource.NewBadgerKV(db),\n\t\t}\n\t\tbackend, err := resource.NewKVStorageBackend(kvOpts)\n\t\trequire.NoError(t, err)\n\t\treturn backend\n\t}, &TestOptions{\n\t\tNSPrefix: \"badgerkvstorage-test\",\n\t\tSkipTests: map[string]bool{\n\t\t"
+    },
+    {
+      "file": "pkg/storage/unified/sql/list_iterator_test.go",
+      "start_line": 1,
+      "end_line": 71,
+      "similarity": 0.7544,
+      "related_to": "pkg/storage/unified/sql/queries_test.go",
+      "content_preview": "package sql\n\nimport (\n\t\"context\"\n\t\"encoding/base64\"\n\t\"encoding/json\"\n\t\"fmt\"\n\t\"testing\"\n\n\t\"github.com/stretchr/testify/require\"\n\n\t\"github.com/grafana/grafana/pkg/infra/db\"\n\t\"github.com/grafana/grafana/pkg/infra/tracing\"\n\t\"github.com/grafana/grafana/pkg/setting\"\n\t\"github.com/grafana/grafana/pkg/storage/unified/resource\"\n\t\"github.com/grafana/grafana/pkg/storage/unified/resourcepb\"\n\tdbsql \"github.com/grafana/grafana/pkg/storage/unified/sql/db\"\n\t\"github.com/grafana/grafana/pkg/storage/unified/sql/db/dbimpl\"\n\t\"github.com/grafana/grafana/pkg/storage/unified/sql/dbutil\"\n\t\"github.com/grafana/grafana/pkg/storage/unified/sql/rvmanager\"\n\t\"github.com/grafana/grafana/pkg/storage/unified/sql/sqltemplate\"\n\t\"github.com/grafana/grafana/pkg/tests/testsuite\"\n\t\"github.com/grafana/grafana/pkg/util/testutil\"\n)\n\n"
+    }
+  ],
+  "rag_evidence": {
+    "similar_code": [
+      {
+        "file": "pkg/storage/unified/testing/server.go",
+        "start_line": 1,
+        "end_line": 66,
+        "similarity": 0.8315,
+        "related_to": "pkg/storage/unified/testing/storage_backend.go",
+        "content_preview": "package test\n\nimport (\n\t\"context\"\n\t\"encoding/json\"\n\t\"fmt\"\n\t\"net/http\"\n\t\"testing\"\n\n\t\"github.com/grafana/authlib/types\"\n\n\t\"github.com/grafana/grafana/pkg/apimachinery/identity\"\n\t\"github.com/grafana/grafana/pkg/apimachinery/utils\"\n\t\"github.com/grafana/grafana/pkg/storage/unified/resource\"\n\t\"github.com/grafana/grafana/pkg/storage/unified/resourcepb\"\n\n\t\"github.com/stretchr/testify/require\"\n)\n\n// RunStorageServerTest runs the storage server test suite\nfunc RunStorageServerTest(t *testing.T, newBackend NewBackendFunc) {\n\trunTestResourcePermissionScenarios(t, newBackend(context.Background()), GenerateRandomNSPrefix())\n\trunTestListTrashAccessControl(t, newBackend(context.Background()), GenerateRandomNSPrefix())\n}\n\n// func runTestIntegrationBackendHappyPath(t *testing.T, backend resource.StorageBack"
+      },
+      {
+        "file": "pkg/storage/unified/testing/storage_backend_sql_compatibility.go",
+        "start_line": 1,
+        "end_line": 74,
+        "similarity": 0.8127,
+        "related_to": "pkg/storage/unified/testing/storage_backend.go",
+        "content_preview": "package test\n\nimport (\n\t\"context\"\n\t\"encoding/json\"\n\t\"fmt\"\n\t\"strings\"\n\t\"sync\"\n\t\"testing\"\n\t\"time\"\n\n\t\"github.com/stretchr/testify/require\"\n\n\tclaims \"github.com/grafana/authlib/types\"\n\t\"github.com/grafana/grafana/pkg/infra/db\"\n\t\"github.com/grafana/grafana/pkg/setting\"\n\t\"github.com/grafana/grafana/pkg/storage/unified/resource\"\n\t\"github.com/grafana/grafana/pkg/storage/unified/resourcepb\"\n\tsqldb \"github.com/grafana/grafana/pkg/storage/unified/sql/db\"\n\t\"github.com/grafana/grafana/pkg/storage/unified/sql/db/dbimpl\"\n\t\"github.com/grafana/grafana/pkg/storage/unified/sql/rvmanager\"\n\t\"github.com/grafana/grafana/pkg/storage/unified/sql/sqltemplate\"\n\t\"github.com/grafana/grafana/pkg/util/testutil\"\n)\n\nfunc NewTestSqlKvBackend(t *testing.T, ctx context.Context, withRvManager bool) (resource.KVBackend, sqldb."
+      },
+      {
+        "file": "pkg/storage/unified/testing/search_backend.go",
+        "start_line": 1,
+        "end_line": 71,
+        "similarity": 0.7954,
+        "related_to": "pkg/storage/unified/testing/storage_backend.go",
+        "content_preview": "package test\n\nimport (\n\t\"context\"\n\t\"testing\"\n\t\"time\"\n\n\t\"github.com/stretchr/testify/require\"\n\n\t\"github.com/grafana/grafana/pkg/storage/unified/resource\"\n\t\"github.com/grafana/grafana/pkg/storage/unified/resourcepb\"\n\t\"github.com/grafana/grafana/pkg/util/testutil\"\n)\n\n// Test names for the search backend test suite\nconst (\n\tTestBuildIndex    = \"build index\"\n\tTestTotalDocs     = \"total docs\"\n\tTestResourceIndex = \"resource index\"\n)\n\n// NewSearchBackendFunc is a function that creates a new SearchBackend instance\ntype NewSearchBackendFunc func(ctx context.Context) resource.SearchBackend\n\n// RunSearchBackendTest runs the search backend test suite\nfunc RunSearchBackendTest(t *testing.T, newBackend NewSearchBackendFunc, opts *TestOptions) {\n\tif opts == nil {\n\t\topts = &TestOptions{}\n\t}\n\n\tif opts.NSPre"
+      },
+      {
+        "file": "pkg/storage/unified/testing/storage_backend_sql_compatibility.go",
+        "start_line": 68,
+        "end_line": 122,
+        "similarity": 0.7922,
+        "related_to": "pkg/storage/unified/testing/storage_backend.go",
+        "content_preview": "gf(\"Running tests with namespace prefix: %s\", opts.NSPrefix)\n\n\tcases := []struct {\n\t\tname string\n\t\tfn   func(*testing.T, resource.StorageBackend, resource.StorageBackend, string, sqldb.DB)\n\t}{\n\t\t{\"key_path generation\", runTestIntegrationBackendKeyPathGeneration},\n\t\t{\"sql backend fields compatibility\", runTestSQLBackendFieldsCompatibility},\n\t\t{\"cross backend consistency\", runTestCrossBackendConsistency},\n\t\t{\"concurrent operations stress\", runTestConcurrentOperationsStress},\n\t}\n\n\tfor _, tc := range cases {\n\t\tt.Run(tc.name, func(t *testing.T) {\n\t\t\tif opts.SkipTests[tc.name] {\n\t\t\t\tt.Skip()\n\t\t\t}\n\n\t\t\tkvbackend, db := newKvBackend(t.Context())\n\t\t\tsqlbackend, _ := newSqlBackend(t.Context())\n\n\t\t\ttc.fn(t, sqlbackend, kvbackend, opts.NSPrefix, db)\n\t\t})\n\t}\n\n\t// Search operations compatibility test (ha"
+      },
+      {
+        "file": "pkg/storage/unified/sql/test/integration_test.go",
+        "start_line": 1,
+        "end_line": 50,
+        "similarity": 0.7888,
+        "related_to": "pkg/storage/unified/testing/storage_backend.go",
+        "content_preview": "package test\n\nimport (\n\t\"context\"\n\t\"sync\"\n\t\"testing\"\n\t\"time\"\n\n\tindex \"github.com/blevesearch/bleve_index_api\"\n\t\"github.com/go-jose/go-jose/v4/jwt\"\n\t\"github.com/prometheus/client_golang/prometheus\"\n\t\"github.com/stretchr/testify/require\"\n\n\t\"github.com/grafana/authlib/authn\"\n\t\"github.com/grafana/authlib/types\"\n\t\"github.com/grafana/dskit/kv\"\n\t\"github.com/grafana/dskit/services\"\n\n\t\"github.com/grafana/grafana/pkg/infra/db\"\n\t\"github.com/grafana/grafana/pkg/infra/tracing\"\n\t\"github.com/grafana/grafana/pkg/services/featuremgmt\"\n\t\"github.com/grafana/grafana/pkg/setting\"\n\t\"github.com/grafana/grafana/pkg/storage/unified\"\n\t\"github.com/grafana/grafana/pkg/storage/unified/resource\"\n\t\"github.com/grafana/grafana/pkg/storage/unified/resourcepb\"\n\t\"github.com/grafana/grafana/pkg/storage/unified/search\"\n\t\"githu"
+      },
+      {
+        "file": "pkg/storage/unified/sql/test/integration_test.go",
+        "start_line": 44,
+        "end_line": 111,
+        "similarity": 0.7655,
+        "related_to": "pkg/storage/unified/testing/storage_backend.go",
+        "content_preview": "block is atomic.\n\tinitMutex.Lock()\n\t// Unlock once the function returns the initialized backend.\n\tdefer initMutex.Unlock()\n\n\tdbstore := db.InitTestDB(t)\n\teDB, err := dbimpl.ProvideResourceDB(dbstore, setting.NewCfg(), nil)\n\trequire.NoError(t, err)\n\trequire.NotNil(t, eDB)\n\n\tbackend, err := sql.NewBackend(sql.BackendOptions{\n\t\tDBProvider:              eDB,\n\t\tIsHA:                    isHA,\n\t\tSimulatedNetworkLatency: simulatedNetworkLatency,\n\t\tLastImportTimeMaxAge:    24 * time.Hour,\n\t})\n\trequire.NoError(t, err)\n\trequire.NotNil(t, backend)\n\n\t// Use a context with a reasonable timeout for migrations.\n\terr = backend.Init(testutil.NewTestContext(t, time.Now().Add(1*time.Minute)))\n\trequire.NoError(t, err)\n\n\tsqlDB, err := eDB.Init(testutil.NewTestContext(t, time.Now().Add(1*time.Minute)))\n\trequire."
+      },
+      {
+        "file": "pkg/storage/unified/testing/storage_backend_test.go",
+        "start_line": 1,
+        "end_line": 67,
+        "similarity": 0.7649,
+        "related_to": "pkg/storage/unified/testing/storage_backend.go",
+        "content_preview": "package test\n\nimport (\n\t\"context\"\n\t\"testing\"\n\n\tbadger \"github.com/dgraph-io/badger/v4\"\n\t\"github.com/stretchr/testify/require\"\n\n\t\"github.com/grafana/grafana/pkg/storage/unified/resource\"\n\t\"github.com/grafana/grafana/pkg/util/testutil\"\n)\n\nfunc TestBadgerKVStorageBackend(t *testing.T) {\n\tRunStorageBackendTest(t, func(ctx context.Context) resource.StorageBackend {\n\t\topts := badger.DefaultOptions(\"\").WithInMemory(true).WithLogger(nil)\n\t\tdb, err := badger.Open(opts)\n\t\trequire.NoError(t, err)\n\t\tt.Cleanup(func() {\n\t\t\t_ = db.Close()\n\t\t})\n\t\tkvOpts := resource.KVBackendOptions{\n\t\t\tKvStore: resource.NewBadgerKV(db),\n\t\t}\n\t\tbackend, err := resource.NewKVStorageBackend(kvOpts)\n\t\trequire.NoError(t, err)\n\t\treturn backend\n\t}, &TestOptions{\n\t\tNSPrefix: \"badgerkvstorage-test\",\n\t\tSkipTests: map[string]bool{\n\t\t"
+      },
+      {
+        "file": "pkg/storage/unified/sql/list_iterator_test.go",
+        "start_line": 1,
+        "end_line": 71,
+        "similarity": 0.7544,
+        "related_to": "pkg/storage/unified/sql/queries_test.go",
+        "content_preview": "package sql\n\nimport (\n\t\"context\"\n\t\"encoding/base64\"\n\t\"encoding/json\"\n\t\"fmt\"\n\t\"testing\"\n\n\t\"github.com/stretchr/testify/require\"\n\n\t\"github.com/grafana/grafana/pkg/infra/db\"\n\t\"github.com/grafana/grafana/pkg/infra/tracing\"\n\t\"github.com/grafana/grafana/pkg/setting\"\n\t\"github.com/grafana/grafana/pkg/storage/unified/resource\"\n\t\"github.com/grafana/grafana/pkg/storage/unified/resourcepb\"\n\tdbsql \"github.com/grafana/grafana/pkg/storage/unified/sql/db\"\n\t\"github.com/grafana/grafana/pkg/storage/unified/sql/db/dbimpl\"\n\t\"github.com/grafana/grafana/pkg/storage/unified/sql/dbutil\"\n\t\"github.com/grafana/grafana/pkg/storage/unified/sql/rvmanager\"\n\t\"github.com/grafana/grafana/pkg/storage/unified/sql/sqltemplate\"\n\t\"github.com/grafana/grafana/pkg/tests/testsuite\"\n\t\"github.com/grafana/grafana/pkg/util/testutil\"\n)\n\n"
+      }
+    ]
+  }
+}

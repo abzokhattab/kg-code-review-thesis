@@ -1,0 +1,51 @@
+{
+  "pr_id": 2,
+  "mode": "joern_kg",
+  "mean_scores": {
+    "F3": 3.0,
+    "F4": 3.0,
+    "P1": 0.0,
+    "R2": 0.0,
+    "T3": 3.0
+  },
+  "mean_graded_total": 9.0,
+  "per_judge": [
+    {
+      "model": "gemini:gemini-2.5-flash",
+      "scores": {
+        "F3": 3,
+        "F4": 3,
+        "P1": 0,
+        "R2": 0,
+        "T3": 3
+      },
+      "evidence": {
+        "F3": "Names multiple specific callers or dependent components with file paths or function names, and explains the concrete integration risk for each. The review states: 'External tools, scripts, or provisioning systems that interact with Grafana's API for dashboard management will break if they expect datasource variable `value` to be the datasource `name`.'",
+        "F4": "Identifies multiple specific contract violations with file/function references and explains exactly what downstream behavior would change. The review states: 'Changing the `value` of a datasource variable option from `name` to `uid` fundamentally alters its API contract.' and references `public/app/features/variables/datasource/reducer.ts:45`. It also explains that 'Existing dashboards with datasource variables might fail to load correctly or display \"No value\" if their stored `value` (which wou",
+        "P1": "No mention of performance in the review.",
+        "R2": "No comment on complexity or code structure in the review.",
+        "T3": "Names multiple specific test file paths, references the exact test scenarios or functions within those files that need coverage, and explains what edge cases are currently missing. The review states: 'Add an explicit assertion in `e2e/dashboards-suite/new-datasource-variable.spec.ts` to verify the `raw` output of the datasource variable... Add a dedicated unit test in `public/app/features/variables/state/actions.test.ts` that simulates loading a datasource variable with `current.value` set to a "
+      },
+      "error": ""
+    },
+    {
+      "model": "gemini:gemini-2.5-pro",
+      "scores": {
+        "F3": 3,
+        "F4": 3,
+        "P1": 0,
+        "R2": 0,
+        "T3": 3
+      },
+      "evidence": {
+        "F3": "The review names multiple dependent components (existing dashboards, external tools, provisioning systems) and explains the concrete integration risk for each. For example: \"External tools, scripts, or provisioning systems that interact with Grafana's API for dashboard management will break if they expect datasource variable `value` to be the datasource `name`.\" It also references specific files involved in the interaction, such as `datasource_srv.ts` and `actions.ts`.",
+        "F4": "The review identifies multiple specific contract violations. First, the API contract: \"Changing the `value` of a datasource variable option from `name` to `uid` fundamentally alters its API contract,\" referencing `reducer.ts:45`. Second, the backward compatibility contract with existing dashboards: \"Existing dashboards with datasource variables might fail to load correctly... if their stored `value` (which would be the datasource `name`) cannot be resolved.\" It explains the exact downstream beha",
+        "P1": "The review makes no mention of performance, efficiency, or potential bottlenecks.",
+        "R2": "The review does not comment on code complexity, simplification, or suggest any refactoring for clarity.",
+        "T3": "The review names multiple specific test file paths (`e2e/dashboards-suite/new-datasource-variable.spec.ts`, `public/app/features/plugins/tests/datasource_srv.test.ts`, `public/app/features/variables/state/actions.test.ts`), references the exact scenarios needing coverage (raw output, datasource renaming, migration from name to uid), and explains the missing edge cases."
+      },
+      "error": ""
+    }
+  ],
+  "timestamp": "2026-06-01T18:57:28.783832+00:00"
+}

@@ -1,0 +1,68 @@
+{
+  "candidate_mentions": [
+    {
+      "basename_collision": false,
+      "end": 526,
+      "evidence_id": "M001",
+      "excerpt": "utableDataFrame` does not affect existing functionality.\n\n## Evidence\n- `packages/grafana-data/src/index.ts:12`: `MutableDataFrame` export has been removed.\n- `packages/grafana-data/src/dataframe/CircularDataFrame.ts`: This file depends on `MutableDataFrame`.\n- `packages/grafana-data/src/transformations/transformers/merge.ts`: This file depends on `MutableDataFrame`.\n- `packages/grafana-data/src/transformations/transformers/seriesToRows.ts`: This file depends on `MutableD",
+      "finding_passage_id": "P008",
+      "match_kind": "full_path",
+      "match_text": "packages/grafana-data/src/dataframe/CircularDataFrame.ts",
+      "oracle_path": "packages/grafana-data/src/dataframe/CircularDataFrame.ts",
+      "start": 470
+    },
+    {
+      "basename_collision": false,
+      "end": 1306,
+      "evidence_id": "M003",
+      "excerpt": " Re-evaluate the necessity of removing `MutableDataFrame` from exports and consider keeping it if dependencies are not updated.\n2. Add or update test cases in `MutableDataFrame.test.ts` to ensure that all dependent modules function correctly without direct access to `MutableDataFrame`.\n3. Communicate with teams or code owners of dependent modules to ensure they are aware of this change and can make necessary adjustments.\n\n## Traceability\n- ",
+      "finding_passage_id": "P016",
+      "match_kind": "basename",
+      "match_text": "MutableDataFrame.test.ts",
+      "oracle_path": "packages/grafana-data/src/dataframe/MutableDataFrame.test.ts",
+      "start": 1282
+    },
+    {
+      "basename_collision": false,
+      "end": 636,
+      "evidence_id": "M004",
+      "excerpt": "x.ts:12`: `MutableDataFrame` export has been removed.\n- `packages/grafana-data/src/dataframe/CircularDataFrame.ts`: This file depends on `MutableDataFrame`.\n- `packages/grafana-data/src/transformations/transformers/merge.ts`: This file depends on `MutableDataFrame`.\n- `packages/grafana-data/src/transformations/transformers/seriesToRows.ts`: This file depends on `MutableDataFrame`.\n\n## Impact\n- Removing `MutableDataFrame` from exports could lead to runtime errors in modules that ",
+      "finding_passage_id": "P009",
+      "match_kind": "full_path",
+      "match_text": "packages/grafana-data/src/transformations/transformers/merge.ts",
+      "oracle_path": "packages/grafana-data/src/transformations/transformers/merge.ts",
+      "start": 573
+    },
+    {
+      "basename_collision": false,
+      "end": 753,
+      "evidence_id": "M005",
+      "excerpt": ".ts`: This file depends on `MutableDataFrame`.\n- `packages/grafana-data/src/transformations/transformers/merge.ts`: This file depends on `MutableDataFrame`.\n- `packages/grafana-data/src/transformations/transformers/seriesToRows.ts`: This file depends on `MutableDataFrame`.\n\n## Impact\n- Removing `MutableDataFrame` from exports could lead to runtime errors in modules that import it, potentially causing application failures.\n- The lack of explicit test coverage for the removal of this exp",
+      "finding_passage_id": "P010",
+      "match_kind": "full_path",
+      "match_text": "packages/grafana-data/src/transformations/transformers/seriesToRows.ts",
+      "oracle_path": "packages/grafana-data/src/transformations/transformers/seriesToRows.ts",
+      "start": 683
+    }
+  ],
+  "causal_passage_id": "P012",
+  "decision_source": "llm_causal_adjudication",
+  "detected": true,
+  "evidence_id": "M001",
+  "evidence_id_normalized": false,
+  "executed_at_utc": "2026-09-19T15:47:23.226980+00:00",
+  "finding_passage_id": "P008",
+  "judge": "xai:grok-4.6",
+  "manifest_sha256": "5d4371a93d1b09f0491ecc12279f9f3ff5de23053b7a5e74650a749f58b472b0",
+  "model_alias": "xai:grok-4.6",
+  "model_evidence_id": "M001",
+  "model_snapshot": "unavailable-from-original-wrapper",
+  "original_verdict": null,
+  "prompt_sha256": "81eb909a2b0003f09eecb0886f25e2c48313ff77a92b3ac2625edb6107ff0650",
+  "reason_code": "specific_cross_file_link",
+  "response_wrapper": "bare",
+  "review_sha256": "4b909ede5895b8a46db329c8035abab4dfb42b4e304b982a716e2e93c8cb4d3f",
+  "schema_sha256": "f70f714868ecd3d25508bb3e00b32ecbe6761b0ebc05f454ee10fa4d28efd013",
+  "schema_version": "exp2-adjudication-v3",
+  "system_sha256": "030b5e701c798b32afdabbbeb22db38f664db8c8fd8b862d2fcb98df63b6fb6b"
+}

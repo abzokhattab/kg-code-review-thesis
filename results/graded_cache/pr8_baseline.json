@@ -1,0 +1,51 @@
+{
+  "pr_id": 8,
+  "mode": "baseline",
+  "mean_scores": {
+    "F3": 2.5,
+    "F4": 2.0,
+    "P1": 0.0,
+    "R2": 0.0,
+    "T3": 2.0
+  },
+  "mean_graded_total": 6.5,
+  "per_judge": [
+    {
+      "model": "gemini:gemini-2.5-flash",
+      "scores": {
+        "F3": 2,
+        "F4": 2,
+        "P1": 0,
+        "R2": 0,
+        "T3": 3
+      },
+      "evidence": {
+        "F3": "Names at least one specific caller, module, or dependent file that is affected. The review names 'existing dashboards' as a specific dependent component and explains the risk: 'Existing dashboards that depend on custom values might break if the default behavior changes or if the feature is not correctly integrated.'",
+        "F4": "Identifies at least one specific API contract or caller expectation that could break. The review identifies the expectation that 'existing dashboards that rely on custom values' might break, implying a change in the expected behavior or 'contract' for custom values.",
+        "P1": "No mention of performance.",
+        "R2": "No comment on complexity or code structure.",
+        "T3": "Names multiple specific test file paths, references the exact test scenarios or functions within those files that need coverage, and explains what edge cases are currently missing. The review names `public/app/features/dashboard-scene/settings/variables/components/AdHocVariableForm.tsx:85` and `public/app/features/dashboard-scene/settings/variables/editors/CustomVariableEditor.tsx:35`, and explains missing coverage as 'lacks tests for all scenarios' and 'not thoroughly validated in tests', recom"
+      },
+      "error": ""
+    },
+    {
+      "model": "gemini:gemini-2.5-pro",
+      "scores": {
+        "F3": 3,
+        "F4": 2,
+        "P1": 0,
+        "R2": 0,
+        "T3": 1
+      },
+      "evidence": {
+        "F3": "Names multiple specific components with file paths (`AdHocVariableForm.tsx:85`, `variables.ts:138`, `CustomVariableEditor.tsx:35`) and explains the concrete integration risk: 'Existing dashboards that depend on custom values might break if the default behavior changes or if the feature is not correctly integrated.'",
+        "F4": "Identifies a specific caller expectation that could break: 'Potential backward compatibility issues with existing dashboards that rely on custom values.' and 'Existing dashboards that depend on custom values might break if the default behavior changes...'",
+        "P1": "The review makes no mention of performance.",
+        "R2": "The review makes no comment on complexity or code structure.",
+        "T3": "The review mentions that tests are needed ('Lack of comprehensive test coverage... Expand test coverage...') but does not name a specific test file."
+      },
+      "error": ""
+    }
+  ],
+  "timestamp": "2026-06-01T18:57:24.593951+00:00"
+}

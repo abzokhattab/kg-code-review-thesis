@@ -1,0 +1,170 @@
+{
+  "pr": {
+    "number": 18330,
+    "title": "KAFKA-17631: Convert SaslApiVersionsRequestTest to kraft",
+    "body": "We disabled `SaslApiVersionsRequestTest` when implementing KAFKA-17614. Re-enable with a new test framework.\r\n\r\n### Committer Checklist (excluded from commit message)\r\n- [ ] Verify design and implementation \r\n- [ ] Verify test coverage and CI build status\r\n- [ ] Verify documentation (including upgrade notes)\r\n",
+    "url": "https://github.com/apache/kafka/pull/18330",
+    "repo": "apache/kafka",
+    "base_branch": "trunk",
+    "head_branch": "KAFKA-17631",
+    "merged_at": "2025-02-03T13:01:38Z",
+    "state": "MERGED"
+  },
+  "changed_files": [
+    {
+      "path": "core/src/test/scala/unit/kafka/server/SaslApiVersionsRequestTest.scala",
+      "language": "scala",
+      "added": 26,
+      "deleted": 58
+    }
+  ],
+  "nearest_tests": [],
+  "dependent_files": [],
+  "diff_summary": "1 files changed",
+  "full_diff": "diff --git a/core/src/test/scala/unit/kafka/server/SaslApiVersionsRequestTest.scala b/core/src/test/scala/unit/kafka/server/SaslApiVersionsRequestTest.scala\nindex 3a8042e2590b3..7f1f8b6aae358 100644\n--- a/core/src/test/scala/unit/kafka/server/SaslApiVersionsRequestTest.scala\n+++ b/core/src/test/scala/unit/kafka/server/SaslApiVersionsRequestTest.scala\n@@ -16,81 +16,48 @@\n   */\n package kafka.server\n \n-import kafka.api.SaslSetup\n-import kafka.security.JaasTestUtils\n-import kafka.server.SaslApiVersionsRequestTest.{kafkaClientSaslMechanism, kafkaServerSaslMechanisms}\n-import org.apache.kafka.common.test.api.{ClusterConfig, ClusterTemplate, Type}\n-import org.apache.kafka.common.config.SaslConfigs\n-import org.apache.kafka.common.config.internals.BrokerSecurityConfigs\n import org.apache.kafka.common.message.SaslHandshakeRequestData\n import org.apache.kafka.common.protocol.{ApiKeys, Errors}\n import org.apache.kafka.common.requests.{ApiVersionsRequest, ApiVersionsResponse, SaslHandshakeRequest, SaslHandshakeResponse}\n import org.apache.kafka.common.security.auth.SecurityProtocol\n+import org.apache.kafka.common.test.api.{ClusterTest, Type}\n import org.apache.kafka.common.test.ClusterInstance\n-import org.apache.kafka.network.SocketServerConfigs\n+import org.apache.kafka.common.test.junit.ClusterTestExtensions\n import org.junit.jupiter.api.Assertions._\n-import org.junit.jupiter.api.{AfterEach, BeforeEach, Disabled}\n+import org.junit.jupiter.api.extension.ExtendWith\n \n import java.net.Socket\n import java.util.Collections\n import scala.jdk.CollectionConverters._\n \n-object SaslApiVersionsRequestTest {\n-  val kafkaClientSaslMechanism = \"PLAIN\"\n-  val kafkaServerSaslMechanisms: Seq[String] = List(\"PLAIN\")\n-  val controlPlaneListenerName = \"CONTROL_PLANE\"\n-  val securityProtocol = SecurityProtocol.SASL_PLAINTEXT\n-\n-  def saslApiVersionsRequestClusterConfig(): java.util.List[ClusterConfig] = {\n-    val saslServerProperties = new java.util.HashMap[String, String]()\n-    saslServerProperties.put(BrokerSecurityConfigs.SASL_MECHANISM_INTER_BROKER_PROTOCOL_CONFIG, kafkaClientSaslMechanism)\n-    saslServerProperties.put(BrokerSecurityConfigs.SASL_ENABLED_MECHANISMS_CONFIG, kafkaServerSaslMechanisms.mkString(\",\"))\n-\n-    val saslClientProperties = new java.util.HashMap[String, String]()\n-    saslClientProperties.put(SaslConfigs.SASL_MECHANISM, kafkaClientSaslMechanism)\n-\n-    // Configure control plane listener to make sure we have separate listeners for testing.\n-    val serverProperties =  new java.util.HashMap[String, String]()\n-    serverProperties.put(SocketServerConfigs.LISTENER_SECURITY_PROTOCOL_MAP_CONFIG, s\"$controlPlaneListenerName:$securityProtocol,$securityProtocol:$securityProtocol\")\n-    serverProperties.put(\"listeners\", s\"$securityProtocol://localhost:0,$controlPlaneListenerName://localhost:0\")\n-    serverProperties.put(SocketServerConfigs.ADVERTISED_LISTENERS_CONFIG, s\"$securityProtocol://localhost:0,$controlPlaneListenerName://localhost:0\")\n-\n-    List(ClusterConfig.defaultBuilder\n-      .setBrokerSecurityProtocol(securityProtocol)\n-      .setTypes(Set(Type.KRAFT).asJava)\n-      .setSaslServerProperties(saslServerProperties)\n-      .setSaslClientProperties(saslClientProperties)\n-      .setServerProperties(serverProperties)\n-      .build()).asJava\n-  }\n-}\n-\n-@Disabled(\"TODO: KAFKA-17631 - Convert SaslApiVersionsRequestTest to kraft\")\n+@ExtendWith(value = Array(classOf[ClusterTestExtensions]))\n class SaslApiVersionsRequestTest(cluster: ClusterInstance) extends AbstractApiVersionsRequestTest(cluster) {\n-  private var sasl: SaslSetup = _\n-\n-  @BeforeEach\n-  def setupSasl(): Unit = {\n-    sasl = new SaslSetup() {}\n-    sasl.startSasl(sasl.jaasSections(kafkaServerSaslMechanisms, Some(kafkaClientSaslMechanism), JaasTestUtils.KAFKA_SERVER_CONTEXT_NAME))\n-  }\n \n-  @ClusterTemplate(\"saslApiVersionsRequestClusterConfig\")\n+  @ClusterTest(types = Array(Type.KRAFT),\n+    brokerSecurityProtocol = SecurityProtocol.SASL_PLAINTEXT,\n+    controllerSecurityProtocol = SecurityProtocol.SASL_PLAINTEXT\n+  )\n   def testApiVersionsRequestBeforeSaslHandshakeRequest(): Unit = {\n     val socket = IntegrationTestUtils.connect(cluster.brokerSocketServers().asScala.head, cluster.clientListener())\n     try {\n       val apiVersionsResponse = IntegrationTestUtils.sendAndReceive[ApiVersionsResponse](\n         new ApiVersionsRequest.Builder().build(0), socket)\n-      validateApiVersionsResponse(apiVersionsResponse,\n+      validateApiVersionsResponse(\n+        apiVersionsResponse,\n         enableUnstableLastVersion = !\"false\".equals(\n-          cluster.config().serverProperties().get(\"unstable.api.versions.enable\")))\n+          cluster.config().serverProperties().get(\"unstable.api.versions.enable\")),\n+        apiVersion = 0.toShort\n+      )\n       sendSaslHandshakeRequestValidateResponse(socket)\n     } finally {\n       socket.close()\n     }\n   }\n \n-  @ClusterTemplate(\"saslApiVersionsRequestClusterConfig\")\n+  @ClusterTest(types = Array(Type.KRAFT),\n+    brokerSecurityProtocol = SecurityProtocol.SASL_PLAINTEXT,\n+    controllerSecurityProtocol = SecurityProtocol.SASL_PLAINTEXT\n+  )\n   def testApiVersionsRequestAfterSaslHandshakeRequest(): Unit = {\n     val socket = IntegrationTestUtils.connect(cluster.brokerSocketServers().asScala.head, cluster.clientListener())\n     try {\n@@ -103,7 +70,10 @@ class SaslApiVersionsRequestTest(cluster: ClusterInstance) extends AbstractApiVe\n     }\n   }\n \n-  @ClusterTemplate(\"saslApiVersionsRequestClusterConfig\")\n+  @ClusterTest(types = Array(Type.KRAFT),\n+    brokerSecurityProtocol = SecurityProtocol.SASL_PLAINTEXT,\n+    controllerSecurityProtocol = SecurityProtocol.SASL_PLAINTEXT\n+  )\n   def testApiVersionsRequestWithUnsupportedVersion(): Unit = {\n     val socket = IntegrationTestUtils.connect(cluster.brokerSocketServers().asScala.head, cluster.clientListener())\n     try {\n@@ -112,20 +82,18 @@ class SaslApiVersionsRequestTest(cluster: ClusterInstance) extends AbstractApiVe\n       assertEquals(Errors.UNSUPPORTED_VERSION.code, apiVersionsResponse.data.errorCode)\n       val apiVersionsResponse2 = IntegrationTestUtils.sendAndReceive[ApiVersionsResponse](\n         new ApiVersionsRequest.Builder().build(0), socket)\n-      validateApiVersionsResponse(apiVersionsResponse2,\n+      validateApiVersionsResponse(\n+        apiVersionsResponse2,\n         enableUnstableLastVersion = !\"false\".equals(\n-          cluster.config().serverProperties().get(\"unstable.api.versions.enable\")))\n+          cluster.config().serverProperties().get(\"unstable.api.versions.enable\")),\n+        apiVersion = 0.toShort\n+      )\n       sendSaslHandshakeRequestValidateResponse(socket)\n     } finally {\n       socket.close()\n     }\n   }\n \n-  @AfterEach\n-  def closeSasl(): Unit = {\n-    sasl.closeSasl()\n-  }\n-\n   private def sendSaslHandshakeRequestValidateResponse(socket: Socket): Unit = {\n     val request = new SaslHandshakeRequest(new SaslHandshakeRequestData().setMechanism(\"PLAIN\"),\n       ApiKeys.SASL_HANDSHAKE.latestVersion)\n",
+  "metadata": {
+    "v2_fetcher_version": 1,
+    "v2_fetched_at_unix": 1777501326,
+    "v2_diff_cap_bytes": 50000,
+    "v2_body_cap_bytes": 8000,
+    "v2_diff_truncated": false,
+    "v2_raw_diff_chars": 7004,
+    "v2_raw_body_chars": 311,
+    "v2_rag_source": "merged_from_v1",
+    "v2_rag_chunks_copied": 8
+  },
+  "similar_chunks": [
+    {
+      "file": "core/src/test/scala/unit/kafka/server/ApiVersionsRequestTest.scala",
+      "start_line": 17,
+      "end_line": 41,
+      "similarity": 0.8703,
+      "related_to": "core/src/test/scala/unit/kafka/server/SaslApiVersionsRequestTest.scala",
+      "content_preview": "\npackage kafka.server\n\nimport org.apache.kafka.common.message.ApiVersionsRequestData\nimport org.apache.kafka.common.protocol.{ApiKeys, Errors}\nimport org.apache.kafka.common.requests.{ApiVersionsRequest, ApiVersionsResponse}\nimport org.apache.kafka.common.test.ClusterInstance\nimport org.apache.kafka.common.test.api.{ClusterConfigProperty, ClusterTest, Type}\nimport org.apache.kafka.server.IntegrationTestUtils\nimport org.apache.kafka.server.common.MetadataVersion\nimport org.junit.jupiter.api.Assertions._\n\nclass ApiVersionsRequestTest(cluster: ClusterInstance) extends AbstractApiVersionsRequestTest(cluster) {\n\n  @ClusterTest(types = Array(Type.KRAFT, Type.CO_KRAFT), serverPrope"
+    },
+    {
+      "file": "core/src/test/scala/unit/kafka/server/AbstractApiVersionsRequestTest.scala",
+      "start_line": 16,
+      "end_line": 40,
+      "similarity": 0.8095,
+      "related_to": "core/src/test/scala/unit/kafka/server/SaslApiVersionsRequestTest.scala",
+      "content_preview": " */\npackage kafka.server\n\nimport org.apache.kafka.clients.NodeApiVersions\nimport org.apache.kafka.common.message.ApiMessageType.ListenerType\nimport org.apache.kafka.common.message.ApiVersionsResponseData.ApiVersion\nimport org.apache.kafka.common.message.ApiMessageType\nimport org.apache.kafka.common.network.ListenerName\nimport org.apache.kafka.common.protocol.ApiKeys\nimport org.apache.kafka.common.requests.{ApiVersionsRequest, ApiVersionsResponse, RequestUtils}\nimport org.apache.kafka.common.test.ClusterInstance\nimport org.apache.kafka.common.utils.Utils\nimport org.apache.kafka.server.IntegrationTestUtils\nimport org.apache.kafka.server.common.{EligibleLeaderReplicasVersion, GroupVersion, MetadataV"
+    },
+    {
+      "file": "core/src/test/scala/unit/kafka/server/ApiVersionsResponseIntegrationTest.scala",
+      "start_line": 13,
+      "end_line": 45,
+      "similarity": 0.7804,
+      "related_to": "core/src/test/scala/unit/kafka/server/SaslApiVersionsRequestTest.scala",
+      "content_preview": " **/\npackage kafka.server\n\nimport org.apache.kafka.common.message.ApiVersionsResponseData.SupportedFeatureKeyCollection\nimport org.apache.kafka.common.requests.ApiVersionsRequest\nimport org.apache.kafka.common.requests.ApiVersionsResponse\nimport org.apache.kafka.coordinator.group.GroupCoordinatorConfig\nimport org.apache.kafka.server.common.MetadataVersion\nimport org.apache.kafka.server.config.ServerConfigs\nimport org.junit.jupiter.api.Assertions.{assertEquals, assertNotNull, assertNull}\nimport org.junit.jupiter.api.Test\n\nimport java.util.Properties\n\nclass ApiVersionsResponseIntegrationTest extends BaseRequestTest {\n  override def brokerCount: Int = 1\n\n  override def brokerPropertyOverrides(properties: Properties): Unit = {\n    properties.put(ServerConfigs.CONTROLLED_SHUTDOWN_ENABLE_CONFIG,"
+    },
+    {
+      "file": "core/src/test/scala/unit/kafka/server/ApiVersionsRequestTest.scala",
+      "start_line": 37,
+      "end_line": 70,
+      "similarity": 0.7628,
+      "related_to": "core/src/test/scala/unit/kafka/server/SaslApiVersionsRequestTest.scala",
+      "content_preview": "l apiVersionsResponse = IntegrationTestUtils.connectAndReceive[ApiVersionsResponse](request, cluster.brokerBoundPorts().get(0))\n    validateApiVersionsResponse(apiVersionsResponse)\n  }\n\n  @ClusterTest(types = Array(Type.KRAFT, Type.CO_KRAFT), serverProperties = Array(\n    new ClusterConfigProperty(key = \"unstable.api.versions.enable\", value = \"true\"),\n    new ClusterConfigProperty(key = \"unstable.feature.versions.enable\", value = \"true\"),\n  ))\n  def testApiVersionsRequestIncludesUnreleasedApis(): Unit = {\n    val request = new ApiVersionsRequest.Builder().build()\n    val apiVersionsResponse = IntegrationTestUtils.connectAndReceive[ApiVersionsResponse](request, cluster.brokerBoundPorts().get(0))\n    validateApiVersionsResponse(apiVersionsResponse, enableUnstableLastVersion = true)\n  }\n\n  @C"
+    },
+    {
+      "file": "core/src/test/scala/unit/kafka/server/ApiVersionsRequestTest.scala",
+      "start_line": 66,
+      "end_line": 95,
+      "similarity": 0.7514,
+      "related_to": "core/src/test/scala/unit/kafka/server/SaslApiVersionsRequestTest.scala",
+      "content_preview": "   assertEquals(ApiKeys.API_VERSIONS.oldestVersion(), apiVersion.minVersion())\n    assertEquals(ApiKeys.API_VERSIONS.latestVersion(), apiVersion.maxVersion())\n  }\n\n  // Use the latest production MV for this test\n  @ClusterTest(types = Array(Type.KRAFT, Type.CO_KRAFT), metadataVersion = MetadataVersion.IBP_3_8_IV0, serverProperties = Array(\n    new ClusterConfigProperty(key = \"unstable.api.versions.enable\", value = \"false\"),\n    new ClusterConfigProperty(key = \"unstable.feature.versions.enable\", value = \"false\"),\n  ))\n  def testApiVersionsRequestValidationV0(): Unit = {\n    val apiVersionsRequest = new ApiVersionsRequest.Builder().build(0.asInstanceOf[Short])\n    val apiVersionsResponse = IntegrationTestUtils.connectAndReceive[ApiVersionsResponse](apiVersionsRequest, cluster.brokerBoundPort"
+    },
+    {
+      "file": "core/src/test/scala/unit/kafka/network/ProcessorTest.scala",
+      "start_line": 17,
+      "end_line": 44,
+      "similarity": 0.7184,
+      "related_to": "core/src/test/scala/unit/kafka/server/SaslApiVersionsRequestTest.scala",
+      "content_preview": "\npackage kafka.network\n\nimport org.apache.kafka.clients.NodeApiVersions\nimport org.apache.kafka.common.errors.{InvalidRequestException, UnsupportedVersionException}\nimport org.apache.kafka.common.message.ApiMessageType.ListenerType\nimport org.apache.kafka.common.message.RequestHeaderData\nimport org.apache.kafka.common.protocol.ApiKeys\nimport org.apache.kafka.common.requests.{RequestHeader, RequestTestUtils}\nimport org.apache.kafka.metadata.KRaftMetadataCache\nimport org.apache.kafka.server.{BrokerFeatures, DefaultApiVersionManager, SimpleApiVersionManager}\nimport org.apache.kafka.server.common.{FinalizedFeatures, KRaftVersion, MetadataVersion}\nimport org.junit.jupiter.api.Assertions.{assert"
+    },
+    {
+      "file": "core/src/test/scala/unit/kafka/server/AbstractApiVersionsRequestTest.scala",
+      "start_line": 38,
+      "end_line": 69,
+      "similarity": 0.7109,
+      "related_to": "core/src/test/scala/unit/kafka/server/SaslApiVersionsRequestTest.scala",
+      "content_preview": "\n  def sendUnsupportedApiVersionRequest(request: ApiVersionsRequest): ApiVersionsResponse = {\n    val overrideHeader = IntegrationTestUtils.nextRequestHeader(ApiKeys.API_VERSIONS, Short.MaxValue)\n    val socket = IntegrationTestUtils.connect(cluster.brokerBoundPorts().get(0))\n    try {\n      val serializedBytes = Utils.toArray(\n        RequestUtils.serialize(overrideHeader.data, overrideHeader.headerVersion, request.data, request.version))\n      IntegrationTestUtils.sendRequest(socket, serializedBytes)\n      IntegrationTestUtils.receive[ApiVersionsResponse](socket, ApiKeys.API_VERSIONS, 0.toShort)\n    } finally socket.close()\n  }\n\n  def validateApiVersionsResponse(\n    apiVersionsResponse: ApiVersionsResponse,\n    listenerName: ListenerName = cluster.clientListener(),\n    enableUnstableLas"
+    },
+    {
+      "file": "core/src/test/scala/unit/kafka/server/DelegationTokenRequestsTest.scala",
+      "start_line": 16,
+      "end_line": 39,
+      "similarity": 0.6948,
+      "related_to": "core/src/test/scala/unit/kafka/server/SaslApiVersionsRequestTest.scala",
+      "content_preview": "  */\npackage kafka.server\n\nimport kafka.api.{IntegrationTestHarness, SaslSetup}\nimport kafka.security.JaasTestUtils\nimport kafka.utils.TestUtils\nimport org.apache.kafka.clients.admin.{Admin, AdminClientConfig, CreateDelegationTokenOptions, DescribeDelegationTokenOptions}\nimport org.apache.kafka.common.errors.{DelegationTokenNotFoundException, InvalidPrincipalTypeException}\nimport org.apache.kafka.common.security.auth.SecurityProtocol\nimport org.apache.kafka.common.utils.SecurityUtils\nimport org.apache.kafka.server.config.DelegationTokenManagerConfigs\nimport org.junit.jupiter.api.Assertions._\nimport org.junit.jupiter.api.{AfterEach, BeforeEach, Test, TestInfo}\n\nimport java.util\nimpor"
+    }
+  ],
+  "rag_evidence": {
+    "similar_code": [
+      {
+        "file": "core/src/test/scala/unit/kafka/server/ApiVersionsRequestTest.scala",
+        "start_line": 17,
+        "end_line": 41,
+        "similarity": 0.8703,
+        "related_to": "core/src/test/scala/unit/kafka/server/SaslApiVersionsRequestTest.scala",
+        "content_preview": "\npackage kafka.server\n\nimport org.apache.kafka.common.message.ApiVersionsRequestData\nimport org.apache.kafka.common.protocol.{ApiKeys, Errors}\nimport org.apache.kafka.common.requests.{ApiVersionsRequest, ApiVersionsResponse}\nimport org.apache.kafka.common.test.ClusterInstance\nimport org.apache.kafka.common.test.api.{ClusterConfigProperty, ClusterTest, Type}\nimport org.apache.kafka.server.IntegrationTestUtils\nimport org.apache.kafka.server.common.MetadataVersion\nimport org.junit.jupiter.api.Assertions._\n\nclass ApiVersionsRequestTest(cluster: ClusterInstance) extends AbstractApiVersionsRequestTest(cluster) {\n\n  @ClusterTest(types = Array(Type.KRAFT, Type.CO_KRAFT), serverPrope"
+      },
+      {
+        "file": "core/src/test/scala/unit/kafka/server/AbstractApiVersionsRequestTest.scala",
+        "start_line": 16,
+        "end_line": 40,
+        "similarity": 0.8095,
+        "related_to": "core/src/test/scala/unit/kafka/server/SaslApiVersionsRequestTest.scala",
+        "content_preview": " */\npackage kafka.server\n\nimport org.apache.kafka.clients.NodeApiVersions\nimport org.apache.kafka.common.message.ApiMessageType.ListenerType\nimport org.apache.kafka.common.message.ApiVersionsResponseData.ApiVersion\nimport org.apache.kafka.common.message.ApiMessageType\nimport org.apache.kafka.common.network.ListenerName\nimport org.apache.kafka.common.protocol.ApiKeys\nimport org.apache.kafka.common.requests.{ApiVersionsRequest, ApiVersionsResponse, RequestUtils}\nimport org.apache.kafka.common.test.ClusterInstance\nimport org.apache.kafka.common.utils.Utils\nimport org.apache.kafka.server.IntegrationTestUtils\nimport org.apache.kafka.server.common.{EligibleLeaderReplicasVersion, GroupVersion, MetadataV"
+      },
+      {
+        "file": "core/src/test/scala/unit/kafka/server/ApiVersionsResponseIntegrationTest.scala",
+        "start_line": 13,
+        "end_line": 45,
+        "similarity": 0.7804,
+        "related_to": "core/src/test/scala/unit/kafka/server/SaslApiVersionsRequestTest.scala",
+        "content_preview": " **/\npackage kafka.server\n\nimport org.apache.kafka.common.message.ApiVersionsResponseData.SupportedFeatureKeyCollection\nimport org.apache.kafka.common.requests.ApiVersionsRequest\nimport org.apache.kafka.common.requests.ApiVersionsResponse\nimport org.apache.kafka.coordinator.group.GroupCoordinatorConfig\nimport org.apache.kafka.server.common.MetadataVersion\nimport org.apache.kafka.server.config.ServerConfigs\nimport org.junit.jupiter.api.Assertions.{assertEquals, assertNotNull, assertNull}\nimport org.junit.jupiter.api.Test\n\nimport java.util.Properties\n\nclass ApiVersionsResponseIntegrationTest extends BaseRequestTest {\n  override def brokerCount: Int = 1\n\n  override def brokerPropertyOverrides(properties: Properties): Unit = {\n    properties.put(ServerConfigs.CONTROLLED_SHUTDOWN_ENABLE_CONFIG,"
+      },
+      {
+        "file": "core/src/test/scala/unit/kafka/server/ApiVersionsRequestTest.scala",
+        "start_line": 37,
+        "end_line": 70,
+        "similarity": 0.7628,
+        "related_to": "core/src/test/scala/unit/kafka/server/SaslApiVersionsRequestTest.scala",
+        "content_preview": "l apiVersionsResponse = IntegrationTestUtils.connectAndReceive[ApiVersionsResponse](request, cluster.brokerBoundPorts().get(0))\n    validateApiVersionsResponse(apiVersionsResponse)\n  }\n\n  @ClusterTest(types = Array(Type.KRAFT, Type.CO_KRAFT), serverProperties = Array(\n    new ClusterConfigProperty(key = \"unstable.api.versions.enable\", value = \"true\"),\n    new ClusterConfigProperty(key = \"unstable.feature.versions.enable\", value = \"true\"),\n  ))\n  def testApiVersionsRequestIncludesUnreleasedApis(): Unit = {\n    val request = new ApiVersionsRequest.Builder().build()\n    val apiVersionsResponse = IntegrationTestUtils.connectAndReceive[ApiVersionsResponse](request, cluster.brokerBoundPorts().get(0))\n    validateApiVersionsResponse(apiVersionsResponse, enableUnstableLastVersion = true)\n  }\n\n  @C"
+      },
+      {
+        "file": "core/src/test/scala/unit/kafka/server/ApiVersionsRequestTest.scala",
+        "start_line": 66,
+        "end_line": 95,
+        "similarity": 0.7514,
+        "related_to": "core/src/test/scala/unit/kafka/server/SaslApiVersionsRequestTest.scala",
+        "content_preview": "   assertEquals(ApiKeys.API_VERSIONS.oldestVersion(), apiVersion.minVersion())\n    assertEquals(ApiKeys.API_VERSIONS.latestVersion(), apiVersion.maxVersion())\n  }\n\n  // Use the latest production MV for this test\n  @ClusterTest(types = Array(Type.KRAFT, Type.CO_KRAFT), metadataVersion = MetadataVersion.IBP_3_8_IV0, serverProperties = Array(\n    new ClusterConfigProperty(key = \"unstable.api.versions.enable\", value = \"false\"),\n    new ClusterConfigProperty(key = \"unstable.feature.versions.enable\", value = \"false\"),\n  ))\n  def testApiVersionsRequestValidationV0(): Unit = {\n    val apiVersionsRequest = new ApiVersionsRequest.Builder().build(0.asInstanceOf[Short])\n    val apiVersionsResponse = IntegrationTestUtils.connectAndReceive[ApiVersionsResponse](apiVersionsRequest, cluster.brokerBoundPort"
+      },
+      {
+        "file": "core/src/test/scala/unit/kafka/network/ProcessorTest.scala",
+        "start_line": 17,
+        "end_line": 44,
+        "similarity": 0.7184,
+        "related_to": "core/src/test/scala/unit/kafka/server/SaslApiVersionsRequestTest.scala",
+        "content_preview": "\npackage kafka.network\n\nimport org.apache.kafka.clients.NodeApiVersions\nimport org.apache.kafka.common.errors.{InvalidRequestException, UnsupportedVersionException}\nimport org.apache.kafka.common.message.ApiMessageType.ListenerType\nimport org.apache.kafka.common.message.RequestHeaderData\nimport org.apache.kafka.common.protocol.ApiKeys\nimport org.apache.kafka.common.requests.{RequestHeader, RequestTestUtils}\nimport org.apache.kafka.metadata.KRaftMetadataCache\nimport org.apache.kafka.server.{BrokerFeatures, DefaultApiVersionManager, SimpleApiVersionManager}\nimport org.apache.kafka.server.common.{FinalizedFeatures, KRaftVersion, MetadataVersion}\nimport org.junit.jupiter.api.Assertions.{assert"
+      },
+      {
+        "file": "core/src/test/scala/unit/kafka/server/AbstractApiVersionsRequestTest.scala",
+        "start_line": 38,
+        "end_line": 69,
+        "similarity": 0.7109,
+        "related_to": "core/src/test/scala/unit/kafka/server/SaslApiVersionsRequestTest.scala",
+        "content_preview": "\n  def sendUnsupportedApiVersionRequest(request: ApiVersionsRequest): ApiVersionsResponse = {\n    val overrideHeader = IntegrationTestUtils.nextRequestHeader(ApiKeys.API_VERSIONS, Short.MaxValue)\n    val socket = IntegrationTestUtils.connect(cluster.brokerBoundPorts().get(0))\n    try {\n      val serializedBytes = Utils.toArray(\n        RequestUtils.serialize(overrideHeader.data, overrideHeader.headerVersion, request.data, request.version))\n      IntegrationTestUtils.sendRequest(socket, serializedBytes)\n      IntegrationTestUtils.receive[ApiVersionsResponse](socket, ApiKeys.API_VERSIONS, 0.toShort)\n    } finally socket.close()\n  }\n\n  def validateApiVersionsResponse(\n    apiVersionsResponse: ApiVersionsResponse,\n    listenerName: ListenerName = cluster.clientListener(),\n    enableUnstableLas"
+      },
+      {
+        "file": "core/src/test/scala/unit/kafka/server/DelegationTokenRequestsTest.scala",
+        "start_line": 16,
+        "end_line": 39,
+        "similarity": 0.6948,
+        "related_to": "core/src/test/scala/unit/kafka/server/SaslApiVersionsRequestTest.scala",
+        "content_preview": "  */\npackage kafka.server\n\nimport kafka.api.{IntegrationTestHarness, SaslSetup}\nimport kafka.security.JaasTestUtils\nimport kafka.utils.TestUtils\nimport org.apache.kafka.clients.admin.{Admin, AdminClientConfig, CreateDelegationTokenOptions, DescribeDelegationTokenOptions}\nimport org.apache.kafka.common.errors.{DelegationTokenNotFoundException, InvalidPrincipalTypeException}\nimport org.apache.kafka.common.security.auth.SecurityProtocol\nimport org.apache.kafka.common.utils.SecurityUtils\nimport org.apache.kafka.server.config.DelegationTokenManagerConfigs\nimport org.junit.jupiter.api.Assertions._\nimport org.junit.jupiter.api.{AfterEach, BeforeEach, Test, TestInfo}\n\nimport java.util\nimpor"
+      }
+    ]
+  }
+}

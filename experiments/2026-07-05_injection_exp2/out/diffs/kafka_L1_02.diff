@@ -1,0 +1,11 @@
+--- a/streams/src/main/java/org/apache/kafka/streams/state/internals/RocksDBVersionedStoreSegmentValueFormatter.java
++++ b/streams/src/main/java/org/apache/kafka/streams/state/internals/RocksDBVersionedStoreSegmentValueFormatter.java
+@@ -561,7 +561,7 @@
+          * @param timestamp timestamp to truncate to
+          */
+         private void truncateRecordsToTimestamp(final long timestamp) {
+-            if (timestamp <= minTimestamp) {
++            if (timestamp < minTimestamp) {
+                 // all record versions in this segment will be truncated.
+                 // if the total number of record versions is not one, or if the truncation timestamp
+                 // does not match the minTimestamp of this segment, then this is unexpected (under

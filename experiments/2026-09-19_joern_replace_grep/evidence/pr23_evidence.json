@@ -1,0 +1,392 @@
+{
+  "pr": {
+    "number": 22643,
+    "title": "MNT remaining clean up for 1.1",
+    "body": "- Some warnings should have been transformed into errors in 1.0 in common tests but we forgot.\r\n- The last deprecated positional args will end in 1.1.\r\n\r\nThere's no usage of ``_deprecate_positional_args anymore``. I wonder if we still want to keep this function around in case we merge a new public function without kwarg only by mistake. I left it for now but I'm not happy leaving dead code in the code base. What do you think ?",
+    "url": "https://github.com/scikit-learn/scikit-learn/pull/22643",
+    "repo": "scikit-learn/scikit-learn",
+    "base_branch": "main",
+    "head_branch": "clean-up-for-1.1",
+    "merged_at": "2022-03-02T13:01:51Z",
+    "state": "MERGED"
+  },
+  "changed_files": [
+    {
+      "path": "sklearn/compose/_target.py",
+      "language": "python",
+      "added": 5,
+      "deleted": 0
+    },
+    {
+      "path": "sklearn/feature_selection/_sequential.py",
+      "language": "python",
+      "added": 0,
+      "deleted": 1
+    },
+    {
+      "path": "sklearn/inspection/_plot/partial_dependence.py",
+      "language": "python",
+      "added": 0,
+      "deleted": 2
+    },
+    {
+      "path": "sklearn/metrics/_regression.py",
+      "language": "python",
+      "added": 0,
+      "deleted": 2
+    },
+    {
+      "path": "sklearn/metrics/tests/test_regression.py",
+      "language": "python",
+      "added": 0,
+      "deleted": 13
+    },
+    {
+      "path": "sklearn/utils/estimator_checks.py",
+      "language": "python",
+      "added": 3,
+      "deleted": 23
+    },
+    {
+      "path": "sklearn/utils/validation.py",
+      "language": "python",
+      "added": 5,
+      "deleted": 2
+    }
+  ],
+  "nearest_tests": [
+    {
+      "path": "sklearn/compose/tests/test_target.py",
+      "relationship": "tests",
+      "source_file": "sklearn/compose/_target.py"
+    },
+    {
+      "path": "sklearn/preprocessing/tests/test_target_encoder.py",
+      "relationship": "tests",
+      "source_file": "sklearn/compose/_target.py"
+    },
+    {
+      "path": "sklearn/feature_selection/tests/test_sequential.py",
+      "relationship": "tests",
+      "source_file": "sklearn/feature_selection/_sequential.py"
+    },
+    {
+      "path": "sklearn/inspection/_plot/tests/test_plot_partial_dependence.py",
+      "relationship": "tests",
+      "source_file": "sklearn/inspection/_plot/partial_dependence.py"
+    },
+    {
+      "path": "sklearn/inspection/tests/test_partial_dependence.py",
+      "relationship": "tests",
+      "source_file": "sklearn/inspection/_plot/partial_dependence.py"
+    },
+    {
+      "path": "sklearn/metrics/tests/test_regression.py",
+      "relationship": "tests",
+      "source_file": "sklearn/metrics/_regression.py"
+    },
+    {
+      "path": "sklearn/utils/tests/test_estimator_checks.py",
+      "relationship": "tests",
+      "source_file": "sklearn/utils/estimator_checks.py"
+    },
+    {
+      "path": "sklearn/utils/tests/test_validation.py",
+      "relationship": "tests",
+      "source_file": "sklearn/utils/validation.py"
+    },
+    {
+      "path": "sklearn/utils/tests/test_param_validation.py",
+      "relationship": "tests",
+      "source_file": "sklearn/utils/validation.py"
+    },
+    {
+      "path": "sklearn/model_selection/tests/test_validation.py",
+      "relationship": "tests",
+      "source_file": "sklearn/utils/validation.py"
+    }
+  ],
+  "dependent_files": [
+    "_target.py"
+  ],
+  "diff_summary": "7 files changed",
+  "full_diff": "diff --git a/sklearn/compose/_target.py b/sklearn/compose/_target.py\nindex e96729b2d91d7..74a826f031a83 100644\n--- a/sklearn/compose/_target.py\n+++ b/sklearn/compose/_target.py\n@@ -207,6 +207,11 @@ def fit(self, X, y, **fit_params):\n         self : object\n             Fitted estimator.\n         \"\"\"\n+        if y is None:\n+            raise ValueError(\n+                f\"This {self.__class__.__name__} estimator \"\n+                \"requires y to be passed, but the target y is None.\"\n+            )\n         y = check_array(\n             y,\n             input_name=\"y\",\ndiff --git a/sklearn/feature_selection/_sequential.py b/sklearn/feature_selection/_sequential.py\nindex 0e4a2adc0ea6f..8a5a8b6e4b276 100644\n--- a/sklearn/feature_selection/_sequential.py\n+++ b/sklearn/feature_selection/_sequential.py\n@@ -306,5 +306,4 @@ def _get_support_mask(self):\n     def _more_tags(self):\n         return {\n             \"allow_nan\": _safe_tags(self.estimator, key=\"allow_nan\"),\n-            \"requires_y\": True,\n         }\ndiff --git a/sklearn/inspection/_plot/partial_dependence.py b/sklearn/inspection/_plot/partial_dependence.py\nindex 252a3bdc9ecf5..2a35824f8270a 100644\n--- a/sklearn/inspection/_plot/partial_dependence.py\n+++ b/sklearn/inspection/_plot/partial_dependence.py\n@@ -14,7 +14,6 @@\n from ...utils import check_matplotlib_support  # noqa\n from ...utils import check_random_state\n from ...utils import _safe_indexing\n-from ...utils.validation import _deprecate_positional_args\n from ...utils.fixes import delayed\n \n \n@@ -1267,7 +1266,6 @@ def _plot_two_way_partial_dependence(\n             ax.set_xlabel(self.feature_names[feature_idx[0]])\n         ax.set_ylabel(self.feature_names[feature_idx[1]])\n \n-    @_deprecate_positional_args(version=\"1.1\")\n     def plot(\n         self,\n         *,\ndiff --git a/sklearn/metrics/_regression.py b/sklearn/metrics/_regression.py\nindex df4f6a74ee849..c701320f9c23a 100644\n--- a/sklearn/metrics/_regression.py\n+++ b/sklearn/metrics/_regression.py\n@@ -37,7 +37,6 @@\n     _num_samples,\n     column_or_1d,\n     _check_sample_weight,\n-    _deprecate_positional_args,\n )\n from ..utils.stats import _weighted_percentile\n \n@@ -288,7 +287,6 @@ def mean_pinball_loss(\n     return np.average(output_errors, weights=multioutput)\n \n \n-@_deprecate_positional_args(version=\"1.1\")\n def mean_absolute_percentage_error(\n     y_true, y_pred, *, sample_weight=None, multioutput=\"uniform_average\"\n ):\ndiff --git a/sklearn/metrics/tests/test_regression.py b/sklearn/metrics/tests/test_regression.py\nindex d372169706053..f5ffc648ed21b 100644\n--- a/sklearn/metrics/tests/test_regression.py\n+++ b/sklearn/metrics/tests/test_regression.py\n@@ -444,19 +444,6 @@ def test_regression_single_sample(metric):\n         assert np.isnan(score)\n \n \n-def test_deprecation_positional_arguments_mape():\n-    y_true = [1, 1, 1]\n-    y_pred = [1, 0, 1]\n-    sample_weights = [0.5, 0.1, 0.2]\n-    multioutput = \"raw_values\"\n-\n-    warning_msg = \"passing these as positional arguments will result in an error\"\n-\n-    # Trigger the warning\n-    with pytest.warns(FutureWarning, match=warning_msg):\n-        mean_absolute_percentage_error(y_true, y_pred, sample_weights, multioutput)\n-\n-\n def test_tweedie_deviance_continuity():\n     n_samples = 100\n \ndiff --git a/sklearn/utils/estimator_checks.py b/sklearn/utils/estimator_checks.py\nindex 4230ab3532b76..9af8f41f88624 100644\n--- a/sklearn/utils/estimator_checks.py\n+++ b/sklearn/utils/estimator_checks.py\n@@ -3636,20 +3636,8 @@ def check_n_features_in(name, estimator_orig):\n \n     assert not hasattr(estimator, \"n_features_in_\")\n     estimator.fit(X, y)\n-    if hasattr(estimator, \"n_features_in_\"):\n-        assert estimator.n_features_in_ == X.shape[1]\n-    else:\n-        warnings.warn(\n-            \"As of scikit-learn 0.23, estimators should expose a \"\n-            \"n_features_in_ attribute, unless the 'no_validation' tag is \"\n-            \"True. This attribute should be equal to the number of features \"\n-            \"passed to the fit method. \"\n-            \"An error will be raised from version 1.0 (renaming of 0.25) \"\n-            \"when calling check_estimator(). \"\n-            \"See SLEP010: \"\n-            \"https://scikit-learn-enhancement-proposals.readthedocs.io/en/latest/slep010/proposal.html\",  # noqa\n-            FutureWarning,\n-        )\n+    assert hasattr(estimator, \"n_features_in_\")\n+    assert estimator.n_features_in_ == X.shape[1]\n \n \n def check_requires_y_none(name, estimator_orig):\n@@ -3665,14 +3653,6 @@ def check_requires_y_none(name, estimator_orig):\n     X = rng.normal(loc=100, size=(n_samples, 2))\n     X = _pairwise_estimator_convert_X(X, estimator)\n \n-    warning_msg = (\n-        \"As of scikit-learn 0.23, estimators should have a \"\n-        \"'requires_y' tag set to the appropriate value. \"\n-        \"The default value of the tag is False. \"\n-        \"An error will be raised from version 1.0 when calling \"\n-        \"check_estimator() if the tag isn't properly set.\"\n-    )\n-\n     expected_err_msgs = (\n         \"requires y to be passed, but the target y is None\",\n         \"Expected array-like (array or non-string sequence), got None\",\n@@ -3683,7 +3663,7 @@ def check_requires_y_none(name, estimator_orig):\n         estimator.fit(X, None)\n     except ValueError as ve:\n         if not any(msg in str(ve) for msg in expected_err_msgs):\n-            warnings.warn(warning_msg, FutureWarning)\n+            raise ve\n \n \n @ignore_warnings(category=FutureWarning)\ndiff --git a/sklearn/utils/validation.py b/sklearn/utils/validation.py\nindex e68ed753fecf3..e4db23914ae10 100644\n--- a/sklearn/utils/validation.py\n+++ b/sklearn/utils/validation.py\n@@ -33,7 +33,10 @@\n FLOAT_DTYPES = (np.float64, np.float32, np.float16)\n \n \n-def _deprecate_positional_args(func=None, *, version=\"1.1 (renaming of 0.26)\"):\n+# This function is not used anymore at this moment in the code base but we keep it in\n+# case that we merge a new public function without kwarg only by mistake, which would\n+# require a deprecation cycle to fix.\n+def _deprecate_positional_args(func=None, *, version=\"1.3\"):\n     \"\"\"Decorator for methods that issues warnings for positional arguments.\n \n     Using the keyword-only argument syntax in pep 3102, arguments after the\n@@ -43,7 +46,7 @@ def _deprecate_positional_args(func=None, *, version=\"1.1 (renaming of 0.26)\"):\n     ----------\n     func : callable, default=None\n         Function to check arguments on.\n-    version : callable, default=\"1.1 (renaming of 0.26)\"\n+    version : callable, default=\"1.3\"\n         The version when positional arguments will result in error.\n     \"\"\"\n \n",
+  "metadata": {
+    "v2_fetcher_version": 1,
+    "v2_fetched_at_unix": 1777501356,
+    "v2_diff_cap_bytes": 50000,
+    "v2_body_cap_bytes": 8000,
+    "v2_diff_truncated": false,
+    "v2_raw_diff_chars": 6591,
+    "v2_raw_body_chars": 430,
+    "v2_rag_source": "merged_from_v1",
+    "v2_rag_chunks_copied": 8,
+    "joern_enriched": true,
+    "joern_callers_count": 5,
+    "joern_functions_count": 8
+  },
+  "similar_chunks": [
+    {
+      "file": "sklearn/metrics/_classification.py",
+      "start_line": 69,
+      "end_line": 129,
+      "similarity": 0.7767,
+      "related_to": "sklearn/metrics/_regression.py",
+      "content_preview": ":\n        return np.float64(zero_division)\n    else:  # np.isnan(zero_division)\n        return np.nan\n\n\ndef _check_targets(y_true, y_pred, sample_weight=None):\n    \"\"\"Check that y_true and y_pred belong to the same classification task.\n\n    This converts multiclass or binary types to a common shape, and raises a\n    ValueError for a mix of multilabel and multiclass targets, a mix of\n    multilabel formats, for the presence of continuous-valued or multioutput\n    targets, or for targets of different lengths.\n\n    Column vectors are squeezed to 1d, while multilabel formats are returned\n    as CSR sparse label indicators.\n\n    Parameters\n    ----------\n    y_true : array-like\n\n    y_pred : array-like\n\n    sample_weight : array-like, default=None\n\n    Returns\n    -------\n    type_true : one of"
+    },
+    {
+      "file": "sklearn/utils/__init__.py",
+      "start_line": 1,
+      "end_line": 65,
+      "similarity": 0.7416,
+      "related_to": "sklearn/utils/estimator_checks.py",
+      "content_preview": "\"\"\"Various utilities to help with development.\"\"\"\n\n# Authors: The scikit-learn developers\n# SPDX-License-Identifier: BSD-3-Clause\n\nfrom sklearn.exceptions import DataConversionWarning\nfrom sklearn.utils import metadata_routing\nfrom sklearn.utils._bunch import Bunch\nfrom sklearn.utils._chunking import gen_batches, gen_even_slices\n\n# Make _safe_indexing importable from here for backward compat as this particular\n# helper is considered semi-private and typically very useful for third-party\n# libraries that want to comply with scikit-learn's estimator API. In particular,\n# _safe_indexing was included in our public API documentation despite the leading\n# `_` in its name.\nfrom sklearn.utils._indexing import _safe_indexing, resample, shuffle\nfrom sklearn.utils._mask import safe_mask\nfrom sklearn."
+    },
+    {
+      "file": "sklearn/metrics/_classification.py",
+      "start_line": 1,
+      "end_line": 76,
+      "similarity": 0.706,
+      "related_to": "sklearn/metrics/_regression.py",
+      "content_preview": "\"\"\"Metrics to assess performance on classification task given class prediction.\n\nFunctions named as ``*_score`` return a scalar value to maximize: the higher\nthe better.\n\nFunction named as ``*_error`` or ``*_loss`` return a scalar value to minimize:\nthe lower the better.\n\"\"\"\n\n# Authors: The scikit-learn developers\n# SPDX-License-Identifier: BSD-3-Clause\n\nimport warnings\nfrom contextlib import nullcontext\nfrom math import sqrt\nfrom numbers import Integral, Real\n\nimport numpy as np\nfrom scipy.sparse import coo_matrix, csr_matrix, issparse\n\nfrom sklearn.exceptions import UndefinedMetricWarning\nfrom sklearn.preprocessing import LabelBinarizer, LabelEncoder\nfrom sklearn.utils import (\n    assert_all_finite,\n    check_array,\n    check_consistent_length,\n    check_scalar,\n    column_or_1d,\n)\nfrom"
+    },
+    {
+      "file": "sklearn/utils/multiclass.py",
+      "start_line": 178,
+      "end_line": 233,
+      "similarity": 0.6674,
+      "related_to": "sklearn/metrics/_regression.py",
+      "content_preview": "                # see NEP 34\n                y = check_array(y, dtype=object, **check_y_kwargs)\n\n    if not (hasattr(y, \"shape\") and y.ndim == 2 and y.shape[1] > 1):\n        return False\n\n    if issparse(y):\n        if y.format in (\"dok\", \"lil\"):\n            y = y.tocsr()\n        labels = xp.unique_values(y.data)\n        return len(y.data) == 0 or (\n            (labels.size == 1 or ((labels.size == 2) and (0 in labels)))\n            and (y.dtype.kind in \"biu\" or _is_integral_float(labels))  # bool, int, uint\n        )\n    else:\n        labels = cached_unique(y, xp=xp)\n\n        return labels.shape[0] < 3 and (\n            xp.isdtype(y.dtype, (\"bool\", \"signed integer\", \"unsigned integer\"))\n            or _is_integral_float(labels)\n        )\n\n\ndef check_classification_targets(y):\n    \"\"\"Ensur"
+    },
+    {
+      "file": "sklearn/feature_selection/_rfe.py",
+      "start_line": 561,
+      "end_line": 602,
+      "similarity": 0.6628,
+      "related_to": "sklearn/feature_selection/_sequential.py",
+      "content_preview": "    The number of features selected is tuned automatically by fitting an :class:`RFE`\n    selector on the different cross-validation splits (provided by the `cv` parameter).\n    The performance of each :class:`RFE` selector is evaluated using `scoring` for\n    different numbers of selected features and aggregated together. Finally, the scores\n    are averaged across folds and the number of features selected is set to the number\n    of features that maximize the cross-validation score.\n\n    See glossary entry for :term:`cross-validation estimator`.\n\n    Read more in the :ref:`User Guide <rfe>`.\n\n    Parameters\n    ----------\n    estimator : ``Estimator`` instance\n        A supervised learning estimator with a ``fit`` method that provides\n        information about feature importance either t"
+    },
+    {
+      "file": "sklearn/compose/tests/test_target.py",
+      "start_line": 112,
+      "end_line": 161,
+      "similarity": 0.6537,
+      "related_to": "sklearn/compose/_target.py",
+      "content_preview": " friedman[0]\n    y = np.vstack((friedman[1], friedman[1] ** 2 + 1)).T\n    regr = TransformedTargetRegressor(\n        regressor=LinearRegression(), func=np.log, inverse_func=np.exp\n    )\n    y_pred = regr.fit(X, y).predict(X)\n    # check the transformer output\n    y_tran = regr.transformer_.transform(y)\n    assert_allclose(np.log(y), y_tran)\n    assert_allclose(y, regr.transformer_.inverse_transform(y_tran))\n    assert y.shape == y_pred.shape\n    assert_allclose(y_pred, regr.inverse_func(regr.regressor_.predict(X)))\n    # check the regressor output\n    lr = LinearRegression().fit(X, regr.func(y))\n    assert_allclose(regr.regressor_.coef_.ravel(), lr.coef_.ravel())\n\n\n@pytest.mark.parametrize(\n    \"X,y\", [friedman, (friedman[0], np.vstack((friedman[1], friedman[1] ** 2 + 1)).T)]\n)\ndef test_tr"
+    },
+    {
+      "file": "sklearn/compose/__init__.py",
+      "start_line": 1,
+      "end_line": 24,
+      "similarity": 0.6475,
+      "related_to": "sklearn/compose/_target.py",
+      "content_preview": "\"\"\"Meta-estimators for building composite models with transformers.\n\nIn addition to its current contents, this module will eventually be home to\nrefurbished versions of :class:`~sklearn.pipeline.Pipeline` and\n:class:`~sklearn.pipeline.FeatureUnion`.\n\"\"\"\n\n# Authors: The scikit-learn developers\n# SPDX-License-Identifier: BSD-3-Clause\n\nfrom sklearn.compose._column_transformer import (\n    ColumnTransformer,\n    make_column_selector,\n    make_column_transformer,\n)\nfrom sklearn.compose._target import TransformedTargetRegressor\n\n__all__ = [\n    \"ColumnTransformer\",\n    \"TransformedTargetRegressor\",\n    \"make_column_selector\",\n    \"make_column_transformer\",\n]\n"
+    },
+    {
+      "file": "sklearn/metrics/tests/test_score_objects.py",
+      "start_line": 1,
+      "end_line": 76,
+      "similarity": 0.6473,
+      "related_to": "sklearn/utils/estimator_checks.py",
+      "content_preview": "import numbers\nimport pickle\nimport re\nfrom copy import deepcopy\nfrom functools import partial\n\nimport joblib\nimport numpy as np\nimport pytest\nfrom numpy.testing import assert_allclose\n\nfrom sklearn import config_context\nfrom sklearn.base import BaseEstimator, ClassifierMixin\nfrom sklearn.cluster import KMeans\nfrom sklearn.datasets import (\n    load_diabetes,\n    make_blobs,\n    make_classification,\n    make_multilabel_classification,\n    make_regression,\n)\nfrom sklearn.linear_model import LogisticRegression, Perceptron, Ridge\nfrom sklearn.metrics import (\n    accuracy_score,\n    average_precision_score,\n    balanced_accuracy_score,\n    brier_score_loss,\n    check_scoring,\n    f1_score,\n    fbeta_score,\n    get_scorer,\n    get_scorer_names,\n    jaccard_score,\n    log_loss,\n    make_scorer,"
+    }
+  ],
+  "rag_evidence": {
+    "similar_code": [
+      {
+        "file": "sklearn/metrics/_classification.py",
+        "start_line": 69,
+        "end_line": 129,
+        "similarity": 0.7767,
+        "related_to": "sklearn/metrics/_regression.py",
+        "content_preview": ":\n        return np.float64(zero_division)\n    else:  # np.isnan(zero_division)\n        return np.nan\n\n\ndef _check_targets(y_true, y_pred, sample_weight=None):\n    \"\"\"Check that y_true and y_pred belong to the same classification task.\n\n    This converts multiclass or binary types to a common shape, and raises a\n    ValueError for a mix of multilabel and multiclass targets, a mix of\n    multilabel formats, for the presence of continuous-valued or multioutput\n    targets, or for targets of different lengths.\n\n    Column vectors are squeezed to 1d, while multilabel formats are returned\n    as CSR sparse label indicators.\n\n    Parameters\n    ----------\n    y_true : array-like\n\n    y_pred : array-like\n\n    sample_weight : array-like, default=None\n\n    Returns\n    -------\n    type_true : one of"
+      },
+      {
+        "file": "sklearn/utils/__init__.py",
+        "start_line": 1,
+        "end_line": 65,
+        "similarity": 0.7416,
+        "related_to": "sklearn/utils/estimator_checks.py",
+        "content_preview": "\"\"\"Various utilities to help with development.\"\"\"\n\n# Authors: The scikit-learn developers\n# SPDX-License-Identifier: BSD-3-Clause\n\nfrom sklearn.exceptions import DataConversionWarning\nfrom sklearn.utils import metadata_routing\nfrom sklearn.utils._bunch import Bunch\nfrom sklearn.utils._chunking import gen_batches, gen_even_slices\n\n# Make _safe_indexing importable from here for backward compat as this particular\n# helper is considered semi-private and typically very useful for third-party\n# libraries that want to comply with scikit-learn's estimator API. In particular,\n# _safe_indexing was included in our public API documentation despite the leading\n# `_` in its name.\nfrom sklearn.utils._indexing import _safe_indexing, resample, shuffle\nfrom sklearn.utils._mask import safe_mask\nfrom sklearn."
+      },
+      {
+        "file": "sklearn/metrics/_classification.py",
+        "start_line": 1,
+        "end_line": 76,
+        "similarity": 0.706,
+        "related_to": "sklearn/metrics/_regression.py",
+        "content_preview": "\"\"\"Metrics to assess performance on classification task given class prediction.\n\nFunctions named as ``*_score`` return a scalar value to maximize: the higher\nthe better.\n\nFunction named as ``*_error`` or ``*_loss`` return a scalar value to minimize:\nthe lower the better.\n\"\"\"\n\n# Authors: The scikit-learn developers\n# SPDX-License-Identifier: BSD-3-Clause\n\nimport warnings\nfrom contextlib import nullcontext\nfrom math import sqrt\nfrom numbers import Integral, Real\n\nimport numpy as np\nfrom scipy.sparse import coo_matrix, csr_matrix, issparse\n\nfrom sklearn.exceptions import UndefinedMetricWarning\nfrom sklearn.preprocessing import LabelBinarizer, LabelEncoder\nfrom sklearn.utils import (\n    assert_all_finite,\n    check_array,\n    check_consistent_length,\n    check_scalar,\n    column_or_1d,\n)\nfrom"
+      },
+      {
+        "file": "sklearn/utils/multiclass.py",
+        "start_line": 178,
+        "end_line": 233,
+        "similarity": 0.6674,
+        "related_to": "sklearn/metrics/_regression.py",
+        "content_preview": "                # see NEP 34\n                y = check_array(y, dtype=object, **check_y_kwargs)\n\n    if not (hasattr(y, \"shape\") and y.ndim == 2 and y.shape[1] > 1):\n        return False\n\n    if issparse(y):\n        if y.format in (\"dok\", \"lil\"):\n            y = y.tocsr()\n        labels = xp.unique_values(y.data)\n        return len(y.data) == 0 or (\n            (labels.size == 1 or ((labels.size == 2) and (0 in labels)))\n            and (y.dtype.kind in \"biu\" or _is_integral_float(labels))  # bool, int, uint\n        )\n    else:\n        labels = cached_unique(y, xp=xp)\n\n        return labels.shape[0] < 3 and (\n            xp.isdtype(y.dtype, (\"bool\", \"signed integer\", \"unsigned integer\"))\n            or _is_integral_float(labels)\n        )\n\n\ndef check_classification_targets(y):\n    \"\"\"Ensur"
+      },
+      {
+        "file": "sklearn/feature_selection/_rfe.py",
+        "start_line": 561,
+        "end_line": 602,
+        "similarity": 0.6628,
+        "related_to": "sklearn/feature_selection/_sequential.py",
+        "content_preview": "    The number of features selected is tuned automatically by fitting an :class:`RFE`\n    selector on the different cross-validation splits (provided by the `cv` parameter).\n    The performance of each :class:`RFE` selector is evaluated using `scoring` for\n    different numbers of selected features and aggregated together. Finally, the scores\n    are averaged across folds and the number of features selected is set to the number\n    of features that maximize the cross-validation score.\n\n    See glossary entry for :term:`cross-validation estimator`.\n\n    Read more in the :ref:`User Guide <rfe>`.\n\n    Parameters\n    ----------\n    estimator : ``Estimator`` instance\n        A supervised learning estimator with a ``fit`` method that provides\n        information about feature importance either t"
+      },
+      {
+        "file": "sklearn/compose/tests/test_target.py",
+        "start_line": 112,
+        "end_line": 161,
+        "similarity": 0.6537,
+        "related_to": "sklearn/compose/_target.py",
+        "content_preview": " friedman[0]\n    y = np.vstack((friedman[1], friedman[1] ** 2 + 1)).T\n    regr = TransformedTargetRegressor(\n        regressor=LinearRegression(), func=np.log, inverse_func=np.exp\n    )\n    y_pred = regr.fit(X, y).predict(X)\n    # check the transformer output\n    y_tran = regr.transformer_.transform(y)\n    assert_allclose(np.log(y), y_tran)\n    assert_allclose(y, regr.transformer_.inverse_transform(y_tran))\n    assert y.shape == y_pred.shape\n    assert_allclose(y_pred, regr.inverse_func(regr.regressor_.predict(X)))\n    # check the regressor output\n    lr = LinearRegression().fit(X, regr.func(y))\n    assert_allclose(regr.regressor_.coef_.ravel(), lr.coef_.ravel())\n\n\n@pytest.mark.parametrize(\n    \"X,y\", [friedman, (friedman[0], np.vstack((friedman[1], friedman[1] ** 2 + 1)).T)]\n)\ndef test_tr"
+      },
+      {
+        "file": "sklearn/compose/__init__.py",
+        "start_line": 1,
+        "end_line": 24,
+        "similarity": 0.6475,
+        "related_to": "sklearn/compose/_target.py",
+        "content_preview": "\"\"\"Meta-estimators for building composite models with transformers.\n\nIn addition to its current contents, this module will eventually be home to\nrefurbished versions of :class:`~sklearn.pipeline.Pipeline` and\n:class:`~sklearn.pipeline.FeatureUnion`.\n\"\"\"\n\n# Authors: The scikit-learn developers\n# SPDX-License-Identifier: BSD-3-Clause\n\nfrom sklearn.compose._column_transformer import (\n    ColumnTransformer,\n    make_column_selector,\n    make_column_transformer,\n)\nfrom sklearn.compose._target import TransformedTargetRegressor\n\n__all__ = [\n    \"ColumnTransformer\",\n    \"TransformedTargetRegressor\",\n    \"make_column_selector\",\n    \"make_column_transformer\",\n]\n"
+      },
+      {
+        "file": "sklearn/metrics/tests/test_score_objects.py",
+        "start_line": 1,
+        "end_line": 76,
+        "similarity": 0.6473,
+        "related_to": "sklearn/utils/estimator_checks.py",
+        "content_preview": "import numbers\nimport pickle\nimport re\nfrom copy import deepcopy\nfrom functools import partial\n\nimport joblib\nimport numpy as np\nimport pytest\nfrom numpy.testing import assert_allclose\n\nfrom sklearn import config_context\nfrom sklearn.base import BaseEstimator, ClassifierMixin\nfrom sklearn.cluster import KMeans\nfrom sklearn.datasets import (\n    load_diabetes,\n    make_blobs,\n    make_classification,\n    make_multilabel_classification,\n    make_regression,\n)\nfrom sklearn.linear_model import LogisticRegression, Perceptron, Ridge\nfrom sklearn.metrics import (\n    accuracy_score,\n    average_precision_score,\n    balanced_accuracy_score,\n    brier_score_loss,\n    check_scoring,\n    f1_score,\n    fbeta_score,\n    get_scorer,\n    get_scorer_names,\n    jaccard_score,\n    log_loss,\n    make_scorer,"
+      }
+    ]
+  },
+  "callers": [
+    {
+      "path": "_target.py",
+      "from_function": "_fit_transformer",
+      "calls_function": "fit",
+      "caller_line": 161,
+      "callee_file": "_target.py",
+      "callee_line": 224
+    },
+    {
+      "path": "_target.py",
+      "from_function": "fit",
+      "calls_function": "_fit_transformer",
+      "caller_line": 224,
+      "callee_file": "_target.py",
+      "callee_line": 161
+    },
+    {
+      "path": "_target.py",
+      "from_function": "fit",
+      "calls_function": "_get_regressor",
+      "caller_line": 224,
+      "callee_file": "_target.py",
+      "callee_line": 393
+    },
+    {
+      "path": "_target.py",
+      "from_function": "__sklearn_tags__",
+      "calls_function": "_get_regressor",
+      "caller_line": 347,
+      "callee_file": "_target.py",
+      "callee_line": 393
+    },
+    {
+      "path": "_target.py",
+      "from_function": "get_metadata_routing",
+      "calls_function": "_get_regressor",
+      "caller_line": 371,
+      "callee_file": "_target.py",
+      "callee_line": 393
+    }
+  ],
+  "call_graph_edges": [
+    {
+      "from": "_target.py::_fit_transformer",
+      "to": "_target.py::fit"
+    },
+    {
+      "from": "_target.py::fit",
+      "to": "_target.py::_fit_transformer"
+    },
+    {
+      "from": "_target.py::fit",
+      "to": "_target.py::_get_regressor"
+    },
+    {
+      "from": "_target.py::__sklearn_tags__",
+      "to": "_target.py::_get_regressor"
+    },
+    {
+      "from": "_target.py::get_metadata_routing",
+      "to": "_target.py::_get_regressor"
+    }
+  ],
+  "functions_in_changed_files": [
+    {
+      "name": "__init__",
+      "full_name": "_target.py:<module>.TransformedTargetRegressor.__init__",
+      "file": "_target.py",
+      "start_line": 146,
+      "end_line": 161,
+      "signature": ""
+    },
+    {
+      "name": "_fit_transformer",
+      "full_name": "_target.py:<module>.TransformedTargetRegressor._fit_transformer",
+      "file": "_target.py",
+      "start_line": 161,
+      "end_line": 220,
+      "signature": ""
+    },
+    {
+      "name": "fit",
+      "full_name": "_target.py:<module>.TransformedTargetRegressor.fit",
+      "file": "_target.py",
+      "start_line": 224,
+      "end_line": 300,
+      "signature": ""
+    },
+    {
+      "name": "predict",
+      "full_name": "_target.py:<module>.TransformedTargetRegressor.predict",
+      "file": "_target.py",
+      "start_line": 300,
+      "end_line": 347,
+      "signature": ""
+    },
+    {
+      "name": "__sklearn_tags__",
+      "full_name": "_target.py:<module>.TransformedTargetRegressor.__sklearn_tags__",
+      "file": "_target.py",
+      "start_line": 347,
+      "end_line": 355,
+      "signature": ""
+    },
+    {
+      "name": "n_features_in_",
+      "full_name": "_target.py:<module>.TransformedTargetRegressor.n_features_in_",
+      "file": "_target.py",
+      "start_line": 356,
+      "end_line": 371,
+      "signature": ""
+    },
+    {
+      "name": "get_metadata_routing",
+      "full_name": "_target.py:<module>.TransformedTargetRegressor.get_metadata_routing",
+      "file": "_target.py",
+      "start_line": 371,
+      "end_line": 393,
+      "signature": ""
+    },
+    {
+      "name": "_get_regressor",
+      "full_name": "_target.py:<module>.TransformedTargetRegressor._get_regressor",
+      "file": "_target.py",
+      "start_line": 393,
+      "end_line": 397,
+      "signature": ""
+    }
+  ]
+}

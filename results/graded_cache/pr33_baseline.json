@@ -1,0 +1,51 @@
+{
+  "pr_id": 33,
+  "mode": "baseline",
+  "mean_scores": {
+    "F3": 0.5,
+    "F4": 0.5,
+    "P1": 1.0,
+    "R2": 0.0,
+    "T3": 0.0
+  },
+  "mean_graded_total": 2.0,
+  "per_judge": [
+    {
+      "model": "gemini:gemini-2.5-flash",
+      "scores": {
+        "F3": 0,
+        "F4": 0,
+        "P1": 0,
+        "R2": 0,
+        "T3": 0
+      },
+      "evidence": {
+        "F3": "The review discusses the internal behavior of `OldDataMonitor` and its handling of `Run`s, but does not identify any specific external callers or dependent components that interact with `OldDataMonitor` and would be affected by this change.",
+        "F4": "The review discusses potential issues like incomplete cleanup or missing data, but does not frame these as violations of specific API contracts or breaking changes for dependent code.",
+        "P1": "The review does not identify any potential inefficiencies or performance concerns introduced by the changed code itself. While it mentions 'memory leaks' as a risk, this is framed as a consequence of incomplete cleanup, not an inefficiency in the new logic.",
+        "R2": "The review does not contain any comments regarding the complexity of the code or suggestions for simplification.",
+        "T3": "The review generically states 'Add comprehensive tests' without naming any specific test files or scenarios."
+      },
+      "error": ""
+    },
+    {
+      "model": "gemini:gemini-2.5-pro",
+      "scores": {
+        "F3": 1,
+        "F4": 1,
+        "P1": 2,
+        "R2": 0,
+        "T3": 0
+      },
+      "evidence": {
+        "F3": "The change in `OldDataMonitor` to not track `Run`s could potentially overlook scenarios where `Run` data might still be relevant for monitoring or debugging purposes.",
+        "F4": "The removal of `Run` tracking could lead to scenarios where old data issues related to `Run`s are not reported, potentially missing critical debugging information.",
+        "P1": "The review identifies a specific concern related to the removal of `RunSaveableReference` and its logic, explaining that this could lead to a performance issue: \"Without proper handling of `Run` references, there might be a risk of not fully cleaning up old data, leading to potential memory leaks...\"",
+        "R2": "The review does not contain any comments about code complexity or simplification.",
+        "T3": "The review only provides a generic recommendation to 'Add comprehensive tests'."
+      },
+      "error": ""
+    }
+  ],
+  "timestamp": "2026-06-01T18:58:24.774644+00:00"
+}

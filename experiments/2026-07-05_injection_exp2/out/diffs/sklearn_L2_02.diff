@@ -1,0 +1,11 @@
+--- a/sklearn/preprocessing/_label.py
++++ b/sklearn/preprocessing/_label.py
+@@ -970,7 +970,7 @@
+         return yt
+ 
+     def _build_cache(self):
+-        if self._cached_dict is None:
++        if self._cached_dict is not None:
+             self._cached_dict = dict(zip(self.classes_, range(len(self.classes_))))
+ 
+         return self._cached_dict

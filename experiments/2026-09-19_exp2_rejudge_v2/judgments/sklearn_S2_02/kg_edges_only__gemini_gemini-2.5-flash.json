@@ -1,0 +1,42 @@
+{
+  "candidate_mentions": [
+    {
+      "basename_collision": false,
+      "end": 570,
+      "evidence_id": "M001",
+      "excerpt": "hin the function, leaving its purpose unclear.\n\n## Evidence\n- `sklearn/base.py:44`: The function signature of `clone` is modified to include `required_ctx`.\n- `sklearn/linear_model/_ransac.py`: Calls `clone` but does not pass `required_ctx`.\n- `sklearn/linear_model/_stochastic_gradient.py`: Calls `clone` but does not pass `required_ctx`.\n\n## Impact\n- **Technical Impact:** The change in function signature could lead to runtime errors in any existin",
+      "match_kind": "full_path",
+      "match_text": "sklearn/linear_model/_ransac.py",
+      "oracle_path": "sklearn/linear_model/_ransac.py",
+      "start": 539
+    },
+    {
+      "basename_collision": false,
+      "end": 668,
+      "evidence_id": "M002",
+      "excerpt": "he function signature of `clone` is modified to include `required_ctx`.\n- `sklearn/linear_model/_ransac.py`: Calls `clone` but does not pass `required_ctx`.\n- `sklearn/linear_model/_stochastic_gradient.py`: Calls `clone` but does not pass `required_ctx`.\n\n## Impact\n- **Technical Impact:** The change in function signature could lead to runtime errors in any existing code that calls `clone` without the new `required_ctx` parameter. This can break functionality i",
+      "match_kind": "full_path",
+      "match_text": "sklearn/linear_model/_stochastic_gradient.py",
+      "oracle_path": "sklearn/linear_model/_stochastic_gradient.py",
+      "start": 624
+    }
+  ],
+  "causal_quote": "The change in function signature could lead to runtime errors in any existing code that calls `clone` without the new `required_ctx` parameter. This can break functionality in modules that rely on `clone`, such as `ransac` and `stochastic_gradient`.",
+  "decision_source": "llm_causal_adjudication",
+  "detected": true,
+  "evidence_id": "M001",
+  "executed_at_utc": "2026-09-19T15:05:51.991704+00:00",
+  "finding_quote": "`sklearn/linear_model/_ransac.py`: Calls `clone` but does not pass `required_ctx`.",
+  "judge": "gemini:gemini-2.5-flash",
+  "manifest_sha256": "5d4371a93d1b09f0491ecc12279f9f3ff5de23053b7a5e74650a749f58b472b0",
+  "model_alias": "gemini:gemini-2.5-flash",
+  "model_snapshot": "unavailable-from-original-wrapper",
+  "original_verdict": true,
+  "prompt_sha256": "dc9fbfab9dad563c45c7fc60bd8e145cf135f71d65d34f77f5d2b32b5c9d6291",
+  "reason_code": "specific_cross_file_link",
+  "response_wrapper": "single_json_fence",
+  "review_sha256": "12459cea5405f5c6b0ef6d48251fc098c1183b3e339162591b398d6fa397d354",
+  "schema_sha256": "6a22fcb256437ebed904ab2d879b36be1234fb2e06add1127ac8ea2ab46f60f0",
+  "schema_version": "exp2-adjudication-v2",
+  "system_sha256": "3634314a8fc4231391e4c51174e5c32d7346b0e2ceb5f8c4641e6ba866bd5939"
+}

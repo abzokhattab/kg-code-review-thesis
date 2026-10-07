@@ -1,0 +1,35 @@
+{
+  "candidate_mentions": [
+    {
+      "basename_collision": false,
+      "end": 455,
+      "evidence_id": "M001",
+      "excerpt": "ode that relies on importing `k_means` directly from `sklearn.cluster`.\n2. There is a potential impact on other modules that depend on `k_means`, specifically `sklearn/cluster/_spectral.py`.\n\n## Evidence\n- `sklearn/cluster/__init__.py:22`: The line removing `k_means` from the exports.\n- `sklearn/cluster/_spectral.py`: This file has a dependency on `k_means` through its `fit` function.\n\n## Impact\n- Removing `k_means` from the exports could lead ",
+      "finding_passage_id": "P005",
+      "match_kind": "full_path",
+      "match_text": "sklearn/cluster/_spectral.py",
+      "oracle_path": "sklearn/cluster/_spectral.py",
+      "start": 427
+    }
+  ],
+  "causal_passage_id": "P011",
+  "decision_source": "llm_causal_adjudication",
+  "detected": true,
+  "evidence_id": "M001",
+  "evidence_id_normalized": false,
+  "executed_at_utc": "2026-09-19T15:38:30.230189+00:00",
+  "finding_passage_id": "P005",
+  "judge": "xai:grok-4.6",
+  "manifest_sha256": "5d4371a93d1b09f0491ecc12279f9f3ff5de23053b7a5e74650a749f58b472b0",
+  "model_alias": "xai:grok-4.6",
+  "model_evidence_id": "M001",
+  "model_snapshot": "unavailable-from-original-wrapper",
+  "original_verdict": null,
+  "prompt_sha256": "030ee5907bab114358d219198a45ba12f26e2bf1cc221259891a28b87ae1f1dc",
+  "reason_code": "specific_cross_file_link",
+  "response_wrapper": "bare",
+  "review_sha256": "5b753d2af8c94e537ae6548eaa3c1d34ea38d51c856a29f741e10ffc2c75f1d1",
+  "schema_sha256": "f70f714868ecd3d25508bb3e00b32ecbe6761b0ebc05f454ee10fa4d28efd013",
+  "schema_version": "exp2-adjudication-v3",
+  "system_sha256": "030b5e701c798b32afdabbbeb22db38f664db8c8fd8b862d2fcb98df63b6fb6b"
+}

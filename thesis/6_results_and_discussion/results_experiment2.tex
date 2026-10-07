@@ -1,0 +1,77 @@
+\section{Experiment 2: Controlled Defect Injection}
+\label{sec:results-exp2}
+
+\subsection{Detection on the Structural Bands}
+\label{sec:results-exp2-structural}
+
+Figure~\ref{fig:exp2-detection} shows detection rates on the 28 structural
+injections, where the consequence lies in a different file from the edit.%
+\footnote{Numbers reflect the corrected two-stage adjudication described in
+Section~\ref{sec:injection-design}, scored by the five-judge panel. Exact
+rates and Wilson intervals are in
+Table~\ref{tab:exp2-detection} (Appendix).}
+
+\begin{figure}[htbp]
+    \centering
+    \input{figures/fig_exp2_detection}
+    \caption{Detection rate by arm on both bands. Bars are structural
+             injections with Wilson 95\,\% intervals; open markers are local
+             controls. Structural-band rates increase from zero to
+             near-ceiling, while local-control rates stay at or near
+             ceiling.}
+    \label{fig:exp2-detection}
+\end{figure}
+
+The baseline detects nothing (zero of 28) while the deployed graph arm
+detects eighteen. The exact McNemar contrast is $+0.64$, $p < 0.0001$,
+clearing the pre-registered threshold of $+0.30$ at $p < 0.05$.
+
+Retrieval detects five of 28. On pull requests it had the best total coverage;
+on defects whose
+consequences sit outside the diff it remains substantially below the graph.
+Embedding similarity retrieves code that \emph{resembles} the change, but a
+file that breaks because it calls a renamed function need not resemble it.
+The two mechanisms are not competing implementations of the same idea.
+
+\hybrid{} detects twenty-one, numerically above the graph arm. The paired
+difference does not provide evidence that the hybrid outperforms the graph
+arm.
+
+\subsection{The Local Control Bands}
+\label{sec:results-exp2-control}
+
+On the twelve local injections, whose consequences are visible in the diff,
+all arms detect at or near ceiling (the hybrid arm misses one local case;
+every other arm scores $12/12$). The graph block's advantage appears exactly
+where structural reasoning is required and vanishes where it is not.
+
+The graph block contains the dependents' filenames, so naming one is not
+by itself proof of reasoning. Judges must confirm that the review links
+the named file to the change, and filtering the block to true-dependent
+edges raises detection further (Appendix~\ref{app:supporting-components}),
+so what is named matters. A block of the same size with edges to unrelated
+symbols yields 1 of 28, so the detections do not come from memory of these
+repositories.
+
+\subsection{Effect of Inheritance Edges}
+\label{sec:results-exp2-inheritance}
+
+The deployed builder carries no inheritance edges. Adding them raises
+detection from 18 to 26 of 28, matching the idealised resolver. With the model
+held fixed, this attributes the eight
+recovered cases to relations omitted by the deployed builder. The two
+remaining misses persist under the idealised resolver and cannot be assigned
+to graph construction alone: one review identifies affected classes without
+satisfying the exact filename gate, while the other remains generic despite
+complete evidence. Perfect structural evidence therefore does not guarantee a
+specific review comment. Appendix~\ref{app:supporting-exp2-misses} analyses
+both cases; Appendix~\ref{app:supporting-exp2-contrasts} reports the secondary
+paired contrasts.
+
+\subsection{Supporting Mechanism Probes}
+
+Component probes isolate dependency lists, resolved call edges, test-file
+links, and matched-volume noise. Across their respective configurations they
+support the same structural interpretation: relevant relationships drive
+detection, while unrelated context does not. Appendix
+\ref{app:supporting-components} reports the protocols and statistics.

@@ -1,0 +1,185 @@
+{
+  "pr": {
+    "number": 22255,
+    "title": "KAFKA-20444: [8/N] Extend TxnOffsetCommit integration tests to v6 (KIP-1319)",
+    "body": "Extend the existing `TxnOffsetCommit` and `WriteTxnMarkers` integration\ntests to cover v6 (KIP-1319), and thread the topic id through the\n`commitTxnOffset` helper in `GroupCoordinatorBaseRequestTest`.\n\nThree new error cases in\n`TxnOffsetCommitRequestTest.testTxnOffsetCommit`:\n- v6+ stale member epoch (new protocol) \u2192 `STALE_MEMBER_EPOCH`.\n- v6+ unknown group id \u2192 `GROUP_ID_NOT_FOUND`.\n- v6+ unknown topic id \u2192 `UNKNOWN_TOPIC_ID`.\n\nReviewers: Sean Quah <squah@confluent.io>\n",
+    "url": "https://github.com/apache/kafka/pull/22255",
+    "repo": "apache/kafka",
+    "base_branch": "trunk",
+    "head_branch": "KAFKA-20444-pr4e",
+    "merged_at": "2026-05-12T07:25:32Z",
+    "state": "MERGED"
+  },
+  "changed_files": [
+    {
+      "path": "core/src/test/scala/unit/kafka/server/GroupCoordinatorBaseRequestTest.scala",
+      "language": "scala",
+      "added": 4,
+      "deleted": 1
+    },
+    {
+      "path": "core/src/test/scala/unit/kafka/server/TxnOffsetCommitRequestTest.scala",
+      "language": "scala",
+      "added": 53,
+      "deleted": 5
+    },
+    {
+      "path": "core/src/test/scala/unit/kafka/server/WriteTxnMarkersRequestTest.scala",
+      "language": "scala",
+      "added": 3,
+      "deleted": 2
+    }
+  ],
+  "nearest_tests": [],
+  "dependent_files": [],
+  "diff_summary": "3 files changed",
+  "full_diff": "diff --git a/core/src/test/scala/unit/kafka/server/GroupCoordinatorBaseRequestTest.scala b/core/src/test/scala/unit/kafka/server/GroupCoordinatorBaseRequestTest.scala\nindex 6b041a329d0d1..a2456a0aa9ae7 100644\n--- a/core/src/test/scala/unit/kafka/server/GroupCoordinatorBaseRequestTest.scala\n+++ b/core/src/test/scala/unit/kafka/server/GroupCoordinatorBaseRequestTest.scala\n@@ -258,6 +258,7 @@ class GroupCoordinatorBaseRequestTest(cluster: ClusterInstance) {\n      producerEpoch: Short,\n      transactionalId: String,\n      topic: String,\n+     topicId: Uuid,\n      partition: Int,\n      offset: Long,\n      expectedError: Errors,\n@@ -273,6 +274,7 @@ class GroupCoordinatorBaseRequestTest(cluster: ClusterInstance) {\n         .setTransactionalId(transactionalId)\n         .setTopics(List(\n           new TxnOffsetCommitRequestData.TxnOffsetCommitRequestTopic()\n+            .setTopicId(topicId)\n             .setName(topic)\n             .setPartitions(List(\n               new TxnOffsetCommitRequestData.TxnOffsetCommitRequestPartition()\n@@ -286,7 +288,8 @@ class GroupCoordinatorBaseRequestTest(cluster: ClusterInstance) {\n     val expectedResponse = new TxnOffsetCommitResponseData()\n       .setTopics(List(\n         new TxnOffsetCommitResponseData.TxnOffsetCommitResponseTopic()\n-          .setName(topic)\n+          .setTopicId(if (version >= 6) topicId else Uuid.ZERO_UUID)\n+          .setName(if (version < 6) topic else \"\")\n           .setPartitions(List(\n             new TxnOffsetCommitResponseData.TxnOffsetCommitResponsePartition()\n               .setPartitionIndex(partition)\ndiff --git a/core/src/test/scala/unit/kafka/server/TxnOffsetCommitRequestTest.scala b/core/src/test/scala/unit/kafka/server/TxnOffsetCommitRequestTest.scala\nindex 61ed91a4e7d2a..ee774c05c8b36 100644\n--- a/core/src/test/scala/unit/kafka/server/TxnOffsetCommitRequestTest.scala\n+++ b/core/src/test/scala/unit/kafka/server/TxnOffsetCommitRequestTest.scala\n@@ -17,6 +17,7 @@\n package kafka.server\n \n import kafka.utils.TestUtils\n+import org.apache.kafka.common.Uuid\n import org.apache.kafka.common.errors.UnsupportedVersionException\n import org.apache.kafka.common.protocol.{ApiKeys, Errors}\n import org.apache.kafka.common.requests.{EndTxnRequest, JoinGroupRequest}\n@@ -75,13 +76,14 @@ class TxnOffsetCommitRequestTest(cluster:ClusterInstance) extends GroupCoordinat\n     assertNotEquals(JoinGroupRequest.UNKNOWN_MEMBER_ID, memberId)\n     assertNotEquals(JoinGroupRequest.UNKNOWN_GENERATION_ID, memberEpoch)\n \n-    createTopic(topic, 1)\n+    val topicId = createTopic(topic, 1)\n \n-    for (version <- 0 to ApiKeys.TXN_OFFSET_COMMIT.latestVersion(false)) {\n+    for (version <- 0 to ApiKeys.TXN_OFFSET_COMMIT.latestVersion(isUnstableApiEnabled)) {\n       // Verify that the TXN_OFFSET_COMMIT request is processed correctly when member id is UNKNOWN_MEMBER_ID\n       // and generation id is UNKNOWN_GENERATION_ID under all api versions.\n       verifyTxnCommitAndFetch(\n         topic = topic,\n+        topicId = topicId,\n         partition = partition,\n         transactionalId = transactionalId,\n         groupId = groupId,\n@@ -98,6 +100,7 @@ class TxnOffsetCommitRequestTest(cluster:ClusterInstance) extends GroupCoordinat\n         // must not be empty from version 3 onwards.\n         verifyTxnCommitAndFetch(\n           topic = topic,\n+          topicId = topicId,\n           partition = partition,\n           transactionalId = transactionalId,\n           groupId = groupId,\n@@ -111,6 +114,7 @@ class TxnOffsetCommitRequestTest(cluster:ClusterInstance) extends GroupCoordinat\n         // Verify TXN_OFFSET_COMMIT request failed with incorrect memberId.\n         verifyTxnCommitAndFetch(\n           topic = topic,\n+          topicId = topicId,\n           partition = partition,\n           transactionalId = transactionalId,\n           groupId = groupId,\n@@ -122,8 +126,11 @@ class TxnOffsetCommitRequestTest(cluster:ClusterInstance) extends GroupCoordinat\n         )\n \n         // Verify TXN_OFFSET_COMMIT request failed with incorrect generationId.\n+        // Under the new consumer group protocol, v6+ returns STALE_MEMBER_EPOCH\n+        // directly while v0-5 maps it to ILLEGAL_GENERATION (KIP-1319).\n         verifyTxnCommitAndFetch(\n           topic = topic,\n+          topicId = topicId,\n           partition = partition,\n           transactionalId = transactionalId,\n           groupId = groupId,\n@@ -131,13 +138,51 @@ class TxnOffsetCommitRequestTest(cluster:ClusterInstance) extends GroupCoordinat\n           generationId = 100,\n           offset = 200 + version,\n           version = version.toShort,\n-          expectedTxnCommitError = Errors.ILLEGAL_GENERATION\n+          expectedTxnCommitError =\n+            if (useNewProtocol && version >= 6) Errors.STALE_MEMBER_EPOCH\n+            else Errors.ILLEGAL_GENERATION\n         )\n+\n+        // Verify TXN_OFFSET_COMMIT request failed with an unknown groupId.\n+        // v6+ propagates GROUP_ID_NOT_FOUND directly while v0-5 maps it to\n+        // ILLEGAL_GENERATION (KIP-1319). This applies to both protocols.\n+        verifyTxnCommitAndFetch(\n+          topic = topic,\n+          topicId = topicId,\n+          partition = partition,\n+          transactionalId = transactionalId,\n+          groupId = \"unknown\",\n+          memberId = memberId,\n+          generationId = memberEpoch,\n+          offset = 200 + version,\n+          version = version.toShort,\n+          expectedTxnCommitError =\n+            if (version >= 6) Errors.GROUP_ID_NOT_FOUND\n+            else Errors.ILLEGAL_GENERATION\n+        )\n+\n+        if (version >= 6) {\n+          // Verify TXN_OFFSET_COMMIT request failed with UNKNOWN_TOPIC_ID for an\n+          // unknown topic id. Only v6+ carries topic IDs on the wire.\n+          verifyTxnCommitAndFetch(\n+            topic = topic,\n+            topicId = Uuid.randomUuid(),\n+            partition = partition,\n+            transactionalId = transactionalId,\n+            groupId = groupId,\n+            memberId = memberId,\n+            generationId = memberEpoch,\n+            offset = 200 + version,\n+            version = version.toShort,\n+            expectedTxnCommitError = Errors.UNKNOWN_TOPIC_ID\n+          )\n+        }\n       } else {\n         // Verify that the TXN_OFFSET_COMMIT request failed when group metadata is set under version 3.\n         assertThrows(classOf[UnsupportedVersionException], () =>\n           verifyTxnCommitAndFetch(\n             topic = topic,\n+            topicId = topicId,\n             partition = partition,\n             transactionalId = transactionalId,\n             groupId = groupId,\n@@ -154,6 +199,7 @@ class TxnOffsetCommitRequestTest(cluster:ClusterInstance) extends GroupCoordinat\n \n   private def verifyTxnCommitAndFetch(\n     topic: String,\n+    topicId: Uuid,\n     partition: Int,\n     transactionalId: String,\n     groupId: String,\n@@ -195,6 +241,7 @@ class TxnOffsetCommitRequestTest(cluster:ClusterInstance) extends GroupCoordinat\n       producerEpoch = producerIdAndEpoch.epoch,\n       transactionalId = transactionalId,\n       topic = topic,\n+      topicId = topicId,\n       partition = partition,\n       offset = offset,\n       expectedError = expectedTxnCommitError,\n@@ -239,9 +286,9 @@ class TxnOffsetCommitRequestTest(cluster:ClusterInstance) extends GroupCoordinat\n     assertNotEquals(JoinGroupRequest.UNKNOWN_MEMBER_ID, memberId)\n     assertNotEquals(JoinGroupRequest.UNKNOWN_GENERATION_ID, memberEpoch)\n \n-    createTopic(topic, 1)\n+    val topicId = createTopic(topic, 1)\n \n-    for (version <- ApiKeys.TXN_OFFSET_COMMIT.oldestVersion to ApiKeys.TXN_OFFSET_COMMIT.latestVersion(false)) {\n+    for (version <- ApiKeys.TXN_OFFSET_COMMIT.oldestVersion to ApiKeys.TXN_OFFSET_COMMIT.latestVersion(isUnstableApiEnabled)) {\n       val useTV2 = version > EndTxnRequest.LAST_STABLE_VERSION_BEFORE_TRANSACTION_V2\n \n       // Initialize producer. Wait until the coordinator finishes loading.\n@@ -300,6 +347,7 @@ class TxnOffsetCommitRequestTest(cluster:ClusterInstance) extends GroupCoordinat\n         producerEpoch = producerIdAndEpoch.epoch,\n         transactionalId = transactionalId,\n         topic = topic,\n+        topicId = topicId,\n         partition = partition,\n         offset = offset,\n         expectedError = if (useTV2) Errors.INVALID_PRODUCER_EPOCH else Errors.NONE,\ndiff --git a/core/src/test/scala/unit/kafka/server/WriteTxnMarkersRequestTest.scala b/core/src/test/scala/unit/kafka/server/WriteTxnMarkersRequestTest.scala\nindex 82263b891815d..1bc57a2ff6524 100644\n--- a/core/src/test/scala/unit/kafka/server/WriteTxnMarkersRequestTest.scala\n+++ b/core/src/test/scala/unit/kafka/server/WriteTxnMarkersRequestTest.scala\n@@ -64,9 +64,9 @@ class WriteTxnMarkersRequestTest(cluster:ClusterInstance) extends GroupCoordinat\n     assertNotEquals(JoinGroupRequest.UNKNOWN_MEMBER_ID, memberId)\n     assertNotEquals(JoinGroupRequest.UNKNOWN_GENERATION_ID, memberEpoch)\n \n-    createTopic(topic, 1)\n+    val topicId = createTopic(topic, 1)\n \n-    for (version <- ApiKeys.TXN_OFFSET_COMMIT.oldestVersion to ApiKeys.TXN_OFFSET_COMMIT.latestVersion(false)) {\n+    for (version <- ApiKeys.TXN_OFFSET_COMMIT.oldestVersion to ApiKeys.TXN_OFFSET_COMMIT.latestVersion(isUnstableApiEnabled)) {\n       val useTV2 = version > EndTxnRequest.LAST_STABLE_VERSION_BEFORE_TRANSACTION_V2\n \n       // Initialize producer. Wait until the coordinator finishes loading.\n@@ -124,6 +124,7 @@ class WriteTxnMarkersRequestTest(cluster:ClusterInstance) extends GroupCoordinat\n         producerEpoch = if (useTV2) (producerIdAndEpoch.epoch + 1).toShort else producerIdAndEpoch.epoch,\n         transactionalId = transactionalId,\n         topic = topic,\n+        topicId = topicId,\n         partition = partition,\n         offset = offset + version,\n         expectedError = Errors.NONE,\n",
+  "metadata": {
+    "v2_fetcher_version": 1,
+    "v2_fetched_at_unix": 1778582587,
+    "v2_diff_cap_bytes": 50000,
+    "v2_body_cap_bytes": 8000,
+    "v2_diff_truncated": false,
+    "v2_raw_diff_chars": 9788,
+    "v2_raw_body_chars": 476,
+    "v2_rag_source": "fresh_for_v2_40pr_expansion",
+    "v2_rag_chunks_copied": 8,
+    "joern_enriched": true,
+    "joern_callers_count": 0,
+    "joern_functions_count": 0
+  },
+  "similar_chunks": [
+    {
+      "file": "core/src/test/scala/unit/kafka/server/OffsetCommitRequestTest.scala",
+      "start_line": 16,
+      "end_line": 47,
+      "similarity": 0.8514,
+      "related_to": "core/src/test/scala/unit/kafka/server/TxnOffsetCommitRequestTest.scala",
+      "content_preview": " */\npackage kafka.server\n\nimport org.apache.kafka.common.Uuid\nimport org.apache.kafka.common.test.api.{ClusterConfigProperty, ClusterTest, ClusterTestDefaults, Type}\nimport org.apache.kafka.common.protocol.{ApiKeys, Errors}\nimport org.apache.kafka.common.test.ClusterInstance\nimport org.apache.kafka.coordinator.group.GroupCoordinatorConfig\n\n@ClusterTestDefaults(\n  types = Array(Type.KRAFT),\n  serverProperties = Array(\n    new ClusterConfigProperty(key = GroupCoordinatorConfig.OFFSETS_TOPIC_PARTITIONS_CONFIG, value = \"1\"),\n    new ClusterConfigProperty(key = GroupCoordinatorConfig.OFFSETS_TOPIC_REPLICATION_FACTOR_CONFIG, value = \"1\")\n  )\n)\nclass OffsetCommitRequestTest(cluster: ClusterInstance) "
+    },
+    {
+      "file": "core/src/test/scala/unit/kafka/server/ConsumerGroupDescribeRequestTest.scala",
+      "start_line": 16,
+      "end_line": 38,
+      "similarity": 0.8342,
+      "related_to": "core/src/test/scala/unit/kafka/server/GroupCoordinatorBaseRequestTest.scala",
+      "content_preview": " */\npackage kafka.server\n\nimport org.apache.kafka.common.test.api._\nimport kafka.utils.TestUtils\nimport org.apache.kafka.clients.consumer.ConsumerPartitionAssignor\nimport org.apache.kafka.clients.consumer.internals.ConsumerProtocol\nimport org.apache.kafka.common.{ConsumerGroupState, TopicPartition, Uuid}\nimport org.apache.kafka.common.message.ConsumerGroupDescribeResponseData.{Assignment, DescribedGroup, TopicPartitions}\nimport org.apache.kafka.common.message.{ConsumerGroupDescribeRequestData, ConsumerGroupDescribeResponseData, ConsumerGroupHeartbeatResponseData}\nimport org.apache.kafka.common.protocol.{ApiKeys, Errors}\nimport org.apache.kafka.common.requests.{ConsumerGroupDescribeRequest, Consum"
+    },
+    {
+      "file": "core/src/test/scala/unit/kafka/server/ConsumerProtocolMigrationTest.scala",
+      "start_line": 16,
+      "end_line": 40,
+      "similarity": 0.8317,
+      "related_to": "core/src/test/scala/unit/kafka/server/GroupCoordinatorBaseRequestTest.scala",
+      "content_preview": " */\npackage kafka.server\n\nimport org.apache.kafka.clients.consumer.ConsumerPartitionAssignor\nimport org.apache.kafka.clients.consumer.internals.ConsumerProtocol\nimport org.apache.kafka.common.{TopicPartition, Uuid}\nimport org.apache.kafka.common.message.{JoinGroupResponseData, ListGroupsResponseData, OffsetFetchRequestData, OffsetFetchResponseData, SyncGroupResponseData}\nimport org.apache.kafka.common.test.api.{ClusterConfigProperty, ClusterTest, ClusterTestDefaults, Type}\nimport org.apache.kafka.common.protocol.{ApiKeys, Errors}\nimport org.apache.kafka.common.test.ClusterInstance\nimport org.apache.kafka.coordinator.group.{Group, GroupCoordinatorConfig}\nimport org.apache.kafka.coordinator.group.c"
+    },
+    {
+      "file": "core/src/test/scala/unit/kafka/server/AddPartitionsToTxnRequestServerTest.scala",
+      "start_line": 17,
+      "end_line": 36,
+      "similarity": 0.8235,
+      "related_to": "core/src/test/scala/unit/kafka/server/GroupCoordinatorBaseRequestTest.scala",
+      "content_preview": "\npackage kafka.server\n\nimport kafka.utils.TestUtils\n\nimport java.util.{Collections, Properties}\nimport java.util.stream.{Stream => JStream}\nimport org.apache.kafka.common.TopicPartition\nimport org.apache.kafka.common.message.AddPartitionsToTxnRequestData.AddPartitionsToTxnTopic\nimport org.apache.kafka.common.message.AddPartitionsToTxnRequestData.AddPartitionsToTxnTransaction\nimport org.apache.kafka.common.message.AddPartitionsToTxnRequestData.AddPartitionsToTxnTransactionCollection\nimport org.apache.kafka.common.message.AddPartitionsToTxnRequestData.AddPartitionsToTxnTopicCollection\nimport org.apache.kafka.common.message.{FindCoordinatorRequestData, InitProducerIdRequestData"
+    },
+    {
+      "file": "core/src/test/scala/unit/kafka/server/OffsetDeleteRequestTest.scala",
+      "start_line": 16,
+      "end_line": 47,
+      "similarity": 0.8191,
+      "related_to": "core/src/test/scala/unit/kafka/server/TxnOffsetCommitRequestTest.scala",
+      "content_preview": " */\npackage kafka.server\n\nimport org.apache.kafka.common.test.api.{ClusterConfigProperty, ClusterTest, ClusterTestDefaults, Type}\nimport org.apache.kafka.common.protocol.{ApiKeys, Errors}\nimport org.apache.kafka.common.test.ClusterInstance\nimport org.apache.kafka.coordinator.group.GroupCoordinatorConfig\n\n@ClusterTestDefaults(\n  types = Array(Type.KRAFT),\n  serverProperties = Array(\n    new ClusterConfigProperty(key = GroupCoordinatorConfig.OFFSETS_TOPIC_PARTITIONS_CONFIG, value = \"1\"),\n    new ClusterConfigProperty(key = GroupCoordinatorConfig.OFFSETS_TOPIC_REPLICATION_FACTOR_CONFIG, value = \"1\")\n  )\n)\nclass OffsetDeleteRequestTest(cluster: ClusterInstance) extends GroupCoordinatorBaseRequestTest"
+    },
+    {
+      "file": "core/src/test/scala/unit/kafka/server/epoch/LeaderEpochIntegrationTest.scala",
+      "start_line": 16,
+      "end_line": 37,
+      "similarity": 0.8132,
+      "related_to": "core/src/test/scala/unit/kafka/server/GroupCoordinatorBaseRequestTest.scala",
+      "content_preview": "  */\npackage kafka.server.epoch\n\nimport kafka.server.KafkaConfig._\nimport kafka.server._\nimport kafka.utils.TestUtils._\nimport kafka.utils.{Logging, TestUtils}\nimport org.apache.kafka.clients.producer.{KafkaProducer, ProducerRecord}\nimport org.apache.kafka.common.TopicPartition\nimport org.apache.kafka.common.message.OffsetForLeaderEpochRequestData.{OffsetForLeaderPartition, OffsetForLeaderTopic, OffsetForLeaderTopicCollection}\nimport org.apache.kafka.common.message.OffsetForLeaderEpochResponseData.EpochEndOffset\nimport org.apache.kafka.common.metrics.Metrics\nimport org.apache.kafka.common.network.ListenerName\nimport org.apache.kafka.common.protocol.Errors._\nimport org.apache.kafka.c"
+    },
+    {
+      "file": "core/src/test/scala/unit/kafka/server/RequestQuotaTest.scala",
+      "start_line": 14,
+      "end_line": 38,
+      "similarity": 0.806,
+      "related_to": "core/src/test/scala/unit/kafka/server/GroupCoordinatorBaseRequestTest.scala",
+      "content_preview": "\npackage kafka.server\n\nimport kafka.utils.TestUtils\nimport org.apache.kafka.common._\nimport org.apache.kafka.common.acl._\nimport org.apache.kafka.common.compress.Compression\nimport org.apache.kafka.common.config.internals.BrokerSecurityConfigs\nimport org.apache.kafka.common.config.{ConfigResource, TopicConfig}\nimport org.apache.kafka.common.internals.Topic\nimport org.apache.kafka.common.message.CreatePartitionsRequestData.CreatePartitionsTopic\nimport org.apache.kafka.common.message.CreateTopicsRequestData.{CreatableTopic, CreatableTopicCollection}\nimport org.apache.kafka.common.message.JoinGroupRequestData.JoinGroupRequestProtocolCollection\nimport org.apache.kafka.common.message.LeaveGroupRequestData.MemberIdentity\nimport org.apache.kafka.common.message.ListOffsetsRequestData.{ListOffsetsP"
+    },
+    {
+      "file": "core/src/test/scala/unit/kafka/server/AutoTopicCreationManagerTest.scala",
+      "start_line": 17,
+      "end_line": 38,
+      "similarity": 0.8051,
+      "related_to": "core/src/test/scala/unit/kafka/server/GroupCoordinatorBaseRequestTest.scala",
+      "content_preview": "\npackage kafka.server\n\nimport java.net.InetAddress\nimport java.util\nimport java.util.concurrent.CompletableFuture\nimport java.util.{Optional, Properties}\nimport kafka.coordinator.transaction.TransactionCoordinator\nimport kafka.utils.TestUtils\nimport org.apache.kafka.common.Node\nimport org.apache.kafka.common.internals.Topic.{GROUP_METADATA_TOPIC_NAME, SHARE_GROUP_STATE_TOPIC_NAME, TRANSACTION_STATE_TOPIC_NAME}\nimport org.apache.kafka.common.message.CreateTopicsRequestData.{CreatableTopic, CreatableTopicConfig, CreatableTopicConfigCollection}\nimport org.apache.kafka.common.message.CreateTopicsResponseData\nimport org.apache.kafka.common.message.CreateTopicsResponseData.CreatableTopicResult\nimpo"
+    }
+  ],
+  "rag_evidence": {
+    "similar_code": [
+      {
+        "file": "core/src/test/scala/unit/kafka/server/OffsetCommitRequestTest.scala",
+        "start_line": 16,
+        "end_line": 47,
+        "similarity": 0.8514,
+        "related_to": "core/src/test/scala/unit/kafka/server/TxnOffsetCommitRequestTest.scala",
+        "content_preview": " */\npackage kafka.server\n\nimport org.apache.kafka.common.Uuid\nimport org.apache.kafka.common.test.api.{ClusterConfigProperty, ClusterTest, ClusterTestDefaults, Type}\nimport org.apache.kafka.common.protocol.{ApiKeys, Errors}\nimport org.apache.kafka.common.test.ClusterInstance\nimport org.apache.kafka.coordinator.group.GroupCoordinatorConfig\n\n@ClusterTestDefaults(\n  types = Array(Type.KRAFT),\n  serverProperties = Array(\n    new ClusterConfigProperty(key = GroupCoordinatorConfig.OFFSETS_TOPIC_PARTITIONS_CONFIG, value = \"1\"),\n    new ClusterConfigProperty(key = GroupCoordinatorConfig.OFFSETS_TOPIC_REPLICATION_FACTOR_CONFIG, value = \"1\")\n  )\n)\nclass OffsetCommitRequestTest(cluster: ClusterInstance) "
+      },
+      {
+        "file": "core/src/test/scala/unit/kafka/server/ConsumerGroupDescribeRequestTest.scala",
+        "start_line": 16,
+        "end_line": 38,
+        "similarity": 0.8342,
+        "related_to": "core/src/test/scala/unit/kafka/server/GroupCoordinatorBaseRequestTest.scala",
+        "content_preview": " */\npackage kafka.server\n\nimport org.apache.kafka.common.test.api._\nimport kafka.utils.TestUtils\nimport org.apache.kafka.clients.consumer.ConsumerPartitionAssignor\nimport org.apache.kafka.clients.consumer.internals.ConsumerProtocol\nimport org.apache.kafka.common.{ConsumerGroupState, TopicPartition, Uuid}\nimport org.apache.kafka.common.message.ConsumerGroupDescribeResponseData.{Assignment, DescribedGroup, TopicPartitions}\nimport org.apache.kafka.common.message.{ConsumerGroupDescribeRequestData, ConsumerGroupDescribeResponseData, ConsumerGroupHeartbeatResponseData}\nimport org.apache.kafka.common.protocol.{ApiKeys, Errors}\nimport org.apache.kafka.common.requests.{ConsumerGroupDescribeRequest, Consum"
+      },
+      {
+        "file": "core/src/test/scala/unit/kafka/server/ConsumerProtocolMigrationTest.scala",
+        "start_line": 16,
+        "end_line": 40,
+        "similarity": 0.8317,
+        "related_to": "core/src/test/scala/unit/kafka/server/GroupCoordinatorBaseRequestTest.scala",
+        "content_preview": " */\npackage kafka.server\n\nimport org.apache.kafka.clients.consumer.ConsumerPartitionAssignor\nimport org.apache.kafka.clients.consumer.internals.ConsumerProtocol\nimport org.apache.kafka.common.{TopicPartition, Uuid}\nimport org.apache.kafka.common.message.{JoinGroupResponseData, ListGroupsResponseData, OffsetFetchRequestData, OffsetFetchResponseData, SyncGroupResponseData}\nimport org.apache.kafka.common.test.api.{ClusterConfigProperty, ClusterTest, ClusterTestDefaults, Type}\nimport org.apache.kafka.common.protocol.{ApiKeys, Errors}\nimport org.apache.kafka.common.test.ClusterInstance\nimport org.apache.kafka.coordinator.group.{Group, GroupCoordinatorConfig}\nimport org.apache.kafka.coordinator.group.c"
+      },
+      {
+        "file": "core/src/test/scala/unit/kafka/server/AddPartitionsToTxnRequestServerTest.scala",
+        "start_line": 17,
+        "end_line": 36,
+        "similarity": 0.8235,
+        "related_to": "core/src/test/scala/unit/kafka/server/GroupCoordinatorBaseRequestTest.scala",
+        "content_preview": "\npackage kafka.server\n\nimport kafka.utils.TestUtils\n\nimport java.util.{Collections, Properties}\nimport java.util.stream.{Stream => JStream}\nimport org.apache.kafka.common.TopicPartition\nimport org.apache.kafka.common.message.AddPartitionsToTxnRequestData.AddPartitionsToTxnTopic\nimport org.apache.kafka.common.message.AddPartitionsToTxnRequestData.AddPartitionsToTxnTransaction\nimport org.apache.kafka.common.message.AddPartitionsToTxnRequestData.AddPartitionsToTxnTransactionCollection\nimport org.apache.kafka.common.message.AddPartitionsToTxnRequestData.AddPartitionsToTxnTopicCollection\nimport org.apache.kafka.common.message.{FindCoordinatorRequestData, InitProducerIdRequestData"
+      },
+      {
+        "file": "core/src/test/scala/unit/kafka/server/OffsetDeleteRequestTest.scala",
+        "start_line": 16,
+        "end_line": 47,
+        "similarity": 0.8191,
+        "related_to": "core/src/test/scala/unit/kafka/server/TxnOffsetCommitRequestTest.scala",
+        "content_preview": " */\npackage kafka.server\n\nimport org.apache.kafka.common.test.api.{ClusterConfigProperty, ClusterTest, ClusterTestDefaults, Type}\nimport org.apache.kafka.common.protocol.{ApiKeys, Errors}\nimport org.apache.kafka.common.test.ClusterInstance\nimport org.apache.kafka.coordinator.group.GroupCoordinatorConfig\n\n@ClusterTestDefaults(\n  types = Array(Type.KRAFT),\n  serverProperties = Array(\n    new ClusterConfigProperty(key = GroupCoordinatorConfig.OFFSETS_TOPIC_PARTITIONS_CONFIG, value = \"1\"),\n    new ClusterConfigProperty(key = GroupCoordinatorConfig.OFFSETS_TOPIC_REPLICATION_FACTOR_CONFIG, value = \"1\")\n  )\n)\nclass OffsetDeleteRequestTest(cluster: ClusterInstance) extends GroupCoordinatorBaseRequestTest"
+      },
+      {
+        "file": "core/src/test/scala/unit/kafka/server/epoch/LeaderEpochIntegrationTest.scala",
+        "start_line": 16,
+        "end_line": 37,
+        "similarity": 0.8132,
+        "related_to": "core/src/test/scala/unit/kafka/server/GroupCoordinatorBaseRequestTest.scala",
+        "content_preview": "  */\npackage kafka.server.epoch\n\nimport kafka.server.KafkaConfig._\nimport kafka.server._\nimport kafka.utils.TestUtils._\nimport kafka.utils.{Logging, TestUtils}\nimport org.apache.kafka.clients.producer.{KafkaProducer, ProducerRecord}\nimport org.apache.kafka.common.TopicPartition\nimport org.apache.kafka.common.message.OffsetForLeaderEpochRequestData.{OffsetForLeaderPartition, OffsetForLeaderTopic, OffsetForLeaderTopicCollection}\nimport org.apache.kafka.common.message.OffsetForLeaderEpochResponseData.EpochEndOffset\nimport org.apache.kafka.common.metrics.Metrics\nimport org.apache.kafka.common.network.ListenerName\nimport org.apache.kafka.common.protocol.Errors._\nimport org.apache.kafka.c"
+      },
+      {
+        "file": "core/src/test/scala/unit/kafka/server/RequestQuotaTest.scala",
+        "start_line": 14,
+        "end_line": 38,
+        "similarity": 0.806,
+        "related_to": "core/src/test/scala/unit/kafka/server/GroupCoordinatorBaseRequestTest.scala",
+        "content_preview": "\npackage kafka.server\n\nimport kafka.utils.TestUtils\nimport org.apache.kafka.common._\nimport org.apache.kafka.common.acl._\nimport org.apache.kafka.common.compress.Compression\nimport org.apache.kafka.common.config.internals.BrokerSecurityConfigs\nimport org.apache.kafka.common.config.{ConfigResource, TopicConfig}\nimport org.apache.kafka.common.internals.Topic\nimport org.apache.kafka.common.message.CreatePartitionsRequestData.CreatePartitionsTopic\nimport org.apache.kafka.common.message.CreateTopicsRequestData.{CreatableTopic, CreatableTopicCollection}\nimport org.apache.kafka.common.message.JoinGroupRequestData.JoinGroupRequestProtocolCollection\nimport org.apache.kafka.common.message.LeaveGroupRequestData.MemberIdentity\nimport org.apache.kafka.common.message.ListOffsetsRequestData.{ListOffsetsP"
+      },
+      {
+        "file": "core/src/test/scala/unit/kafka/server/AutoTopicCreationManagerTest.scala",
+        "start_line": 17,
+        "end_line": 38,
+        "similarity": 0.8051,
+        "related_to": "core/src/test/scala/unit/kafka/server/GroupCoordinatorBaseRequestTest.scala",
+        "content_preview": "\npackage kafka.server\n\nimport java.net.InetAddress\nimport java.util\nimport java.util.concurrent.CompletableFuture\nimport java.util.{Optional, Properties}\nimport kafka.coordinator.transaction.TransactionCoordinator\nimport kafka.utils.TestUtils\nimport org.apache.kafka.common.Node\nimport org.apache.kafka.common.internals.Topic.{GROUP_METADATA_TOPIC_NAME, SHARE_GROUP_STATE_TOPIC_NAME, TRANSACTION_STATE_TOPIC_NAME}\nimport org.apache.kafka.common.message.CreateTopicsRequestData.{CreatableTopic, CreatableTopicConfig, CreatableTopicConfigCollection}\nimport org.apache.kafka.common.message.CreateTopicsResponseData\nimport org.apache.kafka.common.message.CreateTopicsResponseData.CreatableTopicResult\nimpo"
+      }
+    ]
+  }
+}

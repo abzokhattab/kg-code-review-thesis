@@ -1,0 +1,203 @@
+{
+  "input": "results/checklist_evaluation_llm_multi__v2_scoped_ast.json",
+  "modes": [
+    "baseline",
+    "kg",
+    "rag",
+    "hybrid"
+  ],
+  "metrics": {
+    "total_score": {
+      "label": "Total /25",
+      "n_per_mode": {
+        "baseline": 40,
+        "kg": 40,
+        "rag": 40,
+        "hybrid": 40
+      },
+      "kruskal_wallis": {
+        "H": 5.044,
+        "p": 0.1686,
+        "df": 3
+      },
+      "dunn_bonferroni": [
+        {
+          "pair": "baseline vs kg",
+          "z": -1.247,
+          "p_raw": 0.2124,
+          "p_bonferroni": 1.0,
+          "mean_rank_a": 68.9,
+          "mean_rank_b": 81.6
+        },
+        {
+          "pair": "baseline vs rag",
+          "z": -2.238,
+          "p_raw": 0.0252,
+          "p_bonferroni": 0.1514,
+          "mean_rank_a": 68.9,
+          "mean_rank_b": 91.7
+        },
+        {
+          "pair": "baseline vs hybrid",
+          "z": -1.062,
+          "p_raw": 0.2883,
+          "p_bonferroni": 1.0,
+          "mean_rank_a": 68.9,
+          "mean_rank_b": 79.7
+        },
+        {
+          "pair": "kg vs rag",
+          "z": -0.991,
+          "p_raw": 0.3217,
+          "p_bonferroni": 1.0,
+          "mean_rank_a": 81.6,
+          "mean_rank_b": 91.7
+        },
+        {
+          "pair": "kg vs hybrid",
+          "z": 0.185,
+          "p_raw": 0.8533,
+          "p_bonferroni": 1.0,
+          "mean_rank_a": 81.6,
+          "mean_rank_b": 79.7
+        },
+        {
+          "pair": "rag vs hybrid",
+          "z": 1.176,
+          "p_raw": 0.2397,
+          "p_bonferroni": 1.0,
+          "mean_rank_a": 91.7,
+          "mean_rank_b": 79.7
+        }
+      ],
+      "friedman": {
+        "stat": 5.907,
+        "p": 0.1162,
+        "df": 3,
+        "n_pairs": 40
+      },
+      "wilcoxon_vs_baseline_bonferroni": [
+        {
+          "mode": "kg vs baseline",
+          "n_pairs": 40,
+          "statistic": 203.5,
+          "median_diff": 1.0,
+          "p_raw": 0.1639,
+          "p_bonferroni": 0.4918
+        },
+        {
+          "mode": "rag vs baseline",
+          "n_pairs": 40,
+          "statistic": 143.0,
+          "median_diff": 1.0,
+          "p_raw": 0.0072,
+          "p_bonferroni": 0.0216
+        },
+        {
+          "mode": "hybrid vs baseline",
+          "n_pairs": 40,
+          "statistic": 272.0,
+          "median_diff": 0.0,
+          "p_raw": 0.6593,
+          "p_bonferroni": 1.0
+        }
+      ]
+    },
+    "kg_relevant_score": {
+      "label": "KG-relevant /9",
+      "n_per_mode": {
+        "baseline": 40,
+        "kg": 40,
+        "rag": 40,
+        "hybrid": 40
+      },
+      "kruskal_wallis": {
+        "H": 3.233,
+        "p": 0.3571,
+        "df": 3
+      },
+      "dunn_bonferroni": [
+        {
+          "pair": "baseline vs kg",
+          "z": -1.096,
+          "p_raw": 0.2729,
+          "p_bonferroni": 1.0,
+          "mean_rank_a": 70.0,
+          "mean_rank_b": 81.0
+        },
+        {
+          "pair": "baseline vs rag",
+          "z": -1.588,
+          "p_raw": 0.1123,
+          "p_bonferroni": 0.6739,
+          "mean_rank_a": 70.0,
+          "mean_rank_b": 85.9
+        },
+        {
+          "pair": "baseline vs hybrid",
+          "z": -1.522,
+          "p_raw": 0.1281,
+          "p_bonferroni": 0.7684,
+          "mean_rank_a": 70.0,
+          "mean_rank_b": 85.2
+        },
+        {
+          "pair": "kg vs rag",
+          "z": -0.491,
+          "p_raw": 0.6231,
+          "p_bonferroni": 1.0,
+          "mean_rank_a": 81.0,
+          "mean_rank_b": 85.9
+        },
+        {
+          "pair": "kg vs hybrid",
+          "z": -0.425,
+          "p_raw": 0.6706,
+          "p_bonferroni": 1.0,
+          "mean_rank_a": 81.0,
+          "mean_rank_b": 85.2
+        },
+        {
+          "pair": "rag vs hybrid",
+          "z": 0.066,
+          "p_raw": 0.9473,
+          "p_bonferroni": 1.0,
+          "mean_rank_a": 85.9,
+          "mean_rank_b": 85.2
+        }
+      ],
+      "friedman": {
+        "stat": 2.76,
+        "p": 0.4301,
+        "df": 3,
+        "n_pairs": 40
+      },
+      "wilcoxon_vs_baseline_bonferroni": [
+        {
+          "mode": "kg vs baseline",
+          "n_pairs": 40,
+          "statistic": 94.0,
+          "median_diff": 0.0,
+          "p_raw": 0.1649,
+          "p_bonferroni": 0.4948
+        },
+        {
+          "mode": "rag vs baseline",
+          "n_pairs": 40,
+          "statistic": 60.0,
+          "median_diff": 0.0,
+          "p_raw": 0.0488,
+          "p_bonferroni": 0.1463
+        },
+        {
+          "mode": "hybrid vs baseline",
+          "n_pairs": 40,
+          "statistic": 174.0,
+          "median_diff": 0.0,
+          "p_raw": 0.2137,
+          "p_bonferroni": 0.6412
+        }
+      ]
+    }
+  }
+}

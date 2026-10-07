@@ -1,0 +1,64 @@
+\section{Human Evaluation Results}
+\label{sec:results-human}
+
+The study closed at 27 complete raters, above the 18--20 recruitment target,
+giving 162 pairwise comparisons. Every rater who finished all six tasks is
+included; one incomplete session is excluded, as specified before data
+collection. Participants self-reported as students~(10), junior
+developers~(7), mid-level developers~(8), and senior developers~(2), with
+programming experience ranging from under one year~(3) through one to
+three~(9), three to five~(12), and five to ten years~(3); 19 of 27
+reported reviewing pull requests at least weekly.
+
+This is a third, independent measurement: different stimuli, graph edges
+resolved from import statements, and criteria reworded for non-expert
+readers.
+
+\subsection{Primary Endpoint}
+\label{sec:results-human-primary}
+
+On H1 (which review better names the specific functions, classes, or files
+the change could affect), the mean rater preference for \kg{} is $0.710$,
+with a bootstrap interval of $[0.623, 0.787]$ excluding the no-preference
+value of~$0.5$. Wilcoxon signed-rank $p = 0.0005$ against~$0.5$, with
+rank-biserial $r = 0.80$. Across the 162 comparisons, raters picked the
+\kg{} review 98 times and the \baseline{} review 30 times, with 29 ties and
+5 ``neither'' judgements.
+
+\subsection{Overall Usefulness}
+\label{sec:results-human-overall}
+
+Mean preference on overall usefulness is $0.512$, $[0.423, 0.605]$.
+The interval includes $0.5$, so the data are consistent with no preference.
+This question was set aside for estimation before the study started, so no
+significance test is reported. Raters preferred the graph review when asked
+which review names the affected code, and they showed no preference when asked
+which review was more useful overall. The result is therefore specific to
+affected-code identification.
+
+\subsection{Exploratory Boundary}
+
+Among the five exploratory criteria, only code clarity remains distinguishable
+after correction, and it favours the \baseline{} review. The graph review is
+ahead only on the primary affected-code question.
+Figure~\ref{fig:human-study} summarises all criteria on one axis;
+Table~\ref{tab:human-exploratory} (Appendix) reports the exploratory
+estimates and Holm-corrected $p$-values.
+
+\begin{figure}[htbp]
+    \centering
+    \input{figures/fig_human_study}
+    \caption{Rater preference for the \kg{} review by criterion ($n = 27$).
+             Bars are bootstrap intervals; the dashed line is no preference.
+             Filled markers indicate significance under the governing test.}
+    \label{fig:human-study}
+\end{figure}
+
+\subsection{Summary}
+
+Raters preferred the graph-augmented review for affected-code
+identification, but showed no preference on overall usefulness; code clarity
+favoured the \baseline{} review. Because the sample, instrument, and graph
+construction differ from Experiment~1, this result corroborates targeted
+grounding without validating the earlier ranking or a general quality
+improvement.

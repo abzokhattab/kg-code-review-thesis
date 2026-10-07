@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Thesis Orientation — KG-Augmented LLM Code Review</title>
+<style>
+  :root{
+    --bg:#0f1115; --card:#171a21; --card2:#1d2129; --line:#2a2f3a;
+    --t1:#e8eaed; --t2:#b6bcc6; --t3:#828b99;
+    --green:#3fb950; --greenbg:#15301c; --red:#f0606b; --redbg:#33181b;
+    --orange:#e3a008; --orangebg:#312608; --blue:#58a6ff; --bluebg:#0f2741;
+    --accent:#7c9cff;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--t1);
+    font:15px/1.6 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;}
+  .wrap{max-width:920px;margin:0 auto;padding:40px 22px 120px;}
+  h1{font-size:1.9rem;margin:0 0 6px;letter-spacing:-.02em}
+  h2{font-size:1.32rem;margin:42px 0 4px;letter-spacing:-.01em;padding-top:10px;border-top:1px solid var(--line)}
+  h2:first-of-type{border-top:none}
+  h3{font-size:1.05rem;margin:24px 0 6px;color:var(--t1)}
+  .sub{color:var(--t3);font-size:.92rem;margin:0 0 4px}
+  p{margin:8px 0}
+  .lead{color:var(--t2);font-size:1.02rem}
+  code{background:#222732;padding:1px 6px;border-radius:5px;font-size:.86em;color:#cdd6f4}
+  table{border-collapse:collapse;width:100%;margin:12px 0;font-size:.9rem}
+  th,td{border:1px solid var(--line);padding:7px 10px;text-align:left;vertical-align:top}
+  th{background:var(--card2);color:var(--t2);font-weight:600}
+  td.r,th.r{text-align:right}
+  tr:nth-child(even) td{background:#14171d}
+  .tg{color:var(--green);font-weight:600}
+  .tr{color:var(--red);font-weight:600}
+  .to{color:var(--orange);font-weight:600}
+  .callout{border-radius:10px;padding:13px 16px;margin:14px 0;border:1px solid var(--line)}
+  .green{background:var(--greenbg);border-color:#1f5a2e}
+  .red{background:var(--redbg);border-color:#5a2026}
+  .orange{background:var(--orangebg);border-color:#5a4410}
+  .blue{background:var(--bluebg);border-color:#1c4a78}
+  .callout strong{color:#fff}
+  .pill{display:inline-block;font-size:.72rem;font-weight:700;padding:2px 9px;border-radius:20px;
+    letter-spacing:.03em;text-transform:uppercase;vertical-align:middle}
+  .p-solid{background:var(--greenbg);color:var(--green);border:1px solid #1f5a2e}
+  .p-explor{background:var(--orangebg);color:var(--orange);border:1px solid #5a4410}
+  .p-bad{background:var(--redbg);color:var(--red);border:1px solid #5a2026}
+  .p-blocked{background:#241a2e;color:#c08bff;border:1px solid #4a2d63}
+  .src{color:var(--t3);font-size:.8rem;font-family:ui-monospace,monospace}
+  nav{position:sticky;top:0;background:rgba(15,17,21,.92);backdrop-filter:blur(8px);
+    border-bottom:1px solid var(--line);margin:-40px -22px 24px;padding:12px 22px;z-index:10;
+    display:flex;flex-wrap:wrap;gap:6px 14px;font-size:.82rem}
+  nav a{color:var(--t3);text-decoration:none}
+  nav a:hover{color:var(--accent)}
+  .big{font-size:2rem;font-weight:700;letter-spacing:-.02em}
+  .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:16px 0}
+  .sc{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:14px}
+  .sc .n{font-size:1.6rem;font-weight:700}
+  .sc .l{color:var(--t3);font-size:.82rem;margin-top:2px}
+  .sc .m{color:var(--t2);font-size:.82rem;margin-top:8px;line-height:1.45}
+  ul.clean{list-style:none;padding-left:0;margin:8px 0}
+  ul.clean li{padding:5px 0 5px 26px;position:relative}
+  ul.clean li:before{content:"";position:absolute;left:4px;top:12px;width:7px;height:7px;border-radius:50%;background:var(--accent)}
+  .legend{display:flex;flex-wrap:wrap;gap:10px;margin:10px 0 4px}
+  hr{border:none;border-top:1px solid var(--line);margin:30px 0}
+  .note{color:var(--t3);font-size:.84rem;margin-top:4px}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<nav>
+  <a href="#start">0 · Start here</a>
+  <a href="#setup">1 · The setup</a>
+  <a href="#main">2 · Main result</a>
+  <a href="#criteria">3 · The criteria question</a>
+  <a href="#allexp">4 · All experiments</a>
+  <a href="#claim">5 · What you can claim</a>
+  <a href="#solid">6 · Solid vs shaky</a>
+  <a href="#left">7 · What is left</a>
+</nav>
+
+<h1 id="start">Thesis Orientation Map</h1>
+<p class="sub">KG / RAG-augmented LLM code review &middot; built 2026-06-19 &middot; every number traceable to a file in <code>results/</code></p>
+
+<div class="callout green">
+  <strong>Read this first — you are not lost, and the project is in good shape.</strong><br><br>
+  You have <strong>one clean, significant, pre-registered headline result</strong> plus a stack of supporting experiments. The thing that has been confusing you — "do we use 25 criteria, 9, 6, or 11?" — has a clean answer that is already written down in your own files (<span class="src">results/CRITERIA_DERIVATION.md</span>). Section 3 settles it. Nothing is broken. You mostly need to <em>stop re-cutting the rubric live in chat</em> and lock the version your files already justify.
+</div>
+
+<div class="grid">
+  <div class="sc">
+    <div class="n tg">+0.47</div>
+    <div class="l">Headline effect (d_z), KG on KG-relevant criteria</div>
+    <div class="m">p = 0.007, n = 40. Pre-registered. This is the number the abstract leans on.</div>
+  </div>
+  <div class="sc">
+    <div class="n">40</div>
+    <div class="l">Real merged PRs, 5 repos, 5 languages</div>
+    <div class="m">3-judge LLM panel, 25-criterion rubric, majority vote. 12,000 scored cells.</div>
+  </div>
+  <div class="sc">
+    <div class="n to">1</div>
+    <div class="l">Real blocker left</div>
+    <div class="m">Human study (RQ3) can't collect data — webhook is down. Everything else is analysis-complete.</div>
+  </div>
+</div>
+
+<h2 id="setup">1 &middot; The thesis in one picture</h2>
+<p class="lead">Does giving an LLM code-reviewer structural repository context — beyond the raw diff — make its review better?</p>
+<p>A diff shows <em>what changed</em>. It does not show who calls the changed function, which tests cover it, or what breaks downstream. A human opens the IDE to find that. The thesis asks: if you hand the LLM that context automatically, does the review improve? You compare four modes on the same PR:</p>
+<table>
+  <tr><th>Mode</th><th>What the LLM is given</th></tr>
+  <tr><td><strong>baseline</strong></td><td>PR title + description + diff only</td></tr>
+  <tr><td><strong>kg</strong></td><td>baseline + knowledge-graph context (callers, test files, dependent files)</td></tr>
+  <tr><td><strong>rag</strong></td><td>baseline + top-k semantically similar code chunks (embedding search)</td></tr>
+  <tr><td><strong>hybrid</strong></td><td>baseline + KG + RAG</td></tr>
+</table>
+<p class="note">Generator: GPT-4o (T=0.4, seed=42). Judges: GPT-4o-mini + GPT-4o + Gemini 2.5 Flash, majority vote. Rubric: 25 binary criteria grounded in Bacchelli &amp; Bird (ICSE'13), Bosu et al. (MSR'15), Sadowski et al. (ICSE-SEIP'18), DeepCRCEval, ISO/IEC 25010. <span class="src">thesis-context/CLAUDE.md</span></p>
+
+<h3>The dataset (40 PRs)</h3>
+<table>
+  <tr><th>Repository</th><th>Language</th><th class="r">PRs</th></tr>
+  <tr><td>grafana/grafana</td><td>TypeScript (8) + Go (5)</td><td class="r">13</td></tr>
+  <tr><td>scikit-learn/scikit-learn</td><td>Python</td><td class="r">8</td></tr>
+  <tr><td>apache/kafka</td><td>Java / Scala</td><td class="r">8</td></tr>
+  <tr><td>godotengine/godot</td><td>C++</td><td class="r">6</td></tr>
+  <tr><td>jenkinsci/jenkins</td><td>Java</td><td class="r">5</td></tr>
+</table>
+<p class="note">Source: <span class="src">THESIS_OVERVIEW_FOR_JUDGE.md</span>, <span class="src">dataset_v2/docs/STATUS.md</span>. Inter-judge agreement κ = 0.59–0.72 ("substantial"). <em>Note: the one-paragraph blurb in <span class="src">thesis-context/CLAUDE.md</span> mistakenly lists "Django" as the 5th repo — the real one is Godot. Worth fixing in that file.</em></p>
+
+<h2 id="main">2 &middot; The main result (RQ2) — your headline</h2>
+<p class="sub">Source: <span class="src">results/BOOTSTRAP_STATS_v2.md</span> &middot; n=40 &middot; paired permutation test, B=20,000, seed=2026</p>
+
+<p>This is the canonical, pre-registered result. <strong>Do not change this table.</strong> Each mode wins on the metric it was designed for:</p>
+
+<table>
+  <tr>
+    <th>Mode vs baseline</th>
+    <th>Total Δ (/25)</th><th>p</th><th>d_z</th>
+    <th>KG-relevant Δ (/9)</th><th>p</th><th>d_z</th>
+  </tr>
+  <tr>
+    <td><strong>kg</strong></td>
+    <td>+0.62</td><td>0.054</td><td>+0.33</td>
+    <td class="tg">+0.60</td><td class="tg">0.007</td><td class="tg">+0.47</td>
+  </tr>
+  <tr>
+    <td><strong>rag</strong></td>
+    <td class="tg">+0.88</td><td class="tg">0.007</td><td class="tg">+0.47</td>
+    <td>+0.42</td><td>0.057</td><td>+0.33</td>
+  </tr>
+  <tr>
+    <td><strong>hybrid</strong></td>
+    <td class="tg">+0.72</td><td class="tg">0.037</td><td>+0.36</td>
+    <td class="tg">+0.53</td><td class="tg">0.008</td><td>+0.46</td>
+  </tr>
+</table>
+
+<div class="callout green">
+  <strong>How to read it in one breath:</strong> KG significantly improves the <em>KG-relevant</em> criteria (the 9 that need structural knowledge) — p=0.007. RAG significantly improves <em>total</em> coverage — p=0.007. Hybrid improves <em>both</em>. Neither KG nor RAG dominates the other — they help different things. <strong>That complementarity is the finding.</strong> It is more honest and more interesting than "KG wins everything," and it is exactly what your supervisor's rules tell you to claim (<span class="src">thesis-context/CLAUDE.md</span> §10).
+</div>
+<p class="note">Per-mode means (KG-relevant /9): baseline 4.97, kg 5.58, rag 5.40, hybrid 5.50. KG-rich subgroup analysis pushes the KG effect to d_z=0.66 — see §4.</p>
+
+<h2 id="criteria">3 &middot; The criteria question — settled</h2>
+<p class="lead">This is what has been spinning you in circles. There are <strong>three different "use fewer criteria" ideas</strong> in play. Two are legitimate. One is not. Here they are, side by side.</p>
+
+<table>
+  <tr><th>Version</th><th>Which criteria</th><th>Result</th><th>Verdict</th></tr>
+  <tr>
+    <td><strong>A. 9-item KG-relevant subscale</strong><br><span class="note">PRE-REGISTERED</span></td>
+    <td>F3, F4, T1, T2, T3, M1, M3, C2, Q2</td>
+    <td>KG Δ+0.60, p=0.007, d_z=+0.47</td>
+    <td><span class="pill p-solid">Primary headline</span><br><span class="note">Chosen before data. Strongest defense against "you cherry-picked."</span></td>
+  </tr>
+  <tr>
+    <td><strong>B. Refined 5-item subscale</strong><br><span class="note">PSYCHOMETRIC</span></td>
+    <td>F3, F4, T3, M1, C2<br><span class="note">drops T1, Q2 (ceiling), T2 (negative), M3 (floor)</span></td>
+    <td>KG d_z ≈ +0.58, p ≈ 0.002</td>
+    <td><span class="pill p-solid">Robustness check</span><br><span class="note">Defensible via Classical Test Theory. Report as secondary.</span></td>
+  </tr>
+  <tr>
+    <td><strong>C. "11 active criteria"</strong><br><span class="note">FROM LAST CHAT</span></td>
+    <td>11 of all 25, picked by which ones moved in the data</td>
+    <td>RAG d_z=0.64; KG no longer leads</td>
+    <td><span class="pill p-bad">Do not use</span><br><span class="note">Post-hoc selection on the outcome. Inflates effects, flips the story.</span></td>
+  </tr>
+</table>
+
+<div class="callout green">
+  <strong>Why A and B are fine but C is not.</strong><br><br>
+  <strong>A</strong> was fixed <em>before</em> you saw any results — pre-registration. Unimpeachable.<br>
+  <strong>B</strong> drops items for a reason that has nothing to do with which mode wins: a criterion every review passes (T1 at 98%, Q2 at 100%) or no review passes (M3 at 8%) <em>mathematically cannot</em> tell two modes apart, and one (T2) loads negatively on the construct. Removing zero-information items is standard Classical Test Theory (Lord &amp; Novick 1968; Kelley 1939; Graziotin et al. 2022). KG still wins, and the effect gets a bit cleaner (0.47 → 0.58). This is written up properly in <span class="src">results/CRITERIA_DERIVATION.md</span>.<br>
+  <strong>C</strong> deletes 13 of 25 criteria <em>because they did not move in your data</em>, then reports the survivors. That is selecting on the outcome — the textbook definition of the thing examiners hunt for. It is also why the headline flipped to RAG. It is not in your pre-registration and it should be discarded.
+</div>
+
+<div class="callout orange">
+  <strong>One inconsistency to clean up (so it never confuses you again).</strong> Three of your files disagree about whether the refined subscale is 5 items {F3,F4,T3,M1,C2}, 6 items {+P1}, or 4 items {F3,F4,R2,T3}. The cleanest is the <strong>5-item</strong> set in <span class="src">CRITERIA_DERIVATION.md</span>, because every one of those 5 maps to a real KG evidence field (content validity). P1 (performance) was added empirically in <span class="src">REFINED_SUBSCALE_RESULTS.md</span> but has <em>no</em> KG evidence field — that is the weak link. Pick the 5-item, delete the rest, and your story is airtight.
+</div>
+
+<p class="callout blue"><strong>Bottom line for Section 3:</strong> Headline = <strong>9-item, pre-registered (d_z 0.47, p 0.007)</strong>. Robustness = <strong>5-item refined (d_z ~0.58)</strong> with the CTT justification. Forget the 25-criterion "total" as a KG metric (RAG owns that), and forget the "11 active" cut entirely.</p>
+
+<h2 id="allexp">4 &middot; Every experiment, at a glance</h2>
+<div class="legend">
+  <span class="pill p-solid">Solid / citable</span>
+  <span class="pill p-explor">Exploratory / hedge</span>
+  <span class="pill p-bad">Confounded / don't headline</span>
+  <span class="pill p-blocked">Blocked</span>
+</div>
+<table>
+  <tr><th>Experiment</th><th>What it found</th><th>n</th><th>Status</th></tr>
+  <tr>
+    <td><strong>Main 4-mode (tree-sitter KG)</strong><br><span class="src">BOOTSTRAP_STATS_v2.md</span></td>
+    <td>KG +0.60/9 (p=.007); RAG +0.88/25 (p=.007); hybrid both. Complementarity.</td>
+    <td>40</td><td><span class="pill p-solid">Solid</span></td>
+  </tr>
+  <tr>
+    <td><strong>Clean Joern run (normal prompt)</strong><br><span class="src">experiments/2026-06-11_joern_normal_prompt/</span></td>
+    <td>Joern KG, fair prompt: KG-rel +0.69/9, p=0.003, d_z=+0.58; total +1.17, p=0.001. <strong>Beats tree-sitter cleanly.</strong></td>
+    <td>35</td><td><span class="pill p-solid">Solid (new)</span></td>
+  </tr>
+  <tr>
+    <td><strong>Joern strict prompt</strong><br><span class="src">JOERN_RESULTS_v2.md</span></td>
+    <td>d_z=+1.34, p&lt;0.0001 — but prompt mandates the criteria being scored.</td>
+    <td>35</td><td><span class="pill p-bad">Confounded</span></td>
+  </tr>
+  <tr>
+    <td><strong>Sensitivity: scoped-AST KG</strong><br><span class="src">SENSITIVITY_v2_grep_vs_ast.md</span></td>
+    <td>Aggressive hunk-scoping drops KG to d_z=+0.22, n.s. Effect depends on KG construction.</td>
+    <td>40</td><td><span class="pill p-explor">Reported as limitation</span></td>
+  </tr>
+  <tr>
+    <td><strong>KG-rich subgroup</strong><br><span class="src">SUBGROUP_ANALYSIS.md</span></td>
+    <td>On 31 PRs whose graph is actually populated: KG d_z=+0.66, p=0.0014. Effect is gated on graph population (pre-defined split).</td>
+    <td>31</td><td><span class="pill p-solid">Solid mechanism</span></td>
+  </tr>
+  <tr>
+    <td><strong>Cross-generator / capability sweet spot</strong><br><span class="src">CROSS_GENERATOR_REPLICATION.md</span></td>
+    <td>KG helps GPT-4o, hurts GPT-4o-mini (distraction), neutral on Claude (saturation). Sweet spot, not monotonic.</td>
+    <td>5</td><td><span class="pill p-explor">Exploratory</span></td>
+  </tr>
+  <tr>
+    <td><strong>Multi-hop caller depth</strong><br><span class="src">MULTIHOP_ABLATION_RESULTS.md</span></td>
+    <td>Depth-2/3 callers add nothing over depth-1. Null result → justifies depth-1 default.</td>
+    <td>7</td><td><span class="pill p-explor">Null (useful)</span></td>
+  </tr>
+  <tr>
+    <td><strong>Graded 0–3 scale pilot</strong><br><span class="src">GRADED_SCALE_RESULTS.md</span></td>
+    <td>d_z=+1.72 — but wrong generator (Gemini), wrong 2-judge panel, post-hoc subscale.</td>
+    <td>27</td><td><span class="pill p-bad">Quarantined</span></td>
+  </tr>
+  <tr>
+    <td><strong>Prompt-priming control</strong><br><span class="src">CROSS_GENERATOR_REPLICATION.md §13</span></td>
+    <td>On PRs with no KG data, ~67% of the apparent lift is the prompt wording, not the evidence. Honest decomposition.</td>
+    <td>5</td><td><span class="pill p-explor">Important caveat</span></td>
+  </tr>
+  <tr>
+    <td><strong>Human study (RQ3)</strong><br><span class="src">human_eval_v3/</span></td>
+    <td>6-PR blind A/B, Kendall's τ vs judge ranking. UI + analyzer ready.</td>
+    <td>6</td><td><span class="pill p-blocked">Webhook down</span></td>
+  </tr>
+</table>
+
+<h3>The two that changed since the overview doc was written</h3>
+<div class="callout green">
+  <strong>1. The clean Joern run now exists.</strong> Your <span class="src">THESIS_OVERVIEW_FOR_JUDGE.md</span> still says "the clean Joern run has not yet been executed... it is the keystone next step." <strong>It was run on 2026-06-11.</strong> Result: Joern KG under the <em>fair</em> prompt gives d_z=+0.58 (p=0.003) on KG-relevant and is also significant on total (d_z=+0.61). This is genuinely good news — it means you can move the headline from tree-sitter (d_z 0.47) to Joern (d_z 0.58), the +1.34 strict number becomes a clearly-labelled upper bound, and the prompt-confound worry is resolved. Update the overview doc to reflect this.
+</div>
+
+<h2 id="claim">5 &middot; What you can honestly claim</h2>
+<p>Strung together, the defensible thesis story is:</p>
+<ul class="clean">
+  <li><strong>RQ1 (feasibility):</strong> Yes — a KG+RAG review pipeline runs across 40 PRs in 5 languages. Tree-sitter handles all 5; Joern gives precise call graphs on Java/Scala/C++, weaker on TS/Python, none on Go (5 Go PRs excluded from the Joern arm).</li>
+  <li><strong>RQ2 (does context help):</strong> Yes, complementarily. KG improves KG-relevant criteria (p=0.007, d_z=0.47; Joern d_z=0.58). RAG improves total coverage (p=0.007). Hybrid improves both. The effect is <em>gated</em>: it shows up where the graph is populated (d_z=0.66 on KG-rich PRs) and depends on generator capability (helps mid-tier GPT-4o; saturated on Claude).</li>
+  <li><strong>RQ3 (do humans agree):</strong> Pending — design is valid and balanced, data collection is blocked on a webhook redeploy.</li>
+</ul>
+<div class="callout orange">
+  <strong>The single sentence to keep in your head:</strong> "Structured repository context helps an LLM code-reviewer on the criteria that need structural knowledge — provided the graph has something to say and the base model has headroom to use it." Everything in §4 either supports or sharpens that sentence. None of it contradicts it.
+</div>
+
+<h2 id="solid">6 &middot; Solid vs shaky (your viva cheat-sheet)</h2>
+<table>
+  <tr><th>Claim</th><th>Evidence</th><th>Standing</th></tr>
+  <tr><td>KG improves KG-relevant criteria</td><td>p=0.007, d_z=0.47, n=40, pre-registered</td><td><span class="pill p-solid">Solid</span></td>
+  </tr>
+  <tr><td>Joern KG (fair prompt) beats tree-sitter</td><td>d_z=0.58 vs 0.47, p=0.003</td><td><span class="pill p-solid">Solid</span></td></tr>
+  <tr><td>RAG improves total coverage</td><td>p=0.007, d_z=0.47</td><td><span class="pill p-solid">Solid</span></td></tr>
+  <tr><td>Hybrid improves both</td><td>p&lt;0.05 on both metrics</td><td><span class="pill p-solid">Solid</span></td></tr>
+  <tr><td>Effect is gated on graph population</td><td>KG-rich d_z=0.66; pre-defined input split</td><td><span class="pill p-solid">Solid</span></td></tr>
+  <tr><td>Refined 5-item subscale strengthens the effect</td><td>d_z=0.58, CTT-justified</td><td><span class="pill p-solid">Solid (as robustness)</span></td></tr>
+  <tr><td>Capability sweet spot (helps mid-tier only)</td><td>3 generators, n=5 each</td><td><span class="pill p-explor">Directional — n is small</span></td></tr>
+  <tr><td>Joern strict d_z=1.34</td><td>prompt mandates scored criteria</td><td><span class="pill p-bad">Upper bound only</span></td></tr>
+  <tr><td>Graded scale d_z=1.72</td><td>wrong generator + panel + post-hoc subscale</td><td><span class="pill p-bad">Quarantine / future work</span></td></tr>
+  <tr><td>Humans agree with the judge</td><td>study not yet collected</td><td><span class="pill p-blocked">Pending</span></td></tr>
+</table>
+<div class="callout blue">
+  <strong>Anticipate the killer question:</strong> "Why doesn't KG beat RAG everywhere, like GraphRAG hype claims?" Your answer is already correct: <em>they target different things.</em> KG carries exact structural facts (callers, tests, dependents) → wins the structural criteria. RAG carries similar code → wins general commentary. The honest complementarity framing is a strength, not a weakness — don't let anyone (or any chat session) talk you into claiming KG dominance.
+</div>
+
+<h2 id="left">7 &middot; What is actually left</h2>
+<ul class="clean">
+  <li><strong>Unblock the human study (the one real blocker).</strong> The Apps Script webhook returns HTTP 405 — no rater data reaches the sheet. Fix is a ~5-min redeploy (<span class="src">human_eval_v3/docs/REDEPLOY_WEBHOOK.md</span>), then recruit raters. <span class="src">STATUS.md §5.1</span></li>
+  <li><strong>Update <span class="src">THESIS_OVERVIEW_FOR_JUDGE.md</span></strong> to record that the clean Joern run is done (d_z=0.58) — it currently says "pending."</li>
+  <li><strong>Lock the criteria story</strong> per §3: 9-item primary, 5-item refined as robustness, delete the 6/4-item and "11 active" variants from working docs so they stop resurfacing.</li>
+  <li><strong>Fix the "Django" typo</strong> in <span class="src">thesis-context/CLAUDE.md</span> (the 5th repo is Godot).</li>
+  <li><strong>Then: write.</strong> Analysis is essentially complete. The remaining work is drafting Methods / Results / Discussion — the scaffold and every input number already exist.</li>
+</ul>
+
+<div class="callout green">
+  <strong>The one decision only you can make:</strong> do you keep <em>tree-sitter</em> as the headline KG (d_z=0.47, n=40, the pre-registered one) or promote the <em>clean Joern</em> run (d_z=0.58, n=35, the production KG)? Both are defensible. Tree-sitter = larger n + pre-registered. Joern = the real system + slightly stronger + now total-significant. My suggestion: lead with tree-sitter as the pre-registered headline, present clean-Joern as the confirmatory "production-KG" result in the same section. You lose nothing and you look rigorous.
+</div>
+
+<p class="note" style="margin-top:30px">Every figure in this document is quoted from a file under <code>results/</code> or <code>experiments/</code>; the source path is printed under each table or claim. Nothing here was recomputed in-chat. If a source file and this report ever disagree, the file wins.</p>
+
+</div>
+</body>
+</html>

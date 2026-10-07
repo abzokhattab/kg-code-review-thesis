@@ -1,0 +1,331 @@
+{
+  "pr_id": 1,
+  "mode": "kg",
+  "total_score": 7,
+  "max_score": 25,
+  "percentage": 28.0,
+  "kg_relevant_score": 4,
+  "kg_relevant_max": 9,
+  "kg_relevant_percentage": 44.4,
+  "criteria_scores": [
+    {
+      "criterion_id": "F1",
+      "score": 0,
+      "evidence": "The review discusses 'security patches' for Grafana.com proxy and dashboard snapshot API, which does not align with the PR's stated problem of replacing an OpenXR alert dialog.",
+      "n_yes": 0,
+      "n_valid": 2,
+      "unanimous": true
+    },
+    {
+      "criterion_id": "F2",
+      "score": 0,
+      "evidence": "The review identifies edge cases related to Grafana.com proxy logic and identity handling for dashboard snapshots, not for the OpenXR alert dialog replacement.",
+      "n_yes": 1,
+      "n_valid": 2,
+      "unanimous": false
+    },
+    {
+      "criterion_id": "F3",
+      "score": 0,
+      "evidence": "The 'Integration Risk' section assesses integration with Grafana API manifests, not with the OpenXR components or modules mentioned in the PR.",
+      "n_yes": 1,
+      "n_valid": 2,
+      "unanimous": false
+    },
+    {
+      "criterion_id": "F4",
+      "score": 0,
+      "evidence": "The review does not discuss the OpenXR change, and therefore does not warn about potential breaking changes or impact on its dependent code.",
+      "n_yes": 0,
+      "n_valid": 2,
+      "unanimous": true
+    },
+    {
+      "criterion_id": "T1",
+      "score": 1,
+      "evidence": "The review includes a 'Test Coverage Assessment' section and discusses 'Coverage Gaps' for the code it is reviewing, indicating a discussion about the need for tests.",
+      "n_yes": 2,
+      "n_valid": 2,
+      "unanimous": true
+    },
+    {
+      "criterion_id": "T2",
+      "score": 1,
+      "evidence": "Under 'Coverage Gaps', the review explicitly mentions testing 'Requests to paths *not* matching ssoTokenAllowedPaths' and a test case for when `identity.GetRequester` returns an identity that is *not* a `*user.SignedInUser`.",
+      "n_yes": 2,
+      "n_valid": 2,
+      "unanimous": true
+    },
+    {
+      "criterion_id": "T3",
+      "score": 1,
+      "evidence": "The review references specific files like `pkg/api/grafana_com_proxy.go` and `pkg/registry/apis/dashboard/snapshot/routes.go` and suggests specific test scenarios for them.",
+      "n_yes": 2,
+      "n_valid": 2,
+      "unanimous": true
+    },
+    {
+      "criterion_id": "R1",
+      "score": 0,
+      "evidence": "The review does not contain any comments on code clarity, naming conventions, or function organization for either the PR's content or the code it discusses.",
+      "n_yes": 0,
+      "n_valid": 2,
+      "unanimous": true
+    },
+    {
+      "criterion_id": "R2",
+      "score": 0,
+      "evidence": "The review focuses on integration and test coverage, but does not identify unnecessary complexity or suggest simplification for any code.",
+      "n_yes": 0,
+      "n_valid": 2,
+      "unanimous": true
+    },
+    {
+      "criterion_id": "R3",
+      "score": 0,
+      "evidence": "The review does not mention or check if code comments explain the 'why' behind decisions.",
+      "n_yes": 0,
+      "n_valid": 2,
+      "unanimous": true
+    },
+    {
+      "criterion_id": "M1",
+      "score": 0,
+      "evidence": "The review does not assess whether the OpenXR change fits the existing architecture or design patterns. It also doesn't explicitly assess this for the Grafana changes it discusses.",
+      "n_yes": 0,
+      "n_valid": 2,
+      "unanimous": true
+    },
+    {
+      "criterion_id": "M2",
+      "score": 0,
+      "evidence": "The review does not comment on the scope of the PR (the OpenXR change) or suggest splitting it.",
+      "n_yes": 0,
+      "n_valid": 2,
+      "unanimous": true
+    },
+    {
+      "criterion_id": "M3",
+      "score": 0,
+      "evidence": "The review does not mention or check for documentation of public APIs or interfaces.",
+      "n_yes": 0,
+      "n_valid": 2,
+      "unanimous": true
+    },
+    {
+      "criterion_id": "C1",
+      "score": 0,
+      "evidence": "The review does not check adherence to project style guides or coding conventions.",
+      "n_yes": 0,
+      "n_valid": 2,
+      "unanimous": true
+    },
+    {
+      "criterion_id": "C2",
+      "score": 0,
+      "evidence": "The review does not discuss consistency with existing patterns for solving similar problems.",
+      "n_yes": 0,
+      "n_valid": 2,
+      "unanimous": true
+    },
+    {
+      "criterion_id": "P1",
+      "score": 0,
+      "evidence": "The review does not identify any potential performance issues or inefficiencies.",
+      "n_yes": 0,
+      "n_valid": 2,
+      "unanimous": true
+    },
+    {
+      "criterion_id": "P2",
+      "score": 0,
+      "evidence": "The review does not ask about benchmarks or performance testing for critical paths.",
+      "n_yes": 0,
+      "n_valid": 2,
+      "unanimous": true
+    },
+    {
+      "criterion_id": "S1",
+      "score": 0,
+      "evidence": "While discussing security-related changes (SSO tokens, identity handling), the review does not explicitly check for general input validation or sanitization.",
+      "n_yes": 0,
+      "n_valid": 2,
+      "unanimous": true
+    },
+    {
+      "criterion_id": "S2",
+      "score": 0,
+      "evidence": "The review does not flag any hardcoded secrets, credentials, or sensitive data.",
+      "n_yes": 0,
+      "n_valid": 2,
+      "unanimous": true
+    },
+    {
+      "criterion_id": "S3",
+      "score": 1,
+      "evidence": "Under 'Coverage Gaps', the review explicitly mentions ensuring 'the error handling `fmt.Errorf(...)` is correctly triggered and handled, rather than a panic'.",
+      "n_yes": 2,
+      "n_valid": 2,
+      "unanimous": true
+    },
+    {
+      "criterion_id": "Q1",
+      "score": 1,
+      "evidence": "The review starts with a 'Scope' section that provides an overall summary of the changes it is evaluating: 'This PR applies two security patches, one modifying Grafana.com proxy logic...'",
+      "n_yes": 2,
+      "n_valid": 2,
+      "unanimous": true
+    },
+    {
+      "criterion_id": "Q2",
+      "score": 1,
+      "evidence": "Review comments are anchored to specific file paths, such as `apps/alerting/historian/pkg/apis/alertinghistorian_manifest.go` and `pkg/api/grafana_com_proxy.go`.",
+      "n_yes": 2,
+      "n_valid": 2,
+      "unanimous": true
+    },
+    {
+      "criterion_id": "Q3",
+      "score": 0,
+      "evidence": "The review lists 'Coverage Gaps' but does not explicitly distinguish between blocking issues and minor suggestions; it presents them as areas that 'need testing'.",
+      "n_yes": 0,
+      "n_valid": 2,
+      "unanimous": true
+    },
+    {
+      "criterion_id": "Q4",
+      "score": 0,
+      "evidence": "The review makes direct statements and suggestions (e.g., 'Specific scenarios that need testing include:') rather than posing clarifying questions.",
+      "n_yes": 0,
+      "n_valid": 2,
+      "unanimous": true
+    },
+    {
+      "criterion_id": "Q5",
+      "score": 1,
+      "evidence": "For test coverage, the review explains the reasoning, e.g., 'ensure the error handling ... is correctly triggered and handled, rather than a panic'.",
+      "n_yes": 2,
+      "n_valid": 2,
+      "unanimous": true
+    }
+  ],
+  "per_judge": [
+    {
+      "model": "gemini:gemini-2.5-flash",
+      "scores": {
+        "F1": 0,
+        "F2": 0,
+        "F3": 0,
+        "F4": 0,
+        "T1": 1,
+        "T2": 1,
+        "T3": 1,
+        "R1": 0,
+        "R2": 0,
+        "R3": 0,
+        "M1": 0,
+        "M2": 0,
+        "M3": 0,
+        "C1": 0,
+        "C2": 0,
+        "P1": 0,
+        "P2": 0,
+        "S1": 0,
+        "S2": 0,
+        "S3": 1,
+        "Q1": 1,
+        "Q2": 1,
+        "Q3": 0,
+        "Q4": 0,
+        "Q5": 1
+      },
+      "evidence": {
+        "F1": "The review discusses 'security patches' for Grafana.com proxy and dashboard snapshot API, which does not align with the PR's stated problem of replacing an OpenXR alert dialog.",
+        "F2": "The review identifies edge cases related to Grafana.com proxy logic and identity handling for dashboard snapshots, not for the OpenXR alert dialog replacement.",
+        "F3": "The 'Integration Risk' section assesses integration with Grafana API manifests, not with the OpenXR components or modules mentioned in the PR.",
+        "F4": "The review does not discuss the OpenXR change, and therefore does not warn about potential breaking changes or impact on its dependent code.",
+        "T1": "The review includes a 'Test Coverage Assessment' section and discusses 'Coverage Gaps' for the code it is reviewing, indicating a discussion about the need for tests.",
+        "T2": "Under 'Coverage Gaps', the review explicitly mentions testing 'Requests to paths *not* matching ssoTokenAllowedPaths' and a test case for when `identity.GetRequester` returns an identity that is *not* a `*user.SignedInUser`.",
+        "T3": "The review references specific files like `pkg/api/grafana_com_proxy.go` and `pkg/registry/apis/dashboard/snapshot/routes.go` and suggests specific test scenarios for them.",
+        "R1": "The review does not contain any comments on code clarity, naming conventions, or function organization for either the PR's content or the code it discusses.",
+        "R2": "The review focuses on integration and test coverage, but does not identify unnecessary complexity or suggest simplification for any code.",
+        "R3": "The review does not mention or check if code comments explain the 'why' behind decisions.",
+        "M1": "The review does not assess whether the OpenXR change fits the existing architecture or design patterns. It also doesn't explicitly assess this for the Grafana changes it discusses.",
+        "M2": "The review does not comment on the scope of the PR (the OpenXR change) or suggest splitting it.",
+        "M3": "The review does not mention or check for documentation of public APIs or interfaces.",
+        "C1": "The review does not check adherence to project style guides or coding conventions.",
+        "C2": "The review does not discuss consistency with existing patterns for solving similar problems.",
+        "P1": "The review does not identify any potential performance issues or inefficiencies.",
+        "P2": "The review does not ask about benchmarks or performance testing for critical paths.",
+        "S1": "While discussing security-related changes (SSO tokens, identity handling), the review does not explicitly check for general input validation or sanitization.",
+        "S2": "The review does not flag any hardcoded secrets, credentials, or sensitive data.",
+        "S3": "Under 'Coverage Gaps', the review explicitly mentions ensuring 'the error handling `fmt.Errorf(...)` is correctly triggered and handled, rather than a panic'.",
+        "Q1": "The review starts with a 'Scope' section that provides an overall summary of the changes it is evaluating: 'This PR applies two security patches, one modifying Grafana.com proxy logic...'",
+        "Q2": "Review comments are anchored to specific file paths, such as `apps/alerting/historian/pkg/apis/alertinghistorian_manifest.go` and `pkg/api/grafana_com_proxy.go`.",
+        "Q3": "The review lists 'Coverage Gaps' but does not explicitly distinguish between blocking issues and minor suggestions; it presents them as areas that 'need testing'.",
+        "Q4": "The review makes direct statements and suggestions (e.g., 'Specific scenarios that need testing include:') rather than posing clarifying questions.",
+        "Q5": "For test coverage, the review explains the reasoning, e.g., 'ensure the error handling ... is correctly triggered and handled, rather than a panic'."
+      },
+      "error": ""
+    },
+    {
+      "model": "anthropic:claude-sonnet-4-20250514",
+      "scores": {
+        "F1": 0,
+        "F2": 1,
+        "F3": 1,
+        "F4": 0,
+        "T1": 1,
+        "T2": 1,
+        "T3": 1,
+        "R1": 0,
+        "R2": 0,
+        "R3": 0,
+        "M1": 0,
+        "M2": 0,
+        "M3": 0,
+        "C1": 0,
+        "C2": 0,
+        "P1": 0,
+        "P2": 0,
+        "S1": 0,
+        "S2": 0,
+        "S3": 1,
+        "Q1": 1,
+        "Q2": 1,
+        "Q3": 0,
+        "Q4": 0,
+        "Q5": 1
+      },
+      "evidence": {
+        "F1": "Review does not address the OpenXR initialization problem or alert dialog replacement described in the PR",
+        "F2": "Review identifies edge cases like 'Requests to paths *not* matching ssoTokenAllowedPaths' and 'Requests with POST/PUT/DELETE methods'",
+        "F3": "Review systematically analyzes integration risk for multiple files: 'No direct integration risk. This file defines API manifests and does not directly call the modified ReverseProxyGnetReq or GetRoutes functions'",
+        "F4": "Review does not warn about potential breaking changes or impact on dependent code",
+        "T1": "Review explicitly discusses test coverage: 'No test files were provided in the structural context, so existing test coverage cannot be assessed directly'",
+        "T2": "Review mentions testing error paths: 'a test case where identity.GetRequester returns an identity.Requester that is not a *user.SignedInUser' and various failure scenarios",
+        "T3": "Review references specific code locations and suggests testing: 'Coverage Gaps for pkg/api/grafana_com_proxy.go' and 'Coverage Gaps for pkg/registry/apis/dashboard/snapshot/routes.go'",
+        "R1": "Review does not comment on code clarity, naming conventions, or function organization",
+        "R2": "Review does not identify unnecessary complexity or suggest simplification",
+        "R3": "Review does not check if code comments explain the 'why' behind decisions",
+        "M1": "Review does not assess architectural fit or design patterns",
+        "M2": "Review does not comment on PR scope or suggest splitting",
+        "M3": "Review does not check if public APIs are properly documented",
+        "C1": "Review does not check adherence to style guides or coding conventions",
+        "C2": "Review does not check consistency with existing patterns",
+        "P1": "Review does not identify performance issues or inefficiencies",
+        "P2": "Review does not ask about benchmarks or performance testing",
+        "S1": "Review does not check for input validation or sanitization",
+        "S2": "Review does not flag hardcoded secrets or sensitive data",
+        "S3": "Review assesses error handling: 'error handling fmt.Errorf(\"expected SignedInUser identity, got %T\", requester) is correctly triggered and handled, rather than a panic'",
+        "Q1": "Review provides overall summary: 'This PR applies two security patches, one modifying Grafana.com proxy logic to conditionally send SSO tokens, and another refining identity handling for dashboard snapshot API routes'",
+        "Q2": "Review is anchored to specific code locations with file paths like 'pkg/api/grafana_com_proxy.go' and 'pkg/registry/apis/dashboard/snapshot/routes.go'",
+        "Q3": "Review does not distinguish between blocking issues and minor suggestions",
+        "Q4": "Review does not ask clarifying questions",
+        "Q5": "Review explains reasoning: 'would be valuable to ensure the error handling...is correctly triggered and handled, rather than a panic'"
+      },
+      "error": ""
+    }
+  ],
+  "evaluation_timestamp": "2026-05-14T17:44:29.588346Z"
+}

@@ -1,0 +1,62 @@
+{
+  "candidate_mentions": [
+    {
+      "basename_collision": false,
+      "end": 742,
+      "evidence_id": "M001",
+      "excerpt": " updated parameter.\n\n## Evidence\n- `sklearn/linear_model/_base.py:108`: The function `_preprocess_data` now requires an additional parameter `required_ctx`.\n- `sklearn/linear_model/_bayes.py`, `sklearn/linear_model/_coordinate_descent.py`, `sklearn/linear_model/_least_angle.py`, `sklearn/linear_model/_ridge.py`: These files call `_preprocess_data` and may not have been updated to pass the new parameter.\n\n## Impact\n- Existing code that calls `_pre",
+      "match_kind": "full_path",
+      "match_text": "sklearn/linear_model/_bayes.py",
+      "oracle_path": "sklearn/linear_model/_bayes.py",
+      "start": 712
+    },
+    {
+      "basename_collision": false,
+      "end": 789,
+      "evidence_id": "M002",
+      "excerpt": " `sklearn/linear_model/_base.py:108`: The function `_preprocess_data` now requires an additional parameter `required_ctx`.\n- `sklearn/linear_model/_bayes.py`, `sklearn/linear_model/_coordinate_descent.py`, `sklearn/linear_model/_least_angle.py`, `sklearn/linear_model/_ridge.py`: These files call `_preprocess_data` and may not have been updated to pass the new parameter.\n\n## Impact\n- Existing code that calls `_preprocess_data` without the `required_ctx` parame",
+      "match_kind": "full_path",
+      "match_text": "sklearn/linear_model/_coordinate_descent.py",
+      "oracle_path": "sklearn/linear_model/_coordinate_descent.py",
+      "start": 746
+    },
+    {
+      "basename_collision": false,
+      "end": 829,
+      "evidence_id": "M003",
+      "excerpt": "ion `_preprocess_data` now requires an additional parameter `required_ctx`.\n- `sklearn/linear_model/_bayes.py`, `sklearn/linear_model/_coordinate_descent.py`, `sklearn/linear_model/_least_angle.py`, `sklearn/linear_model/_ridge.py`: These files call `_preprocess_data` and may not have been updated to pass the new parameter.\n\n## Impact\n- Existing code that calls `_preprocess_data` without the `required_ctx` parameter will raise a `TypeError`, potentiall",
+      "match_kind": "full_path",
+      "match_text": "sklearn/linear_model/_least_angle.py",
+      "oracle_path": "sklearn/linear_model/_least_angle.py",
+      "start": 793
+    },
+    {
+      "basename_collision": false,
+      "end": 863,
+      "evidence_id": "M004",
+      "excerpt": "dditional parameter `required_ctx`.\n- `sklearn/linear_model/_bayes.py`, `sklearn/linear_model/_coordinate_descent.py`, `sklearn/linear_model/_least_angle.py`, `sklearn/linear_model/_ridge.py`: These files call `_preprocess_data` and may not have been updated to pass the new parameter.\n\n## Impact\n- Existing code that calls `_preprocess_data` without the `required_ctx` parameter will raise a `TypeError`, potentially breaking functionality across mu",
+      "match_kind": "full_path",
+      "match_text": "sklearn/linear_model/_ridge.py",
+      "oracle_path": "sklearn/linear_model/_ridge.py",
+      "start": 833
+    }
+  ],
+  "causal_quote": "Existing code that calls `_preprocess_data` without the `required_ctx` parameter will raise a `TypeError`, potentially breaking functionality across multiple modules.",
+  "decision_source": "llm_causal_adjudication",
+  "detected": true,
+  "evidence_id": "M001",
+  "executed_at_utc": "2026-09-19T15:05:26.495040+00:00",
+  "finding_quote": "- `sklearn/linear_model/_bayes.py`, `sklearn/linear_model/_coordinate_descent.py`, `sklearn/linear_model/_least_angle.py`, `sklearn/linear_model/_ridge.py`: These files call `_preprocess_data` and may not have been updated to pass the new parameter.",
+  "judge": "openai:gpt-4o",
+  "manifest_sha256": "5d4371a93d1b09f0491ecc12279f9f3ff5de23053b7a5e74650a749f58b472b0",
+  "model_alias": "openai:gpt-4o",
+  "model_snapshot": "unavailable-from-original-wrapper",
+  "original_verdict": true,
+  "prompt_sha256": "4adfdc147060b8b227104b17ace5be5e5180ec2eddc43888357728b86ce6eea5",
+  "reason_code": "specific_cross_file_link",
+  "response_wrapper": "single_json_fence",
+  "review_sha256": "6ea0c409f7d14f57131bfbd30658bfaa98abe351950fe99e688a61a61ce61271",
+  "schema_sha256": "6a22fcb256437ebed904ab2d879b36be1234fb2e06add1127ac8ea2ab46f60f0",
+  "schema_version": "exp2-adjudication-v2",
+  "system_sha256": "3634314a8fc4231391e4c51174e5c32d7346b0e2ceb5f8c4641e6ba866bd5939"
+}

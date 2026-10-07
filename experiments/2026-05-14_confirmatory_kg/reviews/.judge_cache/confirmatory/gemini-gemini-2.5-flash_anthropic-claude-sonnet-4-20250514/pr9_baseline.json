@@ -1,0 +1,331 @@
+{
+  "pr_id": 9,
+  "mode": "baseline",
+  "total_score": 13,
+  "max_score": 25,
+  "percentage": 52.0,
+  "kg_relevant_score": 8,
+  "kg_relevant_max": 9,
+  "kg_relevant_percentage": 88.9,
+  "criteria_scores": [
+    {
+      "criterion_id": "F1",
+      "score": 0,
+      "evidence": "The review's 'Scope' states what the PR does, but the 'Problem' section immediately critiques the implementation without explicitly verifying that the change successfully addresses the stated problem or requirement.",
+      "n_yes": 1,
+      "n_valid": 2,
+      "unanimous": false
+    },
+    {
+      "criterion_id": "F2",
+      "score": 1,
+      "evidence": "The review identifies 'Potential for Future Property/Signal Name Collisions' and 'Future attempts to expose non-signal properties' as edge cases.",
+      "n_yes": 2,
+      "n_valid": 2,
+      "unanimous": true
+    },
+    {
+      "criterion_id": "F3",
+      "score": 1,
+      "evidence": "The review discusses how `JNISingleton`'s `_get` method integrates with 'typical Godot `Object`s' and `ClassDB::bind_property`.",
+      "n_yes": 2,
+      "n_valid": 2,
+      "unanimous": true
+    },
+    {
+      "criterion_id": "F4",
+      "score": 1,
+      "evidence": "The review warns about 'Inconsistent API Behavior' and that 'Future attempts to expose non-signal properties on `JNISingleton` via `_get` would fail'.",
+      "n_yes": 2,
+      "n_valid": 2,
+      "unanimous": true
+    },
+    {
+      "criterion_id": "T1",
+      "score": 1,
+      "evidence": "The 'Recommendation' section includes 'Add Test for Non-Signal Property Access (Tests)'.",
+      "n_yes": 2,
+      "n_valid": 2,
+      "unanimous": true
+    },
+    {
+      "criterion_id": "T2",
+      "score": 1,
+      "evidence": "The review suggests adding a test 'to ensure it correctly returns `false` or handles it gracefully', which covers error paths/failure scenarios.",
+      "n_yes": 2,
+      "n_valid": 2,
+      "unanimous": true
+    },
+    {
+      "criterion_id": "T3",
+      "score": 0,
+      "evidence": "The review suggests adding a new test case but does not reference specific existing test files or suggest which ones should be updated.",
+      "n_yes": 0,
+      "n_valid": 2,
+      "unanimous": true
+    },
+    {
+      "criterion_id": "R1",
+      "score": 0,
+      "evidence": "The review does not comment on code clarity, naming conventions, or function organization.",
+      "n_yes": 0,
+      "n_valid": 2,
+      "unanimous": true
+    },
+    {
+      "criterion_id": "R2",
+      "score": 0,
+      "evidence": "The review identifies a narrow scope and suggests broadening it or documenting it, rather than identifying unnecessary complexity or suggesting simplification.",
+      "n_yes": 0,
+      "n_valid": 2,
+      "unanimous": true
+    },
+    {
+      "criterion_id": "R3",
+      "score": 1,
+      "evidence": "The review suggests: 'If no other dynamic properties are anticipated, add a comment explaining the intentional narrow scope.', implying a check for the 'why' behind decisions.",
+      "n_yes": 2,
+      "n_valid": 2,
+      "unanimous": true
+    },
+    {
+      "criterion_id": "M1",
+      "score": 1,
+      "evidence": "The review assesses the change against 'typical Godot `Object`s' and `ClassDB::bind_property`, evaluating its fit within the existing architecture.",
+      "n_yes": 2,
+      "n_valid": 2,
+      "unanimous": true
+    },
+    {
+      "criterion_id": "M2",
+      "score": 0,
+      "evidence": "The review critiques the narrowness of the PR's scope, not that it is too large or should be split.",
+      "n_yes": 0,
+      "n_valid": 2,
+      "unanimous": true
+    },
+    {
+      "criterion_id": "M3",
+      "score": 1,
+      "evidence": "The review recommends: 'Clearly document the specific behavior of `JNISingleton`'s `_get` method', indicating a check for API documentation.",
+      "n_yes": 2,
+      "n_valid": 2,
+      "unanimous": true
+    },
+    {
+      "criterion_id": "C1",
+      "score": 0,
+      "evidence": "The review does not mention adherence to project style guides or coding conventions.",
+      "n_yes": 0,
+      "n_valid": 2,
+      "unanimous": true
+    },
+    {
+      "criterion_id": "C2",
+      "score": 1,
+      "evidence": "The review compares the `_get` implementation to 'typical Godot `Object`s' and `ClassDB::bind_property`, checking for consistency with existing patterns.",
+      "n_yes": 2,
+      "n_valid": 2,
+      "unanimous": true
+    },
+    {
+      "criterion_id": "P1",
+      "score": 0,
+      "evidence": "The review does not identify any potential performance issues or inefficiencies.",
+      "n_yes": 0,
+      "n_valid": 2,
+      "unanimous": true
+    },
+    {
+      "criterion_id": "P2",
+      "score": 0,
+      "evidence": "The review does not ask about benchmarks or performance testing.",
+      "n_yes": 0,
+      "n_valid": 2,
+      "unanimous": true
+    },
+    {
+      "criterion_id": "S1",
+      "score": 0,
+      "evidence": "The review does not check for proper input validation or sanitization.",
+      "n_yes": 0,
+      "n_valid": 2,
+      "unanimous": true
+    },
+    {
+      "criterion_id": "S2",
+      "score": 0,
+      "evidence": "The review does not flag hardcoded secrets, credentials, or sensitive data.",
+      "n_yes": 0,
+      "n_valid": 2,
+      "unanimous": true
+    },
+    {
+      "criterion_id": "S3",
+      "score": 1,
+      "evidence": "The review suggests a test 'to ensure it correctly returns `false` or handles it gracefully', which touches on error handling.",
+      "n_yes": 2,
+      "n_valid": 2,
+      "unanimous": true
+    },
+    {
+      "criterion_id": "Q1",
+      "score": 1,
+      "evidence": "The 'Scope' section provides a summary of the changes, and the 'Problem' and 'Impact' sections provide an assessment.",
+      "n_yes": 2,
+      "n_valid": 2,
+      "unanimous": true
+    },
+    {
+      "criterion_id": "Q2",
+      "score": 1,
+      "evidence": "The 'Evidence' section provides specific file paths and line numbers: 'platform/android/api/jni_singleton.cpp:36-41'.",
+      "n_yes": 2,
+      "n_valid": 2,
+      "unanimous": true
+    },
+    {
+      "criterion_id": "Q3",
+      "score": 0,
+      "evidence": "Review does not clearly distinguish between blocking issues and minor suggestions",
+      "n_yes": 1,
+      "n_valid": 2,
+      "unanimous": false
+    },
+    {
+      "criterion_id": "Q4",
+      "score": 0,
+      "evidence": "The review primarily makes statements and suggestions rather than asking clarifying questions.",
+      "n_yes": 0,
+      "n_valid": 2,
+      "unanimous": true
+    },
+    {
+      "criterion_id": "Q5",
+      "score": 1,
+      "evidence": "The 'Impact' section clearly explains the reasoning and consequences behind the identified problems, which supports the 'why' of the recommendations.",
+      "n_yes": 2,
+      "n_valid": 2,
+      "unanimous": true
+    }
+  ],
+  "per_judge": [
+    {
+      "model": "gemini:gemini-2.5-flash",
+      "scores": {
+        "F1": 0,
+        "F2": 1,
+        "F3": 1,
+        "F4": 1,
+        "T1": 1,
+        "T2": 1,
+        "T3": 0,
+        "R1": 0,
+        "R2": 0,
+        "R3": 1,
+        "M1": 1,
+        "M2": 0,
+        "M3": 1,
+        "C1": 0,
+        "C2": 1,
+        "P1": 0,
+        "P2": 0,
+        "S1": 0,
+        "S2": 0,
+        "S3": 1,
+        "Q1": 1,
+        "Q2": 1,
+        "Q3": 1,
+        "Q4": 0,
+        "Q5": 1
+      },
+      "evidence": {
+        "F1": "The review's 'Scope' states what the PR does, but the 'Problem' section immediately critiques the implementation without explicitly verifying that the change successfully addresses the stated problem or requirement.",
+        "F2": "The review identifies 'Potential for Future Property/Signal Name Collisions' and 'Future attempts to expose non-signal properties' as edge cases.",
+        "F3": "The review discusses how `JNISingleton`'s `_get` method integrates with 'typical Godot `Object`s' and `ClassDB::bind_property`.",
+        "F4": "The review warns about 'Inconsistent API Behavior' and that 'Future attempts to expose non-signal properties on `JNISingleton` via `_get` would fail'.",
+        "T1": "The 'Recommendation' section includes 'Add Test for Non-Signal Property Access (Tests)'.",
+        "T2": "The review suggests adding a test 'to ensure it correctly returns `false` or handles it gracefully', which covers error paths/failure scenarios.",
+        "T3": "The review suggests adding a new test case but does not reference specific existing test files or suggest which ones should be updated.",
+        "R1": "The review does not comment on code clarity, naming conventions, or function organization.",
+        "R2": "The review identifies a narrow scope and suggests broadening it or documenting it, rather than identifying unnecessary complexity or suggesting simplification.",
+        "R3": "The review suggests: 'If no other dynamic properties are anticipated, add a comment explaining the intentional narrow scope.', implying a check for the 'why' behind decisions.",
+        "M1": "The review assesses the change against 'typical Godot `Object`s' and `ClassDB::bind_property`, evaluating its fit within the existing architecture.",
+        "M2": "The review critiques the narrowness of the PR's scope, not that it is too large or should be split.",
+        "M3": "The review recommends: 'Clearly document the specific behavior of `JNISingleton`'s `_get` method', indicating a check for API documentation.",
+        "C1": "The review does not mention adherence to project style guides or coding conventions.",
+        "C2": "The review compares the `_get` implementation to 'typical Godot `Object`s' and `ClassDB::bind_property`, checking for consistency with existing patterns.",
+        "P1": "The review does not identify any potential performance issues or inefficiencies.",
+        "P2": "The review does not ask about benchmarks or performance testing.",
+        "S1": "The review does not check for proper input validation or sanitization.",
+        "S2": "The review does not flag hardcoded secrets, credentials, or sensitive data.",
+        "S3": "The review suggests a test 'to ensure it correctly returns `false` or handles it gracefully', which touches on error handling.",
+        "Q1": "The 'Scope' section provides a summary of the changes, and the 'Problem' and 'Impact' sections provide an assessment.",
+        "Q2": "The 'Evidence' section provides specific file paths and line numbers: 'platform/android/api/jni_singleton.cpp:36-41'.",
+        "Q3": "The review explicitly states: 'This is a minor concern' for one of the identified problems, distinguishing it from other issues.",
+        "Q4": "The review primarily makes statements and suggestions rather than asking clarifying questions.",
+        "Q5": "The 'Impact' section clearly explains the reasoning and consequences behind the identified problems, which supports the 'why' of the recommendations."
+      },
+      "error": ""
+    },
+    {
+      "model": "anthropic:claude-sonnet-4-20250514",
+      "scores": {
+        "F1": 1,
+        "F2": 1,
+        "F3": 1,
+        "F4": 1,
+        "T1": 1,
+        "T2": 1,
+        "T3": 0,
+        "R1": 0,
+        "R2": 0,
+        "R3": 1,
+        "M1": 1,
+        "M2": 0,
+        "M3": 1,
+        "C1": 0,
+        "C2": 1,
+        "P1": 0,
+        "P2": 0,
+        "S1": 0,
+        "S2": 0,
+        "S3": 1,
+        "Q1": 1,
+        "Q2": 1,
+        "Q3": 0,
+        "Q4": 0,
+        "Q5": 1
+      },
+      "evidence": {
+        "F1": "Review states 'This PR fixes a regression in Android plugin signal connections by implementing the `_get` method' - directly addresses the stated problem",
+        "F2": "Review identifies 'Potential for Future Property/Signal Name Collisions' and discusses what happens 'if `JNISingleton` were to bind a regular property with the same name as a signal'",
+        "F3": "Review discusses how change 'makes the `JNISingleton`'s property access behavior inconsistent with typical Godot `Object`s' - shows integration analysis",
+        "F4": "Review warns about 'Inconsistent API Behavior' and states 'Future attempts to expose non-signal properties on `JNISingleton` via `_get` would fail'",
+        "T1": "Review mentions 'adds a new test case to verify this functionality' and recommends 'Add Test for Non-Signal Property Access'",
+        "T2": "Review recommends 'consider adding a test case that attempts to access a non-existent property' - addresses error path testing",
+        "T3": "Review mentions tests generally but does not reference specific test files or suggest which existing tests should be updated",
+        "R1": "Review does not comment on code clarity, naming conventions, or function organization",
+        "R2": "Review does not identify unnecessary complexity or suggest simplification",
+        "R3": "Review recommends 'add a comment explaining the intentional narrow scope' - asks for explanatory comments",
+        "M1": "Review assesses architectural fit by discussing how the change affects 'typical Godot `Object`s that might expose both signals and other properties via `_get`'",
+        "M2": "Review does not comment on whether the PR scope is appropriate or should be split",
+        "M3": "Review recommends 'Document `_get` Behavior' and 'Clearly document the specific behavior of `JNISingleton`'s `_get` method'",
+        "C1": "Review does not check adherence to project style guides or coding conventions",
+        "C2": "Review compares the implementation to 'typical Godot `Object`s' and discusses consistency with existing patterns",
+        "P1": "Review does not identify performance issues or inefficiencies",
+        "P2": "Review does not ask about benchmarks or performance testing",
+        "S1": "Review does not check for input validation or sanitization",
+        "S2": "Review does not flag hardcoded secrets, credentials, or sensitive data",
+        "S3": "Review discusses error handling: 'ensure it correctly returns `false` or handles it gracefully'",
+        "Q1": "Review provides comprehensive summary in 'Scope' section and overall assessment of changes with Problem, Impact, and Recommendation sections",
+        "Q2": "Review includes specific file references: 'platform/android/api/jni_singleton.cpp:36-41' and 'platform/android/api/jni_singleton.h:49'",
+        "Q3": "Review does not clearly distinguish between blocking issues and minor suggestions",
+        "Q4": "Review makes statements and recommendations but does not ask clarifying questions",
+        "Q5": "Review explains reasoning throughout, such as 'This makes the `JNISingleton`'s property access behavior inconsistent' and provides detailed impact analysis"
+      },
+      "error": ""
+    }
+  ],
+  "evaluation_timestamp": "2026-05-14T17:52:09.600579Z"
+}

@@ -1,0 +1,51 @@
+{
+  "pr_id": 6,
+  "mode": "joern_kg",
+  "mean_scores": {
+    "F3": 3.0,
+    "F4": 2.0,
+    "P1": 0.5,
+    "R2": 0.0,
+    "T3": 3.0
+  },
+  "mean_graded_total": 8.5,
+  "per_judge": [
+    {
+      "model": "gemini:gemini-2.5-flash",
+      "scores": {
+        "F3": 3,
+        "F4": 2,
+        "P1": 0,
+        "R2": 0,
+        "T3": 3
+      },
+      "evidence": {
+        "F3": "Names multiple specific callers or dependent components with file paths or function names, and explains the concrete integration risk for each. \nEvidence: 'Problem 1: Changed Behavior for Remote Fetches: The PR alters the `DelayedRemoteFetch` timeout mechanism to use a new broker-configured value (`remote.fetch.max.wait.ms`) instead of the `maxWaitMs` provided in the `FetchParams` object. This means client-provided `fetch.max.wait.ms` will no longer influence the server-side blocking timeout for",
+        "F4": "Identifies at least one specific API contract or caller expectation that could break. \nEvidence: 'Problem 1: Changed Behavior for Remote Fetches: The PR alters the `DelayedRemoteFetch` timeout mechanism to use a new broker-configured value (`remote.fetch.max.wait.ms`) instead of the `maxWaitMs` provided in the `FetchParams` object. This means client-provided `fetch.max.wait.ms` will no longer influence the server-side blocking timeout for remote log fetches, which is a significant behavioral cha",
+        "P1": "No mention of performance. The review discusses 'different latency profiles' but in the context of changed behavior and client expectations regarding timeouts, not as an inefficiency introduced by the code itself.",
+        "R2": "No comment on complexity or code structure. The 'Potential for Configuration Confusion' is about usability/documentation, not code complexity.",
+        "T3": "Names multiple specific test file paths, references the exact test scenarios or functions within those files that need coverage, and explains what edge cases are currently missing. \nEvidence: 'Enhance `core/src/test/scala/integration/kafka/server/DelayedRemoteFetchTest.scala` to include test cases that: Verify `DelayedRemoteFetch` uses `remoteFetchMaxWaitMs` when it's different from `fetchParams.maxWaitMs`. Verify `DelayedRemoteFetch` correctly times out based on `remoteFetchMaxWaitMs`. Consider"
+      },
+      "error": ""
+    },
+    {
+      "model": "gemini:gemini-2.5-pro",
+      "scores": {
+        "F3": 3,
+        "F4": 2,
+        "P1": 1,
+        "R2": 0,
+        "T3": 3
+      },
+      "evidence": {
+        "F3": "The review names multiple specific components with file paths (`DelayedRemoteFetch.scala:38`, `ReplicaManager.scala:1480`, `ConsumerConfig.java:200-203`) and explains the concrete integration risk: 'Existing Kafka clients that rely on `fetch.max.wait.ms` to control the server-side blocking timeout for *all* fetch requests (including those that might involve remote storage) will find their expectation violated for remote fetches.'",
+        "F4": "The review identifies a specific caller expectation that could break: 'client-provided `fetch.max.wait.ms` will no longer influence the server-side blocking timeout for remote log fetches, which is a significant behavioral change.' It details the impact on clients, explaining that their expectation of controlling the timeout will be violated.",
+        "P1": "The review makes a comment that performance could be affected, mentioning that the change could lead to 'different latency profiles or timeouts than clients expect' and 'unexpected timeouts or delays'. It does not identify a specific inefficiency in the changed code itself, but rather the performance impact of the behavioral change.",
+        "R2": "The review mentions 'Potential for Configuration Confusion', which relates to user-facing complexity, but it does not comment on the complexity of the code implementation or suggest any code-level simplification or refactoring.",
+        "T3": "The review names multiple specific test file paths (`core/src/test/scala/integration/kafka/server/DelayedRemoteFetchTest.scala` and `core/src/test/scala/unit/kafka/server/ReplicaManagerTest.scala`), references the exact test scenarios needed ('Verify `DelayedRemoteFetch` uses `remoteFetchMaxWaitMs` when it's different from `fetchParams.maxWaitMs`'), and explains what edge cases are missing ('Edge cases like `remote.log.storage.system.enable=false`... are also not covered')."
+      },
+      "error": ""
+    }
+  ],
+  "timestamp": "2026-06-01T18:57:46.506699+00:00"
+}

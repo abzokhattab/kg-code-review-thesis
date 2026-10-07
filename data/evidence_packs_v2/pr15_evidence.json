@@ -1,0 +1,372 @@
+{
+  "pr": {
+    "number": 78399,
+    "title": "Chore: Refactor TimeRangePicker for aria-label selectors ",
+    "body": "Refactors TimeRangePicker to move aria-label e2e selectors to data-testid.\r\n\r\nWhile I was there I also changed the close calendar button to an IconButton, which ended up being a rats nest of adjusting the design to account for it. Hopefully things should be a bit better now :) \r\n\r\n![image](https://github.com/grafana/grafana/assets/46142/54a69321-342b-4459-bfcf-5c9a54491e8c)\r\n",
+    "url": "https://github.com/grafana/grafana/pull/78399",
+    "repo": "grafana/grafana",
+    "base_branch": "main",
+    "head_branch": "joshhunt/time-range-picker-refactor",
+    "merged_at": "2023-11-23T10:39:27Z",
+    "state": "MERGED"
+  },
+  "changed_files": [
+    {
+      "path": ".betterer.results",
+      "language": "unknown",
+      "added": 0,
+      "deleted": 14
+    },
+    {
+      "path": "packages/grafana-e2e-selectors/src/selectors/components.ts",
+      "language": "typescript",
+      "added": 5,
+      "deleted": 5
+    },
+    {
+      "path": "packages/grafana-ui/src/components/DateTimePickers/TimeRangePicker/CalendarFooter.tsx",
+      "language": "typescript",
+      "added": 7,
+      "deleted": 28
+    },
+    {
+      "path": "packages/grafana-ui/src/components/DateTimePickers/TimeRangePicker/CalendarHeader.tsx",
+      "language": "typescript",
+      "added": 10,
+      "deleted": 24
+    },
+    {
+      "path": "packages/grafana-ui/src/components/DateTimePickers/TimeRangePicker/TimePickerCalendar.tsx",
+      "language": "typescript",
+      "added": 46,
+      "deleted": 33
+    },
+    {
+      "path": "packages/grafana-ui/src/components/DateTimePickers/TimeRangePicker/TimePickerContent.test.tsx",
+      "language": "typescript",
+      "added": 4,
+      "deleted": 4
+    },
+    {
+      "path": "packages/grafana-ui/src/components/DateTimePickers/TimeRangePicker/TimePickerFooter.tsx",
+      "language": "typescript",
+      "added": 1,
+      "deleted": 1
+    },
+    {
+      "path": "packages/grafana-ui/src/components/DateTimePickers/TimeRangePicker/TimeRangeContent.test.tsx",
+      "language": "typescript",
+      "added": 11,
+      "deleted": 15
+    },
+    {
+      "path": "packages/grafana-ui/src/components/DateTimePickers/TimeRangePicker/TimeRangeContent.tsx",
+      "language": "typescript",
+      "added": 10,
+      "deleted": 4
+    },
+    {
+      "path": "public/app/core/components/TimePicker/TimePickerWithHistory.test.tsx",
+      "language": "typescript",
+      "added": 2,
+      "deleted": 2
+    },
+    {
+      "path": "public/locales/de-DE/grafana.json",
+      "language": "json",
+      "added": 2,
+      "deleted": 0
+    },
+    {
+      "path": "public/locales/en-US/grafana.json",
+      "language": "json",
+      "added": 2,
+      "deleted": 0
+    },
+    {
+      "path": "public/locales/es-ES/grafana.json",
+      "language": "json",
+      "added": 2,
+      "deleted": 0
+    },
+    {
+      "path": "public/locales/fr-FR/grafana.json",
+      "language": "json",
+      "added": 2,
+      "deleted": 0
+    },
+    {
+      "path": "public/locales/pseudo-LOCALE/grafana.json",
+      "language": "json",
+      "added": 2,
+      "deleted": 0
+    },
+    {
+      "path": "public/locales/zh-Hans/grafana.json",
+      "language": "json",
+      "added": 2,
+      "deleted": 0
+    }
+  ],
+  "nearest_tests": [
+    {
+      "path": "packages/grafana-ui/src/components/DateTimePickers/TimeRangePicker/TimePickerCalendar.test.tsx",
+      "relationship": "tests",
+      "source_file": "packages/grafana-ui/src/components/DateTimePickers/TimeRangePicker/TimePickerCalendar.tsx"
+    },
+    {
+      "path": "packages/grafana-ui/src/components/DateTimePickers/TimeRangePicker/TimeRangeContent.test.tsx",
+      "relationship": "tests",
+      "source_file": "packages/grafana-ui/src/components/DateTimePickers/TimeRangePicker/TimeRangeContent.tsx"
+    },
+    {
+      "path": "tools/setup_grafana_alertmanager_integration_test_images.go",
+      "relationship": "tests",
+      "source_file": "public/locales/de-DE/grafana.json"
+    },
+    {
+      "path": "e2e-playwright/test-plugins/grafana-test-datasource/locales/es-ES/grafana-e2etest-datasource.json",
+      "relationship": "tests",
+      "source_file": "public/locales/de-DE/grafana.json"
+    },
+    {
+      "path": "e2e-playwright/test-plugins/grafana-test-datasource/locales/sv-SE/grafana-e2etest-datasource.json",
+      "relationship": "tests",
+      "source_file": "public/locales/de-DE/grafana.json"
+    },
+    {
+      "path": "e2e-playwright/test-plugins/grafana-test-datasource/locales/en-US/grafana-e2etest-datasource.json",
+      "relationship": "tests",
+      "source_file": "public/locales/de-DE/grafana.json"
+    },
+    {
+      "path": "e2e-playwright/test-plugins/grafana-test-panel/locales/es-ES/grafana-e2etest-panel.json",
+      "relationship": "tests",
+      "source_file": "public/locales/de-DE/grafana.json"
+    }
+  ],
+  "dependent_files": [
+    {
+      "path": "e2e-playwright/various-suite/filter-annotations.spec.ts",
+      "relationship": "imports",
+      "source_file": "packages/grafana-e2e-selectors/src/selectors/components.ts"
+    },
+    {
+      "path": "e2e-playwright/various-suite/navigation.spec.ts",
+      "relationship": "imports",
+      "source_file": "packages/grafana-e2e-selectors/src/selectors/components.ts"
+    },
+    {
+      "path": "e2e-playwright/various-suite/explore.spec.ts",
+      "relationship": "imports",
+      "source_file": "packages/grafana-e2e-selectors/src/selectors/components.ts"
+    },
+    {
+      "path": "e2e-playwright/various-suite/keybinds.spec.ts",
+      "relationship": "imports",
+      "source_file": "packages/grafana-e2e-selectors/src/selectors/components.ts"
+    },
+    {
+      "path": "e2e-playwright/various-suite/prometheus-config.spec.ts",
+      "relationship": "imports",
+      "source_file": "packages/grafana-e2e-selectors/src/selectors/components.ts"
+    },
+    {
+      "path": "e2e-playwright/various-suite/solo-route.spec.ts",
+      "relationship": "imports",
+      "source_file": "packages/grafana-e2e-selectors/src/selectors/components.ts"
+    },
+    {
+      "path": "e2e-playwright/various-suite/loki-table-explore-to-dash.spec.ts",
+      "relationship": "imports",
+      "source_file": "packages/grafana-e2e-selectors/src/selectors/components.ts"
+    },
+    {
+      "path": "e2e-playwright/various-suite/return-to-previous.spec.ts",
+      "relationship": "imports",
+      "source_file": "packages/grafana-e2e-selectors/src/selectors/components.ts"
+    },
+    {
+      "path": "e2e-playwright/various-suite/prometheus-variable-editor.spec.ts",
+      "relationship": "imports",
+      "source_file": "packages/grafana-e2e-selectors/src/selectors/components.ts"
+    },
+    {
+      "path": "e2e-playwright/various-suite/verify-i18n.spec.ts",
+      "relationship": "imports",
+      "source_file": "packages/grafana-e2e-selectors/src/selectors/components.ts"
+    },
+    {
+      "path": "packages/grafana-ui/src/components/DateTimePickers/TimeRangePicker/CalendarBody.tsx",
+      "relationship": "imports",
+      "source_file": "packages/grafana-ui/src/components/DateTimePickers/TimeRangePicker/TimePickerCalendar.tsx"
+    },
+    {
+      "path": "packages/grafana-ui/src/components/DateTimePickers/TimeRangePicker/TimePickerContent.tsx",
+      "relationship": "imports",
+      "source_file": "packages/grafana-ui/src/components/DateTimePickers/TimeRangePicker/TimePickerFooter.tsx"
+    },
+    {
+      "path": "embed.go",
+      "relationship": "imports",
+      "source_file": "public/locales/de-DE/grafana.json"
+    },
+    {
+      "path": "playwright.storybook.config.ts",
+      "relationship": "imports",
+      "source_file": "public/locales/de-DE/grafana.json"
+    },
+    {
+      "path": "tools/setup_grafana_alertmanager_integration_test_images.go",
+      "relationship": "imports",
+      "source_file": "public/locales/de-DE/grafana.json"
+    }
+  ],
+  "diff_summary": "16 files changed",
+  "full_diff": "diff --git a/.betterer.results b/.betterer.results\nindex 31f7ab330d78d..713870268e502 100644\n--- a/.betterer.results\n+++ b/.betterer.results\n@@ -752,20 +752,6 @@ exports[`better eslint`] = {\n     \"packages/grafana-ui/src/components/DateTimePickers/TimeRangeInput.tsx:5381\": [\n       [0, 0, 0, \"Use data-testid for E2E selectors instead of aria-label\", \"0\"]\n     ],\n-    \"packages/grafana-ui/src/components/DateTimePickers/TimeRangePicker/CalendarHeader.tsx:5381\": [\n-      [0, 0, 0, \"Use data-testid for E2E selectors instead of aria-label\", \"0\"]\n-    ],\n-    \"packages/grafana-ui/src/components/DateTimePickers/TimeRangePicker/TimePickerCalendar.tsx:5381\": [\n-      [0, 0, 0, \"Use data-testid for E2E selectors instead of aria-label\", \"0\"]\n-    ],\n-    \"packages/grafana-ui/src/components/DateTimePickers/TimeRangePicker/TimePickerFooter.tsx:5381\": [\n-      [0, 0, 0, \"Use data-testid for E2E selectors instead of aria-label\", \"0\"]\n-    ],\n-    \"packages/grafana-ui/src/components/DateTimePickers/TimeRangePicker/TimeRangeContent.tsx:5381\": [\n-      [0, 0, 0, \"Use data-testid for E2E selectors instead of aria-label\", \"0\"],\n-      [0, 0, 0, \"Use data-testid for E2E selectors instead of aria-label\", \"1\"],\n-      [0, 0, 0, \"Use data-testid for E2E selectors instead of aria-label\", \"2\"]\n-    ],\n     \"packages/grafana-ui/src/components/Drawer/Drawer.tsx:5381\": [\n       [0, 0, 0, \"Use data-testid for E2E selectors instead of aria-label\", \"0\"]\n     ],\ndiff --git a/packages/grafana-e2e-selectors/src/selectors/components.ts b/packages/grafana-e2e-selectors/src/selectors/components.ts\nindex a4d03a8d1f27f..ab4b63577a65b 100644\n--- a/packages/grafana-e2e-selectors/src/selectors/components.ts\n+++ b/packages/grafana-e2e-selectors/src/selectors/components.ts\n@@ -16,13 +16,13 @@ export const Components = {\n   TimePicker: {\n     openButton: 'data-testid TimePicker Open Button',\n     overlayContent: 'data-testid TimePicker Overlay Content',\n-    fromField: 'Time Range from field',\n-    toField: 'Time Range to field',\n+    fromField: 'data-testid Time Range from field',\n+    toField: 'data-testid Time Range to field',\n     applyTimeRange: 'data-testid TimePicker submit button',\n     calendar: {\n-      label: 'Time Range calendar',\n-      openButton: 'Open time range calendar',\n-      closeButton: 'Close time range Calendar',\n+      label: 'data-testid Time Range calendar',\n+      openButton: 'data-testid Open time range calendar',\n+      closeButton: 'data-testid Close time range Calendar',\n     },\n     absoluteTimeRangeTitle: 'data-testid-absolute-time-range-narrow',\n   },\ndiff --git a/packages/grafana-ui/src/components/DateTimePickers/TimeRangePicker/CalendarFooter.tsx b/packages/grafana-ui/src/components/DateTimePickers/TimeRangePicker/CalendarFooter.tsx\nindex 4db12f188934c..1f5ab28cff4ec 100644\n--- a/packages/grafana-ui/src/components/DateTimePickers/TimeRangePicker/CalendarFooter.tsx\n+++ b/packages/grafana-ui/src/components/DateTimePickers/TimeRangePicker/CalendarFooter.tsx\n@@ -1,44 +1,23 @@\n-import { css } from '@emotion/css';\n import React from 'react';\n \n-import { GrafanaTheme2 } from '@grafana/data';\n-\n-import { useStyles2 } from '../../../themes';\n import { Trans } from '../../../utils/i18n';\n import { Button } from '../../Button';\n+import { Stack } from '../../Layout/Stack/Stack';\n \n import { TimePickerCalendarProps } from './TimePickerCalendar';\n \n export function Footer({ onClose, onApply }: TimePickerCalendarProps) {\n-  const styles = useStyles2(getFooterStyles);\n-\n   return (\n-    <div className={styles.container}>\n-      <Button className={styles.apply} onClick={onApply}>\n-        <Trans i18nKey=\"time-picker.calendar.apply-button\">Apply time range</Trans>\n-      </Button>\n+    <Stack gap={2} justifyContent=\"space-between\">\n       <Button variant=\"secondary\" onClick={onClose}>\n         <Trans i18nKey=\"time-picker.calendar.cancel-button\">Cancel</Trans>\n       </Button>\n-    </div>\n+\n+      <Button onClick={onApply}>\n+        <Trans i18nKey=\"time-picker.calendar.apply-button\">Apply time range</Trans>\n+      </Button>\n+    </Stack>\n   );\n }\n \n Footer.displayName = 'Footer';\n-\n-const getFooterStyles = (theme: GrafanaTheme2) => {\n-  return {\n-    container: css({\n-      backgroundColor: theme.colors.background.primary,\n-      display: 'flex',\n-      justifyContent: 'center',\n-      padding: '10px',\n-      alignItems: 'stretch',\n-    }),\n-    apply: css({\n-      marginRight: '4px',\n-      width: '100%',\n-      justifyContent: 'center',\n-    }),\n-  };\n-};\ndiff --git a/packages/grafana-ui/src/components/DateTimePickers/TimeRangePicker/CalendarHeader.tsx b/packages/grafana-ui/src/components/DateTimePickers/TimeRangePicker/CalendarHeader.tsx\nindex f87fcca805b64..c09d39d198a6e 100644\n--- a/packages/grafana-ui/src/components/DateTimePickers/TimeRangePicker/CalendarHeader.tsx\n+++ b/packages/grafana-ui/src/components/DateTimePickers/TimeRangePicker/CalendarHeader.tsx\n@@ -1,44 +1,30 @@\n-import { css } from '@emotion/css';\n import React from 'react';\n \n-import { GrafanaTheme2 } from '@grafana/data';\n import { selectors } from '@grafana/e2e-selectors';\n \n-import { useStyles2 } from '../../../themes';\n-import { Trans } from '../../../utils/i18n';\n-import { Button } from '../../Button';\n+import { Trans, t } from '../../../utils/i18n';\n+import { IconButton } from '../../IconButton/IconButton';\n+import { Stack } from '../../Layout/Stack/Stack';\n \n import { TimePickerCalendarProps } from './TimePickerCalendar';\n import { TimePickerTitle } from './TimePickerTitle';\n \n export function Header({ onClose }: TimePickerCalendarProps) {\n-  const styles = useStyles2(getHeaderStyles);\n-\n   return (\n-    <div className={styles.container}>\n+    <Stack justifyContent=\"space-between\">\n       <TimePickerTitle>\n         <Trans i18nKey=\"time-picker.calendar.select-time\">Select a time range</Trans>\n       </TimePickerTitle>\n-      <Button\n-        aria-label={selectors.components.TimePicker.calendar.closeButton}\n-        icon=\"times\"\n+\n+      <IconButton\n+        data-testid={selectors.components.TimePicker.calendar.closeButton}\n+        tooltip={t(`time-picker.calendar.close`, 'Close calendar')}\n+        name=\"times\"\n         variant=\"secondary\"\n         onClick={onClose}\n       />\n-    </div>\n+    </Stack>\n   );\n }\n \n Header.displayName = 'Header';\n-\n-const getHeaderStyles = (theme: GrafanaTheme2) => {\n-  return {\n-    container: css({\n-      backgroundColor: theme.colors.background.primary,\n-      display: 'flex',\n-      alignItems: 'center',\n-      justifyContent: 'space-between',\n-      padding: '7px',\n-    }),\n-  };\n-};\ndiff --git a/packages/grafana-ui/src/components/DateTimePickers/TimeRangePicker/TimePickerCalendar.tsx b/packages/grafana-ui/src/components/DateTimePickers/TimeRangePicker/TimePickerCalendar.tsx\nindex 2e32795301ee1..ed69abb937ea5 100644\n--- a/packages/grafana-ui/src/components/DateTimePickers/TimeRangePicker/TimePickerCalendar.tsx\n+++ b/packages/grafana-ui/src/components/DateTimePickers/TimeRangePicker/TimePickerCalendar.tsx\n@@ -19,27 +19,28 @@ export const getStyles = (theme: GrafanaTheme2, isReversed = false) => {\n     container: css({\n       top: 0,\n       position: 'absolute',\n-      [`${isReversed ? 'left' : 'right'}`]: '544px',\n+      [`${isReversed ? 'left' : 'right'}`]: '546px', // lmao\n+    }),\n+\n+    modalContainer: css({\n+      label: 'modalContainer',\n+      margin: '0 auto',\n+    }),\n+\n+    calendar: css({\n+      display: 'flex',\n+      flexDirection: 'column',\n+      gap: theme.spacing(1),\n+      padding: theme.spacing(1),\n+      label: 'calendar',\n       boxShadow: theme.shadows.z3,\n       backgroundColor: theme.colors.background.primary,\n-      zIndex: -1,\n       border: `1px solid ${theme.colors.border.weak}`,\n-      borderTopLeftRadius: theme.shape.radius.default,\n-      borderBottomLeftRadius: theme.shape.radius.default,\n-\n-      '&:after': {\n-        display: 'block',\n-        backgroundColor: theme.colors.background.primary,\n-        width: '19px',\n-        height: '100%',\n-        content: `${!isReversed ? '\" \"' : '\"\"'}`,\n-        position: 'absolute',\n-        top: 0,\n-        right: '-19px',\n-        borderLeft: `1px solid ${theme.colors.border.weak}`,\n-      },\n+      borderRadius: theme.shape.radius.default,\n     }),\n+\n     modal: css({\n+      label: 'modal',\n       boxShadow: theme.shadows.z3,\n       left: '50%',\n       position: 'fixed',\n@@ -47,10 +48,6 @@ export const getStyles = (theme: GrafanaTheme2, isReversed = false) => {\n       transform: 'translate(-50%, -50%)',\n       zIndex: theme.zIndex.modal,\n     }),\n-    content: css({\n-      margin: '0 auto',\n-      width: '268px',\n-    }),\n   };\n };\n \n@@ -61,6 +58,11 @@ export interface TimePickerCalendarProps {\n   onClose: () => void;\n   onApply: (e: FormEvent<HTMLButtonElement>) => void;\n   onChange: (from: DateTime, to: DateTime) => void;\n+\n+  /**\n+   * When true, the calendar is rendered as a floating \"tooltip\" next to the input.\n+   * When false, the calendar is rendered \"fullscreen\" in a modal. Yes. Don't ask.\n+   */\n   isFullscreen: boolean;\n   timeZone?: TimeZone;\n   isReversed?: boolean;\n@@ -70,7 +72,7 @@ function TimePickerCalendar(props: TimePickerCalendarProps) {\n   const theme = useTheme2();\n   const { modalBackdrop } = getModalStyles(theme);\n   const styles = getStyles(theme, props.isReversed);\n-  const { isOpen, isFullscreen, onClose } = props;\n+  const { isOpen, isFullscreen: isFullscreenProp, onClose } = props;\n   const ref = React.createRef<HTMLElement>();\n   const { dialogProps } = useDialog(\n     {\n@@ -87,17 +89,31 @@ function TimePickerCalendar(props: TimePickerCalendarProps) {\n     ref\n   );\n \n+  // This prop is confusingly worded, so rename it to something more intuitive.\n+  const showInModal = !isFullscreenProp;\n+\n   if (!isOpen) {\n     return null;\n   }\n \n-  if (isFullscreen) {\n+  const calendar = (\n+    <section\n+      className={styles.calendar}\n+      ref={ref}\n+      {...overlayProps}\n+      {...dialogProps}\n+      data-testid={selectors.components.TimePicker.calendar.label}\n+    >\n+      <Header {...props} />\n+      <Body {...props} />\n+      {showInModal && <Footer {...props} />}\n+    </section>\n+  );\n+\n+  if (!showInModal) {\n     return (\n       <FocusScope contain restoreFocus autoFocus>\n-        <section className={styles.container} ref={ref} {...overlayProps} {...dialogProps}>\n-          <Header {...props} />\n-          <Body {...props} />\n-        </section>\n+        <div className={styles.container}>{calendar}</div>\n       </FocusScope>\n     );\n   }\n@@ -105,14 +121,11 @@ function TimePickerCalendar(props: TimePickerCalendarProps) {\n   return (\n     <OverlayContainer>\n       <div className={modalBackdrop} />\n+\n       <FocusScope contain autoFocus restoreFocus>\n-        <section className={styles.modal} ref={ref} {...overlayProps} {...dialogProps}>\n-          <div className={styles.content} aria-label={selectors.components.TimePicker.calendar.label}>\n-            <Header {...props} />\n-            <Body {...props} />\n-            <Footer {...props} />\n-          </div>\n-        </section>\n+        <div className={styles.modal}>\n+          <div className={styles.modalContainer}>{calendar}</div>\n+        </div>\n       </FocusScope>\n     </OverlayContainer>\n   );\ndiff --git a/packages/grafana-ui/src/components/DateTimePickers/TimeRangePicker/TimePickerContent.test.tsx b/packages/grafana-ui/src/components/DateTimePickers/TimeRangePicker/TimePickerContent.test.tsx\nindex 40d9dc2b693bc..ba9c9a4f011e2 100644\n--- a/packages/grafana-ui/src/components/DateTimePickers/TimeRangePicker/TimePickerContent.test.tsx\n+++ b/packages/grafana-ui/src/components/DateTimePickers/TimeRangePicker/TimePickerContent.test.tsx\n@@ -96,22 +96,22 @@ describe('TimePickerContent', () => {\n \n     it('renders with absolute picker when absolute value and quick ranges are visible', () => {\n       renderComponent({ value: absoluteValue, isFullscreen: false });\n-      expect(screen.queryByLabelText(/time range from field/i)).toBeInTheDocument();\n+      expect(screen.queryByLabelText('From')).toBeInTheDocument();\n     });\n \n     it('renders with absolute picker when absolute value and quick ranges are hidden', () => {\n       renderComponent({ value: absoluteValue, isFullscreen: false, hideQuickRanges: true });\n-      expect(screen.queryByLabelText(/time range from field/i)).toBeInTheDocument();\n+      expect(screen.queryByLabelText('From')).toBeInTheDocument();\n     });\n \n     it('renders without absolute picker when narrow screen and quick ranges are visible', () => {\n       renderComponent({ value: relativeValue, isFullscreen: false });\n-      expect(screen.queryByLabelText(/time range from field/i)).not.toBeInTheDocument();\n+      expect(screen.queryByLabelText('From')).not.toBeInTheDocument();\n     });\n \n     it('renders with absolute picker when narrow screen and quick ranges are hidden', () => {\n       renderComponent({ value: relativeValue, isFullscreen: false, hideQuickRanges: true });\n-      expect(screen.queryByLabelText(/time range from field/i)).toBeInTheDocument();\n+      expect(screen.queryByLabelText('From')).toBeInTheDocument();\n     });\n \n     it('renders without timezone picker', () => {\ndiff --git a/packages/grafana-ui/src/components/DateTimePickers/TimeRangePicker/TimePickerFooter.tsx b/packages/grafana-ui/src/components/DateTimePickers/TimeRangePicker/TimePickerFooter.tsx\nindex 3286314f7efff..c5d37ced8c9c5 100644\n--- a/packages/grafana-ui/src/components/DateTimePickers/TimeRangePicker/TimePickerFooter.tsx\n+++ b/packages/grafana-ui/src/components/DateTimePickers/TimeRangePicker/TimePickerFooter.tsx\n@@ -110,7 +110,7 @@ export const TimePickerFooter = (props: Props) => {\n             </section>\n           ) : (\n             <section\n-              aria-label={selectors.components.TimeZonePicker.containerV2}\n+              data-testid={selectors.components.TimeZonePicker.containerV2}\n               className={cx(style.timeZoneContainer, style.timeSettingContainer)}\n             >\n               <Field\ndiff --git a/packages/grafana-ui/src/components/DateTimePickers/TimeRangePicker/TimeRangeContent.test.tsx b/packages/grafana-ui/src/components/DateTimePickers/TimeRangePicker/TimeRangeContent.test.tsx\nindex ac074c9ae281f..a03b7c5ea7d9f 100644\n--- a/packages/grafana-ui/src/components/DateTimePickers/TimeRangePicker/TimeRangeContent.test.tsx\n+++ b/packages/grafana-ui/src/components/DateTimePickers/TimeRangePicker/TimeRangeContent.test.tsx\n@@ -36,18 +36,17 @@ function setup(initial: TimeRange = defaultTimeRange, timeZone = 'utc'): TimeRan\n describe('TimeRangeForm', () => {\n   it('should render form correcty', () => {\n     const { getByLabelText, getByText, getAllByRole } = setup();\n-    const { TimePicker } = selectors.components;\n \n     expect(getByText('Apply time range')).toBeInTheDocument();\n-    expect(getAllByRole('button', { name: TimePicker.calendar.openButton })).toHaveLength(2);\n-    expect(getByLabelText(TimePicker.fromField)).toBeInTheDocument();\n-    expect(getByLabelText(TimePicker.toField)).toBeInTheDocument();\n+    expect(getAllByRole('button', { name: 'Open calendar' })).toHaveLength(2);\n+    expect(getByLabelText('From')).toBeInTheDocument();\n+    expect(getByLabelText('To')).toBeInTheDocument();\n   });\n \n   it('should display calendar when clicking the calendar icon', () => {\n     const { getByLabelText, getAllByRole } = setup();\n     const { TimePicker } = selectors.components;\n-    const openCalendarButton = getAllByRole('button', { name: TimePicker.calendar.openButton });\n+    const openCalendarButton = getAllByRole('button', { name: 'Open calendar' });\n \n     fireEvent.click(openCalendarButton[0]);\n     expect(getByLabelText(TimePicker.calendar.label)).toBeInTheDocument();\n@@ -55,24 +54,23 @@ describe('TimeRangeForm', () => {\n \n   it('should have passed time range entered in form', () => {\n     const { getByLabelText } = setup();\n-    const { TimePicker } = selectors.components;\n \n     const fromValue = defaultTimeRange.raw.from as string;\n     const toValue = defaultTimeRange.raw.to as string;\n \n-    expect(getByLabelText(TimePicker.fromField)).toHaveValue(fromValue);\n-    expect(getByLabelText(TimePicker.toField)).toHaveValue(toValue);\n+    expect(getByLabelText('From')).toHaveValue(fromValue);\n+    expect(getByLabelText('To')).toHaveValue(toValue);\n   });\n \n   it('should close calendar when clicking the close icon', () => {\n     const { queryByLabelText, getAllByRole, getByRole } = setup();\n     const { TimePicker } = selectors.components;\n-    const openCalendarButton = getAllByRole('button', { name: TimePicker.calendar.openButton });\n+    const openCalendarButton = getAllByRole('button', { name: 'Open calendar' });\n \n     fireEvent.click(openCalendarButton[0]);\n-    expect(getByRole('button', { name: TimePicker.calendar.closeButton })).toBeInTheDocument();\n+    expect(getByRole('button', { name: 'Close calendar' })).toBeInTheDocument();\n \n-    fireEvent.click(getByRole('button', { name: TimePicker.calendar.closeButton }));\n+    fireEvent.click(getByRole('button', { name: 'Close calendar' }));\n     expect(queryByLabelText(TimePicker.calendar.label)).toBeNull();\n   });\n \n@@ -85,8 +83,7 @@ describe('TimeRangeForm', () => {\n \n   it('should have passed time range selected in calendar', () => {\n     const { getAllByRole, getCalendarDayByLabelText } = setup();\n-    const { TimePicker } = selectors.components;\n-    const openCalendarButton = getAllByRole('button', { name: TimePicker.calendar.openButton });\n+    const openCalendarButton = getAllByRole('button', { name: 'Open calendar' });\n \n     fireEvent.click(openCalendarButton[0]);\n     const from = getCalendarDayByLabelText('June 17, 2021');\n@@ -98,8 +95,7 @@ describe('TimeRangeForm', () => {\n \n   it('should select correct time range in calendar when having a custom time zone', () => {\n     const { getAllByRole, getCalendarDayByLabelText } = setup(defaultTimeRange, 'Asia/Tokyo');\n-    const { TimePicker } = selectors.components;\n-    const openCalendarButton = getAllByRole('button', { name: TimePicker.calendar.openButton });\n+    const openCalendarButton = getAllByRole('button', { name: 'Open calendar' });\n \n     fireEvent.click(openCalendarButton[1]);\n     const from = getCalendarDayByLabelText('June 17, 2021');\ndiff --git a/packages/grafana-ui/src/components/DateTimePickers/TimeRangePicker/TimeRangeContent.tsx b/packages/grafana-ui/src/components/DateTimePickers/TimeRangePicker/TimeRangeContent.tsx\nindex a91d10282ae78..4cbf3748b4d10 100644\n--- a/packages/grafana-ui/src/components/DateTimePickers/TimeRangePicker/TimeRangeContent.tsx\n+++ b/packages/grafana-ui/src/components/DateTimePickers/TimeRangePicker/TimeRangeContent.tsx\n@@ -1,5 +1,5 @@\n import { css } from '@emotion/css';\n-import React, { FormEvent, useCallback, useEffect, useState } from 'react';\n+import React, { FormEvent, useCallback, useEffect, useId, useState } from 'react';\n \n import {\n   DateTime,\n@@ -55,6 +55,9 @@ export const TimeRangeContent = (props: Props) => {\n   const [to, setTo] = useState<InputState>(toValue);\n   const [isOpen, setOpen] = useState(false);\n \n+  const fromFieldId = useId();\n+  const toFieldId = useId();\n+\n   // Synchronize internal state with external value\n   useEffect(() => {\n     const [fromValue, toValue] = valueToState(value.raw.from, value.raw.to, timeZone);\n@@ -113,7 +116,8 @@ export const TimeRangeContent = (props: Props) => {\n \n   const icon = (\n     <Button\n-      aria-label={selectors.components.TimePicker.calendar.openButton}\n+      aria-label={t('time-picker.range-content.open-input-calendar', 'Open calendar')}\n+      data-testid={selectors.components.TimePicker.calendar.openButton}\n       icon=\"calendar-alt\"\n       variant=\"secondary\"\n       type=\"button\"\n@@ -130,11 +134,12 @@ export const TimeRangeContent = (props: Props) => {\n           error={from.errorMessage}\n         >\n           <Input\n+            id={fromFieldId}\n             onClick={(event) => event.stopPropagation()}\n             onChange={(event) => onChange(event.currentTarget.value, to.value)}\n             addonAfter={icon}\n             onKeyDown={submitOnEnter}\n-            aria-label={selectors.components.TimePicker.fromField}\n+            data-testid={selectors.components.TimePicker.fromField}\n             value={from.value}\n           />\n         </Field>\n@@ -143,11 +148,12 @@ export const TimeRangeContent = (props: Props) => {\n       <div className={style.fieldContainer}>\n         <Field label={t('time-picker.range-content.to-input', 'To')} invalid={to.invalid} error={to.errorMessage}>\n           <Input\n+            id={toFieldId}\n             onClick={(event) => event.stopPropagation()}\n             onChange={(event) => onChange(from.value, event.currentTarget.value)}\n             addonAfter={icon}\n             onKeyDown={submitOnEnter}\n-            aria-label={selectors.components.TimePicker.toField}\n+            data-testid={selectors.components.TimePicker.toField}\n             value={to.value}\n           />\n         </Field>\ndiff --git a/public/app/core/components/TimePicker/TimePickerWithHistory.test.tsx b/public/app/core/components/TimePicker/TimePickerWithHistory.test.tsx\nindex 87a4e6195a285..99883186c3e9a 100644\n--- a/public/app/core/components/TimePicker/TimePickerWithHistory.test.tsx\n+++ b/public/app/core/components/TimePicker/TimePickerWithHistory.test.tsx\n@@ -9,8 +9,8 @@ import { TimePickerWithHistory } from './TimePickerWithHistory';\n describe('TimePickerWithHistory', () => {\n   // In some of the tests we close and re-open the picker. When we do that we must re-find these inputs\n   // as new elements will have been mounted\n-  const getFromField = () => screen.getByLabelText('Time Range from field');\n-  const getToField = () => screen.getByLabelText('Time Range to field');\n+  const getFromField = () => screen.getByLabelText('From');\n+  const getToField = () => screen.getByLabelText('To');\n   const getApplyButton = () => screen.getByRole('button', { name: 'Apply time range' });\n \n   const LOCAL_STORAGE_KEY = 'grafana.dashboard.timepicker.history';\ndiff --git a/public/locales/de-DE/grafana.json b/public/locales/de-DE/grafana.json\nindex a9296bd48e27b..e84ae3a6ef621 100644\n--- a/public/locales/de-DE/grafana.json\n+++ b/public/locales/de-DE/grafana.json\n@@ -1249,6 +1249,7 @@\n     \"calendar\": {\n       \"apply-button\": \"Zeitbereich anwenden\",\n       \"cancel-button\": \"Abbrechen\",\n+      \"close\": \"\",\n       \"select-time\": \"Einen Zeitbereich ausw\u00e4hlen\"\n     },\n     \"content\": {\n@@ -1268,6 +1269,7 @@\n       \"default-error\": \"Ein vergangenes Datum oder \\\"heutiges\\\" eingeben\",\n       \"fiscal-year\": \"Gesch\u00e4ftsjahr\",\n       \"from-input\": \"Von\",\n+      \"open-input-calendar\": \"\",\n       \"range-error\": \"\u201eVon\u201c darf nicht nach \u201eBis\u201c sein\",\n       \"to-input\": \"Bis\"\n     },\ndiff --git a/public/locales/en-US/grafana.json b/public/locales/en-US/grafana.json\nindex db5fa55c05e20..c4e081f21c801 100644\n--- a/public/locales/en-US/grafana.json\n+++ b/public/locales/en-US/grafana.json\n@@ -1249,6 +1249,7 @@\n     \"calendar\": {\n       \"apply-button\": \"Apply time range\",\n       \"cancel-button\": \"Cancel\",\n+      \"close\": \"Close calendar\",\n       \"select-time\": \"Select a time range\"\n     },\n     \"content\": {\n@@ -1268,6 +1269,7 @@\n       \"default-error\": \"Please enter a past date or \\\"now\\\"\",\n       \"fiscal-year\": \"Fiscal year\",\n       \"from-input\": \"From\",\n+      \"open-input-calendar\": \"Open calendar\",\n       \"range-error\": \"\\\"From\\\" can't be after \\\"To\\\"\",\n       \"to-input\": \"To\"\n     },\ndiff --git a/public/locales/es-ES/grafana.json b/public/locales/es-ES/grafana.json\nindex 80658b4b1dd0f..1d417c3cbe49e 100644\n--- a/public/locales/es-ES/grafana.json\n+++ b/public/locales/es-ES/grafana.json\n@@ -1255,6 +1255,7 @@\n     \"calendar\": {\n       \"apply-button\": \"Aplicar intervalo de tiempo\",\n       \"cancel-button\": \"Cancelar\",\n+      \"close\": \"\",\n       \"select-time\": \"Seleccionar un intervalo de tiempo\"\n     },\n     \"content\": {\n@@ -1274,6 +1275,7 @@\n       \"default-error\": \"Introducir una fecha anterior o \u00abahora\u00bb\",\n       \"fiscal-year\": \"Ejercicio fiscal\",\n       \"from-input\": \"Desde\",\n+      \"open-input-calendar\": \"\",\n       \"range-error\": \"\u00abDesde\u00bb no puede ser posterior a \u00abhasta\u00bb\",\n       \"to-input\": \"Hasta\"\n     },\ndiff --git a/public/locales/fr-FR/grafana.json b/public/locales/fr-FR/grafana.json\nindex 22a2b28ad7b83..3fdcc8c353b9f 100644\n--- a/public/locales/fr-FR/grafana.json\n+++ b/public/locales/fr-FR/grafana.json\n@@ -1255,6 +1255,7 @@\n     \"calendar\": {\n       \"apply-button\": \"Appliquer la plage de temps\",\n       \"cancel-button\": \"Annuler\",\n+      \"close\": \"\",\n       \"select-time\": \"S\u00e9lectionner une plage de temps\"\n     },\n     \"content\": {\n@@ -1274,6 +1275,7 @@\n       \"default-error\": \"Entrez une date dans le pass\u00e9 ou \u00ab maintenant \u00bb\",\n       \"fiscal-year\": \"Exercice fiscal\",\n       \"from-input\": \"De\",\n+      \"open-input-calendar\": \"\",\n       \"range-error\": \"\u00ab De \u00bb ne peut pas \u00eatre ult\u00e9rieur \u00e0 \u00ab \u00c0 \u00bb\",\n       \"to-input\": \"\u00c0\"\n     },\ndiff --git a/public/locales/pseudo-LOCALE/grafana.json b/public/locales/pseudo-LOCALE/grafana.json\nindex bff14de3d5328..221e22a547b31 100644\n--- a/public/locales/pseudo-LOCALE/grafana.json\n+++ b/public/locales/pseudo-LOCALE/grafana.json\n@@ -1249,6 +1249,7 @@\n     \"calendar\": {\n       \"apply-button\": \"\u00c5pp\u013ey \u0167\u012fm\u0119 \u0159\u00e4\u0149\u0123\u0119\",\n       \"cancel-button\": \"C\u00e4\u0149\u010d\u0119\u013e\",\n+      \"close\": \"C\u013e\u0151\u015f\u0119 \u010d\u00e4\u013e\u0119\u0149\u0111\u00e4\u0159\",\n       \"select-time\": \"\u015c\u0119\u013e\u0119\u010d\u0167 \u00e4 \u0167\u012fm\u0119 \u0159\u00e4\u0149\u0123\u0119\"\n     },\n     \"content\": {\n@@ -1268,6 +1269,7 @@\n       \"default-error\": \"P\u013e\u0119\u00e4\u015f\u0119 \u0119\u0149\u0167\u0119\u0159 \u00e4 p\u00e4\u015f\u0167 \u0111\u00e4\u0167\u0119 \u0151\u0159 \\\"\u0149\u0151\u0175\\\"\",\n       \"fiscal-year\": \"F\u012f\u015f\u010d\u00e4\u013e y\u0119\u00e4\u0159\",\n       \"from-input\": \"F\u0159\u0151m\",\n+      \"open-input-calendar\": \"\u00d8p\u0119\u0149 \u010d\u00e4\u013e\u0119\u0149\u0111\u00e4\u0159\",\n       \"range-error\": \"\\\"F\u0159\u0151m\\\" \u010d\u00e4\u0149'\u0167 \u00fe\u0119 \u00e4\u0192\u0167\u0119\u0159 \\\"\u0166\u0151\\\"\",\n       \"to-input\": \"\u0166\u0151\"\n     },\ndiff --git a/public/locales/zh-Hans/grafana.json b/public/locales/zh-Hans/grafana.json\nindex 30c5e0d909cf6..bc8176ffce84c 100644\n--- a/public/locales/zh-Hans/grafana.json\n+++ b/public/locales/zh-Hans/grafana.json\n@@ -1243,6 +1243,7 @@\n     \"calendar\": {\n       \"apply-button\": \"\u5e94\u7528\u65f6\u95f4\u8303\u56f4\",\n       \"cancel-button\": \"\u53d6\u6d88\",\n+      \"close\": \"\",\n       \"select-time\": \"\u9009\u62e9\u65f6\u95f4\u8303\u56f4\"\n     },\n     \"content\": {\n@@ -1262,6 +1263,7 @@\n       \"default-error\": \"\u8bf7\u8f93\u5165\u4e00\u4e2a\u8fc7\u53bb\u7684\u65e5\u671f\u6216\\\"\u73b0\u5728\\\"\",\n       \"fiscal-year\": \"\u8d22\u653f\u5e74\u5ea6\",\n       \"from-input\": \"\u53d1\u4ef6\u4eba\",\n+      \"open-input-calendar\": \"\",\n       \"range-error\": \"\u201c\u53d1\u4ef6\u4eba\u201d\u4e0d\u80fd\u5728\u201c\u6536\u4ef6\u4eba\u201d\u4e4b\u540e\",\n       \"to-input\": \"\u7ed3\u675f\"\n     },\n",
+  "metadata": {
+    "v2_fetcher_version": 1,
+    "v2_fetched_at_unix": 1777501304,
+    "v2_diff_cap_bytes": 50000,
+    "v2_body_cap_bytes": 8000,
+    "v2_diff_truncated": false,
+    "v2_raw_diff_chars": 26345,
+    "v2_raw_body_chars": 378,
+    "v2_rag_source": "merged_from_v1",
+    "v2_rag_chunks_copied": 8
+  },
+  "similar_chunks": [
+    {
+      "file": "packages/grafana-ui/src/components/DateTimePickers/RelativeTimeRangePicker/RelativeTimeRangePicker.tsx",
+      "start_line": 1,
+      "end_line": 53,
+      "similarity": 0.8774,
+      "related_to": "packages/grafana-ui/src/components/DateTimePickers/TimeRangePicker/TimeRangeContent.tsx",
+      "content_preview": "import { css, cx } from '@emotion/css';\nimport { autoUpdate, useClick, useDismiss, useFloating, useInteractions } from '@floating-ui/react';\nimport { useDialog } from '@react-aria/dialog';\nimport { FocusScope } from '@react-aria/focus';\nimport { useOverlay } from '@react-aria/overlays';\nimport { FormEvent, useCallback, useRef, useState } from 'react';\n\nimport { RelativeTimeRange, GrafanaTheme2, TimeOption } from '@grafana/data';\nimport { t, Trans } from '@grafana/i18n';\n\nimport { useStyles2 } from '../../../themes/ThemeContext';\nimport { getPositioningMiddleware } from '../../../utils/floating';\nimport { Button } from '../../Button/Button';\nimport { Field } from '../../Forms/Field';\nimport { Icon } from '../../Icon/Icon';\nimport { getInputStyles, Input } from '../../Input/Input';\nimport { "
+    },
+    {
+      "file": "packages/grafana-ui/src/components/DateTimePickers/TimeRangePicker/TimePickerContent.tsx",
+      "start_line": 1,
+      "end_line": 62,
+      "similarity": 0.8759,
+      "related_to": "packages/grafana-ui/src/components/DateTimePickers/TimeRangePicker/TimeRangeContent.tsx",
+      "content_preview": "import { css, cx } from '@emotion/css';\nimport { memo, useMemo, useState } from 'react';\n\nimport { GrafanaTheme2, isDateTime, rangeUtil, RawTimeRange, TimeOption, TimeRange, TimeZone } from '@grafana/data';\nimport { selectors } from '@grafana/e2e-selectors';\nimport { t, Trans } from '@grafana/i18n';\n\nimport { useStyles2, useTheme2 } from '../../../themes/ThemeContext';\nimport { getFocusStyles } from '../../../themes/mixins';\nimport { FilterInput } from '../../FilterInput/FilterInput';\nimport { Icon } from '../../Icon/Icon';\nimport { TextLink } from '../../Link/TextLink';\nimport { WeekStart } from '../WeekStartPicker';\n\nimport { TimePickerFooter } from './TimePickerFooter';\nimport { TimePickerTitle } from './TimePickerTitle';\nimport { TimeRangeContent } from './TimeRangeContent';\nimport { T"
+    },
+    {
+      "file": "packages/grafana-ui/src/components/DateTimePickers/DatePicker/DatePicker.tsx",
+      "start_line": 1,
+      "end_line": 77,
+      "similarity": 0.8647,
+      "related_to": "packages/grafana-ui/src/components/DateTimePickers/TimeRangePicker/TimePickerCalendar.tsx",
+      "content_preview": "import { css } from '@emotion/css';\nimport { memo } from 'react';\nimport Calendar from 'react-calendar';\n\nimport { GrafanaTheme2 } from '@grafana/data';\n\nimport { useStyles2 } from '../../../themes/ThemeContext';\nimport { ClickOutsideWrapper } from '../../ClickOutsideWrapper/ClickOutsideWrapper';\nimport { Icon } from '../../Icon/Icon';\nimport { getBodyStyles } from '../TimeRangePicker/CalendarBody';\n\n/** @public */\nexport interface DatePickerProps {\n  isOpen?: boolean;\n  onClose: () => void;\n  onChange: (value: Date) => void;\n  value?: Date;\n  minDate?: Date;\n  maxDate?: Date;\n}\n\n/**\n * A component with a calendar view for selecting a date.\n *\n * https://developers.grafana.com/ui/latest/index.html?path=/docs/date-time-pickers-datepicker--docs\n * @public\n * */\nexport const DatePicker = memo"
+    },
+    {
+      "file": "packages/grafana-ui/src/components/DateTimePickers/TimeRangeInput.tsx",
+      "start_line": 1,
+      "end_line": 59,
+      "similarity": 0.8623,
+      "related_to": "packages/grafana-ui/src/components/DateTimePickers/TimeRangePicker/TimeRangeContent.tsx",
+      "content_preview": "import { css, cx } from '@emotion/css';\nimport { useDismiss, useFloating, useInteractions } from '@floating-ui/react';\nimport { FocusScope } from '@react-aria/focus';\nimport { FormEvent, MouseEvent, useState } from 'react';\n\nimport { dateTime, getDefaultTimeRange, GrafanaTheme2, TimeRange, TimeZone } from '@grafana/data';\nimport { selectors } from '@grafana/e2e-selectors';\n\nimport { useStyles2 } from '../../themes/ThemeContext';\nimport { Icon } from '../Icon/Icon';\nimport { getInputStyles } from '../Input/Input';\n\nimport { TimePickerContent } from './TimeRangePicker/TimePickerContent';\nimport { TimeRangeLabel } from './TimeRangePicker/TimeRangeLabel';\nimport { WeekStart } from './WeekStartPicker';\nimport { getQuickOptions } from './options';\nimport { isValidTimeRange } from './utils';\n\nexp"
+    },
+    {
+      "file": "packages/grafana-ui/src/components/DateTimePickers/TimeRangePicker.tsx",
+      "start_line": 1,
+      "end_line": 56,
+      "similarity": 0.8419,
+      "related_to": "packages/grafana-ui/src/components/DateTimePickers/TimeRangePicker/TimeRangeContent.tsx",
+      "content_preview": "import { css, cx } from '@emotion/css';\nimport { useDialog } from '@react-aria/dialog';\nimport { FocusScope } from '@react-aria/focus';\nimport { useOverlay } from '@react-aria/overlays';\nimport { memo, createRef, useState, useEffect, type JSX } from 'react';\n\nimport {\n  rangeUtil,\n  GrafanaTheme2,\n  dateTimeFormat,\n  timeZoneFormatUserFriendly,\n  TimeOption,\n  TimeRange,\n  TimeZone,\n  dateMath,\n  getTimeZoneInfo,\n} from '@grafana/data';\nimport { selectors } from '@grafana/e2e-selectors';\nimport { t, Trans } from '@grafana/i18n';\n\nimport { useStyles2 } from '../../themes/ThemeContext';\nimport { getFeatureToggle } from '../../utils/featureToggle';\nimport { ButtonGroup } from '../Button/ButtonGroup';\nimport { getModalStyles } from '../Modal/getModalStyles';\nimport { getPortalContainer } from "
+    },
+    {
+      "file": "packages/grafana-ui/src/components/DateTimePickers/TimeRangeInput.test.tsx",
+      "start_line": 1,
+      "end_line": 56,
+      "similarity": 0.8343,
+      "related_to": "packages/grafana-ui/src/components/DateTimePickers/TimeRangePicker/TimeRangeContent.test.tsx",
+      "content_preview": "import { render, screen } from '@testing-library/react';\nimport userEvent from '@testing-library/user-event';\n\nimport { dateTime } from '@grafana/data';\n\nimport { TimeRangeInput } from './TimeRangeInput';\n\ndescribe('TimeRangeInput', () => {\n  // TODO: This test is evergreen - the check that we haven't accidentally closed\n  // the picker still passes without the appropriate fix\n  // Seems to be related to jest-dom and how it handles clicking outside the node etc.\n  it('handles selecting dates over multiple months', async () => {\n    const user = userEvent.setup();\n    const from = dateTime('2024-01-01T00:00:00Z');\n    const to = dateTime('2024-01-01T00:00:00Z');\n    const onChange = jest.fn();\n\n    render(\n      <TimeRangeInput\n        timeZone=\"utc\"\n        onChange={(payload) => {\n       "
+    },
+    {
+      "file": "packages/grafana-ui/src/components/DateTimePickers/TimeRangePicker/mapper.test.ts",
+      "start_line": 1,
+      "end_line": 57,
+      "similarity": 0.8337,
+      "related_to": "packages/grafana-ui/src/components/DateTimePickers/TimeRangePicker/TimeRangeContent.test.tsx",
+      "content_preview": "import { set } from 'lodash';\n\nimport { DateTime, dateTimeParse, FeatureToggles } from '@grafana/data';\nimport { initRegionalFormatForTests } from '@grafana/i18n';\n\nimport * as commonFormatModule from '../commonFormat';\n\nimport { mapOptionToTimeRange, mapRangeToTimeOption } from './mapper';\n\n// If this flag is deleted, this mock also should be, and the additional tests for when\n// the flag was disabled.\ntype LocaleFormatPreferenceType = FeatureToggles['localeFormatPreference'];\njest.mock('../commonFormat', () => {\n  const format = 'YYYY-MM-DD HH:mm:ss' as const;\n  const moduleObject = {\n    __esModule: true,\n    commonFormat: format as undefined | 'YYYY-MM-DD HH:mm:ss',\n    mockSetCommonFormat,\n  };\n  function mockSetCommonFormat(enabled: LocaleFormatPreferenceType = true) {\n    moduleObje"
+    },
+    {
+      "file": "packages/grafana-ui/src/components/DateTimePickers/TimeZonePicker.tsx",
+      "start_line": 1,
+      "end_line": 71,
+      "similarity": 0.8324,
+      "related_to": "packages/grafana-ui/src/components/DateTimePickers/TimeRangePicker/TimePickerFooter.tsx",
+      "content_preview": "import { toLower, isEmpty, isString } from 'lodash';\nimport { useMemo, useCallback } from 'react';\n\nimport {\n  SelectableValue,\n  getTimeZoneInfo,\n  TimeZoneInfo,\n  getTimeZoneGroups,\n  GroupedTimeZones,\n  TimeZone,\n  InternalTimeZones,\n} from '@grafana/data';\nimport { t } from '@grafana/i18n';\n\nimport { Select } from '../Select/Select';\n\nimport { TimeZoneGroup } from './TimeZonePicker/TimeZoneGroup';\nimport { formatUtcOffset } from './TimeZonePicker/TimeZoneOffset';\nimport { CompactTimeZoneOption, WideTimeZoneOption, SelectableZone } from './TimeZonePicker/TimeZoneOption';\n\nexport interface Props {\n  onChange: (timeZone?: TimeZone) => void;\n  value?: TimeZone;\n  width?: number;\n  autoFocus?: boolean;\n  onBlur?: () => void;\n  includeInternal?: boolean | InternalTimeZones[];\n  disabled?: bo"
+    }
+  ],
+  "rag_evidence": {
+    "similar_code": [
+      {
+        "file": "packages/grafana-ui/src/components/DateTimePickers/RelativeTimeRangePicker/RelativeTimeRangePicker.tsx",
+        "start_line": 1,
+        "end_line": 53,
+        "similarity": 0.8774,
+        "related_to": "packages/grafana-ui/src/components/DateTimePickers/TimeRangePicker/TimeRangeContent.tsx",
+        "content_preview": "import { css, cx } from '@emotion/css';\nimport { autoUpdate, useClick, useDismiss, useFloating, useInteractions } from '@floating-ui/react';\nimport { useDialog } from '@react-aria/dialog';\nimport { FocusScope } from '@react-aria/focus';\nimport { useOverlay } from '@react-aria/overlays';\nimport { FormEvent, useCallback, useRef, useState } from 'react';\n\nimport { RelativeTimeRange, GrafanaTheme2, TimeOption } from '@grafana/data';\nimport { t, Trans } from '@grafana/i18n';\n\nimport { useStyles2 } from '../../../themes/ThemeContext';\nimport { getPositioningMiddleware } from '../../../utils/floating';\nimport { Button } from '../../Button/Button';\nimport { Field } from '../../Forms/Field';\nimport { Icon } from '../../Icon/Icon';\nimport { getInputStyles, Input } from '../../Input/Input';\nimport { "
+      },
+      {
+        "file": "packages/grafana-ui/src/components/DateTimePickers/TimeRangePicker/TimePickerContent.tsx",
+        "start_line": 1,
+        "end_line": 62,
+        "similarity": 0.8759,
+        "related_to": "packages/grafana-ui/src/components/DateTimePickers/TimeRangePicker/TimeRangeContent.tsx",
+        "content_preview": "import { css, cx } from '@emotion/css';\nimport { memo, useMemo, useState } from 'react';\n\nimport { GrafanaTheme2, isDateTime, rangeUtil, RawTimeRange, TimeOption, TimeRange, TimeZone } from '@grafana/data';\nimport { selectors } from '@grafana/e2e-selectors';\nimport { t, Trans } from '@grafana/i18n';\n\nimport { useStyles2, useTheme2 } from '../../../themes/ThemeContext';\nimport { getFocusStyles } from '../../../themes/mixins';\nimport { FilterInput } from '../../FilterInput/FilterInput';\nimport { Icon } from '../../Icon/Icon';\nimport { TextLink } from '../../Link/TextLink';\nimport { WeekStart } from '../WeekStartPicker';\n\nimport { TimePickerFooter } from './TimePickerFooter';\nimport { TimePickerTitle } from './TimePickerTitle';\nimport { TimeRangeContent } from './TimeRangeContent';\nimport { T"
+      },
+      {
+        "file": "packages/grafana-ui/src/components/DateTimePickers/DatePicker/DatePicker.tsx",
+        "start_line": 1,
+        "end_line": 77,
+        "similarity": 0.8647,
+        "related_to": "packages/grafana-ui/src/components/DateTimePickers/TimeRangePicker/TimePickerCalendar.tsx",
+        "content_preview": "import { css } from '@emotion/css';\nimport { memo } from 'react';\nimport Calendar from 'react-calendar';\n\nimport { GrafanaTheme2 } from '@grafana/data';\n\nimport { useStyles2 } from '../../../themes/ThemeContext';\nimport { ClickOutsideWrapper } from '../../ClickOutsideWrapper/ClickOutsideWrapper';\nimport { Icon } from '../../Icon/Icon';\nimport { getBodyStyles } from '../TimeRangePicker/CalendarBody';\n\n/** @public */\nexport interface DatePickerProps {\n  isOpen?: boolean;\n  onClose: () => void;\n  onChange: (value: Date) => void;\n  value?: Date;\n  minDate?: Date;\n  maxDate?: Date;\n}\n\n/**\n * A component with a calendar view for selecting a date.\n *\n * https://developers.grafana.com/ui/latest/index.html?path=/docs/date-time-pickers-datepicker--docs\n * @public\n * */\nexport const DatePicker = memo"
+      },
+      {
+        "file": "packages/grafana-ui/src/components/DateTimePickers/TimeRangeInput.tsx",
+        "start_line": 1,
+        "end_line": 59,
+        "similarity": 0.8623,
+        "related_to": "packages/grafana-ui/src/components/DateTimePickers/TimeRangePicker/TimeRangeContent.tsx",
+        "content_preview": "import { css, cx } from '@emotion/css';\nimport { useDismiss, useFloating, useInteractions } from '@floating-ui/react';\nimport { FocusScope } from '@react-aria/focus';\nimport { FormEvent, MouseEvent, useState } from 'react';\n\nimport { dateTime, getDefaultTimeRange, GrafanaTheme2, TimeRange, TimeZone } from '@grafana/data';\nimport { selectors } from '@grafana/e2e-selectors';\n\nimport { useStyles2 } from '../../themes/ThemeContext';\nimport { Icon } from '../Icon/Icon';\nimport { getInputStyles } from '../Input/Input';\n\nimport { TimePickerContent } from './TimeRangePicker/TimePickerContent';\nimport { TimeRangeLabel } from './TimeRangePicker/TimeRangeLabel';\nimport { WeekStart } from './WeekStartPicker';\nimport { getQuickOptions } from './options';\nimport { isValidTimeRange } from './utils';\n\nexp"
+      },
+      {
+        "file": "packages/grafana-ui/src/components/DateTimePickers/TimeRangePicker.tsx",
+        "start_line": 1,
+        "end_line": 56,
+        "similarity": 0.8419,
+        "related_to": "packages/grafana-ui/src/components/DateTimePickers/TimeRangePicker/TimeRangeContent.tsx",
+        "content_preview": "import { css, cx } from '@emotion/css';\nimport { useDialog } from '@react-aria/dialog';\nimport { FocusScope } from '@react-aria/focus';\nimport { useOverlay } from '@react-aria/overlays';\nimport { memo, createRef, useState, useEffect, type JSX } from 'react';\n\nimport {\n  rangeUtil,\n  GrafanaTheme2,\n  dateTimeFormat,\n  timeZoneFormatUserFriendly,\n  TimeOption,\n  TimeRange,\n  TimeZone,\n  dateMath,\n  getTimeZoneInfo,\n} from '@grafana/data';\nimport { selectors } from '@grafana/e2e-selectors';\nimport { t, Trans } from '@grafana/i18n';\n\nimport { useStyles2 } from '../../themes/ThemeContext';\nimport { getFeatureToggle } from '../../utils/featureToggle';\nimport { ButtonGroup } from '../Button/ButtonGroup';\nimport { getModalStyles } from '../Modal/getModalStyles';\nimport { getPortalContainer } from "
+      },
+      {
+        "file": "packages/grafana-ui/src/components/DateTimePickers/TimeRangeInput.test.tsx",
+        "start_line": 1,
+        "end_line": 56,
+        "similarity": 0.8343,
+        "related_to": "packages/grafana-ui/src/components/DateTimePickers/TimeRangePicker/TimeRangeContent.test.tsx",
+        "content_preview": "import { render, screen } from '@testing-library/react';\nimport userEvent from '@testing-library/user-event';\n\nimport { dateTime } from '@grafana/data';\n\nimport { TimeRangeInput } from './TimeRangeInput';\n\ndescribe('TimeRangeInput', () => {\n  // TODO: This test is evergreen - the check that we haven't accidentally closed\n  // the picker still passes without the appropriate fix\n  // Seems to be related to jest-dom and how it handles clicking outside the node etc.\n  it('handles selecting dates over multiple months', async () => {\n    const user = userEvent.setup();\n    const from = dateTime('2024-01-01T00:00:00Z');\n    const to = dateTime('2024-01-01T00:00:00Z');\n    const onChange = jest.fn();\n\n    render(\n      <TimeRangeInput\n        timeZone=\"utc\"\n        onChange={(payload) => {\n       "
+      },
+      {
+        "file": "packages/grafana-ui/src/components/DateTimePickers/TimeRangePicker/mapper.test.ts",
+        "start_line": 1,
+        "end_line": 57,
+        "similarity": 0.8337,
+        "related_to": "packages/grafana-ui/src/components/DateTimePickers/TimeRangePicker/TimeRangeContent.test.tsx",
+        "content_preview": "import { set } from 'lodash';\n\nimport { DateTime, dateTimeParse, FeatureToggles } from '@grafana/data';\nimport { initRegionalFormatForTests } from '@grafana/i18n';\n\nimport * as commonFormatModule from '../commonFormat';\n\nimport { mapOptionToTimeRange, mapRangeToTimeOption } from './mapper';\n\n// If this flag is deleted, this mock also should be, and the additional tests for when\n// the flag was disabled.\ntype LocaleFormatPreferenceType = FeatureToggles['localeFormatPreference'];\njest.mock('../commonFormat', () => {\n  const format = 'YYYY-MM-DD HH:mm:ss' as const;\n  const moduleObject = {\n    __esModule: true,\n    commonFormat: format as undefined | 'YYYY-MM-DD HH:mm:ss',\n    mockSetCommonFormat,\n  };\n  function mockSetCommonFormat(enabled: LocaleFormatPreferenceType = true) {\n    moduleObje"
+      },
+      {
+        "file": "packages/grafana-ui/src/components/DateTimePickers/TimeZonePicker.tsx",
+        "start_line": 1,
+        "end_line": 71,
+        "similarity": 0.8324,
+        "related_to": "packages/grafana-ui/src/components/DateTimePickers/TimeRangePicker/TimePickerFooter.tsx",
+        "content_preview": "import { toLower, isEmpty, isString } from 'lodash';\nimport { useMemo, useCallback } from 'react';\n\nimport {\n  SelectableValue,\n  getTimeZoneInfo,\n  TimeZoneInfo,\n  getTimeZoneGroups,\n  GroupedTimeZones,\n  TimeZone,\n  InternalTimeZones,\n} from '@grafana/data';\nimport { t } from '@grafana/i18n';\n\nimport { Select } from '../Select/Select';\n\nimport { TimeZoneGroup } from './TimeZonePicker/TimeZoneGroup';\nimport { formatUtcOffset } from './TimeZonePicker/TimeZoneOffset';\nimport { CompactTimeZoneOption, WideTimeZoneOption, SelectableZone } from './TimeZonePicker/TimeZoneOption';\n\nexport interface Props {\n  onChange: (timeZone?: TimeZone) => void;\n  value?: TimeZone;\n  width?: number;\n  autoFocus?: boolean;\n  onBlur?: () => void;\n  includeInternal?: boolean | InternalTimeZones[];\n  disabled?: bo"
+      }
+    ]
+  }
+}

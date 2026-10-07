@@ -1,0 +1,35 @@
+\section{LLM-as-a-Judge and Inter-Judge Agreement}
+\label{sec:sota-judge}
+
+The methodology this thesis borrows was developed outside software engineering.
+G-Eval established criterion-based scoring by a language
+model~\cite{liu2023geval}; MT-Bench extended it to whole responses and measured the
+judge against human preference~\cite{zheng2023judging}; Chatbot Arena scaled
+pairwise human comparison with model identities hidden to a size at which
+rankings stabilise~\cite{chiang2024chatbotarena}. That literature also produced the
+countermeasures now considered good practice: several judges rather than one,
+coverage across model families so that no single provider's idiosyncrasy dominates,
+blinding and pairwise presentation to control position and identity effects, and
+explicit reporting of inter-judge agreement so that a reader can see how reliable
+the instrument was. Panickssery et al.\ supplied the sharpest reason for the
+cross-family requirement by demonstrating that judges recognise and favour their
+own generations~\cite{panickssery2024selfpreference}.
+
+He et al.\ survey the migration of these methods into software engineering and find
+adoption to be uneven~\cite{he2025llmasjudgese}. The code-review evaluations closest
+to this thesis illustrate the point: DeepCRCEval scores its rubric with a single
+judge~\cite{hong2024deepcrceval}, and CRScore is a single metric
+pipeline~\cite{naik2025crscore}. Neither reports an agreement coefficient between
+independent scorers of the same reviews, because neither has two.
+
+This matters more for a context-augmentation study than for a model-ranking study,
+for a reason specific to the intervention. Adding retrieved material to a prompt
+reliably makes the generated review longer. Verbosity bias, in which a judge
+rewards length independent of content, is among the best-documented judge
+pathologies~\cite{zheng2023judging}. A single-judge protocol cannot separate a real
+improvement from a judge preferring more text, and self-preference compounds the
+problem when the generator and the judge come from the same family. Bringing the
+panel methodology into code-review evaluation and measuring how much the
+conclusion depends on individual judges is therefore
+not a methodological flourish here; it is what makes the central claim
+interpretable, and Chapter~\ref{chap:results} reports the difference it makes.

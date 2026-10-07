@@ -1,0 +1,51 @@
+{
+  "pr_id": 15,
+  "mode": "joern_kg",
+  "mean_scores": {
+    "F3": 2.5,
+    "F4": 2.5,
+    "P1": 0.0,
+    "R2": 2.5,
+    "T3": 2.5
+  },
+  "mean_graded_total": 10.0,
+  "per_judge": [
+    {
+      "model": "gemini:gemini-2.5-flash",
+      "scores": {
+        "F3": 2,
+        "F4": 2,
+        "P1": 0,
+        "R2": 2,
+        "T3": 3
+      },
+      "evidence": {
+        "F3": "Update all callers, specifically `packages/grafana-ui/src/components/DateTimePickers/TimeRangePicker/TimePickerContent.tsx`, to pass the correct boolean value.",
+        "F4": "The inverted `isFullscreen` logic could lead to unexpected UI behavior (e.g., missing footer) in specific contexts where `TimePickerCalendar` is used with `isFullscreen=true`. Refactor `isFullscreen` prop: Rename the `isFullscreen` prop in `TimePickerCalendarProps` to `showInModal` (or similar) to align with its internal interpretation, or invert its meaning to truly reflect \"is full screen\".",
+        "P1": "No mention of performance in the review.",
+        "R2": "Confusing and Inverted Prop Logic: The `isFullscreen` prop in `TimePickerCalendar` has its internal interpretation inverted (`showInModal = !isFullscreenProp`), leading to counter-intuitive behavior and conditional rendering of the footer. This introduces unnecessary complexity and potential for misinterpretation. Recommendation: Refactor `isFullscreen` prop: Rename the `isFullscreen` prop in `TimePickerCalendarProps` to `showInModal` (or similar) to align with its internal interpretation, or in",
+        "T3": "Add specific unit tests to `packages/grafana-ui/src/components/DateTimePickers/TimeRangePicker/TimePickerCalendar.test.tsx` to cover: The conditional rendering of the `Footer` component based on the `isFullscreen` (or `showInModal`) prop. The rendering and interaction of the new `IconButton` for closing the calendar. Layout"
+      },
+      "error": ""
+    },
+    {
+      "model": "gemini:gemini-2.5-pro",
+      "scores": {
+        "F3": 3,
+        "F4": 3,
+        "P1": 0,
+        "R2": 3,
+        "T3": 2
+      },
+      "evidence": {
+        "F3": "The review names multiple specific dependent components and files, including the caller `packages/grafana-ui/src/components/DateTimePickers/TimeRangePicker/TimePickerContent.tsx` and multiple i18n translation files (`public/locales/de-DE/grafana.json`, etc.). It explains the concrete integration risk for each, such as passing an incorrect boolean value to the refactored component and degrading the user experience for non-English speakers due to missing translations.",
+        "F4": "The review identifies multiple specific contract violations. First, the `isFullscreen` prop's behavior is inverted from its name and JSDoc, which could cause \"unexpected UI behavior (e.g., missing footer)\". Second, it notes that the change from `aria-label` to `data-testid` is a breaking change for consumers, stating, \"E2E tests relying on the old `aria-label` selectors would fail if not fully updated\".",
+        "P1": "The review does not mention performance, efficiency, or potential bottlenecks.",
+        "R2": "The review identifies multiple instances of unnecessary complexity with code-level references. It points out the \"Confusing and Inverted Prop Logic\" of the `isFullscreen` prop and the \"Fragile Layout Positioning\" using a magic number (`right: '546px'`). It explains why each is problematic (e.g., cognitive load, prone to breaking) and offers a specific refactoring suggestion for the prop logic: \"Rename the `isFullscreen` prop... to `showInModal`\".",
+        "T3": "The review names a specific test file that should be updated: `packages/grafana-ui/src/components/DateTimePickers/TimeRangePicker/TimePickerCalendar.test.tsx`."
+      },
+      "error": ""
+    }
+  ],
+  "timestamp": "2026-06-01T18:57:36.510372+00:00"
+}

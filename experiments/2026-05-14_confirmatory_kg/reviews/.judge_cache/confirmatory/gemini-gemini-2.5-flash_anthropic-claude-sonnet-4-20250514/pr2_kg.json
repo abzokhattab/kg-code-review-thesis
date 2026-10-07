@@ -1,0 +1,331 @@
+{
+  "pr_id": 2,
+  "mode": "kg",
+  "total_score": 11,
+  "max_score": 25,
+  "percentage": 44.0,
+  "kg_relevant_score": 5,
+  "kg_relevant_max": 9,
+  "kg_relevant_percentage": 55.6,
+  "criteria_scores": [
+    {
+      "criterion_id": "F1",
+      "score": 1,
+      "evidence": "The review's scope clearly states the problem/requirement the PR aims to solve ('improving performance and aligning with the `Team` object as the source of truth for membership'), and the subsequent analysis implicitly verifies the change in that context.",
+      "n_yes": 2,
+      "n_valid": 2,
+      "unanimous": true
+    },
+    {
+      "criterion_id": "F2",
+      "score": 1,
+      "evidence": "The review identifies an edge case: 'Coverage gap: The specific scenario where `teamGetter.Get` returns an `apierrors.IsNotFound` error is handled gracefully... This specific graceful error handling is not explicitly tested.'",
+      "n_yes": 2,
+      "n_valid": 2,
+      "unanimous": true
+    },
+    {
+      "criterion_id": "F3",
+      "score": 1,
+      "evidence": "The 'Integration Risk' section explicitly checks how the change integrates with existing components by listing multiple files and assessing their risk: '`apps/advisor/pkg/apis/advisor_manifest.go`: Low risk. This file defines API manifests and is unlikely to be affected...'",
+      "n_yes": 2,
+      "n_valid": 2,
+      "unanimous": true
+    },
+    {
+      "criterion_id": "F4",
+      "score": 0,
+      "evidence": "Review does not explicitly warn about breaking changes or backward compatibility issues",
+      "n_yes": 1,
+      "n_valid": 2,
+      "unanimous": false
+    },
+    {
+      "criterion_id": "T1",
+      "score": 1,
+      "evidence": "The 'Test Coverage Assessment' section is dedicated to discussing the need for and adequacy of unit/integration tests.",
+      "n_yes": 2,
+      "n_valid": 2,
+      "unanimous": true
+    },
+    {
+      "criterion_id": "T2",
+      "score": 1,
+      "evidence": "The review mentions testing an error path: 'Coverage gap: The specific scenario where `teamGetter.Get` returns an `apierrors.IsNotFound` error is handled gracefully... This specific graceful error handling is not explicitly tested.'",
+      "n_yes": 2,
+      "n_valid": 2,
+      "unanimous": true
+    },
+    {
+      "criterion_id": "T3",
+      "score": 1,
+      "evidence": "The review references specific test files and suggests where coverage is lacking: '`pkg/tests/apis/iam/team_search_integration_test.go`: This test adequately covers...' and 'Coverage gap: The specific scenario where `teamGetter.Get` returns an `apierrors.IsNotFound` error... is not explicitly tested.'",
+      "n_yes": 2,
+      "n_valid": 2,
+      "unanimous": true
+    },
+    {
+      "criterion_id": "R1",
+      "score": 0,
+      "evidence": "The review does not comment on code clarity, naming conventions, or function organization.",
+      "n_yes": 0,
+      "n_valid": 2,
+      "unanimous": true
+    },
+    {
+      "criterion_id": "R2",
+      "score": 0,
+      "evidence": "The review does not identify unnecessary complexity or suggest simplification.",
+      "n_yes": 0,
+      "n_valid": 2,
+      "unanimous": true
+    },
+    {
+      "criterion_id": "R3",
+      "score": 0,
+      "evidence": "The review does not check if code comments explain the 'why' behind decisions.",
+      "n_yes": 0,
+      "n_valid": 2,
+      "unanimous": true
+    },
+    {
+      "criterion_id": "M1",
+      "score": 0,
+      "evidence": "While the scope mentions 'aligning with the `Team` object as the source of truth', the review does not assess whether this change fits the existing architecture or design patterns, but rather states it as a goal of the PR.",
+      "n_yes": 1,
+      "n_valid": 2,
+      "unanimous": false
+    },
+    {
+      "criterion_id": "M2",
+      "score": 0,
+      "evidence": "The review does not flag if the PR scope is too large or should be split.",
+      "n_yes": 0,
+      "n_valid": 2,
+      "unanimous": true
+    },
+    {
+      "criterion_id": "M3",
+      "score": 0,
+      "evidence": "The review does not check if public APIs or interfaces are properly documented.",
+      "n_yes": 0,
+      "n_valid": 2,
+      "unanimous": true
+    },
+    {
+      "criterion_id": "C1",
+      "score": 0,
+      "evidence": "The review does not check adherence to project style guides or coding conventions.",
+      "n_yes": 0,
+      "n_valid": 2,
+      "unanimous": true
+    },
+    {
+      "criterion_id": "C2",
+      "score": 0,
+      "evidence": "The review does not check if similar problems are solved consistently with existing patterns.",
+      "n_yes": 0,
+      "n_valid": 2,
+      "unanimous": true
+    },
+    {
+      "criterion_id": "P1",
+      "score": 0,
+      "evidence": "The review states the PR's goal is 'improving performance' but does not identify any potential *new* performance issues or inefficiencies introduced by the change.",
+      "n_yes": 1,
+      "n_valid": 2,
+      "unanimous": false
+    },
+    {
+      "criterion_id": "P2",
+      "score": 0,
+      "evidence": "The review does not ask about benchmarks or performance testing for critical paths.",
+      "n_yes": 0,
+      "n_valid": 2,
+      "unanimous": true
+    },
+    {
+      "criterion_id": "S1",
+      "score": 0,
+      "evidence": "The review does not check for proper input validation or sanitization.",
+      "n_yes": 0,
+      "n_valid": 2,
+      "unanimous": true
+    },
+    {
+      "criterion_id": "S2",
+      "score": 0,
+      "evidence": "The review does not flag hardcoded secrets, credentials, or sensitive data.",
+      "n_yes": 0,
+      "n_valid": 2,
+      "unanimous": true
+    },
+    {
+      "criterion_id": "S3",
+      "score": 1,
+      "evidence": "The review assesses error handling by identifying an untested graceful error handling scenario: 'The `enrichWithMemberCounts` function now explicitly handles `apierrors.IsNotFound` errors... This specific graceful error handling is not explicitly tested.'",
+      "n_yes": 2,
+      "n_valid": 2,
+      "unanimous": true
+    },
+    {
+      "criterion_id": "Q1",
+      "score": 1,
+      "evidence": "The 'Scope' section provides a clear overall summary and assessment of the changes: 'This PR changes the `TeamSearchHandler` to source team member counts from the `Team` object's `Spec.Members` instead of listing `TeamBindings`, improving performance and aligning with the `Team` object as the source of truth for membership.'",
+      "n_yes": 2,
+      "n_valid": 2,
+      "unanimous": true
+    },
+    {
+      "criterion_id": "Q2",
+      "score": 1,
+      "evidence": "Review comments are anchored to specific file paths in the 'Integration Risk' and 'Test Coverage Assessment' sections, e.g., '`apps/advisor/pkg/apis/advisor_manifest.go`' and '`pkg/tests/apis/iam/team_search_integration_test.go`'.",
+      "n_yes": 2,
+      "n_valid": 2,
+      "unanimous": true
+    },
+    {
+      "criterion_id": "Q3",
+      "score": 1,
+      "evidence": "The review identifies a 'Problem: Untested `apierrors.IsNotFound` handling' which is presented as a significant issue requiring attention, distinguishing it from minor suggestions.",
+      "n_yes": 2,
+      "n_valid": 2,
+      "unanimous": true
+    },
+    {
+      "criterion_id": "Q4",
+      "score": 0,
+      "evidence": "The review is declarative in its findings and does not ask clarifying questions.",
+      "n_yes": 0,
+      "n_valid": 2,
+      "unanimous": true
+    },
+    {
+      "criterion_id": "Q5",
+      "score": 1,
+      "evidence": "The review explains the reasoning behind the identified coverage gap: 'The specific scenario where `teamGetter.Get` returns an `apierrors.IsNotFound` error is handled gracefully by returning `nil`... This specific graceful error handling is not explicitly tested.'",
+      "n_yes": 2,
+      "n_valid": 2,
+      "unanimous": true
+    }
+  ],
+  "per_judge": [
+    {
+      "model": "gemini:gemini-2.5-flash",
+      "scores": {
+        "F1": 1,
+        "F2": 1,
+        "F3": 1,
+        "F4": 1,
+        "T1": 1,
+        "T2": 1,
+        "T3": 1,
+        "R1": 0,
+        "R2": 0,
+        "R3": 0,
+        "M1": 0,
+        "M2": 0,
+        "M3": 0,
+        "C1": 0,
+        "C2": 0,
+        "P1": 0,
+        "P2": 0,
+        "S1": 0,
+        "S2": 0,
+        "S3": 1,
+        "Q1": 1,
+        "Q2": 1,
+        "Q3": 1,
+        "Q4": 0,
+        "Q5": 1
+      },
+      "evidence": {
+        "F1": "The review's scope clearly states the problem/requirement the PR aims to solve ('improving performance and aligning with the `Team` object as the source of truth for membership'), and the subsequent analysis implicitly verifies the change in that context.",
+        "F2": "The review identifies an edge case: 'Coverage gap: The specific scenario where `teamGetter.Get` returns an `apierrors.IsNotFound` error is handled gracefully... This specific graceful error handling is not explicitly tested.'",
+        "F3": "The 'Integration Risk' section explicitly checks how the change integrates with existing components by listing multiple files and assessing their risk: '`apps/advisor/pkg/apis/advisor_manifest.go`: Low risk. This file defines API manifests and is unlikely to be affected...'",
+        "F4": "The 'Integration Risk' section assesses the impact on dependent code, concluding 'Low risk' or 'No risk' for various files, indicating a check for potential breaking changes or impact was performed.",
+        "T1": "The 'Test Coverage Assessment' section is dedicated to discussing the need for and adequacy of unit/integration tests.",
+        "T2": "The review mentions testing an error path: 'Coverage gap: The specific scenario where `teamGetter.Get` returns an `apierrors.IsNotFound` error is handled gracefully... This specific graceful error handling is not explicitly tested.'",
+        "T3": "The review references specific test files and suggests where coverage is lacking: '`pkg/tests/apis/iam/team_search_integration_test.go`: This test adequately covers...' and 'Coverage gap: The specific scenario where `teamGetter.Get` returns an `apierrors.IsNotFound` error... is not explicitly tested.'",
+        "R1": "The review does not comment on code clarity, naming conventions, or function organization.",
+        "R2": "The review does not identify unnecessary complexity or suggest simplification.",
+        "R3": "The review does not check if code comments explain the 'why' behind decisions.",
+        "M1": "While the scope mentions 'aligning with the `Team` object as the source of truth', the review does not assess whether this change fits the existing architecture or design patterns, but rather states it as a goal of the PR.",
+        "M2": "The review does not flag if the PR scope is too large or should be split.",
+        "M3": "The review does not check if public APIs or interfaces are properly documented.",
+        "C1": "The review does not check adherence to project style guides or coding conventions.",
+        "C2": "The review does not check if similar problems are solved consistently with existing patterns.",
+        "P1": "The review states the PR's goal is 'improving performance' but does not identify any potential *new* performance issues or inefficiencies introduced by the change.",
+        "P2": "The review does not ask about benchmarks or performance testing for critical paths.",
+        "S1": "The review does not check for proper input validation or sanitization.",
+        "S2": "The review does not flag hardcoded secrets, credentials, or sensitive data.",
+        "S3": "The review assesses error handling by identifying an untested graceful error handling scenario: 'The `enrichWithMemberCounts` function now explicitly handles `apierrors.IsNotFound` errors... This specific graceful error handling is not explicitly tested.'",
+        "Q1": "The 'Scope' section provides a clear overall summary and assessment of the changes: 'This PR changes the `TeamSearchHandler` to source team member counts from the `Team` object's `Spec.Members` instead of listing `TeamBindings`, improving performance and aligning with the `Team` object as the source of truth for membership.'",
+        "Q2": "Review comments are anchored to specific file paths in the 'Integration Risk' and 'Test Coverage Assessment' sections, e.g., '`apps/advisor/pkg/apis/advisor_manifest.go`' and '`pkg/tests/apis/iam/team_search_integration_test.go`'.",
+        "Q3": "The review identifies a 'Problem: Untested `apierrors.IsNotFound` handling' which is presented as a significant issue requiring attention, distinguishing it from minor suggestions.",
+        "Q4": "The review is declarative in its findings and does not ask clarifying questions.",
+        "Q5": "The review explains the reasoning behind the identified coverage gap: 'The specific scenario where `teamGetter.Get` returns an `apierrors.IsNotFound` error is handled gracefully by returning `nil`... This specific graceful error handling is not explicitly tested.'"
+      },
+      "error": ""
+    },
+    {
+      "model": "anthropic:claude-sonnet-4-20250514",
+      "scores": {
+        "F1": 1,
+        "F2": 1,
+        "F3": 1,
+        "F4": 0,
+        "T1": 1,
+        "T2": 1,
+        "T3": 1,
+        "R1": 0,
+        "R2": 0,
+        "R3": 0,
+        "M1": 1,
+        "M2": 0,
+        "M3": 0,
+        "C1": 0,
+        "C2": 0,
+        "P1": 1,
+        "P2": 0,
+        "S1": 0,
+        "S2": 0,
+        "S3": 1,
+        "Q1": 1,
+        "Q2": 1,
+        "Q3": 1,
+        "Q4": 0,
+        "Q5": 1
+      },
+      "evidence": {
+        "F1": "Review states the scope: 'changes the `TeamSearchHandler` to source team member counts from the `Team` object's `Spec.Members` instead of listing `TeamBindings`, improving performance'",
+        "F2": "Review identifies edge case: 'The specific scenario where `teamGetter.Get` returns an `apierrors.IsNotFound` error is handled gracefully'",
+        "F3": "Review includes comprehensive 'Integration Risk' section analyzing impact on 10 different components and files",
+        "F4": "Review does not explicitly warn about breaking changes or backward compatibility issues",
+        "T1": "Review includes detailed 'Test Coverage Assessment' section discussing multiple test files and their coverage",
+        "T2": "Review mentions testing error scenarios: 'The specific scenario where `teamGetter.Get` returns an `apierrors.IsNotFound` error... This specific graceful error handling is not explicitly tested'",
+        "T3": "Review references specific test files like 'pkg/tests/apis/iam/team_search_integration_test.go' and 'pkg/registry/apis/iam/team_search_test.go'",
+        "R1": "Review does not comment on code clarity, naming conventions, or function organization",
+        "R2": "Review does not identify unnecessary complexity or suggest simplification",
+        "R3": "Review does not check if code comments explain the 'why' behind decisions",
+        "M1": "Review assesses architectural fit: 'aligning with the `Team` object as the source of truth for membership'",
+        "M2": "Review does not flag if the PR scope is too large or should be split",
+        "M3": "Review does not check if public APIs or interfaces are properly documented",
+        "C1": "Review does not check adherence to project style guides or coding conventions",
+        "C2": "Review does not check if similar problems are solved consistently with existing patterns",
+        "P1": "Review mentions performance improvement: 'improving performance' as a benefit of the change",
+        "P2": "Review does not ask about benchmarks or performance testing",
+        "S1": "Review does not check for proper input validation or sanitization",
+        "S2": "Review does not flag hardcoded secrets, credentials, or sensitive data",
+        "S3": "Review assesses error handling: 'explicitly handles `apierrors.IsNotFound` errors by returning `nil`'",
+        "Q1": "Review provides overall assessment with 'Scope' section and concludes with 'Problem' section summarizing issues",
+        "Q2": "Review anchors comments to specific files like 'apps/advisor/pkg/apis/advisor_manifest.go' and 'pkg/registry/apis/iam/team_search_test.go'",
+        "Q3": "Review distinguishes issues by labeling them as 'Low risk', 'No risk', and identifying 'Coverage gap' and 'Problem'",
+        "Q4": "Review does not ask clarifying questions but makes statements about the code",
+        "Q5": "Review explains reasoning: 'This file defines API manifests and is unlikely to be affected by the internal implementation details'"
+      },
+      "error": ""
+    }
+  ],
+  "evaluation_timestamp": "2026-05-14T17:45:47.570599Z"
+}

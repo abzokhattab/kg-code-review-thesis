@@ -1,0 +1,51 @@
+{
+  "pr_id": 29,
+  "mode": "joern_kg",
+  "mean_scores": {
+    "F3": 3.0,
+    "F4": 2.5,
+    "P1": 0.0,
+    "R2": 0.0,
+    "T3": 2.5
+  },
+  "mean_graded_total": 8.0,
+  "per_judge": [
+    {
+      "model": "gemini:gemini-2.5-flash",
+      "scores": {
+        "F3": 3,
+        "F4": 3,
+        "P1": 0,
+        "R2": 0,
+        "T3": 3
+      },
+      "evidence": {
+        "F3": "If `RaftVoterEndpoint` instances are created with invalid `host` or `port` values (e.g., an empty host or a port of 0), downstream components that rely on these endpoints for network communication (such as `org.apache.kafka.clients.admin.KafkaAdminClient.java` or `org.apache.kafka.tools.MetadataQuorumCommand.java`) could experience connection failures, incorrect routing, or silent misconfigurations.",
+        "F4": "The `RaftVoterEndpoint` constructor performs robust validation for the `listener` argument but lacks similar checks for the `host` argument beyond a simple null check. This could allow empty or whitespace-only host strings, leading to malformed network addresses. ... The `port` argument in the `RaftVoterEndpoint` constructor is an `int` but is not validated to ensure it falls within a standard, valid port range (e.g., 1-65535). Passing a `0` or negative value could result in unexpected behavior ",
+        "P1": "No mention of performance in the review.",
+        "R2": "The review notes 'The change to `private static` for `requireNonNullAllCapsNonEmpty` is a low-risk improvement to encapsulation,' but this is an observation about an improvement in design/encapsulation rather than identifying existing unnecessary complexity or suggesting simplification of complex logic.",
+        "T3": "Extend `clients/src/test/java/org/apache/kafka/clients/admin/RaftVoterEndpointTest.java` with new test cases to cover: `RaftVoterEndpoint` construction with empty or whitespace-only `host` strings, expecting `IllegalArgumentException`. `RaftVoterEndpoint` construction with invalid `port` values (e.g., 0, negative, or values exceeding 65535), expecting `IllegalArgumentException`."
+      },
+      "error": ""
+    },
+    {
+      "model": "gemini:gemini-2.5-pro",
+      "scores": {
+        "F3": 3,
+        "F4": 2,
+        "P1": 0,
+        "R2": 0,
+        "T3": 2
+      },
+      "evidence": {
+        "F3": "The review names multiple specific dependent components and explains the integration risk: \"...downstream components that rely on these endpoints for network communication (such as `org.apache.kafka.clients.admin.KafkaAdminClient.java` or `org.apache.kafka.tools.MetadataQuorumCommand.java`) could experience connection failures, incorrect routing, or silent misconfigurations.\"",
+        "F4": "The review identifies a specific API contract that could be broken: \"API Contract Ambiguity: The lack of explicit validation for `host` and `port` could lead to confusion regarding the expected input constraints for `RaftVoterEndpoint`, potentially violating caller expectations.\"",
+        "P1": "The review does not mention performance, efficiency, or potential bottlenecks.",
+        "R2": "The review does not identify any unnecessary complexity or suggest simplifications. Its focus is on robustness and missing validation, not complex code structure.",
+        "T3": "The review names one specific test file path to be updated: \"Extend `clients/src/test/java/org/apache/kafka/clients/admin/RaftVoterEndpointTest.java` with new test cases...\" The score is not 3 because the anchor requires naming multiple specific test file paths."
+      },
+      "error": ""
+    }
+  ],
+  "timestamp": "2026-06-01T18:58:12.170023+00:00"
+}

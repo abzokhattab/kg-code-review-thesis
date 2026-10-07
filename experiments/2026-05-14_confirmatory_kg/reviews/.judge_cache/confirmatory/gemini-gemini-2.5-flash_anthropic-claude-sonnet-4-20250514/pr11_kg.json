@@ -1,0 +1,331 @@
+{
+  "pr_id": 11,
+  "mode": "kg",
+  "total_score": 12,
+  "max_score": 25,
+  "percentage": 48.0,
+  "kg_relevant_score": 6,
+  "kg_relevant_max": 9,
+  "kg_relevant_percentage": 66.7,
+  "criteria_scores": [
+    {
+      "criterion_id": "F1",
+      "score": 1,
+      "evidence": "Review mentions: 'ensuring the `streamLoadedBuilds()` optimization is effective.' This implies checking if the change addresses its stated goal.",
+      "n_yes": 2,
+      "n_valid": 2,
+      "unanimous": true
+    },
+    {
+      "criterion_id": "F2",
+      "score": 0,
+      "evidence": "Review does not identify specific edge cases or boundary conditions that need handling",
+      "n_yes": 1,
+      "n_valid": 2,
+      "unanimous": false
+    },
+    {
+      "criterion_id": "F3",
+      "score": 1,
+      "evidence": "The 'Integration Risk' section explicitly lists multiple core classes (`RunMap.java`, `Job.java`, etc.) and explains how they interact with the changed code.",
+      "n_yes": 2,
+      "n_valid": 2,
+      "unanimous": true
+    },
+    {
+      "criterion_id": "F4",
+      "score": 1,
+      "evidence": "Review warns: 'potentially leading to a performance regression if those callers do not need all builds immediately.'",
+      "n_yes": 2,
+      "n_valid": 2,
+      "unanimous": true
+    },
+    {
+      "criterion_id": "T1",
+      "score": 1,
+      "evidence": "The entire 'Test Coverage Assessment' section discusses the need for and gaps in testing.",
+      "n_yes": 2,
+      "n_valid": 2,
+      "unanimous": true
+    },
+    {
+      "criterion_id": "T2",
+      "score": 0,
+      "evidence": "Review does not specifically mention testing edge cases, error paths, or failure scenarios",
+      "n_yes": 1,
+      "n_valid": 2,
+      "unanimous": false
+    },
+    {
+      "criterion_id": "T3",
+      "score": 1,
+      "evidence": "Review references specific test files like `core/src/test/java/jenkins/model/lazy/AbstractLazyLoadRunMapTest.java` and suggests adding performance tests.",
+      "n_yes": 2,
+      "n_valid": 2,
+      "unanimous": true
+    },
+    {
+      "criterion_id": "R1",
+      "score": 0,
+      "evidence": "Review does not comment on code clarity, naming conventions, or function organization.",
+      "n_yes": 0,
+      "n_valid": 2,
+      "unanimous": true
+    },
+    {
+      "criterion_id": "R2",
+      "score": 0,
+      "evidence": "Review identifies a new inefficiency but does not suggest simplification of existing code or design.",
+      "n_yes": 0,
+      "n_valid": 2,
+      "unanimous": true
+    },
+    {
+      "criterion_id": "R3",
+      "score": 0,
+      "evidence": "Review does not check if code comments explain the 'why' behind decisions.",
+      "n_yes": 0,
+      "n_valid": 2,
+      "unanimous": true
+    },
+    {
+      "criterion_id": "M1",
+      "score": 1,
+      "evidence": "Review assesses the change in design pattern: 'the internal implementation of `getLoadedBuilds()` has changed from lazy resolution of `R` objects via `BuildReferenceMapAdapter` to eager resolution of all `R` objects into a new `TreeMap`.'",
+      "n_yes": 2,
+      "n_valid": 2,
+      "unanimous": true
+    },
+    {
+      "criterion_id": "M2",
+      "score": 0,
+      "evidence": "Review does not flag if the PR scope is too large or should be split.",
+      "n_yes": 0,
+      "n_valid": 2,
+      "unanimous": true
+    },
+    {
+      "criterion_id": "M3",
+      "score": 0,
+      "evidence": "Review does not check if public APIs or interfaces are properly documented.",
+      "n_yes": 1,
+      "n_valid": 2,
+      "unanimous": false
+    },
+    {
+      "criterion_id": "C1",
+      "score": 0,
+      "evidence": "Review does not check adherence to project style guides or coding conventions.",
+      "n_yes": 0,
+      "n_valid": 2,
+      "unanimous": true
+    },
+    {
+      "criterion_id": "C2",
+      "score": 0,
+      "evidence": "Review does not check if similar problems are solved consistently with existing patterns",
+      "n_yes": 1,
+      "n_valid": 2,
+      "unanimous": false
+    },
+    {
+      "criterion_id": "P1",
+      "score": 1,
+      "evidence": "Review identifies: 'This change introduces a potential performance regression for any callers of `getLoadedBuilds()`.'",
+      "n_yes": 2,
+      "n_valid": 2,
+      "unanimous": true
+    },
+    {
+      "criterion_id": "P2",
+      "score": 1,
+      "evidence": "Review states: 'However, they do not specifically test the *performance characteristics* or the change from lazy to eager resolution of `R` objects within `getLoadedBuilds()`.'",
+      "n_yes": 2,
+      "n_valid": 2,
+      "unanimous": true
+    },
+    {
+      "criterion_id": "S1",
+      "score": 0,
+      "evidence": "Review does not check for proper input validation or sanitization.",
+      "n_yes": 0,
+      "n_valid": 2,
+      "unanimous": true
+    },
+    {
+      "criterion_id": "S2",
+      "score": 0,
+      "evidence": "Review does not flag hardcoded secrets, credentials, or sensitive data.",
+      "n_yes": 0,
+      "n_valid": 2,
+      "unanimous": true
+    },
+    {
+      "criterion_id": "S3",
+      "score": 0,
+      "evidence": "Review does not assess error handling and failure recovery.",
+      "n_yes": 0,
+      "n_valid": 2,
+      "unanimous": true
+    },
+    {
+      "criterion_id": "Q1",
+      "score": 1,
+      "evidence": "The 'Scope' section provides an overall summary of the changes, and the 'Problem' section summarizes the issues found.",
+      "n_yes": 2,
+      "n_valid": 2,
+      "unanimous": true
+    },
+    {
+      "criterion_id": "Q2",
+      "score": 1,
+      "evidence": "Review comments are anchored to specific file paths, e.g., '`core/src/main/java/hudson/model/RunMap.java`'.",
+      "n_yes": 2,
+      "n_valid": 2,
+      "unanimous": true
+    },
+    {
+      "criterion_id": "Q3",
+      "score": 1,
+      "evidence": "The 'Problem' section clearly outlines critical issues like 'Performance Regression for `getLoadedBuilds()`' and 'Incomplete Test Coverage for Performance Changes'.",
+      "n_yes": 2,
+      "n_valid": 2,
+      "unanimous": true
+    },
+    {
+      "criterion_id": "Q4",
+      "score": 0,
+      "evidence": "The review primarily makes statements about identified issues and gaps rather than asking clarifying questions.",
+      "n_yes": 0,
+      "n_valid": 2,
+      "unanimous": true
+    },
+    {
+      "criterion_id": "Q5",
+      "score": 1,
+      "evidence": "Review explains the reasoning: 'This change introduces a potential performance regression... as it now performs a full map copy and eager resolution, which is exactly what the PR aimed to avoid...'",
+      "n_yes": 2,
+      "n_valid": 2,
+      "unanimous": true
+    }
+  ],
+  "per_judge": [
+    {
+      "model": "gemini:gemini-2.5-flash",
+      "scores": {
+        "F1": 1,
+        "F2": 1,
+        "F3": 1,
+        "F4": 1,
+        "T1": 1,
+        "T2": 1,
+        "T3": 1,
+        "R1": 0,
+        "R2": 0,
+        "R3": 0,
+        "M1": 1,
+        "M2": 0,
+        "M3": 0,
+        "C1": 0,
+        "C2": 1,
+        "P1": 1,
+        "P2": 1,
+        "S1": 0,
+        "S2": 0,
+        "S3": 0,
+        "Q1": 1,
+        "Q2": 1,
+        "Q3": 1,
+        "Q4": 0,
+        "Q5": 1
+      },
+      "evidence": {
+        "F1": "Review mentions: 'ensuring the `streamLoadedBuilds()` optimization is effective.' This implies checking if the change addresses its stated goal.",
+        "F2": "Review mentions: 'The new test `streamLoadedBuilds()` adequately covers the basic functionality, ordering, and short-circuiting behavior of the `streamLoadedBuilds()` method.'",
+        "F3": "The 'Integration Risk' section explicitly lists multiple core classes (`RunMap.java`, `Job.java`, etc.) and explains how they interact with the changed code.",
+        "F4": "Review warns: 'potentially leading to a performance regression if those callers do not need all builds immediately.'",
+        "T1": "The entire 'Test Coverage Assessment' section discusses the need for and gaps in testing.",
+        "T2": "Review mentions: 'The new test `streamLoadedBuilds()` adequately covers the basic functionality, ordering, and short-circuiting behavior of the `streamLoadedBuilds()` method.'",
+        "T3": "Review references specific test files like `core/src/test/java/jenkins/model/lazy/AbstractLazyLoadRunMapTest.java` and suggests adding performance tests.",
+        "R1": "Review does not comment on code clarity, naming conventions, or function organization.",
+        "R2": "Review identifies a new inefficiency but does not suggest simplification of existing code or design.",
+        "R3": "Review does not check if code comments explain the 'why' behind decisions.",
+        "M1": "Review assesses the change in design pattern: 'the internal implementation of `getLoadedBuilds()` has changed from lazy resolution of `R` objects via `BuildReferenceMapAdapter` to eager resolution of all `R` objects into a new `TreeMap`.'",
+        "M2": "Review does not flag if the PR scope is too large or should be split.",
+        "M3": "Review does not check if public APIs or interfaces are properly documented.",
+        "C1": "Review does not check adherence to project style guides or coding conventions.",
+        "C2": "Review highlights a deviation from an existing pattern: 'This replaces the previous lazy resolution mechanism provided by `BuildReferenceMapAdapter`.'",
+        "P1": "Review identifies: 'This change introduces a potential performance regression for any callers of `getLoadedBuilds()`.'",
+        "P2": "Review states: 'However, they do not specifically test the *performance characteristics* or the change from lazy to eager resolution of `R` objects within `getLoadedBuilds()`.'",
+        "S1": "Review does not check for proper input validation or sanitization.",
+        "S2": "Review does not flag hardcoded secrets, credentials, or sensitive data.",
+        "S3": "Review does not assess error handling and failure recovery.",
+        "Q1": "The 'Scope' section provides an overall summary of the changes, and the 'Problem' section summarizes the issues found.",
+        "Q2": "Review comments are anchored to specific file paths, e.g., '`core/src/main/java/hudson/model/RunMap.java`'.",
+        "Q3": "The 'Problem' section clearly outlines critical issues like 'Performance Regression for `getLoadedBuilds()`' and 'Incomplete Test Coverage for Performance Changes'.",
+        "Q4": "The review primarily makes statements about identified issues and gaps rather than asking clarifying questions.",
+        "Q5": "Review explains the reasoning: 'This change introduces a potential performance regression... as it now performs a full map copy and eager resolution, which is exactly what the PR aimed to avoid...'"
+      },
+      "error": ""
+    },
+    {
+      "model": "anthropic:claude-sonnet-4-20250514",
+      "scores": {
+        "F1": 1,
+        "F2": 0,
+        "F3": 1,
+        "F4": 1,
+        "T1": 1,
+        "T2": 0,
+        "T3": 1,
+        "R1": 0,
+        "R2": 0,
+        "R3": 0,
+        "M1": 1,
+        "M2": 0,
+        "M3": 1,
+        "C1": 0,
+        "C2": 0,
+        "P1": 1,
+        "P2": 1,
+        "S1": 0,
+        "S2": 0,
+        "S3": 0,
+        "Q1": 1,
+        "Q2": 1,
+        "Q3": 1,
+        "Q4": 0,
+        "Q5": 1
+      },
+      "evidence": {
+        "F1": "Review notes the PR 'aiming to avoid expensive full map copies for retrieving recent builds' and assesses whether this goal is achieved",
+        "F2": "Review does not identify specific edge cases or boundary conditions that need handling",
+        "F3": "Review extensively discusses integration with 'RunMap', 'Job.java', 'AbstractProject.java', and other core classes that 'frequently interact with RunMap'",
+        "F4": "Review warns 'Any code calling RunMap.getLoadedBuilds() will now incur the cost of eagerly loading and copying all R objects, potentially leading to a performance regression'",
+        "T1": "Review discusses test coverage and states 'It is crucial that this file contains tests for getEstimatedDurationCandidates()'",
+        "T2": "Review does not specifically mention testing edge cases, error paths, or failure scenarios",
+        "T3": "Review references specific test files: 'AbstractLazyLoadRunMapTest.java', 'LazyBuildMixInTest.java', 'FakeMap.java', and 'SimpleJobTest.java'",
+        "R1": "Review does not comment on code clarity, naming conventions, or function organization",
+        "R2": "Review does not identify unnecessary complexity or suggest simplification",
+        "R3": "Review does not check if code comments explain the 'why' behind decisions",
+        "M1": "Review assesses architectural fit by noting 'RunMap extends AbstractLazyLoadRunMap' and discusses how changes affect the inheritance hierarchy",
+        "M2": "Review does not comment on whether the PR scope is appropriate or should be split",
+        "M3": "Review notes 'the public API signature (SortedMap<Integer, R>) remains the same' indicating concern for API documentation consistency",
+        "C1": "Review does not check adherence to coding conventions or style guides",
+        "C2": "Review does not check if similar problems are solved consistently with existing patterns",
+        "P1": "Review identifies 'Performance Regression for getLoadedBuilds()' and notes the method 'now performs a full map copy and eager resolution'",
+        "P2": "Review states 'There are no specific performance tests' and mentions need for 'performance improvement when dealing with a large number of builds'",
+        "S1": "Review does not check for proper input validation or sanitization",
+        "S2": "Review does not flag hardcoded secrets, credentials, or sensitive data",
+        "S3": "Review does not assess error handling and failure recovery",
+        "Q1": "Review provides comprehensive summary with 'Scope' section and 'Problem' section outlining key issues",
+        "Q2": "Review anchors comments to specific files like 'core/src/main/java/hudson/model/RunMap.java' and 'core/src/test/java/jenkins/model/lazy/AbstractLazyLoadRunMapTest.java'",
+        "Q3": "Review distinguishes issues by labeling 'Performance Regression' as a major problem and separating 'Integration Risk' from 'Test Coverage Assessment'",
+        "Q4": "Review makes statements but does not ask clarifying questions about the implementation",
+        "Q5": "Review explains reasoning: 'This change introduces a potential performance regression...as it now performs a full map copy and eager resolution, which is exactly what the PR aimed to avoid'"
+      },
+      "error": ""
+    }
+  ],
+  "evaluation_timestamp": "2026-05-14T17:54:35.466501Z"
+}

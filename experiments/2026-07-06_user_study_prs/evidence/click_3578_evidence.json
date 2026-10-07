@@ -1,0 +1,96 @@
+{
+ "pr": {
+  "number": 3578,
+  "title": "Fix double-bracketing of choices in synopsis",
+  "body": "A small rendering issue of choices being enclosed into double-brackets when argument is optional.\r\n\r\nIssue was likely unnoticed in the original https://github.com/pallets/click/issues/1272 / https://github.com/pallets/click/issues/1273 PR.\r\n\r\nThis mirrors the similar fix I implemented for commands in https://github.com/pallets/click/pull/3507",
+  "repo": "pallets/click",
+  "head_sha": "762c97eef7c1b3779678992f26a553a2a8c80793",
+  "merged_at": "2026-06-13T03:59:03Z"
+ },
+ "changed_files": [
+  {
+   "path": "CHANGES.md",
+   "language": "other",
+   "added": 2,
+   "deleted": 0
+  },
+  {
+   "path": "src/click/core.py",
+   "language": "python",
+   "added": 6,
+   "deleted": 1
+  },
+  {
+   "path": "tests/test_basic.py",
+   "language": "python",
+   "added": 40,
+   "deleted": 0
+  }
+ ],
+ "nearest_tests": [
+  {
+   "path": "tests/test_shell_completion.py",
+   "relationship": "tests",
+   "source_file": "click.core"
+  },
+  {
+   "path": "tests/test_context.py",
+   "relationship": "tests",
+   "source_file": "click.core"
+  },
+  {
+   "path": "tests/test_defaults.py",
+   "relationship": "tests",
+   "source_file": "click.core"
+  },
+  {
+   "path": "src/click/testing.py",
+   "relationship": "tests",
+   "source_file": "core"
+  }
+ ],
+ "dependent_files": [
+  {
+   "path": "src/click/globals.py",
+   "relationship": "imports",
+   "source_file": "core"
+  },
+  {
+   "path": "src/click/__init__.py",
+   "relationship": "imports",
+   "source_file": "core"
+  },
+  {
+   "path": "src/click/types.py",
+   "relationship": "imports",
+   "source_file": "core"
+  },
+  {
+   "path": "src/click/parser.py",
+   "relationship": "imports",
+   "source_file": "core"
+  },
+  {
+   "path": "src/click/exceptions.py",
+   "relationship": "imports",
+   "source_file": "core"
+  },
+  {
+   "path": "src/click/shell_completion.py",
+   "relationship": "imports",
+   "source_file": "core"
+  },
+  {
+   "path": "src/click/decorators.py",
+   "relationship": "imports",
+   "source_file": "core"
+  }
+ ],
+ "diff_summary": "3 files changed",
+ "full_diff": "diff --git a/CHANGES.md b/CHANGES.md\nindex 8991e8257..90b93ed80 100644\n--- a/CHANGES.md\n+++ b/CHANGES.md\n@@ -18,6 +18,8 @@ Unreleased\n   stream when no external pager runs, completing the partial\n   `I/O operation on closed file` fix from {pr}`3482`. {issue}`3449`\n   {pr}`3533`\n+- Fix CLI usage symopsis for optional arguments producing double square brackets\n+  `[[a|b|c]]...` whose type already brackets their metavar. {pr}`3578`\n \n ## Version 8.4.1\n \ndiff --git a/src/click/core.py b/src/click/core.py\nindex d2db291d0..d7ecbefbc 100644\n--- a/src/click/core.py\n+++ b/src/click/core.py\n@@ -3571,9 +3571,14 @@ def make_metavar(self, ctx: Context) -> str:\n         var = self.type.get_metavar(param=self, ctx=ctx)\n         if not var:\n             var = self.name.upper()\n+        # Types like ``Choice`` and ``DateTime`` already surround their metavar\n+        # with square brackets to enumerate the allowed values. Reuse those\n+        # outer brackets as the optional-argument indicator instead of wrapping\n+        # the metavar in a second pair, which would produce ``[[a|b|c]]``.\n+        already_bracketed = var.startswith(\"[\") and var.endswith(\"]\")\n         if self.deprecated:\n             var += \"!\"\n-        if not self.required:\n+        if not self.required and not already_bracketed:\n             var = f\"[{var}]\"\n         if self.nargs != 1:\n             var += \"...\"\ndiff --git a/tests/test_basic.py b/tests/test_basic.py\nindex 3f7352879..0d5411586 100644\n--- a/tests/test_basic.py\n+++ b/tests/test_basic.py\n@@ -569,6 +569,46 @@ def cli(method: str | None):\n     assert result.output.startswith(\"Usage: cli [OPTIONS] {not-none|none}\\n\")\n \n \n+def test_choice_argument_optional_metavar(runner):\n+    \"\"\"Optional Choice arguments reuse the type's brackets instead of doubling.\n+\n+    Without this the usage line for a ``Choice`` argument with ``nargs=-1`` or\n+    ``required=False`` rendered as ``[[a|b|c]]``: one pair from ``Choice`` to\n+    enumerate values, a second pair from ``Argument`` to mark it optional.\n+    \"\"\"\n+\n+    @click.command()\n+    @click.argument(\"method\", type=click.Choice([\"foo\", \"bar\", \"baz\"]), nargs=-1)\n+    def cli_variadic(method):\n+        pass\n+\n+    @click.command()\n+    @click.argument(\"method\", type=click.Choice([\"foo\", \"bar\", \"baz\"]), required=False)\n+    def cli_optional(method):\n+        pass\n+\n+    variadic = runner.invoke(cli_variadic, [\"--help\"]).output\n+    assert \"Usage: cli-variadic [OPTIONS] [foo|bar|baz]...\\n\" in variadic\n+    assert \"[[foo|bar|baz]]\" not in variadic\n+\n+    optional = runner.invoke(cli_optional, [\"--help\"]).output\n+    assert \"Usage: cli-optional [OPTIONS] [foo|bar|baz]\\n\" in optional\n+    assert \"[[foo|bar|baz]]\" not in optional\n+\n+\n+def test_datetime_argument_optional_metavar(runner):\n+    \"\"\"``DateTime`` arguments behave the same way as ``Choice``.\"\"\"\n+\n+    @click.command()\n+    @click.argument(\"when\", type=click.DateTime(formats=[\"%Y-%m-%d\"]), required=False)\n+    def cli(when):\n+        pass\n+\n+    result = runner.invoke(cli, [\"--help\"])\n+    assert \"Usage: cli [OPTIONS] [%Y-%m-%d]\\n\" in result.output\n+    assert \"[[%Y-%m-%d]]\" not in result.output\n+\n+\n def test_datetime_option_default(runner):\n     @click.command()\n     @click.option(\"--start_date\", type=click.DateTime())\n",
+ "metadata": {
+  "kg_builder": "ast_import_resolver",
+  "built": "2026-07-06",
+  "note": "AST ImportFrom/Import resolution at PR head SHA; same relation class as deployed Joern+grep pipeline"
+ }
+}

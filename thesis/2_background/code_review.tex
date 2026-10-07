@@ -1,0 +1,75 @@
+\section{Modern Code Review and Its Automation}
+\label{sec:bg-code-review}
+
+Modern code review is the lightweight, asynchronous inspection of a proposed
+change before it enters a shared branch, organised around pull requests on
+hosted platforms~\cite{davila2021mcrslr}. Bacchelli and Bird found that
+developers enter review expecting to find defects but most reliably obtain
+knowledge transfer and awareness of alternative solutions; the gap they
+identified is \emph{understanding}, meaning a reviewer who does not know what
+depends on a piece of code cannot tell whether changing it is
+safe~\cite{bacchelli2013}. Subsequent work confirms the pattern: useful comments
+identify functional defects and consequences the author missed, while comments
+about naming and formatting are judged unhelpful~\cite{bosu2015}; at scale,
+review is fast and habitual, calibrated to maintain norms as much as to catch
+bugs~\cite{sadowski2018}. These studies, together with the ISO/IEC~25010
+quality model~\cite{iso25010}, supply the categories from which the evaluation
+rubric in Chapter~\ref{chap:edas} is derived.
+
+Automating this task has been framed as transduction from a diff to a comment.
+CodeReviewer pre-trains on review data and fine-tunes for comment
+generation~\cite{li2022codereviewer}; Tufano et al.\ show pre-trained models
+outperform earlier baselines~\cite{tufano2022codereview}; general-purpose
+instruction-following models subsequently displaced task-specific
+fine-tuning~\cite{hou2023llmse,fan2023llmse}.
+
+The same shift enabled a wave of commercial AI review tools. CodeRabbit's
+code-graph analysis resolves cross-file dependencies and symbol definitions
+to enrich each review, alongside the output of more than forty integrated
+linters and static analysers~\cite{coderabbit2026}. Greptile builds a graph of the
+repository's files, functions, and dependencies and reviews each change
+against it~\cite{greptile2026}. Qodo~Merge (built on the open-source
+PR-Agent) deploys specialised review agents that gather context from the
+whole codebase, including dependent repositories~\cite{qodo2026}. GitHub's Copilot code-review feature was used by
+over one million developers within a month of its public preview and reached
+general availability in April 2025, while operating primarily on the
+diff~\cite{copilotcr2025}. These systems demonstrate that
+practitioners value repository-wide context, but none exposes the reasoning
+to controlled evaluation: they are closed-source products, not matched
+experimental arms.
+
+Two industrial studies begin to close that gap. Cihan et al.\ deploy Qodo's
+PR-Agent at Beko on 1,568 of 4,335 pull requests and find that 73.8\% of
+automated comments are resolved, although average closure time
+increases~\cite{cihan2025automated}. Sun et al.\ report 75\% precision and
+12\,000 weekly users for ByteDance's BitsAI-CR
+pipeline~\cite{sun2025bitsaicr}.
+
+In every case the input is the change, and everything the model knows about
+the rest of the repository comes from pre-training or from the tool's own
+retrieval pipeline. Recent benchmarks treat that as the limiting factor.
+ContextCRBench tests review with enriched
+context~\cite{hu2025contextcrbench}. SWR-Bench assembles a thousand verified
+pull requests~\cite{zeng2025swrbench}. CodeFuse-CR-Bench evaluates at
+repository level~\cite{guo2025codefusecrbench}. MCR-Bench benchmarks
+multi-round review across 2,269 tasks and finds that 23\% of missed defects
+are missed because the consequence lies in a different
+file~\cite{zheng2026mcrbench}. The cross-file gap that MCR-Bench quantifies
+is the blind spot targeted with a knowledge graph in this thesis.
+
+While these benchmarks measure the effect of context, a parallel line of work
+combines static-analysis output directly with LLM review. Jaoua et al.\
+integrate PMD and Checkstyle diagnostics with a fine-tuned CodeLlama via
+three strategies and find that the hybrid improves relevance and
+completeness~\cite{jaoua2025combining}. In vulnerability detection, LLMxCPG
+uses Joern to extract code-property-graph slices that reduce code volume by
+67--91\% while preserving vulnerability-relevant context, improving F1 by
+15--40\% over prior baselines~\cite{lekssays2025llmxcpg}. These results show that
+static-analysis artefacts can usefully condition an LLM, but neither applies
+CPG-level structural context to pull-request review. Jaoua et al.\ supply
+linter diagnostics (rule violations), not a structural graph; LLMxCPG targets
+security auditing, not review-comment generation.
+
+All of these benchmarks and combination strategies establish that context
+matters but do not compare structural and similarity-based selection within
+one matched review pipeline, which is the comparison this thesis runs.

@@ -1,0 +1,279 @@
+{
+  "pr_id": 50,
+  "mode": "baseline_strict",
+  "total_score": 16,
+  "max_score": 25,
+  "percentage": 64.0,
+  "kg_relevant_score": 9,
+  "kg_relevant_max": 9,
+  "kg_relevant_percentage": 100.0,
+  "criteria_scores": [
+    {
+      "criterion_id": "F1",
+      "score": 1,
+      "evidence": "Review states: 'This PR addresses a bug that caused Cython-based estimators to fail when using NumPy inputs with `array_api_dispatch=True` and introduces changes to ensure compatibility and prevent silent failures.'",
+      "n_yes": 1,
+      "n_valid": 1,
+      "unanimous": true
+    },
+    {
+      "criterion_id": "F2",
+      "score": 1,
+      "evidence": "Review mentions: 'The PR lacks explicit tests for edge cases where `array_api_dispatch=True` is used with non-NumPy inputs, which could lead to untested scenarios.'",
+      "n_yes": 1,
+      "n_valid": 1,
+      "unanimous": true
+    },
+    {
+      "criterion_id": "F3",
+      "score": 1,
+      "evidence": "Review states: 'Integration Risk: The changes in `_array_api.py` modify the behavior of utility functions that are widely used across the codebase, potentially affecting any component relying on these utilities.'",
+      "n_yes": 1,
+      "n_valid": 1,
+      "unanimous": true
+    },
+    {
+      "criterion_id": "F4",
+      "score": 1,
+      "evidence": "Review warns: 'The changes could break existing functionality if any component relies on the previous behavior of the utility functions.'",
+      "n_yes": 1,
+      "n_valid": 1,
+      "unanimous": true
+    },
+    {
+      "criterion_id": "T1",
+      "score": 1,
+      "evidence": "Review discusses: 'Test Gaps: The PR lacks explicit tests for edge cases where `array_api_dispatch=True` is used with non-NumPy inputs...'",
+      "n_yes": 1,
+      "n_valid": 1,
+      "unanimous": true
+    },
+    {
+      "criterion_id": "T2",
+      "score": 1,
+      "evidence": "Review mentions: 'Missing tests for scenarios where `array_api_dispatch=True` is used with non-NumPy inputs.'",
+      "n_yes": 1,
+      "n_valid": 1,
+      "unanimous": true
+    },
+    {
+      "criterion_id": "T3",
+      "score": 1,
+      "evidence": "Review references: 'Existing tests are visible in `sklearn/utils/estimator_checks.py`...'",
+      "n_yes": 1,
+      "n_valid": 1,
+      "unanimous": true
+    },
+    {
+      "criterion_id": "R1",
+      "score": 1,
+      "evidence": "Review suggests: 'CONSISTENCY: Similar patterns in utility functions should be updated consistently, particularly in `sklearn/utils/_array_api.py`.'",
+      "n_yes": 1,
+      "n_valid": 1,
+      "unanimous": true
+    },
+    {
+      "criterion_id": "R2",
+      "score": 1,
+      "evidence": "Review identifies: 'The introduction of `_unwrap_memoryviewslices` in `_array_api.py` adds complexity and potential maintenance overhead without clear documentation on its necessity.'",
+      "n_yes": 1,
+      "n_valid": 1,
+      "unanimous": true
+    },
+    {
+      "criterion_id": "R3",
+      "score": 0,
+      "evidence": "Review mentions 'without clear documentation on its necessity' but does not explicitly check for code comments explaining the 'why'.",
+      "n_yes": 0,
+      "n_valid": 1,
+      "unanimous": true
+    },
+    {
+      "criterion_id": "M1",
+      "score": 1,
+      "evidence": "Review raises: 'Architecture Concerns: The introduction of `_unwrap_memoryviewslices` in `_array_api.py` adds complexity and potential maintenance overhead...'",
+      "n_yes": 1,
+      "n_valid": 1,
+      "unanimous": true
+    },
+    {
+      "criterion_id": "M2",
+      "score": 0,
+      "evidence": "Review does not flag if the PR scope is too large or should be split.",
+      "n_yes": 0,
+      "n_valid": 1,
+      "unanimous": true
+    },
+    {
+      "criterion_id": "M3",
+      "score": 1,
+      "evidence": "Review states: 'Documentation Gaps: The changes in default parameters for functions like `device` and `get_namespace` are not reflected in the API documentation...'",
+      "n_yes": 1,
+      "n_valid": 1,
+      "unanimous": true
+    },
+    {
+      "criterion_id": "C1",
+      "score": 0,
+      "evidence": "Review does not explicitly check adherence to project style guides or coding conventions.",
+      "n_yes": 0,
+      "n_valid": 1,
+      "unanimous": true
+    },
+    {
+      "criterion_id": "C2",
+      "score": 1,
+      "evidence": "Review suggests: 'CONSISTENCY: Similar patterns in utility functions should be updated consistently, particularly in `sklearn/utils/_array_api.py`.'",
+      "n_yes": 1,
+      "n_valid": 1,
+      "unanimous": true
+    },
+    {
+      "criterion_id": "P1",
+      "score": 0,
+      "evidence": "Review does not identify potential performance issues or inefficiencies.",
+      "n_yes": 0,
+      "n_valid": 1,
+      "unanimous": true
+    },
+    {
+      "criterion_id": "P2",
+      "score": 0,
+      "evidence": "Review does not ask about benchmarks or performance testing.",
+      "n_yes": 0,
+      "n_valid": 1,
+      "unanimous": true
+    },
+    {
+      "criterion_id": "S1",
+      "score": 0,
+      "evidence": "Review does not explicitly check for proper input validation or sanitization.",
+      "n_yes": 0,
+      "n_valid": 1,
+      "unanimous": true
+    },
+    {
+      "criterion_id": "S2",
+      "score": 0,
+      "evidence": "Review does not flag hardcoded secrets, credentials, or sensitive data.",
+      "n_yes": 0,
+      "n_valid": 1,
+      "unanimous": true
+    },
+    {
+      "criterion_id": "S3",
+      "score": 0,
+      "evidence": "Review does not assess error handling and failure recovery.",
+      "n_yes": 0,
+      "n_valid": 1,
+      "unanimous": true
+    },
+    {
+      "criterion_id": "Q1",
+      "score": 1,
+      "evidence": "The 'Scope' section provides an overall summary, and 'Problem'/'Impact' sections provide an assessment of the changes.",
+      "n_yes": 1,
+      "n_valid": 1,
+      "unanimous": true
+    },
+    {
+      "criterion_id": "Q2",
+      "score": 1,
+      "evidence": "The 'Evidence' section lists specific file paths and line ranges: `sklearn/utils/_array_api.py:23-457`.",
+      "n_yes": 1,
+      "n_valid": 1,
+      "unanimous": true
+    },
+    {
+      "criterion_id": "Q3",
+      "score": 1,
+      "evidence": "The review's structure (Problem, Impact, Recommendation) implies a distinction between significant issues and suggested improvements.",
+      "n_yes": 1,
+      "n_valid": 1,
+      "unanimous": true
+    },
+    {
+      "criterion_id": "Q4",
+      "score": 0,
+      "evidence": "The review makes declarative statements about problems and recommendations rather than asking clarifying questions.",
+      "n_yes": 0,
+      "n_valid": 1,
+      "unanimous": true
+    },
+    {
+      "criterion_id": "Q5",
+      "score": 1,
+      "evidence": "Review explains: 'The changes in `_array_api.py` modify the behavior of utility functions... potentially affecting any component relying on these utilities.'",
+      "n_yes": 1,
+      "n_valid": 1,
+      "unanimous": true
+    }
+  ],
+  "per_judge": [
+    {
+      "model": "gemini:gemini-2.5-flash",
+      "scores": {
+        "F1": 1,
+        "F2": 1,
+        "F3": 1,
+        "F4": 1,
+        "T1": 1,
+        "T2": 1,
+        "T3": 1,
+        "R1": 1,
+        "R2": 1,
+        "R3": 0,
+        "M1": 1,
+        "M2": 0,
+        "M3": 1,
+        "C1": 0,
+        "C2": 1,
+        "P1": 0,
+        "P2": 0,
+        "S1": 0,
+        "S2": 0,
+        "S3": 0,
+        "Q1": 1,
+        "Q2": 1,
+        "Q3": 1,
+        "Q4": 0,
+        "Q5": 1
+      },
+      "evidence": {
+        "F1": "Review states: 'This PR addresses a bug that caused Cython-based estimators to fail when using NumPy inputs with `array_api_dispatch=True` and introduces changes to ensure compatibility and prevent silent failures.'",
+        "F2": "Review mentions: 'The PR lacks explicit tests for edge cases where `array_api_dispatch=True` is used with non-NumPy inputs, which could lead to untested scenarios.'",
+        "F3": "Review states: 'Integration Risk: The changes in `_array_api.py` modify the behavior of utility functions that are widely used across the codebase, potentially affecting any component relying on these utilities.'",
+        "F4": "Review warns: 'The changes could break existing functionality if any component relies on the previous behavior of the utility functions.'",
+        "T1": "Review discusses: 'Test Gaps: The PR lacks explicit tests for edge cases where `array_api_dispatch=True` is used with non-NumPy inputs...'",
+        "T2": "Review mentions: 'Missing tests for scenarios where `array_api_dispatch=True` is used with non-NumPy inputs.'",
+        "T3": "Review references: 'Existing tests are visible in `sklearn/utils/estimator_checks.py`...'",
+        "R1": "Review suggests: 'CONSISTENCY: Similar patterns in utility functions should be updated consistently, particularly in `sklearn/utils/_array_api.py`.'",
+        "R2": "Review identifies: 'The introduction of `_unwrap_memoryviewslices` in `_array_api.py` adds complexity and potential maintenance overhead without clear documentation on its necessity.'",
+        "R3": "Review mentions 'without clear documentation on its necessity' but does not explicitly check for code comments explaining the 'why'.",
+        "M1": "Review raises: 'Architecture Concerns: The introduction of `_unwrap_memoryviewslices` in `_array_api.py` adds complexity and potential maintenance overhead...'",
+        "M2": "Review does not flag if the PR scope is too large or should be split.",
+        "M3": "Review states: 'Documentation Gaps: The changes in default parameters for functions like `device` and `get_namespace` are not reflected in the API documentation...'",
+        "C1": "Review does not explicitly check adherence to project style guides or coding conventions.",
+        "C2": "Review suggests: 'CONSISTENCY: Similar patterns in utility functions should be updated consistently, particularly in `sklearn/utils/_array_api.py`.'",
+        "P1": "Review does not identify potential performance issues or inefficiencies.",
+        "P2": "Review does not ask about benchmarks or performance testing.",
+        "S1": "Review does not explicitly check for proper input validation or sanitization.",
+        "S2": "Review does not flag hardcoded secrets, credentials, or sensitive data.",
+        "S3": "Review does not assess error handling and failure recovery.",
+        "Q1": "The 'Scope' section provides an overall summary, and 'Problem'/'Impact' sections provide an assessment of the changes.",
+        "Q2": "The 'Evidence' section lists specific file paths and line ranges: `sklearn/utils/_array_api.py:23-457`.",
+        "Q3": "The review's structure (Problem, Impact, Recommendation) implies a distinction between significant issues and suggested improvements.",
+        "Q4": "The review makes declarative statements about problems and recommendations rather than asking clarifying questions.",
+        "Q5": "Review explains: 'The changes in `_array_api.py` modify the behavior of utility functions... potentially affecting any component relying on these utilities.'"
+      },
+      "error": ""
+    },
+    {
+      "model": "gemini:gemini-2.5-pro",
+      "scores": {},
+      "evidence": {},
+      "error": "api_error: API generation failed (https://generativelanguage.googleapis.com/v1beta/openai/): Error code: 429 - [{'error': {'code': 429, 'message': 'You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \\n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 0, model: gemini-2.5-pro\\n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 0, model: gemini-2.5-pro\\n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_input_token_count, limit: 0, model: gemini-2.5-pro\\n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_input_token_count, limit: 0, model: gemini-2.5-pro\\nPlease retry in 36.475786204s.', 'status': 'RESOURCE_EXHAUSTED', 'details': [{'@type': 'type.googleapis.com/google.rpc.Help', 'links': [{'description': 'Learn more about Gemini API quotas', 'url': 'https://ai.google.dev/gemini-api/docs/rate-limits'}]}, {'@type': 'type.googleapis.com/google.rpc.QuotaFailure', 'violations': [{'quotaMetric': 'generativelanguage.googleapis.com/generate_content_free_tier_requests', 'quotaId': 'GenerateRequestsPerDayPerProjectPerModel-FreeTier', 'quotaDimensions': {'model': 'gemini-2.5-pro', 'location': 'global'}}, {'quotaMetric': 'generativelanguage.googleapis.com/generate_content_free_tier_requests', 'quotaId': 'GenerateRequestsPerMinutePerProjectPerModel-FreeTier', 'quotaDimensions': {'location': 'global', 'model': 'gemini-2.5-pro'}}, {'quotaMetric': 'generativelanguage.googleapis.com/generate_content_free_tier_input_token_count', 'quotaId': 'GenerateContentInputTokensPerModelPerMinute-FreeTier', 'quotaDimensions': {'model': 'gemini-2.5-pro', 'location': 'global'}}, {'quotaMetric': 'generativelanguage.googleapis.com/generate_content_free_tier_input_token_count', 'quotaId': 'GenerateContentInputTokensPerModelPerDay-FreeTier', 'quotaDimensions': {'model': 'gemini-2.5-pro', 'location': 'global'}}]}, {'@type': 'type.googleapis.com/google.rpc.RetryInfo', 'retryDelay': '36s'}]}}]"
+    }
+  ],
+  "evaluation_timestamp": "2026-07-13T12:14:23.443821Z"
+}

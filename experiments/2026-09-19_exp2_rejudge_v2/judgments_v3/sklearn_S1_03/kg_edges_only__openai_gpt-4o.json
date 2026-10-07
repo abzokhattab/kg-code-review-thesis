@@ -1,0 +1,44 @@
+{
+  "candidate_mentions": [
+    {
+      "basename_collision": false,
+      "end": 681,
+      "evidence_id": "M002",
+      "excerpt": "usion for future maintainers.\n\n## Evidence\n- `sklearn/linear_model/_linear_loss.py:36`: The class `LinearModelLoss` is renamed to `LinearModelLossInternal`.\n- `sklearn/linear_model/_glm/glm.py`: This file calls `LinearModelLoss`, and the change may affect its functionality if not updated.\n- `sklearn/linear_model/_logistic.py`: This file also calls `LinearModelLoss`, indicating potential integration issues if the renaming is not propagated.\n\n## Impa",
+      "finding_passage_id": "P008",
+      "match_kind": "full_path",
+      "match_text": "sklearn/linear_model/_glm/glm.py",
+      "oracle_path": "sklearn/linear_model/_glm/glm.py",
+      "start": 649
+    },
+    {
+      "basename_collision": false,
+      "end": 815,
+      "evidence_id": "M003",
+      "excerpt": "nearModelLossInternal`.\n- `sklearn/linear_model/_glm/glm.py`: This file calls `LinearModelLoss`, and the change may affect its functionality if not updated.\n- `sklearn/linear_model/_logistic.py`: This file also calls `LinearModelLoss`, indicating potential integration issues if the renaming is not propagated.\n\n## Impact\n- **Technical Impact:** The renaming could lead to runtime errors in any module or script that imports `LinearModelLoss` without up",
+      "finding_passage_id": "P009",
+      "match_kind": "full_path",
+      "match_text": "sklearn/linear_model/_logistic.py",
+      "oracle_path": "sklearn/linear_model/_logistic.py",
+      "start": 782
+    }
+  ],
+  "causal_passage_id": "P011",
+  "decision_source": "llm_causal_adjudication",
+  "detected": true,
+  "evidence_id": "M002",
+  "executed_at_utc": "2026-09-19T15:09:19.710606+00:00",
+  "finding_passage_id": "P008",
+  "judge": "openai:gpt-4o",
+  "manifest_sha256": "5d4371a93d1b09f0491ecc12279f9f3ff5de23053b7a5e74650a749f58b472b0",
+  "model_alias": "openai:gpt-4o",
+  "model_snapshot": "unavailable-from-original-wrapper",
+  "original_verdict": true,
+  "prompt_sha256": "83e4ab98fbd265fb4166bcd1709c4cdc5827ebe8123d53a87315b43e15293e66",
+  "reason_code": "specific_cross_file_link",
+  "response_wrapper": "bare",
+  "review_sha256": "adc68449db2849a9b3aa66a480d253e6026f83d997e7541e3078771a2f22675b",
+  "schema_sha256": "f70f714868ecd3d25508bb3e00b32ecbe6761b0ebc05f454ee10fa4d28efd013",
+  "schema_version": "exp2-adjudication-v3",
+  "system_sha256": "030b5e701c798b32afdabbbeb22db38f664db8c8fd8b862d2fcb98df63b6fb6b"
+}

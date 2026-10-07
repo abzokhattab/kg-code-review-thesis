@@ -1,0 +1,329 @@
+\section{Experiment 1 Supporting Statistics}
+\label{app:supporting-multiplicity}
+
+Table~\ref{tab:exp1-means} gives the absolute mode scores. The paired
+differences in the main chapter remain the informative comparison.
+
+\begin{table}[htbp]
+    \centering
+    \caption{Mean rubric score per mode, $n = 35$, with 95\,\% bootstrap
+             confidence intervals ($B = 10\,000$).}
+    \label{tab:exp1-means}
+    \small
+    \begin{tabular}{lcc}
+        \toprule
+        Mode & Total /25 [95\,\% CI] & KG-relevant /9 [95\,\% CI] \\
+        \midrule
+        \baseline{} & 8.03 [7.51, 8.54] & 4.66 [4.29, 5.03] \\
+        \kg{}       & 8.74 [8.11, 9.37] & 5.34 [4.94, 5.74] \\
+        \rag{}      & 9.06 [8.57, 9.54] & 5.09 [4.69, 5.49] \\
+        \hybrid{}   & 8.60 [8.20, 9.00] & 5.11 [4.77, 5.46] \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+Table~\ref{tab:exp1-deltas-full} gives the inferential details behind the
+paired estimates in Table~\ref{tab:exp1-deltas}.
+
+\begin{table}[htbp]
+    \centering
+    \caption{Paired permutation tests and effect sizes against \baseline{},
+             $n = 35$ ($B = 20\,000$, two-sided, uncorrected).}
+    \label{tab:exp1-deltas-full}
+    \small
+    \begin{tabular}{lcccccc}
+        \toprule
+        & \multicolumn{3}{c}{Total /25} & \multicolumn{3}{c}{KG-relevant /9} \\
+        \cmidrule(lr){2-4} \cmidrule(lr){5-7}
+        Mode & $\Delta$ [95\,\% CI] & $p$ & $d_z$ & $\Delta$ [95\,\% CI] & $p$ & $d_z$ \\
+        \midrule
+        \kg{}     & $+0.71$ [$+0.20$, $+1.26$] & 0.017 & $+0.44$ & $+0.69$ [$+0.29$, $+1.11$] & \textbf{0.003} & $+0.56$ \\
+        \rag{}    & $+1.03$ [$+0.46$, $+1.60$] & 0.002 & $+0.59$ & $+0.43$ [$-0.03$, $+0.94$] & 0.127 & $+0.29$ \\
+        \hybrid{} & $+0.57$ [$+0.09$, $+1.11$] & 0.056 & $+0.35$ & $+0.46$ [$+0.03$, $+0.91$] & 0.068 & $+0.34$ \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+The governing Experiment~1 analysis is the pre-specified paired contrast
+between each context arm and \baseline{}, tested by sign-flip permutation.
+As a sensitivity to test choice and multiplicity, Table~\ref{tab:exp1-corrected}
+also reports a Friedman omnibus and Bonferroni-corrected Wilcoxon signed-rank
+tests. The Friedman test does not detect an omnibus mode difference on the
+KG-relevant subscale. The corrected \kg{} comparison is therefore read only as
+an alternative analysis of the planned contrast, not as post-hoc evidence
+following a significant omnibus result.
+
+\begin{table}[htbp]
+    \centering
+    \caption{Bonferroni-corrected Wilcoxon sensitivity. Friedman omnibus:
+             $\chi^2 = 14.08$, $p = 0.003$ on total;
+             $\chi^2 = 6.63$, $p = 0.084$ on KG-relevant.}
+    \label{tab:exp1-corrected}
+    \small
+    \begin{tabular}{lcccc}
+        \toprule
+        & \multicolumn{2}{c}{Total /25} & \multicolumn{2}{c}{KG-relevant /9} \\
+        \cmidrule(lr){2-3} \cmidrule(lr){4-5}
+        Mode vs \baseline{} & $p$ raw & $p$ corrected & $p$ raw & $p$ corrected \\
+        \midrule
+        \kg{}     & 0.022 & 0.066 & 0.004 & \textbf{0.011} \\
+        \rag{}    & 0.001 & \textbf{0.004} & 0.118 & 0.354 \\
+        \hybrid{} & 0.048 & 0.143 & 0.064 & 0.192 \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+\section{Experiment 1 Inter-Judge Agreement}
+\label{app:supporting-agreement}
+
+Table~\ref{tab:exp1-agreement} reports agreement before majority aggregation.
+Pairs are evaluated on their shared valid rubric cells; Gemini abstained on
+104 of 3\,500 cells, while the other judges returned a verdict for every cell.
+
+\begin{table}[htbp]
+    \centering
+    \caption{Pairwise agreement in the final five-judge Experiment~1 panel.
+             G4 = gpt-4o, GM = gemini-2.5-flash, CL = claude-sonnet-4.5,
+             DS = deepseek-v4-pro, and GR = grok-4.6.}
+    \label{tab:exp1-agreement}
+    \small
+    \begin{tabular}{lrrr}
+        \toprule
+        Pair & Valid cells & Raw agreement & Cohen's $\kappa$ \\
+        \midrule
+        G4--GM & 3\,396 & 85.7\,\% & 0.701 \\
+        G4--CL & 3\,500 & 89.8\,\% & 0.788 \\
+        G4--DS & 3\,500 & 90.3\,\% & 0.786 \\
+        G4--GR & 3\,500 & 92.0\,\% & 0.822 \\
+        GM--CL & 3\,396 & 85.8\,\% & 0.708 \\
+        GM--DS & 3\,396 & 88.4\,\% & 0.753 \\
+        GM--GR & 3\,396 & 87.3\,\% & 0.729 \\
+        CL--DS & 3\,500 & 87.1\,\% & 0.727 \\
+        CL--GR & 3\,500 & 87.5\,\% & 0.735 \\
+        DS--GR & 3\,500 & 95.3\,\% & 0.893 \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+% Source: results/JOERN_UNIFIED_FIVE_JUDGE.json, agreement section.
+
+\section{Experiment 1 Robustness Statistics}
+\label{app:supporting-robustness}
+
+Table~\ref{tab:exp1-robustness} gives the statistics behind
+Figure~\ref{fig:exp1-robustness}. The primary and single-judge rows use the
+Joern CPG at $n = 35$. The generator and held-out rows are from an earlier
+configuration that used a text-heuristic file matcher at $n = 40$ under a
+three-judge panel; they are retained as directional evidence that alternative
+generators preserve the sign of the effect but are not directly comparable
+to the primary row. Values are therefore interpreted within rows.
+
+\begin{table}[htbp]
+    \centering
+    \caption{The \kg{} effect under alternative generators, judges,
+             and samples.}
+    \label{tab:exp1-robustness}
+    \small
+    \setlength{\tabcolsep}{5pt}
+    \begin{tabular}{llcccc}
+        \toprule
+        & & \multicolumn{2}{c}{Total /25} & \multicolumn{2}{c}{KG-relevant /9} \\
+        \cmidrule(lr){3-4} \cmidrule(lr){5-6}
+        Varied & Configuration & $\Delta$ & $p$ & $\Delta$ & $p$ \\
+        \midrule
+        ---       & primary configuration, $n = 35$ & $+0.71$ & \textbf{0.017} & $+0.69$ & \textbf{0.003} \\
+        \midrule
+        Judge     & gpt-4o alone             & --- & --- & $+0.63$ & \textbf{0.007} \\
+                  & gemini-2.5-flash alone   & --- & --- & $+0.74$ & \textbf{0.005} \\
+                  & claude-sonnet-4.5 alone  & --- & --- & $+0.26$ & 0.192 \\
+                  & deepseek-v4-pro alone    & --- & --- & $+0.60$ & \textbf{0.019} \\
+                  & grok-4.6 alone           & --- & --- & $+0.60$ & \textbf{0.009} \\
+        \midrule
+        Generator$^{*}$ & claude-haiku-4.5    & $+0.30$ & 0.407 & $+0.15$ & 0.457 \\
+                  & gemini-2.5-flash         & $+0.33$ & 0.465 & $+0.47$ & 0.136 \\
+                  & deepseek-chat            & $+0.47$ & 0.117 & $+0.20$ & 0.383 \\
+        \midrule
+        Sample$^{*}$ & held-out PRs, $n = 12$   & $+0.42$ & 0.426 & $+0.42$ & 0.312 \\
+        \bottomrule
+        \multicolumn{6}{l}{\footnotesize $^{*}$\,Text-heuristic builder, $n = 40$, three-judge panel; retained as directional evidence.} \\
+    \end{tabular}
+\end{table}
+
+\section{Experiment 2 Detection Rates and Secondary Contrasts}
+\label{app:supporting-exp2-contrasts}
+
+Table~\ref{tab:exp2-detection} gives the exact detection rates behind
+Figure~\ref{fig:exp2-detection}.
+
+\begin{table}[htbp]
+    \centering
+    \caption{Detection rate on structural bands, $n = 28$, with Wilson
+             95\,\% confidence intervals.}
+    \label{tab:exp2-detection}
+    \small
+    \begin{tabular}{lcc}
+        \toprule
+        Arm & Detected & Rate [95\,\% CI] \\
+        \midrule
+        \baseline{}                 & 0/28  & 0.00 [0.00, 0.12] \\
+        \rag{}                      & 5/28  & 0.18 [0.08, 0.36] \\
+        \kg{} (deployed)            & 18/28 & 0.64 [0.46, 0.79] \\
+        \hybrid{}                   & 21/28 & 0.75 [0.57, 0.87] \\
+        \midrule
+        \kg{} + inheritance edges   & 26/28 & 0.93 [0.77, 0.98] \\
+        \kg{} idealised (ceiling)   & 26/28 & 0.93 [0.77, 0.98] \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+Table~\ref{tab:exp2-perband} breaks detection down by structural band and
+local control. The five structural bands (S1--S5) represent different
+dependency types; the two local bands (L1--L2) serve as negative controls
+whose consequences are visible in the diff.
+
+\begin{table}[htbp]
+    \centering
+    \caption{Per-band detection counts. $n$ is the number of injections in
+             each band. Structural bands (S1--S5) require cross-file
+             reasoning; local bands (L1--L2) do not.}
+    \label{tab:exp2-perband}
+    \small
+    \begin{tabular}{lrcccccc}
+        \toprule
+        Band & $n$ & \baseline{} & \kg{} & \rag{} & \hybrid{} & Inherit & Idealised \\
+        \midrule
+        S1 & 9  & 0/9  & 4/9  & 3/9  & 6/9  & 9/9  & 8/9  \\
+        S2 & 9  & 0/9  & 6/9  & 1/9  & 7/9  & 7/9  & 8/9  \\
+        S3 & 1  & 0/1  & 1/1  & 0/1  & 1/1  & 1/1  & 1/1  \\
+        S4 & 6  & 0/6  & 4/6  & 1/6  & 4/6  & 6/6  & 6/6  \\
+        S5 & 3  & 0/3  & 3/3  & 0/3  & 3/3  & 3/3  & 3/3  \\
+        \midrule
+        L1 & 6  & 6/6  & 6/6  & 6/6  & 6/6  & 6/6  & 6/6  \\
+        L2 & 6  & 6/6  & 6/6  & 6/6  & 5/6  & 6/6  & 6/6  \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+The structural bands confirm the aggregate pattern: baseline scores zero in
+every band, and the eight cases recovered by inheritance edges fall in S1
+($+5$), S2 ($+1$) and S4 ($+2$). The inheritance and idealised arms match
+in aggregate, not band by band. Local controls are at or near ceiling for
+all arms (one hybrid miss on L2).
+
+The primary Experiment~2 contrast is \kg{} versus \baseline{}. Table
+\ref{tab:exp2-secondary-contrasts} retains the secondary comparisons used to
+interpret retrieval, hybrid concatenation, and inheritance edges.
+
+\begin{table}[htbp]
+    \centering
+    \caption{Secondary exact McNemar contrasts on the 28 structural
+             injections.}
+    \label{tab:exp2-secondary-contrasts}
+    \small
+    \begin{tabular}{lccc}
+        \toprule
+        Contrast & $\Delta$ detection & Discordant wins/losses & $p$ \\
+        \midrule
+        \rag{} vs \baseline{} & $+0.179$ & 5/0 & 0.0625 \\
+        \hybrid{} vs \kg{} & $+0.107$ & 4/1 & 0.3750 \\
+        \kg{} + inheritance vs \kg{} & $+0.286$ & 8/0 & 0.0078 \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+\subsection{Residual Idealised-Arm Misses}
+\label{app:supporting-exp2-misses}
+
+The two idealised-arm misses arise at different stages. In
+\texttt{kafka\_S2\_01}, the review names genuine dependent classes, including
+\texttt{CachingKeyValueStore} and \texttt{CachingSessionStore}, but does not
+emit the exact file token required by the deterministic filename gate. This is
+a boundary of the operational definition rather than an absence of affected
+code in the review. In \texttt{kafka\_S1\_02}, whose resolver returns 82 true
+dependents, the review warns generically about broken dependencies but names
+none. That case is a generation or evidence-salience failure despite complete
+structural evidence.
+% Sources: experiments/2026-07-05_injection_exp2/out/manifest.json;
+% out/reviews/{kafka_S2_01,kafka_S1_02}/kg_idealised.md;
+% experiments/2026-09-23_five_judge_panel/RESULTS.json.
+
+\input{6_results_and_discussion/results_ablations}
+
+\section{Human-Study Exploratory Endpoints}
+\label{app:supporting-human}
+
+The five non-primary criteria are exploratory and Holm-corrected. Only H5
+(code clarity) remains distinguishable after correction, favouring the
+\baseline{} review.
+
+\begin{table}[htbp]
+    \centering
+    \caption{Exploratory human-study criteria. Values above $0.5$ favour
+             \kg{}. IDs are prefixed H to distinguish them from the
+             25-criterion rubric.}
+    \label{tab:human-exploratory}
+    \small
+    \begin{tabular}{llcccc}
+        \toprule
+        ID & Criterion & Mean [95\,\% CI] & Non-tie $n$ & $p$ & $p_{\text{Holm}}$ \\
+        \midrule
+        H2 & Describes failure cases     & 0.469 [0.414, 0.528] & 25 & 0.146 & 0.499 \\
+        H3 & Points to tests             & 0.454 [0.395, 0.512] & 19 & 0.125 & 0.499 \\
+        H4 & Explains why                & 0.491 [0.438, 0.543] & 20 & 0.735 & 1.000 \\
+        H5 & Comments on code clarity    & 0.414 [0.370, 0.460] & 24 & 0.006 & 0.028 \\
+        H6 & Covers important issues     & 0.481 [0.417, 0.548] & 22 & 0.636 & 1.000 \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+\section{Prompt and Review Length}
+\label{app:supporting-length}
+
+Table~\ref{tab:prompt-length} reports the total input size (system prompt
+plus user prompt) and the augmentation overhead for each arm, computed
+from all 40 stored evidence packs (including the five Go pull requests
+excluded from the $n = 35$ analysis sample) and the generation template.
+Table~\ref{tab:review-length} reports the output review length.
+
+\begin{table}[htbp]
+    \centering
+    \caption{Total input size per arm ($n = 40$ stored evidence packs).
+             Token estimates use the chars\,/\,4 heuristic.}
+    \label{tab:prompt-length}
+    \small
+    \begin{tabular}{lrrrr}
+        \toprule
+        Arm & Mean chars & Median & $\approx$\,Mean tokens & Overhead vs \baseline{} \\
+        \midrule
+        \baseline{} & 16\,926 & 12\,338 & 4\,232 & --- \\
+        \kg{}       & 18\,384 & 14\,240 & 4\,596 & $+$10.9\,\% \\
+        \rag{}      & 21\,292 & 15\,733 & 5\,323 & $+$43.4\,\% \\
+        \hybrid{}   & 22\,538 & 17\,016 & 5\,635 & $+$52.3\,\% \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+\begin{table}[htbp]
+    \centering
+    \caption{Review output length per arm ($n = 40$ stored evidence packs).}
+    \label{tab:review-length}
+    \small
+    \begin{tabular}{lrrr}
+        \toprule
+        Arm & Mean chars & Mean words & $\approx$\,Mean tokens \\
+        \midrule
+        \baseline{} & 1\,774 & 243 & 444 \\
+        \kg{}       & 1\,991 & 266 & 498 \\
+        \rag{}      & 1\,782 & 243 & 445 \\
+        \hybrid{}   & 1\,857 & 252 & 464 \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+The graph arm adds the least input overhead ($+$10.9\,\%) but produces
+the longest reviews ($+$12\,\% in characters and $+$9\,\% in words relative
+to baseline). RAG
+adds more input ($+$43\,\%) yet produces reviews of the same length as
+baseline. This asymmetry suggests the model converts structural context
+into additional commentary more readily than it converts similarity
+context.
+

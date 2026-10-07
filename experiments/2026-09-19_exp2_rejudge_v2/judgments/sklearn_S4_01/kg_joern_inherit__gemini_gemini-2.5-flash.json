@@ -1,0 +1,42 @@
+{
+  "candidate_mentions": [
+    {
+      "basename_collision": false,
+      "end": 615,
+      "evidence_id": "M002",
+      "excerpt": "ass in scikit-learn.\n\n## Evidence\n- `sklearn/base.py:153`: The class name is changed from `BaseEstimator` to `BaseEstimatorInternal`.\n- Dependent files (e.g., `sklearn/cluster/_agglomerative.py`, `sklearn/cluster/_optics.py`, etc.) still reference `BaseEstimator`.\n\n## Impact\n- **Technical Impact:** This change can lead to runtime errors due to unresolved imports in the dependent modules. It also risks breaking backward compatibility if `BaseEstimato",
+      "match_kind": "full_path",
+      "match_text": "sklearn/cluster/_agglomerative.py",
+      "oracle_path": "sklearn/cluster/_agglomerative.py",
+      "start": 582
+    },
+    {
+      "basename_collision": false,
+      "end": 645,
+      "evidence_id": "M009",
+      "excerpt": "sklearn/base.py:153`: The class name is changed from `BaseEstimator` to `BaseEstimatorInternal`.\n- Dependent files (e.g., `sklearn/cluster/_agglomerative.py`, `sklearn/cluster/_optics.py`, etc.) still reference `BaseEstimator`.\n\n## Impact\n- **Technical Impact:** This change can lead to runtime errors due to unresolved imports in the dependent modules. It also risks breaking backward compatibility if `BaseEstimator` is part of the public API u",
+      "match_kind": "full_path",
+      "match_text": "sklearn/cluster/_optics.py",
+      "oracle_path": "sklearn/cluster/_optics.py",
+      "start": 619
+    }
+  ],
+  "causal_quote": "This change can lead to runtime errors due to unresolved imports in the dependent modules.",
+  "decision_source": "llm_causal_adjudication",
+  "detected": true,
+  "evidence_id": "M002",
+  "executed_at_utc": "2026-09-19T15:05:16.459602+00:00",
+  "finding_quote": "Dependent files (e.g., `sklearn/cluster/_agglomerative.py`, `sklearn/cluster/_optics.py`, etc.) still reference `BaseEstimator`.",
+  "judge": "gemini:gemini-2.5-flash",
+  "manifest_sha256": "5d4371a93d1b09f0491ecc12279f9f3ff5de23053b7a5e74650a749f58b472b0",
+  "model_alias": "gemini:gemini-2.5-flash",
+  "model_snapshot": "unavailable-from-original-wrapper",
+  "original_verdict": true,
+  "prompt_sha256": "8bcf5d431fffb7a3cd2c7e2fe6029918e912968fe5aae2c97c910149eb136bc9",
+  "reason_code": "specific_cross_file_link",
+  "response_wrapper": "single_json_fence",
+  "review_sha256": "7bbf5af37a01dd94bd3070ef1fff1edb50ae8412e120bb47185dd4b4759264d1",
+  "schema_sha256": "6a22fcb256437ebed904ab2d879b36be1234fb2e06add1127ac8ea2ab46f60f0",
+  "schema_version": "exp2-adjudication-v2",
+  "system_sha256": "3634314a8fc4231391e4c51174e5c32d7346b0e2ceb5f8c4641e6ba866bd5939"
+}

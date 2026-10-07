@@ -1,0 +1,62 @@
+{
+  "candidate_mentions": [
+    {
+      "basename_collision": false,
+      "end": 584,
+      "evidence_id": "M001",
+      "excerpt": "ntroduce regressions.\n\n## Evidence\n- **sklearn/linear_model/_base.py:109**: The `_preprocess_data` function signature is changed to include `required_ctx`.\n- **sklearn/linear_model/_bayes.py, _coordinate_descent.py, _least_angle.py, _ridge.py**: These files call `_preprocess_data` but are not updated to pass the new `required_ctx` parameter.\n\n## Impact\n- The introduction of a new required parameter without updating all dependent calls could lead ",
+      "match_kind": "full_path",
+      "match_text": "sklearn/linear_model/_bayes.py",
+      "oracle_path": "sklearn/linear_model/_bayes.py",
+      "start": 554
+    },
+    {
+      "basename_collision": false,
+      "end": 608,
+      "evidence_id": "M002",
+      "excerpt": "ce\n- **sklearn/linear_model/_base.py:109**: The `_preprocess_data` function signature is changed to include `required_ctx`.\n- **sklearn/linear_model/_bayes.py, _coordinate_descent.py, _least_angle.py, _ridge.py**: These files call `_preprocess_data` but are not updated to pass the new `required_ctx` parameter.\n\n## Impact\n- The introduction of a new required parameter without updating all dependent calls could lead to runtime errors due to",
+      "match_kind": "basename",
+      "match_text": "_coordinate_descent.py",
+      "oracle_path": "sklearn/linear_model/_coordinate_descent.py",
+      "start": 586
+    },
+    {
+      "basename_collision": false,
+      "end": 625,
+      "evidence_id": "M003",
+      "excerpt": "del/_base.py:109**: The `_preprocess_data` function signature is changed to include `required_ctx`.\n- **sklearn/linear_model/_bayes.py, _coordinate_descent.py, _least_angle.py, _ridge.py**: These files call `_preprocess_data` but are not updated to pass the new `required_ctx` parameter.\n\n## Impact\n- The introduction of a new required parameter without updating all dependent calls could lead to runtime errors due to missing argument",
+      "match_kind": "basename",
+      "match_text": "_least_angle.py",
+      "oracle_path": "sklearn/linear_model/_least_angle.py",
+      "start": 610
+    },
+    {
+      "basename_collision": false,
+      "end": 636,
+      "evidence_id": "M004",
+      "excerpt": "*: The `_preprocess_data` function signature is changed to include `required_ctx`.\n- **sklearn/linear_model/_bayes.py, _coordinate_descent.py, _least_angle.py, _ridge.py**: These files call `_preprocess_data` but are not updated to pass the new `required_ctx` parameter.\n\n## Impact\n- The introduction of a new required parameter without updating all dependent calls could lead to runtime errors due to missing arguments.\n- Lack o",
+      "match_kind": "basename",
+      "match_text": "_ridge.py",
+      "oracle_path": "sklearn/linear_model/_ridge.py",
+      "start": 627
+    }
+  ],
+  "causal_quote": "**sklearn/linear_model/_bayes.py, _coordinate_descent.py, _least_angle.py, _ridge.py**: These files call `_preprocess_data` but are not updated to pass the new `required_ctx` parameter.",
+  "decision_source": "llm_causal_adjudication",
+  "detected": true,
+  "evidence_id": "M001",
+  "executed_at_utc": "2026-09-19T15:05:37.088308+00:00",
+  "finding_quote": "**sklearn/linear_model/_bayes.py, _coordinate_descent.py, _least_angle.py, _ridge.py**: These files call `_preprocess_data` but are not updated to pass the new `required_ctx` parameter.",
+  "judge": "gemini:gemini-2.5-flash",
+  "manifest_sha256": "5d4371a93d1b09f0491ecc12279f9f3ff5de23053b7a5e74650a749f58b472b0",
+  "model_alias": "gemini:gemini-2.5-flash",
+  "model_snapshot": "unavailable-from-original-wrapper",
+  "original_verdict": true,
+  "prompt_sha256": "7c9a97aace76eacc5d1d1b4504a9f6a479b538d6a5ecfa43841f78c7b77959fe",
+  "reason_code": "specific_cross_file_link",
+  "response_wrapper": "single_json_fence",
+  "review_sha256": "06604d75fdcd8fbf622b8070423fac8cd9b3f503682e40221dfc0f02989720b0",
+  "schema_sha256": "6a22fcb256437ebed904ab2d879b36be1234fb2e06add1127ac8ea2ab46f60f0",
+  "schema_version": "exp2-adjudication-v2",
+  "system_sha256": "3634314a8fc4231391e4c51174e5c32d7346b0e2ceb5f8c4641e6ba866bd5939"
+}

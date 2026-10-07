@@ -1,0 +1,95 @@
+{
+  "pr": {
+    "number": 119414,
+    "title": "Add project setting to disable new Volumetric fog blending behavior",
+    "body": "This change effectively reverts https://github.com/godotengine/godot/pull/111998 and https://github.com/godotengine/godot/pull/112494 which changed the fog blending equation to one that is more robust and can handle the case of light colored fog (see https://github.com/godotengine/godot/issues/101514). The previous behaviour was incorrect. \r\n\r\nThat being said, just because the old behaviour was _technically_ wrong, doesn't mean it didn't look acceptable. Many projects in 4.5 and earlier tweaked the fog to look great for their game. Thus the subsequent bug fix for 4.6 broke their game. We knew this was a breaking change (see https://github.com/godotengine/godot/issues/114989, https://github.com/godotengine/tps-demo/pull/212, etc.) but we decided that it was not a big deal since we thought that the old behaviour could be matched by tweaking settings (see https://github.com/godotengine/godot/issues/114989, and https://github.com/godotengine/godot/issues/112468). \r\n\r\nHowever, as it turns out, in some cases, the exact behaviour can't be restored simply by modifying settings. That means that some projects are left with the choice between reverting these PRs manually and using a fork of Godot, or living with a fog result that they like less than the old version. Both are bad choices. \r\n\r\nThis PR seeks to create a middle ground for projects that really hate the new blending equation and can't upgrade. It uses a specialization constant to handle the setting so there is no run time performance cost to having this setting. The setting also requires a restart so it will enforce setting early and not touching it. \r\n\r\nSee for example https://x.com/WaterMuseum_/status/2047064911159705618, https://www.reddit.com/r/godot/comments/1qq5ta8/whats_up_with_materials_looking_significantly/, https://www.reddit.com/r/godot/comments/1qnmjnj/comment/o2j27dc/?utm_source=share&utm_medium=web3x&utm_name=web3xcss&utm_term=1&utm_content=share_button\r\n\r\nCC @RPicster @pirey0\r\n\r\n_this PR with setting on_\r\n<img width=\"2175\" height=\"1227\" alt=\"Screenshot from 2026-05-11 18-55-44\" src=\"https://github.com/user-attachments/assets/fef42003-5447-43b4-95fc-71b3778e6fa3\" />\r\n\r\n_Master with new blending function reverted_\r\n<img width=\"2175\" height=\"1227\" alt=\"Screenshot from 2026-05-11 18-52-10\" src=\"https://github.com/user-attachments/assets/c5267cd7-f479-4038-b591-7c93621172d7\" />\r\n\r\n_this PR with setting on_\r\n<img width=\"2175\" height=\"1227\" alt=\"Screenshot from 2026-05-11 18-33-19\" src=\"https://github.com/user-attachments/assets/8eb2edb1-3541-4a71-8653-cb632963295e\" />\r\n\r\n_Master with new blending function reverted_\r\n<img width=\"2175\" height=\"1227\" alt=\"Screenshot from 2026-05-11 18-39-10\" src=\"https://github.com/user-attachments/assets/59db3836-df44-482f-b6da-9eecf634bc56\" />\r\n\r\nAs you can see from the screenshots, there is a very tiny increase in brightness in some cases with this PR compared to master with the PRs reverted. I have confirmed that that change comes from a difference in rounding behaviour and should be very minor in all cases. ",
+    "url": "https://github.com/godotengine/godot/pull/119414",
+    "repo": "godotengine/godot",
+    "base_branch": "master",
+    "head_branch": "legacy-fog-blend",
+    "merged_at": "2026-05-12T22:57:13Z",
+    "state": "MERGED"
+  },
+  "changed_files": [
+    {
+      "path": "doc/classes/ProjectSettings.xml",
+      "language": "unknown",
+      "added": 3,
+      "deleted": 0
+    },
+    {
+      "path": "servers/rendering/renderer_rd/environment/sky.cpp",
+      "language": "cpp",
+      "added": 1,
+      "deleted": 0
+    },
+    {
+      "path": "servers/rendering/renderer_rd/environment/sky.h",
+      "language": "cpp",
+      "added": 2,
+      "deleted": 2
+    },
+    {
+      "path": "servers/rendering/renderer_rd/forward_clustered/render_forward_clustered.cpp",
+      "language": "cpp",
+      "added": 1,
+      "deleted": 0
+    },
+    {
+      "path": "servers/rendering/renderer_rd/forward_clustered/scene_shader_forward_clustered.h",
+      "language": "cpp",
+      "added": 1,
+      "deleted": 0
+    },
+    {
+      "path": "servers/rendering/renderer_rd/renderer_scene_render_rd.cpp",
+      "language": "cpp",
+      "added": 1,
+      "deleted": 0
+    },
+    {
+      "path": "servers/rendering/renderer_rd/renderer_scene_render_rd.h",
+      "language": "cpp",
+      "added": 7,
+      "deleted": 0
+    },
+    {
+      "path": "servers/rendering/renderer_rd/shaders/environment/sky.glsl",
+      "language": "unknown",
+      "added": 8,
+      "deleted": 4
+    },
+    {
+      "path": "servers/rendering/renderer_rd/shaders/forward_clustered/scene_forward_clustered.glsl",
+      "language": "unknown",
+      "added": 10,
+      "deleted": 2
+    },
+    {
+      "path": "servers/rendering/renderer_rd/shaders/forward_clustered/scene_forward_clustered_inc.glsl",
+      "language": "unknown",
+      "added": 4,
+      "deleted": 0
+    },
+    {
+      "path": "servers/rendering/rendering_server.cpp",
+      "language": "cpp",
+      "added": 1,
+      "deleted": 0
+    }
+  ],
+  "nearest_tests": [],
+  "dependent_files": [],
+  "callers": [],
+  "call_graph_edges": [],
+  "full_diff": "diff --git a/doc/classes/ProjectSettings.xml b/doc/classes/ProjectSettings.xml\nindex 23b263a23f28..6b95feab71a2 100644\n--- a/doc/classes/ProjectSettings.xml\n+++ b/doc/classes/ProjectSettings.xml\n@@ -2919,6 +2919,9 @@\n \t\t<member name=\"rendering/environment/defaults/default_environment\" type=\"String\" setter=\"\" getter=\"\" default=\"&quot;&quot;\">\n \t\t\t[Environment] that will be used as a fallback environment in case a scene does not specify its own environment. The default environment is loaded in at scene load time regardless of whether you have set an environment or not. If you do not rely on the fallback environment, you do not need to set this property.\n \t\t</member>\n+\t\t<member name=\"rendering/environment/fog/use_legacy_blending\" type=\"bool\" setter=\"\" getter=\"\" default=\"false\">\n+\t\t\tEnables legacy fog blending behavior from version 4.5 and earlier. This is intended for users who are developing on pre-4.6 versions and want to upgrade to 4.6 with the smallest possible change to their visuals.\n+\t\t</member>\n \t\t<member name=\"rendering/environment/glow/upscale_mode\" type=\"int\" setter=\"\" getter=\"\" default=\"1\" keywords=\"bicubic\">\n \t\t\tSets how the glow effect is upscaled before being copied onto the screen. Linear is faster, but looks blocky. Bicubic is slower but looks smooth.\n \t\t\t[b]Note:[/b] [member rendering/environment/glow/upscale_mode] is only effective when using the Forward+ or Mobile rendering methods, as Compatibility uses a different glow implementation.\ndiff --git a/servers/rendering/renderer_rd/environment/sky.cpp b/servers/rendering/renderer_rd/environment/sky.cpp\nindex ff61196112e9..b866388f8f16 100644\n--- a/servers/rendering/renderer_rd/environment/sky.cpp\n+++ b/servers/rendering/renderer_rd/environment/sky.cpp\n@@ -1223,6 +1223,7 @@ void SkyRD::setup_sky(const RenderDataRD *p_render_data, const Size2i p_screen_s\n \n \tsky_scene_state.ubo.fog_sky_affect = RendererSceneRenderRD::get_singleton()->environment_get_fog_sky_affect(p_render_data->environment);\n \tsky_scene_state.ubo.volumetric_fog_sky_affect = RendererSceneRenderRD::get_singleton()->environment_get_volumetric_fog_sky_affect(p_render_data->environment);\n+\tsky_scene_state.ubo.fog_use_legacy_blending = RendererSceneRenderRD::get_singleton()->fog_use_legacy_blending_get();\n \n \tRD::get_singleton()->buffer_update(sky_scene_state.uniform_buffer, 0, sizeof(SkySceneState::UBO), &sky_scene_state.ubo);\n }\ndiff --git a/servers/rendering/renderer_rd/environment/sky.h b/servers/rendering/renderer_rd/environment/sky.h\nindex 44d89807db08..8a76ea56748f 100644\n--- a/servers/rendering/renderer_rd/environment/sky.h\n+++ b/servers/rendering/renderer_rd/environment/sky.h\n@@ -158,8 +158,8 @@ class SkyRD {\n \n \t\t\tfloat z_far; // 4 - 340\n \t\t\tuint32_t directional_light_count; // 4 - 344\n-\t\t\tuint32_t pad1; // 4 - 348\n-\t\t\tuint32_t pad2; // 4 - 352\n+\t\t\tuint32_t fog_use_legacy_blending; // 4 - 348\n+\t\t\tuint32_t pad1; // 4 - 352\n \t\t};\n \n \t\tUBO ubo;\ndiff --git a/servers/rendering/renderer_rd/forward_clustered/render_forward_clustered.cpp b/servers/rendering/renderer_rd/forward_clustered/render_forward_clustered.cpp\nindex 678fdc4ad137..b82aa45600c8 100644\n--- a/servers/rendering/renderer_rd/forward_clustered/render_forward_clustered.cpp\n+++ b/servers/rendering/renderer_rd/forward_clustered/render_forward_clustered.cpp\n@@ -4990,6 +4990,7 @@ void RenderForwardClustered::_update_shader_quality_settings() {\n \tspecialization.directional_soft_shadow_samples = directional_soft_shadow_samples_get();\n \tspecialization.directional_penumbra_shadow_samples = directional_penumbra_shadow_samples_get();\n \tspecialization.use_lightmap_bicubic_filter = lightmap_filter_bicubic_get();\n+\tspecialization.fog_use_legacy_blending = fog_use_legacy_blending_get();\n \tscene_shader.set_default_specialization(specialization);\n \n \tbase_uniforms_changed(); //also need this\ndiff --git a/servers/rendering/renderer_rd/forward_clustered/scene_shader_forward_clustered.h b/servers/rendering/renderer_rd/forward_clustered/scene_shader_forward_clustered.h\nindex bf708420ee44..1551213b7e8d 100644\n--- a/servers/rendering/renderer_rd/forward_clustered/scene_shader_forward_clustered.h\n+++ b/servers/rendering/renderer_rd/forward_clustered/scene_shader_forward_clustered.h\n@@ -126,6 +126,7 @@ class SceneShaderForwardClustered {\n \t\t\t\tuint32_t multimesh_format_2d : 1;\n \t\t\t\tuint32_t multimesh_has_color : 1;\n \t\t\t\tuint32_t multimesh_has_custom_data : 1;\n+\t\t\t\tuint32_t fog_use_legacy_blending : 1;\n \t\t\t};\n \t\t};\n \ndiff --git a/servers/rendering/renderer_rd/renderer_scene_render_rd.cpp b/servers/rendering/renderer_rd/renderer_scene_render_rd.cpp\nindex 4ddc9acb68c2..e27340f9df1d 100644\n--- a/servers/rendering/renderer_rd/renderer_scene_render_rd.cpp\n+++ b/servers/rendering/renderer_rd/renderer_scene_render_rd.cpp\n@@ -1741,6 +1741,7 @@ void RendererSceneRenderRD::init() {\n \n \tenvironment_set_volumetric_fog_volume_size(GLOBAL_GET(\"rendering/environment/volumetric_fog/volume_size\"), GLOBAL_GET(\"rendering/environment/volumetric_fog/volume_depth\"));\n \tenvironment_set_volumetric_fog_filter_active(GLOBAL_GET(\"rendering/environment/volumetric_fog/use_filter\"));\n+\tfog_use_legacy_blending = GLOBAL_GET(\"rendering/environment/fog/use_legacy_blending\");\n \n \tdecals_set_filter(RSE::DecalFilter(int(GLOBAL_GET(\"rendering/textures/decals/filter\"))));\n \tlight_projectors_set_filter(RSE::LightProjectorFilter(int(GLOBAL_GET(\"rendering/textures/light_projectors/filter\"))));\ndiff --git a/servers/rendering/renderer_rd/renderer_scene_render_rd.h b/servers/rendering/renderer_rd/renderer_scene_render_rd.h\nindex 9764e0834092..84cb32211a74 100644\n--- a/servers/rendering/renderer_rd/renderer_scene_render_rd.h\n+++ b/servers/rendering/renderer_rd/renderer_scene_render_rd.h\n@@ -162,6 +162,9 @@ class RendererSceneRenderRD : public RendererSceneRender, public RenderingShader\n \n \tuint32_t max_cluster_elements = 512;\n \n+\t/* Fog */\n+\tbool fog_use_legacy_blending = false;\n+\n \t/* Volumetric Fog */\n \n \tuint32_t volumetric_fog_size = 128;\n@@ -325,6 +328,10 @@ class RendererSceneRenderRD : public RendererSceneRender, public RenderingShader\n \t\treturn material_use_debanding;\n \t}\n \n+\t_FORCE_INLINE_ bool fog_use_legacy_blending_get() const {\n+\t\treturn fog_use_legacy_blending;\n+\t}\n+\n \tint get_roughness_layers() const;\n \tbool is_using_radiance_octmap_array() const;\n \ndiff --git a/servers/rendering/renderer_rd/shaders/environment/sky.glsl b/servers/rendering/renderer_rd/shaders/environment/sky.glsl\nindex 1662007b6e52..4ec8f5f73607 100644\n--- a/servers/rendering/renderer_rd/shaders/environment/sky.glsl\n+++ b/servers/rendering/renderer_rd/shaders/environment/sky.glsl\n@@ -78,8 +78,8 @@ layout(set = 0, binding = 2, std140) uniform SkySceneData {\n \n \tfloat z_far; // 4 - 52\n \tuint directional_light_count; // 4 - 56\n-\tuint pad1; // 4 - 60\n-\tuint pad2; // 4 - 64\n+\tbool fog_use_legacy_blending; // 4 - 60\n+\tuint pad1; // 4 - 64\n }\n sky_scene_data;\n \n@@ -286,8 +286,12 @@ void main() {\n \n \tif (sky_scene_data.volumetric_fog_enabled) {\n \t\tvec4 fog = volumetric_fog_process(uv);\n-\t\tfog.rgb = frag_color.rgb * fog.a + fog.rgb;\n-\t\tfrag_color.rgb = mix(frag_color.rgb, fog.rgb, sky_scene_data.volumetric_fog_sky_affect);\n+\t\tif (sky_scene_data.fog_use_legacy_blending) {\n+\t\t\tfrag_color.rgb = mix(frag_color.rgb, fog.rgb, (1.0 - fog.a) * sky_scene_data.volumetric_fog_sky_affect);\n+\t\t} else {\n+\t\t\tfog.rgb = frag_color.rgb * fog.a + fog.rgb;\n+\t\t\tfrag_color.rgb = mix(frag_color.rgb, fog.rgb, sky_scene_data.volumetric_fog_sky_affect);\n+\t\t}\n \t}\n \n \tif (custom_fog.a > 0.0) {\ndiff --git a/servers/rendering/renderer_rd/shaders/forward_clustered/scene_forward_clustered.glsl b/servers/rendering/renderer_rd/shaders/forward_clustered/scene_forward_clustered.glsl\nindex c75e4acaca65..756ad0a491ff 100644\n--- a/servers/rendering/renderer_rd/shaders/forward_clustered/scene_forward_clustered.glsl\n+++ b/servers/rendering/renderer_rd/shaders/forward_clustered/scene_forward_clustered.glsl\n@@ -1505,10 +1505,18 @@ void fragment_shader(in SceneData scene_data) {\n \t\tvec4 res = vec4(0.0);\n \t\tif (bool(scene_data.flags & SCENE_DATA_FLAGS_USE_FOG)) {\n \t\t\t//must use the full blending equation here to blend fogs\n-\t\t\tres.a = fog.a * volumetric_fog.a;\n-\t\t\tres.rgb = fog.rgb * volumetric_fog.a + volumetric_fog.rgb;\n+\t\t\tif (sc_fog_use_legacy_blending()) {\n+\t\t\t\tres.a = mix(0.0, fog.a, volumetric_fog.a);\n+\t\t\t\tres.rgb = mix(volumetric_fog.rgb, fog.rgb, volumetric_fog.a);\n+\t\t\t} else {\n+\t\t\t\tres.a = fog.a * volumetric_fog.a;\n+\t\t\t\tres.rgb = fog.rgb * volumetric_fog.a + volumetric_fog.rgb;\n+\t\t\t}\n \t\t} else {\n \t\t\tres = volumetric_fog;\n+\t\t\tif (sc_fog_use_legacy_blending()) {\n+\t\t\t\tres.rgb *= 1.0 - res.a;\n+\t\t\t}\n \t\t}\n \t\tfog = res;\n \t}\ndiff --git a/servers/rendering/renderer_rd/shaders/forward_clustered/scene_forward_clustered_inc.glsl b/servers/rendering/renderer_rd/shaders/forward_clustered/scene_forward_clustered_inc.glsl\nindex 41f3b0a10d7a..4600e5dcdf7d 100644\n--- a/servers/rendering/renderer_rd/shaders/forward_clustered/scene_forward_clustered_inc.glsl\n+++ b/servers/rendering/renderer_rd/shaders/forward_clustered/scene_forward_clustered_inc.glsl\n@@ -138,6 +138,10 @@ bool sc_multimesh_has_custom_data() {\n \treturn ((sc_packed_1() >> 3) & 1U) != 0;\n }\n \n+bool sc_fog_use_legacy_blending() {\n+\treturn ((sc_packed_1() >> 4) & 1U) != 0;\n+}\n+\n float sc_luminance_multiplier() {\n \t// Not used in clustered renderer but we share some code with the mobile renderer that requires this.\n \treturn 1.0;\ndiff --git a/servers/rendering/rendering_server.cpp b/servers/rendering/rendering_server.cpp\nindex 6395278497cb..1d78160dd4c0 100644\n--- a/servers/rendering/rendering_server.cpp\n+++ b/servers/rendering/rendering_server.cpp\n@@ -3789,6 +3789,7 @@ void RenderingServer::init() {\n \tGLOBAL_DEF(PropertyInfo(Variant::INT, \"rendering/global_illumination/sdfgi/frames_to_converge\", PROPERTY_HINT_ENUM, \"5 (Less Latency but Lower Quality),10,15,20,25,30 (More Latency but Higher Quality)\"), 5);\n \tGLOBAL_DEF(PropertyInfo(Variant::INT, \"rendering/global_illumination/sdfgi/frames_to_update_lights\", PROPERTY_HINT_ENUM, \"1 (Slower),2,4,8,16 (Faster)\"), 2);\n \n+\tGLOBAL_DEF_RST(\"rendering/environment/fog/use_legacy_blending\", false);\n \tGLOBAL_DEF(PropertyInfo(Variant::INT, \"rendering/environment/volumetric_fog/volume_size\", PROPERTY_HINT_RANGE, \"16,512,1\"), 64);\n \tGLOBAL_DEF(PropertyInfo(Variant::INT, \"rendering/environment/volumetric_fog/volume_depth\", PROPERTY_HINT_RANGE, \"16,512,1\"), 64);\n \tGLOBAL_DEF(PropertyInfo(Variant::INT, \"rendering/environment/volumetric_fog/use_filter\", PROPERTY_HINT_ENUM, \"No (Faster),Yes (Higher Quality)\"), 1);\n",
+  "diff_summary": "11 files changed",
+  "similar_chunks": [],
+  "metadata": {
+    "experiment": "confirmatory_kg_2026-05-14",
+    "local_id": 10,
+    "v2_diff_truncated": false,
+    "v2_raw_diff_chars": 10543,
+    "v2_raw_body_chars": 3058
+  }
+}

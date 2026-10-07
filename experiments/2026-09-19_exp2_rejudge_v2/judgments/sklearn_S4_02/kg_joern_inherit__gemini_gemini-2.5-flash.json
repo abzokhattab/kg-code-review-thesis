@@ -1,0 +1,42 @@
+{
+  "candidate_mentions": [
+    {
+      "basename_collision": false,
+      "end": 553,
+      "evidence_id": "M004",
+      "excerpt": "arn/linear_model/_base.py:277`: Class name changed from `LinearModel` to `LinearModelInternal`.\n- Dependent files such as `sklearn/linear_model/_quantile.py`, `sklearn/linear_model/_least_angle.py`, etc., still reference `LinearModel`.\n\n## Impact\n- This change could lead to import errors or runtime exceptions in modules that depend on the `LinearModel` class.\n- Potential disruption in the functionality of models that extend or utilize the `LinearModel`",
+      "match_kind": "full_path",
+      "match_text": "sklearn/linear_model/_least_angle.py",
+      "oracle_path": "sklearn/linear_model/_least_angle.py",
+      "start": 517
+    },
+    {
+      "basename_collision": false,
+      "end": 513,
+      "evidence_id": "M006",
+      "excerpt": "d `LinearModel`.\n\n## Evidence\n- `sklearn/linear_model/_base.py:277`: Class name changed from `LinearModel` to `LinearModelInternal`.\n- Dependent files such as `sklearn/linear_model/_quantile.py`, `sklearn/linear_model/_least_angle.py`, etc., still reference `LinearModel`.\n\n## Impact\n- This change could lead to import errors or runtime exceptions in modules that depend on the `LinearModel` class.\n- Potential disruption in the functionality of models ",
+      "match_kind": "full_path",
+      "match_text": "sklearn/linear_model/_quantile.py",
+      "oracle_path": "sklearn/linear_model/_quantile.py",
+      "start": 480
+    }
+  ],
+  "causal_quote": "This change could lead to import errors or runtime exceptions in modules that depend on the `LinearModel` class.",
+  "decision_source": "llm_causal_adjudication",
+  "detected": true,
+  "evidence_id": "M006",
+  "executed_at_utc": "2026-09-19T15:05:22.433901+00:00",
+  "finding_quote": "Dependent files such as `sklearn/linear_model/_quantile.py`, `sklearn/linear_model/_least_angle.py`, etc., still reference `LinearModel`.",
+  "judge": "gemini:gemini-2.5-flash",
+  "manifest_sha256": "5d4371a93d1b09f0491ecc12279f9f3ff5de23053b7a5e74650a749f58b472b0",
+  "model_alias": "gemini:gemini-2.5-flash",
+  "model_snapshot": "unavailable-from-original-wrapper",
+  "original_verdict": true,
+  "prompt_sha256": "ea40992ab3ef72c800da81850027e970605ddc1ac7d78120cba81d103c7cfd40",
+  "reason_code": "specific_cross_file_link",
+  "response_wrapper": "single_json_fence",
+  "review_sha256": "fb538cfe63ddcd3c9803b8b4c831003b00e37848ec58d2a3b6a53f3885ad3399",
+  "schema_sha256": "6a22fcb256437ebed904ab2d879b36be1234fb2e06add1127ac8ea2ab46f60f0",
+  "schema_version": "exp2-adjudication-v2",
+  "system_sha256": "3634314a8fc4231391e4c51174e5c32d7346b0e2ceb5f8c4641e6ba866bd5939"
+}

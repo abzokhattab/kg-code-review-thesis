@@ -1,0 +1,331 @@
+{
+  "pr_id": 47,
+  "mode": "joern",
+  "total_score": 12,
+  "max_score": 25,
+  "percentage": 48.0,
+  "kg_relevant_score": 8,
+  "kg_relevant_max": 9,
+  "kg_relevant_percentage": 88.9,
+  "criteria_scores": [
+    {
+      "criterion_id": "F1",
+      "score": 0,
+      "evidence": "The review focuses on the problems introduced by the change (e.g., API contract violation, exposure of internal methods) rather than verifying if the change successfully addresses the original problem of retaining the offline cause.",
+      "n_yes": 0,
+      "n_valid": 2,
+      "unanimous": true
+    },
+    {
+      "criterion_id": "F2",
+      "score": 1,
+      "evidence": "Review mentions: 'Missing Edge Case Tests: There is no test coverage for scenarios where nodes are set offline for reasons other than user actions, such as system maintenance.'",
+      "n_yes": 2,
+      "n_valid": 2,
+      "unanimous": true
+    },
+    {
+      "criterion_id": "F3",
+      "score": 1,
+      "evidence": "Review mentions: 'Integration Risk: The modification in Nodes.java could affect other components that rely on node state management, such as hudson/cli/UpdateNodeCommand.java.'",
+      "n_yes": 2,
+      "n_valid": 2,
+      "unanimous": true
+    },
+    {
+      "criterion_id": "F4",
+      "score": 1,
+      "evidence": "Review mentions: 'API Contract Violation: The change in access level of setTemporaryOfflineCause might violate existing API contracts' and 'Regression Risk: Existing functionality that relies on the previous access level of setTemporaryOfflineCause might break.'",
+      "n_yes": 2,
+      "n_valid": 2,
+      "unanimous": true
+    },
+    {
+      "criterion_id": "T1",
+      "score": 1,
+      "evidence": "Review mentions: 'Missing Edge Case Tests' and recommends 'Add tests for scenarios where nodes are set offline due to system maintenance or other non-user causes.'",
+      "n_yes": 2,
+      "n_valid": 2,
+      "unanimous": true
+    },
+    {
+      "criterion_id": "T2",
+      "score": 1,
+      "evidence": "Review mentions: 'Missing Edge Case Tests: There is no test coverage for scenarios where nodes are set offline for reasons other than user actions, such as system maintenance.'",
+      "n_yes": 2,
+      "n_valid": 2,
+      "unanimous": true
+    },
+    {
+      "criterion_id": "T3",
+      "score": 1,
+      "evidence": "Review references: 'test/src/test/java/jenkins/model/NodesTest.java:359-372' and 'Related Tests: test/src/test/java/hudson/cli/OfflineNodeCommandTest.java'.",
+      "n_yes": 2,
+      "n_valid": 2,
+      "unanimous": true
+    },
+    {
+      "criterion_id": "R1",
+      "score": 0,
+      "evidence": "The review does not comment on code clarity, naming conventions, or function organization.",
+      "n_yes": 0,
+      "n_valid": 2,
+      "unanimous": true
+    },
+    {
+      "criterion_id": "R2",
+      "score": 0,
+      "evidence": "The review does not identify any unnecessary complexity or suggest simplification; its suggested fix is based on risk, not complexity.",
+      "n_yes": 1,
+      "n_valid": 2,
+      "unanimous": false
+    },
+    {
+      "criterion_id": "R3",
+      "score": 0,
+      "evidence": "The review does not check if code comments explain the 'why' behind decisions.",
+      "n_yes": 0,
+      "n_valid": 2,
+      "unanimous": true
+    },
+    {
+      "criterion_id": "M1",
+      "score": 1,
+      "evidence": "Review discusses 'API Contract Violation' and 'unintended exposure of internal methods', which assesses the architectural fit of making a package-private method public.",
+      "n_yes": 2,
+      "n_valid": 2,
+      "unanimous": true
+    },
+    {
+      "criterion_id": "M2",
+      "score": 0,
+      "evidence": "The review does not flag if the PR scope is too large or should be split.",
+      "n_yes": 0,
+      "n_valid": 2,
+      "unanimous": true
+    },
+    {
+      "criterion_id": "M3",
+      "score": 1,
+      "evidence": "Review recommends: 'Update API documentation to reflect changes in method access levels and their intended use.'",
+      "n_yes": 2,
+      "n_valid": 2,
+      "unanimous": true
+    },
+    {
+      "criterion_id": "C1",
+      "score": 0,
+      "evidence": "The review does not check adherence to project style guides or coding conventions.",
+      "n_yes": 0,
+      "n_valid": 2,
+      "unanimous": true
+    },
+    {
+      "criterion_id": "C2",
+      "score": 0,
+      "evidence": "The review suggests a 'different approach' but does not check if similar problems have been solved consistently with existing patterns elsewhere in the codebase.",
+      "n_yes": 1,
+      "n_valid": 2,
+      "unanimous": false
+    },
+    {
+      "criterion_id": "P1",
+      "score": 0,
+      "evidence": "The review does not identify potential performance issues or inefficiencies.",
+      "n_yes": 0,
+      "n_valid": 2,
+      "unanimous": true
+    },
+    {
+      "criterion_id": "P2",
+      "score": 0,
+      "evidence": "The review does not ask about benchmarks or performance testing for critical paths.",
+      "n_yes": 0,
+      "n_valid": 2,
+      "unanimous": true
+    },
+    {
+      "criterion_id": "S1",
+      "score": 0,
+      "evidence": "The review does not check for proper input validation or sanitization.",
+      "n_yes": 0,
+      "n_valid": 2,
+      "unanimous": true
+    },
+    {
+      "criterion_id": "S2",
+      "score": 0,
+      "evidence": "The review does not flag hardcoded secrets, credentials, or sensitive data.",
+      "n_yes": 0,
+      "n_valid": 2,
+      "unanimous": true
+    },
+    {
+      "criterion_id": "S3",
+      "score": 0,
+      "evidence": "The review does not explicitly assess error handling and failure recovery.",
+      "n_yes": 0,
+      "n_valid": 2,
+      "unanimous": true
+    },
+    {
+      "criterion_id": "Q1",
+      "score": 1,
+      "evidence": "The 'Scope' section provides a summary, and the 'Impact' section provides an overall assessment of the changes' consequences.",
+      "n_yes": 2,
+      "n_valid": 2,
+      "unanimous": true
+    },
+    {
+      "criterion_id": "Q2",
+      "score": 1,
+      "evidence": "The 'Evidence' section provides 'Diff References' with file paths and line numbers, e.g., 'core/src/main/java/hudson/model/Node.java:279-282'.",
+      "n_yes": 2,
+      "n_valid": 2,
+      "unanimous": true
+    },
+    {
+      "criterion_id": "Q3",
+      "score": 1,
+      "evidence": "The review clearly outlines 'Problems' and their 'Impact', followed by 'Recommendation (Fix / Tests / Risks)', indicating critical issues that need to be addressed.",
+      "n_yes": 2,
+      "n_valid": 2,
+      "unanimous": true
+    },
+    {
+      "criterion_id": "Q4",
+      "score": 0,
+      "evidence": "The review makes direct statements and recommendations rather than asking clarifying questions.",
+      "n_yes": 0,
+      "n_valid": 2,
+      "unanimous": true
+    },
+    {
+      "criterion_id": "Q5",
+      "score": 1,
+      "evidence": "The 'Recommendation' section's suggestions are directly linked to the 'Problem' and 'Impact' sections, explaining the reasoning (e.g., 'Consider maintaining the restricted access level... [due to] Functionality Breakage' and 'API Contract Violation').",
+      "n_yes": 2,
+      "n_valid": 2,
+      "unanimous": true
+    }
+  ],
+  "per_judge": [
+    {
+      "model": "gemini:gemini-2.5-flash",
+      "scores": {
+        "F1": 0,
+        "F2": 1,
+        "F3": 1,
+        "F4": 1,
+        "T1": 1,
+        "T2": 1,
+        "T3": 1,
+        "R1": 0,
+        "R2": 1,
+        "R3": 0,
+        "M1": 1,
+        "M2": 0,
+        "M3": 1,
+        "C1": 0,
+        "C2": 1,
+        "P1": 0,
+        "P2": 0,
+        "S1": 0,
+        "S2": 0,
+        "S3": 0,
+        "Q1": 1,
+        "Q2": 1,
+        "Q3": 1,
+        "Q4": 0,
+        "Q5": 1
+      },
+      "evidence": {
+        "F1": "The review focuses on the problems introduced by the change (e.g., API contract violation, exposure of internal methods) rather than verifying if the change successfully addresses the original problem of retaining the offline cause.",
+        "F2": "Review mentions: 'Missing Edge Case Tests: There is no test coverage for scenarios where nodes are set offline for reasons other than user actions, such as system maintenance.'",
+        "F3": "Review mentions: 'Integration Risk: The modification in Nodes.java could affect other components that rely on node state management, such as hudson/cli/UpdateNodeCommand.java.'",
+        "F4": "Review mentions: 'API Contract Violation: The change in access level of setTemporaryOfflineCause might violate existing API contracts' and 'Regression Risk: Existing functionality that relies on the previous access level of setTemporaryOfflineCause might break.'",
+        "T1": "Review mentions: 'Missing Edge Case Tests' and recommends 'Add tests for scenarios where nodes are set offline due to system maintenance or other non-user causes.'",
+        "T2": "Review mentions: 'Missing Edge Case Tests: There is no test coverage for scenarios where nodes are set offline for reasons other than user actions, such as system maintenance.'",
+        "T3": "Review references: 'test/src/test/java/jenkins/model/NodesTest.java:359-372' and 'Related Tests: test/src/test/java/hudson/cli/OfflineNodeCommandTest.java'.",
+        "R1": "The review does not comment on code clarity, naming conventions, or function organization.",
+        "R2": "Review recommends: 'Consider maintaining the restricted access level of setTemporaryOfflineCause and use a different approach to retain offline causes.'",
+        "R3": "The review does not check if code comments explain the 'why' behind decisions.",
+        "M1": "Review discusses 'API Contract Violation' and 'unintended exposure of internal methods', which assesses the architectural fit of making a package-private method public.",
+        "M2": "The review does not flag if the PR scope is too large or should be split.",
+        "M3": "Review recommends: 'Update API documentation to reflect changes in method access levels and their intended use.'",
+        "C1": "The review does not check adherence to project style guides or coding conventions.",
+        "C2": "By flagging 'API Contract Violation' and suggesting an alternative approach that maintains restricted access, the review implicitly checks if the solution aligns with existing patterns for handling internal methods.",
+        "P1": "The review does not identify potential performance issues or inefficiencies.",
+        "P2": "The review does not ask about benchmarks or performance testing for critical paths.",
+        "S1": "The review does not check for proper input validation or sanitization.",
+        "S2": "The review does not flag hardcoded secrets, credentials, or sensitive data.",
+        "S3": "The review does not explicitly assess error handling and failure recovery.",
+        "Q1": "The 'Scope' section provides a summary, and the 'Impact' section provides an overall assessment of the changes' consequences.",
+        "Q2": "The 'Evidence' section provides 'Diff References' with file paths and line numbers, e.g., 'core/src/main/java/hudson/model/Node.java:279-282'.",
+        "Q3": "The review clearly outlines 'Problems' and their 'Impact', followed by 'Recommendation (Fix / Tests / Risks)', indicating critical issues that need to be addressed.",
+        "Q4": "The review makes direct statements and recommendations rather than asking clarifying questions.",
+        "Q5": "The 'Recommendation' section's suggestions are directly linked to the 'Problem' and 'Impact' sections, explaining the reasoning (e.g., 'Consider maintaining the restricted access level... [due to] Functionality Breakage' and 'API Contract Violation')."
+      },
+      "error": ""
+    },
+    {
+      "model": "gemini:gemini-2.5-pro",
+      "scores": {
+        "F1": 0,
+        "F2": 1,
+        "F3": 1,
+        "F4": 1,
+        "T1": 1,
+        "T2": 1,
+        "T3": 1,
+        "R1": 0,
+        "R2": 0,
+        "R3": 0,
+        "M1": 1,
+        "M2": 0,
+        "M3": 1,
+        "C1": 0,
+        "C2": 0,
+        "P1": 0,
+        "P2": 0,
+        "S1": 0,
+        "S2": 0,
+        "S3": 0,
+        "Q1": 1,
+        "Q2": 1,
+        "Q3": 1,
+        "Q4": 0,
+        "Q5": 1
+      },
+      "evidence": {
+        "F1": "The review restates the PR's goal in the 'Scope' section but does not verify or confirm that the implementation successfully achieves it. It focuses on the problems with the approach taken.",
+        "F2": "The review identifies a missing edge case: 'There is no test coverage for scenarios where nodes are set offline for reasons other than user actions, such as system maintenance.'",
+        "F3": "The review explicitly mentions integration risk: 'The modification in `Nodes.java` could affect other components that rely on node state management, such as `hudson/cli/UpdateNodeCommand.java`.'",
+        "F4": "The review warns about breaking changes: 'The change in access level of `setTemporaryOfflineCause` might violate existing API contracts' and mentions 'Regression Risk'.",
+        "T1": "The review discusses the need for more tests under 'Problem' ('Missing Edge Case Tests') and 'Recommendation' ('Add tests for scenarios...').",
+        "T2": "The review specifically calls out the need to test edge cases: 'Add tests for scenarios where nodes are set offline due to system maintenance or other non-user causes.'",
+        "T3": "The review references the test file added in the PR (`NodesTest.java`) and also lists 'Related Tests' like `OfflineNodeCommandTest.java`.",
+        "R1": "The review does not comment on code clarity, naming conventions, or the organization of functions.",
+        "R2": "The review does not identify any unnecessary complexity or suggest simplification; its suggested fix is based on risk, not complexity.",
+        "R3": "The review does not mention code comments or whether they explain the 'why'.",
+        "M1": "The review assesses the change against the existing architecture by flagging the public exposure of an internal method as an 'API Contract Violation'.",
+        "M2": "The review does not comment on the PR's scope or suggest splitting it.",
+        "M3": "The review explicitly recommends documentation updates: 'Update API documentation to reflect changes in method access levels and their intended use.'",
+        "C1": "The review does not mention project style guides or coding conventions.",
+        "C2": "The review suggests a 'different approach' but does not check if similar problems have been solved consistently with existing patterns elsewhere in the codebase.",
+        "P1": "The review does not identify or mention any potential performance issues.",
+        "P2": "The review does not ask for benchmarks or performance testing.",
+        "S1": "The review does not check for input validation or sanitization.",
+        "S2": "The review does not mention hardcoded secrets or sensitive data.",
+        "S3": "The review does not assess error handling or failure recovery mechanisms.",
+        "Q1": "The review provides a summary in the 'Scope' section and an overall assessment of the change's problems and impact in their respective sections.",
+        "Q2": "The review anchors its findings to specific code locations under 'Diff References', e.g., '`core/src/main/java/hudson/model/Node.java:279-282`'.",
+        "Q3": "The review implicitly distinguishes blocking issues (e.g., 'Functionality Breakage', 'API Contract Violation') from other points by the severity of the language used and the recommendation to find a different approach.",
+        "Q4": "The review makes declarative statements about problems and risks rather than asking clarifying questions.",
+        "Q5": "The review explains the reasoning for its main suggestion (avoid making a method public) in the 'Problem' and 'Impact' sections, citing risks like 'Functionality Breakage' and 'API Contract Violation'."
+      },
+      "error": ""
+    }
+  ],
+  "evaluation_timestamp": "2026-06-01T22:15:41.252676Z"
+}

@@ -1,0 +1,331 @@
+{
+  "pr_id": 44,
+  "mode": "baseline_strict",
+  "total_score": 8,
+  "max_score": 25,
+  "percentage": 32.0,
+  "kg_relevant_score": 6,
+  "kg_relevant_max": 9,
+  "kg_relevant_percentage": 66.7,
+  "criteria_scores": [
+    {
+      "criterion_id": "F1",
+      "score": 0,
+      "evidence": "The review identifies problems and risks associated with the change but does not explicitly verify if the change successfully addresses the stated problem of making the bitset accessible and reusable.",
+      "n_yes": 0,
+      "n_valid": 2,
+      "unanimous": true
+    },
+    {
+      "criterion_id": "F2",
+      "score": 0,
+      "evidence": "The review mentions 'untested edge cases' in general terms but does not identify any specific edge cases or boundary conditions for the developer to consider.",
+      "n_yes": 1,
+      "n_valid": 2,
+      "unanimous": false
+    },
+    {
+      "criterion_id": "F3",
+      "score": 1,
+      "evidence": "Review states: 'The relocation of the bitset code could potentially break existing functionality if any references to the old location are missed.' and 'The change could also introduce integration issues with other components that rely on the bitset.'",
+      "n_yes": 2,
+      "n_valid": 2,
+      "unanimous": true
+    },
+    {
+      "criterion_id": "F4",
+      "score": 1,
+      "evidence": "Review warns: 'The relocation of the bitset code could potentially break existing functionality if any references to the old location are missed.' and 'The change could break existing functionality if any references to the old bitset location are not updated.'",
+      "n_yes": 2,
+      "n_valid": 2,
+      "unanimous": true
+    },
+    {
+      "criterion_id": "T1",
+      "score": 1,
+      "evidence": "Review identifies 'Test Gaps' and recommends: 'Add unit tests specifically for the bitset functionality in its new location within `sklearn.utils`.'",
+      "n_yes": 2,
+      "n_valid": 2,
+      "unanimous": true
+    },
+    {
+      "criterion_id": "T2",
+      "score": 1,
+      "evidence": "Review mentions: 'There are no new tests added to verify the functionality of the bitset in its new location, which could lead to untested edge cases.' and 'The lack of new tests means that edge cases specific to the new location of the bitset are untested.'",
+      "n_yes": 2,
+      "n_valid": 2,
+      "unanimous": true
+    },
+    {
+      "criterion_id": "T3",
+      "score": 0,
+      "evidence": "The review suggests adding tests 'within `sklearn.utils`' but does not reference any specific existing test files to modify or suggest a name for the new test file.",
+      "n_yes": 1,
+      "n_valid": 2,
+      "unanimous": false
+    },
+    {
+      "criterion_id": "R1",
+      "score": 0,
+      "evidence": "The review does not comment on code clarity, naming conventions, or function organization of the moved code itself.",
+      "n_yes": 0,
+      "n_valid": 2,
+      "unanimous": true
+    },
+    {
+      "criterion_id": "R2",
+      "score": 0,
+      "evidence": "The review does not identify unnecessary complexity or suggest simplification.",
+      "n_yes": 0,
+      "n_valid": 2,
+      "unanimous": true
+    },
+    {
+      "criterion_id": "R3",
+      "score": 0,
+      "evidence": "The review does not check if code comments explain the 'why' behind decisions.",
+      "n_yes": 0,
+      "n_valid": 2,
+      "unanimous": true
+    },
+    {
+      "criterion_id": "M1",
+      "score": 1,
+      "evidence": "Review raises 'Architecture Concerns': 'The change introduces a dependency on `sklearn.utils` for modules that previously did not have it, which could affect maintainability.'",
+      "n_yes": 2,
+      "n_valid": 2,
+      "unanimous": true
+    },
+    {
+      "criterion_id": "M2",
+      "score": 0,
+      "evidence": "The review does not flag if the PR scope is too large or should be split.",
+      "n_yes": 0,
+      "n_valid": 2,
+      "unanimous": true
+    },
+    {
+      "criterion_id": "M3",
+      "score": 0,
+      "evidence": "The review mentions updating documentation that references the code's location, but does not assess the documentation of any public-facing APIs or interfaces.",
+      "n_yes": 1,
+      "n_valid": 2,
+      "unanimous": false
+    },
+    {
+      "criterion_id": "C1",
+      "score": 0,
+      "evidence": "The review does not check adherence to project style guides or coding conventions.",
+      "n_yes": 0,
+      "n_valid": 2,
+      "unanimous": true
+    },
+    {
+      "criterion_id": "C2",
+      "score": 0,
+      "evidence": "The review does not check if similar problems are solved consistently with existing patterns.",
+      "n_yes": 0,
+      "n_valid": 2,
+      "unanimous": true
+    },
+    {
+      "criterion_id": "P1",
+      "score": 0,
+      "evidence": "The review does not identify potential performance issues or inefficiencies.",
+      "n_yes": 0,
+      "n_valid": 2,
+      "unanimous": true
+    },
+    {
+      "criterion_id": "P2",
+      "score": 0,
+      "evidence": "The review does not ask about benchmarks or performance testing for critical paths.",
+      "n_yes": 0,
+      "n_valid": 2,
+      "unanimous": true
+    },
+    {
+      "criterion_id": "S1",
+      "score": 0,
+      "evidence": "The review does not check for proper input validation or sanitization.",
+      "n_yes": 0,
+      "n_valid": 2,
+      "unanimous": true
+    },
+    {
+      "criterion_id": "S2",
+      "score": 0,
+      "evidence": "The review does not flag hardcoded secrets, credentials, or sensitive data.",
+      "n_yes": 0,
+      "n_valid": 2,
+      "unanimous": true
+    },
+    {
+      "criterion_id": "S3",
+      "score": 0,
+      "evidence": "The review does not assess error handling and failure recovery.",
+      "n_yes": 0,
+      "n_valid": 2,
+      "unanimous": true
+    },
+    {
+      "criterion_id": "Q1",
+      "score": 1,
+      "evidence": "The 'Scope' section provides a summary of the changes, and the 'Problem' and 'Impact' sections provide an assessment of the implications.",
+      "n_yes": 2,
+      "n_valid": 2,
+      "unanimous": true
+    },
+    {
+      "criterion_id": "Q2",
+      "score": 1,
+      "evidence": "The 'Evidence' section lists specific file paths and line ranges, anchoring the identified problems to code locations.",
+      "n_yes": 2,
+      "n_valid": 2,
+      "unanimous": true
+    },
+    {
+      "criterion_id": "Q3",
+      "score": 0,
+      "evidence": "The review lists recommendations but does not explicitly distinguish between which are blocking issues versus minor suggestions.",
+      "n_yes": 1,
+      "n_valid": 2,
+      "unanimous": false
+    },
+    {
+      "criterion_id": "Q4",
+      "score": 0,
+      "evidence": "The review makes direct statements and recommendations rather than asking clarifying questions.",
+      "n_yes": 0,
+      "n_valid": 2,
+      "unanimous": true
+    },
+    {
+      "criterion_id": "Q5",
+      "score": 1,
+      "evidence": "The 'Problem' and 'Impact' sections clearly explain the reasoning (the 'why') behind the 'Recommendation' section's suggestions.",
+      "n_yes": 2,
+      "n_valid": 2,
+      "unanimous": true
+    }
+  ],
+  "per_judge": [
+    {
+      "model": "gemini:gemini-2.5-flash",
+      "scores": {
+        "F1": 0,
+        "F2": 1,
+        "F3": 1,
+        "F4": 1,
+        "T1": 1,
+        "T2": 1,
+        "T3": 1,
+        "R1": 0,
+        "R2": 0,
+        "R3": 0,
+        "M1": 1,
+        "M2": 0,
+        "M3": 1,
+        "C1": 0,
+        "C2": 0,
+        "P1": 0,
+        "P2": 0,
+        "S1": 0,
+        "S2": 0,
+        "S3": 0,
+        "Q1": 1,
+        "Q2": 1,
+        "Q3": 1,
+        "Q4": 0,
+        "Q5": 1
+      },
+      "evidence": {
+        "F1": "The review identifies problems and risks associated with the change but does not explicitly verify if the change successfully addresses the stated problem of making the bitset accessible and reusable.",
+        "F2": "Review mentions: 'There are no new tests added to verify the functionality of the bitset in its new location, which could lead to untested edge cases.' and 'The lack of new tests means that edge cases specific to the new location of the bitset are untested.'",
+        "F3": "Review states: 'The relocation of the bitset code could potentially break existing functionality if any references to the old location are missed.' and 'The change could also introduce integration issues with other components that rely on the bitset.'",
+        "F4": "Review warns: 'The relocation of the bitset code could potentially break existing functionality if any references to the old location are missed.' and 'The change could break existing functionality if any references to the old bitset location are not updated.'",
+        "T1": "Review identifies 'Test Gaps' and recommends: 'Add unit tests specifically for the bitset functionality in its new location within `sklearn.utils`.'",
+        "T2": "Review mentions: 'There are no new tests added to verify the functionality of the bitset in its new location, which could lead to untested edge cases.' and 'The lack of new tests means that edge cases specific to the new location of the bitset are untested.'",
+        "T3": "Review lists `sklearn/ensemble/_hist_gradient_boosting/tests/test_predictor.py` in 'Evidence' and suggests: 'Add unit tests specifically for the bitset functionality in its new location within `sklearn.utils`.'",
+        "R1": "The review does not comment on code clarity, naming conventions, or function organization of the moved code itself.",
+        "R2": "The review does not identify unnecessary complexity or suggest simplification.",
+        "R3": "The review does not check if code comments explain the 'why' behind decisions.",
+        "M1": "Review raises 'Architecture Concerns': 'The change introduces a dependency on `sklearn.utils` for modules that previously did not have it, which could affect maintainability.'",
+        "M2": "The review does not flag if the PR scope is too large or should be split.",
+        "M3": "Review identifies 'Documentation Gaps' and recommends: 'Update any documentation that references the bitset's original location to reflect the new structure.'",
+        "C1": "The review does not check adherence to project style guides or coding conventions.",
+        "C2": "The review does not check if similar problems are solved consistently with existing patterns.",
+        "P1": "The review does not identify potential performance issues or inefficiencies.",
+        "P2": "The review does not ask about benchmarks or performance testing for critical paths.",
+        "S1": "The review does not check for proper input validation or sanitization.",
+        "S2": "The review does not flag hardcoded secrets, credentials, or sensitive data.",
+        "S3": "The review does not assess error handling and failure recovery.",
+        "Q1": "The 'Scope' section provides a summary of the changes, and the 'Problem' and 'Impact' sections provide an assessment of the implications.",
+        "Q2": "The 'Evidence' section lists specific file paths and line ranges, anchoring the identified problems to code locations.",
+        "Q3": "The review clearly distinguishes between significant 'Problem' and 'Impact' areas (e.g., breaking functionality, regression risk) and provides 'Recommendation' for these, implying they are critical rather than minor suggestions.",
+        "Q4": "The review makes direct statements and recommendations rather than asking clarifying questions.",
+        "Q5": "The 'Problem' and 'Impact' sections clearly explain the reasoning (the 'why') behind the 'Recommendation' section's suggestions."
+      },
+      "error": ""
+    },
+    {
+      "model": "gemini:gemini-2.5-pro",
+      "scores": {
+        "F1": 0,
+        "F2": 0,
+        "F3": 1,
+        "F4": 1,
+        "T1": 1,
+        "T2": 1,
+        "T3": 0,
+        "R1": 0,
+        "R2": 0,
+        "R3": 0,
+        "M1": 1,
+        "M2": 0,
+        "M3": 0,
+        "C1": 0,
+        "C2": 0,
+        "P1": 0,
+        "P2": 0,
+        "S1": 0,
+        "S2": 0,
+        "S3": 0,
+        "Q1": 1,
+        "Q2": 1,
+        "Q3": 0,
+        "Q4": 0,
+        "Q5": 1
+      },
+      "evidence": {
+        "F1": "The review restates the PR's goal in the 'Scope' section but does not verify if the change successfully achieves it. It focuses on the risks of the change, not its functional success.",
+        "F2": "The review mentions 'untested edge cases' in general terms but does not identify any specific edge cases or boundary conditions for the developer to consider.",
+        "F3": "The review's primary focus is on integration. It mentions: 'The relocation of the bitset code could potentially break existing functionality if any references to the old location are missed.'",
+        "F4": "The review explicitly warns about breaking changes and regression risks: 'The change could break existing functionality...' and 'There is a risk of regression in modules that depend on the bitset functionality...'",
+        "T1": "The review clearly identifies the lack of tests and recommends adding them: 'Add unit tests specifically for the bitset functionality in its new location within `sklearn.utils`.'",
+        "T2": "The review mentions the need to test for specific scenarios: 'The lack of new tests means that edge cases specific to the new location of the bitset are untested.'",
+        "T3": "The review suggests adding tests 'within `sklearn.utils`' but does not reference any specific existing test files to modify or suggest a name for the new test file.",
+        "R1": "The review does not comment on the code's clarity, naming, or organization; it focuses on the structural change of moving files.",
+        "R2": "The review does not mention code complexity or suggest any simplifications.",
+        "R3": "The review does not check for or mention code comments.",
+        "M1": "The review assesses the architectural impact: 'Architecture Concerns: The change introduces a dependency on `sklearn.utils` for modules that previously did not have it, which could affect maintainability.'",
+        "M2": "The review does not comment on the PR's scope.",
+        "M3": "The review mentions updating documentation that references the code's location, but does not assess the documentation of any public-facing APIs or interfaces.",
+        "C1": "The review does not mention project style guides or coding conventions.",
+        "C2": "The review does not check if this refactoring is consistent with how similar problems have been solved elsewhere in the project.",
+        "P1": "The review does not identify or discuss any potential performance issues.",
+        "P2": "The review does not ask for benchmarks or performance tests.",
+        "S1": "The review does not check for input validation or sanitization.",
+        "S2": "The review does not check for hardcoded secrets or sensitive data.",
+        "S3": "The review does not assess error handling or failure recovery mechanisms.",
+        "Q1": "The review provides a clear summary and assessment through its 'Scope', 'Problem', and 'Impact' sections.",
+        "Q2": "The review anchors its points to specific code locations in the 'Evidence' section, listing file paths and line ranges (e.g., '`sklearn/ensemble/_hist_gradient_boosting/_bitset.pxd`:1-20').",
+        "Q3": "The review lists recommendations but does not explicitly distinguish between which are blocking issues versus minor suggestions.",
+        "Q4": "The review makes declarative statements about problems and recommendations rather than asking clarifying questions.",
+        "Q5": "The review's structure (Problem -> Impact -> Recommendation) inherently explains the reasoning. For example, the recommendation to 'Add unit tests' is justified by the stated 'Test Gaps' problem."
+      },
+      "error": ""
+    }
+  ],
+  "evaluation_timestamp": "2026-06-01T22:14:18.486153Z"
+}

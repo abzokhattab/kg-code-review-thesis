@@ -1,0 +1,47 @@
+{
+  "pr": {
+    "number": 22268,
+    "title": "KAFKA-20563: Fix flaky ShareConsumerRackAwareTest",
+    "body": "ShareConsumerRackAwareTest is very slightly flaky. This is caused by the\nfact that the assignor it uses is very particular about the combination\nof members, assigned partitions and rack IDs. Because the assignment can\nbe performed at unpredictable points during the test, it is possible\nthat the set of members is incomplete when the assignment is calculated.\nIf any of the racks has no members, the assignor throws an exception and\nthe test then fails.\n\nThe PR makes the assignor tolerant of when there are no members for a\nrack, just not making an assignment for partitions in such a rack.\n\nReviewers: Sean Quah <squah@confluent.io>, Chia-Ping Tsai\n <chia7712@gmail.com>, Sushant Mahajan <smahajan@confluent.io>\n",
+    "url": "https://github.com/apache/kafka/pull/22268",
+    "repo": "apache/kafka",
+    "base_branch": "trunk",
+    "head_branch": "KAFKA-20563",
+    "merged_at": "2026-05-14T10:12:16Z",
+    "state": "MERGED"
+  },
+  "changed_files": [
+    {
+      "path": "clients/clients-integration-tests/src/test/java/org/apache/kafka/clients/consumer/ConsumerIntegrationTest.java",
+      "language": "java",
+      "added": 2,
+      "deleted": 2
+    },
+    {
+      "path": "clients/clients-integration-tests/src/test/java/org/apache/kafka/clients/consumer/RackAwareTestAssignor.java",
+      "language": "java",
+      "added": 6,
+      "deleted": 5
+    },
+    {
+      "path": "clients/clients-integration-tests/src/test/java/org/apache/kafka/clients/consumer/ShareConsumerRackAwareTest.java",
+      "language": "java",
+      "added": 3,
+      "deleted": 1
+    }
+  ],
+  "nearest_tests": [],
+  "dependent_files": [],
+  "callers": [],
+  "call_graph_edges": [],
+  "full_diff": "diff --git a/clients/clients-integration-tests/src/test/java/org/apache/kafka/clients/consumer/ConsumerIntegrationTest.java b/clients/clients-integration-tests/src/test/java/org/apache/kafka/clients/consumer/ConsumerIntegrationTest.java\nindex d10dddde472b6..fcfb493388dec 100644\n--- a/clients/clients-integration-tests/src/test/java/org/apache/kafka/clients/consumer/ConsumerIntegrationTest.java\n+++ b/clients/clients-integration-tests/src/test/java/org/apache/kafka/clients/consumer/ConsumerIntegrationTest.java\n@@ -242,7 +242,7 @@ public void testLeaderEpoch(ClusterInstance clusterInstance) throws Exception {\n                 @ClusterConfigProperty(id = 2, key = \"broker.rack\", value = \"rack2\"),\n                 @ClusterConfigProperty(key = GroupCoordinatorConfig.CONSUMER_GROUP_HEARTBEAT_INTERVAL_MS_CONFIG, value = \"1000\"),\n                 @ClusterConfigProperty(key = GroupCoordinatorConfig.CONSUMER_GROUP_MIN_HEARTBEAT_INTERVAL_MS_CONFIG, value = \"1000\"),\n-                @ClusterConfigProperty(key = GroupCoordinatorConfig.CONSUMER_GROUP_ASSIGNORS_CONFIG, value = \"org.apache.kafka.clients.consumer.RackAwareAssignor\"),\n+                @ClusterConfigProperty(key = GroupCoordinatorConfig.CONSUMER_GROUP_ASSIGNORS_CONFIG, value = \"org.apache.kafka.clients.consumer.RackAwareTestAssignor\"),\n                 @ClusterConfigProperty(key = GroupCoordinatorConfig.CONSUMER_GROUP_ASSIGNMENT_INTERVAL_MS_CONFIG, value = \"0\")\n             }\n         ),\n@@ -255,7 +255,7 @@ public void testLeaderEpoch(ClusterInstance clusterInstance) throws Exception {\n                 @ClusterConfigProperty(id = 2, key = \"broker.rack\", value = \"rack2\"),\n                 @ClusterConfigProperty(key = GroupCoordinatorConfig.CONSUMER_GROUP_HEARTBEAT_INTERVAL_MS_CONFIG, value = \"1000\"),\n                 @ClusterConfigProperty(key = GroupCoordinatorConfig.CONSUMER_GROUP_MIN_HEARTBEAT_INTERVAL_MS_CONFIG, value = \"1000\"),\n-                @ClusterConfigProperty(key = GroupCoordinatorConfig.CONSUMER_GROUP_ASSIGNORS_CONFIG, value = \"org.apache.kafka.clients.consumer.RackAwareAssignor\"),\n+                @ClusterConfigProperty(key = GroupCoordinatorConfig.CONSUMER_GROUP_ASSIGNORS_CONFIG, value = \"org.apache.kafka.clients.consumer.RackAwareTestAssignor\"),\n                 @ClusterConfigProperty(key = GroupCoordinatorConfig.CONSUMER_GROUP_ASSIGNMENT_INTERVAL_MS_CONFIG, value = \"1000\")\n             }\n         )\ndiff --git a/clients/clients-integration-tests/src/test/java/org/apache/kafka/clients/consumer/RackAwareAssignor.java b/clients/clients-integration-tests/src/test/java/org/apache/kafka/clients/consumer/RackAwareTestAssignor.java\nsimilarity index 88%\nrename from clients/clients-integration-tests/src/test/java/org/apache/kafka/clients/consumer/RackAwareAssignor.java\nrename to clients/clients-integration-tests/src/test/java/org/apache/kafka/clients/consumer/RackAwareTestAssignor.java\nindex 4b9ee6fd27418..f230b3d1979bf 100644\n--- a/clients/clients-integration-tests/src/test/java/org/apache/kafka/clients/consumer/RackAwareAssignor.java\n+++ b/clients/clients-integration-tests/src/test/java/org/apache/kafka/clients/consumer/RackAwareTestAssignor.java\n@@ -33,11 +33,11 @@\n import java.util.Set;\n \n /**\n- * The RackAwareAssignor is a consumer group partition assignor that takes into account the rack\n- * information of the members when assigning partitions to them.\n- * It needs all brokers and members to have rack information available.\n+ * The RackAwareTestAssignor is a partition assignor for consumer groups and share groups that takes\n+ * into account the rack information of the members when assigning partitions to them.\n+ * It leaves partitions unassigned if there are no members with the same rack information.\n  */\n-public class RackAwareAssignor implements ConsumerGroupPartitionAssignor, ShareGroupPartitionAssignor {\n+public class RackAwareTestAssignor implements ConsumerGroupPartitionAssignor, ShareGroupPartitionAssignor {\n     @Override\n     public String name() {\n         return \"rack-aware-assignor\";\n@@ -81,7 +81,8 @@ public GroupAssignment assign(GroupSpec groupSpec, SubscribedTopicDescriber subs\n                 }\n \n                 if (assignedRack == null) {\n-                    throw new PartitionAssignorException(\"No member found for racks \" + racks + \" for partition \" + partitionId + \" of topic \" + topicId);\n+                    // No rack-local member found, which can be transiently true as membership changes. Just skip this partition for now.\n+                    break;\n                 }\n \n                 Map<Uuid, Set<Integer>> assignment = assignments.computeIfAbsent(\ndiff --git a/clients/clients-integration-tests/src/test/java/org/apache/kafka/clients/consumer/ShareConsumerRackAwareTest.java b/clients/clients-integration-tests/src/test/java/org/apache/kafka/clients/consumer/ShareConsumerRackAwareTest.java\nindex 668c84a0a064a..3c9b07be26adb 100644\n--- a/clients/clients-integration-tests/src/test/java/org/apache/kafka/clients/consumer/ShareConsumerRackAwareTest.java\n+++ b/clients/clients-integration-tests/src/test/java/org/apache/kafka/clients/consumer/ShareConsumerRackAwareTest.java\n@@ -50,7 +50,7 @@\n         @ClusterConfigProperty(id = 0, key = \"broker.rack\", value = \"rack0\"),\n         @ClusterConfigProperty(id = 1, key = \"broker.rack\", value = \"rack1\"),\n         @ClusterConfigProperty(id = 2, key = \"broker.rack\", value = \"rack2\"),\n-        @ClusterConfigProperty(key = GroupCoordinatorConfig.SHARE_GROUP_ASSIGNORS_CONFIG, value = \"org.apache.kafka.clients.consumer.RackAwareAssignor\")\n+        @ClusterConfigProperty(key = GroupCoordinatorConfig.SHARE_GROUP_ASSIGNORS_CONFIG, value = \"org.apache.kafka.clients.consumer.RackAwareTestAssignor\")\n     }\n )\n public class ShareConsumerRackAwareTest {\n@@ -137,6 +137,8 @@ public void testShareConsumerWithRackAwareAssignor(ClusterInstance clusterInstan\n                     NewPartitions.increaseTo(6, List.of(List.of(2), List.of(2), List.of(2)))\n                 )\n             );\n+            clusterInstance.waitTopicCreation(topic, 6);\n+\n             TestUtils.waitForCondition(() -> {\n                 consumer0.poll(Duration.ofMillis(1000));\n                 consumer1.poll(Duration.ofMillis(1000));\n",
+  "diff_summary": "3 files changed",
+  "similar_chunks": [],
+  "metadata": {
+    "experiment": "confirmatory_kg_2026-05-14",
+    "local_id": 6,
+    "v2_diff_truncated": false,
+    "v2_raw_diff_chars": 6218,
+    "v2_raw_body_chars": 714
+  }
+}

@@ -1,0 +1,39 @@
+{
+  "useful": 6,
+  "generic": 0,
+  "wrong": 0,
+  "total": 6,
+  "signal": 6,
+  "noise": 0,
+  "snr": 1.0,
+  "points": [
+    {
+      "text": "Centering of test features in `predict` should check if `fit_intercept` is `True` before applying the offset.",
+      "label": "useful"
+    },
+    {
+      "text": "Subtraction of `self.X_offset_` assumes it is always available, which may not be true if `fit_intercept=False`.",
+      "label": "useful"
+    },
+    {
+      "text": "If `fit_intercept=False`, subtracting `self.X_offset_` could lead to incorrect predictions or runtime errors.",
+      "label": "useful"
+    },
+    {
+      "text": "Add a condition to check `fit_intercept` before centering `X` in both models' predict methods.",
+      "label": "useful"
+    },
+    {
+      "text": "Ensure `self.X_offset_` is initialized only when `fit_intercept=True` to avoid attribute errors.",
+      "label": "useful"
+    },
+    {
+      "text": "Extend test coverage for scenarios where `fit_intercept=False` to verify the fix does not introduce new issues.",
+      "label": "useful"
+    }
+  ],
+  "parse_ok": true,
+  "pr_id": 31,
+  "mode": "rag",
+  "tag": "verbose"
+}

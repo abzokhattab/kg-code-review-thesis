@@ -1,0 +1,156 @@
+{
+  "pr": {
+    "number": 32846,
+    "title": "Fix make sure enabling `array_api_dispatch=True` does not break any estimator on NumPy inputs",
+    "body": "This is a follow-up to #32840. This should detect most possible silent breaking in future refactoring of helper functions that are used by both in array API supporting and not supporting code in scikit-learn.\r\n\r\n#### AI usage disclosure\r\n<!--\r\nIf AI tools were involved in creating this PR, please check all boxes that apply\r\nbelow and make sure that you adhere to our Automated Contributions Policy:\r\nhttps://scikit-learn.org/dev/developers/contributing.html#automated-contributions-policy\r\n-->\r\nI used AI assistance for:\r\n- [x] Mostly bad code suggestions that I had to re-edit manually to get the code working correctly\r\n- [ ] Test/benchmark generation\r\n- [ ] Documentation (including examples)\r\n- [ ] Research and understanding\r\n",
+    "url": "https://github.com/scikit-learn/scikit-learn/pull/32846",
+    "repo": "scikit-learn/scikit-learn",
+    "base_branch": "main",
+    "head_branch": "array-api-dispatch-should-not-break-estimators-on-numpy-inputs",
+    "merged_at": "2026-01-06T14:26:21Z",
+    "state": "MERGED"
+  },
+  "changed_files": [
+    {
+      "path": "doc/whats_new/upcoming_changes/array-api/32846.fix.rst",
+      "language": "rst",
+      "added": 3,
+      "deleted": 0
+    },
+    {
+      "path": "sklearn/decomposition/_dict_learning.py",
+      "language": "python",
+      "added": 1,
+      "deleted": 1
+    },
+    {
+      "path": "sklearn/utils/_array_api.py",
+      "language": "python",
+      "added": 41,
+      "deleted": 9
+    },
+    {
+      "path": "sklearn/utils/_test_common/instance_generator.py",
+      "language": "python",
+      "added": 20,
+      "deleted": 4
+    },
+    {
+      "path": "sklearn/utils/estimator_checks.py",
+      "language": "python",
+      "added": 71,
+      "deleted": 47
+    },
+    {
+      "path": "sklearn/utils/tests/test_array_api.py",
+      "language": "python",
+      "added": 6,
+      "deleted": 7
+    }
+  ],
+  "nearest_tests": [
+    {
+      "path": "sklearn/decomposition/tests/test_dict_learning.py",
+      "relationship": "tests",
+      "source_file": "sklearn/decomposition/_dict_learning.py"
+    },
+    {
+      "path": "sklearn/utils/tests/test_array_api.py",
+      "relationship": "tests",
+      "source_file": "sklearn/utils/_array_api.py"
+    },
+    {
+      "path": "sklearn/utils/tests/test_estimator_checks.py",
+      "relationship": "tests",
+      "source_file": "sklearn/utils/estimator_checks.py"
+    }
+  ],
+  "dependent_files": [
+    {
+      "path": "asv_benchmarks/benchmarks/utils.py",
+      "relationship": "imports",
+      "source_file": "sklearn/decomposition/_dict_learning.py"
+    },
+    {
+      "path": "asv_benchmarks/benchmarks/decomposition.py",
+      "relationship": "imports",
+      "source_file": "sklearn/decomposition/_dict_learning.py"
+    },
+    {
+      "path": "sklearn/decomposition/_sparse_pca.py",
+      "relationship": "imports",
+      "source_file": "sklearn/decomposition/_dict_learning.py"
+    },
+    {
+      "path": "sklearn/decomposition/tests/test_dict_learning.py",
+      "relationship": "imports",
+      "source_file": "sklearn/decomposition/_dict_learning.py"
+    },
+    {
+      "path": "sklearn/decomposition/__init__.py",
+      "relationship": "imports",
+      "source_file": "sklearn/decomposition/_dict_learning.py"
+    },
+    {
+      "path": "sklearn/tree/tests/test_tree.py",
+      "relationship": "imports",
+      "source_file": "sklearn/utils/_array_api.py"
+    },
+    {
+      "path": "sklearn/metrics/_classification.py",
+      "relationship": "imports",
+      "source_file": "sklearn/utils/_array_api.py"
+    },
+    {
+      "path": "sklearn/metrics/_base.py",
+      "relationship": "imports",
+      "source_file": "sklearn/utils/_array_api.py"
+    },
+    {
+      "path": "sklearn/metrics/cluster/tests/test_supervised.py",
+      "relationship": "imports",
+      "source_file": "sklearn/utils/_array_api.py"
+    },
+    {
+      "path": "sklearn/metrics/cluster/tests/test_common.py",
+      "relationship": "imports",
+      "source_file": "sklearn/utils/_array_api.py"
+    },
+    {
+      "path": "sklearn/metrics/cluster/_unsupervised.py",
+      "relationship": "imports",
+      "source_file": "sklearn/utils/_array_api.py"
+    },
+    {
+      "path": "sklearn/metrics/cluster/_supervised.py",
+      "relationship": "imports",
+      "source_file": "sklearn/utils/_array_api.py"
+    },
+    {
+      "path": "sklearn/metrics/_regression.py",
+      "relationship": "imports",
+      "source_file": "sklearn/utils/_array_api.py"
+    },
+    {
+      "path": "sklearn/metrics/tests/test_common.py",
+      "relationship": "imports",
+      "source_file": "sklearn/utils/_array_api.py"
+    },
+    {
+      "path": "sklearn/metrics/tests/test_pairwise.py",
+      "relationship": "imports",
+      "source_file": "sklearn/utils/_array_api.py"
+    }
+  ],
+  "diff_summary": "6 files changed",
+  "full_diff": "diff --git a/doc/whats_new/upcoming_changes/array-api/32846.fix.rst b/doc/whats_new/upcoming_changes/array-api/32846.fix.rst\nnew file mode 100644\nindex 0000000000000..c9df3929e14c6\n--- /dev/null\n+++ b/doc/whats_new/upcoming_changes/array-api/32846.fix.rst\n@@ -0,0 +1,3 @@\n+- Fixed a bug that would cause Cython-based estimators to fail when fit on\n+  NumPy inputs when setting `sklearn.set_config(array_api_dispatch=True)`. By\n+  :user:`Olivier Grisel <ogrisel>`.\ndiff --git a/sklearn/decomposition/_dict_learning.py b/sklearn/decomposition/_dict_learning.py\nindex d4550e4ce8982..2a32ad92de83e 100644\n--- a/sklearn/decomposition/_dict_learning.py\n+++ b/sklearn/decomposition/_dict_learning.py\n@@ -1360,7 +1360,7 @@ def fit(self, X, y=None):\n         if X.shape[1] != self.dictionary.shape[1]:\n             raise ValueError(\n                 \"Dictionary and X have different numbers of features:\"\n-                f\"dictionary.shape: {self.dictionary.shape} X.shape{X.shape}\"\n+                f\"dictionary.shape: {self.dictionary.shape} X.shape: {X.shape}\"\n             )\n         return self\n \ndiff --git a/sklearn/utils/_array_api.py b/sklearn/utils/_array_api.py\nindex 8bcf8bde132ea..23239ee062267 100644\n--- a/sklearn/utils/_array_api.py\n+++ b/sklearn/utils/_array_api.py\n@@ -23,6 +23,11 @@\n __all__ = [\"xpx\"]  # we import xpx here just to re-export it, need this to appease ruff\n \n _NUMPY_NAMESPACE_NAMES = {\"numpy\", \"sklearn.externals.array_api_compat.numpy\"}\n+REMOVE_TYPES_DEFAULT = (\n+    str,\n+    list,\n+    tuple,\n+)\n \n \n def yield_namespaces(include_numpy_namespaces=True):\n@@ -167,7 +172,7 @@ def _single_array_device(array):\n         return array.device\n \n \n-def device(*array_list, remove_none=True, remove_types=(str,)):\n+def device(*array_list, remove_none=True, remove_types=REMOVE_TYPES_DEFAULT):\n     \"\"\"Hardware device where the array data resides on.\n \n     If the hardware device is not the same for all arrays, an error is raised.\n@@ -180,7 +185,7 @@ def device(*array_list, remove_none=True, remove_types=(str,)):\n     remove_none : bool, default=True\n         Whether to ignore None objects passed in array_list.\n \n-    remove_types : tuple or list, default=(str,)\n+    remove_types : tuple or list, default=(str, list, tuple)\n         Types to ignore in array_list.\n \n     Returns\n@@ -290,7 +295,7 @@ def supported_float_dtypes(xp, device=None):\n     return tuple(valid_float_dtypes)\n \n \n-def _remove_non_arrays(*arrays, remove_none=True, remove_types=(str,)):\n+def _remove_non_arrays(*arrays, remove_none=True, remove_types=REMOVE_TYPES_DEFAULT):\n     \"\"\"Filter arrays to exclude None and/or specific types.\n \n     Sparse arrays are always filtered out.\n@@ -303,7 +308,7 @@ def _remove_non_arrays(*arrays, remove_none=True, remove_types=(str,)):\n     remove_none : bool, default=True\n         Whether to ignore None objects passed in arrays.\n \n-    remove_types : tuple or list, default=(str,)\n+    remove_types : tuple or list, default=(str, list, tuple)\n         Types to ignore in the arrays.\n \n     Returns\n@@ -328,7 +333,27 @@ def _remove_non_arrays(*arrays, remove_none=True, remove_types=(str,)):\n     return filtered_arrays\n \n \n-def get_namespace(*arrays, remove_none=True, remove_types=(str,), xp=None):\n+def _unwrap_memoryviewslices(*arrays):\n+    # Since _cyutility._memoryviewslice is an implementation detail of the\n+    # Cython runtime, we would rather not introduce a possibly brittle\n+    # import statement to run `isinstance`-based filtering, hence the\n+    # attribute-based type inspection.\n+    unwrapped = []\n+    for a in arrays:\n+        a_type = type(a)\n+        if (\n+            a_type.__module__ == \"_cyutility\"\n+            and a_type.__name__ == \"_memoryviewslice\"\n+            and hasattr(a, \"base\")\n+        ):\n+            a = a.base\n+        unwrapped.append(a)\n+    return unwrapped\n+\n+\n+def get_namespace(\n+    *arrays, remove_none=True, remove_types=REMOVE_TYPES_DEFAULT, xp=None\n+):\n     \"\"\"Get namespace of arrays.\n \n     Introspect `arrays` arguments and return their common Array API compatible\n@@ -364,7 +389,7 @@ def get_namespace(*arrays, remove_none=True, remove_types=(str,), xp=None):\n     remove_none : bool, default=True\n         Whether to ignore None objects passed in arrays.\n \n-    remove_types : tuple or list, default=(str,)\n+    remove_types : tuple or list, default=(str, list, tuple)\n         Types to ignore in the arrays.\n \n     xp : module, default=None\n@@ -399,12 +424,19 @@ def get_namespace(*arrays, remove_none=True, remove_types=(str,), xp=None):\n         remove_types=remove_types,\n     )\n \n+    # get_namespace can be called by helper functions that are used both in\n+    # array API compatible code and non-array API Cython related code. To\n+    # support the latter on NumPy inputs without raising a TypeError, we\n+    # unwrap potential Cython memoryview slices here.\n+    arrays = _unwrap_memoryviewslices(*arrays)\n+\n     if not arrays:\n         return np_compat, False\n \n     _check_array_api_dispatch(array_api_dispatch)\n \n-    namespace, is_array_api_compliant = array_api_compat.get_namespace(*arrays), True\n+    namespace = array_api_compat.get_namespace(*arrays)\n+    is_array_api_compliant = True\n \n     if namespace.__name__ == \"array_api_strict\" and hasattr(\n         namespace, \"set_array_api_strict_flags\"\n@@ -415,7 +447,7 @@ def get_namespace(*arrays, remove_none=True, remove_types=(str,), xp=None):\n \n \n def get_namespace_and_device(\n-    *array_list, remove_none=True, remove_types=(str,), xp=None\n+    *array_list, remove_none=True, remove_types=REMOVE_TYPES_DEFAULT, xp=None\n ):\n     \"\"\"Combination into one single function of `get_namespace` and `device`.\n \n@@ -425,7 +457,7 @@ def get_namespace_and_device(\n         Array objects.\n     remove_none : bool, default=True\n         Whether to ignore None objects passed in arrays.\n-    remove_types : tuple or list, default=(str,)\n+    remove_types : tuple or list, default=(str, list, tuple)\n         Types to ignore in the arrays.\n     xp : module, default=None\n         Precomputed array namespace module. When passed, typically from a caller\ndiff --git a/sklearn/utils/_test_common/instance_generator.py b/sklearn/utils/_test_common/instance_generator.py\nindex 14f8090b96cf8..176d1ab070ca6 100644\n--- a/sklearn/utils/_test_common/instance_generator.py\n+++ b/sklearn/utils/_test_common/instance_generator.py\n@@ -46,7 +46,10 @@\n     SparsePCA,\n     TruncatedSVD,\n )\n-from sklearn.discriminant_analysis import LinearDiscriminantAnalysis\n+from sklearn.discriminant_analysis import (\n+    LinearDiscriminantAnalysis,\n+    QuadraticDiscriminantAnalysis,\n+)\n from sklearn.dummy import DummyClassifier\n from sklearn.ensemble import (\n     AdaBoostClassifier,\n@@ -79,6 +82,7 @@\n     SequentialFeatureSelector,\n )\n from sklearn.frozen import FrozenEstimator\n+from sklearn.impute import SimpleImputer\n from sklearn.kernel_approximation import (\n     Nystroem,\n     PolynomialCountSketch,\n@@ -559,11 +563,16 @@\n             dict(solver=\"lbfgs\"),\n         ],\n     },\n-    GaussianMixture: {\"check_dict_unchanged\": dict(max_iter=5, n_init=2)},\n+    GaussianMixture: {\n+        \"check_dict_unchanged\": dict(max_iter=5, n_init=2),\n+        \"check_array_api_input\": dict(\n+            max_iter=5, n_init=2, init_params=\"random_from_data\"\n+        ),\n+    },\n     GaussianRandomProjection: {\"check_dict_unchanged\": dict(n_components=1)},\n+    GraphicalLasso: {\"check_array_api_input\": dict(max_iter=5, alpha=1.0)},\n     IncrementalPCA: {\"check_dict_unchanged\": dict(batch_size=10, n_components=1)},\n     Isomap: {\"check_dict_unchanged\": dict(n_components=1)},\n-    KMeans: {\"check_dict_unchanged\": dict(max_iter=5, n_clusters=1, n_init=2)},\n     # TODO(1.9) simplify when averaged_inverted_cdf is the default\n     KBinsDiscretizer: {\n         \"check_sample_weight_equivalence_on_dense_data\": [\n@@ -595,7 +604,11 @@\n             strategy=\"quantile\", quantile_method=\"averaged_inverted_cdf\"\n         ),\n     },\n-    KernelPCA: {\"check_dict_unchanged\": dict(n_components=1)},\n+    KernelPCA: {\n+        \"check_dict_unchanged\": dict(n_components=1),\n+        \"check_array_api_input\": dict(fit_inverse_transform=True),\n+    },\n+    KMeans: {\"check_dict_unchanged\": dict(max_iter=5, n_clusters=1, n_init=2)},\n     LassoLars: {\"check_non_transformer_estimators_n_iter\": dict(alpha=0.0)},\n     LatentDirichletAllocation: {\n         \"check_dict_unchanged\": dict(batch_size=10, max_iter=5, n_components=1)\n@@ -693,6 +706,7 @@\n             dict(solver=\"highs-ipm\"),\n         ],\n     },\n+    QuadraticDiscriminantAnalysis: {\"check_array_api_input\": dict(reg_param=1.0)},\n     RBFSampler: {\"check_dict_unchanged\": dict(n_components=1)},\n     Ridge: {\n         \"check_sample_weight_equivalence_on_dense_data\": [\n@@ -720,7 +734,9 @@\n         ],\n     },\n     SkewedChi2Sampler: {\"check_dict_unchanged\": dict(n_components=1)},\n+    SimpleImputer: {\"check_array_api_input\": dict(add_indicator=True)},\n     SparseCoder: {\n+        \"check_array_api_input\": dict(dictionary=rng.normal(size=(5, 10))),\n         \"check_estimators_dtypes\": dict(dictionary=rng.normal(size=(5, 5))),\n         \"check_dtype_object\": dict(dictionary=rng.normal(size=(5, 10))),\n         \"check_transformers_unfitted_stateless\": dict(\ndiff --git a/sklearn/utils/estimator_checks.py b/sklearn/utils/estimator_checks.py\nindex 7fd36041f608a..3d166d875fb6c 100644\n--- a/sklearn/utils/estimator_checks.py\n+++ b/sklearn/utils/estimator_checks.py\n@@ -196,9 +196,11 @@ def _yield_checks(estimator):\n     yield check_estimators_pickle\n     yield partial(check_estimators_pickle, readonly_memmap=True)\n \n-    if tags.array_api_support:\n-        for check in _yield_array_api_checks(estimator):\n-            yield check\n+    for check in _yield_array_api_checks(\n+        estimator,\n+        only_numpy=not tags.array_api_support,\n+    ):\n+        yield check\n \n     yield check_f_contiguous_array_estimator\n \n@@ -336,18 +338,30 @@ def _yield_outliers_checks(estimator):\n     yield check_non_transformer_estimators_n_iter\n \n \n-def _yield_array_api_checks(estimator):\n-    for (\n-        array_namespace,\n-        device,\n-        dtype_name,\n-    ) in yield_namespace_device_dtype_combinations():\n+def _yield_array_api_checks(estimator, only_numpy=False):\n+    if only_numpy:\n+        # Enabling array API dispatch and using NumPy inputs should not\n+        # change results, even if the estimator does not explicitly support\n+        # array API.\n         yield partial(\n             check_array_api_input,\n-            array_namespace=array_namespace,\n-            dtype_name=dtype_name,\n-            device=device,\n+            array_namespace=\"numpy\",\n+            expect_only_array_outputs=False,\n         )\n+    else:\n+        # These extended checks should pass for all estimators that declare\n+        # array API support in their tags.\n+        for (\n+            array_namespace,\n+            device,\n+            dtype_name,\n+        ) in yield_namespace_device_dtype_combinations():\n+            yield partial(\n+                check_array_api_input,\n+                array_namespace=array_namespace,\n+                dtype_name=dtype_name,\n+                device=device,\n+            )\n \n \n def _yield_all_checks(estimator, legacy: bool):\n@@ -1048,6 +1062,7 @@ def check_array_api_input(\n     dtype_name=\"float64\",\n     check_values=False,\n     check_sample_weight=False,\n+    expect_only_array_outputs=True,\n ):\n     \"\"\"Check that the estimator can work consistently with the Array API\n \n@@ -1057,17 +1072,25 @@ def check_array_api_input(\n     When check_values is True, it also checks that calling the estimator on the\n     array_api Array gives the same results as ndarrays.\n \n-    When sample_weight is True, dummy sample weights are passed to the fit call.\n+    When check_sample_weight is True, dummy sample weights are passed to the\n+    fit call.\n+\n+    When expect_only_array_outputs is False, the check is looser: in particular\n+    it accepts non-array outputs such as sparse data structures. This is\n+    useful to test that enabling array API dispatch does not change the\n+    behavior of any estimator fed with NumPy inputs, even for estimators that\n+    do not support array API.\n     \"\"\"\n     xp = _array_api_for_tests(array_namespace, device)\n \n-    X, y = make_classification(random_state=42)\n+    X, y = make_classification(n_samples=30, n_features=10, random_state=42)\n     X = X.astype(dtype_name, copy=False)\n \n     X = _enforce_estimator_tags_X(estimator_orig, X)\n     y = _enforce_estimator_tags_y(estimator_orig, y)\n \n     est = clone(estimator_orig)\n+    set_random_state(est)\n \n     X_xp = xp.asarray(X, device=device)\n     y_xp = xp.asarray(y, device=device)\n@@ -1193,47 +1216,48 @@ def check_array_api_input(\n             f\"got {result_ns}.\"\n         )\n \n-        with config_context(array_api_dispatch=True):\n-            assert array_device(result_xp) == array_device(X_xp)\n-\n-        result_xp_np = _convert_to_numpy(result_xp, xp=xp)\n+        if expect_only_array_outputs:\n+            with config_context(array_api_dispatch=True):\n+                assert array_device(result_xp) == array_device(X_xp)\n \n-        if check_values:\n-            assert_allclose(\n-                result,\n-                result_xp_np,\n-                err_msg=f\"{method} did not the return the same result\",\n-                atol=_atol_for_type(X.dtype),\n-            )\n-        else:\n-            if hasattr(result, \"shape\"):\n+            result_xp_np = _convert_to_numpy(result_xp, xp=xp)\n+            if check_values:\n+                assert_allclose(\n+                    result,\n+                    result_xp_np,\n+                    err_msg=f\"{method} did not the return the same result\",\n+                    atol=_atol_for_type(X.dtype),\n+                )\n+            elif hasattr(result, \"shape\"):\n                 assert result.shape == result_xp_np.shape\n                 assert result.dtype == result_xp_np.dtype\n \n         if method_name == \"transform\" and hasattr(est, \"inverse_transform\"):\n             inverse_result = est.inverse_transform(result)\n             with config_context(array_api_dispatch=True):\n-                invese_result_xp = est_xp.inverse_transform(result_xp)\n-                inverse_result_ns = get_namespace(invese_result_xp)[0].__name__\n-            assert inverse_result_ns == input_ns, (\n-                \"'inverse_transform' output is in wrong namespace, expected\"\n-                f\" {input_ns}, got {inverse_result_ns}.\"\n-            )\n-\n-            with config_context(array_api_dispatch=True):\n-                assert array_device(invese_result_xp) == array_device(X_xp)\n-\n-            invese_result_xp_np = _convert_to_numpy(invese_result_xp, xp=xp)\n-            if check_values:\n-                assert_allclose(\n-                    inverse_result,\n-                    invese_result_xp_np,\n-                    err_msg=\"inverse_transform did not the return the same result\",\n-                    atol=_atol_for_type(X.dtype),\n+                inverse_result_xp = est_xp.inverse_transform(result_xp)\n+\n+            if expect_only_array_outputs:\n+                with config_context(array_api_dispatch=True):\n+                    inverse_result_ns = get_namespace(inverse_result_xp)[0].__name__\n+                assert inverse_result_ns == input_ns, (\n+                    \"'inverse_transform' output is in wrong namespace, expected\"\n+                    f\" {input_ns}, got {inverse_result_ns}.\"\n                 )\n-            else:\n-                assert inverse_result.shape == invese_result_xp_np.shape\n-                assert inverse_result.dtype == invese_result_xp_np.dtype\n+                with config_context(array_api_dispatch=True):\n+                    assert array_device(result_xp) == array_device(X_xp)\n+\n+                inverse_result_xp_np = _convert_to_numpy(inverse_result_xp, xp=xp)\n+                if check_values:\n+                    assert_allclose(\n+                        inverse_result,\n+                        inverse_result_xp_np,\n+                        err_msg=\"inverse_transform did not the return the same result\",\n+                        atol=_atol_for_type(X.dtype),\n+                    )\n+                elif hasattr(result, \"shape\"):\n+                    assert inverse_result.shape == inverse_result_xp_np.shape\n+                    assert inverse_result.dtype == inverse_result_xp_np.dtype\n \n \n def check_array_api_input_and_values(\ndiff --git a/sklearn/utils/tests/test_array_api.py b/sklearn/utils/tests/test_array_api.py\nindex a1fc81c109af8..785bb668e9878 100644\n--- a/sklearn/utils/tests/test_array_api.py\n+++ b/sklearn/utils/tests/test_array_api.py\n@@ -50,8 +50,8 @@\n from sklearn.utils.fixes import _IS_32BIT, CSR_CONTAINERS, np_version, parse_version\n \n \n-@pytest.mark.parametrize(\"X\", [numpy.asarray([1, 2, 3]), [1, 2, 3]])\n-def test_get_namespace_ndarray_default(X):\n+@pytest.mark.parametrize(\"X\", [numpy.asarray([1, 2, 3]), [1, 2, 3], (1, 2, 3)])\n+def test_get_namespace_ndarray_or_similar_default(X):\n     \"\"\"Check that get_namespace returns NumPy wrapper\"\"\"\n     xp_out, is_array_api_compliant = get_namespace(X)\n     assert xp_out is np_compat\n@@ -71,14 +71,13 @@ def test_get_namespace_ndarray_creation_device():\n \n \n @skip_if_array_api_compat_not_configured\n-def test_get_namespace_ndarray_with_dispatch():\n+@pytest.mark.parametrize(\"X\", [numpy.asarray([1, 2, 3]), [1, 2, 3], (1, 2, 3)])\n+def test_get_namespace_ndarray_or_similar_default_with_dispatch(X):\n     \"\"\"Test get_namespace on NumPy ndarrays.\"\"\"\n \n-    X_np = numpy.asarray([[1, 2, 3]])\n-\n     with config_context(array_api_dispatch=True):\n-        xp_out, is_array_api_compliant = get_namespace(X_np)\n-        assert is_array_api_compliant\n+        xp_out, is_array_api_compliant = get_namespace(X)\n+        assert is_array_api_compliant == isinstance(X, numpy.ndarray)\n \n         # In the future, NumPy should become API compliant library and we should have\n         # assert xp_out is numpy\n",
+  "metadata": {
+    "v2_fetcher_version": 1,
+    "v2_fetched_at_unix": 1783944580,
+    "v2_diff_cap_bytes": 50000,
+    "v2_body_cap_bytes": 8000,
+    "v2_diff_truncated": false,
+    "v2_raw_diff_chars": 17991,
+    "v2_raw_body_chars": 733
+  }
+}

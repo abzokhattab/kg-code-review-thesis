@@ -1,0 +1,331 @@
+{
+  "pr_id": 38,
+  "mode": "joern",
+  "total_score": 13,
+  "max_score": 25,
+  "percentage": 52.0,
+  "kg_relevant_score": 8,
+  "kg_relevant_max": 9,
+  "kg_relevant_percentage": 88.9,
+  "criteria_scores": [
+    {
+      "criterion_id": "F1",
+      "score": 0,
+      "evidence": "The review states what the PR intends to do ('This PR fixes the redirect behavior...'), but it does not verify or assess if the proposed change actually solves the original problem effectively.",
+      "n_yes": 0,
+      "n_valid": 2,
+      "unanimous": true
+    },
+    {
+      "criterion_id": "F2",
+      "score": 1,
+      "evidence": "Missing Edge Case Tests: There are no tests for scenarios where the `redirectUri` is a malformed URL or contains unexpected characters.",
+      "n_yes": 2,
+      "n_valid": 2,
+      "unanimous": true
+    },
+    {
+      "criterion_id": "F3",
+      "score": 1,
+      "evidence": "Integration Risk: The change affects the `processRedirectUri` function, which is used by several components, including `GrafanaRoute.tsx` and `interceptLinkClicks.ts`.",
+      "n_yes": 2,
+      "n_valid": 2,
+      "unanimous": true
+    },
+    {
+      "criterion_id": "F4",
+      "score": 1,
+      "evidence": "Functionality Breakage: The change in `processRedirectUri` could potentially break existing functionality if any callers rely on the previous behavior.",
+      "n_yes": 2,
+      "n_valid": 2,
+      "unanimous": true
+    },
+    {
+      "criterion_id": "T1",
+      "score": 1,
+      "evidence": "Missing Edge Case Tests: There are no tests for scenarios where the `redirectUri` is a malformed URL or contains unexpected characters.",
+      "n_yes": 2,
+      "n_valid": 2,
+      "unanimous": true
+    },
+    {
+      "criterion_id": "T2",
+      "score": 1,
+      "evidence": "Add tests for malformed URLs and unexpected characters in `redirectUri` to `location.test.ts`.",
+      "n_yes": 2,
+      "n_valid": 2,
+      "unanimous": true
+    },
+    {
+      "criterion_id": "T3",
+      "score": 1,
+      "evidence": "Add tests for malformed URLs and unexpected characters in `redirectUri` to `location.test.ts`.",
+      "n_yes": 2,
+      "n_valid": 2,
+      "unanimous": true
+    },
+    {
+      "criterion_id": "R1",
+      "score": 0,
+      "evidence": "The review does not comment on code clarity, naming conventions, or function organization.",
+      "n_yes": 0,
+      "n_valid": 2,
+      "unanimous": true
+    },
+    {
+      "criterion_id": "R2",
+      "score": 0,
+      "evidence": "The review does not identify unnecessary complexity or suggest simplification.",
+      "n_yes": 0,
+      "n_valid": 2,
+      "unanimous": true
+    },
+    {
+      "criterion_id": "R3",
+      "score": 0,
+      "evidence": "The review does not check if code comments explain the 'why' behind decisions.",
+      "n_yes": 0,
+      "n_valid": 2,
+      "unanimous": true
+    },
+    {
+      "criterion_id": "M1",
+      "score": 0,
+      "evidence": "The review focuses on integration risks and consistency with other patterns, but not explicitly on whether the change itself fits the existing architecture or design patterns.",
+      "n_yes": 1,
+      "n_valid": 2,
+      "unanimous": false
+    },
+    {
+      "criterion_id": "M2",
+      "score": 0,
+      "evidence": "The review does not flag if the PR scope is too large or should be split.",
+      "n_yes": 0,
+      "n_valid": 2,
+      "unanimous": true
+    },
+    {
+      "criterion_id": "M3",
+      "score": 1,
+      "evidence": "Documentation: Update API documentation to reflect changes in URL handling behavior.",
+      "n_yes": 2,
+      "n_valid": 2,
+      "unanimous": true
+    },
+    {
+      "criterion_id": "C1",
+      "score": 0,
+      "evidence": "The review does not check adherence to project style guides or coding conventions.",
+      "n_yes": 0,
+      "n_valid": 2,
+      "unanimous": true
+    },
+    {
+      "criterion_id": "C2",
+      "score": 1,
+      "evidence": "Consistency Check: Review similar URL handling patterns in other parts of the codebase to ensure consistency.",
+      "n_yes": 2,
+      "n_valid": 2,
+      "unanimous": true
+    },
+    {
+      "criterion_id": "P1",
+      "score": 0,
+      "evidence": "The review does not identify potential performance issues or inefficiencies.",
+      "n_yes": 0,
+      "n_valid": 2,
+      "unanimous": true
+    },
+    {
+      "criterion_id": "P2",
+      "score": 0,
+      "evidence": "The review does not ask about benchmarks or performance testing for critical paths.",
+      "n_yes": 0,
+      "n_valid": 2,
+      "unanimous": true
+    },
+    {
+      "criterion_id": "S1",
+      "score": 0,
+      "evidence": "While 'malformed URL' is mentioned for testing, the review does not explicitly check for input validation or sanitization from a security perspective.",
+      "n_yes": 1,
+      "n_valid": 2,
+      "unanimous": false
+    },
+    {
+      "criterion_id": "S2",
+      "score": 0,
+      "evidence": "The review does not flag hardcoded secrets, credentials, or sensitive data.",
+      "n_yes": 0,
+      "n_valid": 2,
+      "unanimous": true
+    },
+    {
+      "criterion_id": "S3",
+      "score": 1,
+      "evidence": "Malformed URLs and unexpected characters in `redirectUri` are not covered, which could lead to unhandled exceptions.",
+      "n_yes": 2,
+      "n_valid": 2,
+      "unanimous": true
+    },
+    {
+      "criterion_id": "Q1",
+      "score": 1,
+      "evidence": "Scope: This PR fixes the redirect behavior when the application is served under a subpath by modifying the `processRedirectUri` function in `location.ts`.",
+      "n_yes": 2,
+      "n_valid": 2,
+      "unanimous": true
+    },
+    {
+      "criterion_id": "Q2",
+      "score": 1,
+      "evidence": "Diff References: `location.ts:168-173`: Changes to `processRedirectUri` logic.",
+      "n_yes": 2,
+      "n_valid": 2,
+      "unanimous": true
+    },
+    {
+      "criterion_id": "Q3",
+      "score": 1,
+      "evidence": "The review uses distinct 'Problem' and 'Impact' sections to highlight critical issues and risks, and 'Recommendation' for suggested actions, implicitly distinguishing importance.",
+      "n_yes": 2,
+      "n_valid": 2,
+      "unanimous": true
+    },
+    {
+      "criterion_id": "Q4",
+      "score": 0,
+      "evidence": "The review makes direct statements about problems and recommendations, rather than asking clarifying questions.",
+      "n_yes": 0,
+      "n_valid": 2,
+      "unanimous": true
+    },
+    {
+      "criterion_id": "Q5",
+      "score": 1,
+      "evidence": "The 'Problem' and 'Impact' sections clearly provide the reasoning behind the suggestions in the 'Recommendation' section (e.g., 'Functionality Breakage' justifies updating callers).",
+      "n_yes": 2,
+      "n_valid": 2,
+      "unanimous": true
+    }
+  ],
+  "per_judge": [
+    {
+      "model": "gemini:gemini-2.5-flash",
+      "scores": {
+        "F1": 0,
+        "F2": 1,
+        "F3": 1,
+        "F4": 1,
+        "T1": 1,
+        "T2": 1,
+        "T3": 1,
+        "R1": 0,
+        "R2": 0,
+        "R3": 0,
+        "M1": 0,
+        "M2": 0,
+        "M3": 1,
+        "C1": 0,
+        "C2": 1,
+        "P1": 0,
+        "P2": 0,
+        "S1": 0,
+        "S2": 0,
+        "S3": 1,
+        "Q1": 1,
+        "Q2": 1,
+        "Q3": 1,
+        "Q4": 0,
+        "Q5": 1
+      },
+      "evidence": {
+        "F1": "The review states what the PR intends to do ('This PR fixes the redirect behavior...'), but it does not verify or assess if the proposed change actually solves the original problem effectively.",
+        "F2": "Missing Edge Case Tests: There are no tests for scenarios where the `redirectUri` is a malformed URL or contains unexpected characters.",
+        "F3": "Integration Risk: The change affects the `processRedirectUri` function, which is used by several components, including `GrafanaRoute.tsx` and `interceptLinkClicks.ts`.",
+        "F4": "Functionality Breakage: The change in `processRedirectUri` could potentially break existing functionality if any callers rely on the previous behavior.",
+        "T1": "Missing Edge Case Tests: There are no tests for scenarios where the `redirectUri` is a malformed URL or contains unexpected characters.",
+        "T2": "Add tests for malformed URLs and unexpected characters in `redirectUri` to `location.test.ts`.",
+        "T3": "Add tests for malformed URLs and unexpected characters in `redirectUri` to `location.test.ts`.",
+        "R1": "The review does not comment on code clarity, naming conventions, or function organization.",
+        "R2": "The review does not identify unnecessary complexity or suggest simplification.",
+        "R3": "The review does not check if code comments explain the 'why' behind decisions.",
+        "M1": "The review focuses on integration risks and consistency with other patterns, but not explicitly on whether the change itself fits the existing architecture or design patterns.",
+        "M2": "The review does not flag if the PR scope is too large or should be split.",
+        "M3": "Documentation: Update API documentation to reflect changes in URL handling behavior.",
+        "C1": "The review does not check adherence to project style guides or coding conventions.",
+        "C2": "Consistency Check: Review similar URL handling patterns in other parts of the codebase to ensure consistency.",
+        "P1": "The review does not identify potential performance issues or inefficiencies.",
+        "P2": "The review does not ask about benchmarks or performance testing for critical paths.",
+        "S1": "While 'malformed URL' is mentioned for testing, the review does not explicitly check for input validation or sanitization from a security perspective.",
+        "S2": "The review does not flag hardcoded secrets, credentials, or sensitive data.",
+        "S3": "Malformed URLs and unexpected characters in `redirectUri` are not covered, which could lead to unhandled exceptions.",
+        "Q1": "Scope: This PR fixes the redirect behavior when the application is served under a subpath by modifying the `processRedirectUri` function in `location.ts`.",
+        "Q2": "Diff References: `location.ts:168-173`: Changes to `processRedirectUri` logic.",
+        "Q3": "The review uses distinct 'Problem' and 'Impact' sections to highlight critical issues and risks, and 'Recommendation' for suggested actions, implicitly distinguishing importance.",
+        "Q4": "The review makes direct statements about problems and recommendations, rather than asking clarifying questions.",
+        "Q5": "The 'Problem' and 'Impact' sections clearly provide the reasoning behind the suggestions in the 'Recommendation' section (e.g., 'Functionality Breakage' justifies updating callers)."
+      },
+      "error": ""
+    },
+    {
+      "model": "gemini:gemini-2.5-pro",
+      "scores": {
+        "F1": 0,
+        "F2": 1,
+        "F3": 1,
+        "F4": 1,
+        "T1": 1,
+        "T2": 1,
+        "T3": 1,
+        "R1": 0,
+        "R2": 0,
+        "R3": 0,
+        "M1": 1,
+        "M2": 0,
+        "M3": 1,
+        "C1": 0,
+        "C2": 1,
+        "P1": 0,
+        "P2": 0,
+        "S1": 1,
+        "S2": 0,
+        "S3": 1,
+        "Q1": 1,
+        "Q2": 1,
+        "Q3": 1,
+        "Q4": 0,
+        "Q5": 1
+      },
+      "evidence": {
+        "F1": "The review describes the PR's scope but does not explicitly verify if the change successfully fixes the stated problem.",
+        "F2": "The review identifies missing tests for edge cases: \"scenarios where the `redirectUri` is a malformed URL or contains unexpected characters.\"",
+        "F3": "The review checks integration by listing callers (`GrafanaRoute.tsx`, `interceptLinkClicks.ts`) and warning they \"might not handle the new behavior correctly.\"",
+        "F4": "The review warns about breaking changes: \"The change in `processRedirectUri` could potentially break existing functionality...\" and mentions a \"High risk of regression\".",
+        "T1": "The review explicitly points out \"Missing Edge Case Tests\" and recommends adding them.",
+        "T2": "The review specifically recommends adding tests for \"malformed URLs and unexpected characters in `redirectUri`,\" which are edge/error cases.",
+        "T3": "The review recommends adding tests to a specific file: \"Add tests for malformed URLs... to `location.test.ts`.\"",
+        "R1": "The review does not comment on code clarity, naming, or organization.",
+        "R2": "The review does not mention code complexity or suggest any simplifications.",
+        "R3": "The review does not mention code comments.",
+        "M1": "The review assesses architectural fit by flagging a potential \"API Contract Violation\" and recommending a \"Consistency Check\" against other URL handling patterns.",
+        "M2": "The review does not comment on the PR's scope being too large.",
+        "M3": "The review recommends: \"Update API documentation to reflect changes in URL handling behavior.\"",
+        "C1": "The review does not mention project style guides or coding conventions.",
+        "C2": "The review recommends to \"Review similar URL handling patterns in other parts of the codebase to ensure consistency.\"",
+        "P1": "The review does not mention performance.",
+        "P2": "The review does not mention performance testing or benchmarks.",
+        "S1": "The review checks for input validation by pointing out the lack of handling for \"malformed URLs or... unexpected characters.\"",
+        "S2": "The review does not mention secrets or sensitive data.",
+        "S3": "The review assesses error handling by noting that untested scenarios \"could lead to unhandled exceptions.\"",
+        "Q1": "The review provides a summary in the 'Scope' section and an overall assessment in the 'Problem' and 'Impact' sections.",
+        "Q2": "The review anchors comments to specific code locations, e.g., \"location.ts:168-173\" and \"location.test.ts:340-367\".",
+        "Q3": "The review uses strong language like \"Functionality Breakage,\" \"API Contract Violation,\" and \"High risk of regression,\" clearly indicating these are blocking issues.",
+        "Q4": "The review makes direct statements and recommendations rather than asking clarifying questions.",
+        "Q5": "The review explains the 'why' behind its points, for example, noting that untested scenarios \"could lead to unhandled exceptions.\""
+      },
+      "error": ""
+    }
+  ],
+  "evaluation_timestamp": "2026-06-01T22:15:47.686788Z"
+}

@@ -1,0 +1,44 @@
+{
+  "candidate_mentions": [
+    {
+      "basename_collision": false,
+      "end": 801,
+      "evidence_id": "M001",
+      "excerpt": "ture of `clone` is modified to include `required_ctx`.\n- `sklearn/cluster/_agglomerative.py`: Calls to `clone` do not pass the new `required_ctx` parameter.\n- `sklearn/linear_model/_ransac.py:fit`: Calls `clone` without the `required_ctx` parameter.\n- `sklearn/linear_model/_stochastic_gradient.py:__init__`: Calls `clone` without the `required_ctx` parameter.\n\n## Impact\n- The change in the function signature can lead to runtime errors in all module",
+      "finding_passage_id": "P010",
+      "match_kind": "full_path",
+      "match_text": "sklearn/linear_model/_ransac.py",
+      "oracle_path": "sklearn/linear_model/_ransac.py",
+      "start": 770
+    },
+    {
+      "basename_collision": false,
+      "end": 907,
+      "evidence_id": "M002",
+      "excerpt": " Calls to `clone` do not pass the new `required_ctx` parameter.\n- `sklearn/linear_model/_ransac.py:fit`: Calls `clone` without the `required_ctx` parameter.\n- `sklearn/linear_model/_stochastic_gradient.py:__init__`: Calls `clone` without the `required_ctx` parameter.\n\n## Impact\n- The change in the function signature can lead to runtime errors in all modules that currently call `clone` without the `required_ctx` parameter.\n- Potential for breaking existing func",
+      "finding_passage_id": "P011",
+      "match_kind": "full_path",
+      "match_text": "sklearn/linear_model/_stochastic_gradient.py",
+      "oracle_path": "sklearn/linear_model/_stochastic_gradient.py",
+      "start": 863
+    }
+  ],
+  "causal_passage_id": "P013",
+  "decision_source": "llm_causal_adjudication",
+  "detected": true,
+  "evidence_id": "M001",
+  "executed_at_utc": "2026-09-19T15:09:10.641974+00:00",
+  "finding_passage_id": "P010",
+  "judge": "gemini:gemini-2.5-flash",
+  "manifest_sha256": "5d4371a93d1b09f0491ecc12279f9f3ff5de23053b7a5e74650a749f58b472b0",
+  "model_alias": "gemini:gemini-2.5-flash",
+  "model_snapshot": "unavailable-from-original-wrapper",
+  "original_verdict": true,
+  "prompt_sha256": "4a4d74431d99683eeb6e8fb5676e47000638c6f3c363ced732d890014566d942",
+  "reason_code": "specific_cross_file_link",
+  "response_wrapper": "single_json_fence",
+  "review_sha256": "431e3edbc0218febbc516f3c2e46e55dded6a9c6167dc0079a2252c24ecb3217",
+  "schema_sha256": "f70f714868ecd3d25508bb3e00b32ecbe6761b0ebc05f454ee10fa4d28efd013",
+  "schema_version": "exp2-adjudication-v3",
+  "system_sha256": "030b5e701c798b32afdabbbeb22db38f664db8c8fd8b862d2fcb98df63b6fb6b"
+}

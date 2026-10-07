@@ -1,0 +1,55 @@
+{
+  "candidate_mentions": [
+    {
+      "basename_collision": false,
+      "end": 479,
+      "evidence_id": "M008",
+      "excerpt": "nal function name.\n2. The change lacks corresponding updates in the dependent files and tests that might still reference the old function name.\n\n## Evidence\n- `packages/grafana-data/src/themes/context.tsx`: The file imports `createTheme`, which may now be broken due to the renaming.\n- `packages/grafana-data/src/themes/registry.ts`: Similar dependency on `createTheme` that could be affected.\n- `packages/grafana-data/src/transformations/transformers/histogram.ts",
+      "finding_passage_id": "P007",
+      "match_kind": "full_path",
+      "match_text": "packages/grafana-data/src/themes/context.tsx",
+      "oracle_path": "packages/grafana-data/src/themes/context.tsx",
+      "start": 435
+    },
+    {
+      "basename_collision": false,
+      "end": 606,
+      "evidence_id": "M010",
+      "excerpt": "d function name.\n\n## Evidence\n- `packages/grafana-data/src/themes/context.tsx`: The file imports `createTheme`, which may now be broken due to the renaming.\n- `packages/grafana-data/src/themes/registry.ts`: Similar dependency on `createTheme` that could be affected.\n- `packages/grafana-data/src/transformations/transformers/histogram.ts`: This file calls `createTheme`, which might lead to runtime errors if not updated.\n\n## Impact\n- Technical impact includes pot",
+      "finding_passage_id": "P008",
+      "match_kind": "full_path",
+      "match_text": "packages/grafana-data/src/themes/registry.ts",
+      "oracle_path": "packages/grafana-data/src/themes/registry.ts",
+      "start": 562
+    },
+    {
+      "basename_collision": false,
+      "end": 739,
+      "evidence_id": "M011",
+      "excerpt": ", which may now be broken due to the renaming.\n- `packages/grafana-data/src/themes/registry.ts`: Similar dependency on `createTheme` that could be affected.\n- `packages/grafana-data/src/transformations/transformers/histogram.ts`: This file calls `createTheme`, which might lead to runtime errors if not updated.\n\n## Impact\n- Technical impact includes potential runtime errors or broken functionality in parts of the application that still reference `createTheme`.\n- There is a risk of in",
+      "finding_passage_id": "P009",
+      "match_kind": "full_path",
+      "match_text": "packages/grafana-data/src/transformations/transformers/histogram.ts",
+      "oracle_path": "packages/grafana-data/src/transformations/transformers/histogram.ts",
+      "start": 672
+    }
+  ],
+  "causal_passage_id": "P004",
+  "decision_source": "llm_causal_adjudication",
+  "detected": true,
+  "evidence_id": "M008",
+  "executed_at_utc": "2026-09-19T15:10:52.598903+00:00",
+  "finding_passage_id": "P007",
+  "judge": "openai:gpt-4o-mini",
+  "manifest_sha256": "5d4371a93d1b09f0491ecc12279f9f3ff5de23053b7a5e74650a749f58b472b0",
+  "model_alias": "openai:gpt-4o-mini",
+  "model_snapshot": "unavailable-from-original-wrapper",
+  "original_verdict": true,
+  "prompt_sha256": "097786ce95d673ab661bb2db7334454c05ad5a8017c6984c4f89b9a940bfd829",
+  "reason_code": "specific_cross_file_link",
+  "response_wrapper": "bare",
+  "review_sha256": "bdc2accffaf2c655b3daee68eabe166ad486dd77d2be3a3f9c955c35233d9e1e",
+  "schema_sha256": "f70f714868ecd3d25508bb3e00b32ecbe6761b0ebc05f454ee10fa4d28efd013",
+  "schema_version": "exp2-adjudication-v3",
+  "system_sha256": "030b5e701c798b32afdabbbeb22db38f664db8c8fd8b862d2fcb98df63b6fb6b"
+}

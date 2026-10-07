@@ -1,0 +1,3109 @@
+{
+  "metadata": {
+    "evaluation_method": "heuristic",
+    "timestamp": "2026-01-28T22:57:23.260910",
+    "criteria_count": 25,
+    "kg_relevant_criteria_count": 9
+  },
+  "criteria_definitions": [
+    {
+      "id": "F1",
+      "category": "Functionality",
+      "description": "Review checks if change solves the stated problem",
+      "kg_relevant": false
+    },
+    {
+      "id": "F2",
+      "category": "Functionality",
+      "description": "Review identifies edge cases that need handling",
+      "kg_relevant": false
+    },
+    {
+      "id": "F3",
+      "category": "Functionality",
+      "description": "Review checks integration with existing components/APIs",
+      "kg_relevant": true
+    },
+    {
+      "id": "F4",
+      "category": "Functionality",
+      "description": "Review identifies potential broken contracts with dependent code",
+      "kg_relevant": true
+    },
+    {
+      "id": "T1",
+      "category": "Tests",
+      "description": "Review asks about or mentions unit/integration tests",
+      "kg_relevant": true
+    },
+    {
+      "id": "T2",
+      "category": "Tests",
+      "description": "Review checks if tests cover edge cases and error paths",
+      "kg_relevant": true
+    },
+    {
+      "id": "T3",
+      "category": "Tests",
+      "description": "Review mentions specific test files that should exist or be updated",
+      "kg_relevant": true
+    },
+    {
+      "id": "R1",
+      "category": "Readability",
+      "description": "Review comments on code clarity (naming, function size)",
+      "kg_relevant": false
+    },
+    {
+      "id": "R2",
+      "category": "Readability",
+      "description": "Review identifies unnecessary complexity",
+      "kg_relevant": false
+    },
+    {
+      "id": "R3",
+      "category": "Readability",
+      "description": "Review checks if comments explain 'why' not 'what'",
+      "kg_relevant": false
+    },
+    {
+      "id": "M1",
+      "category": "Maintainability",
+      "description": "Review checks if change fits existing architecture",
+      "kg_relevant": true
+    },
+    {
+      "id": "M2",
+      "category": "Maintainability",
+      "description": "Review flags if PR scope is too large",
+      "kg_relevant": false
+    },
+    {
+      "id": "M3",
+      "category": "Maintainability",
+      "description": "Review checks if APIs/interfaces are documented",
+      "kg_relevant": true
+    },
+    {
+      "id": "C1",
+      "category": "Consistency",
+      "description": "Review checks project style guide compliance",
+      "kg_relevant": false
+    },
+    {
+      "id": "C2",
+      "category": "Consistency",
+      "description": "Review checks if similar problems are solved similarly elsewhere",
+      "kg_relevant": true
+    },
+    {
+      "id": "P1",
+      "category": "Performance",
+      "description": "Review identifies obvious inefficiencies",
+      "kg_relevant": false
+    },
+    {
+      "id": "P2",
+      "category": "Performance",
+      "description": "Review asks about benchmarks for critical paths",
+      "kg_relevant": false
+    },
+    {
+      "id": "S1",
+      "category": "Security",
+      "description": "Review checks input validation",
+      "kg_relevant": false
+    },
+    {
+      "id": "S2",
+      "category": "Security",
+      "description": "Review flags hardcoded secrets/credentials",
+      "kg_relevant": false
+    },
+    {
+      "id": "S3",
+      "category": "Security",
+      "description": "Review checks error handling quality",
+      "kg_relevant": false
+    },
+    {
+      "id": "Q1",
+      "category": "Quality",
+      "description": "Review provides overall assessment summary",
+      "kg_relevant": false
+    },
+    {
+      "id": "Q2",
+      "category": "Quality",
+      "description": "Comments are tied to specific code locations (file:line references)",
+      "kg_relevant": true
+    },
+    {
+      "id": "Q3",
+      "category": "Quality",
+      "description": "Review distinguishes blocking vs non-blocking issues",
+      "kg_relevant": false
+    },
+    {
+      "id": "Q4",
+      "category": "Quality",
+      "description": "Review asks clarifying questions rather than assuming",
+      "kg_relevant": false
+    },
+    {
+      "id": "Q5",
+      "category": "Quality",
+      "description": "Review provides rationale for suggestions (explains WHY)",
+      "kg_relevant": false
+    }
+  ],
+  "evaluations": [
+    {
+      "pr_id": 1,
+      "mode": "baseline",
+      "total_score": 11,
+      "max_score": 25,
+      "percentage": 44.0,
+      "kg_relevant_score": 4,
+      "kg_relevant_max": 9,
+      "kg_relevant_percentage": 44.4,
+      "criteria_scores": [
+        {
+          "criterion_id": "F1",
+          "score": 1,
+          "evidence": "Review mentions 3 keywords from PR title"
+        },
+        {
+          "criterion_id": "F2",
+          "score": 0,
+          "evidence": "Not found"
+        },
+        {
+          "criterion_id": "F3",
+          "score": 0,
+          "evidence": "Not found"
+        },
+        {
+          "criterion_id": "F4",
+          "score": 1,
+          "evidence": "Found contract warning: impact"
+        },
+        {
+          "criterion_id": "T1",
+          "score": 1,
+          "evidence": "Found test mention: \\btest"
+        },
+        {
+          "criterion_id": "T2",
+          "score": 0,
+          "evidence": "Not found"
+        },
+        {
+          "criterion_id": "T3",
+          "score": 0,
+          "evidence": "Not found"
+        },
+        {
+          "criterion_id": "R1",
+          "score": 1,
+          "evidence": "Found clarity mention: confus"
+        },
+        {
+          "criterion_id": "R2",
+          "score": 1,
+          "evidence": "Found complexity mention: refactor"
+        },
+        {
+          "criterion_id": "R3",
+          "score": 0,
+          "evidence": "Not found"
+        },
+        {
+          "criterion_id": "M1",
+          "score": 0,
+          "evidence": "Not found"
+        },
+        {
+          "criterion_id": "M2",
+          "score": 1,
+          "evidence": "Found scope mention: scope"
+        },
+        {
+          "criterion_id": "M3",
+          "score": 1,
+          "evidence": "Found API doc mention: missing.*doc"
+        },
+        {
+          "criterion_id": "C1",
+          "score": 0,
+          "evidence": "Not found"
+        },
+        {
+          "criterion_id": "C2",
+          "score": 1,
+          "evidence": "Found consistency mention: consistent"
+        },
+        {
+          "criterion_id": "P1",
+          "score": 0,
+          "evidence": "Not found"
+        },
+        {
+          "criterion_id": "P2",
+          "score": 0,
+          "evidence": "Not found"
+        },
+        {
+          "criterion_id": "S1",
+          "score": 0,
+          "evidence": "Not found"
+        },
+        {
+          "criterion_id": "S2",
+          "score": 0,
+          "evidence": "Not found"
+        },
+        {
+          "criterion_id": "S3",
+          "score": 0,
+          "evidence": "Not found"
+        },
+        {
+          "criterion_id": "Q1",
+          "score": 1,
+          "evidence": "Has summary/scope section"
+        },
+        {
+          "criterion_id": "Q2",
+          "score": 0,
+          "evidence": "Not found"
+        },
+        {
+          "criterion_id": "Q3",
+          "score": 1,
+          "evidence": "Found severity indicator: critical"
+        },
+        {
+          "criterion_id": "Q4",
+          "score": 0,
+          "evidence": "Not found"
+        },
+        {
+          "criterion_id": "Q5",
+          "score": 1,
+          "evidence": "Found rationale: reason"
+        }
+      ],
+      "evaluation_timestamp": "2026-01-28T22:57:23.233334"
+    },
+    {
+      "pr_id": 1,
+      "mode": "hybrid",
+      "total_score": 11,
+      "max_score": 25,
+      "percentage": 44.0,
+      "kg_relevant_score": 4,
+      "kg_relevant_max": 9,
+      "kg_relevant_percentage": 44.4,
+      "criteria_scores": [
+        {
+          "criterion_id": "F1",
+          "score": 1,
+          "evidence": "Review mentions 5 keywords from PR title"
+        },
+        {
+          "criterion_id": "F2",
+          "score": 0,
+          "evidence": "Not found"
+        },
+        {
+          "criterion_id": "F3",
+          "score": 1,
+          "evidence": "Found integration mention: depend"
+        },
+        {
+          "criterion_id": "F4",
+          "score": 1,
+          "evidence": "Found contract warning: break"
+        },
+        {
+          "criterion_id": "T1",
+          "score": 1,
+          "evidence": "Found test mention: \\btest"
+        },
+        {
+          "criterion_id": "T2",
+          "score": 0,
+          "evidence": "Not found"
+        },
+        {
+          "criterion_id": "T3",
+          "score": 0,
+          "evidence": "Not found"
+        },
+        {
+          "criterion_id": "R1",
+          "score": 0,
+          "evidence": "Not found"
+        },
+        {
+          "criterion_id": "R2",
+          "score": 0,
+          "evidence": "Not found"
+        },
+        {
+          "criterion_id": "R3",
+          "score": 0,
+          "evidence": "Not found"
+        },
+        {
+          "criterion_id": "M1",
+          "score": 0,
+          "evidence": "Not found"
+        },
+        {
+          "criterion_id": "M2",
+          "score": 1,
+          "evidence": "Found scope mention: scope"
+        },
+        {
+          "criterion_id": "M3",
+          "score": 0,
+          "evidence": "Not found"
+        },
+        {
+          "criterion_id": "C1",
+          "score": 0,
+          "evidence": "Not found"
+        },
+        {
+          "criterion_id": "C2",
+          "score": 0,
+          "evidence": "Not found"
+        },
+        {
+          "criterion_id": "P1",
+          "score": 1,
+          "evidence": "Found performance mention: performance"
+        },
+        {
+          "criterion_id": "P2",
+          "score": 0,
+          "evidence": "Not found"
+        },
+        {
+          "criterion_id": "S1",
+          "score": 0,
+          "evidence": "Not found"
+        },
+        {
+          "criterion_id": "S2",
+          "score": 0,
+          "evidence": "Not found"
+        },
+        {
+          "criterion_id": "S3",
+          "score": 1,
+          "evidence": "Found error handling mention: error.*handl"
+        },
+        {
+          "criterion_id": "Q1",
+          "score": 1,
+          "evidence": "Has summary/scope section"
+        },
+        {
+          "criterion_id": "Q2",
+          "score": 1,
+          "evidence": "Found 2 file:line references"
+        },
+        {
+          "criterion_id": "Q3",
+          "score": 1,
+          "evidence": "Found severity indicator: critical"
+        },
+        {
+          "criterion_id": "Q4",
+          "score": 0,
+          "evidence": "Not found"
+        },
+        {
+          "criterion_id": "Q5",
+          "score": 1,
+          "evidence": "Found rationale: lead.*to"
+        }
+      ],
+      "evaluation_timestamp": "2026-01-28T22:57:23.235020"
+    },
+    {
+      "pr_id": 1,
+      "mode": "kg",
+      "total_score": 11,
+      "max_score": 25,
+      "percentage": 44.0,
+      "kg_relevant_score": 5,
+      "kg_relevant_max": 9,
+      "kg_relevant_percentage": 55.6,
+      "criteria_scores": [
+        {
+          "criterion_id": "F1",
+          "score": 1,
+          "evidence": "Review mentions 5 keywords from PR title"
+        },
+        {
+          "criterion_id": "F2",
+          "score": 0,
+          "evidence": "Not found"
+        },
+        {
+          "criterion_id": "F3",
+          "score": 1,
+          "evidence": "Found integration mention: depend"
+        },
+        {
+          "criterion_id": "F4",
+          "score": 1,
+          "evidence": "Found contract warning: impact"
+        },
+        {
+          "criterion_id": "T1",
+          "score": 1,
+          "evidence": "Found test mention: \\btest"
+        },
+        {
+          "criterion_id": "T2",
+          "score": 0,
+          "evidence": "Not found"
+        },
+        {
+          "criterion_id": "T3",
+          "score": 0,
+          "evidence": "Not found"
+        },
+        {
+          "criterion_id": "R1",
+          "score": 0,
+          "evidence": "Not found"
+        },
+        {
+          "criterion_id": "R2",
+          "score": 0,
+          "evidence": "Not found"
+        },
+        {
+          "criterion_id": "R3",
+          "score": 0,
+          "evidence": "Not found"
+        },
+        {
+          "criterion_id": "M1",
+          "score": 1,
+          "evidence": "Found architecture mention: module"
+        },
+        {
+          "criterion_id": "M2",
+          "score": 1,
+          "evidence": "Found scope mention: scope"
+        },
+        {
+          "criterion_id": "M3",
+          "score": 0,
+          "evidence": "Not found"
+        },
+        {
+          "criterion_id": "C1",
+          "score": 1,
+          "evidence": "Found style mention: format"
+        },
+        {
+          "criterion_id": "C2",
+          "score": 0,
+          "evidence": "Not found"
+        },
+        {
+          "criterion_id": "P1",
+          "score": 0,
+          "evidence": "Not found"
+        },
+        {
+          "criterion_id": "P2",
+          "score": 0,
+          "evidence": "Not found"
+        },
+        {
+          "criterion_id": "S1",
+          "score": 0,
+          "evidence": "Not found"
+        },
+        {
+          "criterion_id": "S2",
+          "score": 0,
+          "evidence": "Not found"
+        },
+        {
+          "criterion_id": "S3",
+          "score": 0,
+          "evidence": "Not found"
+        },
+        {
+          "criterion_id": "Q1",
+          "score": 1,
+          "evidence": "Has summary/scope section"
+        },
+        {
+          "criterion_id": "Q2",
+          "score": 1,
+          "evidence": "Found 3 file:line references"
+        },
+        {
+          "criterion_id": "Q3",
+          "score": 1,
+          "evidence": "Found severity indicator: critical"
+        },
+        {
+          "criterion_id": "Q4",
+          "score": 0,
+          "evidence": "Not found"
+        },
+        {
+          "criterion_id": "Q5",
+          "score": 1,
+          "evidence": "Found rationale: lead.*to"
+        }
+      ],
+      "evaluation_timestamp": "2026-01-28T22:57:23.236368"
+    },
+    {
+      "pr_id": 2,
+      "mode": "baseline",
+      "total_score": 11,
+      "max_score": 25,
+      "percentage": 44.0,
+      "kg_relevant_score": 6,
+      "kg_relevant_max": 9,
+      "kg_relevant_percentage": 66.7,
+      "criteria_scores": [
+        {
+          "criterion_id": "F1",
+          "score": 0,
+          "evidence": "Not found"
+        },
+        {
+          "criterion_id": "F2",
+          "score": 1,
+          "evidence": "Found edge case mention: edge case"
+        },
+        {
+          "criterion_id": "F3",
+          "score": 1,
+          "evidence": "Found integration mention: component"
+        },
+        {
+          "criterion_id": "F4",
+          "score": 1,
+          "evidence": "Found contract warning: impact"
+        },
+        {
+          "criterion_id": "T1",
+          "score": 1,
+          "evidence": "Found test mention: \\btest"
+        },
+        {
+          "criterion_id": "T2",
+          "score": 1,
+          "evidence": "Found test coverage mention: test.*edge"
+        },
+        {
+          "criterion_id": "T3",
+          "score": 1,
+          "evidence": "Found specific test file reference"
+        },
+        {
+          "criterion_id": "R1",
+          "score": 0,
+          "evidence": "Not found"
+        },
+        {
+          "criterion_id": "R2",
+          "score": 1,
+          "evidence": "Found complexity mention: refactor"
+        },
+        {
+          "criterion_id": "R3",
+          "score": 0,
+          "evidence": "Not found"
+        },
+        {
+          "criterion_id": "M1",
+          "score": 1,
+          "evidence": "Found architecture mention: component"
+        },
+        {
+          "criterion_id": "M2",
+          "score": 1,
+          "evidence": "Found scope mention: scope"
+        },
+        {
+          "criterion_id": "M3",
+          "score": 0,
+          "evidence": "Not found"
+        },
+        {
+          "criterion_id": "C1",
+          "score": 0,
+          "evidence": "Not found"
+        },
+        {
+          "criterion_id": "C2",
+          "score": 0,
+          "evidence": "Not found"
+        },
+        {
+          "criterion_id": "P1",
+          "score": 0,
+          "evidence": "Not found"
+        },
+        {
+          "criterion_id": "P2",
+          "score": 0,
+          "evidence": "Not found"
+        },
+        {
+          "criterion_id": "S1",
+          "score": 0,
+          "evidence": "Not found"
+        },
+        {
+          "criterion_id": "S2",
+          "score": 0,
+          "evidence": "Not found"
+        },
+        {
+          "criterion_id": "S3",
+          "score": 0,
+          "evidence": "Not found"
+        },
+        {
+          "criterion_id": "Q1",
+          "score": 1,
+          "evidence": "Has summary/scope section"
+        },
+        {
+          "criterion_id": "Q2",
+          "score": 0,
+          "evidence": "Not found"
+        },
+        {
+          "criterion_id": "Q3",
+          "score": 0,
+          "evidence": "Not found"
+        },
+        {
+          "criterion_id": "Q4",
+          "score": 0,
+          "evidence": "Not found"
+        },
+        {
+          "criterion_id": "Q5",
+          "score": 1,
+          "evidence": "Found rationale: lead.*to"
+        }
+      ],
+      "evaluation_timestamp": "2026-01-28T22:57:23.237850"
+    },
+    {
+      "pr_id": 2,
+      "mode": "hybrid",
+      "total_score": 10,
+      "max_score": 25,
+      "percentage": 40.0,
+      "kg_relevant_score": 5,
+      "kg_relevant_max": 9,
+      "kg_relevant_percentage": 55.6,
+      "criteria_scores": [
+        {
+          "criterion_id": "F1",
+          "score": 1,
+          "evidence": "Review mentions 3 keywords from PR title"
+        },
+        {
+          "criterion_id": "F2",
+          "score": 0,
+          "evidence": "Not found"
+        },
+        {
+          "criterion_id": "F3",
+          "score": 1,
+          "evidence": "Found integration mention: depend"
+        },
+        {
+          "criterion_id": "F4",
+          "score": 1,
+          "evidence": "Found contract warning: impact"
+        },
+        {
+          "criterion_id": "T1",
+          "score": 1,
+          "evidence": "Found test mention: \\btest"
+        },
+        {
+          "criterion_id": "T2",
+          "score": 0,
+          "evidence": "Not found"
+        },
+        {
+          "criterion_id": "T3",
+          "score": 1,
+          "evidence": "Found specific test file reference"
+        },
+        {
+          "criterion_id": "R1",
+          "score": 0,
+          "evidence": "Not found"
+        },
+        {
+          "criterion_id": "R2",
+          "score": 0,
+          "evidence": "Not found"
+        },
+        {
+          "criterion_id": "R3",
+          "score": 0,
+          "evidence": "Not found"
+        },
+        {
+          "criterion_id": "M1",
+          "score": 0,
+          "evidence": "Not found"
+        },
+        {
+          "criterion_id": "M2",
+          "score": 1,
+          "evidence": "Found scope mention: scope"
+        },
+        {
+          "criterion_id": "M3",
+          "score": 0,
+          "evidence": "Not found"
+        },
+        {
+          "criterion_id": "C1",
+          "score": 0,
+          "evidence": "Not found"
+        },
+        {
+          "criterion_id": "C2",
+          "score": 0,
+          "evidence": "Not found"
+        },
+        {
+          "criterion_id": "P1",
+          "score": 0,
+          "evidence": "Not found"
+        },
+        {
+          "criterion_id": "P2",
+          "score": 0,
+          "evidence": "Not found"
+        },
+        {
+          "criterion_id": "S1",
+          "score": 0,
+          "evidence": "Not found"
+        },
+        {
+          "criterion_id": "S2",
+          "score": 0,
+          "evidence": "Not found"
+        },
+        {
+          "criterion_id": "S3",
+          "score": 0,
+          "evidence": "Not found"
+        },
+        {
+          "criterion_id": "Q1",
+          "score": 1,
+          "evidence": "Has summary/scope section"
+        },
+        {
+          "criterion_id": "Q2",
+          "score": 1,
+          "evidence": "Found 2 file:line references"
+        },
+        {
+          "criterion_id": "Q3",
+          "score": 1,
+          "evidence": "Found severity indicator: critical"
+        },
+        {
+          "criterion_id": "Q4",
+          "score": 0,
+          "evidence": "Not found"
+        },
+        {
+          "criterion_id": "Q5",
+          "score": 1,
+          "evidence": "Found rationale: lead.*to"
+        }
+      ],
+      "evaluation_timestamp": "2026-01-28T22:57:23.239555"
+    },
+    {
+      "pr_id": 2,
+      "mode": "kg",
+      "total_score": 11,
+      "max_score": 25,
+      "percentage": 44.0,
+      "kg_relevant_score": 6,
+      "kg_relevant_max": 9,
+      "kg_relevant_percentage": 66.7,
+      "criteria_scores": [
+        {
+          "criterion_id": "F1",
+          "score": 1,
+          "evidence": "Review mentions 4 keywords from PR title"
+        },
+        {
+          "criterion_id": "F2",
+          "score": 0,
+          "evidence": "Not found"
+        },
+        {
+          "criterion_id": "F3",
+          "score": 1,
+          "evidence": "Found integration mention: depend"
+        },
+        {
+          "criterion_id": "F4",
+          "score": 1,
+          "evidence": "Found contract warning: break"
+        },
+        {
+          "criterion_id": "T1",
+          "score": 1,
+          "evidence": "Found test mention: \\btest"
+        },
+        {
+          "criterion_id": "T2",
+          "score": 1,
+          "evidence": "Found test coverage mention: test.*fail"
+        },
+        {
+          "criterion_id": "T3",
+          "score": 1,
+          "evidence": "Found specific test file reference"
+        },
+        {
+          "criterion_id": "R1",
+          "score": 0,
+          "evidence": "Not found"
+        },
+        {
+          "criterion_id": "R2",
+          "score": 0,
+          "evidence": "Not found"
+        },
+        {
+          "criterion_id": "R3",
+          "score": 0,
+          "evidence": "Not found"
+        },
+        {
+          "criterion_id": "M1",
+          "score": 0,
+          "evidence": "Not found"
+        },
+        {
+          "criterion_id": "M2",
+          "score": 1,
+          "evidence": "Found scope mention: scope"
+        },
+        {
+          "criterion_id": "M3",
+          "score": 0,
+          "evidence": "Not found"
+        },
+        {
+          "criterion_id": "C1",
+          "score": 0,
+          "evidence": "Not found"
+        },
+        {
+          "criterion_id": "C2",
+          "score": 0,
+          "evidence": "Not found"
+        },
+        {
+          "criterion_id": "P1",
+          "score": 0,
+          "evidence": "Not found"
+        },
+        {
+          "criterion_id": "P2",
+          "score": 0,
+          "evidence": "Not found"
+        },
+        {
+          "criterion_id": "S1",
+          "score": 0,
+          "evidence": "Not found"
+        },
+        {
+          "criterion_id": "S2",
+          "score": 0,
+          "evidence": "Not found"
+        },
+        {
+          "criterion_id": "S3",
+          "score": 0,
+          "evidence": "Not found"
+        },
+        {
+          "criterion_id": "Q1",
+          "score": 1,
+          "evidence": "Has summary/scope section"
+        },
+        {
+          "criterion_id": "Q2",
+          "score": 1,
+          "evidence": "Found 3 file:line references"
+        },
+        {
+          "criterion_id": "Q3",
+          "score": 1,
+          "evidence": "Found severity indicator: critical"
+        },
+        {
+          "criterion_id": "Q4",
+          "score": 0,
+          "evidence": "Not found"
+        },
+        {
+          "criterion_id": "Q5",
+          "score": 1,
+          "evidence": "Found rationale: lead.*to"
+        }
+      ],
+      "evaluation_timestamp": "2026-01-28T22:57:23.241171"
+    },
+    {
+      "pr_id": 2,
+      "mode": "rag",
+      "total_score": 12,
+      "max_score": 25,
+      "percentage": 48.0,
+      "kg_relevant_score": 4,
+      "kg_relevant_max": 9,
+      "kg_relevant_percentage": 44.4,
+      "criteria_scores": [
+        {
+          "criterion_id": "F1",
+          "score": 1,
+          "evidence": "Review mentions 2 keywords from PR title"
+        },
+        {
+          "criterion_id": "F2",
+          "score": 1,
+          "evidence": "Found edge case mention: edge case"
+        },
+        {
+          "criterion_id": "F3",
+          "score": 0,
+          "evidence": "Not found"
+        },
+        {
+          "criterion_id": "F4",
+          "score": 1,
+          "evidence": "Found contract warning: impact"
+        },
+        {
+          "criterion_id": "T1",
+          "score": 1,
+          "evidence": "Found test mention: \\btest"
+        },
+        {
+          "criterion_id": "T2",
+          "score": 0,
+          "evidence": "Not found"
+        },
+        {
+          "criterion_id": "T3",
+          "score": 0,
+          "evidence": "Not found"
+        },
+        {
+          "criterion_id": "R1",
+          "score": 0,
+          "evidence": "Not found"
+        },
+        {
+          "criterion_id": "R2",
+          "score": 1,
+          "evidence": "Found complexity mention: complex"
+        },
+        {
+          "criterion_id": "R3",
+          "score": 0,
+          "evidence": "Not found"
+        },
+        {
+          "criterion_id": "M1",
+          "score": 1,
+          "evidence": "Found architecture mention: structure"
+        },
+        {
+          "criterion_id": "M2",
+          "score": 1,
+          "evidence": "Found scope mention: scope"
+        },
+        {
+          "criterion_id": "M3",
+          "score": 0,
+          "evidence": "Not found"
+        },
+        {
+          "criterion_id": "C1",
+          "score": 1,
+          "evidence": "Found style mention: format"
+        },
+        {
+          "criterion_id": "C2",
+          "score": 1,
+          "evidence": "Found consistency mention: consistent"
+        },
+        {
+          "criterion_id": "P1",
+          "score": 0,
+          "evidence": "Not found"
+        },
+        {
+          "criterion_id": "P2",
+          "score": 0,
+          "evidence": "Not found"
+        },
+        {
+          "criterion_id": "S1",
+          "score": 1,
+          "evidence": "Found validation mention: validat"
+        },
+        {
+          "criterion_id": "S2",
+          "score": 0,
+          "evidence": "Not found"
+        },
+        {
+          "criterion_id": "S3",
+          "score": 0,
+          "evidence": "Not found"
+        },
+        {
+          "criterion_id": "Q1",
+          "score": 1,
+          "evidence": "Has summary/scope section"
+        },
+        {
+          "criterion_id": "Q2",
+          "score": 0,
+          "evidence": "Not found"
+        },
+        {
+          "criterion_id": "Q3",
+          "score": 0,
+          "evidence": "Not found"
+        },
+        {
+          "criterion_id": "Q4",
+          "score": 0,
+          "evidence": "Not found"
+        },
+        {
+          "criterion_id": "Q5",
+          "score": 1,
+          "evidence": "Found rationale: lead.*to"
+        }
+      ],
+      "evaluation_timestamp": "2026-01-28T22:57:23.242847"
+    },
+    {
+      "pr_id": 3,
+      "mode": "baseline",
+      "total_score": 12,
+      "max_score": 25,
+      "percentage": 48.0,
+      "kg_relevant_score": 5,
+      "kg_relevant_max": 9,
+      "kg_relevant_percentage": 55.6,
+      "criteria_scores": [
+        {
+          "criterion_id": "F1",
+          "score": 0,
+          "evidence": "Not found"
+        },
+        {
+          "criterion_id": "F2",
+          "score": 1,
+          "evidence": "Found edge case mention: edge case"
+        },
+        {
+          "criterion_id": "F3",
+          "score": 0,
+          "evidence": "Not found"
+        },
+        {
+          "criterion_id": "F4",
+          "score": 1,
+          "evidence": "Found contract warning: break"
+        },
+        {
+          "criterion_id": "T1",
+          "score": 1,
+          "evidence": "Found test mention: \\btest"
+        },
+        {
+          "criterion_id": "T2",
+          "score": 1,
+          "evidence": "Found test coverage mention: test.*edge"
+        },
+        {
+          "criterion_id": "T3",
+          "score": 0,
+          "evidence": "Not found"
+        },
+        {
+          "criterion_id": "R1",
+          "score": 0,
+          "evidence": "Not found"
+        },
+        {
+          "criterion_id": "R2",
+          "score": 1,
+          "evidence": "Found complexity mention: complex"
+        },
+        {
+          "criterion_id": "R3",
+          "score": 0,
+          "evidence": "Not found"
+        },
+        {
+          "criterion_id": "M1",
+          "score": 1,
+          "evidence": "Found architecture mention: structure"
+        },
+        {
+          "criterion_id": "M2",
+          "score": 1,
+          "evidence": "Found scope mention: scope"
+        },
+        {
+          "criterion_id": "M3",
+          "score": 0,
+          "evidence": "Not found"
+        },
+        {
+          "criterion_id": "C1",
+          "score": 0,
+          "evidence": "Not found"
+        },
+        {
+          "criterion_id": "C2",
+          "score": 0,
+          "evidence": "Not found"
+        },
+        {
+          "criterion_id": "P1",
+          "score": 1,
+          "evidence": "Found performance mention: performance"
+        },
+        {
+          "criterion_id": "P2",
+          "score": 0,
+          "evidence": "Not found"
+        },
+        {
+          "criterion_id": "S1",
+          "score": 0,
+          "evidence": "Not found"
+        },
+        {
+          "criterion_id": "S2",
+          "score": 0,
+          "evidence": "Not found"
+        },
+        {
+          "criterion_id": "S3",
+          "score": 1,
+          "evidence": "Found error handling mention: error.*handl"
+        },
+        {
+          "criterion_id": "Q1",
+          "score": 1,
+          "evidence": "Has summary/scope section"
+        },
+        {
+          "criterion_id": "Q2",
+          "score": 1,
+          "evidence": "Found 2 file:line references"
+        },
+        {
+          "criterion_id": "Q3",
+          "score": 0,
+          "evidence": "Not found"
+        },
+        {
+          "criterion_id": "Q4",
+          "score": 0,
+          "evidence": "Not found"
+        },
+        {
+          "criterion_id": "Q5",
+          "score": 1,
+          "evidence": "Found rationale: lead.*to"
+        }
+      ],
+      "evaluation_timestamp": "2026-01-28T22:57:23.244390"
+    },
+    {
+      "pr_id": 3,
+      "mode": "hybrid",
+      "total_score": 9,
+      "max_score": 25,
+      "percentage": 36.0,
+      "kg_relevant_score": 4,
+      "kg_relevant_max": 9,
+      "kg_relevant_percentage": 44.4,
+      "criteria_scores": [
+        {
+          "criterion_id": "F1",
+          "score": 1,
+          "evidence": "Review mentions 4 keywords from PR title"
+        },
+        {
+          "criterion_id": "F2",
+          "score": 0,
+          "evidence": "Not found"
+        },
+        {
+          "criterion_id": "F3",
+          "score": 1,
+          "evidence": "Found integration mention: integrat"
+        },
+        {
+          "criterion_id": "F4",
+          "score": 1,
+          "evidence": "Found contract warning: impact"
+        },
+        {
+          "criterion_id": "T1",
+          "score": 1,
+          "evidence": "Found test mention: \\btest"
+        },
+        {
+          "criterion_id": "T2",
+          "score": 0,
+          "evidence": "Not found"
+        },
+        {
+          "criterion_id": "T3",
+          "score": 1,
+          "evidence": "Found specific test file reference"
+        },
+        {
+          "criterion_id": "R1",
+          "score": 0,
+          "evidence": "Not found"
+        },
+        {
+          "criterion_id": "R2",
+          "score": 0,
+          "evidence": "Not found"
+        },
+        {
+          "criterion_id": "R3",
+          "score": 0,
+          "evidence": "Not found"
+        },
+        {
+          "criterion_id": "M1",
+          "score": 0,
+          "evidence": "Not found"
+        },
+        {
+          "criterion_id": "M2",
+          "score": 1,
+          "evidence": "Found scope mention: scope"
+        },
+        {
+          "criterion_id": "M3",
+          "score": 0,
+          "evidence": "Not found"
+        },
+        {
+          "criterion_id": "C1",
+          "score": 0,
+          "evidence": "Not found"
+        },
+        {
+          "criterion_id": "C2",
+          "score": 0,
+          "evidence": "Not found"
+        },
+        {
+          "criterion_id": "P1",
+          "score": 0,
+          "evidence": "Not found"
+        },
+        {
+          "criterion_id": "P2",
+          "score": 0,
+          "evidence": "Not found"
+        },
+        {
+          "criterion_id": "S1",
+          "score": 0,
+          "evidence": "Not found"
+        },
+        {
+          "criterion_id": "S2",
+          "score": 0,
+          "evidence": "Not found"
+        },
+        {
+          "criterion_id": "S3",
+          "score": 0,
+          "evidence": "Not found"
+        },
+        {
+          "criterion_id": "Q1",
+          "score": 1,
+          "evidence": "Has summary/scope section"
+        },
+        {
+          "criterion_id": "Q2",
+          "score": 0,
+          "evidence": "Not found"
+        },
+        {
+          "criterion_id": "Q3",
+          "score": 1,
+          "evidence": "Found severity indicator: critical"
+        },
+        {
+          "criterion_id": "Q4",
+          "score": 0,
+          "evidence": "Not found"
+        },
+        {
+          "criterion_id": "Q5",
+          "score": 1,
+          "evidence": "Found rationale: lead.*to"
+        }
+      ],
+      "evaluation_timestamp": "2026-01-28T22:57:23.245702"
+    },
+    {
+      "pr_id": 3,
+      "mode": "kg",
+      "total_score": 7,
+      "max_score": 25,
+      "percentage": 28.0,
+      "kg_relevant_score": 2,
+      "kg_relevant_max": 9,
+      "kg_relevant_percentage": 22.2,
+      "criteria_scores": [
+        {
+          "criterion_id": "F1",
+          "score": 1,
+          "evidence": "Review mentions 3 keywords from PR title"
+        },
+        {
+          "criterion_id": "F2",
+          "score": 0,
+          "evidence": "Not found"
+        },
+        {
+          "criterion_id": "F3",
+          "score": 0,
+          "evidence": "Not found"
+        },
+        {
+          "criterion_id": "F4",
+          "score": 1,
+          "evidence": "Found contract warning: break"
+        },
+        {
+          "criterion_id": "T1",
+          "score": 1,
+          "evidence": "Found test mention: \\btest"
+        },
+        {
+          "criterion_id": "T2",
+          "score": 0,
+          "evidence": "Not found"
+        },
+        {
+          "criterion_id": "T3",
+          "score": 0,
+          "evidence": "Not found"
+        },
+        {
+          "criterion_id": "R1",
+          "score": 1,
+          "evidence": "Found clarity mention: confus"
+        },
+        {
+          "criterion_id": "R2",
+          "score": 0,
+          "evidence": "Not found"
+        },
+        {
+          "criterion_id": "R3",
+          "score": 0,
+          "evidence": "Not found"
+        },
+        {
+          "criterion_id": "M1",
+          "score": 0,
+          "evidence": "Not found"
+        },
+        {
+          "criterion_id": "M2",
+          "score": 1,
+          "evidence": "Found scope mention: scope"
+        },
+        {
+          "criterion_id": "M3",
+          "score": 0,
+          "evidence": "Not found"
+        },
+        {
+          "criterion_id": "C1",
+          "score": 0,
+          "evidence": "Not found"
+        },
+        {
+          "criterion_id": "C2",
+          "score": 0,
+          "evidence": "Not found"
+        },
+        {
+          "criterion_id": "P1",
+          "score": 0,
+          "evidence": "Not found"
+        },
+        {
+          "criterion_id": "P2",
+          "score": 0,
+          "evidence": "Not found"
+        },
+        {
+          "criterion_id": "S1",
+          "score": 0,
+          "evidence": "Not found"
+        },
+        {
+          "criterion_id": "S2",
+          "score": 0,
+          "evidence": "Not found"
+        },
+        {
+          "criterion_id": "S3",
+          "score": 0,
+          "evidence": "Not found"
+        },
+        {
+          "criterion_id": "Q1",
+          "score": 1,
+          "evidence": "Has summary/scope section"
+        },
+        {
+          "criterion_id": "Q2",
+          "score": 0,
+          "evidence": "Not found"
+        },
+        {
+          "criterion_id": "Q3",
+          "score": 0,
+          "evidence": "Not found"
+        },
+        {
+          "criterion_id": "Q4",
+          "score": 0,
+          "evidence": "Not found"
+        },
+        {
+          "criterion_id": "Q5",
+          "score": 1,
+          "evidence": "Found rationale: lead.*to"
+        }
+      ],
+      "evaluation_timestamp": "2026-01-28T22:57:23.247019"
+    },
+    {
+      "pr_id": 3,
+      "mode": "rag",
+      "total_score": 9,
+      "max_score": 25,
+      "percentage": 36.0,
+      "kg_relevant_score": 3,
+      "kg_relevant_max": 9,
+      "kg_relevant_percentage": 33.3,
+      "criteria_scores": [
+        {
+          "criterion_id": "F1",
+          "score": 0,
+          "evidence": "Not found"
+        },
+        {
+          "criterion_id": "F2",
+          "score": 0,
+          "evidence": "Not found"
+        },
+        {
+          "criterion_id": "F3",
+          "score": 0,
+          "evidence": "Not found"
+        },
+        {
+          "criterion_id": "F4",
+          "score": 1,
+          "evidence": "Found contract warning: impact"
+        },
+        {
+          "criterion_id": "T1",
+          "score": 1,
+          "evidence": "Found test mention: \\btest"
+        },
+        {
+          "criterion_id": "T2",
+          "score": 0,
+          "evidence": "Not found"
+        },
+        {
+          "criterion_id": "T3",
+          "score": 0,
+          "evidence": "Not found"
+        },
+        {
+          "criterion_id": "R1",
+          "score": 0,
+          "evidence": "Not found"
+        },
+        {
+          "criterion_id": "R2",
+          "score": 0,
+          "evidence": "Not found"
+        },
+        {
+          "criterion_id": "R3",
+          "score": 0,
+          "evidence": "Not found"
+        },
+        {
+          "criterion_id": "M1",
+          "score": 0,
+          "evidence": "Not found"
+        },
+        {
+          "criterion_id": "M2",
+          "score": 1,
+          "evidence": "Found scope mention: scope"
+        },
+        {
+          "criterion_id": "M3",
+          "score": 0,
+          "evidence": "Not found"
+        },
+        {
+          "criterion_id": "C1",
+          "score": 0,
+          "evidence": "Not found"
+        },
+        {
+          "criterion_id": "C2",
+          "score": 1,
+          "evidence": "Found consistency mention: existing.*pattern"
+        },
+        {
+          "criterion_id": "P1",
+          "score": 0,
+          "evidence": "Not found"
+        },
+        {
+          "criterion_id": "P2",
+          "score": 0,
+          "evidence": "Not found"
+        },
+        {
+          "criterion_id": "S1",
+          "score": 1,
+          "evidence": "Found validation mention: validat"
+        },
+        {
+          "criterion_id": "S2",
+          "score": 0,
+          "evidence": "Not found"
+        },
+        {
+          "criterion_id": "S3",
+          "score": 1,
+          "evidence": "Found error handling mention: error.*handl"
+        },
+        {
+          "criterion_id": "Q1",
+          "score": 1,
+          "evidence": "Has summary/scope section"
+        },
+        {
+          "criterion_id": "Q2",
+          "score": 0,
+          "evidence": "Not found"
+        },
+        {
+          "criterion_id": "Q3",
+          "score": 1,
+          "evidence": "Found severity indicator: critical"
+        },
+        {
+          "criterion_id": "Q4",
+          "score": 0,
+          "evidence": "Not found"
+        },
+        {
+          "criterion_id": "Q5",
+          "score": 1,
+          "evidence": "Found rationale: lead.*to"
+        }
+      ],
+      "evaluation_timestamp": "2026-01-28T22:57:23.248556"
+    },
+    {
+      "pr_id": 5,
+      "mode": "baseline",
+      "total_score": 7,
+      "max_score": 25,
+      "percentage": 28.0,
+      "kg_relevant_score": 3,
+      "kg_relevant_max": 9,
+      "kg_relevant_percentage": 33.3,
+      "criteria_scores": [
+        {
+          "criterion_id": "F1",
+          "score": 0,
+          "evidence": "Not found"
+        },
+        {
+          "criterion_id": "F2",
+          "score": 0,
+          "evidence": "Not found"
+        },
+        {
+          "criterion_id": "F3",
+          "score": 0,
+          "evidence": "Not found"
+        },
+        {
+          "criterion_id": "F4",
+          "score": 1,
+          "evidence": "Found contract warning: impact"
+        },
+        {
+          "criterion_id": "T1",
+          "score": 1,
+          "evidence": "Found test mention: \\btest"
+        },
+        {
+          "criterion_id": "T2",
+          "score": 0,
+          "evidence": "Not found"
+        },
+        {
+          "criterion_id": "T3",
+          "score": 0,
+          "evidence": "Not found"
+        },
+        {
+          "criterion_id": "R1",
+          "score": 1,
+          "evidence": "Found clarity mention: confus"
+        },
+        {
+          "criterion_id": "R2",
+          "score": 0,
+          "evidence": "Not found"
+        },
+        {
+          "criterion_id": "R3",
+          "score": 0,
+          "evidence": "Not found"
+        },
+        {
+          "criterion_id": "M1",
+          "score": 0,
+          "evidence": "Not found"
+        },
+        {
+          "criterion_id": "M2",
+          "score": 1,
+          "evidence": "Found scope mention: scope"
+        },
+        {
+          "criterion_id": "M3",
+          "score": 0,
+          "evidence": "Not found"
+        },
+        {
+          "criterion_id": "C1",
+          "score": 0,
+          "evidence": "Not found"
+        },
+        {
+          "criterion_id": "C2",
+          "score": 0,
+          "evidence": "Not found"
+        },
+        {
+          "criterion_id": "P1",
+          "score": 0,
+          "evidence": "Not found"
+        },
+        {
+          "criterion_id": "P2",
+          "score": 0,
+          "evidence": "Not found"
+        },
+        {
+          "criterion_id": "S1",
+          "score": 0,
+          "evidence": "Not found"
+        },
+        {
+          "criterion_id": "S2",
+          "score": 0,
+          "evidence": "Not found"
+        },
+        {
+          "criterion_id": "S3",
+          "score": 0,
+          "evidence": "Not found"
+        },
+        {
+          "criterion_id": "Q1",
+          "score": 1,
+          "evidence": "Has summary/scope section"
+        },
+        {
+          "criterion_id": "Q2",
+          "score": 1,
+          "evidence": "Found 2 file:line references"
+        },
+        {
+          "criterion_id": "Q3",
+          "score": 0,
+          "evidence": "Not found"
+        },
+        {
+          "criterion_id": "Q4",
+          "score": 0,
+          "evidence": "Not found"
+        },
+        {
+          "criterion_id": "Q5",
+          "score": 1,
+          "evidence": "Found rationale: lead.*to"
+        }
+      ],
+      "evaluation_timestamp": "2026-01-28T22:57:23.250078"
+    },
+    {
+      "pr_id": 5,
+      "mode": "hybrid",
+      "total_score": 11,
+      "max_score": 25,
+      "percentage": 44.0,
+      "kg_relevant_score": 5,
+      "kg_relevant_max": 9,
+      "kg_relevant_percentage": 55.6,
+      "criteria_scores": [
+        {
+          "criterion_id": "F1",
+          "score": 1,
+          "evidence": "Review mentions 2 keywords from PR title"
+        },
+        {
+          "criterion_id": "F2",
+          "score": 0,
+          "evidence": "Not found"
+        },
+        {
+          "criterion_id": "F3",
+          "score": 1,
+          "evidence": "Found integration mention: depend"
+        },
+        {
+          "criterion_id": "F4",
+          "score": 1,
+          "evidence": "Found contract warning: break"
+        },
+        {
+          "criterion_id": "T1",
+          "score": 1,
+          "evidence": "Found test mention: \\btest"
+        },
+        {
+          "criterion_id": "T2",
+          "score": 1,
+          "evidence": "Found test coverage mention: test.*fail"
+        },
+        {
+          "criterion_id": "T3",
+          "score": 0,
+          "evidence": "Not found"
+        },
+        {
+          "criterion_id": "R1",
+          "score": 0,
+          "evidence": "Not found"
+        },
+        {
+          "criterion_id": "R2",
+          "score": 0,
+          "evidence": "Not found"
+        },
+        {
+          "criterion_id": "R3",
+          "score": 0,
+          "evidence": "Not found"
+        },
+        {
+          "criterion_id": "M1",
+          "score": 0,
+          "evidence": "Not found"
+        },
+        {
+          "criterion_id": "M2",
+          "score": 1,
+          "evidence": "Found scope mention: scope"
+        },
+        {
+          "criterion_id": "M3",
+          "score": 0,
+          "evidence": "Not found"
+        },
+        {
+          "criterion_id": "C1",
+          "score": 0,
+          "evidence": "Not found"
+        },
+        {
+          "criterion_id": "C2",
+          "score": 0,
+          "evidence": "Not found"
+        },
+        {
+          "criterion_id": "P1",
+          "score": 1,
+          "evidence": "Found performance mention: efficien"
+        },
+        {
+          "criterion_id": "P2",
+          "score": 0,
+          "evidence": "Not found"
+        },
+        {
+          "criterion_id": "S1",
+          "score": 0,
+          "evidence": "Not found"
+        },
+        {
+          "criterion_id": "S2",
+          "score": 0,
+          "evidence": "Not found"
+        },
+        {
+          "criterion_id": "S3",
+          "score": 0,
+          "evidence": "Not found"
+        },
+        {
+          "criterion_id": "Q1",
+          "score": 1,
+          "evidence": "Has summary/scope section"
+        },
+        {
+          "criterion_id": "Q2",
+          "score": 1,
+          "evidence": "Found 1 file:line references"
+        },
+        {
+          "criterion_id": "Q3",
+          "score": 1,
+          "evidence": "Found severity indicator: critical"
+        },
+        {
+          "criterion_id": "Q4",
+          "score": 0,
+          "evidence": "Not found"
+        },
+        {
+          "criterion_id": "Q5",
+          "score": 1,
+          "evidence": "Found rationale: lead.*to"
+        }
+      ],
+      "evaluation_timestamp": "2026-01-28T22:57:23.251610"
+    },
+    {
+      "pr_id": 5,
+      "mode": "kg",
+      "total_score": 7,
+      "max_score": 25,
+      "percentage": 28.0,
+      "kg_relevant_score": 4,
+      "kg_relevant_max": 9,
+      "kg_relevant_percentage": 44.4,
+      "criteria_scores": [
+        {
+          "criterion_id": "F1",
+          "score": 1,
+          "evidence": "Review mentions 3 keywords from PR title"
+        },
+        {
+          "criterion_id": "F2",
+          "score": 0,
+          "evidence": "Not found"
+        },
+        {
+          "criterion_id": "F3",
+          "score": 1,
+          "evidence": "Found integration mention: depend"
+        },
+        {
+          "criterion_id": "F4",
+          "score": 1,
+          "evidence": "Found contract warning: impact"
+        },
+        {
+          "criterion_id": "T1",
+          "score": 1,
+          "evidence": "Found test mention: \\btest"
+        },
+        {
+          "criterion_id": "T2",
+          "score": 0,
+          "evidence": "Not found"
+        },
+        {
+          "criterion_id": "T3",
+          "score": 0,
+          "evidence": "Not found"
+        },
+        {
+          "criterion_id": "R1",
+          "score": 0,
+          "evidence": "Not found"
+        },
+        {
+          "criterion_id": "R2",
+          "score": 0,
+          "evidence": "Not found"
+        },
+        {
+          "criterion_id": "R3",
+          "score": 0,
+          "evidence": "Not found"
+        },
+        {
+          "criterion_id": "M1",
+          "score": 0,
+          "evidence": "Not found"
+        },
+        {
+          "criterion_id": "M2",
+          "score": 1,
+          "evidence": "Found scope mention: scope"
+        },
+        {
+          "criterion_id": "M3",
+          "score": 0,
+          "evidence": "Not found"
+        },
+        {
+          "criterion_id": "C1",
+          "score": 0,
+          "evidence": "Not found"
+        },
+        {
+          "criterion_id": "C2",
+          "score": 0,
+          "evidence": "Not found"
+        },
+        {
+          "criterion_id": "P1",
+          "score": 0,
+          "evidence": "Not found"
+        },
+        {
+          "criterion_id": "P2",
+          "score": 0,
+          "evidence": "Not found"
+        },
+        {
+          "criterion_id": "S1",
+          "score": 0,
+          "evidence": "Not found"
+        },
+        {
+          "criterion_id": "S2",
+          "score": 0,
+          "evidence": "Not found"
+        },
+        {
+          "criterion_id": "S3",
+          "score": 0,
+          "evidence": "Not found"
+        },
+        {
+          "criterion_id": "Q1",
+          "score": 1,
+          "evidence": "Has summary/scope section"
+        },
+        {
+          "criterion_id": "Q2",
+          "score": 1,
+          "evidence": "Found 1 file:line references"
+        },
+        {
+          "criterion_id": "Q3",
+          "score": 0,
+          "evidence": "Not found"
+        },
+        {
+          "criterion_id": "Q4",
+          "score": 0,
+          "evidence": "Not found"
+        },
+        {
+          "criterion_id": "Q5",
+          "score": 0,
+          "evidence": "Not found"
+        }
+      ],
+      "evaluation_timestamp": "2026-01-28T22:57:23.253016"
+    },
+    {
+      "pr_id": 5,
+      "mode": "rag",
+      "total_score": 11,
+      "max_score": 25,
+      "percentage": 44.0,
+      "kg_relevant_score": 5,
+      "kg_relevant_max": 9,
+      "kg_relevant_percentage": 55.6,
+      "criteria_scores": [
+        {
+          "criterion_id": "F1",
+          "score": 0,
+          "evidence": "Not found"
+        },
+        {
+          "criterion_id": "F2",
+          "score": 0,
+          "evidence": "Not found"
+        },
+        {
+          "criterion_id": "F3",
+          "score": 0,
+          "evidence": "Not found"
+        },
+        {
+          "criterion_id": "F4",
+          "score": 1,
+          "evidence": "Found contract warning: impact"
+        },
+        {
+          "criterion_id": "T1",
+          "score": 1,
+          "evidence": "Found test mention: \\btest"
+        },
+        {
+          "criterion_id": "T2",
+          "score": 1,
+          "evidence": "Found test coverage mention: test.*error"
+        },
+        {
+          "criterion_id": "T3",
+          "score": 0,
+          "evidence": "Not found"
+        },
+        {
+          "criterion_id": "R1",
+          "score": 0,
+          "evidence": "Not found"
+        },
+        {
+          "criterion_id": "R2",
+          "score": 0,
+          "evidence": "Not found"
+        },
+        {
+          "criterion_id": "R3",
+          "score": 0,
+          "evidence": "Not found"
+        },
+        {
+          "criterion_id": "M1",
+          "score": 0,
+          "evidence": "Not found"
+        },
+        {
+          "criterion_id": "M2",
+          "score": 1,
+          "evidence": "Found scope mention: scope"
+        },
+        {
+          "criterion_id": "M3",
+          "score": 0,
+          "evidence": "Not found"
+        },
+        {
+          "criterion_id": "C1",
+          "score": 1,
+          "evidence": "Found style mention: format"
+        },
+        {
+          "criterion_id": "C2",
+          "score": 1,
+          "evidence": "Found consistency mention: consistent"
+        },
+        {
+          "criterion_id": "P1",
+          "score": 0,
+          "evidence": "Not found"
+        },
+        {
+          "criterion_id": "P2",
+          "score": 0,
+          "evidence": "Not found"
+        },
+        {
+          "criterion_id": "S1",
+          "score": 1,
+          "evidence": "Found validation mention: validat"
+        },
+        {
+          "criterion_id": "S2",
+          "score": 0,
+          "evidence": "Not found"
+        },
+        {
+          "criterion_id": "S3",
+          "score": 1,
+          "evidence": "Found error handling mention: error.*handl"
+        },
+        {
+          "criterion_id": "Q1",
+          "score": 1,
+          "evidence": "Has summary/scope section"
+        },
+        {
+          "criterion_id": "Q2",
+          "score": 1,
+          "evidence": "Found 1 file:line references"
+        },
+        {
+          "criterion_id": "Q3",
+          "score": 0,
+          "evidence": "Not found"
+        },
+        {
+          "criterion_id": "Q4",
+          "score": 0,
+          "evidence": "Not found"
+        },
+        {
+          "criterion_id": "Q5",
+          "score": 1,
+          "evidence": "Found rationale: lead.*to"
+        }
+      ],
+      "evaluation_timestamp": "2026-01-28T22:57:23.254497"
+    },
+    {
+      "pr_id": 6,
+      "mode": "baseline",
+      "total_score": 12,
+      "max_score": 25,
+      "percentage": 48.0,
+      "kg_relevant_score": 5,
+      "kg_relevant_max": 9,
+      "kg_relevant_percentage": 55.6,
+      "criteria_scores": [
+        {
+          "criterion_id": "F1",
+          "score": 0,
+          "evidence": "Not found"
+        },
+        {
+          "criterion_id": "F2",
+          "score": 1,
+          "evidence": "Found edge case mention: edge case"
+        },
+        {
+          "criterion_id": "F3",
+          "score": 0,
+          "evidence": "Not found"
+        },
+        {
+          "criterion_id": "F4",
+          "score": 1,
+          "evidence": "Found contract warning: break"
+        },
+        {
+          "criterion_id": "T1",
+          "score": 1,
+          "evidence": "Found test mention: \\btest"
+        },
+        {
+          "criterion_id": "T2",
+          "score": 1,
+          "evidence": "Found test coverage mention: test.*edge"
+        },
+        {
+          "criterion_id": "T3",
+          "score": 0,
+          "evidence": "Not found"
+        },
+        {
+          "criterion_id": "R1",
+          "score": 0,
+          "evidence": "Not found"
+        },
+        {
+          "criterion_id": "R2",
+          "score": 1,
+          "evidence": "Found complexity mention: complex"
+        },
+        {
+          "criterion_id": "R3",
+          "score": 0,
+          "evidence": "Not found"
+        },
+        {
+          "criterion_id": "M1",
+          "score": 1,
+          "evidence": "Found architecture mention: structure"
+        },
+        {
+          "criterion_id": "M2",
+          "score": 1,
+          "evidence": "Found scope mention: scope"
+        },
+        {
+          "criterion_id": "M3",
+          "score": 0,
+          "evidence": "Not found"
+        },
+        {
+          "criterion_id": "C1",
+          "score": 0,
+          "evidence": "Not found"
+        },
+        {
+          "criterion_id": "C2",
+          "score": 0,
+          "evidence": "Not found"
+        },
+        {
+          "criterion_id": "P1",
+          "score": 1,
+          "evidence": "Found performance mention: performance"
+        },
+        {
+          "criterion_id": "P2",
+          "score": 0,
+          "evidence": "Not found"
+        },
+        {
+          "criterion_id": "S1",
+          "score": 0,
+          "evidence": "Not found"
+        },
+        {
+          "criterion_id": "S2",
+          "score": 0,
+          "evidence": "Not found"
+        },
+        {
+          "criterion_id": "S3",
+          "score": 1,
+          "evidence": "Found error handling mention: error.*handl"
+        },
+        {
+          "criterion_id": "Q1",
+          "score": 1,
+          "evidence": "Has summary/scope section"
+        },
+        {
+          "criterion_id": "Q2",
+          "score": 1,
+          "evidence": "Found 2 file:line references"
+        },
+        {
+          "criterion_id": "Q3",
+          "score": 0,
+          "evidence": "Not found"
+        },
+        {
+          "criterion_id": "Q4",
+          "score": 0,
+          "evidence": "Not found"
+        },
+        {
+          "criterion_id": "Q5",
+          "score": 1,
+          "evidence": "Found rationale: lead.*to"
+        }
+      ],
+      "evaluation_timestamp": "2026-01-28T22:57:23.255865"
+    },
+    {
+      "pr_id": 6,
+      "mode": "hybrid",
+      "total_score": 9,
+      "max_score": 25,
+      "percentage": 36.0,
+      "kg_relevant_score": 4,
+      "kg_relevant_max": 9,
+      "kg_relevant_percentage": 44.4,
+      "criteria_scores": [
+        {
+          "criterion_id": "F1",
+          "score": 1,
+          "evidence": "Review mentions 2 keywords from PR title"
+        },
+        {
+          "criterion_id": "F2",
+          "score": 0,
+          "evidence": "Not found"
+        },
+        {
+          "criterion_id": "F3",
+          "score": 1,
+          "evidence": "Found integration mention: depend"
+        },
+        {
+          "criterion_id": "F4",
+          "score": 1,
+          "evidence": "Found contract warning: break"
+        },
+        {
+          "criterion_id": "T1",
+          "score": 1,
+          "evidence": "Found test mention: \\btest"
+        },
+        {
+          "criterion_id": "T2",
+          "score": 1,
+          "evidence": "Found test coverage mention: test.*fail"
+        },
+        {
+          "criterion_id": "T3",
+          "score": 0,
+          "evidence": "Not found"
+        },
+        {
+          "criterion_id": "R1",
+          "score": 0,
+          "evidence": "Not found"
+        },
+        {
+          "criterion_id": "R2",
+          "score": 0,
+          "evidence": "Not found"
+        },
+        {
+          "criterion_id": "R3",
+          "score": 0,
+          "evidence": "Not found"
+        },
+        {
+          "criterion_id": "M1",
+          "score": 0,
+          "evidence": "Not found"
+        },
+        {
+          "criterion_id": "M2",
+          "score": 1,
+          "evidence": "Found scope mention: scope"
+        },
+        {
+          "criterion_id": "M3",
+          "score": 0,
+          "evidence": "Not found"
+        },
+        {
+          "criterion_id": "C1",
+          "score": 0,
+          "evidence": "Not found"
+        },
+        {
+          "criterion_id": "C2",
+          "score": 0,
+          "evidence": "Not found"
+        },
+        {
+          "criterion_id": "P1",
+          "score": 0,
+          "evidence": "Not found"
+        },
+        {
+          "criterion_id": "P2",
+          "score": 0,
+          "evidence": "Not found"
+        },
+        {
+          "criterion_id": "S1",
+          "score": 0,
+          "evidence": "Not found"
+        },
+        {
+          "criterion_id": "S2",
+          "score": 0,
+          "evidence": "Not found"
+        },
+        {
+          "criterion_id": "S3",
+          "score": 0,
+          "evidence": "Not found"
+        },
+        {
+          "criterion_id": "Q1",
+          "score": 1,
+          "evidence": "Has summary/scope section"
+        },
+        {
+          "criterion_id": "Q2",
+          "score": 0,
+          "evidence": "Not found"
+        },
+        {
+          "criterion_id": "Q3",
+          "score": 1,
+          "evidence": "Found severity indicator: critical"
+        },
+        {
+          "criterion_id": "Q4",
+          "score": 0,
+          "evidence": "Not found"
+        },
+        {
+          "criterion_id": "Q5",
+          "score": 1,
+          "evidence": "Found rationale: lead.*to"
+        }
+      ],
+      "evaluation_timestamp": "2026-01-28T22:57:23.257228"
+    },
+    {
+      "pr_id": 6,
+      "mode": "kg",
+      "total_score": 10,
+      "max_score": 25,
+      "percentage": 40.0,
+      "kg_relevant_score": 4,
+      "kg_relevant_max": 9,
+      "kg_relevant_percentage": 44.4,
+      "criteria_scores": [
+        {
+          "criterion_id": "F1",
+          "score": 1,
+          "evidence": "Review mentions 2 keywords from PR title"
+        },
+        {
+          "criterion_id": "F2",
+          "score": 0,
+          "evidence": "Not found"
+        },
+        {
+          "criterion_id": "F3",
+          "score": 1,
+          "evidence": "Found integration mention: depend"
+        },
+        {
+          "criterion_id": "F4",
+          "score": 1,
+          "evidence": "Found contract warning: impact"
+        },
+        {
+          "criterion_id": "T1",
+          "score": 1,
+          "evidence": "Found test mention: \\btest"
+        },
+        {
+          "criterion_id": "T2",
+          "score": 1,
+          "evidence": "Found test coverage mention: test.*error"
+        },
+        {
+          "criterion_id": "T3",
+          "score": 0,
+          "evidence": "Not found"
+        },
+        {
+          "criterion_id": "R1",
+          "score": 1,
+          "evidence": "Found clarity mention: confus"
+        },
+        {
+          "criterion_id": "R2",
+          "score": 0,
+          "evidence": "Not found"
+        },
+        {
+          "criterion_id": "R3",
+          "score": 0,
+          "evidence": "Not found"
+        },
+        {
+          "criterion_id": "M1",
+          "score": 0,
+          "evidence": "Not found"
+        },
+        {
+          "criterion_id": "M2",
+          "score": 1,
+          "evidence": "Found scope mention: scope"
+        },
+        {
+          "criterion_id": "M3",
+          "score": 0,
+          "evidence": "Not found"
+        },
+        {
+          "criterion_id": "C1",
+          "score": 0,
+          "evidence": "Not found"
+        },
+        {
+          "criterion_id": "C2",
+          "score": 0,
+          "evidence": "Not found"
+        },
+        {
+          "criterion_id": "P1",
+          "score": 0,
+          "evidence": "Not found"
+        },
+        {
+          "criterion_id": "P2",
+          "score": 0,
+          "evidence": "Not found"
+        },
+        {
+          "criterion_id": "S1",
+          "score": 1,
+          "evidence": "Found validation mention: validat"
+        },
+        {
+          "criterion_id": "S2",
+          "score": 0,
+          "evidence": "Not found"
+        },
+        {
+          "criterion_id": "S3",
+          "score": 0,
+          "evidence": "Not found"
+        },
+        {
+          "criterion_id": "Q1",
+          "score": 1,
+          "evidence": "Has summary/scope section"
+        },
+        {
+          "criterion_id": "Q2",
+          "score": 0,
+          "evidence": "Not found"
+        },
+        {
+          "criterion_id": "Q3",
+          "score": 0,
+          "evidence": "Not found"
+        },
+        {
+          "criterion_id": "Q4",
+          "score": 0,
+          "evidence": "Not found"
+        },
+        {
+          "criterion_id": "Q5",
+          "score": 1,
+          "evidence": "Found rationale: lead.*to"
+        }
+      ],
+      "evaluation_timestamp": "2026-01-28T22:57:23.258424"
+    },
+    {
+      "pr_id": 6,
+      "mode": "rag",
+      "total_score": 7,
+      "max_score": 25,
+      "percentage": 28.0,
+      "kg_relevant_score": 2,
+      "kg_relevant_max": 9,
+      "kg_relevant_percentage": 22.2,
+      "criteria_scores": [
+        {
+          "criterion_id": "F1",
+          "score": 0,
+          "evidence": "Not found"
+        },
+        {
+          "criterion_id": "F2",
+          "score": 0,
+          "evidence": "Not found"
+        },
+        {
+          "criterion_id": "F3",
+          "score": 0,
+          "evidence": "Not found"
+        },
+        {
+          "criterion_id": "F4",
+          "score": 1,
+          "evidence": "Found contract warning: impact"
+        },
+        {
+          "criterion_id": "T1",
+          "score": 1,
+          "evidence": "Found test mention: \\btest"
+        },
+        {
+          "criterion_id": "T2",
+          "score": 0,
+          "evidence": "Not found"
+        },
+        {
+          "criterion_id": "T3",
+          "score": 0,
+          "evidence": "Not found"
+        },
+        {
+          "criterion_id": "R1",
+          "score": 0,
+          "evidence": "Not found"
+        },
+        {
+          "criterion_id": "R2",
+          "score": 0,
+          "evidence": "Not found"
+        },
+        {
+          "criterion_id": "R3",
+          "score": 0,
+          "evidence": "Not found"
+        },
+        {
+          "criterion_id": "M1",
+          "score": 0,
+          "evidence": "Not found"
+        },
+        {
+          "criterion_id": "M2",
+          "score": 1,
+          "evidence": "Found scope mention: scope"
+        },
+        {
+          "criterion_id": "M3",
+          "score": 0,
+          "evidence": "Not found"
+        },
+        {
+          "criterion_id": "C1",
+          "score": 0,
+          "evidence": "Not found"
+        },
+        {
+          "criterion_id": "C2",
+          "score": 0,
+          "evidence": "Not found"
+        },
+        {
+          "criterion_id": "P1",
+          "score": 0,
+          "evidence": "Not found"
+        },
+        {
+          "criterion_id": "P2",
+          "score": 0,
+          "evidence": "Not found"
+        },
+        {
+          "criterion_id": "S1",
+          "score": 0,
+          "evidence": "Not found"
+        },
+        {
+          "criterion_id": "S2",
+          "score": 0,
+          "evidence": "Not found"
+        },
+        {
+          "criterion_id": "S3",
+          "score": 1,
+          "evidence": "Found error handling mention: error.*handl"
+        },
+        {
+          "criterion_id": "Q1",
+          "score": 1,
+          "evidence": "Has summary/scope section"
+        },
+        {
+          "criterion_id": "Q2",
+          "score": 0,
+          "evidence": "Not found"
+        },
+        {
+          "criterion_id": "Q3",
+          "score": 1,
+          "evidence": "Found severity indicator: critical"
+        },
+        {
+          "criterion_id": "Q4",
+          "score": 0,
+          "evidence": "Not found"
+        },
+        {
+          "criterion_id": "Q5",
+          "score": 1,
+          "evidence": "Found rationale: lead.*to"
+        }
+      ],
+      "evaluation_timestamp": "2026-01-28T22:57:23.259756"
+    }
+  ],
+  "summary": {
+    "by_mode": {
+      "baseline": {
+        "count": 5,
+        "avg_total": 10.6,
+        "avg_percentage": 42.4,
+        "avg_kg_relevant": 4.6,
+        "avg_kg_percentage": 51.1,
+        "max_score": 25,
+        "kg_max": 9
+      },
+      "kg": {
+        "count": 5,
+        "avg_total": 9.2,
+        "avg_percentage": 36.8,
+        "avg_kg_relevant": 4.2,
+        "avg_kg_percentage": 46.7,
+        "max_score": 25,
+        "kg_max": 9
+      },
+      "rag": {
+        "count": 4,
+        "avg_total": 9.75,
+        "avg_percentage": 39.0,
+        "avg_kg_relevant": 3.5,
+        "avg_kg_percentage": 38.9,
+        "max_score": 25,
+        "kg_max": 9
+      },
+      "hybrid": {
+        "count": 5,
+        "avg_total": 10.0,
+        "avg_percentage": 40.0,
+        "avg_kg_relevant": 4.4,
+        "avg_kg_percentage": 48.9,
+        "max_score": 25,
+        "kg_max": 9
+      }
+    },
+    "by_criterion": {
+      "F1": {
+        "description": "Review checks if change solves the stated problem",
+        "category": "Functionality",
+        "kg_relevant": false,
+        "scores_by_mode": {
+          "baseline": 20.0,
+          "kg": 100.0,
+          "rag": 25.0,
+          "hybrid": 100.0
+        }
+      },
+      "F2": {
+        "description": "Review identifies edge cases that need handling",
+        "category": "Functionality",
+        "kg_relevant": false,
+        "scores_by_mode": {
+          "baseline": 60.0,
+          "kg": 0.0,
+          "rag": 25.0,
+          "hybrid": 0.0
+        }
+      },
+      "F3": {
+        "description": "Review checks integration with existing components/APIs",
+        "category": "Functionality",
+        "kg_relevant": true,
+        "scores_by_mode": {
+          "baseline": 20.0,
+          "kg": 80.0,
+          "rag": 0.0,
+          "hybrid": 100.0
+        }
+      },
+      "F4": {
+        "description": "Review identifies potential broken contracts with dependent code",
+        "category": "Functionality",
+        "kg_relevant": true,
+        "scores_by_mode": {
+          "baseline": 100.0,
+          "kg": 100.0,
+          "rag": 100.0,
+          "hybrid": 100.0
+        }
+      },
+      "T1": {
+        "description": "Review asks about or mentions unit/integration tests",
+        "category": "Tests",
+        "kg_relevant": true,
+        "scores_by_mode": {
+          "baseline": 100.0,
+          "kg": 100.0,
+          "rag": 100.0,
+          "hybrid": 100.0
+        }
+      },
+      "T2": {
+        "description": "Review checks if tests cover edge cases and error paths",
+        "category": "Tests",
+        "kg_relevant": true,
+        "scores_by_mode": {
+          "baseline": 60.0,
+          "kg": 40.0,
+          "rag": 25.0,
+          "hybrid": 40.0
+        }
+      },
+      "T3": {
+        "description": "Review mentions specific test files that should exist or be updated",
+        "category": "Tests",
+        "kg_relevant": true,
+        "scores_by_mode": {
+          "baseline": 20.0,
+          "kg": 20.0,
+          "rag": 0.0,
+          "hybrid": 40.0
+        }
+      },
+      "R1": {
+        "description": "Review comments on code clarity (naming, function size)",
+        "category": "Readability",
+        "kg_relevant": false,
+        "scores_by_mode": {
+          "baseline": 40.0,
+          "kg": 40.0,
+          "rag": 0.0,
+          "hybrid": 0.0
+        }
+      },
+      "R2": {
+        "description": "Review identifies unnecessary complexity",
+        "category": "Readability",
+        "kg_relevant": false,
+        "scores_by_mode": {
+          "baseline": 80.0,
+          "kg": 0.0,
+          "rag": 25.0,
+          "hybrid": 0.0
+        }
+      },
+      "R3": {
+        "description": "Review checks if comments explain 'why' not 'what'",
+        "category": "Readability",
+        "kg_relevant": false,
+        "scores_by_mode": {
+          "baseline": 0.0,
+          "kg": 0.0,
+          "rag": 0.0,
+          "hybrid": 0.0
+        }
+      },
+      "M1": {
+        "description": "Review checks if change fits existing architecture",
+        "category": "Maintainability",
+        "kg_relevant": true,
+        "scores_by_mode": {
+          "baseline": 60.0,
+          "kg": 20.0,
+          "rag": 25.0,
+          "hybrid": 0.0
+        }
+      },
+      "M2": {
+        "description": "Review flags if PR scope is too large",
+        "category": "Maintainability",
+        "kg_relevant": false,
+        "scores_by_mode": {
+          "baseline": 100.0,
+          "kg": 100.0,
+          "rag": 100.0,
+          "hybrid": 100.0
+        }
+      },
+      "M3": {
+        "description": "Review checks if APIs/interfaces are documented",
+        "category": "Maintainability",
+        "kg_relevant": true,
+        "scores_by_mode": {
+          "baseline": 20.0,
+          "kg": 0.0,
+          "rag": 0.0,
+          "hybrid": 0.0
+        }
+      },
+      "C1": {
+        "description": "Review checks project style guide compliance",
+        "category": "Consistency",
+        "kg_relevant": false,
+        "scores_by_mode": {
+          "baseline": 0.0,
+          "kg": 20.0,
+          "rag": 50.0,
+          "hybrid": 0.0
+        }
+      },
+      "C2": {
+        "description": "Review checks if similar problems are solved similarly elsewhere",
+        "category": "Consistency",
+        "kg_relevant": true,
+        "scores_by_mode": {
+          "baseline": 20.0,
+          "kg": 0.0,
+          "rag": 75.0,
+          "hybrid": 0.0
+        }
+      },
+      "P1": {
+        "description": "Review identifies obvious inefficiencies",
+        "category": "Performance",
+        "kg_relevant": false,
+        "scores_by_mode": {
+          "baseline": 40.0,
+          "kg": 0.0,
+          "rag": 0.0,
+          "hybrid": 40.0
+        }
+      },
+      "P2": {
+        "description": "Review asks about benchmarks for critical paths",
+        "category": "Performance",
+        "kg_relevant": false,
+        "scores_by_mode": {
+          "baseline": 0.0,
+          "kg": 0.0,
+          "rag": 0.0,
+          "hybrid": 0.0
+        }
+      },
+      "S1": {
+        "description": "Review checks input validation",
+        "category": "Security",
+        "kg_relevant": false,
+        "scores_by_mode": {
+          "baseline": 0.0,
+          "kg": 20.0,
+          "rag": 75.0,
+          "hybrid": 0.0
+        }
+      },
+      "S2": {
+        "description": "Review flags hardcoded secrets/credentials",
+        "category": "Security",
+        "kg_relevant": false,
+        "scores_by_mode": {
+          "baseline": 0.0,
+          "kg": 0.0,
+          "rag": 0.0,
+          "hybrid": 0.0
+        }
+      },
+      "S3": {
+        "description": "Review checks error handling quality",
+        "category": "Security",
+        "kg_relevant": false,
+        "scores_by_mode": {
+          "baseline": 40.0,
+          "kg": 0.0,
+          "rag": 75.0,
+          "hybrid": 20.0
+        }
+      },
+      "Q1": {
+        "description": "Review provides overall assessment summary",
+        "category": "Quality",
+        "kg_relevant": false,
+        "scores_by_mode": {
+          "baseline": 100.0,
+          "kg": 100.0,
+          "rag": 100.0,
+          "hybrid": 100.0
+        }
+      },
+      "Q2": {
+        "description": "Comments are tied to specific code locations (file:line references)",
+        "category": "Quality",
+        "kg_relevant": true,
+        "scores_by_mode": {
+          "baseline": 60.0,
+          "kg": 60.0,
+          "rag": 25.0,
+          "hybrid": 60.0
+        }
+      },
+      "Q3": {
+        "description": "Review distinguishes blocking vs non-blocking issues",
+        "category": "Quality",
+        "kg_relevant": false,
+        "scores_by_mode": {
+          "baseline": 20.0,
+          "kg": 40.0,
+          "rag": 50.0,
+          "hybrid": 100.0
+        }
+      },
+      "Q4": {
+        "description": "Review asks clarifying questions rather than assuming",
+        "category": "Quality",
+        "kg_relevant": false,
+        "scores_by_mode": {
+          "baseline": 0.0,
+          "kg": 0.0,
+          "rag": 0.0,
+          "hybrid": 0.0
+        }
+      },
+      "Q5": {
+        "description": "Review provides rationale for suggestions (explains WHY)",
+        "category": "Quality",
+        "kg_relevant": false,
+        "scores_by_mode": {
+          "baseline": 100.0,
+          "kg": 80.0,
+          "rag": 100.0,
+          "hybrid": 100.0
+        }
+      }
+    },
+    "comparison": {
+      "kg_vs_baseline": {
+        "total_improvement": -5.6,
+        "kg_relevant_improvement": -4.4,
+        "total_multiplier": 0.87,
+        "kg_relevant_multiplier": 0.91
+      }
+    }
+  }
+}

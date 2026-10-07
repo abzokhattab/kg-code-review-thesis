@@ -1,0 +1,42 @@
+{
+  "candidate_mentions": [
+    {
+      "basename_collision": false,
+      "end": 623,
+      "evidence_id": "M001",
+      "excerpt": "ths.\n\n## Evidence\n- `sklearn/linear_model/_sag.py:87`: The function signature of `sag_solver` has been changed to include `required_ctx` as a new parameter.\n- `sklearn/linear_model/_logistic.py` and `sklearn/linear_model/_ridge.py`: These files depend on `sag_solver`, but there is no indication that their calls to `sag_solver` have been updated to include the new parameter.\n- Absence of changes in test files related to `sag_solver`, indicating a lac",
+      "match_kind": "full_path",
+      "match_text": "sklearn/linear_model/_logistic.py",
+      "oracle_path": "sklearn/linear_model/_logistic.py",
+      "start": 590
+    },
+    {
+      "basename_collision": false,
+      "end": 660,
+      "evidence_id": "M002",
+      "excerpt": "l/_sag.py:87`: The function signature of `sag_solver` has been changed to include `required_ctx` as a new parameter.\n- `sklearn/linear_model/_logistic.py` and `sklearn/linear_model/_ridge.py`: These files depend on `sag_solver`, but there is no indication that their calls to `sag_solver` have been updated to include the new parameter.\n- Absence of changes in test files related to `sag_solver`, indicating a lack of test coverage for the new parame",
+      "match_kind": "full_path",
+      "match_text": "sklearn/linear_model/_ridge.py",
+      "oracle_path": "sklearn/linear_model/_ridge.py",
+      "start": 630
+    }
+  ],
+  "causal_quote": "The change introduces a risk of breaking existing functionality in dependent modules (`_logistic.py` and `_ridge.py`) if they do not pass the new `required_ctx` parameter.",
+  "decision_source": "llm_causal_adjudication",
+  "detected": true,
+  "evidence_id": "M001",
+  "executed_at_utc": "2026-09-19T15:05:54.991720+00:00",
+  "finding_quote": "`sklearn/linear_model/_logistic.py` and `sklearn/linear_model/_ridge.py`: These files depend on `sag_solver`, but there is no indication that their calls to `sag_solver` have been updated to include the new parameter.",
+  "judge": "gemini:gemini-2.5-flash",
+  "manifest_sha256": "5d4371a93d1b09f0491ecc12279f9f3ff5de23053b7a5e74650a749f58b472b0",
+  "model_alias": "gemini:gemini-2.5-flash",
+  "model_snapshot": "unavailable-from-original-wrapper",
+  "original_verdict": true,
+  "prompt_sha256": "0abec4dc655ad811b8447c2a1a3eb6b6c2d9500337e8790e1e5af3242313bd10",
+  "reason_code": "specific_cross_file_link",
+  "response_wrapper": "single_json_fence",
+  "review_sha256": "84e1fc3c82264d6c1fad9a3d8e39ff470b1abee5f4bb25ce89a49435dc789100",
+  "schema_sha256": "6a22fcb256437ebed904ab2d879b36be1234fb2e06add1127ac8ea2ab46f60f0",
+  "schema_version": "exp2-adjudication-v2",
+  "system_sha256": "3634314a8fc4231391e4c51174e5c32d7346b0e2ceb5f8c4641e6ba866bd5939"
+}

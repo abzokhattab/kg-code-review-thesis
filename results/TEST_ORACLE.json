@@ -1,0 +1,215 @@
+{
+  "meta": {
+    "seed": 2026,
+    "n": 28,
+    "judges": [
+      "openai:gpt-4o-mini",
+      "openai:gpt-4o",
+      "gemini:gemini-2.5-flash"
+    ],
+    "rule": "majority of 3, ties to 0",
+    "repo": "grafana (TypeScript) only \u2014 see pre-registration \u00a77",
+    "pre_registration": "experiments/2026-09-06_test_oracle/docs/PRE_REGISTRATION_test_oracle.md"
+  },
+  "deployed_finder_quality": {
+    "n": 28,
+    "empty": 2,
+    "hits_a_true_test": 25
+  },
+  "primary_named_test": {
+    "rates": {
+      "baseline": {
+        "k": 0,
+        "n": 28,
+        "rate": 0.0,
+        "wilson95": [
+          0.0,
+          0.12064330481563733
+        ],
+        "label": "diff only"
+      },
+      "kg": {
+        "k": 0,
+        "n": 28,
+        "rate": 0.0,
+        "wilson95": [
+          0.0,
+          0.12064330481563733
+        ],
+        "label": "dependencies, test files removed"
+      },
+      "kg_plus_tests_lexical": {
+        "k": 24,
+        "n": 28,
+        "rate": 0.8571428571428571,
+        "wilson95": [
+          0.6851019783173826,
+          0.943009946814305
+        ],
+        "label": "+ tests from the deployed filename finder"
+      },
+      "kg_plus_tests": {
+        "k": 27,
+        "n": 28,
+        "rate": 0.9642857142857143,
+        "wilson95": [
+          0.8228780225181455,
+          0.9936674801530484
+        ],
+        "label": "+ tests from ground truth (ceiling)"
+      }
+    },
+    "contrasts": {
+      "kg - baseline": {
+        "delta": 0.0,
+        "ci95": [
+          0.0,
+          0.0
+        ],
+        "discordant_arm_only": 0,
+        "discordant_ref_only": 0,
+        "p_mcnemar_exact": 1.0,
+        "p_perm": 1.0,
+        "p_holm": 1.0,
+        "significant": false
+      },
+      "kg_plus_tests_lexical - kg": {
+        "delta": 0.8571428571428571,
+        "ci95": [
+          0.7142857142857143,
+          0.9642857142857143
+        ],
+        "discordant_arm_only": 24,
+        "discordant_ref_only": 0,
+        "p_mcnemar_exact": 1.1920928955078125e-07,
+        "p_perm": 4.999750012499375e-05,
+        "p_holm": 3.5762786865234375e-07,
+        "significant": true
+      },
+      "kg_plus_tests - kg": {
+        "delta": 0.9642857142857143,
+        "ci95": [
+          0.8928571428571429,
+          1.0
+        ],
+        "discordant_arm_only": 27,
+        "discordant_ref_only": 0,
+        "p_mcnemar_exact": 1.4901161193847656e-08,
+        "p_perm": 4.999750012499375e-05,
+        "p_holm": 5.960464477539063e-08,
+        "significant": true
+      },
+      "kg_plus_tests - kg_plus_tests_lexical": {
+        "delta": 0.1071428571428572,
+        "ci95": [
+          -0.03571428571428571,
+          0.25
+        ],
+        "discordant_arm_only": 4,
+        "discordant_ref_only": 1,
+        "p_mcnemar_exact": 0.375,
+        "p_perm": 0.3673316334183291,
+        "p_holm": 0.75,
+        "significant": false
+      }
+    }
+  },
+  "secondary_generic_test_talk": {
+    "rates": {
+      "baseline": {
+        "k": 22,
+        "n": 28,
+        "rate": 0.7857142857142857,
+        "wilson95": [
+          0.6046141434166243,
+          0.8978753966887256
+        ],
+        "label": "diff only"
+      },
+      "kg": {
+        "k": 28,
+        "n": 28,
+        "rate": 1.0,
+        "wilson95": [
+          0.8793566951843627,
+          0.9999999999999999
+        ],
+        "label": "dependencies, test files removed"
+      },
+      "kg_plus_tests_lexical": {
+        "k": 23,
+        "n": 28,
+        "rate": 0.8214285714285714,
+        "wilson95": [
+          0.6440857520597325,
+          0.9212149805587864
+        ],
+        "label": "+ tests from the deployed filename finder"
+      },
+      "kg_plus_tests": {
+        "k": 25,
+        "n": 28,
+        "rate": 0.8928571428571429,
+        "wilson95": [
+          0.728041484465539,
+          0.9628816331793175
+        ],
+        "label": "+ tests from ground truth (ceiling)"
+      }
+    },
+    "contrasts": {
+      "kg - baseline": {
+        "delta": 0.2142857142857143,
+        "ci95": [
+          0.07142857142857142,
+          0.35714285714285715
+        ],
+        "discordant_arm_only": 6,
+        "discordant_ref_only": 0,
+        "p_mcnemar_exact": 0.03125,
+        "p_perm": 0.031048447577621117,
+        "p_holm": 0.125,
+        "significant": false
+      },
+      "kg_plus_tests_lexical - kg": {
+        "delta": -0.1785714285714286,
+        "ci95": [
+          -0.32142857142857145,
+          -0.03571428571428571
+        ],
+        "discordant_arm_only": 0,
+        "discordant_ref_only": 5,
+        "p_mcnemar_exact": 0.0625,
+        "p_perm": 0.063946802659867,
+        "p_holm": 0.1875,
+        "significant": false
+      },
+      "kg_plus_tests - kg": {
+        "delta": -0.1071428571428571,
+        "ci95": [
+          -0.21428571428571427,
+          0.0
+        ],
+        "discordant_arm_only": 0,
+        "discordant_ref_only": 3,
+        "p_mcnemar_exact": 0.25,
+        "p_perm": 0.24468776561171943,
+        "p_holm": 0.5,
+        "significant": false
+      },
+      "kg_plus_tests - kg_plus_tests_lexical": {
+        "delta": 0.07142857142857151,
+        "ci95": [
+          -0.07142857142857142,
+          0.21428571428571427
+        ],
+        "discordant_arm_only": 3,
+        "discordant_ref_only": 1,
+        "p_mcnemar_exact": 0.625,
+        "p_perm": 0.6241687915604219,
+        "p_holm": 0.625,
+        "significant": false
+      }
+    }
+  }
+}

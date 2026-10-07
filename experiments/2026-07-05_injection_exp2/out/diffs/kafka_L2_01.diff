@@ -1,0 +1,11 @@
+--- a/streams/src/main/java/org/apache/kafka/streams/processor/internals/DefaultStateUpdater.java
++++ b/streams/src/main/java/org/apache/kafka/streams/processor/internals/DefaultStateUpdater.java
+@@ -772,7 +772,7 @@
+     }
+ 
+     public void start() {
+-        if (stateUpdaterThread == null) {
++        if (stateUpdaterThread != null) {
+             if (!restoredActiveTasks.isEmpty() || !exceptionsAndFailedTasks.isEmpty()) {
+                 throw new IllegalStateException("State updater started with non-empty output queues. "
+                     + BUG_ERROR_MESSAGE);

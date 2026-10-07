@@ -1,0 +1,11 @@
+--- a/packages/grafana-data/src/transformations/transformers/histogram.ts
++++ b/packages/grafana-data/src/transformations/transformers/histogram.ts
+@@ -675,7 +675,7 @@
+     if (f.name === 'xMax') {
+       xMaxField = f;
+     } else if (f.name === 'xMin') {
+-      if (xMinField == null) {
++      if (xMinField != null) {
+         xMinField = f;
+       } else {
+         for (let i = 0; i < f.values.length; i++) {

@@ -1,0 +1,44 @@
+{
+  "candidate_mentions": [
+    {
+      "basename_collision": false,
+      "end": 774,
+      "evidence_id": "M024",
+      "excerpt": "s.\n\n## Evidence\n- **streams/src/main/java/org/apache/kafka/streams/processor/TaskId.java:27**: The class name is changed from `TaskId` to `TaskIdInternal`.\n- **streams/src/main/java/org/apache/kafka/streams/processor/internals/DefaultStreamsRebalanceListener.java**: Multiple instances where `TaskId` is instantiated (e.g., `toTaskId` method).\n- **streams/src/main/java/org/apache/kafka/streams/processor/internals/assignment/SubscriptionInfo.java**: Several lambda expressions and methods (e.g., `taskOffsetSums`) instanti",
+      "finding_passage_id": "P009",
+      "match_kind": "full_path",
+      "match_text": "streams/src/main/java/org/apache/kafka/streams/processor/internals/DefaultStreamsRebalanceListener.java",
+      "oracle_path": "streams/src/main/java/org/apache/kafka/streams/processor/internals/DefaultStreamsRebalanceListener.java",
+      "start": 671
+    },
+    {
+      "basename_collision": false,
+      "end": 958,
+      "evidence_id": "M072",
+      "excerpt": "ache/kafka/streams/processor/internals/DefaultStreamsRebalanceListener.java**: Multiple instances where `TaskId` is instantiated (e.g., `toTaskId` method).\n- **streams/src/main/java/org/apache/kafka/streams/processor/internals/assignment/SubscriptionInfo.java**: Several lambda expressions and methods (e.g., `taskOffsetSums`) instantiate `TaskId`.\n\n## Impact\n- **Technical Impact**: The renaming could break the build or runtime functionality if any external code or configuration relies on the `TaskId` class. This in",
+      "finding_passage_id": "P010",
+      "match_kind": "full_path",
+      "match_text": "streams/src/main/java/org/apache/kafka/streams/processor/internals/assignment/SubscriptionInfo.java",
+      "oracle_path": "streams/src/main/java/org/apache/kafka/streams/processor/internals/assignment/SubscriptionInfo.java",
+      "start": 859
+    }
+  ],
+  "causal_passage_id": "P012",
+  "decision_source": "llm_causal_adjudication",
+  "detected": true,
+  "evidence_id": "M072",
+  "executed_at_utc": "2026-09-19T15:09:57.385576+00:00",
+  "finding_passage_id": "P010",
+  "judge": "openai:gpt-4o-mini",
+  "manifest_sha256": "5d4371a93d1b09f0491ecc12279f9f3ff5de23053b7a5e74650a749f58b472b0",
+  "model_alias": "openai:gpt-4o-mini",
+  "model_snapshot": "unavailable-from-original-wrapper",
+  "original_verdict": false,
+  "prompt_sha256": "5015ad894dd4453689130442ef43104b2ff9c8f5aae994e787b10f215506112c",
+  "reason_code": "specific_cross_file_link",
+  "response_wrapper": "bare",
+  "review_sha256": "1c843b0d31f4782f58a02226ef5b6697942d6daddad0d72b50db735d4876d70d",
+  "schema_sha256": "f70f714868ecd3d25508bb3e00b32ecbe6761b0ebc05f454ee10fa4d28efd013",
+  "schema_version": "exp2-adjudication-v3",
+  "system_sha256": "030b5e701c798b32afdabbbeb22db38f664db8c8fd8b862d2fcb98df63b6fb6b"
+}

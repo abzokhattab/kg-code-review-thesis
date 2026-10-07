@@ -1,0 +1,113 @@
+\section{Motivation}
+\label{sec:intro-motivation}
+
+Consider a change that narrows what a widely used helper function will accept:
+where it previously tolerated a missing value, it now requires one. Inside the
+diff the change is sound. The function's own tests are updated, and a reviewer
+reading those few lines has every reason to approve. The defect, if there is
+one, is somewhere else: in a caller three directories away that has always
+passed nothing and relied on the old tolerance. Nothing in the diff mentions
+that caller.
+
+This scenario illustrates a recognised challenge in code review; its frequency
+is not estimated in this thesis. When Bacchelli and Bird asked Microsoft
+developers what they hoped to get from review and what they actually got, the
+gap was defect detection, and the
+reason they gave was not inattention but
+\emph{understanding}~\cite{bacchelli2013}: a reviewer who does not know what
+depends on a piece of code cannot judge whether changing it is safe.
+
+A language model asked to review a pull request is usually given the diff and
+nothing else. It cannot open the neighbouring file, search for usages, or run
+the tests. The natural response is to put more of the repository into the
+prompt, and two mechanisms are available. Retrieval embeds the repository and
+returns the code most similar to the change. Structural traversal parses the
+repository and returns the code \emph{connected} to the change. In the
+vignette above, similarity would rank the helper's sibling utilities highly,
+while the caller that is about to break may share no vocabulary with the
+function it calls. Which mechanism to use, and what each is actually good for,
+is the question this thesis takes up.
+
+\section{Problem Statement}
+\label{sec:intro-problem}
+
+The problem is not that repository context is unavailable. Both retrieval and
+graph construction are mature enough to deploy, and systems built on them have
+demonstrated gains on completion, fault localisation and
+repair~\cite{zhang2023repocoder,liu2024graphcoder,yang2025kgcompass}. The
+problem is that for review-comment generation it is not known which kind of
+context helps, by how much, or whether the instruments commonly used to answer
+such questions can detect the answer.
+
+Three difficulties compound. First, the tasks on which structural context has
+been shown to help all have checkable outcomes (completion is right or
+wrong, a test passes or fails), while a review comment is prose with no
+automatic success signal, making evaluation part of the problem. Second, the
+evaluation methods now used for this task are weaker than the claims made with
+them: single-model rubric scoring with unreported reliability cannot
+distinguish a real improvement from a preference for longer
+text~\cite{zheng2023judging}. Third, the structural context must come from
+a described static-analysis artefact, here a code property graph, rather
+than an ad hoc text heuristic, so that the result can be attributed and
+replicated.
+
+\section{Research Questions}
+\label{sec:intro-rqs}
+
+Three research questions form a chain, each closing a gap the previous one
+leaves open:
+
+\begin{description}
+    \item[RQ1: Comparative coverage.] \textit{How do \kg{}, \rag{}, and
+        \hybrid{} context affect the rubric coverage of LLM-generated review
+        comments compared with a diff-only \baseline{}?}
+    \item[RQ2: Cross-file reasoning.] \textit{To what extent does
+        structural context enable an LLM reviewer to identify cross-file
+        consequences that are absent from the diff?}
+    \item[RQ3: Human preference.] \textit{Do human raters prefer
+        graph-augmented reviews over diff-only reviews for identifying affected
+        code when the review conditions are hidden?}
+\end{description}
+
+RQ1 is evaluated with a 25-criterion rubric, including nine criteria
+designated in advance as structurally relevant (Section~\ref{sec:rubric}).
+The rubric measures what a review covers, not whether it is correct, so
+RQ2 uses controlled defect injection, where the ground truth is known.
+Both are scored by language models, so RQ3 asks people. RQ1 and RQ2 build the
+knowledge graph with Joern; RQ3 uses the same graph block with edges
+resolved from import statements. The hybrid arm tests whether structural and similarity context
+combine their benefits or dilute attention when concatenated.
+
+\section{Contributions}
+\label{sec:intro-contributions}
+
+\paragraph{Mechanistic evidence for the structural blind spot.}
+A controlled injection experiment shows that a diff-only reviewer detects none
+of 28 cross-file defects, while the deployed CPG arm detects 18. Near-ceiling
+performance on local controls supports a structural interpretation of the gain.
+
+\paragraph{A localised benefit on pull requests.}
+On 35~pull requests, the structural arm concentrates its gain in
+the nine criteria its mechanism predicts, while retrieval produces the largest
+full-rubric gain. The hybrid mode leads on neither scale after correction.
+
+\paragraph{Human corroboration of targeted grounding.}
+In the human study, raters prefer the graph-augmented review for naming
+affected code, but show no preference on overall usefulness; code clarity
+favours the baseline.
+
+\paragraph{An analysis of evaluation sensitivity.}
+Judge-level and regeneration analyses show that the targeted direction is
+stable, but its magnitude and significance depend on the evaluation
+configuration.
+
+\medskip\noindent
+The remainder of this thesis is organised as follows.
+Chapter~\ref{chap:background} situates the work in the literature on code
+review, language models for code, retrieval, knowledge graphs, and evaluation.
+Chapter~\ref{chap:approach} describes the pipeline and the graph
+construction. Chapter~\ref{chap:edas} presents the experimental design, the
+rubric, and the human study protocol. Chapter~\ref{chap:results} reports and
+discusses results from all three studies together with threats to validity.
+Chapter~\ref{chap:conclusion} summarises the findings and identifies future
+work.

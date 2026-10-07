@@ -1,0 +1,1299 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PR Review — Human Evaluation Study</title>
+<style>
+:root {
+  --bg0:#0d1117;--bg1:#161b22;--bg2:#21262d;--bg3:#292e36;
+  --brd:#30363d;--t1:#e6edf3;--t2:#adbac7;--t3:#848d97;
+  --blue:#58a6ff;--green:#3fb950;--red:#f85149;
+  --orange:#d29922;--purple:#a371f7;--pink:#db61a2;
+  --diff-add-bg:rgba(63,185,80,.13);--diff-add-txt:#aff5b4;
+  --diff-del-bg:rgba(248,81,73,.13);--diff-del-txt:#ffd7d5;
+  --toggle-yes-bg:#1a3a2a;--toggle-no-bg:#3a1a1a;
+}
+[data-theme="light"] {
+  --bg0:#ffffff;--bg1:#f6f8fa;--bg2:#e8ecf0;--bg3:#d0d7de;
+  --brd:#d0d7de;--t1:#1f2328;--t2:#656d76;--t3:#8b949e;
+  --blue:#0969da;--green:#1a7f37;--red:#cf222e;
+  --orange:#9a6700;--purple:#8250df;--pink:#bf3989;
+  --diff-add-bg:rgba(26,127,55,.12);--diff-add-txt:#1a7f37;
+  --diff-del-bg:rgba(207,34,46,.12);--diff-del-txt:#cf222e;
+  --toggle-yes-bg:#dafbe1;--toggle-no-bg:#ffebe9;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;background:var(--bg0);color:var(--t1);min-height:100vh;line-height:1.6}
+.container{max-width:1600px;margin:0 auto;padding:20px}
+.screen{display:none}.screen.active{display:block}
+
+/* ── Welcome ──────────────────────────────── */
+#welcome.active{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:90vh;text-align:center}
+#welcome h1{font-size:2rem;font-weight:700;margin-bottom:6px;color:var(--blue)}
+#welcome .sub{color:var(--t2);margin-bottom:28px}
+.wcard{background:var(--bg1);border:1px solid var(--brd);border-radius:12px;padding:28px;max-width:640px;width:100%;text-align:left}
+.wcard h2{font-size:1.1rem;color:var(--blue);margin-bottom:12px}
+.wcard p,.wcard li{color:var(--t2);font-size:.92rem;margin-bottom:6px}
+.wcard ol,.wcard ul{margin-left:18px;margin-bottom:12px}
+.igroup{margin-top:20px;display:flex;gap:10px}
+.igroup input{flex:1;background:var(--bg2);border:1px solid var(--brd);border-radius:8px;padding:10px 14px;color:var(--t1);font-size:.95rem;outline:none}
+.igroup input:focus{border-color:var(--blue)}
+#resumeNote{margin-top:10px;font-size:.82rem;color:var(--green);display:none}
+
+/* ── Consent ─────────────────────────────── */
+#consent.active{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:90vh;text-align:center}
+.consent-card{background:var(--bg1);border:1px solid var(--brd);border-radius:12px;padding:28px 32px;max-width:720px;width:100%;text-align:left}
+.consent-card h2{font-size:1.2rem;color:var(--blue);margin-bottom:16px;text-align:center}
+.consent-card p{color:var(--t2);font-size:.9rem;margin-bottom:10px;line-height:1.65}
+.consent-card ul{margin-left:18px;margin-bottom:14px}
+.consent-card li{color:var(--t2);font-size:.9rem;margin-bottom:4px}
+.consent-check{display:flex;align-items:flex-start;gap:10px;margin:20px 0 16px;padding:14px;background:var(--bg2);border-radius:8px;border:1px solid var(--brd)}
+.consent-check input[type=checkbox]{margin-top:3px;width:18px;height:18px;accent-color:var(--blue);flex-shrink:0}
+.consent-check label{color:var(--t1);font-size:.9rem;font-weight:600;cursor:pointer}
+
+/* ── Demographics ────────────────────────── */
+#demographics.active{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:90vh}
+.demo-card{background:var(--bg1);border:1px solid var(--brd);border-radius:12px;padding:28px 32px;max-width:720px;width:100%;text-align:left}
+.demo-card h2{font-size:1.2rem;color:var(--blue);margin-bottom:6px;text-align:center}
+.demo-card p.demo-sub{color:var(--t2);font-size:.88rem;margin-bottom:18px;text-align:center}
+.demo-group{margin-bottom:16px}
+.demo-group .demo-q{display:block;font-size:.88rem;font-weight:600;color:var(--t1);margin-bottom:6px}
+.demo-opts{display:flex;gap:0;flex-wrap:wrap}
+.demo-opts label{flex:1;min-width:0;text-align:center;cursor:pointer;padding:8px 6px;border:1px solid var(--brd);background:var(--bg2);color:var(--t3);font-size:.78rem;font-weight:600;transition:all .15s;white-space:nowrap}
+.demo-opts label:first-child{border-radius:6px 0 0 6px}
+.demo-opts label:last-child{border-radius:0 6px 6px 0}
+.demo-opts label:hover{background:var(--bg3);color:var(--t2)}
+.demo-opts input{display:none}
+.demo-opts label.selected{background:var(--blue);border-color:var(--blue);color:#fff}
+
+/* ── Briefing ─────────────────────────────── */
+#briefing .brief-card{background:var(--bg1);border:1px solid var(--brd);border-radius:12px;padding:28px;margin-bottom:20px;max-width:900px;margin-left:auto;margin-right:auto}
+#briefing .brief-card h2{font-size:1.15rem;color:var(--blue);margin-bottom:12px}
+#briefing .brief-card h3{font-size:1rem;color:var(--purple);margin:16px 0 8px}
+#briefing .brief-card p,#briefing .brief-card li{color:var(--t2);font-size:.9rem;margin-bottom:6px;line-height:1.6}
+#briefing .brief-card ol,#briefing .brief-card ul{margin-left:18px;margin-bottom:12px}
+.criteria-table{width:100%;border-collapse:collapse;margin:10px 0 16px;font-size:.85rem}
+.criteria-table th{text-align:left;padding:8px 10px;background:var(--bg2);color:var(--t2);font-weight:600;border-bottom:1px solid var(--brd)}
+.criteria-table td{padding:7px 10px;border-bottom:1px solid var(--bg2);color:var(--t2)}
+.criteria-table td:first-child{font-family:monospace;font-weight:600;color:var(--purple);white-space:nowrap;width:50px}
+.criteria-table td:nth-child(2){color:var(--t3);white-space:nowrap;width:100px}
+.criteria-table tr:last-child td{border-bottom:none}
+.brief-nav{display:flex;justify-content:center;gap:12px;margin:24px auto 0;max-width:900px}
+
+/* ── Buttons ──────────────────────────────── */
+.btn{display:inline-flex;align-items:center;gap:6px;padding:10px 20px;border-radius:8px;border:none;font-size:.9rem;font-weight:600;cursor:pointer;transition:all .15s}
+.btn:disabled{opacity:.4;cursor:not-allowed}
+.btn-p{background:var(--blue);color:#fff}.btn-p:hover:not(:disabled){filter:brightness(1.15)}
+.btn-s{background:var(--bg2);color:var(--t1);border:1px solid var(--brd)}.btn-s:hover{background:var(--bg3)}
+.btn-g{background:var(--green);color:#fff}.btn-g:hover{filter:brightness(1.15)}
+
+/* ── Topbar ───────────────────────────────── */
+.topbar{display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--brd);margin-bottom:16px;flex-wrap:wrap;gap:10px}
+.topbar .logo{font-weight:700;color:var(--blue);font-size:.95rem}
+.pbar{width:180px;height:5px;background:var(--bg2);border-radius:3px;overflow:hidden;display:inline-block;vertical-align:middle;margin:0 8px}
+.pfill{height:100%;background:linear-gradient(90deg,var(--blue),var(--purple));border-radius:3px;transition:width .3s}
+.ptxt{font-size:.82rem;color:var(--t2)}
+.timer{font-family:monospace;font-size:.82rem;color:var(--t3)}
+
+/* ── PR Header ────────────────────────────── */
+.prh{background:var(--bg1);border:1px solid var(--brd);border-radius:10px;padding:16px;margin-bottom:12px}
+.prh .title{font-size:1.05rem;font-weight:600;margin-bottom:4px}
+.prh .meta{font-size:.82rem;color:var(--t2);display:flex;gap:14px;flex-wrap:wrap}
+.prh .meta a{color:var(--blue);text-decoration:none}
+
+/* ── Diff styling (collapsible) ── */
+.diff-section{background:var(--bg1);border:1px solid var(--brd);border-radius:8px;margin-bottom:12px;overflow:hidden}
+.diff-header{padding:8px 14px;font-weight:600;font-size:.85rem;color:var(--t2);background:var(--bg2);border-bottom:1px solid var(--brd);cursor:pointer;display:flex;align-items:center;justify-content:space-between;user-select:none}
+.diff-header:hover{background:var(--bg3)}
+.diff-toggle{font-size:.7rem;color:var(--t3);font-weight:400}
+.diff-view{font-family:'SF Mono',SFMono-Regular,Consolas,'Liberation Mono',Menlo,monospace;font-size:.8rem;line-height:1.6;overflow-x:auto;max-height:500px;overflow-y:auto}
+.diff-section.collapsed .diff-view{display:none}
+.diff-section.collapsed .diff-header{border-bottom:none}
+.diff-file{margin-bottom:2px}
+.diff-file:last-child{margin-bottom:0}
+.diff-fname{padding:7px 12px;font-weight:600;font-size:.8rem;color:var(--t2);background:var(--bg2);border-bottom:1px solid var(--bg3)}
+.diff-tbl{width:100%;border-collapse:collapse}
+.diff-tbl td{padding:0;vertical-align:top;white-space:pre-wrap;word-break:break-all}
+.diff-tbl .dg{width:24px;min-width:24px;text-align:center;color:var(--t3);user-select:none;font-weight:600;padding:1px 4px;border-right:1px solid var(--bg3)}
+.diff-tbl .dc{padding:1px 12px}
+.diff-tbl tr.add{background:var(--diff-add-bg)}
+.diff-tbl tr.add .dg{color:var(--green)}
+.diff-tbl tr.add .dc{color:var(--diff-add-txt)}
+.diff-tbl tr.del{background:var(--diff-del-bg)}
+.diff-tbl tr.del .dg{color:var(--red)}
+.diff-tbl tr.del .dc{color:var(--diff-del-txt)}
+.diff-tbl tr.hunk{background:rgba(88,166,255,.07)}
+.diff-tbl tr.hunk .dc{color:var(--blue);font-style:italic;padding:3px 12px}
+.diff-tbl tr.hunk .dg{color:var(--blue)}
+.diff-tbl tr.ctx .dc{color:var(--t2)}
+
+/* ── Review Side-by-Side ─────────────────── */
+.comparison-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:16px}
+@media(max-width:800px){.comparison-grid{grid-template-columns:1fr}}
+.review-card{background:var(--bg1);border:1px solid var(--brd);border-radius:10px;overflow:hidden;display:flex;flex-direction:column}
+.review-card-header{padding:8px 14px;font-weight:700;font-size:.85rem;border-bottom:1px solid var(--bg3);display:flex;align-items:center;gap:8px}
+.review-card-header .rlabel{width:24px;height:24px;border-radius:6px;display:inline-flex;align-items:center;justify-content:center;font-size:.75rem;font-weight:800;color:#fff;flex-shrink:0}
+.review-card-body{padding:12px;overflow-y:auto;flex:1}
+.rcontent{font-size:.82rem;line-height:1.45}
+.rcontent h1,.rcontent h2,.rcontent h3{margin-top:10px;margin-bottom:3px;color:var(--t2);font-weight:600;text-transform:uppercase;letter-spacing:.5px;padding-top:6px;border-top:1px solid var(--bg3)}
+.rcontent h1{font-size:.76rem}.rcontent h2{font-size:.74rem}.rcontent h3{font-size:.72rem}
+.rcontent h1:first-child,.rcontent h2:first-child,.rcontent h3:first-child{margin-top:0;padding-top:0;border-top:none}
+.rcontent p{margin:0 0 3px}
+.rcontent p:empty{display:none}
+.rcontent ul,.rcontent ol{margin-left:14px;margin-bottom:3px}
+.rcontent li{margin-bottom:0}
+.rcontent code{font-family:monospace;font-size:.82em;background:var(--bg2);padding:1px 4px;border-radius:3px}
+.rcontent strong{color:var(--orange)}
+/* ── Criteria reminder strip (sticky while reading reviews) ── */
+.criteria-strip{display:flex;align-items:center;gap:8px;flex-wrap:wrap;padding:6px 12px;margin-bottom:10px;background:var(--bg1);border:1px solid var(--brd);border-radius:6px;font-size:.72rem;position:sticky;top:0;z-index:10;backdrop-filter:blur(8px);box-shadow:0 2px 8px rgba(0,0,0,.15)}
+.cs-label{color:var(--t3);font-weight:600;text-transform:uppercase;letter-spacing:.5px}
+.cs-tag{color:var(--t2);background:var(--bg2);padding:2px 8px;border-radius:4px;font-weight:500;white-space:nowrap}
+
+/* ── Comparison label ────────────────────── */
+.comp-label{display:inline-block;font-size:.78rem;font-weight:700;padding:3px 10px;border-radius:4px;margin-left:10px}
+.comp-label-1{background:var(--blue);color:#fff}
+.comp-label-2{background:var(--purple);color:#fff}
+
+/* ── Criteria Matrix ──────────────────────── */
+.matrix-section{margin-bottom:16px}
+.matrix-section h3{font-size:.95rem;margin-bottom:10px;color:var(--t2)}
+.matrix-wrap{overflow-x:auto}
+.matrix{width:100%;border-collapse:separate;border-spacing:0;background:var(--bg1);border:1px solid var(--brd);border-radius:10px;overflow:hidden}
+.matrix th{padding:10px 12px;text-align:center;font-size:.8rem;font-weight:700;color:var(--purple);background:var(--bg2);border-bottom:1px solid var(--brd);position:sticky;top:0;z-index:1}
+.matrix th:first-child{text-align:left;min-width:300px;color:var(--t2)}
+.matrix th.col-review{min-width:90px}
+.matrix td{padding:8px 10px;border-bottom:1px solid var(--bg2);vertical-align:middle}
+.matrix td:first-child{font-size:.82rem;color:var(--t2)}
+.matrix tr:last-child td{border-bottom:none}
+.matrix tr:hover td{background:var(--bg2)}
+.matrix .cid-cell{display:flex;align-items:center;gap:8px}
+.matrix .cid{font-family:monospace;font-size:.75rem;font-weight:600;color:var(--purple);background:var(--bg2);padding:1px 6px;border-radius:3px;white-space:nowrap}
+.matrix .ccat{font-size:.65rem;padding:1px 5px;border-radius:3px;background:var(--bg2);color:var(--t3);white-space:nowrap}
+.matrix .cdesc .kw{color:var(--orange);font-weight:700}
+.matrix .chint{display:block;font-size:.65rem;color:var(--t3);font-style:italic;margin-top:2px;font-weight:400}
+.matrix td.cell-toggle{text-align:center;padding:4px}
+.yn-group{display:inline-flex;gap:0;border-radius:6px;overflow:hidden}
+.yn-btn{width:46px;height:38px;border:2px solid var(--brd);background:var(--bg2);cursor:pointer;font-weight:700;font-size:.95rem;color:var(--t3);transition:all .15s;padding:0;line-height:34px}
+.yn-btn.yn-yes{border-radius:6px 0 0 6px;border-right-width:1px}
+.yn-btn.yn-no{border-radius:0 6px 6px 0;border-left-width:1px}
+.yn-btn:hover{background:var(--bg3);color:var(--t2)}
+.yn-btn.yn-yes:hover{border-color:var(--green);color:var(--green)}
+.yn-btn.yn-no:hover{border-color:var(--red);color:var(--red)}
+.yn-btn.yn-yes.active{background:var(--toggle-yes-bg);border-color:var(--green);color:var(--green)}
+.yn-btn.yn-no.active{background:var(--toggle-no-bg);border-color:var(--red);color:var(--red)}
+.yn-group.missing{box-shadow:0 0 0 2px var(--red),0 0 0 4px rgba(248,81,73,.25);border-radius:6px;animation:missingPulse 1.2s ease-in-out infinite}
+@keyframes missingPulse{0%,100%{box-shadow:0 0 0 2px var(--red),0 0 0 4px rgba(248,81,73,.25)}50%{box-shadow:0 0 0 2px var(--red),0 0 0 8px rgba(248,81,73,.12)}}
+
+/* ── Difficulty Rating ───────────────────── */
+.difficulty-section{margin:16px 0;padding:16px;background:var(--bg1);border:1px solid var(--brd);border-radius:10px}
+.difficulty-section h4{font-size:.9rem;color:var(--t2);margin-bottom:10px}
+.diff-scale{display:flex;gap:0;justify-content:center}
+.diff-scale label{flex:1;max-width:140px;text-align:center;cursor:pointer;padding:10px 8px;border:1px solid var(--brd);background:var(--bg2);color:var(--t3);font-size:.78rem;font-weight:600;transition:all .15s;white-space:nowrap}
+.diff-scale label:first-child{border-radius:8px 0 0 8px}
+.diff-scale label:last-child{border-radius:0 8px 8px 0}
+.diff-scale label:hover{background:var(--bg3);color:var(--t2)}
+.diff-scale input{display:none}
+.diff-scale label.selected{background:var(--blue);border-color:var(--blue);color:#fff}
+.diff-scale label.selected span{color:#fff}
+
+/* ── Overall Preference ──────────────────── */
+.pref-section{margin:16px 0;padding:16px;background:var(--bg1);border:1px solid var(--brd);border-radius:10px}
+.pref-section h4{font-size:.9rem;color:var(--t2);margin-bottom:10px}
+.pref-opts{display:flex;gap:0;justify-content:center}
+.pref-opts label{flex:1;max-width:220px;text-align:center;cursor:pointer;padding:10px 8px;border:1px solid var(--brd);background:var(--bg2);color:var(--t3);font-size:.82rem;font-weight:600;transition:all .15s;white-space:nowrap}
+.pref-opts label:first-child{border-radius:8px 0 0 8px}
+.pref-opts label:last-child{border-radius:0 8px 8px 0}
+.pref-opts label:hover{background:var(--bg3);color:var(--t2)}
+.pref-opts input{display:none}
+.pref-opts label.selected{border-color:var(--blue)}
+.pref-opts label[data-pref="A"].selected{background:rgba(88,166,255,.15);color:#58a6ff;border-color:#58a6ff}
+.pref-opts label[data-pref="B"].selected{background:rgba(163,113,247,.15);color:#a371f7;border-color:#a371f7}
+.pref-opts label[data-pref="both"].selected{background:var(--blue);color:#fff;border-color:var(--blue)}
+
+/* ── Notes ────────────────────────────────── */
+.notes-section{margin:12px 0;padding:14px;background:var(--bg1);border:1px solid var(--brd);border-radius:10px}
+.notes-section h4{font-size:.85rem;color:var(--t3);margin-bottom:6px;font-weight:500}
+.notes-section textarea{width:100%;min-height:50px;max-height:120px;background:var(--bg2);border:1px solid var(--brd);border-radius:6px;padding:8px 10px;color:var(--t1);font-size:.82rem;font-family:inherit;resize:vertical;outline:none}
+.notes-section textarea:focus{border-color:var(--blue)}
+.notes-section textarea::placeholder{color:var(--t3)}
+
+/* ── Nav ──────────────────────────────────── */
+.navbar{display:flex;align-items:center;justify-content:space-between;padding:14px 0;border-top:1px solid var(--brd);margin-top:6px}
+.uwarn{color:var(--red);font-size:.85rem;font-weight:700;display:none}
+
+/* ── Feedback ────────────────────────────── */
+#feedback.active{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:70vh;text-align:center}
+.feedback-card{background:var(--bg1);border:1px solid var(--brd);border-radius:12px;padding:28px 32px;max-width:700px;width:100%;text-align:left}
+.feedback-card h2{font-size:1.15rem;color:var(--blue);margin-bottom:8px;text-align:center}
+.feedback-card p{color:var(--t2);font-size:.88rem;margin-bottom:16px;text-align:center}
+.feedback-card textarea{width:100%;min-height:120px;background:var(--bg2);border:1px solid var(--brd);border-radius:8px;padding:12px;color:var(--t1);font-size:.9rem;font-family:inherit;resize:vertical;outline:none}
+.feedback-card textarea:focus{border-color:var(--blue)}
+.feedback-card .fb-btns{display:flex;justify-content:center;gap:12px;margin-top:16px}
+
+/* ── Completion ───────────────────────────── */
+#completion{text-align:center;padding-top:10vh}
+#completion h1{font-size:1.8rem;color:var(--green);margin-bottom:10px}
+#completion p{color:var(--t2);margin-bottom:20px}
+.sgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px;max-width:550px;margin:0 auto 28px}
+.scard{background:var(--bg1);border:1px solid var(--brd);border-radius:10px;padding:14px}
+.scard .sl{font-size:.75rem;color:var(--t3);text-transform:uppercase;letter-spacing:.5px}
+.scard .sv{font-size:1.4rem;font-weight:700;color:var(--blue)}
+
+kbd{display:inline-block;font-family:monospace;font-size:.7rem;background:var(--bg2);border:1px solid var(--brd);border-radius:3px;padding:1px 4px;color:var(--t3);vertical-align:middle}
+
+.jump-btn{position:fixed;bottom:80px;right:24px;z-index:100;padding:10px 18px;border-radius:8px;border:none;background:var(--blue);color:#fff;font-weight:700;font-size:.82rem;cursor:pointer;box-shadow:0 4px 12px rgba(0,0,0,.4);transition:all .2s;opacity:0;pointer-events:none}
+.jump-btn.visible{opacity:1;pointer-events:auto}
+.jump-btn:hover{filter:brightness(1.15);transform:translateY(-1px)}
+
+/* ── Theme Toggle ────────────────────────── */
+.theme-toggle{position:fixed;top:16px;right:16px;z-index:200;width:38px;height:38px;border-radius:50%;border:1px solid var(--brd);background:var(--bg1);color:var(--t2);cursor:pointer;font-size:1.1rem;display:flex;align-items:center;justify-content:center;transition:all .15s;box-shadow:0 2px 8px rgba(0,0,0,.15)}
+.theme-toggle:hover{background:var(--bg2);border-color:var(--t3);transform:scale(1.08)}
+
+/* ── Warmup ──────────────────────────────── */
+#warmup .topbar{border-bottom-color:var(--orange)}
+</style>
+</head>
+<body>
+<button class="theme-toggle" id="themeToggle" title="Toggle light/dark mode">&#9790;</button>
+<div class="container">
+
+<!-- ═══ WELCOME ═══ -->
+<div id="welcome" class="screen active">
+  <h1>PR Review Evaluation Study</h1>
+  <p class="sub">Human evaluation of AI-generated code review comments</p>
+  <div class="wcard">
+    <p style="color:var(--t2);margin-bottom:4px">Compare pairs of AI-generated reviews for 6 Pull Requests.</p>
+    <p style="color:var(--t3);font-size:.85rem;margin-bottom:16px">Takes roughly 25&ndash;30 minutes. Progress is saved automatically &mdash; you can take breaks.</p>
+    <div class="igroup">
+      <input type="text" id="raterInput" placeholder="Enter your name or rater ID" autocomplete="off" />
+      <button class="btn btn-p" id="startBtn" disabled>Start</button>
+    </div>
+    <p id="resumeNote"></p>
+  </div>
+</div>
+
+<!-- ═══ CONSENT ═══ -->
+<div id="consent" class="screen">
+  <div class="consent-card">
+    <h2>Informed Consent</h2>
+    <p>You are being invited to participate in a research study on AI-assisted code review quality, conducted as part of a Master's thesis at the Hasso Plattner Institute, University of Potsdam.</p>
+    <p><strong>What you will do:</strong> You will compare pairs of AI-generated code review comments and judge them against quality criteria. The study takes approximately 25&ndash;30 minutes.</p>
+    <p><strong>Data collection:</strong></p>
+    <ul>
+      <li>We collect your rater ID (which you chose freely), basic background information (current role, experience level, review frequency), your yes/no ratings for each criterion, an overall preference per comparison, difficulty ratings, time spent per comparison, and optional feedback.</li>
+      <li><strong>No personally identifiable data</strong> (name, email, IP address) is collected or stored.</li>
+      <li>All data is used solely for academic research purposes.</li>
+    </ul>
+    <p><strong>Your rights:</strong></p>
+    <ul>
+      <li>Participation is <strong>voluntary</strong>. You may quit the study at any time without giving a reason.</li>
+      <li>If you have questions or concerns, contact any of the following at Hasso Plattner Institute:
+        <ul>
+          <li><strong>Abdelrahman Khattab</strong> &mdash; <a href="mailto:Abdelrahman.Khattab@student.hpi.uni-potsdam.de" style="color:var(--blue)">Abdelrahman.Khattab@student.hpi.uni-potsdam.de</a></li>
+          <li><strong>Christian Adriano</strong> (supervisor) &mdash; <a href="mailto:Christian.Adriano@hpi.de" style="color:var(--blue)">Christian.Adriano@hpi.de</a></li>
+          <li><strong>Prof. Holger Giese</strong> &mdash; <a href="mailto:holger.giese@hpi.de" style="color:var(--blue)">holger.giese@hpi.de</a></li>
+        </ul>
+      </li>
+    </ul>
+    <div class="consent-check">
+      <input type="checkbox" id="consentBox" />
+      <label for="consentBox">I have read and understood the above information. I voluntarily agree to participate in this study.</label>
+    </div>
+    <div style="text-align:center">
+      <button class="btn btn-s" onclick="showScreen('welcome')" style="margin-right:8px">&larr; Back</button>
+      <button class="btn btn-p" id="consentBtn" disabled>I Agree &mdash; Continue &rarr;</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ DEMOGRAPHICS ═══ -->
+<div id="demographics" class="screen">
+  <div class="demo-card">
+    <h2>About You</h2>
+    <p class="demo-sub">Three quick questions before we start.</p>
+
+    <div class="demo-group">
+      <span class="demo-q">Current role</span>
+      <div class="demo-opts" data-field="role">
+        <label onclick="demoSelect(this)"><input type="radio" name="d_role" value="student">Student</label>
+        <label onclick="demoSelect(this)"><input type="radio" name="d_role" value="junior_dev">Junior Developer</label>
+        <label onclick="demoSelect(this)"><input type="radio" name="d_role" value="software_engineer">Software Engineer</label>
+        <label onclick="demoSelect(this)"><input type="radio" name="d_role" value="senior_engineer">Senior Engineer</label>
+        <label onclick="demoSelect(this)"><input type="radio" name="d_role" value="other">Other</label>
+      </div>
+    </div>
+
+    <div class="demo-group">
+      <span class="demo-q">Years of programming experience</span>
+      <div class="demo-opts" data-field="exp_years">
+        <label onclick="demoSelect(this)"><input type="radio" name="d_exp" value="<1">&lt;1</label>
+        <label onclick="demoSelect(this)"><input type="radio" name="d_exp" value="1-3">1&ndash;3</label>
+        <label onclick="demoSelect(this)"><input type="radio" name="d_exp" value="3-5">3&ndash;5</label>
+        <label onclick="demoSelect(this)"><input type="radio" name="d_exp" value="5-10">5&ndash;10</label>
+        <label onclick="demoSelect(this)"><input type="radio" name="d_exp" value="10+">10+</label>
+      </div>
+    </div>
+
+    <div class="demo-group">
+      <span class="demo-q">How often do you review Pull Requests / Merge Requests?</span>
+      <div class="demo-opts" data-field="freq_review_pr">
+        <label onclick="demoSelect(this)"><input type="radio" name="d_rpr" value="never">Never</label>
+        <label onclick="demoSelect(this)"><input type="radio" name="d_rpr" value="rarely">Rarely</label>
+        <label onclick="demoSelect(this)"><input type="radio" name="d_rpr" value="monthly">Monthly</label>
+        <label onclick="demoSelect(this)"><input type="radio" name="d_rpr" value="weekly">Weekly</label>
+        <label onclick="demoSelect(this)"><input type="radio" name="d_rpr" value="daily">Daily</label>
+      </div>
+    </div>
+
+    <div style="text-align:center;margin-top:20px">
+      <button class="btn btn-s" onclick="showScreen('consent')" style="margin-right:8px">&larr; Back</button>
+      <button class="btn btn-p" id="demoBtn" disabled>Continue &rarr;</button>
+    </div>
+    <p id="demoWarn" style="display:none;color:var(--orange);font-size:.82rem;text-align:center;margin-top:8px;font-weight:600"></p>
+  </div>
+</div>
+
+<!-- ═══ BRIEFING ═══ -->
+<div id="briefing" class="screen">
+  <div class="brief-card">
+    <h2>What You'll Do</h2>
+    <p>You will compare <strong>pairs of AI-generated code review comments</strong> for real Pull Requests from open-source projects. For each PR you will see <strong>two comparisons</strong>, each showing two reviews side by side. Your task: judge each review against 6 quality criteria.</p>
+
+    <h3>Step by Step</h3>
+    <ol>
+      <li><strong>Read the PR context</strong> &mdash; the title, description, and diff show what code changed and why. You don't need to understand every line; focus on the overall intent. <em style="color:var(--t3)">(Large diffs are truncated; reviews may reference files not visible in the excerpt.)</em></li>
+      <li><strong>Read both reviews</strong> shown side by side &mdash; <strong style="color:#58a6ff">Review A</strong> and <strong style="color:#a371f7">Review B</strong>. You won't know which AI strategy wrote which review.</li>
+      <li><strong>Answer 6 quick questions</strong> below the reviews &mdash; one row per question, one column per review. Click <strong style="color:var(--green)">Y</strong> for Yes or <strong style="color:var(--red)">N</strong> for No.</li>
+      <li><strong>Pick an overall preference</strong> &mdash; which review better addresses the PR's issues? (A / B / Both equally)</li>
+      <li><strong>Rate the difficulty</strong> &mdash; how hard was this comparison? (1&ndash;5 scale)</li>
+      <li><strong>Submit &amp; continue</strong> to the next comparison. There are <strong>6 PRs &times; 2 comparisons = 12 screens</strong> total (~25-30 min).</li>
+    </ol>
+
+    <h3>Tips</h3>
+    <ul>
+      <li><strong>There are no right or wrong answers</strong> &mdash; we want your honest impression. Don't overthink it.</li>
+      <li>For each cell, click <strong style="color:var(--green)">Y</strong> for Yes or <strong style="color:var(--red)">N</strong> for No. You can switch your choice at any time.</li>
+      <li>Judge each review <strong>on its own</strong>, not by comparing it to the other.</li>
+      <li>Mark <strong style="color:var(--green)">Yes</strong> if the review addresses the question &mdash; even briefly.</li>
+      <li>Mark <strong style="color:var(--red)">No</strong> if it doesn't. If you're unsure, <strong style="color:var(--red)">No</strong> is fine.</li>
+      <li>Some pairs may look similar &mdash; that's normal. It gets easier after the first few.</li>
+    </ul>
+  </div>
+
+  <div class="brief-card">
+    <h2>The 6 Criteria</h2>
+    <p>Each is a yes/no question about the review:</p>
+
+    <table class="criteria-table">
+      <thead><tr><th>#</th><th>Category</th><th>Question</th></tr></thead>
+      <tbody>
+        <tr><td>1</td><td>Functionality</td><td>Does the review name <strong>concrete</strong> components, APIs, or design patterns <strong>affected</strong> by the changes?</td></tr>
+        <tr><td>2</td><td>Functionality</td><td>Does the review describe <strong>concrete</strong> edge cases, <strong>boundary conditions</strong>, or <strong>error-handling</strong> gaps?</td></tr>
+        <tr><td>3</td><td>Tests</td><td>Does the review reference <strong>concrete</strong> test files or suggest which tests should be added/updated?</td></tr>
+        <tr><td>4</td><td>Quality</td><td>Does the review give a <strong>concrete reason</strong> for each suggestion (e.g. 'X could cause Y')?</td></tr>
+        <tr><td>5</td><td>Readability</td><td>Does the review comment on <strong>code clarity</strong>, <strong>naming conventions</strong>, or <strong>function organization</strong>?</td></tr>
+        <tr><td>6</td><td>Completeness</td><td>Does the review cover the <strong>obvious issues</strong> in the PR <strong>without obvious missing information</strong>?</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="brief-nav">
+    <button class="btn btn-s" onclick="showScreen('demographics')">&larr; Back</button>
+    <button class="btn btn-p" id="beginBtn">Got it &mdash; start with a practice round &rarr;</button>
+  </div>
+</div>
+
+<!-- ═══ WARMUP ═══ -->
+<div id="warmup" class="screen">
+  <div class="topbar">
+    <div style="display:flex;align-items:center;gap:14px">
+      <span class="logo">Practice Round</span>
+      <span style="font-size:.82rem;color:var(--orange);font-weight:600">This does not count &mdash; just get familiar with the interface</span>
+    </div>
+  </div>
+
+  <div class="prh">
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:4px">
+      <span style="font-size:.75rem;font-weight:700;background:var(--orange);color:#fff;padding:2px 8px;border-radius:4px;white-space:nowrap">Practice</span>
+      <span class="title">Add retry logic to API client</span>
+    </div>
+    <div class="meta"><span>example/web-service</span></div>
+  </div>
+
+  <div class="diff-section">
+    <div class="diff-header">Diff</div>
+    <div class="diff-view">
+      <div class="diff-file">
+        <div class="diff-fname">src/api_client.py</div>
+        <table class="diff-tbl">
+          <tr class="hunk"><td class="dg">@@</td><td class="dc">@@ -12,8 +12,19 @@ class ApiClient:</td></tr>
+          <tr class="ctx"><td class="dg"></td><td class="dc">     def __init__(self, base_url, timeout=30):</td></tr>
+          <tr class="ctx"><td class="dg"></td><td class="dc">         self.base_url = base_url</td></tr>
+          <tr class="ctx"><td class="dg"></td><td class="dc">         self.timeout = timeout</td></tr>
+          <tr class="add"><td class="dg">+</td><td class="dc">         self.max_retries = 3</td></tr>
+          <tr class="ctx"><td class="dg"></td><td class="dc"> </td></tr>
+          <tr class="del"><td class="dg">&#8722;</td><td class="dc">     def fetch(self, endpoint):</td></tr>
+          <tr class="del"><td class="dg">&#8722;</td><td class="dc">         response = requests.get(f"{self.base_url}/{endpoint}", timeout=self.timeout)</td></tr>
+          <tr class="del"><td class="dg">&#8722;</td><td class="dc">         return response.json()</td></tr>
+          <tr class="add"><td class="dg">+</td><td class="dc">     def fetch(self, endpoint, retries=None):</td></tr>
+          <tr class="add"><td class="dg">+</td><td class="dc">         retries = retries or self.max_retries</td></tr>
+          <tr class="add"><td class="dg">+</td><td class="dc">         for attempt in range(retries):</td></tr>
+          <tr class="add"><td class="dg">+</td><td class="dc">             try:</td></tr>
+          <tr class="add"><td class="dg">+</td><td class="dc">                 response = requests.get(</td></tr>
+          <tr class="add"><td class="dg">+</td><td class="dc">                     f"{self.base_url}/{endpoint}",</td></tr>
+          <tr class="add"><td class="dg">+</td><td class="dc">                     timeout=self.timeout</td></tr>
+          <tr class="add"><td class="dg">+</td><td class="dc">                 )</td></tr>
+          <tr class="add"><td class="dg">+</td><td class="dc">                 return response.json()</td></tr>
+          <tr class="add"><td class="dg">+</td><td class="dc">             except requests.RequestException:</td></tr>
+          <tr class="add"><td class="dg">+</td><td class="dc">                 if attempt == retries - 1:</td></tr>
+          <tr class="add"><td class="dg">+</td><td class="dc">                     raise</td></tr>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <div class="comparison-grid">
+    <div class="review-card">
+      <div class="review-card-header"><span class="rlabel" style="background:#58a6ff">A</span><span style="color:#58a6ff">Review A</span></div>
+      <div class="review-card-body"><div class="rcontent"><h2>Problem</h2><p>The <code>fetch()</code> retry loop has no backoff between attempts, so a transient failure turns into a tight burst of requests against the upstream service.</p><h2>Evidence</h2><p><code>ApiClient.fetch()</code> (line 12): retry loop catches all <code>RequestException</code> subtypes, including <code>ConnectionError</code> and <code>Timeout</code>.</p><h2>Impact</h2><p>Without a backoff delay between retries, rapid repeated requests could overwhelm the server or trigger rate limiting, especially under transient network failures.</p><h2>Recommendation</h2><p>Add exponential backoff (e.g. <code>time.sleep(2 ** attempt)</code>) between retries. Also consider adding tests in <code>tests/test_api_client.py</code> for the retry behavior, especially the case where all retries are exhausted.</p></div></div>
+    </div>
+    <div class="review-card">
+      <div class="review-card-header"><span class="rlabel" style="background:#a371f7">B</span><span style="color:#a371f7">Review B</span></div>
+      <div class="review-card-body"><div class="rcontent"><h2>Problem</h2><p>The retry logic in <code>fetch()</code> may not handle failures robustly enough.</p><h2>Evidence</h2><p><code>fetch()</code> method retry loop.</p><h2>Impact</h2><p>The retry mechanism looks reasonable but could be improved.</p><h2>Recommendation</h2><p>Consider adding some error handling and tests. The code should also follow best practices for retry logic.</p></div></div>
+    </div>
+  </div>
+
+  <div class="matrix-section">
+    <h3>Quick Questions <span style="font-weight:400;font-size:.82rem;color:var(--t3)">&mdash; try clicking <strong style="color:var(--green)">Y</strong> or <strong style="color:var(--red)">N</strong> for each review</span></h3>
+    <div class="matrix-wrap">
+      <table class="matrix" id="warmMatrix">
+        <thead><tr>
+          <th>Criterion</th>
+          <th class="col-review" style="color:#58a6ff">Review A</th>
+          <th class="col-review" style="color:#a371f7">Review B</th>
+        </tr></thead>
+        <tbody>
+          <tr>
+            <td><div class="cid-cell"><span class="cid">1</span><span class="ccat">Functionality</span><span class="cdesc">Does the review name <span class="kw">concrete</span> components, APIs, or design patterns <span class="kw">affected</span> by the changes?<span class="chint">Tip: does it name actual classes, APIs, or patterns — not just 'other parts'?</span></span></div></td>
+            <td class="cell-toggle"><div class="yn-group" data-val="0"><button type="button" class="yn-btn yn-yes" onclick="setYN(this,'1')">Y</button><button type="button" class="yn-btn yn-no" onclick="setYN(this,'-1')">N</button></div></td>
+            <td class="cell-toggle"><div class="yn-group" data-val="0"><button type="button" class="yn-btn yn-yes" onclick="setYN(this,'1')">Y</button><button type="button" class="yn-btn yn-no" onclick="setYN(this,'-1')">N</button></div></td>
+          </tr>
+          <tr>
+            <td><div class="cid-cell"><span class="cid">2</span><span class="ccat">Functionality</span><span class="cdesc">Does the review describe <span class="kw">concrete</span> edge cases, <span class="kw">boundary conditions</span>, or <span class="kw">error-handling</span> gaps?<span class="chint">Tip: does it describe a concrete scenario, not just say 'edge cases exist'?</span></span></div></td>
+            <td class="cell-toggle"><div class="yn-group" data-val="0"><button type="button" class="yn-btn yn-yes" onclick="setYN(this,'1')">Y</button><button type="button" class="yn-btn yn-no" onclick="setYN(this,'-1')">N</button></div></td>
+            <td class="cell-toggle"><div class="yn-group" data-val="0"><button type="button" class="yn-btn yn-yes" onclick="setYN(this,'1')">Y</button><button type="button" class="yn-btn yn-no" onclick="setYN(this,'-1')">N</button></div></td>
+          </tr>
+          <tr>
+            <td><div class="cid-cell"><span class="cid">3</span><span class="ccat">Tests</span><span class="cdesc">Does the review reference <span class="kw">concrete</span> <span class="kw">test files</span> or suggest which tests should be added/updated?<span class="chint">Tip: does it mention actual test file names or specific test types — not just 'add tests'?</span></span></div></td>
+            <td class="cell-toggle"><div class="yn-group" data-val="0"><button type="button" class="yn-btn yn-yes" onclick="setYN(this,'1')">Y</button><button type="button" class="yn-btn yn-no" onclick="setYN(this,'-1')">N</button></div></td>
+            <td class="cell-toggle"><div class="yn-group" data-val="0"><button type="button" class="yn-btn yn-yes" onclick="setYN(this,'1')">Y</button><button type="button" class="yn-btn yn-no" onclick="setYN(this,'-1')">N</button></div></td>
+          </tr>
+          <tr>
+            <td><div class="cid-cell"><span class="cid">4</span><span class="ccat">Quality</span><span class="cdesc">Does the review give a <span class="kw">concrete reason</span> for each suggestion (e.g. 'X could cause Y')?<span class="chint">Tip: look for concrete cause→effect reasoning</span></span></div></td>
+            <td class="cell-toggle"><div class="yn-group" data-val="0"><button type="button" class="yn-btn yn-yes" onclick="setYN(this,'1')">Y</button><button type="button" class="yn-btn yn-no" onclick="setYN(this,'-1')">N</button></div></td>
+            <td class="cell-toggle"><div class="yn-group" data-val="0"><button type="button" class="yn-btn yn-yes" onclick="setYN(this,'1')">Y</button><button type="button" class="yn-btn yn-no" onclick="setYN(this,'-1')">N</button></div></td>
+          </tr>
+          <tr>
+            <td><div class="cid-cell"><span class="cid">5</span><span class="ccat">Readability</span><span class="cdesc">Does the review comment on <span class="kw">code clarity</span>, <span class="kw">naming conventions</span>, or <span class="kw">function organization</span>?<span class="chint">Tip: any mention of naming, clarity, or code structure</span></span></div></td>
+            <td class="cell-toggle"><div class="yn-group" data-val="0"><button type="button" class="yn-btn yn-yes" onclick="setYN(this,'1')">Y</button><button type="button" class="yn-btn yn-no" onclick="setYN(this,'-1')">N</button></div></td>
+            <td class="cell-toggle"><div class="yn-group" data-val="0"><button type="button" class="yn-btn yn-yes" onclick="setYN(this,'1')">Y</button><button type="button" class="yn-btn yn-no" onclick="setYN(this,'-1')">N</button></div></td>
+          </tr>
+          <tr>
+            <td><div class="cid-cell"><span class="cid">6</span><span class="ccat">Completeness</span><span class="cdesc">Does the review cover the <span class="kw">obvious issues</span> in the PR <span class="kw">without</span> <span class="kw">obvious missing information</span>?<span class="chint">Tip: did the review skip something a competent reviewer would flag? If yes &rarr; N. Otherwise &rarr; Y.</span></span></div></td>
+            <td class="cell-toggle"><div class="yn-group" data-val="0"><button type="button" class="yn-btn yn-yes" onclick="setYN(this,'1')">Y</button><button type="button" class="yn-btn yn-no" onclick="setYN(this,'-1')">N</button></div></td>
+            <td class="cell-toggle"><div class="yn-group" data-val="0"><button type="button" class="yn-btn yn-yes" onclick="setYN(this,'1')">Y</button><button type="button" class="yn-btn yn-no" onclick="setYN(this,'-1')">N</button></div></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="pref-section">
+    <h4>Overall, which review better addresses this PR's issues?</h4>
+    <div class="pref-opts">
+      <label data-pref="A" onclick="this.parentNode.querySelectorAll('label').forEach(l=>l.classList.remove('selected'));this.classList.add('selected')"><input type="radio" name="warmPref" value="A"><span style="color:#58a6ff;font-weight:700">&#9664;</span> Review A</label>
+      <label data-pref="both" onclick="this.parentNode.querySelectorAll('label').forEach(l=>l.classList.remove('selected'));this.classList.add('selected')"><input type="radio" name="warmPref" value="both">Both equally</label>
+      <label data-pref="B" onclick="this.parentNode.querySelectorAll('label').forEach(l=>l.classList.remove('selected'));this.classList.add('selected')"><input type="radio" name="warmPref" value="B">Review B <span style="color:#a371f7;font-weight:700">&#9654;</span></label>
+    </div>
+  </div>
+
+  <div class="difficulty-section">
+    <h4>How difficult was this comparison?</h4>
+    <div class="diff-scale" id="warmDiffScale">
+      <label onclick="this.parentNode.querySelectorAll('label').forEach(l=>l.classList.remove('selected'));this.classList.add('selected')"><input type="radio" name="warmDiff" value="1"><span>1 &mdash; Very Easy</span></label>
+      <label onclick="this.parentNode.querySelectorAll('label').forEach(l=>l.classList.remove('selected'));this.classList.add('selected')"><input type="radio" name="warmDiff" value="2"><span>2</span></label>
+      <label onclick="this.parentNode.querySelectorAll('label').forEach(l=>l.classList.remove('selected'));this.classList.add('selected')"><input type="radio" name="warmDiff" value="3"><span>3</span></label>
+      <label onclick="this.parentNode.querySelectorAll('label').forEach(l=>l.classList.remove('selected'));this.classList.add('selected')"><input type="radio" name="warmDiff" value="4"><span>4</span></label>
+      <label onclick="this.parentNode.querySelectorAll('label').forEach(l=>l.classList.remove('selected'));this.classList.add('selected')"><input type="radio" name="warmDiff" value="5"><span>5 &mdash; Very Hard</span></label>
+    </div>
+  </div>
+
+  <div style="text-align:center;padding:20px 0;border-top:1px solid var(--brd);margin-top:6px">
+    <p style="color:var(--t3);font-size:.85rem;margin-bottom:14px">Try clicking <strong style="color:var(--green)">Y</strong> or <strong style="color:var(--red)">N</strong> for each cell, pick a difficulty, and pick a preference. The button below unlocks once everything is answered.</p>
+    <button class="btn btn-g" id="warmDoneBtn" style="font-size:1rem;padding:12px 28px" disabled>I'm ready &mdash; start the real study &rarr;</button>
+  </div>
+</div>
+
+<!-- ═══ EVALUATION ═══ -->
+<div id="evaluation" class="screen">
+  <div class="topbar">
+    <div style="display:flex;align-items:center;gap:14px">
+      <span class="logo">PR Review Study</span>
+      <span class="pbar"><span class="pfill" id="pFill"></span></span>
+      <span class="ptxt" id="pTxt">0 / 12</span>
+    </div>
+    <span class="timer" id="timer">0:00</span>
+  </div>
+
+  <!-- PR context -->
+  <div class="prh">
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:4px">
+      <span style="font-size:.75rem;font-weight:700;background:var(--blue);color:#fff;padding:2px 8px;border-radius:4px;white-space:nowrap" id="prCounter"></span>
+      <span id="compLabel" class="comp-label"></span>
+      <span class="title" id="prTitle"></span>
+    </div>
+    <div class="meta">
+      <span id="prRepo"></span>
+      <span id="prNumber" style="color:var(--t3)"></span>
+      <a id="prLink" href="#" target="_blank" rel="noopener">View on GitHub</a>
+    </div>
+    <div id="bodySection" style="display:none;margin-top:10px;padding-top:10px;border-top:1px solid var(--bg3);font-size:.88rem;color:var(--t1);line-height:1.5">
+      <div id="bodyC"></div>
+    </div>
+  </div>
+
+  <!-- Diff (collapsible) -->
+  <div class="diff-section" id="diffSection">
+    <div class="diff-header" onclick="document.getElementById('diffSection').classList.toggle('collapsed');this.querySelector('.diff-toggle').textContent=this.closest('.diff-section').classList.contains('collapsed')?'click to expand':'click to collapse'">
+      <span>Diff</span><span class="diff-toggle">click to collapse</span>
+    </div>
+    <div class="diff-view" id="diffC"></div>
+  </div>
+
+  <!-- 2 reviews side by side -->
+  <div class="comparison-grid" id="reviewGrid"></div>
+
+  <button class="jump-btn" id="jumpBtn">&#8595; Jump to Questions</button>
+
+  <!-- Scoring questions (2 columns) -->
+  <div class="matrix-section">
+    <h3>6 Quick Questions <span style="font-weight:400;font-size:.82rem;color:var(--t3)">&mdash; for each review, click <strong style="color:var(--green)">Y</strong> or <strong style="color:var(--red)">N</strong></span></h3>
+    <div class="matrix-wrap">
+      <table class="matrix" id="matrixTable"></table>
+    </div>
+  </div>
+
+  <!-- Overall preference -->
+  <div class="pref-section">
+    <h4>Overall, which review better addresses this PR's issues?</h4>
+    <div class="pref-opts" id="prefOpts">
+      <label data-pref="A" onclick="selectPref(this)"><input type="radio" name="taskPref" value="A"><span style="color:#58a6ff;font-weight:700">&#9664;</span> Review A</label>
+      <label data-pref="both" onclick="selectPref(this)"><input type="radio" name="taskPref" value="both">Both equally</label>
+      <label data-pref="B" onclick="selectPref(this)"><input type="radio" name="taskPref" value="B">Review B <span style="color:#a371f7;font-weight:700">&#9654;</span></label>
+    </div>
+  </div>
+
+  <!-- Difficulty rating -->
+  <div class="difficulty-section">
+    <h4>How difficult was this comparison?</h4>
+    <div class="diff-scale" id="diffScale"></div>
+  </div>
+
+  <!-- Optional notes -->
+  <div class="notes-section">
+    <h4>Notes (optional) &mdash; anything that influenced your scoring?</h4>
+    <textarea id="taskNotes" placeholder="e.g. &quot;Review A mentioned specific test files, Review B stayed generic&quot;"></textarea>
+  </div>
+
+  <!-- Nav -->
+  <div class="navbar">
+    <button class="btn btn-s" id="prevBtn">&#8592; Previous</button>
+    <span class="uwarn" id="uWarn" style="display:none"></span>
+    <div style="display:flex;gap:8px;align-items:center">
+      <button class="btn btn-p" id="nextBtn">Submit &amp; Next &#8594;</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ FEEDBACK ═══ -->
+<div id="feedback" class="screen">
+  <div class="feedback-card">
+    <h2>Thank You!</h2>
+    <p>Before we finish, we'd love to hear your thoughts. This is optional.</p>
+    <textarea id="feedbackText" placeholder="Any feedback on the study? What did you like, what was confusing, any suggestions?"></textarea>
+    <div class="fb-btns">
+      <button class="btn btn-s" id="skipFbBtn">Skip</button>
+      <button class="btn btn-p" id="submitFbBtn">Submit Feedback</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ COMPLETION ═══ -->
+<div id="completion" class="screen">
+  <h1>Study Complete</h1>
+  <p>Thank you for participating!</p>
+  <div class="sgrid">
+    <div class="scard"><div class="sl">Comparisons</div><div class="sv" id="stR">12</div></div>
+    <div class="scard"><div class="sl">Total Time</div><div class="sv" id="stT">--</div></div>
+    <div class="scard"><div class="sl">Avg / Comp</div><div class="sv" id="stA">--</div></div>
+    <div class="scard"><div class="sl">Yes Rate</div><div class="sv" id="stY">--</div></div>
+  </div>
+  <p style="margin-top:10px;font-size:.85rem;color:var(--t2)">Your responses have been saved automatically.</p>
+  <div id="exportBackup" style="margin-top:14px;padding:14px;border:1px solid var(--brd);border-radius:10px;max-width:560px;margin-left:auto;margin-right:auto;background:var(--bg1)">
+    <p style="font-size:.9rem;color:var(--t1);margin:0 0 8px"><strong>Backup copy</strong></p>
+    <p style="font-size:.85rem;color:var(--t2);margin:0 0 10px">If the researcher asked you to email your responses, click below to download them as a JSON file and attach it to your reply. This is optional — your data was already submitted automatically.</p>
+    <button id="downloadBackupBtn" class="btn" style="font-size:.9rem">Download my responses (.json)</button>
+  </div>
+</div>
+
+</div>
+
+<script>
+/* ═══════════════════════════════════════════════════════════
+   Human Evaluation Study — Pairwise Comparison (v2)
+   ═══════════════════════════════════════════════════════════ */
+
+let STUDY=null;
+async function loadStudy(){
+  if(window.__STUDY_DATA){STUDY=window.__STUDY_DATA;return}
+  const r=await fetch("study_data.json");STUDY=await r.json();
+}
+
+let raterId="",taskOrder=[],modeMap={},ratings={},curTask=0,taskMs=0,timerH=null,startedAt=null;
+const PAIR_LABELS=["A","B"];
+const PAIR_COLORS={"A":"#58a6ff","B":"#a371f7"};
+let githubClickLog={},demographics={};
+
+const CRITERIA_KEYWORDS = {
+  "F3*": ["concrete","components","APIs","design patterns","affected"],
+  "F2*": ["concrete","boundary conditions","error-handling"],
+  "T3":  ["concrete","test files"],
+  "Q5":  ["concrete reason"],
+  "R1":  ["code clarity","naming conventions","function organization"],
+  "C6":  ["obvious issues","without","obvious missing information"],
+};
+
+const CRITERIA_HINTS = {
+  "F3*": "Tip: does it name actual classes, APIs, or patterns — not just 'other parts'?",
+  "F2*": "Tip: does it describe a concrete scenario, not just say 'edge cases exist'?",
+  "T3":  "Tip: does it mention actual test file names or specific test types — not just 'add tests'?",
+  "Q5":  "Tip: look for specific cause→effect reasoning",
+  "R1":  "Tip: any mention of naming, clarity, or code structure",
+  "C6":  "Tip: did the review skip something a competent reviewer would flag? If yes → N. Otherwise → Y.",
+};
+
+function showScreen(id){document.querySelectorAll(".screen").forEach(s=>s.classList.remove("active"));document.getElementById(id).classList.add("active")}
+
+/* ═══ Seeded RNG ═══ */
+function hash(s){let h=0;for(let i=0;i<s.length;i++)h=((h<<5)-h+s.charCodeAt(i))|0;return h>>>0}
+function rng(seed){return function(){seed|=0;seed=(seed+0x6d2b79f5)|0;let t=Math.imul(seed^(seed>>>15),1|seed);t=(t+Math.imul(t^(t>>>7),61|t))^t;return((t^(t>>>14))>>>0)/4294967296}}
+
+/* ═══ Build task order ═══ */
+function buildOrder(){
+  const r=rng(hash(raterId));
+  taskOrder=[];
+  modeMap={};
+  const prBlocks=[];
+  for(let pi=0;pi<STUDY.prs.length;pi++){
+    const block=[];
+    const pr=STUDY.prs[pi];
+    for(let ci=0;ci<STUDY.comparisons.length;ci++){
+      const comp=STUDY.comparisons[ci];
+      const flip=r()<0.5;
+      const left=flip?comp.mode_b:comp.mode_a;
+      const right=flip?comp.mode_a:comp.mode_b;
+      const taskId=`${pr.pr_id}_${comp.id}`;
+      block.push({prIdx:pi,compIdx:ci,taskId});
+      modeMap[taskId]={A:left,B:right};
+    }
+    prBlocks.push(block);
+  }
+  /* PR order is fixed easy→hard (set in study_data.json); only A/B sides are randomized */
+  for(const block of prBlocks)taskOrder.push(...block);
+}
+
+/* ═══ Storage ═══ */
+function sKey(){return"heval3_"+raterId}
+function save(){localStorage.setItem(sKey(),JSON.stringify({raterId,startedAt,curTask,ratings,modeMap,taskOrder,demographics,githubClickLog}))}
+function load(){
+  try{const d=JSON.parse(localStorage.getItem(sKey()));
+    if(d&&d.taskOrder&&d.ratings){taskOrder=d.taskOrder;ratings=d.ratings;modeMap=d.modeMap;startedAt=d.startedAt;demographics=d.demographics||{};githubClickLog=d.githubClickLog||{};curTask=firstOpen();return true}}catch(e){}
+  return false;
+}
+function firstOpen(){
+  for(let i=0;i<taskOrder.length;i++){
+    if(!ratings[taskOrder[i].taskId])return i;
+  }
+  return taskOrder.length;
+}
+
+/* ═══ Simple Markdown ═══ */
+function md(s){
+  if(!s)return"";
+  s=s.replace(/\r\n/g,"\n").replace(/\n{3,}/g,"\n\n");
+  return s.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;")
+    .replace(/^### (.+)$/gm,"<h3>$1</h3>").replace(/^## (.+)$/gm,"<h2>$1</h2>").replace(/^# (.+)$/gm,"<h1>$1</h1>")
+    .replace(/\*\*(.+?)\*\*/g,"<strong>$1</strong>").replace(/\*(.+?)\*/g,"<em>$1</em>")
+    .replace(/`([^`]+)`/g,"<code>$1</code>")
+    .replace(/^[\-\*] (.+)$/gm,"<li>$1</li>").replace(/^\d+\. (.+)$/gm,"<li>$1</li>")
+    .replace(/\[([^\]]+)\]\(([^)]+)\)/g,'<a href="$2" target="_blank">$1</a>')
+    .replace(/((?:<li>.*?<\/li>\n?)+)/g,m=>"<ul>"+m+"</ul>")
+    .replace(/\n\n/g,"</p><p>").replace(/\n/g," ")
+    .replace(/^/,"<p>").replace(/$/,"</p>")
+    .replace(/<p>\s*(<h[123]>)/g,"$1").replace(/(<\/h[123]>)\s*<\/p>/g,"$1")
+    .replace(/<p>\s*(<ul>)/g,"$1").replace(/(<\/ul>)\s*<\/p>/g,"$1")
+    .replace(/<p>\s*<\/p>/g,"");
+}
+
+function renderDiff(d){
+  if(!d)return"<span style='color:var(--t3)'>No diff available</span>";
+  const esc=s=>s.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+  const lines=d.split("\n");
+  let html="",curFile=null,rows=[];
+  function flush(){
+    if(!rows.length)return;
+    let out="";
+    if(curFile)out+=`<div class="diff-fname">${esc(curFile)}</div>`;
+    out+=`<table class="diff-tbl">${rows.join("")}</table>`;
+    html+=`<div class="diff-file">${out}</div>`;
+    rows=[];
+  }
+  for(const l of lines){
+    if(l.startsWith("diff ")){flush();curFile=null;continue}
+    if(l.startsWith("index ")||l.startsWith("new file")||l.startsWith("deleted file"))continue;
+    if(l.startsWith("--- "))continue;
+    if(l.startsWith("+++ ")){flush();let f=l.slice(4);if(f.startsWith("b/"))f=f.slice(2);curFile=f;continue}
+    if(l.startsWith("@@")){
+      const m=l.match(/@@ .+? @@(.*)/);
+      const label=esc(l.match(/@@ .+? @@/)?.[0]||l);
+      const ctx=m&&m[1]?` ${esc(m[1].trim())}`:"";
+      rows.push(`<tr class="hunk"><td class="dg">@@</td><td class="dc">${label}${ctx}</td></tr>`);
+    }else if(l.startsWith("+")){
+      rows.push(`<tr class="add"><td class="dg">+</td><td class="dc">${esc(l.slice(1))}</td></tr>`);
+    }else if(l.startsWith("-")){
+      rows.push(`<tr class="del"><td class="dg">\u2212</td><td class="dc">${esc(l.slice(1))}</td></tr>`);
+    }else{
+      rows.push(`<tr class="ctx"><td class="dg"></td><td class="dc">${esc(l)}</td></tr>`);
+    }
+  }
+  flush();
+  return html;
+}
+
+/* ═══ Review Side-by-Side ═══ */
+function buildReviewPair(pr,taskId){
+  const grid=document.getElementById("reviewGrid");
+  grid.innerHTML="";
+  const asgn=modeMap[taskId];
+
+  PAIR_LABELS.forEach(lbl=>{
+    const mode=asgn[lbl];
+    const card=document.createElement("div");
+    card.className="review-card";
+    const reviewHtml=md(pr.reviews[mode]);
+    card.innerHTML=`<div class="review-card-header"><span class="rlabel" style="background:${PAIR_COLORS[lbl]}">${lbl}</span><span style="color:${PAIR_COLORS[lbl]}">Review ${lbl}</span></div><div class="review-card-body"><div class="rcontent">${reviewHtml}</div></div>`;
+    grid.appendChild(card);
+  });
+}
+
+/* ═══ Highlight keywords in criterion description ═══ */
+function highlightDesc(cid,desc){
+  const kws=CRITERIA_KEYWORDS[cid]||[];
+  let out=desc;
+  for(const kw of kws){
+    const re=new RegExp(`(${kw.replace(/[.*+?^${}()|[\]\\]/g,"\\$&")})`,"gi");
+    out=out.replace(re,`<span class="kw">$1</span>`);
+  }
+  return out;
+}
+
+/* ═══ Scoring Matrix (2 columns) ═══ */
+function buildMatrix(){
+  const tbl=document.getElementById("matrixTable");
+  let html=`<thead><tr><th>Criterion</th>`;
+  PAIR_LABELS.forEach(l=>{html+=`<th class="col-review" style="color:${PAIR_COLORS[l]}">Review ${l}</th>`});
+  html+=`</tr></thead><tbody>`;
+
+  STUDY.criteria.forEach((c,idx)=>{
+    const desc=highlightDesc(c.id,c.description);
+    const hint=CRITERIA_HINTS[c.id]||"";
+    html+=`<tr><td><div class="cid-cell"><span class="cid" title="${c.id}">${idx+1}</span><span class="ccat">${c.category}</span><span class="cdesc">${desc}${hint?`<span class="chint">${hint}</span>`:""}</span></div></td>`;
+    PAIR_LABELS.forEach(lbl=>{
+      const cellId=`m-${c.id}-${lbl}`;
+      html+=`<td class="cell-toggle"><div class="yn-group" id="${cellId}" data-cid="${c.id}" data-lbl="${lbl}" data-val="0"><button type="button" class="yn-btn yn-yes" onclick="setYN(this,'1')">Y</button><button type="button" class="yn-btn yn-no" onclick="setYN(this,'-1')">N</button></div></td>`;
+    });
+    html+=`</tr>`;
+  });
+  html+=`</tbody>`;
+  tbl.innerHTML=html;
+}
+
+/* ═══ Difficulty scale ═══ */
+function buildDiffScale(){
+  const el=document.getElementById("diffScale");
+  const labels=["1 &mdash; Very Easy","2","3","4","5 &mdash; Very Hard"];
+  el.innerHTML="";
+  labels.forEach((txt,i)=>{
+    const lab=document.createElement("label");
+    lab.innerHTML=`<input type="radio" name="taskDiff" value="${i+1}"><span>${txt}</span>`;
+    lab.onclick=()=>{el.querySelectorAll("label").forEach(l=>l.classList.remove("selected"));lab.classList.add("selected")};
+    el.appendChild(lab);
+  });
+}
+
+function getDifficulty(){
+  const checked=document.querySelector('input[name="taskDiff"]:checked');
+  return checked?parseInt(checked.value):0;
+}
+
+function setGroupState(group,val){
+  if(!group)return;
+  group.dataset.val=val;
+  group.classList.remove('missing');
+  group.querySelectorAll('.yn-btn').forEach(b=>{
+    const bv=b.classList.contains('yn-yes')?"1":"-1";
+    b.classList.toggle('active',bv===val);
+  });
+}
+function setYN(btn,val){setGroupState(btn.parentElement,val)}
+function markMissing(){
+  let firstMissing=null;
+  PAIR_LABELS.forEach(lbl=>{
+    STUDY.criteria.forEach(c=>{
+      const g=document.getElementById(`m-${c.id}-${lbl}`);
+      if(!g)return;
+      if(g.dataset.val==="0"){
+        g.classList.add('missing');
+        if(!firstMissing)firstMissing=g;
+      }
+    });
+  });
+  if(firstMissing)firstMissing.scrollIntoView({behavior:"smooth",block:"center"});
+}
+function clearMissing(){
+  document.querySelectorAll('.yn-group.missing').forEach(g=>g.classList.remove('missing'));
+}
+
+function selectPref(label){
+  label.closest('.pref-opts').querySelectorAll('label').forEach(l=>l.classList.remove('selected'));
+  label.classList.add('selected');
+}
+function getPreference(){
+  const checked=document.querySelector('input[name="taskPref"]:checked');
+  return checked?checked.value:"";
+}
+
+function demoSelect(label){
+  label.closest('.demo-opts').querySelectorAll('label').forEach(l=>l.classList.remove('selected'));
+  label.classList.add('selected');
+  let ok=true;
+  document.querySelectorAll('#demographics .demo-opts').forEach(f=>{if(!f.querySelector('label.selected'))ok=false});
+  document.getElementById('demoBtn').disabled=!ok;
+}
+function getDemographics(){
+  const r={};
+  document.querySelectorAll('#demographics .demo-opts').forEach(c=>{const s=c.querySelector('input:checked');if(s)r[c.dataset.field]=s.value});
+  return r;
+}
+
+function allFilled(){
+  let ok=true;
+  PAIR_LABELS.forEach(lbl=>{
+    STUDY.criteria.forEach(c=>{
+      const btn=document.getElementById(`m-${c.id}-${lbl}`);
+      if(btn&&btn.dataset.val==="0")ok=false;
+    });
+  });
+  return ok;
+}
+
+function getMatrixScores(){
+  const result={};
+  PAIR_LABELS.forEach(lbl=>{
+    result[lbl]={};
+    STUDY.criteria.forEach(c=>{
+      const btn=document.getElementById(`m-${c.id}-${lbl}`);
+      if(!btn)return;
+      if(btn.dataset.val==="1")result[lbl][c.id]=1;
+      else if(btn.dataset.val==="-1")result[lbl][c.id]=0;
+    });
+  });
+  return result;
+}
+
+function restoreMatrix(taskId){
+  if(!ratings[taskId])return;
+  const saved=ratings[taskId].scores||{};
+  PAIR_LABELS.forEach(lbl=>{
+    if(!saved[lbl])return;
+    STUDY.criteria.forEach(c=>{
+      const g=document.getElementById(`m-${c.id}-${lbl}`);
+      if(!g)return;
+      const v=saved[lbl][c.id];
+      if(v===1)setGroupState(g,"1");
+      else if(v===0)setGroupState(g,"-1");
+    });
+  });
+  const diff=ratings[taskId].difficulty;
+  if(diff){
+    const radio=document.querySelector(`input[name="taskDiff"][value="${diff}"]`);
+    if(radio){radio.checked=true;radio.closest("label").classList.add("selected")}
+  }
+  const pref=ratings[taskId].preference;
+  if(pref){
+    const radio=document.querySelector(`input[name="taskPref"][value="${pref}"]`);
+    if(radio){radio.checked=true;radio.closest("label").classList.add("selected")}
+  }
+  const notesEl=document.getElementById("taskNotes");
+  if(notesEl&&ratings[taskId].notes)notesEl.value=ratings[taskId].notes;
+}
+
+/* ═══ Timer ═══ */
+function startT(){taskMs=0;clearInterval(timerH);const el=document.getElementById("timer");timerH=setInterval(()=>{taskMs+=1000;const s=Math.floor(taskMs/1000);const txt=Math.floor(s/60)+":"+String(s%60).padStart(2,"0");if(el.textContent!==txt)el.textContent=txt},1000)}
+function stopT(){clearInterval(timerH);return taskMs}
+
+/* ═══ Render Task ═══ */
+function render(idx){
+  if(idx>=taskOrder.length){showFeedback();return}
+  const task=taskOrder[idx];
+  const pr=STUDY.prs[task.prIdx];
+  const comp=STUDY.comparisons[task.compIdx];
+
+  document.getElementById("prCounter").textContent=`PR ${task.prIdx+1} of ${STUDY.prs.length}`;
+  const cl=document.getElementById("compLabel");
+  cl.textContent=`Comparison ${task.compIdx+1} of ${STUDY.comparisons.length}`;
+  cl.className=`comp-label comp-label-${task.compIdx+1}`;
+
+  document.getElementById("prTitle").textContent=pr.title;
+  document.getElementById("prRepo").textContent=pr.repo;
+  document.getElementById("prNumber").textContent=`#${pr.pr_number}`;
+  const ghLink=document.getElementById("prLink");
+  ghLink.href=pr.url;
+  ghLink.onclick=function(){if(!githubClickLog[task.taskId])githubClickLog[task.taskId]=0;githubClickLog[task.taskId]++;save()};
+
+  if(pr.body){document.getElementById("bodySection").style.display="block";document.getElementById("bodyC").textContent=pr.body}
+  else document.getElementById("bodySection").style.display="none";
+
+  document.getElementById("diffC").innerHTML=renderDiff(pr.diff);
+
+  buildReviewPair(pr,task.taskId);
+  buildMatrix();
+  buildDiffScale();
+  document.querySelectorAll('#prefOpts label').forEach(l=>l.classList.remove('selected'));
+  document.querySelectorAll('input[name="taskPref"]').forEach(r=>{r.checked=false});
+  const notesEl=document.getElementById("taskNotes");if(notesEl)notesEl.value="";
+  restoreMatrix(task.taskId);
+
+  updProg();
+  document.getElementById("uWarn").style.display="none";
+  clearMissing();
+  startT();
+  document.getElementById("prevBtn").disabled=idx===0;
+  const nb=document.getElementById("nextBtn");
+  if(idx===taskOrder.length-1){nb.innerHTML="Submit &amp; Finish &#10003;";nb.classList.add("btn-g");nb.classList.remove("btn-p")}
+  else{nb.innerHTML="Submit &amp; Next &#8594;";nb.classList.add("btn-p");nb.classList.remove("btn-g")}
+  window.scrollTo({top:0,behavior:"smooth"});
+}
+
+function updProg(){
+  const total=taskOrder.length;
+  document.getElementById("pFill").style.width=((curTask+1)/total*100)+"%";
+  document.getElementById("pTxt").textContent=(curTask+1)+" / "+total;
+}
+
+/* ═══ Navigation ═══ */
+function submitTask(){
+  if(!allFilled()){
+    const w=document.getElementById("uWarn");
+    w.textContent="\u26A0 A few questions are still unanswered \u2014 please click the remaining cells!";
+    w.style.display="inline";
+    markMissing();
+    return false;
+  }
+  clearMissing();
+  const diff=getDifficulty();
+  if(!diff){
+    const w=document.getElementById("uWarn");
+    w.textContent="\u26A0 One more thing \u2014 please rate the difficulty! (pick 1\u20135)";
+    w.style.display="inline";
+    return false;
+  }
+  const pref=getPreference();
+  if(!pref){
+    const w=document.getElementById("uWarn");
+    w.textContent="\u26A0 Please select an overall preference \u2014 A, B, or Both equally!";
+    w.style.display="inline";
+    return false;
+  }
+  const task=taskOrder[curTask];
+  const notes=(document.getElementById("taskNotes").value||"").trim();
+  ratings[task.taskId]={taskId:task.taskId,scores:getMatrixScores(),difficulty:diff,preference:pref,time_spent_ms:stopT(),notes,github_clicks:githubClickLog[task.taskId]||0};
+  save();
+  submitTaskToSheet(task.taskId);
+  return true;
+}
+
+function goNext(){if(!submitTask())return;curTask++;curTask>=taskOrder.length?showFeedback():render(curTask)}
+function goPrev(){
+  const task=taskOrder[curTask];
+  const sc=getMatrixScores();
+  const diff=getDifficulty();
+  const pref=getPreference();
+  const notes=(document.getElementById("taskNotes").value||"").trim();
+  const hasMatrix=PAIR_LABELS.some(l=>Object.keys(sc[l]||{}).length>0);
+  const hasAny=hasMatrix||!!diff||!!pref||!!notes;
+  if(hasAny){
+    ratings[task.taskId]={taskId:task.taskId,scores:sc,difficulty:diff,preference:pref,time_spent_ms:stopT(),notes,github_clicks:githubClickLog[task.taskId]||0};
+    save();
+  }
+  if(curTask>0){curTask--;render(curTask)}
+}
+
+/* ═══ Sheet auto-save (per comparison) with retry ═══
+   Every payload is mirrored to a localStorage outbox BEFORE the fetch
+   fires. Even if the Apps Script webhook is broken or the rater's
+   network drops, every submission is recoverable from the rater's
+   browser via the "Download my responses" button on the completion
+   screen. */
+const SHEET_URL="REDACTED_WEBHOOK_URL";
+const STUDY_ID="human_eval_v1";
+
+function _outboxKey(){return "heval3_outbox_"+STUDY_ID+"_"+(raterId||"_anon")}
+function appendToOutbox(payload){
+  try{
+    const key=_outboxKey();
+    const cur=JSON.parse(localStorage.getItem(key)||"[]");
+    cur.push({queued_at:new Date().toISOString(),payload});
+    localStorage.setItem(key,JSON.stringify(cur));
+  }catch(e){console.warn("outbox write failed",e)}
+}
+function loadOutbox(){
+  try{return JSON.parse(localStorage.getItem(_outboxKey())||"[]")}catch(e){return []}
+}
+function downloadResponseBackup(){
+  const data={study_id:STUDY_ID,rater_id:raterId,exported_at:new Date().toISOString(),sheet_url:SHEET_URL,payloads:loadOutbox()};
+  const blob=new Blob([JSON.stringify(data,null,2)],{type:"application/json"});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement("a");
+  a.href=url;
+  a.download=STUDY_ID+"_"+(raterId||"anon")+"_"+new Date().toISOString().replace(/[:.]/g,"-")+".json";
+  document.body.appendChild(a);a.click();document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+}
+
+function sendToSheet(payload,retries=3){
+  appendToOutbox(payload);
+  function attempt(n){
+    try{
+      fetch(SHEET_URL,{method:"POST",body:JSON.stringify(payload),mode:"no-cors"})
+        .catch(()=>{if(n>1)setTimeout(()=>attempt(n-1),2000*(4-n))});
+    }catch(e){if(n>1)setTimeout(()=>attempt(n-1),2000*(4-n))}
+  }
+  attempt(retries);
+}
+
+function submitTaskToSheet(taskId){
+  const r=ratings[taskId];if(!r)return;
+  const parts=taskId.split("_");
+  const prId=parseInt(parts[0]);
+  const compId=parts.slice(1).join("_");
+  const asgn=modeMap[taskId];
+  const rows=[];
+  for(const lbl of PAIR_LABELS){
+    if(!r.scores[lbl])continue;
+    rows.push({pr_id:prId,comparison:compId,blind_label:lbl,mode:asgn[lbl],scores:r.scores[lbl],difficulty:r.difficulty,preference:r.preference||"",time_spent_ms:r.time_spent_ms||0,notes:r.notes||"",github_clicks:r.github_clicks||0});
+  }
+  const payload={rater_id:raterId,completed_at:new Date().toISOString(),demographics,ratings:rows};
+  sendToSheet(payload);
+}
+
+function submitFeedbackToSheet(text){
+  if(!text)return;
+  const payload={rater_id:raterId,completed_at:new Date().toISOString(),feedback:text};
+  sendToSheet(payload);
+}
+
+/* ═══ Feedback ═══ */
+function showFeedback(){
+  showScreen("feedback");
+  document.getElementById("skipFbBtn").onclick=showDone;
+  document.getElementById("submitFbBtn").onclick=()=>{
+    const txt=document.getElementById("feedbackText").value.trim();
+    if(txt)submitFeedbackToSheet(txt);
+    showDone();
+  };
+}
+
+/* ═══ Attention / quality flags ═══ */
+function computeQualityFlags(){
+  const flags=[];
+  const vals=Object.values(ratings);
+  const n=vals.length;
+  if(!n)return flags;
+
+  const totalMs=vals.reduce((s,r)=>s+(r.time_spent_ms||0),0);
+  const avgMs=totalMs/n;
+  if(avgMs<30000)flags.push("speed:avg_under_30s");
+
+  const fastCount=vals.filter(r=>(r.time_spent_ms||0)<15000).length;
+  if(fastCount>n*0.5)flags.push("speed:majority_under_15s");
+
+  let allY=true,allN=true;
+  for(const r of vals){
+    for(const lbl of PAIR_LABELS){
+      if(!r.scores||!r.scores[lbl])continue;
+      for(const v of Object.values(r.scores[lbl])){
+        if(v!==1)allY=false;
+        if(v!==0)allN=false;
+      }
+    }
+  }
+  if(allY)flags.push("pattern:all_yes");
+  if(allN)flags.push("pattern:all_no");
+
+  let sameCount=0;
+  for(const r of vals){
+    if(!r.scores||!r.scores.A||!r.scores.B)continue;
+    const a=Object.values(r.scores.A);
+    const b=Object.values(r.scores.B);
+    if(a.length===b.length&&a.every((v,i)=>v===b[i]))sameCount++;
+  }
+  if(sameCount===n&&n>2)flags.push("pattern:A_equals_B_every_task");
+
+  return flags;
+}
+
+/* ═══ Completion ═══ */
+function showDone(){
+  showScreen("completion");
+  const n=Object.keys(ratings).length;document.getElementById("stR").textContent=n;
+  let tt=0,ty=0,tj=0;
+  for(const r of Object.values(ratings)){
+    tt+=r.time_spent_ms||0;
+    for(const lbl of PAIR_LABELS){
+      if(!r.scores||!r.scores[lbl])continue;
+      for(const v of Object.values(r.scores[lbl])){tj++;if(v===1)ty++}
+    }
+  }
+  const m=Math.round(tt/60000);
+  document.getElementById("stT").textContent=m<60?m+"m":Math.floor(m/60)+"h "+m%60+"m";
+  document.getElementById("stA").textContent=n>0?Math.round(tt/n/1000)+"s":"--";
+  document.getElementById("stY").textContent=tj>0?Math.round(100*ty/tj)+"%":"--";
+
+  const qflags=computeQualityFlags();
+  if(qflags.length){
+    sendToSheet({rater_id:raterId,completed_at:new Date().toISOString(),quality_flags:qflags});
+  }
+  const dlBtn=document.getElementById("downloadBackupBtn");
+  if(dlBtn)dlBtn.onclick=downloadResponseBackup;
+}
+
+/* ═══ Init ═══ */
+async function init(){
+  await loadStudy();
+  const inp=document.getElementById("raterInput"),btn=document.getElementById("startBtn");
+  inp.addEventListener("input",()=>{
+    const v=inp.value.trim();btn.disabled=!v;
+    if(v){try{const d=JSON.parse(localStorage.getItem("heval3_"+v));if(d&&d.ratings){const n=Object.keys(d.ratings).length;document.getElementById("resumeNote").style.display="block";document.getElementById("resumeNote").textContent=`Saved progress (${n}/${STUDY.prs.length*STUDY.comparisons.length} comparisons). Click Start to resume.`}else document.getElementById("resumeNote").style.display="none"}catch(e){document.getElementById("resumeNote").style.display="none"}}
+    else document.getElementById("resumeNote").style.display="none";
+  });
+  btn.onclick=start;
+  inp.addEventListener("keydown",e=>{if(e.key==="Enter"&&inp.value.trim())start()});
+
+  const cb=document.getElementById("consentBox"),cbtn=document.getElementById("consentBtn");
+  cb.onchange=()=>{cbtn.disabled=!cb.checked};
+  cbtn.onclick=()=>{
+    if(hasExistingProgress&&Object.keys(demographics).length>0)showScreen("briefing");
+    else showScreen("demographics");
+  };
+  document.getElementById("demoBtn").onclick=function(){demographics=getDemographics();save();showScreen("briefing")};
+}
+
+let hasExistingProgress=false;
+function start(){
+  raterId=document.getElementById("raterInput").value.trim();if(!raterId)return;
+
+  const lockKey="heval3_lock_"+raterId;
+  const lockVal=localStorage.getItem(lockKey);
+  if(lockVal){
+    const elapsed=Date.now()-parseInt(lockVal,10);
+    if(elapsed<300000){
+      if(!confirm("This rater ID appears to be active in another tab (last seen "+Math.round(elapsed/1000)+"s ago).\n\nContinue anyway?")){return}
+    }
+  }
+  localStorage.setItem(lockKey,String(Date.now()));
+  setInterval(()=>localStorage.setItem(lockKey,String(Date.now())),60000);
+
+  buildOrder();
+  hasExistingProgress=load();
+  if(!hasExistingProgress)startedAt=new Date().toISOString();
+  showScreen("consent");
+}
+
+function warmupComplete(){
+  const groups=document.querySelectorAll('#warmMatrix .yn-group');
+  for(const g of groups){if(g.dataset.val==="0")return false}
+  if(!document.querySelector('input[name="warmDiff"]:checked'))return false;
+  if(!document.querySelector('input[name="warmPref"]:checked'))return false;
+  return true;
+}
+function showWarmup(){
+  showScreen("warmup");
+  const btn=document.getElementById("warmDoneBtn");
+  btn.disabled=true;
+  const refresh=()=>{btn.disabled=!warmupComplete()};
+  document.getElementById("warmup").addEventListener("click",refresh);
+  btn.onclick=()=>{if(warmupComplete())beginEval()};
+}
+
+function beginEval(){
+  showScreen("evaluation");
+  document.getElementById("nextBtn").onclick=goNext;
+  document.getElementById("prevBtn").onclick=goPrev;
+  setupJumpBtn();
+  render(curTask);
+}
+
+function setupJumpBtn(){
+  const btn=document.getElementById("jumpBtn");
+  const matrixEl=document.querySelector("#evaluation .matrix-section");
+  const gridEl=document.getElementById("reviewGrid");
+  if(!matrixEl||!gridEl)return;
+  let matrixVisible=true;
+  const matrixObs=new IntersectionObserver(([e])=>{
+    matrixVisible=e.isIntersecting;
+    if(matrixVisible){btn.innerHTML="&#8593; Back to Reviews";btn.onclick=()=>gridEl.scrollIntoView({behavior:"smooth"})}
+    else{btn.innerHTML="&#8595; Jump to Questions";btn.onclick=()=>matrixEl.scrollIntoView({behavior:"smooth"})}
+  },{threshold:0});
+  matrixObs.observe(matrixEl);
+  const topbar=document.querySelector("#evaluation .topbar");
+  if(topbar){
+    const topObs=new IntersectionObserver(([e])=>{
+      btn.classList.toggle("visible",!e.isIntersecting);
+    },{threshold:0});
+    topObs.observe(topbar);
+  }
+}
+
+/* ═══ Theme Toggle ═══ */
+(function(){
+  const btn=document.getElementById("themeToggle");
+  const saved=localStorage.getItem("heval_theme");
+  if(saved==="light"){document.documentElement.setAttribute("data-theme","light");btn.innerHTML="&#9728;"}
+  btn.onclick=()=>{
+    const isLight=document.documentElement.getAttribute("data-theme")==="light";
+    if(isLight){document.documentElement.removeAttribute("data-theme");btn.innerHTML="&#9790;";localStorage.setItem("heval_theme","dark")}
+    else{document.documentElement.setAttribute("data-theme","light");btn.innerHTML="&#9728;";localStorage.setItem("heval_theme","light")}
+  };
+})();
+
+init();
+
+/* ═══ Briefing → warmup/eval routing ═══ */
+document.getElementById("beginBtn").onclick=function(){
+  if(hasExistingProgress)beginEval();else showWarmup();
+};
+</script>
+</body>
+</html>

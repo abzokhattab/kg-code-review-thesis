@@ -1,0 +1,51 @@
+{
+  "pr_id": 31,
+  "mode": "baseline",
+  "mean_scores": {
+    "F3": 0.0,
+    "F4": 2.0,
+    "P1": 0.0,
+    "R2": 0.0,
+    "T3": 2.0
+  },
+  "mean_graded_total": 4.0,
+  "per_judge": [
+    {
+      "model": "gemini:gemini-2.5-flash",
+      "scores": {
+        "F3": 0,
+        "F4": 2,
+        "P1": 0,
+        "R2": 0,
+        "T3": 2
+      },
+      "evidence": {
+        "F3": "The review discusses the impact on the model's internal calculations and predictions but does not mention how the change interacts with other callers or dependent components.",
+        "F4": "Unconditional centering of test features could lead to incorrect variance calculations if `fit_intercept` is `False`, potentially causing misleading predictions.",
+        "P1": "The review does not mention performance or potential inefficiencies.",
+        "R2": "The review does not comment on complexity or suggest simplification of the code structure.",
+        "T3": "`sklearn/linear_model/tests/test_bayes.py:line 192`: The test only checks a specific case with a small dataset and may not account for other potential edge cases. Expand test cases to include scenarios where `fit_intercept` is `False` and with different data distributions to ensure robustness. Consider adding tests for edge cases, such as when `X_offset_` is zero or when the input data has varying scales."
+      },
+      "error": ""
+    },
+    {
+      "model": "gemini:gemini-2.5-pro",
+      "scores": {
+        "F3": 0,
+        "F4": 2,
+        "P1": 0,
+        "R2": 0,
+        "T3": 2
+      },
+      "evidence": {
+        "F3": "The review focuses on the internal logic of the `predict` method and does not mention how the change interacts with any callers or dependent components.",
+        "F4": "The review identifies a specific scenario where the contract is broken: \"Unconditional centering of test features could lead to incorrect variance calculations if `fit_intercept` is `False`, potentially causing misleading predictions.\"",
+        "P1": "The review makes no mention of performance or efficiency.",
+        "R2": "The review does not comment on code complexity or suggest simplifications. The recommendations are for correctness, not refactoring.",
+        "T3": "The review names one specific test file path: `sklearn/linear_model/tests/test_bayes.py:line 192`."
+      },
+      "error": ""
+    }
+  ],
+  "timestamp": "2026-06-01T18:58:10.775948+00:00"
+}

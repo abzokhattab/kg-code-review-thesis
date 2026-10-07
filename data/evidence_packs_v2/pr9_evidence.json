@@ -1,0 +1,406 @@
+{
+  "pr": {
+    "number": 98123,
+    "title": "Auth: Add IP address login attempt validation",
+    "body": "<!--\r\n\r\nThank you for sending a pull request! Here are some tips:\r\n\r\n1. If this is your first time, please read our contribution guide at https://github.com/grafana/grafana/blob/main/CONTRIBUTING.md\r\n\r\n2. Ensure you include and run the appropriate tests as part of your Pull Request.\r\n\r\n3. In a new feature or configuration option, an update to the documentation is necessary. Everything related to the documentation is under the docs folder in the root of the repository.\r\n\r\n4. If the Pull Request is a work in progress, make use of GitHub's \"Draft PR\" feature and mark it as such.\r\n\r\n5. If you can not merge your Pull Request due to a merge conflict, Rebase it. This gets it in sync with the main branch.\r\n\r\n6. Name your PR as \"<FeatureArea>: Describe your change\", e.g. Alerting: Prevent race condition. If it's a fix or feature relevant for the changelog describe the user impact in the title. The PR title is used to auto-generate the changelog for issues marked with the \"add to changelog\" label.\r\n\r\n7. If your PR content should be added to the What's New document for the next major or minor release, add the **add to what's new** label to your PR. Note that you should add this label to the main PR that introduces the feature; do not add this label to smaller PRs for the feature.\r\n\r\n-->\r\n\r\n**What is this feature?**\r\nImplement login attempt validation by IP address. This is configured with the setting `DisableIPAddressLoginProtection`, with the default set to `true`\r\n\r\n**Why do we need this feature?**\r\nOffers an additional layer of protection for passwordless login attempts.\r\n\r\n**Which issue(s) does this PR fix?**:\r\n\r\n<!--\r\n\r\n- Automatically closes linked issue when the Pull Request is merged.\r\n\r\nUsage: \"Fixes #<issue number>\", or \"Fixes (paste link of issue)\"\r\n\r\n-->\r\n\r\nCloses https://github.com/grafana/identity-access-team/issues/1037\r\n\r\n**Special notes for your reviewer:**\r\n\r\nPlease check that:\r\n- [ ] It works as expected from a user's perspective.\r\n- [ ] If this is a pre-GA feature, it is behind a feature toggle.\r\n- [ ] The docs are updated, and if this is a [notable improvement](https://grafana.com/docs/writers-toolkit/contribute/release-notes/#how-to-determine-if-content-belongs-in-whats-new), it's added to our [What's New](https://grafana.com/docs/writers-toolkit/contribute/release-notes/) doc.\r\n",
+    "url": "https://github.com/grafana/grafana/pull/98123",
+    "repo": "grafana/grafana",
+    "base_branch": "main",
+    "head_branch": "colin-stuart/add-ip-address-login-attempt-validation",
+    "merged_at": "2025-02-05T18:16:36Z",
+    "state": "MERGED"
+  },
+  "changed_files": [
+    {
+      "path": "conf/defaults.ini",
+      "language": "unknown",
+      "added": 3,
+      "deleted": 0
+    },
+    {
+      "path": "conf/sample.ini",
+      "language": "unknown",
+      "added": 3,
+      "deleted": 0
+    },
+    {
+      "path": "docs/sources/setup-grafana/configure-grafana/_index.md",
+      "language": "markdown",
+      "added": 4,
+      "deleted": 0
+    },
+    {
+      "path": "pkg/services/authn/clients/password.go",
+      "language": "go",
+      "added": 11,
+      "deleted": 2
+    },
+    {
+      "path": "pkg/services/authn/clients/password_test.go",
+      "language": "go",
+      "added": 18,
+      "deleted": 8
+    },
+    {
+      "path": "pkg/services/authn/clients/passwordless.go",
+      "language": "go",
+      "added": 9,
+      "deleted": 1
+    },
+    {
+      "path": "pkg/services/loginattempt/login_attempt.go",
+      "language": "go",
+      "added": 4,
+      "deleted": 1
+    },
+    {
+      "path": "pkg/services/loginattempt/loginattemptimpl/login_attempt.go",
+      "language": "go",
+      "added": 23,
+      "deleted": 1
+    },
+    {
+      "path": "pkg/services/loginattempt/loginattemptimpl/login_attempt_test.go",
+      "language": "go",
+      "added": 107,
+      "deleted": 7
+    },
+    {
+      "path": "pkg/services/loginattempt/loginattemptimpl/models.go",
+      "language": "go",
+      "added": 6,
+      "deleted": 1
+    },
+    {
+      "path": "pkg/services/loginattempt/loginattemptimpl/store.go",
+      "language": "go",
+      "added": 18,
+      "deleted": 1
+    },
+    {
+      "path": "pkg/services/loginattempt/loginattemptimpl/store_test.go",
+      "language": "go",
+      "added": 6,
+      "deleted": 6
+    },
+    {
+      "path": "pkg/services/loginattempt/loginattempttest/fake.go",
+      "language": "go",
+      "added": 4,
+      "deleted": 0
+    },
+    {
+      "path": "pkg/services/loginattempt/loginattempttest/mock.go",
+      "language": "go",
+      "added": 6,
+      "deleted": 1
+    },
+    {
+      "path": "pkg/setting/setting.go",
+      "language": "go",
+      "added": 2,
+      "deleted": 0
+    }
+  ],
+  "nearest_tests": [
+    {
+      "path": "apps/dashboard/pkg/migration/frontend_defaults_test.go",
+      "relationship": "tests",
+      "source_file": "conf/defaults.ini"
+    },
+    {
+      "path": "apps/logsdrilldown/pkg/apis/logsdrilldown/v1alpha1/logsdrilldowndefaults_spec_gen.go",
+      "relationship": "tests",
+      "source_file": "conf/defaults.ini"
+    },
+    {
+      "path": "public/app/features/explore/TraceView/components/model/ddg/sample-paths.test.resources.ts",
+      "relationship": "tests",
+      "source_file": "conf/sample.ini"
+    },
+    {
+      "path": "pkg/expr/mathexp/resample_test.go",
+      "relationship": "tests",
+      "source_file": "conf/sample.ini"
+    },
+    {
+      "path": "pkg/promlib/querydata/exemplar/sampler_stddev_test.go",
+      "relationship": "tests",
+      "source_file": "conf/sample.ini"
+    },
+    {
+      "path": "pkg/promlib/querydata/exemplar/sampler_test.go",
+      "relationship": "tests",
+      "source_file": "conf/sample.ini"
+    },
+    {
+      "path": "pkg/cmd/grafana-cli/commands/datamigrations/encrypt_datasource_passwords_test.go",
+      "relationship": "tests",
+      "source_file": "pkg/services/authn/clients/password.go"
+    },
+    {
+      "path": "pkg/cmd/grafana-cli/commands/reset_password_command_test.go",
+      "relationship": "tests",
+      "source_file": "pkg/services/authn/clients/password.go"
+    },
+    {
+      "path": "pkg/services/user/password_test.go",
+      "relationship": "tests",
+      "source_file": "pkg/services/authn/clients/password.go"
+    },
+    {
+      "path": "pkg/services/authn/clients/password_test.go",
+      "relationship": "tests",
+      "source_file": "pkg/services/authn/clients/password.go"
+    },
+    {
+      "path": "pkg/services/authn/clients/passwordless_test.go",
+      "relationship": "tests",
+      "source_file": "pkg/services/authn/clients/password.go"
+    },
+    {
+      "path": "pkg/services/loginattempt/loginattemptimpl/login_attempt_test.go",
+      "relationship": "tests",
+      "source_file": "pkg/services/loginattempt/login_attempt.go"
+    },
+    {
+      "path": "pkg/registry/apis/iam/resourcepermission/models_test.go",
+      "relationship": "tests",
+      "source_file": "pkg/services/loginattempt/loginattemptimpl/models.go"
+    },
+    {
+      "path": "pkg/api/dtos/models_test.go",
+      "relationship": "tests",
+      "source_file": "pkg/services/loginattempt/loginattemptimpl/models.go"
+    },
+    {
+      "path": "pkg/services/datasources/models_test.go",
+      "relationship": "tests",
+      "source_file": "pkg/services/loginattempt/loginattemptimpl/models.go"
+    }
+  ],
+  "dependent_files": [
+    {
+      "path": "e2e-playwright/test-plugins/grafana-test-panel/components/SimplePanel.tsx",
+      "relationship": "imports",
+      "source_file": "conf/defaults.ini"
+    },
+    {
+      "path": "e2e-playwright/test-plugins/grafana-extensionstest-app/tests/usePluginLinks.spec.ts",
+      "relationship": "imports",
+      "source_file": "conf/defaults.ini"
+    },
+    {
+      "path": "public/app/core/specs/backend_srv.test.ts",
+      "relationship": "imports",
+      "source_file": "conf/defaults.ini"
+    },
+    {
+      "path": "public/app/core/navigation/mocks/routeProps.ts",
+      "relationship": "imports",
+      "source_file": "conf/defaults.ini"
+    },
+    {
+      "path": "public/app/core/components/OptionsUI/color.tsx",
+      "relationship": "imports",
+      "source_file": "conf/defaults.ini"
+    },
+    {
+      "path": "public/app/plugins/datasource/parca/QueryEditor/QueryEditor.tsx",
+      "relationship": "imports",
+      "source_file": "conf/defaults.ini"
+    },
+    {
+      "path": "public/app/plugins/datasource/loki/querybuilder/state.ts",
+      "relationship": "imports",
+      "source_file": "conf/defaults.ini"
+    },
+    {
+      "path": "public/app/plugins/datasource/loki/querybuilder/state.test.ts",
+      "relationship": "imports",
+      "source_file": "conf/defaults.ini"
+    },
+    {
+      "path": "public/app/plugins/datasource/loki/datasource.ts",
+      "relationship": "imports",
+      "source_file": "conf/defaults.ini"
+    },
+    {
+      "path": "public/app/plugins/datasource/loki/components/LokiQueryEditor.tsx",
+      "relationship": "imports",
+      "source_file": "conf/defaults.ini"
+    },
+    {
+      "path": "public/app/core/components/TimelineChart/utils.ts",
+      "relationship": "imports",
+      "source_file": "conf/sample.ini"
+    },
+    {
+      "path": "public/app/plugins/datasource/parca/types.ts",
+      "relationship": "imports",
+      "source_file": "conf/sample.ini"
+    },
+    {
+      "path": "public/app/plugins/datasource/parca/QueryEditor/QueryEditor.test.tsx",
+      "relationship": "imports",
+      "source_file": "conf/sample.ini"
+    },
+    {
+      "path": "public/app/plugins/datasource/loki/querybuilder/operations.ts",
+      "relationship": "imports",
+      "source_file": "conf/sample.ini"
+    },
+    {
+      "path": "public/app/plugins/datasource/loki/querybuilder/components/LokiQueryBuilder.tsx",
+      "relationship": "imports",
+      "source_file": "conf/sample.ini"
+    }
+  ],
+  "diff_summary": "15 files changed",
+  "full_diff": "diff --git a/conf/defaults.ini b/conf/defaults.ini\nindex 91e7af2544251..4640b26b4f4e2 100644\n--- a/conf/defaults.ini\n+++ b/conf/defaults.ini\n@@ -354,6 +354,9 @@ disable_brute_force_login_protection = false\n # max number of failed login attempts before user gets locked\n brute_force_login_protection_max_attempts = 5\n \n+# disable protection against brute force login attempts by IP address\n+disable_ip_address_login_protection = true\n+\n # set to true if you host Grafana behind HTTPS. default is false.\n cookie_secure = false\n \ndiff --git a/conf/sample.ini b/conf/sample.ini\nindex d1a06d9c3318b..92b99457212fc 100644\n--- a/conf/sample.ini\n+++ b/conf/sample.ini\n@@ -353,6 +353,9 @@\n # max number of failed login attempts before user gets locked\n ;brute_force_login_protection_max_attempts = 5\n \n+# disable protection against brute force login attempts by IP address\n+; disable_ip_address_login_protection = true\n+\n # set to true if you host Grafana behind HTTPS. default is false.\n ;cookie_secure = false\n \ndiff --git a/docs/sources/setup-grafana/configure-grafana/_index.md b/docs/sources/setup-grafana/configure-grafana/_index.md\nindex 6469a11891b55..848d0c1a82003 100644\n--- a/docs/sources/setup-grafana/configure-grafana/_index.md\n+++ b/docs/sources/setup-grafana/configure-grafana/_index.md\n@@ -696,6 +696,10 @@ An existing user's account is unable to login for five minutes if all login atte\n Configure how many login attempts a user can have within a five minute window before their account is locked.\n Default is `5`.\n \n+#### `disable_ip_address_login_protection`\n+\n+Set to `true` to disable [brute force login protection by IP address](https://cheatsheetseries.owasp.org/cheatsheets/Authentication_Cheat_Sheet.html#account-lockout). Default is `true`. Anyone from the IP address will be unable to login for 5 minutes if all login attempts are spent within a 5 minute window.\n+\n #### `cookie_secure`\n \n Set to `true` if you host Grafana behind HTTPS. Default is `false`.\ndiff --git a/pkg/services/authn/clients/password.go b/pkg/services/authn/clients/password.go\nindex a44f8615086f8..76e82d4fc5940 100644\n--- a/pkg/services/authn/clients/password.go\n+++ b/pkg/services/authn/clients/password.go\n@@ -39,6 +39,14 @@ func (c *Password) AuthenticatePassword(ctx context.Context, r *authn.Request, u\n \t\treturn nil, errPasswordAuthFailed.Errorf(\"too many consecutive incorrect login attempts for user - login for user temporarily blocked\")\n \t}\n \n+\tok, err = c.loginAttempts.ValidateIPAddress(ctx, web.RemoteAddr(r.HTTPRequest))\n+\tif err != nil {\n+\t\treturn nil, err\n+\t}\n+\tif !ok {\n+\t\treturn nil, errPasswordlessClientTooManyLoginAttempts.Errorf(\"too many consecutive incorrect login attempts for IP address - login for IP address temporarily blocked\")\n+\t}\n+\n \tif len(password) == 0 {\n \t\treturn nil, errPasswordAuthFailed.Errorf(\"no password provided\")\n \t}\n@@ -56,8 +64,9 @@ func (c *Password) AuthenticatePassword(ctx context.Context, r *authn.Request, u\n \t\treturn identity, nil\n \t}\n \n-\tif errors.Is(clientErrs, errInvalidPassword) {\n-\t\t_ = c.loginAttempts.Add(ctx, username, web.RemoteAddr(r.HTTPRequest))\n+\terr = c.loginAttempts.Add(ctx, username, web.RemoteAddr(r.HTTPRequest))\n+\tif err != nil {\n+\t\treturn nil, err\n \t}\n \n \treturn nil, errPasswordAuthFailed.Errorf(\"failed to authenticate identity: %w\", clientErrs)\ndiff --git a/pkg/services/authn/clients/password_test.go b/pkg/services/authn/clients/password_test.go\nindex e8a9069222921..5393feafd5330 100644\n--- a/pkg/services/authn/clients/password_test.go\n+++ b/pkg/services/authn/clients/password_test.go\n@@ -2,6 +2,8 @@ package clients\n \n import (\n \t\"context\"\n+\t\"net/http\"\n+\t\"net/url\"\n \t\"testing\"\n \n \t\"github.com/grafana/authlib/claims\"\n@@ -17,7 +19,6 @@ func TestPassword_AuthenticatePassword(t *testing.T) {\n \t\tdesc             string\n \t\tusername         string\n \t\tpassword         string\n-\t\treq              *authn.Request\n \t\tblockLogin       bool\n \t\tclients          []authn.PasswordClient\n \t\texpectedErr      error\n@@ -29,7 +30,6 @@ func TestPassword_AuthenticatePassword(t *testing.T) {\n \t\t\tdesc:             \"should success when password client return identity\",\n \t\t\tusername:         \"test\",\n \t\t\tpassword:         \"test\",\n-\t\t\treq:              &authn.Request{},\n \t\t\tclients:          []authn.PasswordClient{authntest.FakePasswordClient{ExpectedIdentity: &authn.Identity{ID: \"1\", Type: claims.TypeUser}}},\n \t\t\texpectedIdentity: &authn.Identity{ID: \"1\", Type: claims.TypeUser},\n \t\t},\n@@ -37,7 +37,6 @@ func TestPassword_AuthenticatePassword(t *testing.T) {\n \t\t\tdesc:             \"should success when found in second client\",\n \t\t\tusername:         \"test\",\n \t\t\tpassword:         \"test\",\n-\t\t\treq:              &authn.Request{},\n \t\t\tclients:          []authn.PasswordClient{authntest.FakePasswordClient{ExpectedErr: errIdentityNotFound}, authntest.FakePasswordClient{ExpectedIdentity: &authn.Identity{ID: \"2\", Type: claims.TypeUser}}},\n \t\t\texpectedIdentity: &authn.Identity{ID: \"2\", Type: claims.TypeUser},\n \t\t},\n@@ -45,14 +44,12 @@ func TestPassword_AuthenticatePassword(t *testing.T) {\n \t\t\tdesc:        \"should fail for empty password\",\n \t\t\tusername:    \"test\",\n \t\t\tpassword:    \"\",\n-\t\t\treq:         &authn.Request{},\n \t\t\texpectedErr: errPasswordAuthFailed,\n \t\t},\n \t\t{\n \t\t\tdesc:        \"should if login is blocked by to many attempts\",\n \t\t\tusername:    \"test\",\n \t\t\tpassword:    \"test\",\n-\t\t\treq:         &authn.Request{},\n \t\t\tblockLogin:  true,\n \t\t\texpectedErr: errPasswordAuthFailed,\n \t\t},\n@@ -60,7 +57,6 @@ func TestPassword_AuthenticatePassword(t *testing.T) {\n \t\t\tdesc:        \"should fail when not found in any clients\",\n \t\t\tusername:    \"test\",\n \t\t\tpassword:    \"test\",\n-\t\t\treq:         &authn.Request{},\n \t\t\tclients:     []authn.PasswordClient{authntest.FakePasswordClient{ExpectedErr: errIdentityNotFound}, authntest.FakePasswordClient{ExpectedErr: errIdentityNotFound}},\n \t\t\texpectedErr: errPasswordAuthFailed,\n \t\t},\n@@ -69,8 +65,22 @@ func TestPassword_AuthenticatePassword(t *testing.T) {\n \tfor _, tt := range tests {\n \t\tt.Run(tt.desc, func(t *testing.T) {\n \t\t\tc := ProvidePassword(loginattempttest.FakeLoginAttemptService{ExpectedValid: !tt.blockLogin}, tt.clients...)\n-\n-\t\t\tidentity, err := c.AuthenticatePassword(context.Background(), tt.req, tt.username, tt.password)\n+\t\t\tr := &authn.Request{\n+\t\t\t\tOrgID: 12345,\n+\t\t\t\tHTTPRequest: &http.Request{\n+\t\t\t\t\tMethod: \"GET\",\n+\t\t\t\t\tURL: &url.URL{\n+\t\t\t\t\t\tScheme: \"https\",\n+\t\t\t\t\t\tHost:   \"example.com\",\n+\t\t\t\t\t\tPath:   \"/api/v1/resource\",\n+\t\t\t\t\t},\n+\t\t\t\t\tHeader: http.Header{\n+\t\t\t\t\t\t\"Content-Type\": []string{\"application/json\"},\n+\t\t\t\t\t\t\"User-Agent\":   []string{\"MyApp/1.0\"},\n+\t\t\t\t\t},\n+\t\t\t\t},\n+\t\t\t}\n+\t\t\tidentity, err := c.AuthenticatePassword(context.Background(), r, tt.username, tt.password)\n \t\t\tif tt.expectedErr != nil {\n \t\t\t\tassert.ErrorIs(t, err, tt.expectedErr)\n \t\t\t\tassert.Nil(t, identity)\ndiff --git a/pkg/services/authn/clients/passwordless.go b/pkg/services/authn/clients/passwordless.go\nindex 701d781878968..115f59d35244b 100644\n--- a/pkg/services/authn/clients/passwordless.go\n+++ b/pkg/services/authn/clients/passwordless.go\n@@ -105,7 +105,6 @@ func (c *Passwordless) RedirectURL(ctx context.Context, r *authn.Request) (*auth\n \t\treturn nil, err\n \t}\n \n-\t// TODO: add IP address validation\n \tok, err := c.loginAttempts.Validate(ctx, form.Email)\n \tif err != nil {\n \t\treturn nil, err\n@@ -115,6 +114,15 @@ func (c *Passwordless) RedirectURL(ctx context.Context, r *authn.Request) (*auth\n \t\treturn nil, errPasswordlessClientTooManyLoginAttempts.Errorf(\"too many consecutive incorrect login attempts for user - login for user temporarily blocked\")\n \t}\n \n+\tok, err = c.loginAttempts.ValidateIPAddress(ctx, web.RemoteAddr(r.HTTPRequest))\n+\tif err != nil {\n+\t\treturn nil, err\n+\t}\n+\n+\tif !ok {\n+\t\treturn nil, errPasswordlessClientTooManyLoginAttempts.Errorf(\"too many consecutive incorrect login attempts for IP address - login for IP address temporarily blocked\")\n+\t}\n+\n \terr = c.loginAttempts.Add(ctx, form.Email, web.RemoteAddr(r.HTTPRequest))\n \tif err != nil {\n \t\treturn nil, err\ndiff --git a/pkg/services/loginattempt/login_attempt.go b/pkg/services/loginattempt/login_attempt.go\nindex ce3233f0f3b33..7758e6716d493 100644\n--- a/pkg/services/loginattempt/login_attempt.go\n+++ b/pkg/services/loginattempt/login_attempt.go\n@@ -6,10 +6,13 @@ import (\n \n type Service interface {\n \t// Add adds a new login attempt record for provided username\n-\tAdd(ctx context.Context, username, IPAddress string) error\n+\tAdd(ctx context.Context, username, ipAddress string) error\n \t// Validate checks if username has to many login attempts inside a window.\n \t// Will return true if provided username do not have too many attempts.\n \tValidate(ctx context.Context, username string) (bool, error)\n+\t// Validate checks if IP address has to many login attempts inside a window.\n+\t// Will return true if provided IP address do not have too many attempts.\n+\tValidateIPAddress(ctx context.Context, ipAddress string) (bool, error)\n \t// Reset resets all login attempts attached to username\n \tReset(ctx context.Context, username string) error\n }\ndiff --git a/pkg/services/loginattempt/loginattemptimpl/login_attempt.go b/pkg/services/loginattempt/loginattemptimpl/login_attempt.go\nindex f55b8fe34b177..3c9014153339e 100644\n--- a/pkg/services/loginattempt/loginattemptimpl/login_attempt.go\n+++ b/pkg/services/loginattempt/loginattemptimpl/login_attempt.go\n@@ -53,7 +53,7 @@ func (s *Service) Add(ctx context.Context, username, IPAddress string) error {\n \n \t_, err := s.store.CreateLoginAttempt(ctx, CreateLoginAttemptCommand{\n \t\tUsername:  strings.ToLower(username),\n-\t\tIpAddress: IPAddress,\n+\t\tIPAddress: IPAddress,\n \t})\n \treturn err\n }\n@@ -84,6 +84,28 @@ func (s *Service) Validate(ctx context.Context, username string) (bool, error) {\n \treturn true, nil\n }\n \n+func (s *Service) ValidateIPAddress(ctx context.Context, IPAddress string) (bool, error) {\n+\tif s.cfg.DisableIPAddressLoginProtection {\n+\t\treturn true, nil\n+\t}\n+\n+\tloginAttemptCountQuery := GetIPLoginAttemptCountQuery{\n+\t\tIPAddress: IPAddress,\n+\t\tSince:     time.Now().Add(-loginAttemptsWindow),\n+\t}\n+\n+\tcount, err := s.store.GetIPLoginAttemptCount(ctx, loginAttemptCountQuery)\n+\tif err != nil {\n+\t\treturn false, err\n+\t}\n+\n+\tif count >= s.cfg.BruteForceLoginProtectionMaxAttempts {\n+\t\treturn false, nil\n+\t}\n+\n+\treturn true, nil\n+}\n+\n func (s *Service) cleanup(ctx context.Context) {\n \terr := s.lock.LockAndExecute(ctx, \"delete old login attempts\", time.Minute*10, func(context.Context) {\n \t\tcmd := DeleteOldLoginAttemptsCommand{\ndiff --git a/pkg/services/loginattempt/loginattemptimpl/login_attempt_test.go b/pkg/services/loginattempt/loginattemptimpl/login_attempt_test.go\nindex 7015dff01e988..96e19039f2893 100644\n--- a/pkg/services/loginattempt/loginattemptimpl/login_attempt_test.go\n+++ b/pkg/services/loginattempt/loginattemptimpl/login_attempt_test.go\n@@ -22,40 +22,40 @@ func TestService_Validate(t *testing.T) {\n \t\texpectedErr   error\n \t}{\n \t\t{\n-\t\t\tname:          \"When brute force protection enabled and user login attempt count is less than max\",\n+\t\t\tname:          \"Should be valid when brute force protection enabled and user login attempt count is less than max\",\n \t\t\tloginAttempts: maxInvalidLoginAttempts - 1,\n \t\t\texpected:      true,\n \t\t\texpectedErr:   nil,\n \t\t},\n \t\t{\n-\t\t\tname:          \"When brute force protection enabled and user login attempt count equals max\",\n+\t\t\tname:          \"Should be invalid when brute force protection enabled and user login attempt count equals max\",\n \t\t\tloginAttempts: maxInvalidLoginAttempts,\n \t\t\texpected:      false,\n \t\t\texpectedErr:   nil,\n \t\t},\n \t\t{\n-\t\t\tname:          \"When brute force protection enabled and user login attempt count is greater than max\",\n+\t\t\tname:          \"Should be invalid when brute force protection enabled and user login attempt count is greater than max\",\n \t\t\tloginAttempts: maxInvalidLoginAttempts + 1,\n \t\t\texpected:      false,\n \t\t\texpectedErr:   nil,\n \t\t},\n \n \t\t{\n-\t\t\tname:          \"When brute force protection disabled and user login attempt count is less than max\",\n+\t\t\tname:          \"Should be valid when brute force protection disabled and user login attempt count is less than max\",\n \t\t\tloginAttempts: maxInvalidLoginAttempts - 1,\n \t\t\tdisabled:      true,\n \t\t\texpected:      true,\n \t\t\texpectedErr:   nil,\n \t\t},\n \t\t{\n-\t\t\tname:          \"When brute force protection disabled and user login attempt count equals max\",\n+\t\t\tname:          \"Should be valid when brute force protection disabled and user login attempt count equals max\",\n \t\t\tloginAttempts: maxInvalidLoginAttempts,\n \t\t\tdisabled:      true,\n \t\t\texpected:      true,\n \t\t\texpectedErr:   nil,\n \t\t},\n \t\t{\n-\t\t\tname:          \"When brute force protection disabled and user login attempt count is greater than max\",\n+\t\t\tname:          \"Should be valid when brute force protection disabled and user login attempt count is greater than max\",\n \t\t\tloginAttempts: maxInvalidLoginAttempts + 1,\n \t\t\tdisabled:      true,\n \t\t\texpected:      true,\n@@ -83,7 +83,7 @@ func TestService_Validate(t *testing.T) {\n \t}\n }\n \n-func TestLoginAttempts(t *testing.T) {\n+func TestUserLoginAttempts(t *testing.T) {\n \tctx := context.Background()\n \tcfg := setting.NewCfg()\n \tcfg.DisableBruteForceLoginProtection = false\n@@ -109,6 +109,102 @@ func TestLoginAttempts(t *testing.T) {\n \tassert.Nil(t, err)\n }\n \n+func TestService_ValidateIPAddress(t *testing.T) {\n+\tconst maxInvalidLoginAttempts = 5\n+\n+\ttestCases := []struct {\n+\t\tname          string\n+\t\tloginAttempts int64\n+\t\tdisabled      bool\n+\t\texpected      bool\n+\t\texpectedErr   error\n+\t}{\n+\t\t{\n+\t\t\tname:          \"Should be valid when brute force protection enabled and IP address login attempt count is less than max\",\n+\t\t\tloginAttempts: maxInvalidLoginAttempts - 1,\n+\t\t\texpected:      true,\n+\t\t\texpectedErr:   nil,\n+\t\t},\n+\t\t{\n+\t\t\tname:          \"Should be invalid when brute force protection enabled and IP address login attempt count equals max\",\n+\t\t\tloginAttempts: maxInvalidLoginAttempts,\n+\t\t\texpected:      false,\n+\t\t\texpectedErr:   nil,\n+\t\t},\n+\t\t{\n+\t\t\tname:          \"Should be invalid when brute force protection enabled and IP address login attempt count is greater than max\",\n+\t\t\tloginAttempts: maxInvalidLoginAttempts + 1,\n+\t\t\texpected:      false,\n+\t\t\texpectedErr:   nil,\n+\t\t},\n+\n+\t\t{\n+\t\t\tname:          \"Should be valid when brute force protection disabled and IP address login attempt count is less than max\",\n+\t\t\tloginAttempts: maxInvalidLoginAttempts - 1,\n+\t\t\tdisabled:      true,\n+\t\t\texpected:      true,\n+\t\t\texpectedErr:   nil,\n+\t\t},\n+\t\t{\n+\t\t\tname:          \"Should be valid when brute force protection disabled and IP address login attempt count equals max\",\n+\t\t\tloginAttempts: maxInvalidLoginAttempts,\n+\t\t\tdisabled:      true,\n+\t\t\texpected:      true,\n+\t\t\texpectedErr:   nil,\n+\t\t},\n+\t\t{\n+\t\t\tname:          \"Should be valid when brute force protection disabled and IP address login attempt count is greater than max\",\n+\t\t\tloginAttempts: maxInvalidLoginAttempts + 1,\n+\t\t\tdisabled:      true,\n+\t\t\texpected:      true,\n+\t\t\texpectedErr:   nil,\n+\t\t},\n+\t}\n+\n+\tfor _, tt := range testCases {\n+\t\tt.Run(tt.name, func(t *testing.T) {\n+\t\t\tcfg := setting.NewCfg()\n+\t\t\tcfg.BruteForceLoginProtectionMaxAttempts = maxInvalidLoginAttempts\n+\t\t\tcfg.DisableIPAddressLoginProtection = tt.disabled\n+\t\t\tservice := &Service{\n+\t\t\t\tstore: fakeStore{\n+\t\t\t\t\tExpectedCount: tt.loginAttempts,\n+\t\t\t\t\tExpectedErr:   tt.expectedErr,\n+\t\t\t\t},\n+\t\t\t\tcfg: cfg,\n+\t\t\t}\n+\n+\t\t\tok, err := service.ValidateIPAddress(context.Background(), \"192.168.1.1\")\n+\t\t\tassert.Equal(t, tt.expected, ok)\n+\t\t\tassert.Equal(t, tt.expectedErr, err)\n+\t\t})\n+\t}\n+}\n+\n+func TestIPLoginAttempts(t *testing.T) {\n+\tctx := context.Background()\n+\tcfg := setting.NewCfg()\n+\tcfg.DisableIPAddressLoginProtection = false\n+\tcfg.BruteForceLoginProtectionMaxAttempts = 3\n+\tdb := db.InitTestDB(t)\n+\tservice := ProvideService(db, cfg, nil)\n+\n+\t_ = service.Add(ctx, \"user1\", \"192.168.1.1\")\n+\t_ = service.Add(ctx, \"user2\", \"10.0.0.123\")\n+\t_ = service.Add(ctx, \"user3\", \"192.168.1.1\")\n+\t_ = service.Add(ctx, \"user4\", \"[::1]\")\n+\t_ = service.Add(ctx, \"user5\", \"192.168.1.1\")\n+\t_ = service.Add(ctx, \"user6\", \"192.168.1.1\")\n+\n+\tcount, err := service.store.GetIPLoginAttemptCount(ctx, GetIPLoginAttemptCountQuery{IPAddress: \"192.168.1.1\"})\n+\tassert.Nil(t, err)\n+\tassert.Equal(t, int64(4), count)\n+\n+\tok, err := service.ValidateIPAddress(ctx, \"192.168.1.1\")\n+\tassert.False(t, ok)\n+\tassert.Nil(t, err)\n+}\n+\n var _ store = new(fakeStore)\n \n type fakeStore struct {\n@@ -121,6 +217,10 @@ func (f fakeStore) GetUserLoginAttemptCount(ctx context.Context, query GetUserLo\n \treturn f.ExpectedCount, f.ExpectedErr\n }\n \n+func (f fakeStore) GetIPLoginAttemptCount(ctx context.Context, query GetIPLoginAttemptCountQuery) (int64, error) {\n+\treturn f.ExpectedCount, f.ExpectedErr\n+}\n+\n func (f fakeStore) CreateLoginAttempt(ctx context.Context, command CreateLoginAttemptCommand) (loginattempt.LoginAttempt, error) {\n \treturn loginattempt.LoginAttempt{}, f.ExpectedErr\n }\ndiff --git a/pkg/services/loginattempt/loginattemptimpl/models.go b/pkg/services/loginattempt/loginattemptimpl/models.go\nindex f235cd3d30824..4957daa841465 100644\n--- a/pkg/services/loginattempt/loginattemptimpl/models.go\n+++ b/pkg/services/loginattempt/loginattemptimpl/models.go\n@@ -6,7 +6,7 @@ import (\n \n type CreateLoginAttemptCommand struct {\n \tUsername  string\n-\tIpAddress string\n+\tIPAddress string\n }\n \n type GetUserLoginAttemptCountQuery struct {\n@@ -14,6 +14,11 @@ type GetUserLoginAttemptCountQuery struct {\n \tSince    time.Time\n }\n \n+type GetIPLoginAttemptCountQuery struct {\n+\tIPAddress string\n+\tSince     time.Time\n+}\n+\n type DeleteOldLoginAttemptsCommand struct {\n \tOlderThan time.Time\n }\ndiff --git a/pkg/services/loginattempt/loginattemptimpl/store.go b/pkg/services/loginattempt/loginattemptimpl/store.go\nindex f273e6f5ef038..0afa93fbaebdd 100644\n--- a/pkg/services/loginattempt/loginattemptimpl/store.go\n+++ b/pkg/services/loginattempt/loginattemptimpl/store.go\n@@ -18,13 +18,14 @@ type store interface {\n \tDeleteOldLoginAttempts(ctx context.Context, cmd DeleteOldLoginAttemptsCommand) (int64, error)\n \tDeleteLoginAttempts(ctx context.Context, cmd DeleteLoginAttemptsCommand) error\n \tGetUserLoginAttemptCount(ctx context.Context, query GetUserLoginAttemptCountQuery) (int64, error)\n+\tGetIPLoginAttemptCount(ctx context.Context, query GetIPLoginAttemptCountQuery) (int64, error)\n }\n \n func (xs *xormStore) CreateLoginAttempt(ctx context.Context, cmd CreateLoginAttemptCommand) (result loginattempt.LoginAttempt, err error) {\n \terr = xs.db.WithTransactionalDbSession(ctx, func(sess *db.Session) error {\n \t\tloginAttempt := loginattempt.LoginAttempt{\n \t\t\tUsername:  cmd.Username,\n-\t\t\tIpAddress: cmd.IpAddress,\n+\t\t\tIpAddress: cmd.IPAddress,\n \t\t\tCreated:   xs.now().Unix(),\n \t\t}\n \n@@ -73,6 +74,22 @@ func (xs *xormStore) GetUserLoginAttemptCount(ctx context.Context, query GetUser\n \t\t\tAnd(\"created >= ?\", query.Since.Unix()).\n \t\t\tCount(loginAttempt)\n \n+\t\treturn queryErr\n+\t})\n+\n+\treturn total, err\n+}\n+\n+func (xs *xormStore) GetIPLoginAttemptCount(ctx context.Context, query GetIPLoginAttemptCountQuery) (int64, error) {\n+\tvar total int64\n+\terr := xs.db.WithDbSession(ctx, func(dbSession *db.Session) error {\n+\t\tvar queryErr error\n+\t\tloginAttempt := new(loginattempt.LoginAttempt)\n+\t\ttotal, queryErr = dbSession.\n+\t\t\tWhere(\"ip_address = ?\", query.IPAddress).\n+\t\t\tAnd(\"created >= ?\", query.Since.Unix()).\n+\t\t\tCount(loginAttempt)\n+\n \t\tif queryErr != nil {\n \t\t\treturn queryErr\n \t\t}\ndiff --git a/pkg/services/loginattempt/loginattemptimpl/store_test.go b/pkg/services/loginattempt/loginattemptimpl/store_test.go\nindex 194e64ff572b4..c8041bbd6da03 100644\n--- a/pkg/services/loginattempt/loginattemptimpl/store_test.go\n+++ b/pkg/services/loginattempt/loginattemptimpl/store_test.go\n@@ -60,21 +60,21 @@ func TestIntegrationLoginAttemptsQuery(t *testing.T) {\n \n \t\t_, err := s.CreateLoginAttempt(context.Background(), CreateLoginAttemptCommand{\n \t\t\tUsername:  user,\n-\t\t\tIpAddress: \"192.168.0.1\",\n+\t\t\tIPAddress: \"192.168.0.1\",\n \t\t})\n \t\trequire.Nil(t, err)\n \n \t\tmockTime = timePlusOneMinute\n \t\t_, err = s.CreateLoginAttempt(context.Background(), CreateLoginAttemptCommand{\n \t\t\tUsername:  user,\n-\t\t\tIpAddress: \"192.168.0.1\",\n+\t\t\tIPAddress: \"192.168.0.1\",\n \t\t})\n \t\trequire.Nil(t, err)\n \n \t\tmockTime = timePlusTwoMinutes\n \t\t_, err = s.CreateLoginAttempt(context.Background(), CreateLoginAttemptCommand{\n \t\t\tUsername:  user,\n-\t\t\tIpAddress: \"192.168.0.1\",\n+\t\t\tIPAddress: \"192.168.0.1\",\n \t\t})\n \t\trequire.Nil(t, err)\n \n@@ -125,21 +125,21 @@ func TestIntegrationLoginAttemptsDelete(t *testing.T) {\n \n \t\t_, err := s.CreateLoginAttempt(context.Background(), CreateLoginAttemptCommand{\n \t\t\tUsername:  user,\n-\t\t\tIpAddress: \"192.168.0.1\",\n+\t\t\tIPAddress: \"192.168.0.1\",\n \t\t})\n \t\trequire.Nil(t, err)\n \n \t\tmockTime = timePlusOneMinute\n \t\t_, err = s.CreateLoginAttempt(context.Background(), CreateLoginAttemptCommand{\n \t\t\tUsername:  user,\n-\t\t\tIpAddress: \"192.168.0.1\",\n+\t\t\tIPAddress: \"192.168.0.1\",\n \t\t})\n \t\trequire.Nil(t, err)\n \n \t\tmockTime = timePlusTwoMinutes\n \t\t_, err = s.CreateLoginAttempt(context.Background(), CreateLoginAttemptCommand{\n \t\t\tUsername:  user,\n-\t\t\tIpAddress: \"192.168.0.1\",\n+\t\t\tIPAddress: \"192.168.0.1\",\n \t\t})\n \t\trequire.Nil(t, err)\n \ndiff --git a/pkg/services/loginattempt/loginattempttest/fake.go b/pkg/services/loginattempt/loginattempttest/fake.go\nindex 581aeae174237..4e6cb56b52b27 100644\n--- a/pkg/services/loginattempt/loginattempttest/fake.go\n+++ b/pkg/services/loginattempt/loginattempttest/fake.go\n@@ -24,3 +24,7 @@ func (f FakeLoginAttemptService) Reset(ctx context.Context, username string) err\n func (f FakeLoginAttemptService) Validate(ctx context.Context, username string) (bool, error) {\n \treturn f.ExpectedValid, f.ExpectedErr\n }\n+\n+func (f FakeLoginAttemptService) ValidateIPAddress(ctx context.Context, IpAddress string) (bool, error) {\n+\treturn f.ExpectedValid, f.ExpectedErr\n+}\ndiff --git a/pkg/services/loginattempt/loginattempttest/mock.go b/pkg/services/loginattempt/loginattempttest/mock.go\nindex c775323a9a351..33cff397161e3 100644\n--- a/pkg/services/loginattempt/loginattempttest/mock.go\n+++ b/pkg/services/loginattempt/loginattempttest/mock.go\n@@ -17,7 +17,7 @@ type MockLoginAttemptService struct {\n \tExpectedErr   error\n }\n \n-func (f *MockLoginAttemptService) Add(ctx context.Context, username, IPAddress string) error {\n+func (f *MockLoginAttemptService) Add(ctx context.Context, username, ipAddress string) error {\n \tf.AddCalled = true\n \treturn f.ExpectedErr\n }\n@@ -31,3 +31,8 @@ func (f *MockLoginAttemptService) Validate(ctx context.Context, username string)\n \tf.ValidateCalled = true\n \treturn f.ExpectedValid, f.ExpectedErr\n }\n+\n+func (f *MockLoginAttemptService) ValidateIPAddress(ctx context.Context, ipAddress string) (bool, error) {\n+\tf.ValidateCalled = true\n+\treturn f.ExpectedValid, f.ExpectedErr\n+}\ndiff --git a/pkg/setting/setting.go b/pkg/setting/setting.go\nindex 7eca72b15f4bd..3e6102a96c36c 100644\n--- a/pkg/setting/setting.go\n+++ b/pkg/setting/setting.go\n@@ -156,6 +156,7 @@ type Cfg struct {\n \tDisableInitAdminCreation             bool\n \tDisableBruteForceLoginProtection     bool\n \tBruteForceLoginProtectionMaxAttempts int64\n+\tDisableIPAddressLoginProtection      bool\n \tCookieSecure                         bool\n \tCookieSameSiteDisabled               bool\n \tCookieSameSiteMode                   http.SameSite\n@@ -1516,6 +1517,7 @@ func readSecuritySettings(iniFile *ini.File, cfg *Cfg) error {\n \n \tcfg.DisableBruteForceLoginProtection = security.Key(\"disable_brute_force_login_protection\").MustBool(false)\n \tcfg.BruteForceLoginProtectionMaxAttempts = security.Key(\"brute_force_login_protection_max_attempts\").MustInt64(5)\n+\tcfg.DisableIPAddressLoginProtection = security.Key(\"disable_ip_address_login_protection\").MustBool(true)\n \n \t// Ensure at least one login attempt can be performed.\n \tif cfg.BruteForceLoginProtectionMaxAttempts <= 0 {\n",
+  "metadata": {
+    "v2_fetcher_version": 1,
+    "v2_fetched_at_unix": 1777501221,
+    "v2_diff_cap_bytes": 50000,
+    "v2_body_cap_bytes": 8000,
+    "v2_diff_truncated": false,
+    "v2_raw_diff_chars": 23805,
+    "v2_raw_body_chars": 2331,
+    "v2_rag_source": "merged_from_v1",
+    "v2_rag_chunks_copied": 8
+  },
+  "similar_chunks": [
+    {
+      "file": "pkg/services/authn/clients/basic_test.go",
+      "start_line": 1,
+      "end_line": 73,
+      "similarity": 0.8575,
+      "related_to": "pkg/services/authn/clients/password_test.go",
+      "content_preview": "package clients\n\nimport (\n\t\"context\"\n\t\"net/http\"\n\t\"testing\"\n\n\t\"github.com/stretchr/testify/assert\"\n\n\tclaims \"github.com/grafana/authlib/types\"\n\n\t\"github.com/grafana/grafana/pkg/services/authn\"\n\t\"github.com/grafana/grafana/pkg/services/authn/authntest\"\n)\n\nfunc TestBasic_Authenticate(t *testing.T) {\n\ttype TestCase struct {\n\t\tdesc             string\n\t\treq              *authn.Request\n\t\tclient           authn.PasswordClient\n\t\texpectedErr      error\n\t\texpectedIdentity *authn.Identity\n\t}\n\n\ttests := []TestCase{\n\t\t{\n\t\t\tdesc:             \"should success when password client return identity\",\n\t\t\treq:              &authn.Request{HTTPRequest: &http.Request{Header: map[string][]string{authorizationHeaderName: {encodeBasicAuth(\"user\", \"password\")}}}},\n\t\t\tclient:           authntest.FakePasswordClient{Exp"
+    },
+    {
+      "file": "pkg/services/authn/clients/form_test.go",
+      "start_line": 1,
+      "end_line": 49,
+      "similarity": 0.8321,
+      "related_to": "pkg/services/authn/clients/password_test.go",
+      "content_preview": "package clients\n\nimport (\n\t\"context\"\n\t\"io\"\n\t\"net/http\"\n\t\"strings\"\n\t\"testing\"\n\n\t\"github.com/stretchr/testify/assert\"\n\n\t\"github.com/grafana/grafana/pkg/services/authn\"\n\t\"github.com/grafana/grafana/pkg/services/authn/authntest\"\n)\n\nfunc TestForm_Authenticate(t *testing.T) {\n\ttype testCase struct {\n\t\tdesc        string\n\t\treq         *authn.Request\n\t\texpectedErr error\n\t}\n\n\ttests := []testCase{\n\t\t{\n\t\t\tdesc: \"should success on valid request\",\n\t\t\treq: &authn.Request{HTTPRequest: &http.Request{\n\t\t\t\tHeader: map[string][]string{\"Content-Type\": {\"application/json\"}},\n\t\t\t\tBody:   io.NopCloser(strings.NewReader(`{\"user\": \"test\", \"password\": \"test\"}`)),\n\t\t\t}},\n\t\t},\n\t\t{\n\t\t\tdesc: \"should return error for bad request\",\n\t\t\treq: &authn.Request{HTTPRequest: &http.Request{\n\t\t\t\tHeader: map[string][]string{\"Conten"
+    },
+    {
+      "file": "pkg/services/authn/clients/grafana_test.go",
+      "start_line": 110,
+      "end_line": 170,
+      "similarity": 0.8216,
+      "related_to": "pkg/services/authn/clients/password_test.go",
+      "content_preview": "D, identity.AuthID)\n\t\t\t\tassert.Equal(t, tt.expectedIdentity.AuthenticatedBy, identity.AuthenticatedBy)\n\t\t\t\tassert.Equal(t, tt.expectedIdentity.Groups, identity.Groups)\n\n\t\t\t\tassert.Equal(t, tt.expectedIdentity.ClientParams.SyncUser, identity.ClientParams.SyncUser)\n\t\t\t\tassert.Equal(t, tt.expectedIdentity.ClientParams.AllowSignUp, identity.ClientParams.AllowSignUp)\n\t\t\t\tassert.Equal(t, tt.expectedIdentity.ClientParams.SyncTeams, identity.ClientParams.SyncTeams)\n\t\t\t\tassert.Equal(t, tt.expectedIdentity.ClientParams.EnableUser, identity.ClientParams.EnableUser)\n\n\t\t\t\tassert.EqualValues(t, tt.expectedIdentity.ClientParams.LookUpParams.Email, identity.ClientParams.LookUpParams.Email)\n\t\t\t\tassert.EqualValues(t, tt.expectedIdentity.ClientParams.LookUpParams.Login, identity.ClientParams.LookUpParams.Log"
+    },
+    {
+      "file": "pkg/services/authn/clients/passwordless_test.go",
+      "start_line": 1,
+      "end_line": 65,
+      "similarity": 0.8125,
+      "related_to": "pkg/services/authn/clients/password_test.go",
+      "content_preview": "package clients\n\nimport (\n\t\"context\"\n\t\"testing\"\n\n\t\"github.com/stretchr/testify/assert\"\n\n\tclaims \"github.com/grafana/authlib/types\"\n\t\"github.com/grafana/grafana/pkg/infra/remotecache\"\n\t\"github.com/grafana/grafana/pkg/services/authn\"\n\t\"github.com/grafana/grafana/pkg/services/login\"\n\t\"github.com/grafana/grafana/pkg/services/loginattempt/loginattempttest\"\n\t\"github.com/grafana/grafana/pkg/services/notifications\"\n\ttempuser \"github.com/grafana/grafana/pkg/services/temp_user\"\n\t\"github.com/grafana/grafana/pkg/services/temp_user/tempusertest\"\n\t\"github.com/grafana/grafana/pkg/services/user\"\n\t\"github.com/grafana/grafana/pkg/services/user/usertest\"\n\t\"github.com/grafana/grafana/pkg/setting\"\n\t\"github.com/grafana/grafana/pkg/util\"\n)\n\nfunc TestPasswordless_StartPasswordless(t *testing.T) {\n\ttype testCase s"
+    },
+    {
+      "file": "pkg/services/authn/clients/render_test.go",
+      "start_line": 1,
+      "end_line": 72,
+      "similarity": 0.7739,
+      "related_to": "pkg/services/authn/clients/password_test.go",
+      "content_preview": "package clients\n\nimport (\n\t\"context\"\n\t\"net/http\"\n\t\"testing\"\n\t\"time\"\n\n\t\"github.com/stretchr/testify/assert\"\n\t\"go.uber.org/mock/gomock\"\n\n\tclaims \"github.com/grafana/authlib/types\"\n\n\t\"github.com/grafana/grafana/pkg/services/authn\"\n\t\"github.com/grafana/grafana/pkg/services/login\"\n\t\"github.com/grafana/grafana/pkg/services/org\"\n\t\"github.com/grafana/grafana/pkg/services/rendering\"\n)\n\nfunc TestRender_Authenticate(t *testing.T) {\n\ttype TestCase struct {\n\t\tdesc              string\n\t\trenderKey         string\n\t\treq               *authn.Request\n\t\texpectedErr       error\n\t\texpectedIdentity  *authn.Identity\n\t\texpectedRenderUsr *rendering.RenderUser\n\t}\n\n\ttests := []TestCase{\n\t\t{\n\t\t\tdesc:      \"expect valid render key to return anonymous user identity for org role Viewer\",\n\t\t\trenderKey: \"123\",\n\t\t\treq: &aut"
+    },
+    {
+      "file": "pkg/services/authn/clients/grafana_test.go",
+      "start_line": 1,
+      "end_line": 68,
+      "similarity": 0.77,
+      "related_to": "pkg/services/authn/clients/password_test.go",
+      "content_preview": "package clients\n\nimport (\n\t\"context\"\n\t\"net/http\"\n\t\"testing\"\n\n\t\"github.com/stretchr/testify/assert\"\n\n\tclaims \"github.com/grafana/authlib/types\"\n\t\"github.com/grafana/grafana/pkg/infra/tracing\"\n\t\"github.com/grafana/grafana/pkg/services/authn\"\n\t\"github.com/grafana/grafana/pkg/services/login\"\n\t\"github.com/grafana/grafana/pkg/services/org\"\n\t\"github.com/grafana/grafana/pkg/services/user\"\n\t\"github.com/grafana/grafana/pkg/services/user/usertest\"\n\t\"github.com/grafana/grafana/pkg/setting\"\n\t\"github.com/grafana/grafana/pkg/util\"\n)\n\nfunc TestGrafana_AuthenticateProxy(t *testing.T) {\n\ttype testCase struct {\n\t\tdesc             string\n\t\treq              *authn.Request\n\t\tusername         string\n\t\tproxyProperty    string\n\t\tadditional       map[string]string\n\t\texpectedErr      error\n\t\texpectedIdentity *authn."
+    },
+    {
+      "file": "pkg/services/authn/clients/oauth_test.go",
+      "start_line": 1,
+      "end_line": 69,
+      "similarity": 0.7636,
+      "related_to": "pkg/services/authn/clients/password_test.go",
+      "content_preview": "package clients\n\nimport (\n\t\"context\"\n\t\"net/http\"\n\t\"net/url\"\n\t\"strconv\"\n\t\"strings\"\n\t\"testing\"\n\t\"time\"\n\n\t\"golang.org/x/oauth2\"\n\n\t\"github.com/stretchr/testify/assert\"\n\t\"github.com/stretchr/testify/require\"\n\n\tclaims \"github.com/grafana/authlib/types\"\n\t\"github.com/grafana/grafana/pkg/apimachinery/identity\"\n\t\"github.com/grafana/grafana/pkg/infra/tracing\"\n\t\"github.com/grafana/grafana/pkg/login/social\"\n\t\"github.com/grafana/grafana/pkg/login/social/socialtest\"\n\t\"github.com/grafana/grafana/pkg/models/usertoken\"\n\t\"github.com/grafana/grafana/pkg/services/auth\"\n\t\"github.com/grafana/grafana/pkg/services/authn\"\n\t\"github.com/grafana/grafana/pkg/services/featuremgmt\"\n\t\"github.com/grafana/grafana/pkg/services/login\"\n\t\"github.com/grafana/grafana/pkg/services/oauthtoken\"\n\t\"github.com/grafana/grafana/pkg/servi"
+    },
+    {
+      "file": "pkg/services/authn/clients/proxy_test.go",
+      "start_line": 1,
+      "end_line": 79,
+      "similarity": 0.7635,
+      "related_to": "pkg/services/authn/clients/password_test.go",
+      "content_preview": "package clients\n\nimport (\n\t\"context\"\n\t\"errors\"\n\t\"fmt\"\n\t\"net/http\"\n\t\"testing\"\n\t\"time\"\n\n\t\"github.com/stretchr/testify/assert\"\n\t\"github.com/stretchr/testify/require\"\n\n\tclaims \"github.com/grafana/authlib/types\"\n\t\"github.com/grafana/grafana/pkg/infra/tracing\"\n\t\"github.com/grafana/grafana/pkg/services/authn\"\n\t\"github.com/grafana/grafana/pkg/services/authn/authntest\"\n\t\"github.com/grafana/grafana/pkg/setting\"\n)\n\nfunc TestProxy_Authenticate(t *testing.T) {\n\ttype testCase struct {\n\t\tdesc               string\n\t\treq                *authn.Request\n\t\tips                string\n\t\tproxyHeader        string\n\t\tproxyHeaders       map[string]string\n\t\texpectedErr        error\n\t\texpectedUsername   string\n\t\texpectedAdditional map[string]string\n\t}\n\n\ttests := []testCase{\n\t\t{\n\t\t\tdesc: \"should authenticate using passe"
+    }
+  ],
+  "rag_evidence": {
+    "similar_code": [
+      {
+        "file": "pkg/services/authn/clients/basic_test.go",
+        "start_line": 1,
+        "end_line": 73,
+        "similarity": 0.8575,
+        "related_to": "pkg/services/authn/clients/password_test.go",
+        "content_preview": "package clients\n\nimport (\n\t\"context\"\n\t\"net/http\"\n\t\"testing\"\n\n\t\"github.com/stretchr/testify/assert\"\n\n\tclaims \"github.com/grafana/authlib/types\"\n\n\t\"github.com/grafana/grafana/pkg/services/authn\"\n\t\"github.com/grafana/grafana/pkg/services/authn/authntest\"\n)\n\nfunc TestBasic_Authenticate(t *testing.T) {\n\ttype TestCase struct {\n\t\tdesc             string\n\t\treq              *authn.Request\n\t\tclient           authn.PasswordClient\n\t\texpectedErr      error\n\t\texpectedIdentity *authn.Identity\n\t}\n\n\ttests := []TestCase{\n\t\t{\n\t\t\tdesc:             \"should success when password client return identity\",\n\t\t\treq:              &authn.Request{HTTPRequest: &http.Request{Header: map[string][]string{authorizationHeaderName: {encodeBasicAuth(\"user\", \"password\")}}}},\n\t\t\tclient:           authntest.FakePasswordClient{Exp"
+      },
+      {
+        "file": "pkg/services/authn/clients/form_test.go",
+        "start_line": 1,
+        "end_line": 49,
+        "similarity": 0.8321,
+        "related_to": "pkg/services/authn/clients/password_test.go",
+        "content_preview": "package clients\n\nimport (\n\t\"context\"\n\t\"io\"\n\t\"net/http\"\n\t\"strings\"\n\t\"testing\"\n\n\t\"github.com/stretchr/testify/assert\"\n\n\t\"github.com/grafana/grafana/pkg/services/authn\"\n\t\"github.com/grafana/grafana/pkg/services/authn/authntest\"\n)\n\nfunc TestForm_Authenticate(t *testing.T) {\n\ttype testCase struct {\n\t\tdesc        string\n\t\treq         *authn.Request\n\t\texpectedErr error\n\t}\n\n\ttests := []testCase{\n\t\t{\n\t\t\tdesc: \"should success on valid request\",\n\t\t\treq: &authn.Request{HTTPRequest: &http.Request{\n\t\t\t\tHeader: map[string][]string{\"Content-Type\": {\"application/json\"}},\n\t\t\t\tBody:   io.NopCloser(strings.NewReader(`{\"user\": \"test\", \"password\": \"test\"}`)),\n\t\t\t}},\n\t\t},\n\t\t{\n\t\t\tdesc: \"should return error for bad request\",\n\t\t\treq: &authn.Request{HTTPRequest: &http.Request{\n\t\t\t\tHeader: map[string][]string{\"Conten"
+      },
+      {
+        "file": "pkg/services/authn/clients/grafana_test.go",
+        "start_line": 110,
+        "end_line": 170,
+        "similarity": 0.8216,
+        "related_to": "pkg/services/authn/clients/password_test.go",
+        "content_preview": "D, identity.AuthID)\n\t\t\t\tassert.Equal(t, tt.expectedIdentity.AuthenticatedBy, identity.AuthenticatedBy)\n\t\t\t\tassert.Equal(t, tt.expectedIdentity.Groups, identity.Groups)\n\n\t\t\t\tassert.Equal(t, tt.expectedIdentity.ClientParams.SyncUser, identity.ClientParams.SyncUser)\n\t\t\t\tassert.Equal(t, tt.expectedIdentity.ClientParams.AllowSignUp, identity.ClientParams.AllowSignUp)\n\t\t\t\tassert.Equal(t, tt.expectedIdentity.ClientParams.SyncTeams, identity.ClientParams.SyncTeams)\n\t\t\t\tassert.Equal(t, tt.expectedIdentity.ClientParams.EnableUser, identity.ClientParams.EnableUser)\n\n\t\t\t\tassert.EqualValues(t, tt.expectedIdentity.ClientParams.LookUpParams.Email, identity.ClientParams.LookUpParams.Email)\n\t\t\t\tassert.EqualValues(t, tt.expectedIdentity.ClientParams.LookUpParams.Login, identity.ClientParams.LookUpParams.Log"
+      },
+      {
+        "file": "pkg/services/authn/clients/passwordless_test.go",
+        "start_line": 1,
+        "end_line": 65,
+        "similarity": 0.8125,
+        "related_to": "pkg/services/authn/clients/password_test.go",
+        "content_preview": "package clients\n\nimport (\n\t\"context\"\n\t\"testing\"\n\n\t\"github.com/stretchr/testify/assert\"\n\n\tclaims \"github.com/grafana/authlib/types\"\n\t\"github.com/grafana/grafana/pkg/infra/remotecache\"\n\t\"github.com/grafana/grafana/pkg/services/authn\"\n\t\"github.com/grafana/grafana/pkg/services/login\"\n\t\"github.com/grafana/grafana/pkg/services/loginattempt/loginattempttest\"\n\t\"github.com/grafana/grafana/pkg/services/notifications\"\n\ttempuser \"github.com/grafana/grafana/pkg/services/temp_user\"\n\t\"github.com/grafana/grafana/pkg/services/temp_user/tempusertest\"\n\t\"github.com/grafana/grafana/pkg/services/user\"\n\t\"github.com/grafana/grafana/pkg/services/user/usertest\"\n\t\"github.com/grafana/grafana/pkg/setting\"\n\t\"github.com/grafana/grafana/pkg/util\"\n)\n\nfunc TestPasswordless_StartPasswordless(t *testing.T) {\n\ttype testCase s"
+      },
+      {
+        "file": "pkg/services/authn/clients/render_test.go",
+        "start_line": 1,
+        "end_line": 72,
+        "similarity": 0.7739,
+        "related_to": "pkg/services/authn/clients/password_test.go",
+        "content_preview": "package clients\n\nimport (\n\t\"context\"\n\t\"net/http\"\n\t\"testing\"\n\t\"time\"\n\n\t\"github.com/stretchr/testify/assert\"\n\t\"go.uber.org/mock/gomock\"\n\n\tclaims \"github.com/grafana/authlib/types\"\n\n\t\"github.com/grafana/grafana/pkg/services/authn\"\n\t\"github.com/grafana/grafana/pkg/services/login\"\n\t\"github.com/grafana/grafana/pkg/services/org\"\n\t\"github.com/grafana/grafana/pkg/services/rendering\"\n)\n\nfunc TestRender_Authenticate(t *testing.T) {\n\ttype TestCase struct {\n\t\tdesc              string\n\t\trenderKey         string\n\t\treq               *authn.Request\n\t\texpectedErr       error\n\t\texpectedIdentity  *authn.Identity\n\t\texpectedRenderUsr *rendering.RenderUser\n\t}\n\n\ttests := []TestCase{\n\t\t{\n\t\t\tdesc:      \"expect valid render key to return anonymous user identity for org role Viewer\",\n\t\t\trenderKey: \"123\",\n\t\t\treq: &aut"
+      },
+      {
+        "file": "pkg/services/authn/clients/grafana_test.go",
+        "start_line": 1,
+        "end_line": 68,
+        "similarity": 0.77,
+        "related_to": "pkg/services/authn/clients/password_test.go",
+        "content_preview": "package clients\n\nimport (\n\t\"context\"\n\t\"net/http\"\n\t\"testing\"\n\n\t\"github.com/stretchr/testify/assert\"\n\n\tclaims \"github.com/grafana/authlib/types\"\n\t\"github.com/grafana/grafana/pkg/infra/tracing\"\n\t\"github.com/grafana/grafana/pkg/services/authn\"\n\t\"github.com/grafana/grafana/pkg/services/login\"\n\t\"github.com/grafana/grafana/pkg/services/org\"\n\t\"github.com/grafana/grafana/pkg/services/user\"\n\t\"github.com/grafana/grafana/pkg/services/user/usertest\"\n\t\"github.com/grafana/grafana/pkg/setting\"\n\t\"github.com/grafana/grafana/pkg/util\"\n)\n\nfunc TestGrafana_AuthenticateProxy(t *testing.T) {\n\ttype testCase struct {\n\t\tdesc             string\n\t\treq              *authn.Request\n\t\tusername         string\n\t\tproxyProperty    string\n\t\tadditional       map[string]string\n\t\texpectedErr      error\n\t\texpectedIdentity *authn."
+      },
+      {
+        "file": "pkg/services/authn/clients/oauth_test.go",
+        "start_line": 1,
+        "end_line": 69,
+        "similarity": 0.7636,
+        "related_to": "pkg/services/authn/clients/password_test.go",
+        "content_preview": "package clients\n\nimport (\n\t\"context\"\n\t\"net/http\"\n\t\"net/url\"\n\t\"strconv\"\n\t\"strings\"\n\t\"testing\"\n\t\"time\"\n\n\t\"golang.org/x/oauth2\"\n\n\t\"github.com/stretchr/testify/assert\"\n\t\"github.com/stretchr/testify/require\"\n\n\tclaims \"github.com/grafana/authlib/types\"\n\t\"github.com/grafana/grafana/pkg/apimachinery/identity\"\n\t\"github.com/grafana/grafana/pkg/infra/tracing\"\n\t\"github.com/grafana/grafana/pkg/login/social\"\n\t\"github.com/grafana/grafana/pkg/login/social/socialtest\"\n\t\"github.com/grafana/grafana/pkg/models/usertoken\"\n\t\"github.com/grafana/grafana/pkg/services/auth\"\n\t\"github.com/grafana/grafana/pkg/services/authn\"\n\t\"github.com/grafana/grafana/pkg/services/featuremgmt\"\n\t\"github.com/grafana/grafana/pkg/services/login\"\n\t\"github.com/grafana/grafana/pkg/services/oauthtoken\"\n\t\"github.com/grafana/grafana/pkg/servi"
+      },
+      {
+        "file": "pkg/services/authn/clients/proxy_test.go",
+        "start_line": 1,
+        "end_line": 79,
+        "similarity": 0.7635,
+        "related_to": "pkg/services/authn/clients/password_test.go",
+        "content_preview": "package clients\n\nimport (\n\t\"context\"\n\t\"errors\"\n\t\"fmt\"\n\t\"net/http\"\n\t\"testing\"\n\t\"time\"\n\n\t\"github.com/stretchr/testify/assert\"\n\t\"github.com/stretchr/testify/require\"\n\n\tclaims \"github.com/grafana/authlib/types\"\n\t\"github.com/grafana/grafana/pkg/infra/tracing\"\n\t\"github.com/grafana/grafana/pkg/services/authn\"\n\t\"github.com/grafana/grafana/pkg/services/authn/authntest\"\n\t\"github.com/grafana/grafana/pkg/setting\"\n)\n\nfunc TestProxy_Authenticate(t *testing.T) {\n\ttype testCase struct {\n\t\tdesc               string\n\t\treq                *authn.Request\n\t\tips                string\n\t\tproxyHeader        string\n\t\tproxyHeaders       map[string]string\n\t\texpectedErr        error\n\t\texpectedUsername   string\n\t\texpectedAdditional map[string]string\n\t}\n\n\ttests := []testCase{\n\t\t{\n\t\t\tdesc: \"should authenticate using passe"
+      }
+    ]
+  }
+}

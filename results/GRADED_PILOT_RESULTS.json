@@ -1,0 +1,2902 @@
+{
+  "experiment": "graded_pilot",
+  "prs": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    18,
+    19,
+    20,
+    21,
+    22,
+    23,
+    24,
+    25,
+    26,
+    28,
+    29,
+    30,
+    31,
+    32,
+    33,
+    34,
+    38,
+    39,
+    40
+  ],
+  "judges": [
+    "gemini:gemini-2.5-flash",
+    "gemini:gemini-2.5-pro"
+  ],
+  "modes": [
+    "baseline",
+    "joern_kg"
+  ],
+  "joern_mode_label": "joern_kg",
+  "graded_criteria": [
+    "F3",
+    "F4",
+    "P1",
+    "R2",
+    "T3"
+  ],
+  "stats": {
+    "joern_kg": {
+      "per_criterion": {
+        "F3": {
+          "n": 27,
+          "mean_delta": 1.0740740740740742,
+          "ci_95": [
+            0.7222222222222222,
+            1.4259259259259258
+          ],
+          "p_perm": 0.0,
+          "p_wilcoxon": 6.167689547256311e-05,
+          "cohens_dz": 1.1333400714037285,
+          "wins": 19,
+          "ties": 8,
+          "losses": 0
+        },
+        "F4": {
+          "n": 27,
+          "mean_delta": 0.9629629629629629,
+          "ci_95": [
+            0.5740740740740741,
+            1.3703703703703705
+          ],
+          "p_perm": 0.0001,
+          "p_wilcoxon": 0.000249961098734827,
+          "cohens_dz": 0.8824193058265498,
+          "wins": 18,
+          "ties": 6,
+          "losses": 3
+        },
+        "P1": {
+          "n": 27,
+          "mean_delta": 0.1111111111111111,
+          "ci_95": [
+            -0.09259259259259259,
+            0.37037037037037035
+          ],
+          "p_perm": 0.25255,
+          "p_wilcoxon": 0.2326044092260709,
+          "cohens_dz": 0.16954398566012682,
+          "wins": 2,
+          "ties": 23,
+          "losses": 2
+        },
+        "R2": {
+          "n": 27,
+          "mean_delta": 0.6481481481481481,
+          "ci_95": [
+            0.18518518518518517,
+            1.1111111111111112
+          ],
+          "p_perm": 0.00835,
+          "p_wilcoxon": 0.012498813034789915,
+          "cohens_dz": 0.5075047334796848,
+          "wins": 11,
+          "ties": 14,
+          "losses": 2
+        },
+        "T3": {
+          "n": 27,
+          "mean_delta": 1.1851851851851851,
+          "ci_95": [
+            0.7962962962962963,
+            1.5925925925925926
+          ],
+          "p_perm": 0.0,
+          "p_wilcoxon": 2.7650575117460746e-05,
+          "cohens_dz": 1.0754929710968266,
+          "wins": 22,
+          "ties": 3,
+          "losses": 2
+        }
+      },
+      "aggregate": {
+        "n": 27,
+        "mean_delta": 3.9814814814814814,
+        "ci_95": [
+          3.111111111111111,
+          4.851851851851852
+        ],
+        "p_perm": 0.0,
+        "p_wilcoxon": 3.056923136156072e-06,
+        "cohens_dz": 1.7235717595878262,
+        "wins": 26,
+        "ties": 0,
+        "losses": 1
+      }
+    }
+  },
+  "per_cell": {
+    "pr1_baseline": {
+      "pr_id": 1,
+      "mode": "baseline",
+      "mean_scores": {
+        "F3": 1.5,
+        "F4": 2.0,
+        "P1": 0.0,
+        "R2": 0.0,
+        "T3": 0.0
+      },
+      "mean_graded_total": 3.5,
+      "per_judge": [
+        {
+          "model": "gemini:gemini-2.5-flash",
+          "scores": {
+            "F3": 1,
+            "F4": 2,
+            "P1": 0,
+            "R2": 0,
+            "T3": 0
+          },
+          "evidence": {
+            "F3": "The change in behavior from a blocking alert to a non-blocking log message might not be adequately tested for all user scenarios, especially for those relying on the alert for critical feedback.",
+            "F4": "The change in behavior from a blocking alert to a non-blocking log message might not be adequately tested for all user scenarios, especially for those relying on the alert for critical feedback.",
+            "P1": "No mention of performance in the review.",
+            "R2": "No comment on complexity or code structure in the review.",
+            "T3": "Ensure comprehensive testing is conducted to verify that the new behavior does not negatively impact workflows that depend on immediate feedback from the alert dialog."
+          },
+          "error": ""
+        },
+        {
+          "model": "gemini:gemini-2.5-pro",
+          "scores": {
+            "F3": 2,
+            "F4": 2,
+            "P1": 0,
+            "R2": 0,
+            "T3": 0
+          },
+          "evidence": {
+            "F3": "The review names a specific dependent file that is affected: `doc/classes/ProjectSettings.xml:2378-2381`: The new setting `xr/openxr/startup_alert` is added but lacks accompanying documentation for users.",
+            "F4": "The review identifies a specific user expectation that could break: 'The change in behavior from a blocking alert to a non-blocking log message might not be adequately tested for all user scenarios, especially for those relying on the alert for critical feedback.'",
+            "P1": "The review makes no mention of performance.",
+            "R2": "The review makes no comment on complexity or code structure.",
+            "T3": "The review only generically recommends testing: 'Ensure comprehensive testing is conducted to verify that the new behavior does not negatively impact workflows...'. It does not name any test files."
+          },
+          "error": ""
+        }
+      ],
+      "timestamp": "2026-06-01T18:57:21.749807+00:00"
+    },
+    "pr1_joern_kg": {
+      "pr_id": 1,
+      "mode": "joern_kg",
+      "mean_scores": {
+        "F3": 3.0,
+        "F4": 2.0,
+        "P1": 0.0,
+        "R2": 1.0,
+        "T3": 2.5
+      },
+      "mean_graded_total": 8.5,
+      "per_judge": [
+        {
+          "model": "gemini:gemini-2.5-flash",
+          "scores": {
+            "F3": 3,
+            "F4": 2,
+            "P1": 0,
+            "R2": 0,
+            "T3": 3
+          },
+          "evidence": {
+            "F3": "The review names multiple specific callers/dependent components and explains concrete integration risks: 'headless environments or CI/CD pipelines if the xr/openxr/startup_alert setting is left true. This could cause builds or tests to hang', 'Other critical module initialization failures (e.g., graphics, physics) might still use blocking alerts, leading to an inconsistent user experience', and 'main.cpp::setup indirectly calls initialize_openxr_module'.",
+            "F4": "The review identifies a specific user expectation that could break: 'Users expecting an immediate, blocking notification of OpenXR failure might now only see a warning in the console (if they check it) or no immediate feedback, leading to frustration and increased support requests.' This explains exactly what downstream behavior would change for the user.",
+            "P1": "The review makes no mention of performance, inefficiencies, or potential bottlenecks.",
+            "R2": "The review contains no comments on code complexity, structure, or suggestions for simplification.",
+            "T3": "The review names a specific test file path: 'new test files like tests/modules/openxr/test_openxr_init.cpp should be created.' It then references multiple exact test scenarios and functions within those files that need coverage, such as 'test that OS::get_singleton()->alert is not called when startup_alert is false' and 'Test the behavior in a simulated headless environment', explaining missing edge cases."
+          },
+          "error": ""
+        },
+        {
+          "model": "gemini:gemini-2.5-pro",
+          "scores": {
+            "F3": 3,
+            "F4": 2,
+            "P1": 0,
+            "R2": 2,
+            "T3": 2
+          },
+          "evidence": {
+            "F3": "Names multiple specific callers or dependent components with file paths or function names, and explains the concrete integration risk for each. Evidence: 'Call-graph edges: `main.cpp::setup` indirectly calls `initialize_openxr_module` as part of the engine's startup sequence.' and 'Inconsistent Error Reporting Across Modules: ... Other critical module initialization failures (e.g., graphics, physics) might still use blocking alerts...' and 'Potential for Unintended Blocking Behavior in Headless ",
+            "F4": "Identifies at least one specific caller expectation that could break. Evidence: 'User Experience Regression: Users expecting an immediate, blocking notification of OpenXR failure might now only see a warning in the console (if they check it) or no immediate feedback, leading to frustration and increased support requests.' and 'Potential for Unintended Blocking Behavior in Headless Environments: ... This could cause builds or tests to hang, defeating part of the PR's stated justification.'",
+            "P1": "The review does not mention performance, speed, or efficiency.",
+            "R2": "Points to a specific function or block that is unnecessarily complex and suggests a concrete simplification. The review identifies the complexity introduced by the new conditional alert logic and its default value. Evidence: 'Inconsistent Error Reporting Across Modules...' and suggests a simplification: 'Consider changing the default value of `xr/openxr/startup_alert` to `false` for non-editor builds, or introduce a separate setting/logic for headless environments.'",
+            "T3": "Names at least one specific test file path from the repository. Evidence: 'Specific Test Files: Since no existing test files are provided in the context, new test files like `tests/modules/openxr/test_openxr_init.cpp` should be created.'"
+          },
+          "error": ""
+        }
+      ],
+      "timestamp": "2026-06-01T18:57:37.144843+00:00"
+    },
+    "pr2_baseline": {
+      "pr_id": 2,
+      "mode": "baseline",
+      "mean_scores": {
+        "F3": 3.0,
+        "F4": 3.0,
+        "P1": 0.0,
+        "R2": 0.0,
+        "T3": 2.0
+      },
+      "mean_graded_total": 8.0,
+      "per_judge": [
+        {
+          "model": "gemini:gemini-2.5-flash",
+          "scores": {
+            "F3": 3,
+            "F4": 3,
+            "P1": 0,
+            "R2": 0,
+            "T3": 2
+          },
+          "evidence": {
+            "F3": "public/app/features/plugins/datasource_srv.ts:257-258: The code now checks for UIDs in addition to names, which could break existing dashboards that rely solely on names. public/app/features/variables/datasource/reducer.ts:45: The change to use UIDs in the `value` field may not be backward compatible with dashboards that expect names.",
+            "F4": "public/app/features/plugins/datasource_srv.ts:257-258: The code now checks for UIDs in addition to names, which could break existing dashboards that rely solely on names. public/app/features/variables/datasource/reducer.ts:45: The change to use UIDs in the `value` field may not be backward compatible with dashboards that expect names. Existing dashboards that rely on data source names for template variables may break or behave unexpectedly.",
+            "P1": "No mention of performance in the review.",
+            "R2": "No comment on complexity or code structure in the review.",
+            "T3": "`e2e/dashboards-suite/new-datasource-variable.spec.ts:41`: The test checks for UID usage but does not cover scenarios where dashboards might still use names."
+          },
+          "error": ""
+        },
+        {
+          "model": "gemini:gemini-2.5-pro",
+          "scores": {
+            "F3": 3,
+            "F4": 3,
+            "P1": 0,
+            "R2": 0,
+            "T3": 2
+          },
+          "evidence": {
+            "F3": "The review names multiple specific files and explains the integration risk for each: `public/app/features/plugins/datasource_srv.ts:257-258`: The code now checks for UIDs in addition to names, which could break existing dashboards that rely solely on names. `public/app/features/variables/datasource/reducer.ts:45`: The change to use UIDs in the `value` field may not be backward compatible with dashboards that expect names.",
+            "F4": "The review identifies multiple specific contract violations with file references and explains the downstream impact: `datasource_srv.ts:257-258`: ...could break existing dashboards that rely solely on names. `reducer.ts:45`: ...may not be backward compatible with dashboards that expect names. Impact: Existing dashboards that rely on data source names for template variables may break or behave unexpectedly.",
+            "P1": "The review makes no mention of performance.",
+            "R2": "The review makes no comment on complexity or code structure.",
+            "T3": "The review names one specific test file that should be updated: `e2e/dashboards-suite/new-datasource-variable.spec.ts:41`: The test checks for UID usage but does not cover scenarios where dashboards might still use names."
+          },
+          "error": ""
+        }
+      ],
+      "timestamp": "2026-06-01T18:57:24.534445+00:00"
+    },
+    "pr2_joern_kg": {
+      "pr_id": 2,
+      "mode": "joern_kg",
+      "mean_scores": {
+        "F3": 3.0,
+        "F4": 3.0,
+        "P1": 0.0,
+        "R2": 0.0,
+        "T3": 3.0
+      },
+      "mean_graded_total": 9.0,
+      "per_judge": [
+        {
+          "model": "gemini:gemini-2.5-flash",
+          "scores": {
+            "F3": 3,
+            "F4": 3,
+            "P1": 0,
+            "R2": 0,
+            "T3": 3
+          },
+          "evidence": {
+            "F3": "Names multiple specific callers or dependent components with file paths or function names, and explains the concrete integration risk for each. The review states: 'External tools, scripts, or provisioning systems that interact with Grafana's API for dashboard management will break if they expect datasource variable `value` to be the datasource `name`.'",
+            "F4": "Identifies multiple specific contract violations with file/function references and explains exactly what downstream behavior would change. The review states: 'Changing the `value` of a datasource variable option from `name` to `uid` fundamentally alters its API contract.' and references `public/app/features/variables/datasource/reducer.ts:45`. It also explains that 'Existing dashboards with datasource variables might fail to load correctly or display \"No value\" if their stored `value` (which wou",
+            "P1": "No mention of performance in the review.",
+            "R2": "No comment on complexity or code structure in the review.",
+            "T3": "Names multiple specific test file paths, references the exact test scenarios or functions within those files that need coverage, and explains what edge cases are currently missing. The review states: 'Add an explicit assertion in `e2e/dashboards-suite/new-datasource-variable.spec.ts` to verify the `raw` output of the datasource variable... Add a dedicated unit test in `public/app/features/variables/state/actions.test.ts` that simulates loading a datasource variable with `current.value` set to a "
+          },
+          "error": ""
+        },
+        {
+          "model": "gemini:gemini-2.5-pro",
+          "scores": {
+            "F3": 3,
+            "F4": 3,
+            "P1": 0,
+            "R2": 0,
+            "T3": 3
+          },
+          "evidence": {
+            "F3": "The review names multiple dependent components (existing dashboards, external tools, provisioning systems) and explains the concrete integration risk for each. For example: \"External tools, scripts, or provisioning systems that interact with Grafana's API for dashboard management will break if they expect datasource variable `value` to be the datasource `name`.\" It also references specific files involved in the interaction, such as `datasource_srv.ts` and `actions.ts`.",
+            "F4": "The review identifies multiple specific contract violations. First, the API contract: \"Changing the `value` of a datasource variable option from `name` to `uid` fundamentally alters its API contract,\" referencing `reducer.ts:45`. Second, the backward compatibility contract with existing dashboards: \"Existing dashboards with datasource variables might fail to load correctly... if their stored `value` (which would be the datasource `name`) cannot be resolved.\" It explains the exact downstream beha",
+            "P1": "The review makes no mention of performance, efficiency, or potential bottlenecks.",
+            "R2": "The review does not comment on code complexity, simplification, or suggest any refactoring for clarity.",
+            "T3": "The review names multiple specific test file paths (`e2e/dashboards-suite/new-datasource-variable.spec.ts`, `public/app/features/plugins/tests/datasource_srv.test.ts`, `public/app/features/variables/state/actions.test.ts`), references the exact scenarios needing coverage (raw output, datasource renaming, migration from name to uid), and explains the missing edge cases."
+          },
+          "error": ""
+        }
+      ],
+      "timestamp": "2026-06-01T18:57:28.783832+00:00"
+    },
+    "pr3_baseline": {
+      "pr_id": 3,
+      "mode": "baseline",
+      "mean_scores": {
+        "F3": 0.0,
+        "F4": 0.0,
+        "P1": 0.0,
+        "R2": 2.0,
+        "T3": 0.0
+      },
+      "mean_graded_total": 2.0,
+      "per_judge": [
+        {
+          "model": "gemini:gemini-2.5-flash",
+          "scores": {
+            "F3": 0,
+            "F4": 0,
+            "P1": 0,
+            "R2": 2,
+            "T3": 0
+          },
+          "evidence": {
+            "F3": "No mention of integration or impact on other components.",
+            "F4": "No mention of breaking changes or API contract violations.",
+            "P1": "No mention of performance.",
+            "R2": "The logic for displaying the notification is directly within the component, which could be refactored for reusability. ... Consider extracting the notification logic into a separate component or utility function to promote reusability and maintainability.",
+            "T3": "Add Tests: Implement unit tests to cover the notification logic, ensuring that it appears under the correct conditions and with the correct content."
+          },
+          "error": ""
+        },
+        {
+          "model": "gemini:gemini-2.5-pro",
+          "scores": {
+            "F3": 0,
+            "F4": 0,
+            "P1": 0,
+            "R2": 2,
+            "T3": 0
+          },
+          "evidence": {
+            "F3": "The review discusses potential future code duplication but does not mention any impact on existing callers or dependents of the changed component.",
+            "F4": "The review does not mention any breaking changes or API contract violations.",
+            "P1": "The review makes no mention of performance.",
+            "R2": "The review points to a specific block of code (`public/app/features/expressions/components/Reduce.tsx:30-72`) that it identifies as problematic (embedding logic directly) and suggests a concrete simplification: \"Consider extracting the notification logic into a separate component or utility function to promote reusability and maintainability.\"",
+            "T3": "The review generically recommends to \"Add Tests\" but does not name any specific test files that should be added or updated."
+          },
+          "error": ""
+        }
+      ],
+      "timestamp": "2026-06-01T18:57:18.544721+00:00"
+    },
+    "pr3_joern_kg": {
+      "pr_id": 3,
+      "mode": "joern_kg",
+      "mean_scores": {
+        "F3": 3.0,
+        "F4": 2.0,
+        "P1": 0.0,
+        "R2": 0.0,
+        "T3": 3.0
+      },
+      "mean_graded_total": 8.0,
+      "per_judge": [
+        {
+          "model": "gemini:gemini-2.5-flash",
+          "scores": {
+            "F3": 3,
+            "F4": 2,
+            "P1": 0,
+            "R2": 0,
+            "T3": 3
+          },
+          "evidence": {
+            "F3": "Names multiple specific callers or dependent components with file paths or function names, and explains the concrete integration risk for each. The review states: \"Callers: e2e-playwright/panels-suite/panelEdit_transforms.spec.ts, e2e-playwright/panels-suite/table-footer.spec.ts (these E2E tests interact with the UI where Reduce is rendered).\" and explains the impact: \"Existing E2E tests might fail due to unexpected UI shifts, requiring manual updates to selectors or visual assertions, increasin",
+            "F4": "Identifies at least one specific API contract or caller expectation that could break. The review identifies an \"Implicit Behavioral Change for Strict Mode\" in `onModeChanged` within `Reduce.tsx` (lines 33-36, 48-50), explaining that the `ExpressionQuerySettings` structure for `ReducerMode.Strict` would change from `{ mode: value.value }` to `{ mode: ReducerMode.Strict }`, potentially altering how the backend processes queries.",
+            "P1": "No mention of performance issues in the review.",
+            "R2": "No comment on complexity or code structure in the review.",
+            "T3": "Names multiple specific test file paths, references the exact test scenarios or functions within those files that need coverage, and explains what edge cases are currently missing. The review recommends: \"Create a new test file (e.g., public/app/features/expressions/components/Reduce.test.tsx) to cover: Rendering of the strictModeNotification... Non-rendering... Verification that onModeChanged correctly calls onChange... Verification of the documentation link's href... Verification of the locali"
+          },
+          "error": ""
+        },
+        {
+          "model": "gemini:gemini-2.5-pro",
+          "scores": {
+            "F3": 3,
+            "F4": 2,
+            "P1": 0,
+            "R2": 0,
+            "T3": 3
+          },
+          "evidence": {
+            "F3": "Names multiple specific E2E test files that are affected by the UI change: `e2e-playwright/panels-suite/panelEdit_transforms.spec.ts`, `e2e-playwright/panels-suite/table-footer.spec.ts`. It also explains the concrete integration risk: \"The introduction of a new `Alert` component can alter the visual layout of the `Reduce` component, potentially causing existing E2E tests that rely on element positioning or screenshot comparisons to become flaky or fail.\"",
+            "F4": "Identifies a specific behavioral change that could break an expectation: \"The addition of an explicit `case ReducerMode.Strict` in `onModeChanged` changes how this mode's settings are handled. If `ReducerMode.Strict` was previously implicitly caught by the `default` case, its behavior for `ExpressionQuerySettings` would have been `{ mode: value.value }`. Now it's explicitly `{ mode: ReducerMode.Strict }`.\"",
+            "P1": "The review does not mention performance.",
+            "R2": "The review does not comment on complexity or suggest simplifications.",
+            "T3": "Names multiple specific test files to add or update (`public/app/features/expressions/components/Reduce.test.tsx`, `e2e-playwright/panels-suite/panelEdit_transforms.spec.ts`, `e2e-playwright/panels-suite/table-footer.spec.ts`) and lists multiple exact test scenarios to cover, such as \"Rendering of the `strictModeNotification` when `mode` is `ReducerMode.Strict`\" and \"Non-rendering of the `strictModeNotification` when `mode` is not `ReducerMode.Strict`.\""
+          },
+          "error": ""
+        }
+      ],
+      "timestamp": "2026-06-01T18:57:29.362309+00:00"
+    },
+    "pr6_baseline": {
+      "pr_id": 6,
+      "mode": "baseline",
+      "mean_scores": {
+        "F3": 2.0,
+        "F4": 0.0,
+        "P1": 1.0,
+        "R2": 0.0,
+        "T3": 2.0
+      },
+      "mean_graded_total": 5.0,
+      "per_judge": [
+        {
+          "model": "gemini:gemini-2.5-flash",
+          "scores": {
+            "F3": 2,
+            "F4": 0,
+            "P1": 1,
+            "R2": 0,
+            "T3": 2
+          },
+          "evidence": {
+            "F3": "Names at least one specific caller, module, or dependent file that is affected: `core/src/main/scala/kafka/server/ReplicaManager.scala:1479-1481` - The integration of the new configuration with existing fetch parameters might lead to unexpected behavior if defaults are not properly aligned.",
+            "F4": "The review does not mention breaking changes, API contract violations, or changes to caller expectations.",
+            "P1": "Generic comment that performance could be affected: \"Without validation, incorrect configuration values could lead to unexpected behavior or performance degradation.\"",
+            "R2": "The review does not comment on complexity or code structure.",
+            "T3": "Names at least one specific test file path from the repository: `core/src/test/scala/integration/kafka/server/DelayedRemoteFetchTest.scala:40-185` - Tests are added for typical use cases, but edge cases such as negative values or extremely high values for `remote.fetch.max.wait.ms` are not covered."
+          },
+          "error": ""
+        },
+        {
+          "model": "gemini:gemini-2.5-pro",
+          "scores": {
+            "F3": 2,
+            "F4": 0,
+            "P1": 1,
+            "R2": 0,
+            "T3": 2
+          },
+          "evidence": {
+            "F3": "Names one specific dependent file: \"Integration issues: `core/src/main/scala/kafka/server/ReplicaManager.scala:1479-1481` - The integration of the new configuration with existing fetch parameters might lead to unexpected behavior if defaults are not properly aligned.\"",
+            "F4": "The review does not mention breaking changes or API contract violations. It discusses potential internal bugs and unexpected behavior, but not in the context of a contract with a caller.",
+            "P1": "The review makes a generic comment that performance could be affected: \"Without validation, incorrect configuration values could lead to unexpected behavior or performance degradation.\"",
+            "R2": "The review does not contain any comments on code complexity or suggest simplifications.",
+            "T3": "The review names one specific test file that should be updated: \"Insufficient test coverage: `core/src/test/scala/integration/kafka/server/DelayedRemoteFetchTest.scala:40-185` - Tests are added for typical use cases, but edge cases such as negative values or extremely high values for `remote.fetch.max.wait.ms` are not covered.\""
+          },
+          "error": ""
+        }
+      ],
+      "timestamp": "2026-06-01T18:57:23.261081+00:00"
+    },
+    "pr6_joern_kg": {
+      "pr_id": 6,
+      "mode": "joern_kg",
+      "mean_scores": {
+        "F3": 3.0,
+        "F4": 2.0,
+        "P1": 0.5,
+        "R2": 0.0,
+        "T3": 3.0
+      },
+      "mean_graded_total": 8.5,
+      "per_judge": [
+        {
+          "model": "gemini:gemini-2.5-flash",
+          "scores": {
+            "F3": 3,
+            "F4": 2,
+            "P1": 0,
+            "R2": 0,
+            "T3": 3
+          },
+          "evidence": {
+            "F3": "Names multiple specific callers or dependent components with file paths or function names, and explains the concrete integration risk for each. \nEvidence: 'Problem 1: Changed Behavior for Remote Fetches: The PR alters the `DelayedRemoteFetch` timeout mechanism to use a new broker-configured value (`remote.fetch.max.wait.ms`) instead of the `maxWaitMs` provided in the `FetchParams` object. This means client-provided `fetch.max.wait.ms` will no longer influence the server-side blocking timeout for",
+            "F4": "Identifies at least one specific API contract or caller expectation that could break. \nEvidence: 'Problem 1: Changed Behavior for Remote Fetches: The PR alters the `DelayedRemoteFetch` timeout mechanism to use a new broker-configured value (`remote.fetch.max.wait.ms`) instead of the `maxWaitMs` provided in the `FetchParams` object. This means client-provided `fetch.max.wait.ms` will no longer influence the server-side blocking timeout for remote log fetches, which is a significant behavioral cha",
+            "P1": "No mention of performance. The review discusses 'different latency profiles' but in the context of changed behavior and client expectations regarding timeouts, not as an inefficiency introduced by the code itself.",
+            "R2": "No comment on complexity or code structure. The 'Potential for Configuration Confusion' is about usability/documentation, not code complexity.",
+            "T3": "Names multiple specific test file paths, references the exact test scenarios or functions within those files that need coverage, and explains what edge cases are currently missing. \nEvidence: 'Enhance `core/src/test/scala/integration/kafka/server/DelayedRemoteFetchTest.scala` to include test cases that: Verify `DelayedRemoteFetch` uses `remoteFetchMaxWaitMs` when it's different from `fetchParams.maxWaitMs`. Verify `DelayedRemoteFetch` correctly times out based on `remoteFetchMaxWaitMs`. Consider"
+          },
+          "error": ""
+        },
+        {
+          "model": "gemini:gemini-2.5-pro",
+          "scores": {
+            "F3": 3,
+            "F4": 2,
+            "P1": 1,
+            "R2": 0,
+            "T3": 3
+          },
+          "evidence": {
+            "F3": "The review names multiple specific components with file paths (`DelayedRemoteFetch.scala:38`, `ReplicaManager.scala:1480`, `ConsumerConfig.java:200-203`) and explains the concrete integration risk: 'Existing Kafka clients that rely on `fetch.max.wait.ms` to control the server-side blocking timeout for *all* fetch requests (including those that might involve remote storage) will find their expectation violated for remote fetches.'",
+            "F4": "The review identifies a specific caller expectation that could break: 'client-provided `fetch.max.wait.ms` will no longer influence the server-side blocking timeout for remote log fetches, which is a significant behavioral change.' It details the impact on clients, explaining that their expectation of controlling the timeout will be violated.",
+            "P1": "The review makes a comment that performance could be affected, mentioning that the change could lead to 'different latency profiles or timeouts than clients expect' and 'unexpected timeouts or delays'. It does not identify a specific inefficiency in the changed code itself, but rather the performance impact of the behavioral change.",
+            "R2": "The review mentions 'Potential for Configuration Confusion', which relates to user-facing complexity, but it does not comment on the complexity of the code implementation or suggest any code-level simplification or refactoring.",
+            "T3": "The review names multiple specific test file paths (`core/src/test/scala/integration/kafka/server/DelayedRemoteFetchTest.scala` and `core/src/test/scala/unit/kafka/server/ReplicaManagerTest.scala`), references the exact test scenarios needed ('Verify `DelayedRemoteFetch` uses `remoteFetchMaxWaitMs` when it's different from `fetchParams.maxWaitMs`'), and explains what edge cases are missing ('Edge cases like `remote.log.storage.system.enable=false`... are also not covered')."
+          },
+          "error": ""
+        }
+      ],
+      "timestamp": "2026-06-01T18:57:46.506699+00:00"
+    },
+    "pr8_baseline": {
+      "pr_id": 8,
+      "mode": "baseline",
+      "mean_scores": {
+        "F3": 2.5,
+        "F4": 2.0,
+        "P1": 0.0,
+        "R2": 0.0,
+        "T3": 2.0
+      },
+      "mean_graded_total": 6.5,
+      "per_judge": [
+        {
+          "model": "gemini:gemini-2.5-flash",
+          "scores": {
+            "F3": 2,
+            "F4": 2,
+            "P1": 0,
+            "R2": 0,
+            "T3": 3
+          },
+          "evidence": {
+            "F3": "Names at least one specific caller, module, or dependent file that is affected. The review names 'existing dashboards' as a specific dependent component and explains the risk: 'Existing dashboards that depend on custom values might break if the default behavior changes or if the feature is not correctly integrated.'",
+            "F4": "Identifies at least one specific API contract or caller expectation that could break. The review identifies the expectation that 'existing dashboards that rely on custom values' might break, implying a change in the expected behavior or 'contract' for custom values.",
+            "P1": "No mention of performance.",
+            "R2": "No comment on complexity or code structure.",
+            "T3": "Names multiple specific test file paths, references the exact test scenarios or functions within those files that need coverage, and explains what edge cases are currently missing. The review names `public/app/features/dashboard-scene/settings/variables/components/AdHocVariableForm.tsx:85` and `public/app/features/dashboard-scene/settings/variables/editors/CustomVariableEditor.tsx:35`, and explains missing coverage as 'lacks tests for all scenarios' and 'not thoroughly validated in tests', recom"
+          },
+          "error": ""
+        },
+        {
+          "model": "gemini:gemini-2.5-pro",
+          "scores": {
+            "F3": 3,
+            "F4": 2,
+            "P1": 0,
+            "R2": 0,
+            "T3": 1
+          },
+          "evidence": {
+            "F3": "Names multiple specific components with file paths (`AdHocVariableForm.tsx:85`, `variables.ts:138`, `CustomVariableEditor.tsx:35`) and explains the concrete integration risk: 'Existing dashboards that depend on custom values might break if the default behavior changes or if the feature is not correctly integrated.'",
+            "F4": "Identifies a specific caller expectation that could break: 'Potential backward compatibility issues with existing dashboards that rely on custom values.' and 'Existing dashboards that depend on custom values might break if the default behavior changes...'",
+            "P1": "The review makes no mention of performance.",
+            "R2": "The review makes no comment on complexity or code structure.",
+            "T3": "The review mentions that tests are needed ('Lack of comprehensive test coverage... Expand test coverage...') but does not name a specific test file."
+          },
+          "error": ""
+        }
+      ],
+      "timestamp": "2026-06-01T18:57:24.593951+00:00"
+    },
+    "pr8_joern_kg": {
+      "pr_id": 8,
+      "mode": "joern_kg",
+      "mean_scores": {
+        "F3": 3.0,
+        "F4": 1.5,
+        "P1": 0.0,
+        "R2": 2.0,
+        "T3": 3.0
+      },
+      "mean_graded_total": 9.5,
+      "per_judge": [
+        {
+          "model": "gemini:gemini-2.5-flash",
+          "scores": {
+            "F3": 3,
+            "F4": 1,
+            "P1": 0,
+            "R2": 2,
+            "T3": 3
+          },
+          "evidence": {
+            "F3": "Names multiple specific callers or dependent components with file paths or function names, and explains the concrete integration risk for each: 'This could impact public/app/features/dashboard/containers/DashboardPage.tsx when rendering dashboards with AdHoc variables.' and 'This could affect any component consuming variable values, such as public/app/plugins/datasource/azuremonitor/components/ArgQueryEditor/ArgQueryEditor.tsx or public/app/plugins/datasource/cloudwatch/variables.test.ts if they",
+            "F4": "Generically warns that callers or API consumers may be affected, without specifics: 'Users might be confused about the purpose of allowCustomValue for AdHoc variables, potentially leading to incorrect configurations or unexpected filtering behavior.' and 'This scenario could lead to inconsistent UI behavior, data validation issues, or unexpected query generation if a user attempts to enter a custom value for a single-select variable.' While it points to potential issues, it does not explicitly i",
+            "P1": "No mention of performance.",
+            "R2": "Points to a specific function or block that is unnecessarily complex and suggests a concrete simplification: 'Re-evaluate if allowCustomValue is truly necessary or meaningful for AdHocVariableModel. If it is, add specific documentation... If not, remove it from AdHocVariableModel and its associated forms.'",
+            "T3": "Names multiple specific test file paths, references the exact test scenarios or functions within those files that need coverage, and explains what edge cases are currently missing: 'Add a dedicated test case in public/app/features/dashboard-scene/settings/variables/editors/AdHocFiltersVariableEditor.test.tsx and public/app/features/dashboard-scene/utils/variables.test.ts to explicitly verify the behavior of allowCustomValue for AdHoc variables, including scenarios where it's enabled and disabled"
+          },
+          "error": ""
+        },
+        {
+          "model": "gemini:gemini-2.5-pro",
+          "scores": {
+            "F3": 3,
+            "F4": 2,
+            "P1": 0,
+            "R2": 2,
+            "T3": 3
+          },
+          "evidence": {
+            "F3": "Names multiple specific callers or dependent components with file paths or function names, and explains the concrete integration risk for each. For example: 'This could impact `public/app/features/dashboard/containers/DashboardPage.tsx` when rendering dashboards with AdHoc variables.' and 'This could affect any component consuming variable values, such as `public/app/plugins/datasource/azuremonitor/components/ArgQueryEditor/ArgQueryEditor.tsx` or `public/app/plugins/datasource/cloudwatch/variabl",
+            "F4": "Identifies a specific caller expectation that could break: 'It's unclear how a single-value variable (`multi: false`) would behave if `allowCustomValue` is enabled... This scenario could lead to inconsistent UI behavior... if a user attempts to enter a custom value for a single-select variable. This could affect any component consuming variable values... if they rely on strict option lists.'",
+            "P1": "The review does not mention performance.",
+            "R2": "Points to a specific part of the model that is unnecessarily complex and suggests a concrete simplification: 'Re-evaluate if `allowCustomValue` is truly necessary or meaningful for `AdHocVariableModel`. If it is, add specific documentation... If not, remove it from `AdHocVariableModel` and its associated forms.'",
+            "T3": "Names multiple specific test file paths and explains the missing edge cases: 'Add a dedicated test case in `public/app/features/dashboard-scene/settings/variables/editors/AdHocFiltersVariableEditor.test.tsx` and `public/app/features/dashboard-scene/utils/variables.test.ts` to explicitly verify the behavior of `allowCustomValue` for AdHoc variables... Add a new test case in `public/app/features/dashboard-scene/settings/variables/components/QueryVariableForm.test.tsx`...'"
+          },
+          "error": ""
+        }
+      ],
+      "timestamp": "2026-06-01T18:57:27.743919+00:00"
+    },
+    "pr10_baseline": {
+      "pr_id": 10,
+      "mode": "baseline",
+      "mean_scores": {
+        "F3": 3.0,
+        "F4": 3.0,
+        "P1": 0.0,
+        "R2": 0.0,
+        "T3": 1.0
+      },
+      "mean_graded_total": 7.0,
+      "per_judge": [
+        {
+          "model": "gemini:gemini-2.5-flash",
+          "scores": {
+            "F3": 3,
+            "F4": 3,
+            "P1": 0,
+            "R2": 0,
+            "T3": 0
+          },
+          "evidence": {
+            "F3": "Names multiple specific callers or dependent components with file paths or function names, and explains the concrete integration risk for each: `sklearn/ensemble/_forest.py:249`, `282`, `471`, `625`, `879`, `1002`: Direct replacement of `_joblib_parallel_args` with `prefer=\"threads\"` or `require=\"sharedmem\"`. `sklearn/utils/fixes.py:58`: Complete removal of `_joblib_parallel_args` function. `sklearn/tests/test_pipeline.py:1163`, `1227`: Direct usage of `joblib.Memory(location=...)` without fallb",
+            "F4": "Identifies multiple specific contract violations with file/function references and explains exactly what downstream behavior would change: 'Removal of `_joblib_parallel_args` function without ensuring all usages are updated.' (with specific file references in 'Evidence' section). 'Potential backward compatibility issues with older environments that may not support `joblib` 1.0.0.' The impact states: 'The removal of `_joblib_parallel_args` could lead to runtime errors if any code paths still rely",
+            "P1": "No mention of performance.",
+            "R2": "No comment on complexity or code structure.",
+            "T3": "The review only says 'Ensure all instances of `_joblib_parallel_args` are correctly updated and tested to prevent runtime errors.' and 'Verify that all test cases cover scenarios with the updated `joblib` usage to ensure no regressions.' which are generic statements about testing, not naming specific test files or scenarios that need coverage."
+          },
+          "error": ""
+        },
+        {
+          "model": "gemini:gemini-2.5-pro",
+          "scores": {
+            "F3": 3,
+            "F4": 3,
+            "P1": 0,
+            "R2": 0,
+            "T3": 2
+          },
+          "evidence": {
+            "F3": "The review names multiple specific files and line numbers that are affected by the change (`sklearn/ensemble/_forest.py:249`, `282`, `471`, `625`, `879`, `1002`, `sklearn/utils/fixes.py:58`) and explains the concrete integration risk: 'The removal of `_joblib_parallel_args` could lead to runtime errors if any code paths still rely on it.'",
+            "F4": "The review identifies multiple specific breaking changes: the dependency bump ('Potential backward compatibility issues with older environments that may not support `joblib` 1.0.0') and the removal of an internal function ('Removal of `_joblib_parallel_args` function'). It explains the downstream behavior for both: 'breaking their existing workflows' and 'could lead to runtime errors'.",
+            "P1": "The review does not contain any mention of performance, speed, or efficiency.",
+            "R2": "The review does not contain any mention of complexity, simplification, or code structure.",
+            "T3": "The review names a specific test file path in the 'Evidence' section: `sklearn/tests/test_pipeline.py:1163`, `1227`."
+          },
+          "error": ""
+        }
+      ],
+      "timestamp": "2026-06-01T18:57:29.677676+00:00"
+    },
+    "pr10_joern_kg": {
+      "pr_id": 10,
+      "mode": "joern_kg",
+      "mean_scores": {
+        "F3": 3.0,
+        "F4": 3.0,
+        "P1": 2.5,
+        "R2": 0.0,
+        "T3": 3.0
+      },
+      "mean_graded_total": 11.5,
+      "per_judge": [
+        {
+          "model": "gemini:gemini-2.5-flash",
+          "scores": {
+            "F3": 3,
+            "F4": 3,
+            "P1": 2,
+            "R2": 0,
+            "T3": 3
+          },
+          "evidence": {
+            "F3": "Names multiple specific callers or dependent components with file paths or function names, and explains the concrete integration risk for each. For example: 'Problem 1 (CPU Count): `sklearn/_build_utils/__init__.py:64-69`... Incorrect `n_jobs` values during build could lead to resource contention... Problem 2 (Memory Edge Case): `sklearn/pipeline.py:326-339`... If `memory.location is None` does not correctly prevent cloning... Problem 3 (Parallel Behavior): `sklearn/ensemble/_forest.py:249`... R",
+            "F4": "Identifies multiple specific contract violations with file/function references and explains exactly what downstream behavior would change. For example: 'Problem 1 (CPU Count): The removal of the `joblib.__version__` check... assumes `joblib 1.0.0`'s `cpu_count()` reliably accounts for CPU affinity constraints... If this assumption is incorrect, it could lead to over-estimation of available CPUs... Problem 2 (Memory Edge Case): The logic for `joblib.Memory` instantiation and its interaction with ",
+            "P1": "Identifies multiple specific performance issues with code references and explains the complexity or bottleneck. For example: 'Problem 1: Incorrect `n_jobs` values during build could lead to resource contention, slower builds... Problem 2: If `memory.location is None` does not correctly prevent cloning... it could lead to unexpected object copying, increased memory usage, or performance degradation... Problem 3: Regressions in parallel execution could manifest as performance bottlenecks...' Howev",
+            "R2": "The review does not identify any unnecessary complexity in the changed code or suggest simplification. It focuses on potential risks and untested edge cases resulting from simplifications made by the PR.",
+            "T3": "Names multiple specific test file paths, references the exact test scenarios or functions within those files that need coverage, and explains what edge cases are currently missing. For example: '1. Tests for CPU Count: Add a dedicated test case... to `sklearn/tests/test_config.py`... that verifies `joblib.cpu_count()` returns an accurate number of CPUs under simulated CPU affinity constraints... 2. Tests for `joblib.Memory` with `location=None`: Enhance `sklearn/tests/test_pipeline.py` (specific"
+          },
+          "error": ""
+        },
+        {
+          "model": "gemini:gemini-2.5-pro",
+          "scores": {
+            "F3": 3,
+            "F4": 3,
+            "P1": 3,
+            "R2": 0,
+            "T3": 3
+          },
+          "evidence": {
+            "F3": "Names multiple specific callers or dependent components with file paths or function names, and explains the concrete integration risk for each. For example: 'Regressions in parallel execution could manifest as performance bottlenecks... Specific callers like `sklearn/ensemble/_forest.py` (`fit`, `predict_proba`, `predict`), `sklearn/linear_model/_logistic.py` (`fit`), and `sklearn/neighbors/_base.py` (`kneighbors`, `radius_neighbors`) are at risk.' It also identifies risks in `sklearn/_build_uti",
+            "F4": "Identifies multiple specific contract violations with file/function references and explains exactly what downstream behavior would change. For example, it notes the assumption that `joblib 1.0.0`'s `cpu_count()` handles affinity constraints in `_build_utils/__init__.py`, the changed logic for `Pipeline` cloning when `memory.location is None` in `sklearn/pipeline.py`, and the subtle behavior changes of `Parallel` arguments in multiple estimator files.",
+            "P1": "Identifies multiple specific performance issues with code references and explains the bottleneck. It mentions potential for 'slower builds' due to incorrect CPU count in `sklearn/_build_utils/__init__.py`, 'increased memory usage, or performance degradation' from unexpected object copying in `sklearn/pipeline.py`, and 'performance bottlenecks' from regressions in parallel execution in various estimators like `sklearn/ensemble/_forest.py`.",
+            "R2": "The review does not identify unnecessary complexity or suggest simplification. The PR itself is a simplification, and the review focuses on the potential negative consequences and risks of that simplification, not on any remaining complexity.",
+            "T3": "Names multiple specific test file paths, references the exact test scenarios or functions within those files that need coverage, and explains what edge cases are currently missing. Specifically, it recommends adding tests to `sklearn/tests/test_config.py` for CPU affinity constraints and enhancing `sklearn/tests/test_pipeline.py` (specifically `test_pipeline_memory` or `test_make_pipeline_memory`) to cover the `location=None` edge case."
+          },
+          "error": ""
+        }
+      ],
+      "timestamp": "2026-06-01T18:57:41.339952+00:00"
+    },
+    "pr12_baseline": {
+      "pr_id": 12,
+      "mode": "baseline",
+      "mean_scores": {
+        "F3": 1.0,
+        "F4": 1.0,
+        "P1": 0.0,
+        "R2": 0.0,
+        "T3": 0.0
+      },
+      "mean_graded_total": 2.0,
+      "per_judge": [
+        {
+          "model": "gemini:gemini-2.5-flash",
+          "scores": {
+            "F3": 1,
+            "F4": 0,
+            "P1": 0,
+            "R2": 0,
+            "T3": 0
+          },
+          "evidence": {
+            "F3": "Using `Math::rand()` could lead to predictable random values, especially if the random number generator is not properly seeded, which might not be suitable for all use cases. Without tests, there is a risk of introducing bugs or unexpected behavior in the `pick_random` method, which could affect any functionality relying on this method.",
+            "F4": "No mention of breaking changes or API contract violations. The PR adds a new method, and the review focuses on the quality of its implementation rather than changes to existing contracts.",
+            "P1": "No mention of performance. The discussion around `Math::rand()` is about randomness quality and thread safety, not efficiency or speed.",
+            "R2": "No comment on complexity or code structure. The review focuses on the choice of random number generator and lack of tests, not the structural complexity of the method itself.",
+            "T3": "The review states 'Add unit tests for the `pick_random` method to verify its behavior with different array sizes and contents, including edge cases like empty arrays.' While it specifies test scenarios, it does not name any specific test file path from the repository."
+          },
+          "error": ""
+        },
+        {
+          "model": "gemini:gemini-2.5-pro",
+          "scores": {
+            "F3": 1,
+            "F4": 2,
+            "P1": 0,
+            "R2": 0,
+            "T3": 0
+          },
+          "evidence": {
+            "F3": "The review vaguely notes that integration may be affected: \"...which could affect any functionality relying on this method.\"",
+            "F4": "The review identifies specific expectations that could be broken: that the random number generation is thread-safe and provides sufficient randomness. It states, \"The `pick_random` method uses `Math::rand()` which may not be thread-safe or provide sufficient randomness.\"",
+            "P1": "The review does not mention performance.",
+            "R2": "The review does not comment on complexity or suggest simplifications.",
+            "T3": "The review generically recommends to \"Add unit tests for the `pick_random` method\" but does not name any specific test files."
+          },
+          "error": ""
+        }
+      ],
+      "timestamp": "2026-06-01T18:57:22.837482+00:00"
+    },
+    "pr12_joern_kg": {
+      "pr_id": 12,
+      "mode": "joern_kg",
+      "mean_scores": {
+        "F3": 3.0,
+        "F4": 3.0,
+        "P1": 0.0,
+        "R2": 2.0,
+        "T3": 3.0
+      },
+      "mean_graded_total": 11.0,
+      "per_judge": [
+        {
+          "model": "gemini:gemini-2.5-flash",
+          "scores": {
+            "F3": 3,
+            "F4": 3,
+            "P1": 0,
+            "R2": 2,
+            "T3": 3
+          },
+          "evidence": {
+            "F3": "The `pick_random()` method directly uses `Math::rand()`, which relies on a global, shared random number generator state. This can lead to unpredictable or non-reproducible results if `Math::seed()` is not explicitly called or if multiple parts of the application concurrently or sequentially rely on `Math::rand()` without proper coordination. ... Other random number generation patterns in Godot often involve a `RandomNumberGenerator` object for better control, making `pick_random()` an outlier in",
+            "F4": "The `pick_random()` method directly uses `Math::rand()` (`core/array.cpp:408`), which relies on a global, shared random number generator state. This can lead to unpredictable or non-reproducible results... Lack of Thread Safety: `Math::rand()` is not inherently thread-safe. If `Array::pick_random()` is called from multiple threads, it could lead to race conditions or corrupted random number generator state, resulting in incorrect or non-random values. ... API Consistency: Other random number gen",
+            "P1": "No mention of performance in the review.",
+            "R2": "Maintainability: The reliance on a global random number generator makes the `Array::pick_random()` method harder to reason about, test, and debug in isolation. It also introduces a hidden dependency on the global `Math` state. ... Recommendation: Refactor Randomness Source: Consider adding an overload or an alternative method that accepts a `RandomNumberGenerator` object as an argument...",
+            "T3": "Add Comprehensive Unit Tests: Create a new test file (e.g., `tests/core/test_array.cpp` or `tests/core/test_array.h`) to cover `Array::pick_random()`. Tests should include: Calling `pick_random()` on an empty array... Calling `pick_random()` on an array with one element. ... Calling `pick_random()` on an array with multiple elements. ... Testing for deterministic behavior after `Math::seed()` is called..."
+          },
+          "error": ""
+        },
+        {
+          "model": "gemini:gemini-2.5-pro",
+          "scores": {
+            "F3": 3,
+            "F4": 3,
+            "P1": 0,
+            "R2": 2,
+            "T3": 3
+          },
+          "evidence": {
+            "F3": "The review names multiple specific components (`Math::rand()`, `Math::seed()`, `RandomNumberGenerator`) and explains the concrete integration risks for each, such as the global state of `Math::rand()` causing unpredictable results if other parts of the application use it, and the API inconsistency with the `RandomNumberGenerator` pattern used elsewhere in the engine.",
+            "F4": "The review identifies multiple specific expectations or implicit API contracts that are violated. It points to the lack of thread safety (`Math::rand()` is not inherently thread-safe), the violation of API consistency (`making pick_random() an outlier`), and the failure to provide reproducible results, explaining how each of these would negatively affect downstream code.",
+            "P1": "The review does not mention performance, speed, or efficiency. Its focus is on correctness, thread-safety, and API design.",
+            "R2": "The review points to a specific function (`Array::pick_random()`) and identifies its reliance on a global random number generator as a form of complexity that makes it \"harder to reason about, test, and debug in isolation.\" It suggests a concrete simplification by adding an overload that accepts a `RandomNumberGenerator` object.",
+            "T3": "The review names multiple specific potential test file paths (`tests/core/test_array.cpp` or `tests/core/test_array.h`). It also references the exact test scenarios that need coverage (empty array, single-element array, determinism after seeding) and explains what edge cases are currently missing."
+          },
+          "error": ""
+        }
+      ],
+      "timestamp": "2026-06-01T18:57:41.892630+00:00"
+    },
+    "pr13_baseline": {
+      "pr_id": 13,
+      "mode": "baseline",
+      "mean_scores": {
+        "F3": 2.0,
+        "F4": 2.0,
+        "P1": 0.0,
+        "R2": 0.0,
+        "T3": 0.0
+      },
+      "mean_graded_total": 4.0,
+      "per_judge": [
+        {
+          "model": "gemini:gemini-2.5-flash",
+          "scores": {
+            "F3": 2,
+            "F4": 2,
+            "P1": 0,
+            "R2": 0,
+            "T3": 0
+          },
+          "evidence": {
+            "F3": "The review states: \"Manually verify that the behavior of the refactored code matches the original, especially in critical areas like rendering and physics calculations.\" This names specific components ('rendering' and 'physics calculations') that are affected.",
+            "F4": "The review identifies: \"Potential for incorrect behavior if the new `min`, `max`, and `clamp` methods do not handle edge cases as expected.\" and \"The refactoring could introduce subtle bugs if the new methods do not perfectly replicate the behavior of the original `MIN`, `MAX`, and `CLAMP` macros.\" This identifies a specific caller expectation (identical behavior, especially for edge cases) that could break.",
+            "P1": "The review makes no mention of performance issues.",
+            "R2": "The review does not comment on complexity or code structure, nor does it suggest any simplification for the changed code.",
+            "T3": "The review generically recommends to \"Implement unit tests for the `min`, `max`, and `clamp` methods\" but does not name any specific test file paths."
+          },
+          "error": ""
+        },
+        {
+          "model": "gemini:gemini-2.5-pro",
+          "scores": {
+            "F3": 2,
+            "F4": 2,
+            "P1": 0,
+            "R2": 0,
+            "T3": 0
+          },
+          "evidence": {
+            "F3": "The review names multiple specific files that are affected (`core/math/aabb.h:104`, `core/math/delaunay_3d.h:285`, `scene/3d/decal.cpp:34`) and also mentions specific modules ('rendering and physics calculations').",
+            "F4": "The review identifies a specific API contract that could break: that the new methods might not 'perfectly replicate the behavior of the original MIN, MAX, and CLAMP macros', especially 'in edge cases where the original macros might have had specific handling'.",
+            "P1": "The review does not mention performance.",
+            "R2": "The review does not comment on complexity or suggest simplifications in the changed code.",
+            "T3": "The review generically recommends to 'Implement unit tests for the `min`, `max`, and `clamp` methods' without naming any specific test files."
+          },
+          "error": ""
+        }
+      ],
+      "timestamp": "2026-06-01T18:57:26.493139+00:00"
+    },
+    "pr13_joern_kg": {
+      "pr_id": 13,
+      "mode": "joern_kg",
+      "mean_scores": {
+        "F3": 3.0,
+        "F4": 3.0,
+        "P1": 0.0,
+        "R2": 1.5,
+        "T3": 2.5
+      },
+      "mean_graded_total": 10.0,
+      "per_judge": [
+        {
+          "model": "gemini:gemini-2.5-flash",
+          "scores": {
+            "F3": 3,
+            "F4": 3,
+            "P1": 0,
+            "R2": 2,
+            "T3": 3
+          },
+          "evidence": {
+            "F3": "For example, `Delaunay3D`'s grid calculations (`core/math/delaunay_3d.h:284`, `core/math/delaunay_3d.h:343`) are critical for spatial partitioning; any deviation could affect performance or correctness of triangulation. Similarly, window positioning in `DisplayServerX11` (`platform/linuxbsd/x11/display_server_x11.cpp:1995`, `platform/linuxbsd/x11/display_server_x11.cpp:5451`) could be slightly off.",
+            "F4": "subtle differences in floating-point precision handling or implicit type conversions (e.g., `(real_t)0` vs `Vector3()`) could theoretically lead to different results in highly sensitive calculations, especially in physics or rendering. ... The `CLAMP` macro typically evaluates its arguments multiple times, while the method call evaluates them once. ... subtle precision issues could lead to minor visual glitches, incorrect collision detection, or off-by-one errors in grid calculations.",
+            "P1": "No specific performance issues are identified in the changed code. The mention of 'performance' is conditional on correctness issues: 'any deviation could affect performance or correctness of triangulation.'",
+            "R2": "Inconsistent use of macros vs. member functions for identical operations makes the codebase harder to read and contributes to technical debt, requiring future developers to remember which style is used in which context. ... Perform a comprehensive search (e.g., `grep -r \"MIN(\" .`, `grep -r \"MAX(\" .`, `grep -r \"CLAMP(\" .`) across the entire codebase to identify any remaining instances of these macros applied to `Vector*` or `Rect*` components and refactor them consistently.",
+            "T3": "The provided 'Knowledge Graph Context' ... does not list any test files (e.g., `tests/test_aabb.cpp`, `tests/test_vector3.cpp`). ... Create or extend unit tests for `Vector2`, `Vector3`, `Vector2i`, `Vector3i`, `Rect2`, `Rect2i`, and `AABB` to specifically cover the `min`, `max`, and `clamp` methods, including edge cases like zero, negative, and boundary values. These tests should ideally be placed in `tests/core/test_math.h` or similar dedicated math test files."
+          },
+          "error": ""
+        },
+        {
+          "model": "gemini:gemini-2.5-pro",
+          "scores": {
+            "F3": 3,
+            "F4": 3,
+            "P1": 0,
+            "R2": 1,
+            "T3": 2
+          },
+          "evidence": {
+            "F3": "Names multiple specific callers or dependent components with file paths or function names, and explains the concrete integration risk for each. Evidence: \"For example, `Delaunay3D`'s grid calculations (`core/math/delaunay_3d.h:284`, `core/math/delaunay_3d.h:343`) are critical for spatial partitioning; any deviation could affect performance or correctness of triangulation. Similarly, window positioning in `DisplayServerX11` (`platform/linuxbsd/x11/display_server_x11.cpp:1995`, `platform/linuxbsd/",
+            "F4": "Identifies multiple specific contract violations with file/function references and explains exactly what downstream behavior would change. Evidence: It identifies potential behavioral changes due to argument evaluation (`The CLAMP macro typically evaluates its arguments multiple times, while the method call evaluates them once.`) and type conversion (`The (real_t)0 explicit cast is removed.`). It explains the downstream impact: \"subtle precision issues could lead to minor visual glitches, incorr",
+            "P1": "The review makes no mention of performance inefficiencies in the changed code. It mentions that a correctness issue could affect performance downstream, but does not identify a performance issue with the change itself.",
+            "R2": "The review makes a generic remark that the code could be simplified by applying the refactoring more broadly. Evidence: \"Incomplete refactoring of similar patterns... leading to inconsistent coding style... Perform a comprehensive search ... to identify any remaining instances ... and refactor them consistently.\" This is a high-level suggestion about the codebase, not a pointer to a specific complex block in the PR's code.",
+            "T3": "The review names at least one specific test file path. Evidence: \"These tests should ideally be placed in `tests/core/test_math.h` or similar dedicated math test files.\" This satisfies the anchor for score 2, but not 3, as it does not name multiple specific files."
+          },
+          "error": ""
+        }
+      ],
+      "timestamp": "2026-06-01T18:57:49.730821+00:00"
+    },
+    "pr14_baseline": {
+      "pr_id": 14,
+      "mode": "baseline",
+      "mean_scores": {
+        "F3": 1.0,
+        "F4": 3.0,
+        "P1": 0.0,
+        "R2": 0.0,
+        "T3": 0.5
+      },
+      "mean_graded_total": 4.5,
+      "per_judge": [
+        {
+          "model": "gemini:gemini-2.5-flash",
+          "scores": {
+            "F3": 1,
+            "F4": 3,
+            "P1": 0,
+            "R2": 0,
+            "T3": 0
+          },
+          "evidence": {
+            "F3": "The deprecation of the `width` property is not fully backward compatible, potentially affecting existing implementations. ... Deprecating the `width` property without a clear migration path could lead to runtime errors or unexpected behavior in existing applications.",
+            "F4": "The `width` property is deprecated, but existing codebases using this property might not have a clear migration path. ... The inline drawer feature is removed, which might affect users who still rely on it despite its broken state. ... Deprecating the `width` property without a clear migration path could lead to runtime errors or unexpected behavior in existing applications. ... Removing the inline drawer feature might break functionality for users who have not transitioned away from it, leading",
+            "P1": "No mention of performance.",
+            "R2": "No comment on complexity or code structure.",
+            "T3": "Conduct thorough testing on various screen sizes and content types to ensure the media query adjustments handle all edge cases effectively."
+          },
+          "error": ""
+        },
+        {
+          "model": "gemini:gemini-2.5-pro",
+          "scores": {
+            "F3": 1,
+            "F4": 3,
+            "P1": 0,
+            "R2": 0,
+            "T3": 1
+          },
+          "evidence": {
+            "F3": "The review vaguely notes that integration may be affected by stating that deprecating the `width` property is 'potentially affecting existing implementations' and removing the inline drawer 'might impact users relying on this functionality', but it does not name any specific callers or dependent components.",
+            "F4": "The review identifies two specific contract violations with file references: 1. 'The `width` property is deprecated... `packages/grafana-ui/src/components/Drawer/Drawer.tsx:45`' and 2. 'The inline drawer feature is removed... `packages/grafana-ui/src/components/Drawer/Drawer.story.tsx:141`'. It also explains the downstream impact for each, such as 'could lead to runtime errors or unexpected behavior' and 'might break functionality'.",
+            "P1": "The review makes no mention of performance, efficiency, or potential bottlenecks.",
+            "R2": "The review does not comment on code complexity or suggest any simplifications or refactoring.",
+            "T3": "The review recommends to 'Conduct thorough testing on various screen sizes and content types'. This mentions that tests should exist but does not name a specific test file or suite."
+          },
+          "error": ""
+        }
+      ],
+      "timestamp": "2026-06-01T18:57:21.533918+00:00"
+    },
+    "pr14_joern_kg": {
+      "pr_id": 14,
+      "mode": "joern_kg",
+      "mean_scores": {
+        "F3": 1.0,
+        "F4": 3.0,
+        "P1": 0.0,
+        "R2": 0.0,
+        "T3": 0.0
+      },
+      "mean_graded_total": 4.0,
+      "per_judge": [
+        {
+          "model": "gemini:gemini-2.5-flash",
+          "scores": {
+            "F3": 1,
+            "F4": 3,
+            "P1": 0,
+            "R2": 0,
+            "T3": 0
+          },
+          "evidence": {
+            "F3": "This is a breaking change for any existing callers that rely on rendering the drawer within a specific container rather than as a full-page overlay. ... This change might affect z-index, positioning, or styling for existing drawers.",
+            "F4": "1. Breaking Change: Removal of `inline` prop: The `inline` prop has been completely removed from the `Drawer` component's interface and implementation... This is a breaking change for any existing callers that rely on rendering the drawer within a specific container... 2. Inconsistent `getContainer` behavior: The `RcDrawer`'s `getContainer` prop is hardcoded to `'.main-view'`, which changes the rendering context for all drawers... This change might affect z-index, positioning, or styling for exi",
+            "P1": "No mention of performance in the review.",
+            "R2": "No comment on complexity or code structure in the review.",
+            "T3": "No mention of test files in the review."
+          },
+          "error": ""
+        },
+        {
+          "model": "gemini:gemini-2.5-pro",
+          "scores": {
+            "F3": 1,
+            "F4": 3,
+            "P1": 0,
+            "R2": 0,
+            "T3": 0
+          },
+          "evidence": {
+            "F3": "The review notes that the change to the `getContainer` prop \"changes the rendering context for all drawers\" and that the removal of the `inline` prop is a breaking change for \"any existing callers that rely on rendering the drawer within a specific container\". This explains the impact on a class of callers but does not name a specific component or file, which is required for a higher score.",
+            "F4": "The review identifies multiple specific breaking changes. First, \"Breaking Change: Removal of `inline` prop: The `inline` prop has been completely removed from the `Drawer` component's interface and implementation... This is a breaking change\". Second, \"Inconsistent `getContainer` behavior: The `RcDrawer`'s `getContainer` prop is hardcoded to `'.main-view'`, which changes the rendering context for all drawers... Previously... non-inline drawers rendered to `body`.\" It explains the downstream imp",
+            "P1": "The review makes no mention of performance.",
+            "R2": "The review does not comment on code complexity or suggest simplifications.",
+            "T3": "The review makes no mention of tests or test files."
+          },
+          "error": ""
+        }
+      ],
+      "timestamp": "2026-06-01T18:57:29.020828+00:00"
+    },
+    "pr15_baseline": {
+      "pr_id": 15,
+      "mode": "baseline",
+      "mean_scores": {
+        "F3": 1.5,
+        "F4": 0.0,
+        "P1": 0.0,
+        "R2": 0.0,
+        "T3": 0.0
+      },
+      "mean_graded_total": 1.5,
+      "per_judge": [
+        {
+          "model": "gemini:gemini-2.5-flash",
+          "scores": {
+            "F3": 0,
+            "F4": 0,
+            "P1": 0,
+            "R2": 0,
+            "T3": 0
+          },
+          "evidence": {
+            "F3": "The review points to `packages/grafana-ui/src/components/DateTimePickers/TimeRangePicker/CalendarHeader.tsx` as the location of the UI/UX change, but does not name any specific callers, modules, or dependent files that are affected by how the change integrates with them. The impact described is on the user experience of the component itself, not its integration with other components.",
+            "F4": "The review discusses 'Potential UI/UX Regression' and 'Localization Gaps' but makes no mention of breaking changes to API contracts or how dependent code might be affected by such changes.",
+            "P1": "The review does not contain any mention of performance concerns or potential inefficiencies in the changed code.",
+            "R2": "The review does not comment on the complexity of the code or suggest any simplifications to its structure.",
+            "T3": "The review recommends 'accessibility testing' and 'regression tests' but does not name any specific test files, test suites, or provide file paths for where tests should be added or updated."
+          },
+          "error": ""
+        },
+        {
+          "model": "gemini:gemini-2.5-pro",
+          "scores": {
+            "F3": 3,
+            "F4": 0,
+            "P1": 0,
+            "R2": 0,
+            "T3": 0
+          },
+          "evidence": {
+            "F3": "The review names multiple specific dependent localization files with paths and explains the concrete integration risk: 'Localization Gaps: - public/locales/de-DE/grafana.json: Line 1252, 1269 - public/locales/es-ES/grafana.json: Line 1255, 1275... Localization Impact: Missing translations can lead to inconsistent user experiences for non-English users, potentially causing confusion.'",
+            "F4": "The review does not mention any breaking changes or API contract violations. It discusses potential UI/UX regressions, but not in the context of breaking contracts for callers or dependent code.",
+            "P1": "The review makes no mention of performance.",
+            "R2": "The review does not comment on code complexity or suggest simplifications.",
+            "T3": "The review only makes generic recommendations for testing, such as 'Conduct thorough accessibility testing' and 'Perform regression tests,' without naming any specific test files."
+          },
+          "error": ""
+        }
+      ],
+      "timestamp": "2026-06-01T18:57:27.141912+00:00"
+    },
+    "pr15_joern_kg": {
+      "pr_id": 15,
+      "mode": "joern_kg",
+      "mean_scores": {
+        "F3": 2.5,
+        "F4": 2.5,
+        "P1": 0.0,
+        "R2": 2.5,
+        "T3": 2.5
+      },
+      "mean_graded_total": 10.0,
+      "per_judge": [
+        {
+          "model": "gemini:gemini-2.5-flash",
+          "scores": {
+            "F3": 2,
+            "F4": 2,
+            "P1": 0,
+            "R2": 2,
+            "T3": 3
+          },
+          "evidence": {
+            "F3": "Update all callers, specifically `packages/grafana-ui/src/components/DateTimePickers/TimeRangePicker/TimePickerContent.tsx`, to pass the correct boolean value.",
+            "F4": "The inverted `isFullscreen` logic could lead to unexpected UI behavior (e.g., missing footer) in specific contexts where `TimePickerCalendar` is used with `isFullscreen=true`. Refactor `isFullscreen` prop: Rename the `isFullscreen` prop in `TimePickerCalendarProps` to `showInModal` (or similar) to align with its internal interpretation, or invert its meaning to truly reflect \"is full screen\".",
+            "P1": "No mention of performance in the review.",
+            "R2": "Confusing and Inverted Prop Logic: The `isFullscreen` prop in `TimePickerCalendar` has its internal interpretation inverted (`showInModal = !isFullscreenProp`), leading to counter-intuitive behavior and conditional rendering of the footer. This introduces unnecessary complexity and potential for misinterpretation. Recommendation: Refactor `isFullscreen` prop: Rename the `isFullscreen` prop in `TimePickerCalendarProps` to `showInModal` (or similar) to align with its internal interpretation, or in",
+            "T3": "Add specific unit tests to `packages/grafana-ui/src/components/DateTimePickers/TimeRangePicker/TimePickerCalendar.test.tsx` to cover: The conditional rendering of the `Footer` component based on the `isFullscreen` (or `showInModal`) prop. The rendering and interaction of the new `IconButton` for closing the calendar. Layout"
+          },
+          "error": ""
+        },
+        {
+          "model": "gemini:gemini-2.5-pro",
+          "scores": {
+            "F3": 3,
+            "F4": 3,
+            "P1": 0,
+            "R2": 3,
+            "T3": 2
+          },
+          "evidence": {
+            "F3": "The review names multiple specific dependent components and files, including the caller `packages/grafana-ui/src/components/DateTimePickers/TimeRangePicker/TimePickerContent.tsx` and multiple i18n translation files (`public/locales/de-DE/grafana.json`, etc.). It explains the concrete integration risk for each, such as passing an incorrect boolean value to the refactored component and degrading the user experience for non-English speakers due to missing translations.",
+            "F4": "The review identifies multiple specific contract violations. First, the `isFullscreen` prop's behavior is inverted from its name and JSDoc, which could cause \"unexpected UI behavior (e.g., missing footer)\". Second, it notes that the change from `aria-label` to `data-testid` is a breaking change for consumers, stating, \"E2E tests relying on the old `aria-label` selectors would fail if not fully updated\".",
+            "P1": "The review does not mention performance, efficiency, or potential bottlenecks.",
+            "R2": "The review identifies multiple instances of unnecessary complexity with code-level references. It points out the \"Confusing and Inverted Prop Logic\" of the `isFullscreen` prop and the \"Fragile Layout Positioning\" using a magic number (`right: '546px'`). It explains why each is problematic (e.g., cognitive load, prone to breaking) and offers a specific refactoring suggestion for the prop logic: \"Rename the `isFullscreen` prop... to `showInModal`\".",
+            "T3": "The review names a specific test file that should be updated: `packages/grafana-ui/src/components/DateTimePickers/TimeRangePicker/TimePickerCalendar.test.tsx`."
+          },
+          "error": ""
+        }
+      ],
+      "timestamp": "2026-06-01T18:57:36.510372+00:00"
+    },
+    "pr18_baseline": {
+      "pr_id": 18,
+      "mode": "baseline",
+      "mean_scores": {
+        "F3": 3.0,
+        "F4": 3.0,
+        "P1": 0.0,
+        "R2": 0.0,
+        "T3": 1.0
+      },
+      "mean_graded_total": 7.0,
+      "per_judge": [
+        {
+          "model": "gemini:gemini-2.5-flash",
+          "scores": {
+            "F3": 3,
+            "F4": 3,
+            "P1": 0,
+            "R2": 0,
+            "T3": 2
+          },
+          "evidence": {
+            "F3": "core/src/main/java/hudson/model/Descriptor.java:425 and core/src/main/java/hudson/model/Descriptor.java:467: The new capitalization logic does not handle null inputs safely, which could lead to a NullPointerException. core/src/main/java/hudson/util/FormValidation.java:638: Similar issue with potential null pointer exception due to lack of null checks. core/src/test/java/hudson/PluginWrapperTest.java:192: The capitalization logic assumes non-empty strings, which could lead to unexpected behavior ",
+            "F4": "The new capitalization logic does not handle null inputs safely, which could lead to a NullPointerException. ... The capitalization logic assumes non-empty strings, which could lead to unexpected behavior if an empty string is passed.",
+            "P1": "No mention of performance in the review.",
+            "R2": "No comment on complexity or code structure in the review.",
+            "T3": "core/src/test/java/hudson/PluginWrapperTest.java:192: The capitalization logic assumes non-empty strings, which could lead to unexpected behavior if an empty string is passed. ... Introduce unit tests to cover edge cases such as null inputs and empty strings to ensure robustness."
+          },
+          "error": ""
+        },
+        {
+          "model": "gemini:gemini-2.5-pro",
+          "scores": {
+            "F3": 3,
+            "F4": 3,
+            "P1": 0,
+            "R2": 0,
+            "T3": 0
+          },
+          "evidence": {
+            "F3": "Names multiple specific callers or dependent components with file paths or function names, and explains the concrete integration risk for each. Evidence: `core/src/main/java/hudson/model/Descriptor.java:425`, `core/src/main/java/hudson/model/Descriptor.java:467`, `core/src/main/java/hudson/util/FormValidation.java:638`. The review explains the risk is a `NullPointerException` because the new logic does not handle null inputs safely.",
+            "F4": "Identifies multiple specific contract violations (handling of nulls and empty strings) with file/function references (`Descriptor.java`, `FormValidation.java`, `PluginWrapperTest.java`) and explains exactly what downstream behavior would change (introducing `NullPointerException` or unexpected behavior where the previous implementation handled these cases gracefully).",
+            "P1": "The review does not mention performance, efficiency, or potential bottlenecks.",
+            "R2": "The review does not comment on code complexity or suggest simplifications.",
+            "T3": "The review's recommendation is to 'Introduce unit tests to cover edge cases such as null inputs and empty strings to ensure robustness.' This is a generic statement that does not name any specific test files to be added or updated."
+          },
+          "error": ""
+        }
+      ],
+      "timestamp": "2026-06-01T18:57:48.958356+00:00"
+    },
+    "pr18_joern_kg": {
+      "pr_id": 18,
+      "mode": "joern_kg",
+      "mean_scores": {
+        "F3": 3.0,
+        "F4": 3.0,
+        "P1": 0.0,
+        "R2": 0.0,
+        "T3": 2.5
+      },
+      "mean_graded_total": 8.5,
+      "per_judge": [
+        {
+          "model": "gemini:gemini-2.5-flash",
+          "scores": {
+            "F3": 3,
+            "F4": 3,
+            "P1": 0,
+            "R2": 0,
+            "T3": 3
+          },
+          "evidence": {
+            "F3": "Names multiple specific callers or dependent components with file paths or function names, and explains the concrete integration risk for each. For example: `ReflectionUtils.getPublicMethodNamed` (used by `Descriptor.calcFillSettings`, `Descriptor.calcAutoCompleteSettings`, and `FormValidation.CheckMethod` via `Descriptor.getCheckMethod`) to fail to find expected methods. This could silently break form validation, auto-completion, or fill-in functionality for various `Describable`s (e.g., `hudso",
+            "F4": "Identifies multiple specific contract violations with file/function references and explains exactly what downstream behavior would change. For example: 'Potential for subtle behavioral differences in `capitalize`... causing `ReflectionUtils.getPublicMethodNamed` (used by `Descriptor.calcFillSettings`, `Descriptor.calcAutoCompleteSettings`, and `FormValidation.CheckMethod` via `Descriptor.getCheckMethod`) to fail to find expected methods. This could silently break form validation, auto-completion",
+            "P1": "No mention of performance issues in the review.",
+            "R2": "No comment on complexity or code structure, nor suggestions for simplification.",
+            "T3": "Names multiple specific test file paths, references the exact test scenarios or functions within those files that need coverage, and explains what edge cases are currently missing. For example: 'While existing tests like `test/src/test/java/hudson/model/DescriptorTest.java` and `core/src/test/java/hudson/util/FormValidationTest.java` might implicitly cover some `capitalize` scenarios, they likely lack explicit assertions for edge cases such as strings with specific Unicode characters (e.g., [U+0"
+          },
+          "error": ""
+        },
+        {
+          "model": "gemini:gemini-2.5-pro",
+          "scores": {
+            "F3": 3,
+            "F4": 3,
+            "P1": 0,
+            "R2": 0,
+            "T3": 2
+          },
+          "evidence": {
+            "F3": "Names multiple specific callers or dependent components with file paths or function names, and explains the concrete integration risk for each. Specifically, it names `ReflectionUtils.getPublicMethodNamed` (used by `Descriptor.calcFillSettings`, `Descriptor.calcAutoCompleteSettings`, and `FormValidation.CheckMethod`) and dependent `Describable`s like `hudson/tasks/Fingerprinter.java`, `hudson/tasks/BatchFile.java`, etc., explaining that a change in capitalization could break method lookups and t",
+            "F4": "Identifies that the implicit contract for method name generation used by reflection could be broken by subtle differences in the new capitalization logic. It references multiple functions that rely on this (`Descriptor.calcFillSettings`, `Descriptor.calcAutoCompleteSettings`, `FormValidation.CheckMethod`) and explains exactly what downstream behavior would change (failure to find methods, silently breaking form validation, auto-completion, or fill-in functionality).",
+            "P1": "The review makes no mention of performance.",
+            "R2": "The review does not comment on code complexity or suggest simplifications. It discusses the overall strategy but not the complexity of the implementation itself.",
+            "T3": "The review names multiple specific test files that should be updated: `test/src/test/java/hudson/model/DescriptorTest.java` and `core/src/test/java/hudson/util/FormValidationTest.java`. This satisfies the anchor for a score of 2. It does not meet the anchor for 3 because it does not reference exact test scenarios or functions within those files."
+          },
+          "error": ""
+        }
+      ],
+      "timestamp": "2026-06-01T18:57:53.669992+00:00"
+    },
+    "pr19_baseline": {
+      "pr_id": 19,
+      "mode": "baseline",
+      "mean_scores": {
+        "F3": 3.0,
+        "F4": 1.5,
+        "P1": 0.0,
+        "R2": 0.0,
+        "T3": 0.0
+      },
+      "mean_graded_total": 4.5,
+      "per_judge": [
+        {
+          "model": "gemini:gemini-2.5-flash",
+          "scores": {
+            "F3": 3,
+            "F4": 0,
+            "P1": 0,
+            "R2": 0,
+            "T3": 0
+          },
+          "evidence": {
+            "F3": "Evidence: `core/src/main/java/hudson/model/DirectoryBrowserSupport.java:663-667`: References to new SVG icons (`folder.svg`, `document.svg`, `folder-delete.svg`, `document-delete.svg`) without confirmation of their existence in the assets. (...) `core/src/main/resources/hudson/model/DirectoryBrowserSupport/dir.jelly:42`: Change from `icon-go-next` to `icon-next` without ensuring the new class is defined and styled appropriately. (...) Impact: If the SVG assets are missing, the icons will not ren",
+            "F4": "No mention of breaking changes or API contract violations. The review focuses on internal consistency and resource availability for the new implementation.",
+            "P1": "No mention of performance.",
+            "R2": "No comment on complexity or code structure.",
+            "T3": "Add tests to verify that the icons render correctly in the UI, possibly using a UI testing framework to automate this check."
+          },
+          "error": ""
+        },
+        {
+          "model": "gemini:gemini-2.5-pro",
+          "scores": {
+            "F3": 3,
+            "F4": 3,
+            "P1": 0,
+            "R2": 0,
+            "T3": 0
+          },
+          "evidence": {
+            "F3": "The review names multiple specific dependent components with file paths (`core/src/main/java/hudson/model/DirectoryBrowserSupport.java:663-667` and `core/src/main/resources/hudson/model/DirectoryBrowserSupport/dir.jelly:42`) and explains the concrete integration risk for each (missing SVG assets leading to a broken UI, and undefined CSS classes leading to styling issues).",
+            "F4": "The review identifies multiple specific contract violations with file references. It points out that the Java code (`DirectoryBrowserSupport.java:663-667`) now has a contract expecting specific SVG files to exist, and the Jelly template (`dir.jelly:42`) has a contract expecting the `icon-next` CSS class to be defined. It explains the downstream behavior for both potential breaks (broken UI, incorrect styling).",
+            "P1": "The review does not mention performance.",
+            "R2": "The review does not comment on complexity or suggest simplifications.",
+            "T3": "The review generically recommends to 'Add tests to verify that the icons render correctly in the UI' without naming any specific test files."
+          },
+          "error": ""
+        }
+      ],
+      "timestamp": "2026-06-01T18:57:54.971995+00:00"
+    },
+    "pr19_joern_kg": {
+      "pr_id": 19,
+      "mode": "joern_kg",
+      "mean_scores": {
+        "F3": 3.0,
+        "F4": 3.0,
+        "P1": 0.0,
+        "R2": 0.0,
+        "T3": 3.0
+      },
+      "mean_graded_total": 9.0,
+      "per_judge": [
+        {
+          "model": "gemini:gemini-2.5-flash",
+          "scores": {
+            "F3": 3,
+            "F4": 3,
+            "P1": 0,
+            "R2": 0,
+            "T3": 3
+          },
+          "evidence": {
+            "F3": "Names multiple specific callers or dependent components with file paths or function names, and explains the concrete integration risk for each: `hudson/Functions.java::tryGetIcon` and `hudson/Functions.java::tryGetIconPath` are known callers of `IconSet` methods, and would fail to resolve these now-removed icons.",
+            "F4": "Identifies multiple specific contract violations with file/function references and explains exactly what downstream behavior would change: The removal of `icon-folder-error`, `icon-text-error`, and `icon-text` registrations from `IconSet.java`... `hudson/Functions.java::tryGetIcon` and `hudson/Functions.java::tryGetIconPath`... would fail to resolve these now-removed icons. Any UI component or plugin that directly or indirectly... requests the removed icon classes... will no longer display the i",
+            "P1": "No mention of performance issues in the review.",
+            "R2": "No comment on complexity or code structure in the review.",
+            "T3": "Names multiple specific test file paths, references the exact test scenarios or functions within those files that need coverage, and explains what edge cases are currently missing: `test/src/test/java/hudson/model/DirectoryBrowserSupportTest.java`... Add specific assertions... to verify the `getIconName()` and `getIconClassName()` methods return the expected SVG names and classes for both readable and unreadable files/folders (e.g., `folder-delete.svg`, `icon-folder-delete`). `core/src/test/java"
+          },
+          "error": ""
+        },
+        {
+          "model": "gemini:gemini-2.5-pro",
+          "scores": {
+            "F3": 3,
+            "F4": 3,
+            "P1": 0,
+            "R2": 0,
+            "T3": 3
+          },
+          "evidence": {
+            "F3": "The review names multiple specific callers (`hudson/Functions.java::tryGetIcon` and `hudson/Functions.java::tryGetIconPath`) and dependent components ('third-party plugins'), providing file paths and function names, and explains the concrete integration risk ('would fail to resolve these now-removed icons').",
+            "F4": "The review identifies multiple specific contract violations with file references. It points out the removal of icon registrations in `IconSet.java:L329-L344` and the change of icon class/size in `dir.jelly:L42`. It explains exactly what downstream behavior would change for each ('will no longer display the intended icon', 'could cause layout shifts, misalignments').",
+            "P1": "The review does not mention performance.",
+            "R2": "The review does not comment on complexity or suggest simplification.",
+            "T3": "The review names multiple specific test file paths (`DirectoryBrowserSupportTest.java`, `IconSetTest.java`, `IconSetJenkins68805Test.java`), references the exact test scenarios ('verify the getIconName() and getIconClassName() methods'), and explains what edge cases are missing ('may not fully cover the new \"error\" icon states')."
+          },
+          "error": ""
+        }
+      ],
+      "timestamp": "2026-06-01T18:57:52.356761+00:00"
+    },
+    "pr20_baseline": {
+      "pr_id": 20,
+      "mode": "baseline",
+      "mean_scores": {
+        "F3": 0.0,
+        "F4": 0.0,
+        "P1": 0.0,
+        "R2": 0.0,
+        "T3": 2.0
+      },
+      "mean_graded_total": 2.0,
+      "per_judge": [
+        {
+          "model": "gemini:gemini-2.5-flash",
+          "scores": {
+            "F3": 0,
+            "F4": 0,
+            "P1": 0,
+            "R2": 0,
+            "T3": 2
+          },
+          "evidence": {
+            "F3": "The review focuses on the internal correctness and coverage of the test itself, not on how the change in the test framework might impact other callers or dependent components of the Kafka system.",
+            "F4": "The review discusses potential issues with the test's ability to correctly simulate configurations or cover different SASL mechanisms, implying the test itself might be incomplete or incorrect. It does not mention any breaking changes to production code APIs or contracts that the PR might introduce.",
+            "P1": "No mention of performance issues in the review.",
+            "R2": "No comment on complexity or code structure in the review.",
+            "T3": "The review names `SaslApiVersionsRequestTest.scala` multiple times and references specific line ranges (`24-26`, `70-82`, `16-48`) within it, discussing specific changes and missing coverage related to SASL setup, `@ClusterTest` annotations, and additional SASL mechanisms."
+          },
+          "error": ""
+        },
+        {
+          "model": "gemini:gemini-2.5-pro",
+          "scores": {
+            "F3": 0,
+            "F4": 0,
+            "P1": 0,
+            "R2": 0,
+            "T3": 2
+          },
+          "evidence": {
+            "F3": "The review focuses on the internal implementation of a single test file and does not mention its interaction with any other components, callers, or dependents.",
+            "F4": "The review does not mention any breaking changes or violations of API contracts.",
+            "P1": "The review does not mention performance.",
+            "R2": "The review does not comment on code complexity or suggest simplifications.",
+            "T3": "The review names one specific test file that needs to be updated: `SaslApiVersionsRequestTest.scala`. For example, under 'Evidence': '`SaslApiVersionsRequestTest.scala:24-26`: Removal of `SaslSetup` and related SASL configuration.'"
+          },
+          "error": ""
+        }
+      ],
+      "timestamp": "2026-06-01T18:57:43.565698+00:00"
+    },
+    "pr20_joern_kg": {
+      "pr_id": 20,
+      "mode": "joern_kg",
+      "mean_scores": {
+        "F3": 2.5,
+        "F4": 2.0,
+        "P1": 0.0,
+        "R2": 0.0,
+        "T3": 3.0
+      },
+      "mean_graded_total": 7.5,
+      "per_judge": [
+        {
+          "model": "gemini:gemini-2.5-flash",
+          "scores": {
+            "F3": 2,
+            "F4": 2,
+            "P1": 0,
+            "R2": 0,
+            "T3": 3
+          },
+          "evidence": {
+            "F3": "The review names `core/src/test/scala/unit/kafka/server/AbstractApiVersionsRequestTest.scala` as a specific dependent file and `validateApiVersionsResponse` as a specific function, explaining that 'Without a corresponding update to its signature... this call will not match the expected method signature.'",
+            "F4": "The review identifies a specific API contract violation: 'The call to `validateApiVersionsResponse` has been modified to include an `apiVersion` parameter... If the `validateApiVersionsResponse` method in `AbstractApiVersionsRequestTest` has not been updated to accept this new parameter, this change will result in a compilation error or runtime failure.'",
+            "P1": "The review does not mention performance, inefficiencies, or resource usage.",
+            "R2": "The review does not comment on the complexity of the changed code or suggest any simplifications to the code structure itself. It discusses the abstraction level of the new test framework but not the complexity of the PR's code.",
+            "T3": "The review names `SaslApiVersionsRequestTest.scala` and `core/src/test/scala/unit/kafka/server/AbstractApiVersionsRequestTest.scala` as specific test files. It references exact scenarios like 'Explicit SASL Mechanism Configuration' and 'Reintroduce Control Plane Listener Test' for `SaslApiVersionsRequestTest.scala`, and 'Verify `validateApiVersionsResponse` Signature' for `AbstractApiVersionsRequestTest.scala`, explaining that 'Critical edge cases related to specific SASL mechanism negotiation o"
+          },
+          "error": ""
+        },
+        {
+          "model": "gemini:gemini-2.5-pro",
+          "scores": {
+            "F3": 3,
+            "F4": 2,
+            "P1": 0,
+            "R2": 0,
+            "T3": 3
+          },
+          "evidence": {
+            "F3": "The review names the calling component (`SaslApiVersionsRequestTest.scala` via diff references) and a dependent component with its file path (`core/src/test/scala/unit/kafka/server/AbstractApiVersionsRequestTest.scala`). It explains the concrete integration risk: 'Without a corresponding update to its signature in AbstractApiVersionsRequestTest.scala (which is not part of this diff), this call will not match the expected method signature.'",
+            "F4": "The review identifies a specific API contract that could break: 'API Contract Violation in Test Utility: The call to `validateApiVersionsResponse` has been modified to include an `apiVersion` parameter... If the `validateApiVersionsResponse` method in `AbstractApiVersionsRequestTest` has not been updated to accept this new parameter, this change will result in a compilation error or runtime failure.'",
+            "P1": "The review does not mention performance, efficiency, or speed.",
+            "R2": "The review does not comment on complexity or suggest simplification. It points out a loss of configuration detail, which is the opposite of identifying unnecessary complexity.",
+            "T3": "The review names multiple specific test files (`SaslApiVersionsRequestTest.scala` and `core/src/test/scala/unit/kafka/server/AbstractApiVersionsRequestTest.scala`), references specific scenarios/functions (`controlPlaneListenerName`, `validateApiVersionsResponse`), and explains what edge cases are missing ('untested scenarios related to control plane listeners or detailed SASL property interactions')."
+          },
+          "error": ""
+        }
+      ],
+      "timestamp": "2026-06-01T18:57:55.919420+00:00"
+    },
+    "pr21_baseline": {
+      "pr_id": 21,
+      "mode": "baseline",
+      "mean_scores": {
+        "F3": 2.0,
+        "F4": 2.0,
+        "P1": 0.0,
+        "R2": 0.0,
+        "T3": 2.5
+      },
+      "mean_graded_total": 6.5,
+      "per_judge": [
+        {
+          "model": "gemini:gemini-2.5-flash",
+          "scores": {
+            "F3": 3,
+            "F4": 2,
+            "P1": 0,
+            "R2": 0,
+            "T3": 3
+          },
+          "evidence": {
+            "F3": "Names multiple specific callers or dependent components with file paths or function names, and explains the concrete integration risk for each. The review names `clients/src/main/java/org/apache/kafka/common/config/SslConfigs.java` and `clients/src/main/java/org/apache/kafka/common/utils/Java.java` in the 'Evidence' section. It explains the risk for `SslConfigs.java`: 'potentially causing failures in SSL configurations' and for `Java.java`: 'could affect other parts of the codebase that might re",
+            "F4": "Identifies at least one specific API contract or caller expectation that could break. The review states: 'The removal of Java version checks could lead to runtime errors if any dependencies or parts of the codebase still require Java 8. This could also affect backward compatibility for users who have not yet upgraded to Java 11.' This identifies the expectation that Kafka works on Java 8 as broken. It also points to 'SSL configurations' as a specific area where 'failures' could occur.",
+            "P1": "No mention of performance.",
+            "R2": "No comment on complexity or code structure.",
+            "T3": "Names multiple specific test file paths, references the exact test scenarios or functions within those files that need coverage, and explains what edge cases are currently missing. The review names `clients/src/test/java/org/apache/kafka/common/KafkaFutureTest.java` and `clients/src/test/java/org/apache/kafka/common/utils/JavaTest.java`. It references 'removal of conditional test logic based on Java version' and 'removal of tests related to Java version parsing' as scenarios, and explains the mi"
+          },
+          "error": ""
+        },
+        {
+          "model": "gemini:gemini-2.5-pro",
+          "scores": {
+            "F3": 1,
+            "F4": 2,
+            "P1": 0,
+            "R2": 0,
+            "T3": 2
+          },
+          "evidence": {
+            "F3": "The review vaguely notes that integration may be affected, for example: \"The removal of the `Java` utility class's version parsing and compatibility checks could affect other parts of the codebase that might rely on these utilities.\" However, it does not name any specific dependent components.",
+            "F4": "The review identifies a specific caller expectation that could break: Java 8 compatibility. It points to a specific area of impact: \"There is a risk of introducing bugs in environments where Java 8 is still in use, potentially causing failures in SSL configurations...\" This is linked to the evidence provided for `SslConfigs.java`.",
+            "P1": "The review does not mention performance.",
+            "R2": "The review does not comment on complexity or suggest simplifications.",
+            "T3": "The review names two specific test files in the 'Evidence' section: `clients/src/test/java/org/apache/kafka/common/KafkaFutureTest.java` and `clients/src/test/java/org/apache/kafka/common/utils/JavaTest.java`."
+          },
+          "error": ""
+        }
+      ],
+      "timestamp": "2026-06-01T18:57:56.426287+00:00"
+    },
+    "pr21_joern_kg": {
+      "pr_id": 21,
+      "mode": "joern_kg",
+      "mean_scores": {
+        "F3": 3.0,
+        "F4": 3.0,
+        "P1": 0.0,
+        "R2": 0.0,
+        "T3": 2.0
+      },
+      "mean_graded_total": 8.0,
+      "per_judge": [
+        {
+          "model": "gemini:gemini-2.5-flash",
+          "scores": {
+            "F3": 3,
+            "F4": 3,
+            "P1": 0,
+            "R2": 0,
+            "T3": 2
+          },
+          "evidence": {
+            "F3": "Names multiple specific callers or dependent components with file paths or function names, and explains the concrete integration risk for each. For example: 'Components like `org.apache.kafka.common.network.SslTransportLayer.java::close` (which calls `ByteBufferUnmapper.unmap`) and any code using `Checksums` or `Crc32C` will fail if the underlying JVM is JDK 8. This could lead to unexpected crashes in core Kafka components.' and 'Callers of `SslConfigs` (e.g., `main/java/org/apache/kafka/common/",
+            "F4": "Identifies multiple specific contract violations with file/function references and explains exactly what downstream behavior would change. For example: 'The most critical issue is that the changes will cause runtime exceptions (e.g., `ClassNotFoundException`, `NoSuchMethodError`, `UnsupportedOperationException`) if the application is run on JDK 8... This represents a hard break for any environment not yet on JDK 11+.' with specific file references like `clients/src/main/java/org/apache/kafka/com",
+            "P1": "No mention of performance issues in the review.",
+            "R2": "No comment on complexity or code structure in the review.",
+            "T3": "Names at least one specific test file path from the repository: 'The removal of `clients/src/test/java/org/apache/kafka/common/utils/JavaTest.java` removes tests... However, no new tests are added to explicitly assert the behavior when running on an unsupported JDK.'"
+          },
+          "error": ""
+        },
+        {
+          "model": "gemini:gemini-2.5-pro",
+          "scores": {
+            "F3": 3,
+            "F4": 3,
+            "P1": 0,
+            "R2": 0,
+            "T3": 2
+          },
+          "evidence": {
+            "F3": "Names multiple specific callers or dependent components with file paths or function names, and explains the concrete integration risk for each. Specifically, it mentions `org.apache.kafka.common.network.SslTransportLayer.java::close` (which calls `ByteBufferUnmapper.unmap`) and `main/java/org/apache/kafka/common/config/ConfigDef.java::withClientSslSupport` as a caller of `SslConfigs`, explaining how each will fail or experience behavior changes on JDK 8.",
+            "F4": "Identifies multiple specific contract violations with file/function references and explains exactly what downstream behavior would change. For example, it notes that callers of `SslConfigs` (like `ConfigDef.java::withClientSslSupport`) will now get `TLSv1.3` instead of `TLSv1.2` on older JDKs. It also details multiple locations (`ByteBufferUnmapper.java:87`, `Crc32C.java:16`, etc.) that will now throw runtime exceptions on JDK 8, which is a hard breaking change.",
+            "P1": "The review does not mention performance, efficiency, or potential bottlenecks.",
+            "R2": "The review does not comment on code complexity or suggest simplifications.",
+            "T3": "Names at least one specific test file path from the repository. The review points to the removal of `clients/src/test/java/org/apache/kafka/common/utils/JavaTest.java` as evidence that tests for Java version compatibility were removed, but no new tests were added to cover the new edge case (running on an unsupported JDK)."
+          },
+          "error": ""
+        }
+      ],
+      "timestamp": "2026-06-01T18:58:02.188846+00:00"
+    },
+    "pr22_baseline": {
+      "pr_id": 22,
+      "mode": "baseline",
+      "mean_scores": {
+        "F3": 2.5,
+        "F4": 2.0,
+        "P1": 0.0,
+        "R2": 0.0,
+        "T3": 1.5
+      },
+      "mean_graded_total": 6.0,
+      "per_judge": [
+        {
+          "model": "gemini:gemini-2.5-flash",
+          "scores": {
+            "F3": 2,
+            "F4": 2,
+            "P1": 0,
+            "R2": 0,
+            "T3": 2
+          },
+          "evidence": {
+            "F3": "The review names the `tools` module as a specific component where integration issues may arise: 'If dependencies are not correctly managed, tests may fail to run, leading to potential undetected issues in the `tools` module.'",
+            "F4": "The review identifies a specific caller expectation that could break: 'The change in package names could potentially break existing references or usages if not all dependencies are updated accordingly.' This refers to the package structure as a contract.",
+            "P1": "The review makes no mention of performance issues.",
+            "R2": "The review makes no comment on complexity or code structure.",
+            "T3": "The review names multiple specific test file paths from the repository that are being moved/updated: `AbstractResetIntegrationTest.java`, `ResetIntegrationTest.java`, and `ResetIntegrationWithSslTest.java`. However, it does not reference specific test scenarios or edge cases."
+          },
+          "error": ""
+        },
+        {
+          "model": "gemini:gemini-2.5-pro",
+          "scores": {
+            "F3": 3,
+            "F4": 2,
+            "P1": 0,
+            "R2": 0,
+            "T3": 1
+          },
+          "evidence": {
+            "F3": "The review names multiple specific dependent components (the `streams` and `tools` modules, `build.gradle`, `checkstyle/import-control.xml`) and explains the concrete integration risk for each (e.g., 'If dependencies are not correctly managed, tests may fail to run, leading to potential undetected issues in the `tools` module.').",
+            "F4": "The review identifies a specific API contract that could break: the package name. It states, 'The change in package names could potentially break existing references' and provides evidence of the package changing from `org.apache.kafka.streams.integration` to `org.apache.kafka.tools` in `AbstractResetIntegrationTest.java`.",
+            "P1": "The review makes no mention of performance.",
+            "R2": "The review does not comment on complexity or code structure.",
+            "T3": "The review mentions that a 'full suite of integration tests' should be run, but does not name a specific test file."
+          },
+          "error": ""
+        }
+      ],
+      "timestamp": "2026-06-01T18:57:57.434527+00:00"
+    },
+    "pr22_joern_kg": {
+      "pr_id": 22,
+      "mode": "joern_kg",
+      "mean_scores": {
+        "F3": 3.0,
+        "F4": 2.5,
+        "P1": 0.0,
+        "R2": 2.5,
+        "T3": 2.0
+      },
+      "mean_graded_total": 10.0,
+      "per_judge": [
+        {
+          "model": "gemini:gemini-2.5-flash",
+          "scores": {
+            "F3": 3,
+            "F4": 3,
+            "P1": 0,
+            "R2": 3,
+            "T3": 2
+          },
+          "evidence": {
+            "F3": "The review names `streams/integration-tests/src/test/java/org/apache/kafka/streams/integration/FineGrainedAutoResetIntegrationTest.java` as a specific dependent file, and identifies the `streams` and `streams:integration-tests` modules as components that `tools` now depends on. It explains concrete integration risks such as 'compilation failures or runtime errors' and 'increases coupling, potentially complicates future refactoring'.",
+            "F4": "The review identifies multiple specific contract violations: 1) The package change for `AbstractResetIntegrationTest` breaks `FineGrainedAutoResetIntegrationTest.java`, causing it to 'fail to compile or run due to unresolved imports or superclass references'. 2) The 'Inconsistent Assertion Style' leads to 'Test failure messages may become less informative' and an 'inconsistent testing style'. 3) The 'Architectural Dependency Smell' violates the `tools` module's intended contract, leading to 'inc",
+            "P1": "The review does not mention any potential performance issues or inefficiencies in the changed code.",
+            "R2": "The review identifies multiple instances of unnecessary complexity: 1) 'Inconsistent Assertion Style' (with references to specific lines in test files and `build.gradle`) which makes it 'harder for developers to maintain', and suggests 'Standardize Assertion Style' by removing Hamcrest or reverting changes. 2) 'Architectural Dependency Smell' (with `build.gradle` and `checkstyle/import-control.xml` references) which 'increases coupling, potentially complicates future refactoring'.",
+            "T3": "The review names multiple specific test file paths: `streams/integration-tests/src/test/java/org/apache/kafka/streams/integration/FineGrainedAutoResetIntegrationTest.java`, `clients/clients-integration-tests` (e.g., `GroupAuthorizerIntegrationTest.java`, `ListOffsetsIntegrationTest.java`). It explains what needs to be done (fix compilation/runtime errors, follow chosen assertion style), but does not explicitly reference exact test scenarios that *need coverage* or explain *what edge cases are cu"
+          },
+          "error": ""
+        },
+        {
+          "model": "gemini:gemini-2.5-pro",
+          "scores": {
+            "F3": 3,
+            "F4": 2,
+            "P1": 0,
+            "R2": 2,
+            "T3": 2
+          },
+          "evidence": {
+            "F3": "Names multiple specific callers or dependent components: the `tools` module, the `streams` and `streams:integration-tests` modules, and `streams/integration-tests/src/test/java/org/apache/kafka/streams/integration/FineGrainedAutoResetIntegrationTest.java`. It explains the concrete integration risk for each (e.g., 'creates a potentially tight coupling', 'will fail to compile or run due to unresolved imports').",
+            "F4": "Identifies a specific contract that could break: the package and module location of `AbstractResetIntegrationTest`. It names a specific dependent test class that would be affected: `streams/integration-tests/src/test/java/org/apache/kafka/streams/integration/FineGrainedAutoResetIntegrationTest.java`.",
+            "P1": "The review does not mention performance, efficiency, or bottlenecks.",
+            "R2": "Points to a specific issue of unnecessary complexity: 'Inconsistent Assertion Style and Redundant Hamcrest Dependency'. It suggests a concrete simplification: 'Decide on a consistent assertion style for the project. If the intent is to move away from Hamcrest, remove `testRuntimeOnly libs.hamcrest`... If Hamcrest is to be retained, revert the `assertEquals` changes...'",
+            "T3": "Names multiple specific test file paths from the repository that should be updated, including `streams/integration-tests/src/test/java/org/apache/kafka/streams/integration/FineGrainedAutoResetIntegrationTest.java`, `GroupAuthorizerIntegrationTest.java`, and `ListOffsetsIntegrationTest.java`."
+          },
+          "error": ""
+        }
+      ],
+      "timestamp": "2026-06-01T18:58:23.719928+00:00"
+    },
+    "pr23_baseline": {
+      "pr_id": 23,
+      "mode": "baseline",
+      "mean_scores": {
+        "F3": 2.0,
+        "F4": 2.0,
+        "P1": 0.0,
+        "R2": 2.0,
+        "T3": 2.0
+      },
+      "mean_graded_total": 8.0,
+      "per_judge": [
+        {
+          "model": "gemini:gemini-2.5-flash",
+          "scores": {
+            "F3": 2,
+            "F4": 2,
+            "P1": 0,
+            "R2": 2,
+            "T3": 2
+          },
+          "evidence": {
+            "F3": "Removal of the `requires_y` tag in `_sequential.py` might affect estimators that rely on this tag for validation. ... Removing the `requires_y` tag without ensuring all dependent components are updated could lead to runtime errors if any estimator still relies on this tag.",
+            "F4": "Removal of the `requires_y` tag in `_sequential.py` might affect estimators that rely on this tag for validation. ... Removing the `requires_y` tag without ensuring all dependent components are updated could lead to runtime errors if any estimator still relies on this tag.",
+            "P1": "No mention of performance in the review.",
+            "R2": "The `_deprecate_positional_args` function is retained in the codebase despite being unused. ... Retaining unused code like `_deprecate_positional_args` can lead to confusion and maintenance overhead. ... Consider removing `_deprecate_positional_args` entirely if there is no foreseeable use, or document its purpose clearly if it is to be retained.",
+            "T3": "The test for deprecated positional arguments in `test_regression.py` has been removed without replacement, potentially reducing test coverage. ... `sklearn/metrics/tests/test_regression.py:444-463`: The test `test_deprecation_positional_arguments_mape` has been removed. ... Replace the removed test with new tests that ensure the same level of coverage for positional argument handling, especially in public APIs."
+          },
+          "error": ""
+        },
+        {
+          "model": "gemini:gemini-2.5-pro",
+          "scores": {
+            "F3": 2,
+            "F4": 2,
+            "P1": 0,
+            "R2": 2,
+            "T3": 2
+          },
+          "evidence": {
+            "F3": "The review names a specific file where a change might impact dependents: 'Removal of the `requires_y` tag in `_sequential.py` might affect estimators that rely on this tag for validation.' It provides the file path `sklearn/feature_selection/_sequential.py:306`.",
+            "F4": "The review identifies a specific expectation that could be broken: 'Removing the `requires_y` tag without ensuring all dependent components are updated could lead to runtime errors if any estimator still relies on this tag.' This points to the implicit contract of the tag's existence for validation.",
+            "P1": "The review does not mention performance, speed, or resource usage.",
+            "R2": "The review points to a specific function that is unused and suggests its removal: 'The `_deprecate_positional_args` function is retained in the codebase despite being unused... Consider removing `_deprecate_positional_args` entirely if there is no foreseeable use...'",
+            "T3": "The review names a specific test file that is affected by the change: 'The test for deprecated positional arguments in `test_regression.py` has been removed... Evidence: `sklearn/metrics/tests/test_regression.py:444-463`.'"
+          },
+          "error": ""
+        }
+      ],
+      "timestamp": "2026-06-01T18:57:55.863686+00:00"
+    },
+    "pr23_joern_kg": {
+      "pr_id": 23,
+      "mode": "joern_kg",
+      "mean_scores": {
+        "F3": 3.0,
+        "F4": 3.0,
+        "P1": 0.0,
+        "R2": 0.0,
+        "T3": 3.0
+      },
+      "mean_graded_total": 9.0,
+      "per_judge": [
+        {
+          "model": "gemini:gemini-2.5-flash",
+          "scores": {
+            "F3": 3,
+            "F4": 3,
+            "P1": 0,
+            "R2": 0,
+            "T3": 3
+          },
+          "evidence": {
+            "F3": "Impact 1: 'If `SequentialFeatureSelector.fit` does not explicitly raise a `ValueError` for `y=None`, then `check_estimator` (which calls `check_requires_y_none`) might incorrectly pass `SequentialFeatureSelector` as an estimator that handles `y=None` gracefully, leading to silent failures or unexpected behavior in downstream components that rely on `y` being present. This could violate caller expectations from `sklearn/feature_selection/__init__.py` or `sklearn/ensemble/_forest.py` if they use `",
+            "F4": "Problem 3: 'The completion of positional argument deprecation for `plot` and `mean_absolute_percentage_error` is a breaking API change. The docstrings for these functions do not appear to be updated to explicitly state that arguments must now be passed as keywords, which could lead to user confusion and violate API contracts.' Impact 1: 'This could violate caller expectations from `sklearn/feature_selection/__init__.py` or `sklearn/ensemble/_forest.py` if they use `SequentialFeatureSelector` in ",
+            "P1": "The review makes no mention of performance, inefficiencies, or resource usage.",
+            "R2": "The review does not comment on code complexity, structure, or suggest any simplifications.",
+            "T3": "Problem 2: 'there are no new tests to explicitly assert that calling the affected functions (`plot` in `PartialDependenceDisplay` and `mean_absolute_percentage_error`) with positional arguments now raises a `TypeError`.' Evidence 2: '`sklearn/metrics/tests/test_regression.py:444-453`: Removal of `test_deprecation_positional_arguments_mape`.' '`sklearn/inspection/_plot/tests/test_plot_partial_dependence.py`: Existing test file for `PartialDependenceDisplay.plot`.' Problem 4: 'The new `ValueError`"
+          },
+          "error": ""
+        },
+        {
+          "model": "gemini:gemini-2.5-pro",
+          "scores": {
+            "F3": 3,
+            "F4": 3,
+            "P1": 0,
+            "R2": 0,
+            "T3": 3
+          },
+          "evidence": {
+            "F3": "Names multiple specific dependent components and explains the integration risk: \"This could violate caller expectations from `sklearn/feature_selection/__init__.py` or `sklearn/ensemble/_forest.py` if they use `SequentialFeatureSelector` in a context where `y` is expected.\"",
+            "F4": "Identifies multiple specific contract violations with function references and explains the downstream behavior: \"The completion of positional argument deprecation for `plot` and `mean_absolute_percentage_error` is a breaking API change... Users migrating to 1.1 will encounter `TypeError`...\" and \"This could violate caller expectations from `sklearn/feature_selection/__init__.py` or `sklearn/ensemble/_forest.py`...\"",
+            "P1": "The review does not mention performance, efficiency, or bottlenecks.",
+            "R2": "The review does not comment on code complexity or suggest simplifications.",
+            "T3": "Names multiple specific test files (`sklearn/metrics/tests/test_regression.py`, `sklearn/inspection/_plot/tests/test_plot_partial_dependence.py`, `sklearn/compose/tests/test_target.py`) and explains the exact missing test scenarios for each (asserting `TypeError` for positional args, asserting `ValueError` for `y=None`)."
+          },
+          "error": ""
+        }
+      ],
+      "timestamp": "2026-06-01T18:57:56.985369+00:00"
+    },
+    "pr24_baseline": {
+      "pr_id": 24,
+      "mode": "baseline",
+      "mean_scores": {
+        "F3": 3.0,
+        "F4": 2.5,
+        "P1": 0.0,
+        "R2": 0.0,
+        "T3": 1.0
+      },
+      "mean_graded_total": 6.5,
+      "per_judge": [
+        {
+          "model": "gemini:gemini-2.5-flash",
+          "scores": {
+            "F3": 3,
+            "F4": 3,
+            "P1": 0,
+            "R2": 0,
+            "T3": 1
+          },
+          "evidence": {
+            "F3": "Names multiple specific callers or dependent components with file paths or function names, and explains the concrete integration risk for each. Evidence: `sklearn/linear_model/_logistic.py:1792`: Replacement of inline error handling with `_raise_for_params`. `sklearn/metrics/_scorer.py:254`: Similar replacement in the scorer logic. `sklearn/multioutput.py:149`: Another instance of replacing inline checks with `_raise_for_params`. The refactoring might inadvertently change the behavior of existin",
+            "F4": "Identifies multiple specific contract violations with file/function references and explains exactly what downstream behavior would change. Evidence: The review lists multiple files (`sklearn/linear_model/_logistic.py:1792`, `sklearn/metrics/_scorer.py:254`, `sklearn/sklearn/multioutput.py:149`) where the change occurs. It explains the downstream behavior: 'The refactoring might inadvertently change the behavior of existing methods if `_raise_for_params` does not perfectly replicate the previous ",
+            "P1": "The review makes no mention of performance.",
+            "R2": "The review does not comment on the complexity of the changed code or suggest any simplification. It acknowledges the PR's goal of centralization but doesn't identify any unnecessary complexity in the proposed changes.",
+            "T3": "Mentions that tests should exist but does not name a file. Evidence: 'Add unit tests specifically for `_raise_for_params` to cover various scenarios, including edge cases where `params` might be empty or `None`.' and 'Ensure that existing integration tests cover the scenarios where these methods are used'. While specific about the scenarios, no specific test file paths are named."
+          },
+          "error": ""
+        },
+        {
+          "model": "gemini:gemini-2.5-pro",
+          "scores": {
+            "F3": 3,
+            "F4": 2,
+            "P1": 0,
+            "R2": 0,
+            "T3": 1
+          },
+          "evidence": {
+            "F3": "The review names multiple specific files affected by the change (`sklearn/linear_model/_logistic.py:1792`, `sklearn/metrics/_scorer.py:254`, `sklearn/multioutput.py:149`) and explains the concrete integration risk: 'The refactoring might inadvertently change the behavior of existing methods if `_raise_for_params` does not perfectly replicate the previous inline checks.'",
+            "F4": "The review identifies a specific caller expectation that could break: that the new centralized error handling in `_raise_for_params` must 'perfectly replicate the previous inline checks' to avoid changing the behavior of existing methods. It notes this could lead to 'unexpected runtime errors or incorrect error messages'.",
+            "P1": "The review does not mention performance, speed, or efficiency.",
+            "R2": "The review does not identify any unnecessary complexity or suggest simplifications in the proposed code. It discusses the risks of a refactoring intended to reduce complexity, but does not critique the new code's structure.",
+            "T3": "The review recommends adding 'unit tests specifically for `_raise_for_params`' and ensuring 'existing integration tests cover the scenarios', but it does not name any specific test files that should be added or updated."
+          },
+          "error": ""
+        }
+      ],
+      "timestamp": "2026-06-01T18:58:01.709760+00:00"
+    },
+    "pr24_joern_kg": {
+      "pr_id": 24,
+      "mode": "joern_kg",
+      "mean_scores": {
+        "F3": 3.0,
+        "F4": 2.5,
+        "P1": 0.0,
+        "R2": 3.0,
+        "T3": 3.0
+      },
+      "mean_graded_total": 11.5,
+      "per_judge": [
+        {
+          "model": "gemini:gemini-2.5-flash",
+          "scores": {
+            "F3": 3,
+            "F4": 2,
+            "P1": 0,
+            "R2": 3,
+            "T3": 3
+          },
+          "evidence": {
+            "F3": "Names multiple specific callers or dependent components with file paths or function names, and explains the concrete integration risk for each. For example: 'Existing tests in `sklearn/tests/test_multioutput.py` and `sklearn/tests/test_pipeline.py` (and potentially others) that assert on the exact `ValueError` message for methods like `MultiOutputEstimator.partial_fit`, `Pipeline.transform`, etc., will likely fail.'",
+            "F4": "Identifies at least one specific API contract or caller expectation that could break. For example: 'The primary risk is that the change in error message, while more informative, could be considered a minor API contract violation for users or downstream libraries that parse or rely on the exact error string.'",
+            "P1": "No mention of performance.",
+            "R2": "Identifies multiple instances of unnecessary complexity with code-level references, explains why each is problematic, and offers specific refactoring suggestions. For example: 'Conduct a codebase search for the pattern `if <params_dict> and not _routing_enabled(): raise ValueError(...)` to identify all remaining instances of this logic. Systematically update these to use `_raise_for_params` for consistent error handling across the library. This includes methods in components like `sklearn/ensemb",
+            "T3": "Names multiple specific test file paths, references the exact test scenarios or functions within those files that need coverage, and explains what edge cases are currently missing. For example: 'Add a dedicated unit test file, e.g., `sklearn/utils/tests/test_metadata_requests.py` or extend `sklearn/tests/test_metadata_routing.py`, with specific tests for `_raise_for_params`. These tests should cover: Cases where `params` are passed and `_routing_enabled()` is `False` (expect `ValueError`). Cases"
+          },
+          "error": ""
+        },
+        {
+          "model": "gemini:gemini-2.5-pro",
+          "scores": {
+            "F3": 3,
+            "F4": 3,
+            "P1": 0,
+            "R2": 3,
+            "T3": 3
+          },
+          "evidence": {
+            "F3": "Names multiple specific callers or dependent components with file paths or function names, and explains the concrete integration risk for each. Evidence: \"Structural Context: Related tests `sklearn/tests/test_multioutput.py` and `sklearn/tests/test_pipeline.py` are not shown to be updated in the diff, but contain methods (`MultiOutputEstimator.partial_fit`, `MultiOutputEstimator.fit`, `Pipeline.decision_function`, `Pipeline.transform`, `Pipeline.inverse_transform`) that now use `_raise_for_param",
+            "F4": "Identifies multiple specific contract violations with file/function references and explains exactly what downstream behavior would change. Evidence: \"IMPACT: Existing tests in `sklearn/tests/test_multioutput.py` and `sklearn/tests/test_pipeline.py` (and potentially others) that assert on the exact `ValueError` message for methods like `MultiOutputEstimator.partial_fit`, `Pipeline.transform`, etc., will likely fail.\" and \"Risks: The primary risk is that the change in error message...could be cons",
+            "P1": "The review does not contain any mention of performance, efficiency, or speed.",
+            "R2": "Identifies multiple instances of unnecessary complexity with code-level references, explains why each is problematic, and offers specific refactoring suggestions. Evidence: \"Conduct a codebase search for the pattern `if <params_dict> and not _routing_enabled(): raise ValueError(...)` to identify all remaining instances of this logic. Systematically update these to use `_raise_for_params` for consistent error handling...This includes methods in components like `sklearn/ensemble/_stacking.py` (e.g",
+            "T3": "Names multiple specific test file paths, references the exact test scenarios or functions within those files that need coverage, and explains what edge cases are currently missing. Evidence: \"Add a dedicated unit test file, e.g., `sklearn/utils/tests/test_metadata_requests.py` or extend `sklearn/tests/test_metadata_routing.py`, with specific tests for `_raise_for_params`. These tests should cover: Cases where `params` are passed and `_routing_enabled()` is `False`...Verification of the generated"
+          },
+          "error": ""
+        }
+      ],
+      "timestamp": "2026-06-01T18:58:08.885616+00:00"
+    },
+    "pr28_baseline": {
+      "pr_id": 28,
+      "mode": "baseline",
+      "mean_scores": {
+        "F3": 2.5,
+        "F4": 1.0,
+        "P1": 0.0,
+        "R2": 0.0,
+        "T3": 2.0
+      },
+      "mean_graded_total": 5.5,
+      "per_judge": [
+        {
+          "model": "gemini:gemini-2.5-flash",
+          "scores": {
+            "F3": 3,
+            "F4": 0,
+            "P1": 0,
+            "R2": 0,
+            "T3": 2
+          },
+          "evidence": {
+            "F3": "The logic change in `onLayoutChange` now unconditionally stashes the current sort when switching to Folders, which could lead to issues if not all scenarios are considered. ... The use of localStorage for state management could lead to inconsistencies if multiple tabs or windows are open, as changes in one might not be reflected in another.",
+            "F4": "No mention of breaking changes or API contract violations.",
+            "P1": "No mention of performance.",
+            "R2": "No comment on unnecessary complexity or suggestions for simplification.",
+            "T3": "`public/app/features/search/state/SearchStateManager.test.ts:213-271`: The tests added cover several scenarios, but there might be edge cases not considered, such as concurrent modifications to localStorage. ... Ensure comprehensive test coverage for all possible transitions between layouts and sort states, including edge cases like concurrent localStorage access."
+          },
+          "error": ""
+        },
+        {
+          "model": "gemini:gemini-2.5-pro",
+          "scores": {
+            "F3": 2,
+            "F4": 2,
+            "P1": 0,
+            "R2": 0,
+            "T3": 2
+          },
+          "evidence": {
+            "F3": "The review names a specific integration point/module (`localStorage`) and explains the risk: \"The use of localStorage for state management could lead to inconsistencies if multiple tabs or windows are open, as changes in one might not be reflected in another.\"",
+            "F4": "The review identifies a specific expectation that could be broken (state consistency across tabs): \"The use of localStorage for state management could lead to inconsistencies if multiple tabs or windows are open, as changes in one might not be reflected in another.\"",
+            "P1": "The review makes no mention of performance.",
+            "R2": "The review does not comment on complexity or suggest simplification. It discusses potential bugs and edge cases, which is a correctness concern.",
+            "T3": "The review names one specific test file path: \"`public/app/features/search/state/SearchStateManager.test.ts:213-271`: The tests added cover several scenarios, but there might be edge cases not considered...\""
+          },
+          "error": ""
+        }
+      ],
+      "timestamp": "2026-06-01T18:58:12.176730+00:00"
+    },
+    "pr28_joern_kg": {
+      "pr_id": 28,
+      "mode": "joern_kg",
+      "mean_scores": {
+        "F3": 3.0,
+        "F4": 2.5,
+        "P1": 0.0,
+        "R2": 2.0,
+        "T3": 2.5
+      },
+      "mean_graded_total": 10.0,
+      "per_judge": [
+        {
+          "model": "gemini:gemini-2.5-flash",
+          "scores": {
+            "F3": 3,
+            "F4": 2,
+            "P1": 0,
+            "R2": 2,
+            "T3": 3
+          },
+          "evidence": {
+            "F3": "Names multiple specific callers or dependent components with file paths or function names, and explains the concrete integration risk for each: \"Review callers for implicit assumptions: ... review how public/app/features/browse-dashboards/components/BrowseActions/BrowseActions.tsx and public/app/features/browse-dashboards/components/BrowseFilters.tsx consume the SearchStateManager's state to confirm no implicit assumptions about prevSort restoration are violated by the new sort ?? prevSort logic",
+            "F4": "Identifies at least one specific API contract or caller expectation that could break: \"Potential for subtle regressions in sort restoration logic: ... it's crucial to ensure no existing callers implicitly relied on prevSort always being restored, even if sort was already present.\"",
+            "P1": "No mention of performance.",
+            "R2": "Points to a specific function or block that is unnecessarily complex and suggests a concrete simplification: \"Lack of explicit documentation for prevSort lifecycle: The prevSort state variable is critical to this fix, but its lifecycle and intended behavior ... are not explicitly documented. This could lead to future confusion or bugs...\" and suggests \"Add JSDoc for prevSort... This will improve maintainability for future developers.\"",
+            "T3": "Names multiple specific test file paths, references the exact test scenarios or functions within those files that need coverage, and explains what edge cases are currently missing: \"Add a test case to public/app/features/search/state/SearchStateManager.test.ts that explicitly sets stm.state.sort to '' (empty string) and verifies the expected behavior when switching layouts. ... This specific edge case is not explicitly covered by the new tests.\""
+          },
+          "error": ""
+        },
+        {
+          "model": "gemini:gemini-2.5-pro",
+          "scores": {
+            "F3": 3,
+            "F4": 3,
+            "P1": 0,
+            "R2": 2,
+            "T3": 2
+          },
+          "evidence": {
+            "F3": "Names multiple specific callers (`public/app/features/browse-dashboards/components/BrowseActions/BrowseActions.tsx` and `public/app/features/browse-dashboards/components/BrowseFilters.tsx`) and explains the concrete integration risk for each ('to confirm no implicit assumptions about `prevSort` restoration are violated by the new `sort ?? prevSort` logic').",
+            "F4": "Identifies multiple specific contract expectations that could break: 1) 'no existing callers implicitly relied on `prevSort` always being restored, even if `sort` was already present', and 2) 'If `sort` could be an empty string `''` to signify a cleared state, the `??` operator would treat `''` as a valid sort... instead of restoring `prevSort`.' It explains the downstream behavior for both.",
+            "P1": "The review does not mention performance, efficiency, or speed.",
+            "R2": "Points to a specific source of complexity: 'The `prevSort` state variable is critical to this fix, but its lifecycle and intended behavior... are not explicitly documented.' It suggests a concrete simplification: 'Add JSDoc for `prevSort`... to explain the purpose and lifecycle of the `prevSort` property'.",
+            "T3": "Names one specific test file path that should be updated: 'Add a test case to `public/app/features/search/state/SearchStateManager.test.ts`'."
+          },
+          "error": ""
+        }
+      ],
+      "timestamp": "2026-06-01T18:58:10.724719+00:00"
+    },
+    "pr29_baseline": {
+      "pr_id": 29,
+      "mode": "baseline",
+      "mean_scores": {
+        "F3": 1.5,
+        "F4": 2.0,
+        "P1": 0.0,
+        "R2": 0.0,
+        "T3": 2.0
+      },
+      "mean_graded_total": 5.5,
+      "per_judge": [
+        {
+          "model": "gemini:gemini-2.5-flash",
+          "scores": {
+            "F3": 2,
+            "F4": 2,
+            "P1": 0,
+            "R2": 0,
+            "T3": 2
+          },
+          "evidence": {
+            "F3": "Changing the visibility of `requireNonNullAllCapsNonEmpty` to private could break other classes in the package that might be using this method, leading to compilation errors.",
+            "F4": "Changing the visibility of `requireNonNullAllCapsNonEmpty` to private could break other classes in the package that might be using this method, leading to compilation errors.",
+            "P1": "No mention of performance in the review.",
+            "R2": "No comment on complexity or code structure in the review.",
+            "T3": "`clients/src/test/java/org/apache/kafka/clients/admin/RaftVoterEndpointTest.java:0-128`: Tests do not cover edge cases for IPv6 addresses or invalid port numbers."
+          },
+          "error": ""
+        },
+        {
+          "model": "gemini:gemini-2.5-pro",
+          "scores": {
+            "F3": 1,
+            "F4": 2,
+            "P1": 0,
+            "R2": 0,
+            "T3": 2
+          },
+          "evidence": {
+            "F3": "The review notes that changing the method visibility \"may affect other classes relying on this method\" and \"could break other classes in the package\", but does not name any specific class or file that would be affected.",
+            "F4": "The review identifies a specific breaking change: \"The `requireNonNullAllCapsNonEmpty` method was changed from package-private to private\". It explains that this breaks the contract for other classes in the package that might be using it, leading to compilation errors.",
+            "P1": "The review does not mention performance.",
+            "R2": "The review does not comment on complexity or code structure.",
+            "T3": "The review names one specific test file that needs to be updated: `clients/src/test/java/org/apache/kafka/clients/admin/RaftVoterEndpointTest.java`."
+          },
+          "error": ""
+        }
+      ],
+      "timestamp": "2026-06-01T18:58:02.190711+00:00"
+    },
+    "pr29_joern_kg": {
+      "pr_id": 29,
+      "mode": "joern_kg",
+      "mean_scores": {
+        "F3": 3.0,
+        "F4": 2.5,
+        "P1": 0.0,
+        "R2": 0.0,
+        "T3": 2.5
+      },
+      "mean_graded_total": 8.0,
+      "per_judge": [
+        {
+          "model": "gemini:gemini-2.5-flash",
+          "scores": {
+            "F3": 3,
+            "F4": 3,
+            "P1": 0,
+            "R2": 0,
+            "T3": 3
+          },
+          "evidence": {
+            "F3": "If `RaftVoterEndpoint` instances are created with invalid `host` or `port` values (e.g., an empty host or a port of 0), downstream components that rely on these endpoints for network communication (such as `org.apache.kafka.clients.admin.KafkaAdminClient.java` or `org.apache.kafka.tools.MetadataQuorumCommand.java`) could experience connection failures, incorrect routing, or silent misconfigurations.",
+            "F4": "The `RaftVoterEndpoint` constructor performs robust validation for the `listener` argument but lacks similar checks for the `host` argument beyond a simple null check. This could allow empty or whitespace-only host strings, leading to malformed network addresses. ... The `port` argument in the `RaftVoterEndpoint` constructor is an `int` but is not validated to ensure it falls within a standard, valid port range (e.g., 1-65535). Passing a `0` or negative value could result in unexpected behavior ",
+            "P1": "No mention of performance in the review.",
+            "R2": "The review notes 'The change to `private static` for `requireNonNullAllCapsNonEmpty` is a low-risk improvement to encapsulation,' but this is an observation about an improvement in design/encapsulation rather than identifying existing unnecessary complexity or suggesting simplification of complex logic.",
+            "T3": "Extend `clients/src/test/java/org/apache/kafka/clients/admin/RaftVoterEndpointTest.java` with new test cases to cover: `RaftVoterEndpoint` construction with empty or whitespace-only `host` strings, expecting `IllegalArgumentException`. `RaftVoterEndpoint` construction with invalid `port` values (e.g., 0, negative, or values exceeding 65535), expecting `IllegalArgumentException`."
+          },
+          "error": ""
+        },
+        {
+          "model": "gemini:gemini-2.5-pro",
+          "scores": {
+            "F3": 3,
+            "F4": 2,
+            "P1": 0,
+            "R2": 0,
+            "T3": 2
+          },
+          "evidence": {
+            "F3": "The review names multiple specific dependent components and explains the integration risk: \"...downstream components that rely on these endpoints for network communication (such as `org.apache.kafka.clients.admin.KafkaAdminClient.java` or `org.apache.kafka.tools.MetadataQuorumCommand.java`) could experience connection failures, incorrect routing, or silent misconfigurations.\"",
+            "F4": "The review identifies a specific API contract that could be broken: \"API Contract Ambiguity: The lack of explicit validation for `host` and `port` could lead to confusion regarding the expected input constraints for `RaftVoterEndpoint`, potentially violating caller expectations.\"",
+            "P1": "The review does not mention performance, efficiency, or potential bottlenecks.",
+            "R2": "The review does not identify any unnecessary complexity or suggest simplifications. Its focus is on robustness and missing validation, not complex code structure.",
+            "T3": "The review names one specific test file path to be updated: \"Extend `clients/src/test/java/org/apache/kafka/clients/admin/RaftVoterEndpointTest.java` with new test cases...\" The score is not 3 because the anchor requires naming multiple specific test file paths."
+          },
+          "error": ""
+        }
+      ],
+      "timestamp": "2026-06-01T18:58:12.170023+00:00"
+    },
+    "pr30_baseline": {
+      "pr_id": 30,
+      "mode": "baseline",
+      "mean_scores": {
+        "F3": 1.0,
+        "F4": 0.0,
+        "P1": 0.0,
+        "R2": 0.0,
+        "T3": 2.0
+      },
+      "mean_graded_total": 3.0,
+      "per_judge": [
+        {
+          "model": "gemini:gemini-2.5-flash",
+          "scores": {
+            "F3": 1,
+            "F4": 0,
+            "P1": 0,
+            "R2": 0,
+            "T3": 2
+          },
+          "evidence": {
+            "F3": "Vaguely notes that integration may be affected, but names no specific component. The review states: \"Potential for missing integration with other components that rely on `TextureRect`.\"",
+            "F4": "No mention of breaking changes or API contract violations. The review focuses on missing test coverage and potential bugs, not contract violations.",
+            "P1": "No mention of performance.",
+            "R2": "No comment on complexity or code structure of the unit tests themselves.",
+            "T3": "Names at least one specific test file path from the repository (`tests/scene/test_texture_rect.cpp`) and references exact line ranges and missing edge cases within it. However, it does not name multiple specific test file paths."
+          },
+          "error": ""
+        },
+        {
+          "model": "gemini:gemini-2.5-pro",
+          "scores": {
+            "F3": 1,
+            "F4": 0,
+            "P1": 0,
+            "R2": 0,
+            "T3": 2
+          },
+          "evidence": {
+            "F3": "The review vaguely notes that integration may be affected ('Potential for missing integration with other components that rely on `TextureRect`') but does not name any specific components.",
+            "F4": "The review does not mention any breaking changes or API contract violations.",
+            "P1": "The review does not mention performance.",
+            "R2": "The review does not comment on complexity or suggest simplifications.",
+            "T3": "The review names one specific test file path: '`tests/scene/test_texture_rect.cpp:100-110`' and '`tests/scene/test_texture_rect.cpp:150-160`'."
+          },
+          "error": ""
+        }
+      ],
+      "timestamp": "2026-06-01T18:58:03.498277+00:00"
+    },
+    "pr30_joern_kg": {
+      "pr_id": 30,
+      "mode": "joern_kg",
+      "mean_scores": {
+        "F3": 3.0,
+        "F4": 2.0,
+        "P1": 0.0,
+        "R2": 0.0,
+        "T3": 2.5
+      },
+      "mean_graded_total": 7.5,
+      "per_judge": [
+        {
+          "model": "gemini:gemini-2.5-flash",
+          "scores": {
+            "F3": 3,
+            "F4": 2,
+            "P1": 0,
+            "R2": 0,
+            "T3": 3
+          },
+          "evidence": {
+            "F3": "Names multiple specific callers or dependent components with file paths or function names, and explains the concrete integration risk for each. For example: 'This doesn't cover how TextureRect behaves when placed inside various Container nodes (e.g., HBoxContainer, VBoxContainer, GridContainer), where its minimum size and expansion properties are critical for layout calculations.' and 'Structural context: scene/gui/box_container.h, scene/gui/grid_container.h, scene/gui/margin_container.h (common",
+            "F4": "Identifies at least one specific API contract or caller expectation that could break. For example: 'The test explicitly checks that TextureRect::get_mouse_filter() defaults to Control::MOUSE_FILTER_PASS, which differs from the base Control class's default of MOUSE_FILTER_STOP. While tested, this deviation might not be clearly documented for users, leading to unexpected behavior.' and 'Structural context: scene/gui/control.h (defines Control::MOUSE_FILTER_STOP as default in its constructor or pro",
+            "P1": "No mention of performance.",
+            "R2": "No comment on complexity or code structure.",
+            "T3": "Names multiple specific test file paths, references the exact test scenarios or functions within those files that need coverage, and explains what edge cases are currently missing. For example: 'tests/scene/test_texture_rect.cpp:50: Ref<ImageTexture> tex = ImageTexture::create_from_image(image); ... No other Texture2D derived types are instantiated or tested.' and 'tests/scene/test_texture_rect.cpp:139: Window *root = SceneTree::get_singleton()->get_root(); ... The TextureRect is added directly "
+          },
+          "error": ""
+        },
+        {
+          "model": "gemini:gemini-2.5-pro",
+          "scores": {
+            "F3": 3,
+            "F4": 2,
+            "P1": 0,
+            "R2": 0,
+            "T3": 2
+          },
+          "evidence": {
+            "F3": "The review names multiple specific callers/dependents (`HBoxContainer`, `VBoxContainer`, `GridContainer`) and provides their file paths (`scene/gui/box_container.h`, etc.). It explains the concrete integration risk: \"This doesn't cover how `TextureRect` behaves when placed inside various `Container` nodes... where its minimum size and expansion properties are critical for layout calculations.\"",
+            "F4": "The review identifies a specific API contract/caller expectation that is broken: \"The test explicitly checks that `TextureRect::get_mouse_filter()` defaults to `Control::MOUSE_FILTER_PASS`, which differs from the base `Control` class's default of `MOUSE_FILTER_STOP`.\" It provides context from the base class file: `scene/gui/control.h`.",
+            "P1": "The review does not mention performance, efficiency, or potential bottlenecks.",
+            "R2": "The review does not comment on code complexity or suggest any simplifications or refactoring.",
+            "T3": "The review names one specific test file path that should be updated: `tests/scene/test_texture_rect.cpp`. It does not name multiple test files."
+          },
+          "error": ""
+        }
+      ],
+      "timestamp": "2026-06-01T18:58:19.567119+00:00"
+    },
+    "pr31_baseline": {
+      "pr_id": 31,
+      "mode": "baseline",
+      "mean_scores": {
+        "F3": 0.0,
+        "F4": 2.0,
+        "P1": 0.0,
+        "R2": 0.0,
+        "T3": 2.0
+      },
+      "mean_graded_total": 4.0,
+      "per_judge": [
+        {
+          "model": "gemini:gemini-2.5-flash",
+          "scores": {
+            "F3": 0,
+            "F4": 2,
+            "P1": 0,
+            "R2": 0,
+            "T3": 2
+          },
+          "evidence": {
+            "F3": "The review discusses the impact on the model's internal calculations and predictions but does not mention how the change interacts with other callers or dependent components.",
+            "F4": "Unconditional centering of test features could lead to incorrect variance calculations if `fit_intercept` is `False`, potentially causing misleading predictions.",
+            "P1": "The review does not mention performance or potential inefficiencies.",
+            "R2": "The review does not comment on complexity or suggest simplification of the code structure.",
+            "T3": "`sklearn/linear_model/tests/test_bayes.py:line 192`: The test only checks a specific case with a small dataset and may not account for other potential edge cases. Expand test cases to include scenarios where `fit_intercept` is `False` and with different data distributions to ensure robustness. Consider adding tests for edge cases, such as when `X_offset_` is zero or when the input data has varying scales."
+          },
+          "error": ""
+        },
+        {
+          "model": "gemini:gemini-2.5-pro",
+          "scores": {
+            "F3": 0,
+            "F4": 2,
+            "P1": 0,
+            "R2": 0,
+            "T3": 2
+          },
+          "evidence": {
+            "F3": "The review focuses on the internal logic of the `predict` method and does not mention how the change interacts with any callers or dependent components.",
+            "F4": "The review identifies a specific scenario where the contract is broken: \"Unconditional centering of test features could lead to incorrect variance calculations if `fit_intercept` is `False`, potentially causing misleading predictions.\"",
+            "P1": "The review makes no mention of performance or efficiency.",
+            "R2": "The review does not comment on code complexity or suggest simplifications. The recommendations are for correctness, not refactoring.",
+            "T3": "The review names one specific test file path: `sklearn/linear_model/tests/test_bayes.py:line 192`."
+          },
+          "error": ""
+        }
+      ],
+      "timestamp": "2026-06-01T18:58:10.775948+00:00"
+    },
+    "pr31_joern_kg": {
+      "pr_id": 31,
+      "mode": "joern_kg",
+      "mean_scores": {
+        "F3": 0.0,
+        "F4": 1.0,
+        "P1": 2.0,
+        "R2": 0.0,
+        "T3": 2.5
+      },
+      "mean_graded_total": 5.5,
+      "per_judge": [
+        {
+          "model": "gemini:gemini-2.5-flash",
+          "scores": {
+            "F3": 0,
+            "F4": 0,
+            "P1": 2,
+            "R2": 0,
+            "T3": 3
+          },
+          "evidence": {
+            "F3": "The review focuses on the internal correctness of the `predict` method and its output to the end-user, and hypothetical future scenarios. It does not name specific callers, modules, or dependent files within the codebase that are affected by the change or explain concrete integration risks.",
+            "F4": "The review describes a bug fix (incorrect predictive variance) and potential future regression risks (untested `fit_intercept=False`, hypothetical sparse data issues). It does not identify any existing, correct API contract that this PR breaks or changes in a breaking way.",
+            "P1": "The review identifies a specific operation (`X - self.X_offset_`) and a specific data type (`sparse X`) that could lead to 'memory and performance issues' due to 'implicitly convert[ing] it to a dense array'. This is a specific operation with a brief explanation of the concern.",
+            "R2": "The review does not comment on the complexity of the code or suggest any simplifications to the code structure.",
+            "T3": "The review names a specific test file path (`sklearn/linear_model/tests/test_bayes.py`), references an exact test function (`test_std_bayesian_ridge_noncentered`), and explains the missing edge case (`fit_intercept=False`) that needs coverage, including what should be asserted."
+          },
+          "error": ""
+        },
+        {
+          "model": "gemini:gemini-2.5-pro",
+          "scores": {
+            "F3": 0,
+            "F4": 2,
+            "P1": 2,
+            "R2": 0,
+            "T3": 2
+          },
+          "evidence": {
+            "F3": "The review discusses the impact on end-users of the models, but does not mention how the change interacts with any other specific callers, modules, or dependent components within the codebase.",
+            "F4": "The review identifies a specific user expectation that is being changed: \"Users relying on the predictive uncertainty (`y_std`) from `BayesianRidge` or `ARDRegression` with `fit_intercept=True` would receive incorrect standard deviation values, leading to misinformed decisions about model confidence.\" This identifies the `predict(return_std=True)` API contract and the impact of the change.",
+            "P1": "The review identifies a specific operation that could cause a performance issue: \"if X were sparse, the operation `X - self.X_offset_` could implicitly convert it to a dense array, leading to memory and performance issues.\"",
+            "R2": "The review does not contain any comments about unnecessary complexity or suggestions for simplification.",
+            "T3": "The review names a specific test file to be updated: \"Add a specific test case to `sklearn/linear_model/tests/test_bayes.py` within `test_std_bayesian_ridge_noncentered` (or a new test) that initializes `Estimator(fit_intercept=False)`...\""
+          },
+          "error": ""
+        }
+      ],
+      "timestamp": "2026-06-01T18:58:18.550195+00:00"
+    },
+    "pr32_baseline": {
+      "pr_id": 32,
+      "mode": "baseline",
+      "mean_scores": {
+        "F3": 1.0,
+        "F4": 1.0,
+        "P1": 0.0,
+        "R2": 0.0,
+        "T3": 2.0
+      },
+      "mean_graded_total": 4.0,
+      "per_judge": [
+        {
+          "model": "gemini:gemini-2.5-flash",
+          "scores": {
+            "F3": 1,
+            "F4": 1,
+            "P1": 0,
+            "R2": 0,
+            "T3": 2
+          },
+          "evidence": {
+            "F3": "The renaming could lead to potential integration issues if other parts of the codebase or documentation rely on the old variable names. If there are any external dependencies or documentation that reference the old variable names, they may become outdated or incorrect.",
+            "F4": "If there are any external dependencies or documentation that reference the old variable names, they may become outdated or incorrect.",
+            "P1": "No mention of performance in the review.",
+            "R2": "No comment on complexity or code structure in the review.",
+            "T3": "sklearn/metrics/tests/test_common.py:2535-2543: The parameter names in the test function are changed without corresponding updates to any inline comments or documentation. ... Testing: Ensure that all relevant tests are updated and passing to confirm that the renaming does not introduce any unintended side effects."
+          },
+          "error": ""
+        },
+        {
+          "model": "gemini:gemini-2.5-pro",
+          "scores": {
+            "F3": 1,
+            "F4": 1,
+            "P1": 0,
+            "R2": 0,
+            "T3": 2
+          },
+          "evidence": {
+            "F3": "Vaguely notes that integration may be affected: \"The renaming could lead to potential integration issues if other parts of the codebase or documentation rely on the old variable names.\"",
+            "F4": "Generically warns that callers may be affected: \"If there are any external dependencies or documentation that reference the old variable names, they may become outdated or incorrect.\"",
+            "P1": "The review does not mention performance.",
+            "R2": "The review does not comment on complexity or code structure.",
+            "T3": "The review names a specific test file path in the 'Evidence' section: \"`sklearn/metrics/tests/test_common.py:2535-2543`\""
+          },
+          "error": ""
+        }
+      ],
+      "timestamp": "2026-06-01T18:58:16.578445+00:00"
+    },
+    "pr32_joern_kg": {
+      "pr_id": 32,
+      "mode": "joern_kg",
+      "mean_scores": {
+        "F3": 3.0,
+        "F4": 0.0,
+        "P1": 0.0,
+        "R2": 2.0,
+        "T3": 2.5
+      },
+      "mean_graded_total": 7.5,
+      "per_judge": [
+        {
+          "model": "gemini:gemini-2.5-flash",
+          "scores": {
+            "F3": 3,
+            "F4": 0,
+            "P1": 0,
+            "R2": 2,
+            "T3": 3
+          },
+          "evidence": {
+            "F3": "Consider Broader Consistency (Future): While not critical for this PR, consider a broader review of array API tests (e.g., in `sklearn/metrics/cluster/tests/test_common.py::check_array_api_unsupervised_metric` or `sklearn/metrics/cluster/tests/test_common.py::test_array_api_compliance`) to see if similar `from`/`to` naming conventions exist and could benefit from consistent renaming to `other`/`y_pred` for improved clarity across the test suite.",
+            "F4": "No, this change is purely internal to a test and does not modify any public or internal API contracts of the `scikit-learn` library.",
+            "P1": "The review does not mention performance.",
+            "R2": "Lack of Explicit Rationale for `other`: While `y_pred` is clear, the choice of `other` for `y_true` and `sample_weight` is functional but could be slightly more descriptive (e.g., `y_true_ns_and_device` or `input_ns_and_device`) if a more specific role is intended, though this is a minor stylistic point.",
+            "T3": "Consider Broader Consistency (Future): While not critical for this PR, consider a broader review of array API tests (e.g., in `sklearn/metrics/cluster/tests/test_common.py::check_array_api_unsupervised_metric` or `sklearn/metrics/cluster/tests/test_common.py::test_array_api_compliance`) to see if similar `from`/`to` naming conventions exist and could benefit from consistent renaming to `other`/`y_pred` for improved clarity across the test suite."
+          },
+          "error": ""
+        },
+        {
+          "model": "gemini:gemini-2.5-pro",
+          "scores": {
+            "F3": 3,
+            "F4": 0,
+            "P1": 0,
+            "R2": 2,
+            "T3": 2
+          },
+          "evidence": {
+            "F3": "The review names multiple files from the provided context (e.g., `sklearn/metrics/cluster/tests/test_common.py`, `sklearn/metrics/tests/test_ranking.py`) and explains the concrete integration risk for them, concluding they are not affected because they do not directly call the changed function.",
+            "F4": "The review mentions API contracts only to state that none are violated ('No, this change is purely internal to a test and does not modify any public or internal API contracts'). It does not warn of or identify any potential breaking changes, which is a requirement for scores 1, 2, and 3.",
+            "P1": "The review makes no mention of performance, efficiency, or potential bottlenecks.",
+            "R2": "The review points to a specific variable name ('other') that could be simplified for clarity and suggests concrete alternatives: 'the choice of `other` for `y_true` and `sample_weight` is functional but could be slightly more descriptive (e.g., `y_true_ns_and_device` or `input_ns_and_device`)'.",
+            "T3": "The review names a specific test file path to be updated for consistency: 'consider a broader review of array API tests (e.g., in `sklearn/metrics/cluster/tests/test_common.py::check_array_api_unsupervised_metric`...)'."
+          },
+          "error": ""
+        }
+      ],
+      "timestamp": "2026-06-01T18:58:46.711513+00:00"
+    },
+    "pr33_baseline": {
+      "pr_id": 33,
+      "mode": "baseline",
+      "mean_scores": {
+        "F3": 0.5,
+        "F4": 0.5,
+        "P1": 1.0,
+        "R2": 0.0,
+        "T3": 0.0
+      },
+      "mean_graded_total": 2.0,
+      "per_judge": [
+        {
+          "model": "gemini:gemini-2.5-flash",
+          "scores": {
+            "F3": 0,
+            "F4": 0,
+            "P1": 0,
+            "R2": 0,
+            "T3": 0
+          },
+          "evidence": {
+            "F3": "The review discusses the internal behavior of `OldDataMonitor` and its handling of `Run`s, but does not identify any specific external callers or dependent components that interact with `OldDataMonitor` and would be affected by this change.",
+            "F4": "The review discusses potential issues like incomplete cleanup or missing data, but does not frame these as violations of specific API contracts or breaking changes for dependent code.",
+            "P1": "The review does not identify any potential inefficiencies or performance concerns introduced by the changed code itself. While it mentions 'memory leaks' as a risk, this is framed as a consequence of incomplete cleanup, not an inefficiency in the new logic.",
+            "R2": "The review does not contain any comments regarding the complexity of the code or suggestions for simplification.",
+            "T3": "The review generically states 'Add comprehensive tests' without naming any specific test files or scenarios."
+          },
+          "error": ""
+        },
+        {
+          "model": "gemini:gemini-2.5-pro",
+          "scores": {
+            "F3": 1,
+            "F4": 1,
+            "P1": 2,
+            "R2": 0,
+            "T3": 0
+          },
+          "evidence": {
+            "F3": "The change in `OldDataMonitor` to not track `Run`s could potentially overlook scenarios where `Run` data might still be relevant for monitoring or debugging purposes.",
+            "F4": "The removal of `Run` tracking could lead to scenarios where old data issues related to `Run`s are not reported, potentially missing critical debugging information.",
+            "P1": "The review identifies a specific concern related to the removal of `RunSaveableReference` and its logic, explaining that this could lead to a performance issue: \"Without proper handling of `Run` references, there might be a risk of not fully cleaning up old data, leading to potential memory leaks...\"",
+            "R2": "The review does not contain any comments about code complexity or simplification.",
+            "T3": "The review only provides a generic recommendation to 'Add comprehensive tests'."
+          },
+          "error": ""
+        }
+      ],
+      "timestamp": "2026-06-01T18:58:24.774644+00:00"
+    },
+    "pr33_joern_kg": {
+      "pr_id": 33,
+      "mode": "joern_kg",
+      "mean_scores": {
+        "F3": 3.0,
+        "F4": 3.0,
+        "P1": 0.0,
+        "R2": 0.0,
+        "T3": 2.5
+      },
+      "mean_graded_total": 8.5,
+      "per_judge": [
+        {
+          "model": "gemini:gemini-2.5-flash",
+          "scores": {
+            "F3": 3,
+            "F4": 3,
+            "P1": 0,
+            "R2": 0,
+            "T3": 3
+          },
+          "evidence": {
+            "F3": "Callers like `hudson.util.RobustReflectionConverter.unmarshal` (and `RobustCollectionConverter`, `RobustMapConverter`) pass `Saveable` objects to `OldDataMonitor.report` without checking their type.",
+            "F4": "The `report` methods (`report(Saveable obj, String version)` and `report(Saveable obj, Collection<Throwable> errors)`) now silently ignore `Run` objects. Callers expecting these methods to record issues for *any* `Saveable` will not be notified that `Run` objects are explicitly excluded... Evidence: `core/src/main/java/hudson/diagnosis/OldDataMonitor.java:172`: `if (obj instanceof Run<?, ?>) { return; // somewhat ephemeral }` added to `report(Saveable obj, String version)`.",
+            "P1": "The review acknowledges the PR's goal of reducing memory but does not identify any new performance issues or inefficiencies introduced by the changed code itself.",
+            "R2": "No comment on complexity or code structure is present in the review.",
+            "T3": "Recommendation: Add Specific Tests for `Run` Exclusion: In `test/src/test/java/hudson/diagnosis/OldDataMonitorTest.java`, add a new test case that: Creates a `FreeStyleProject` and a `FreeStyleBuild`. Simulates an old data issue for the `FreeStyleBuild` (e.g., by adding a `BadAction` and saving). Calls `OldDataMonitor.report` with the `FreeStyleBuild`. Asserts that `OldDataMonitor.get().getData().keySet()` *does not* contain the `FreeStyleBuild`."
+          },
+          "error": ""
+        },
+        {
+          "model": "gemini:gemini-2.5-pro",
+          "scores": {
+            "F3": 3,
+            "F4": 3,
+            "P1": 0,
+            "R2": 0,
+            "T3": 2
+          },
+          "evidence": {
+            "F3": "Names multiple specific callers and explains the integration risk: \"Callers like `hudson.util.RobustReflectionConverter.unmarshal` (and `RobustCollectionConverter`, `RobustMapConverter`) pass `Saveable` objects to `OldDataMonitor.report` without checking their type.\"",
+            "F4": "Identifies multiple specific contract violations with file references and explains the change in behavior: \"The `report` methods (`report(Saveable obj, String version)` and `report(Saveable obj, Collection<Throwable> errors)`) now silently ignore `Run` objects. Callers expecting these methods to record issues for *any* `Saveable` will not be notified... Evidence: `core/src/main/java/hudson/diagnosis/OldDataMonitor.java:172`... `core/src/main/java/hudson/diagnosis/OldDataMonitor.java:212`...\"",
+            "P1": "The review does not identify any performance inefficiencies in the changed code. It acknowledges the memory benefits of the PR but does not raise any new performance concerns.",
+            "R2": "The review does not contain any comments about unnecessary complexity or suggestions for simplification.",
+            "T3": "Names one specific test file path to be updated: \"In `test/src/test/java/hudson/diagnosis/OldDataMonitorTest.java`, add a new test case...\""
+          },
+          "error": ""
+        }
+      ],
+      "timestamp": "2026-06-01T18:58:21.367036+00:00"
+    },
+    "pr34_baseline": {
+      "pr_id": 34,
+      "mode": "baseline",
+      "mean_scores": {
+        "F3": 1.0,
+        "F4": 0.0,
+        "P1": 0.0,
+        "R2": 0.0,
+        "T3": 2.0
+      },
+      "mean_graded_total": 3.0,
+      "per_judge": [
+        {
+          "model": "gemini:gemini-2.5-flash",
+          "scores": {
+            "F3": 1,
+            "F4": 0,
+            "P1": 0,
+            "R2": 0,
+            "T3": 2
+          },
+          "evidence": {
+            "F3": "Consider edge cases where the sidebar state might be affected by other components or user actions.",
+            "F4": "No mention of breaking changes or API contract violations.",
+            "P1": "No mention of performance.",
+            "R2": "The review identifies a problem with the logic's correctness and suggests an update, but does not comment on unnecessary complexity or suggest simplification.",
+            "T3": "`public/app/features/scopes/tests/editMode.test.ts:55-69`: Tests only verify the sidebar state at the start and end of edit mode, not during."
+          },
+          "error": ""
+        },
+        {
+          "model": "gemini:gemini-2.5-pro",
+          "scores": {
+            "F3": 1,
+            "F4": 0,
+            "P1": 0,
+            "R2": 0,
+            "T3": 2
+          },
+          "evidence": {
+            "F3": "The review vaguely notes potential integration issues: \"Consider edge cases where the sidebar state might be affected by other components or user actions,\" but does not name any specific component.",
+            "F4": "The review does not mention any breaking changes or impact on API contracts or dependent code.",
+            "P1": "The review does not mention performance.",
+            "R2": "The review does not comment on complexity or suggest simplification. It identifies a logic flaw, not unnecessary complexity.",
+            "T3": "The review names one specific test file that should be updated: `public/app/features/scopes/tests/editMode.test.ts:55-69`."
+          },
+          "error": ""
+        }
+      ],
+      "timestamp": "2026-06-01T18:58:19.263152+00:00"
+    },
+    "pr34_joern_kg": {
+      "pr_id": 34,
+      "mode": "joern_kg",
+      "mean_scores": {
+        "F3": 2.5,
+        "F4": 1.5,
+        "P1": 0.0,
+        "R2": 1.0,
+        "T3": 2.0
+      },
+      "mean_graded_total": 7.0,
+      "per_judge": [
+        {
+          "model": "gemini:gemini-2.5-flash",
+          "scores": {
+            "F3": 2,
+            "F4": 0,
+            "P1": 0,
+            "R2": 0,
+            "T3": 2
+          },
+          "evidence": {
+            "F3": "Implicit dependency on `toggleDrawer` behavior: The cleanup logic ... assumes that `toggleDrawer()` reliably closes the drawer if it was open, and that its state can be accurately checked immediately after. While likely true, this creates a tight coupling and could lead to unexpected behavior if `toggleDrawer`'s internal implementation changes or if asynchronous operations are involved. ... Future changes to `scopesDashboardsService.toggleDrawer` or other components interacting with the sidebar ",
+            "F4": "The review does not identify any specific API contract or caller expectation that is broken by the changes in the PR. It discusses potential inconsistencies in UI state and dependencies on other components' implementations, but not broken contracts.",
+            "P1": "The review does not mention performance or potential inefficiencies in the changed code.",
+            "R2": "The review does not comment on unnecessary complexity or suggest simplification of the code structure. It suggests a more robust state management solution for correctness, but not to reduce complexity.",
+            "T3": "Add a test case to `public/app/features/scopes/tests/editMode.test.ts` that simulates `scopesServices` being `null` or `undefined` to ensure the component handles this gracefully without errors. Add a test case to `public/app/features/scopes/tests/editMode.test.ts` where the user manually toggles the sidebar *after* entering edit mode, then exits edit mode, and assert the expected restoration behavior (e.g., it reverts to the state *before* editing, or it respects the user's last action)."
+          },
+          "error": ""
+        },
+        {
+          "model": "gemini:gemini-2.5-pro",
+          "scores": {
+            "F3": 3,
+            "F4": 3,
+            "P1": 0,
+            "R2": 2,
+            "T3": 2
+          },
+          "evidence": {
+            "F3": "The review names the component being changed (`DashboardSceneRenderer.tsx`) and multiple specific dependent services (`scopesDashboardsService`, `scopesSelectorService`) and functions (`toggleDrawer`). It explains the integration risk: \"Implicit dependency on `toggleDrawer` behavior... creates a tight coupling and could lead to unexpected behavior if `toggleDrawer`'s internal implementation changes...\" and \"Future changes to `scopesDashboardsService.toggleDrawer` or other components interacting ",
+            "F4": "The review identifies multiple specific broken expectations/contracts with file references. 1. User expectation: \"If a user manually toggles the sidebar... while in edit mode, the cleanup function will still restore the sidebar to its state before entering edit mode, potentially overriding the user's explicit action...\" (references `DashboardSceneRenderer.tsx:39-41`). 2. API contract: \"Implicit dependency on `toggleDrawer` behavior... could lead to unexpected behavior if `toggleDrawer`'s interna",
+            "P1": "The review does not mention performance, efficiency, or potential bottlenecks.",
+            "R2": "The review points to a specific block of code (the `useEffect` hook in `DashboardSceneRenderer.tsx`) and identifies its complexity: \"Implicit dependency on `toggleDrawer` behavior... creates a tight coupling...\". It then suggests a concrete simplification: \"Consider storing the `drawerWasOpen` state in a `useRef` or a more robust state management solution...\"",
+            "T3": "The review names one specific test file path that should be updated: \"Add a test case to `public/app/features/scopes/tests/editMode.test.ts`...\""
+          },
+          "error": ""
+        }
+      ],
+      "timestamp": "2026-06-01T18:58:35.053648+00:00"
+    },
+    "pr38_baseline": {
+      "pr_id": 38,
+      "mode": "baseline",
+      "mean_scores": {
+        "F3": 0.5,
+        "F4": 1.0,
+        "P1": 0.0,
+        "R2": 0.0,
+        "T3": 2.0
+      },
+      "mean_graded_total": 3.5,
+      "per_judge": [
+        {
+          "model": "gemini:gemini-2.5-flash",
+          "scores": {
+            "F3": 0,
+            "F4": 0,
+            "P1": 0,
+            "R2": 0,
+            "T3": 2
+          },
+          "evidence": {
+            "F3": "The review describes the impact of the problem (broken redirects, unexpected navigation) and points to the file where the problem exists (`location.ts`), but does not discuss how the change in `location.ts` interacts with specific callers or dependents.",
+            "F4": "The review focuses on fixing existing bugs and improving test coverage. It does not mention any potential breaking changes or violations of API contracts.",
+            "P1": "The review does not mention performance at all.",
+            "R2": "The review mentions that the logic 'may not correctly handle all edge cases' and recommends to 'review and expand the logic', which addresses correctness and completeness, not unnecessary complexity or suggestions for simplification.",
+            "T3": "The review names one specific test file path (`packages/grafana-data/src/utils/location.test.ts`) and references line numbers, explaining what edge cases are currently missing ('complex query parameter combinations', 'nested query parameters and different subpath configurations'). However, it does not name *multiple* specific test file paths, which would be required for a score of 3."
+          },
+          "error": ""
+        },
+        {
+          "model": "gemini:gemini-2.5-pro",
+          "scores": {
+            "F3": 1,
+            "F4": 2,
+            "P1": 0,
+            "R2": 0,
+            "T3": 2
+          },
+          "evidence": {
+            "F3": "The review notes that incorrect URL handling could lead to 'broken redirects' and 'unexpected navigation behavior', which vaguely describes an impact on how components integrate, but it does not name any specific callers or dependent components that are affected.",
+            "F4": "The review identifies a specific expectation that could be broken: 'The logic for handling relative paths without a subpath prefix may not correctly handle all edge cases,' particularly for 'complex query parameters and subpath configurations.' This points to a specific contract (correctly handling all URL types) that is at risk.",
+            "P1": "The review does not mention performance.",
+            "R2": "The review does not comment on code complexity or suggest simplification. It focuses on correctness and missing edge cases rather than unnecessarily complex code.",
+            "T3": "The review names one specific test file to be updated: 'Add additional test cases in `location.test.ts`...'"
+          },
+          "error": ""
+        }
+      ],
+      "timestamp": "2026-06-01T18:58:25.449128+00:00"
+    },
+    "pr38_joern_kg": {
+      "pr_id": 38,
+      "mode": "joern_kg",
+      "mean_scores": {
+        "F3": 3.0,
+        "F4": 2.0,
+        "P1": 0.0,
+        "R2": 2.0,
+        "T3": 2.5
+      },
+      "mean_graded_total": 9.5,
+      "per_judge": [
+        {
+          "model": "gemini:gemini-2.5-flash",
+          "scores": {
+            "F3": 3,
+            "F4": 2,
+            "P1": 0,
+            "R2": 2,
+            "T3": 3
+          },
+          "evidence": {
+            "F3": "public/app/core/navigation/patch/interceptLinkClicks.ts: A key caller of locationUtil that processes various link types, highlighting the importance of robust URL processing. public/app/core/navigation/GrafanaRoute.tsx: Another critical caller that relies on locationUtil for correct route handling and redirects.",
+            "F4": "Problem: Implicit Assumption on Relative Paths: The fix implicitly assumes that relative `redirectUri` values passed to `processRedirectUri` will *not* already contain the `appSubUrl` prefix. While this is likely the intended usage, an explicit test for this scenario would increase robustness.",
+            "P1": "No mention of performance in the review.",
+            "R2": "Problem: Potential for Subtle Misinterpretation: The distinction between `redirectUrl.href` and `redirectUrl.pathname + redirectUrl.search` for `stripBaseFromUrl` is critical and subtle. ... Recommendation (Fix / Tests / Risks): Consider adding a comment to the `isAbsoluteUri` check in `packages/grafana-data/src/utils/location.ts` explaining *why* `pathname + search` is used for relative paths and `href` for absolute paths, specifically in the context of `stripBaseFromUrl` and `appSubUrl`.",
+            "T3": "Recommendation (Fix / Tests / Risks): Add the following unit tests to `packages/grafana-data/src/utils/location.test.ts` for `locationUtil.processRedirectUri`: `redirectUri` is an empty string (`\"\"`). `redirectUri` is only a query string (e.g., `\"?param=value\"`). `redirectUri` is a relative path that *already includes* the `appSubUrl` prefix (e.g., `/grafana/admin/users` when `appSubUrl` is `/grafana`). This ensures `stripBaseFromUrl` correctly handles it. `redirectUri` is a root-relative URL (e"
+          },
+          "error": ""
+        },
+        {
+          "model": "gemini:gemini-2.5-pro",
+          "scores": {
+            "F3": 3,
+            "F4": 2,
+            "P1": 0,
+            "R2": 2,
+            "T3": 2
+          },
+          "evidence": {
+            "F3": "Names multiple specific callers with file paths: `public/app/core/navigation/patch/interceptLinkClicks.ts`: A key caller of `locationUtil`... `public/app/core/navigation/GrafanaRoute.tsx`: Another critical caller that relies on `locationUtil` for correct route handling and redirects. Explains the concrete integration risk: 'potentially leading to incorrect redirects or navigation failures in specific scenarios, especially when `appSubUrl` is configured.'",
+            "F4": "The review identifies a specific caller expectation that could be broken: 'The fix implicitly assumes that relative `redirectUri` values passed to `processRedirectUri` will *not* already contain the `appSubUrl` prefix.'",
+            "P1": "The review makes no mention of performance, efficiency, or potential bottlenecks.",
+            "R2": "The review points to a specific block of code that is unnecessarily complex/subtle ('The distinction between `redirectUrl.href` and `redirectUrl.pathname + redirectUrl.search` for `stripBaseFromUrl` is critical and subtle.') and suggests a concrete simplification ('Consider adding a comment to the `isAbsoluteUri` check... explaining why').",
+            "T3": "The review names one specific test file path that should be updated: 'Add the following unit tests to `packages/grafana-data/src/utils/location.test.ts`...'"
+          },
+          "error": ""
+        }
+      ],
+      "timestamp": "2026-06-01T18:58:31.396572+00:00"
+    },
+    "pr39_baseline": {
+      "pr_id": 39,
+      "mode": "baseline",
+      "mean_scores": {
+        "F3": 1.0,
+        "F4": 0.0,
+        "P1": 0.0,
+        "R2": 0.0,
+        "T3": 3.0
+      },
+      "mean_graded_total": 4.0,
+      "per_judge": [
+        {
+          "model": "gemini:gemini-2.5-flash",
+          "scores": {
+            "F3": 2,
+            "F4": 0,
+            "P1": 0,
+            "R2": 0,
+            "T3": 3
+          },
+          "evidence": {
+            "F3": "`GroupCoordinatorBaseRequestTest.scala:273-288`: Topic ID is added but lacks validation checks. Without proper validation of `topicId`, tests might pass with incorrect assumptions, leading to false positives.",
+            "F4": "The review does not discuss breaking changes or API contract violations.",
+            "P1": "The review does not discuss performance issues.",
+            "R2": "The review does not discuss code complexity or suggest simplifications.",
+            "T3": "`GroupCoordinatorBaseRequestTest.scala:273-288`: Topic ID is added but lacks validation checks. `TxnOffsetCommitRequestTest.scala:76-100`: New error cases are introduced without explicit edge case tests. `TxnOffsetCommitRequestTest.scala:138-151`: Use of `Uuid.randomUuid()` for unknown topic ID testing. Recommendations include: 'Add specific tests for edge cases related to the new error scenarios, such as boundary conditions and invalid inputs.' and 'Consider using a fixed, invalid UUID for unkn"
+          },
+          "error": ""
+        },
+        {
+          "model": "gemini:gemini-2.5-pro",
+          "scores": {
+            "F3": 0,
+            "F4": 0,
+            "P1": 0,
+            "R2": 0,
+            "T3": 3
+          },
+          "evidence": {
+            "F3": "The review focuses on the implementation of the tests themselves, not on how the change interacts with callers or dependent components in the broader system. There is no mention of integration risks.",
+            "F4": "The review does not mention any breaking changes or violations of API contracts. Its focus is on the robustness of the tests for the new functionality.",
+            "P1": "The review makes no mention of performance.",
+            "R2": "The review does not comment on code complexity or suggest simplifications.",
+            "T3": "The review names multiple specific test files (`GroupCoordinatorBaseRequestTest.scala`, `TxnOffsetCommitRequestTest.scala`) with line numbers, and explains what edge cases are missing, such as validation checks and tests for new error scenarios."
+          },
+          "error": ""
+        }
+      ],
+      "timestamp": "2026-06-01T18:58:27.953409+00:00"
+    },
+    "pr39_joern_kg": {
+      "pr_id": 39,
+      "mode": "joern_kg",
+      "mean_scores": {
+        "F3": 2.5,
+        "F4": 3.0,
+        "P1": 0.0,
+        "R2": 0.0,
+        "T3": 3.0
+      },
+      "mean_graded_total": 8.5,
+      "per_judge": [
+        {
+          "model": "gemini:gemini-2.5-flash",
+          "scores": {
+            "F3": 3,
+            "F4": 3,
+            "P1": 0,
+            "R2": 0,
+            "T3": 3
+          },
+          "evidence": {
+            "F3": "Clients (e.g., consumer groups, tools) that upgrade to a v6+ protocol and rely on the `topic` field in `TxnOffsetCommitResponse` to be populated will encounter unexpected empty strings, potentially leading to `NullPointerException`s, incorrect logging, or failures in their offset management logic. This could be a silent regression or a breaking change for existing clients. ... Untested mixed-version scenarios could lead to subtle interoperability bugs between older and newer clients, especially ",
+            "F4": "Potential API Contract Violation for `TxnOffsetCommitResponse` v6+: The `commitTxnOffset` helper now sets the topic name to an empty string for `TxnOffsetCommitResponseData` when the API version is 6 or higher. This is a significant change from previous versions where the topic name was always present, and it could break clients that expect the topic name to be populated even when a topic ID is present. ... API Documentation Gap for Response Structure Change: If the change to set the topic name ",
+            "P1": "No mention of performance in the review.",
+            "R2": "No comment on complexity or code structure in the review.",
+            "T3": "Missing Test Coverage for `TxnOffsetCommitResponseData` Topic Name Behavior: There is no explicit test case that asserts the `topic` field is empty for v6+ responses and populated for v0-5 responses in `TxnOffsetCommitRequestTest.scala`. ... Limited Edge Case Testing for Mixed Version Interactions: The current tests primarily verify commit and fetch within the same API version. There's no explicit coverage for scenarios where a client using an older API version commits offsets, and then a client"
+          },
+          "error": ""
+        },
+        {
+          "model": "gemini:gemini-2.5-pro",
+          "scores": {
+            "F3": 2,
+            "F4": 3,
+            "P1": 0,
+            "R2": 0,
+            "T3": 3
+          },
+          "evidence": {
+            "F3": "The review names specific types of dependent components that would be affected, stating: 'Clients (e.g., consumer groups, tools) that upgrade to a v6+ protocol and rely on the `topic` field...'. It also discusses the impact on 'older and newer clients' during 'rolling upgrades'.",
+            "F4": "The review identifies multiple potential contract violations. It explicitly calls out a 'Potential API Contract Violation for `TxnOffsetCommitResponse` v6+' and a second potential issue with 'Mixed Version Interactions'. It provides a file reference for the breaking change (`GroupCoordinatorBaseRequestTest.scala:287`) and explains the exact downstream impact ('potentially leading to `NullPointerException`s, incorrect logging, or failures in their offset management logic').",
+            "P1": "The review does not contain any mention of performance, efficiency, or potential bottlenecks.",
+            "R2": "The review does not comment on code complexity, simplification, or suggest any refactoring for clarity.",
+            "T3": "The review names multiple specific test files (`core/src/test/scala/unit/kafka/server/TxnOffsetCommitRequestTest.scala`, `core/src/test/scala/unit/kafka/server/WriteTxnMarkersRequestTest.scala`), references a specific helper function (`verifyTxnCommitAndFetch`), and explains multiple missing edge cases (asserting the topic field is empty for v6+, and testing mixed-version interactions)."
+          },
+          "error": ""
+        }
+      ],
+      "timestamp": "2026-06-01T18:58:38.581276+00:00"
+    },
+    "pr40_baseline": {
+      "pr_id": 40,
+      "mode": "baseline",
+      "mean_scores": {
+        "F3": 3.0,
+        "F4": 2.0,
+        "P1": 0.0,
+        "R2": 0.0,
+        "T3": 2.5
+      },
+      "mean_graded_total": 7.5,
+      "per_judge": [
+        {
+          "model": "gemini:gemini-2.5-flash",
+          "scores": {
+            "F3": 3,
+            "F4": 2,
+            "P1": 0,
+            "R2": 0,
+            "T3": 3
+          },
+          "evidence": {
+            "F3": "Evidence: `GroupCoordinatorShard.java:1081-1106`: Removal of `offsetMetadataManager.onMetadataUpdate` calls. ... Impact: The removal of metadata image handling could lead to issues if topic IDs are not correctly resolved or if there are discrepancies between the topic ID and the actual metadata. This could result in incorrect offset commits or failures in transactional operations.",
+            "F4": "Impact: The removal of metadata image handling could lead to issues if topic IDs are not correctly resolved or if there are discrepancies between the topic ID and the actual metadata. This could result in incorrect offset commits or failures in transactional operations.",
+            "P1": "No mention of performance in the review.",
+            "R2": "No comment on complexity or code structure in the review.",
+            "T3": "Evidence: `OffsetMetadataManagerTest.java:1273-1304`: Removal of tests verifying `onMetadataUpdate` calls. ... Recommendation: Add comprehensive test cases to cover scenarios where topic IDs might be unresolved or incorrect, ensuring that the system handles these gracefully."
+          },
+          "error": ""
+        },
+        {
+          "model": "gemini:gemini-2.5-pro",
+          "scores": {
+            "F3": 3,
+            "F4": 2,
+            "P1": 0,
+            "R2": 0,
+            "T3": 2
+          },
+          "evidence": {
+            "F3": "Names multiple specific components (`GroupCoordinatorShard.java`, `OffsetMetadataManager.java`) and explains the concrete integration risk: 'The removal of metadata image handling could lead to issues if topic IDs are not correctly resolved... This could result in incorrect offset commits or failures in transactional operations.'",
+            "F4": "Identifies a specific expectation that is broken (validation of topic IDs against metadata) and the impact: 'The removal of metadata image handling could lead to issues if topic IDs are not correctly resolved... This could result in incorrect offset commits or failures in transactional operations.'",
+            "P1": "The review does not mention performance.",
+            "R2": "The review does not comment on unnecessary complexity or suggest simplification. It focuses on the risks of removing a previous mechanism.",
+            "T3": "Names one specific test file path: `OffsetMetadataManagerTest.java`."
+          },
+          "error": ""
+        }
+      ],
+      "timestamp": "2026-06-01T18:58:31.393344+00:00"
+    },
+    "pr40_joern_kg": {
+      "pr_id": 40,
+      "mode": "joern_kg",
+      "mean_scores": {
+        "F3": 3.0,
+        "F4": 3.0,
+        "P1": 0.0,
+        "R2": 0.0,
+        "T3": 2.5
+      },
+      "mean_graded_total": 8.5,
+      "per_judge": [
+        {
+          "model": "gemini:gemini-2.5-flash",
+          "scores": {
+            "F3": 3,
+            "F4": 3,
+            "P1": 0,
+            "R2": 0,
+            "T3": 3
+          },
+          "evidence": {
+            "F3": "The change implicitly requires callers of `OffsetMetadataManager.commitTransactionalOffset` to provide a valid `topicId` in the `TxnOffsetCommitRequest`. If `KafkaApis` (the entry point for client requests) does not correctly populate this field for all API versions, it could lead to `Uuid.ZERO_UUID` being passed, resulting in the issue described in point 1. ... Older clients or `KafkaApis` implementations that do not populate the `topicId` field in `TxnOffsetCommitRequest` (or populate it with ",
+            "F4": "API Contract Violation Risk for Callers: The change implicitly requires callers of `OffsetMetadataManager.commitTransactionalOffset` to provide a valid `topicId` in the `TxnOffsetCommitRequest`. ... Backward Compatibility Issues: Older clients or `KafkaApis` implementations that do not populate the `topicId` field in `TxnOffsetCommitRequest` (or populate it with `Uuid.ZERO_UUID` by default) will now have their offsets stored with `Uuid.ZERO_UUID` without the previous `ILLEGAL_GENERATION` error, ",
+            "P1": "The review does not mention any potential performance issues.",
+            "R2": "The review does not comment on the complexity of the changed code or suggest simplification.",
+            "T3": "Create a new parameterized test case in `group-coordinator/src/test/java/org/apache/kafka/coordinator/group/OffsetMetadataManagerTest.java` that explicitly passes `Uuid.ZERO_UUID` as the `topicId` in `TxnOffsetCommitRequestData.TxnOffsetCommitRequestTopic`. Assert the expected behavior... The removed test `testConsumerGroupTransactionalOffsetCommitWithUnresolvedTopicId` specifically covered the scenario where a topic ID could not be resolved (effectively `Uuid.ZERO_UUID`). The current parameteri"
+          },
+          "error": ""
+        },
+        {
+          "model": "gemini:gemini-2.5-pro",
+          "scores": {
+            "F3": 3,
+            "F4": 3,
+            "P1": 0,
+            "R2": 0,
+            "T3": 2
+          },
+          "evidence": {
+            "F3": "Names multiple specific callers/dependents (`KafkaApis`, `older clients`) and the function (`OffsetMetadataManager.commitTransactionalOffset`), and explains the concrete integration risk: \"If `KafkaApis` (the entry point for client requests) does not correctly populate this field for all API versions, it could lead to `Uuid.ZERO_UUID` being passed...\"",
+            "F4": "Identifies multiple specific contract violations: 1) The implicit requirement for callers of `OffsetMetadataManager.commitTransactionalOffset` to provide a valid `topicId`, and 2) The change in error handling for older clients who will no longer get an `ILLEGAL_GENERATION` error. It explains the downstream behavior change: \"offsets stored with `Uuid.ZERO_UUID` without the previous `ILLEGAL_GENERATION` error, potentially masking a compatibility problem.\"",
+            "P1": "The review does not mention performance.",
+            "R2": "The review does not comment on complexity or suggest simplifications.",
+            "T3": "The review names one specific test file path that should be updated: \"Create a new parameterized test case in `group-coordinator/src/test/java/org/apache/kafka/coordinator/group/OffsetMetadataManagerTest.java`...\""
+          },
+          "error": ""
+        }
+      ],
+      "timestamp": "2026-06-01T18:58:41.307591+00:00"
+    }
+  }
+}

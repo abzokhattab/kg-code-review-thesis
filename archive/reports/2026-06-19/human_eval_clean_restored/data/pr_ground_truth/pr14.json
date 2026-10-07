@@ -1,0 +1,78 @@
+{
+  "body": "Fixes #27426\n \nTrying to solve the problem of our drawer that scale poorly on smaller screens as we only set a fixed percentage width right now, and 40% or 50% of a small screen is way to small for many of our drawers. \n\n* Add size prop with values `sm` | `md` | `lg`  and deprecate width prop \n* size prop sets percentage-based width AND min-width \n* Adds media query to improve handling large drawer with high min-width on smaller screens\n* Adjust media query to leave a small margin where you can still see background to make it more clear you are in a drawer even on very small screens (before it was 100%). \n* Deprecates inline drawers that have been broken for 2 years (https://github.com/grafana/grafana/issues/39390)\n* Update Storybook & mdx \n\nOpen question:\n\n* Maybe with this we can remove the \"expandable\" feature? (the chevron which when clicked expands the drawer to 100%). That interaction could be a bit unnecessary after this PR and would simplify the drawer header. \n\n[New-Features-in-v7-4---gdev-dashboards---Dashboards---Grafana.webm](https://user-images.githubusercontent.com/10999/236156161-7d41fcc8-b719-463b-9511-1fe42cf9916f.webm)\n\nExample of a problem drawer:\n![Screenshot from 2023-05-04 10-52-45](https://user-images.githubusercontent.com/10999/236156947-85079a1b-bae7-4b24-b2b5-48a3c09da194.png)",
+  "issue_comments": [
+    {
+      "body": "Switched the news drawer to medium size as the news items have better more efficient layout then with image to the right, means we can fit more items. \n\n![image](https://user-images.githubusercontent.com/10999/236158470-4c7180da-79d5-4f0c-b3cb-75850a974575.png)",
+      "created_at": "2023-05-04T09:00:45Z",
+      "user": "torkelo"
+    },
+    {
+      "body": "@amy-super for point nr 2 (position under nav) I raised a follow-up PR https://github.com/grafana/grafana/pull/67824 , looks promising.",
+      "created_at": "2023-05-04T12:47:54Z",
+      "user": "torkelo"
+    },
+    {
+      "body": "@JoaoSilvaGrafana inline supports seem to have been broken for quite some time, https://github.com/grafana/grafana/issues/39390  \n\nWonder if we should deprecate the prop instead of fixing it. Can't think of where we would use inline drawers. Maybe better to add that support when we really need it",
+      "created_at": "2023-05-04T16:08:26Z",
+      "user": "torkelo"
+    },
+    {
+      "body": "> @JoaoSilvaGrafana inline supports seem to have been broken for quite some time, #39390\n> \n> Wonder if we should deprecate the prop instead of fixing it. Can't think of where we would use inline drawers. Maybe better to add that support when we really need it\n\n@torkelo I agree that if it is not used and it is broken better to just deprecate it... and then if we need this solution again we revisit it \ud83d\udc4d",
+      "created_at": "2023-05-04T16:35:45Z",
+      "user": "JoaoSilvaGrafana"
+    },
+    {
+      "body": "@JoaoSilvaGrafana deprecated inline part (added deprecated annotation to prop, and removed story). Also update the mdx to include info on the sizes. Think this is ready now",
+      "created_at": "2023-05-05T05:52:43Z",
+      "user": "torkelo"
+    },
+    {
+      "body": "Hello @torkelo!\nBackport pull requests need to be either:\n* Pull requests which address bugs,\n* Urgent fixes which need product approval, in order to get merged,\n* Docs changes.\n\nPlease, if the current pull request addresses a bug fix, label it with the `type/bug` label.\nIf it already has the product approval, please add the `product-approved` label. For docs changes, please add the `type/docs` label.\nIf the pull request modifies CI behaviour, please add the `type/ci` label.\nIf none of the above applies, please consider removing the backport label and target the next major/minor release.\nThanks!",
+      "created_at": "2023-05-09T12:53:30Z",
+      "user": "grafanabot"
+    }
+  ],
+  "merged_at": "2023-05-05T09:31:03Z",
+  "owner_repo": "grafana/grafana",
+  "pr_id": 14,
+  "pr_number": 67809,
+  "review_comments": [
+    {
+      "body": "The only way for `fixedWidth` to be `falsy` is if `isExpanded` is also `false`, so I think `useSizeWidth = !fixedWidth` is enough no?",
+      "line": 75,
+      "path": "packages/grafana-ui/src/components/Drawer/Drawer.tsx",
+      "user": "JoaoSilvaGrafana"
+    },
+    {
+      "body": "```suggestion\n  // deprecated width prop now defaults to empty string which make the size prop take over\n```",
+      "line": 73,
+      "path": "packages/grafana-ui/src/components/Drawer/Drawer.tsx",
+      "user": "JoaoSilvaGrafana"
+    },
+    {
+      "body": "good catch :) fixed!",
+      "line": 75,
+      "path": "packages/grafana-ui/src/components/Drawer/Drawer.tsx",
+      "user": "torkelo"
+    }
+  ],
+  "review_summaries": [
+    {
+      "body": "I think these changes work really well. In my head there are two outstanding questions - one that you raise and one that I thought of. \n\n1. Do we eliminate the expander for the drawer? \nThe only place I can think of that really benefits from that is Dashboard Insights - and even then, a large drawer seems to be plenty on the examples I've found. So I vote yes, but I'd want to poll the rest of the UX team to make sure we're not breaking anything for them. \n\n2. This one has been on my list for awhile, but it bugs me that the megamenu opens under topnav but drawers open over it. They are for different things, and I think there is an argument to be made that it's OK as is. We want to not totally hide the nav elements when you are in megamenu, but drawers benefit from the extra height given their big headers. So I think it's OK? But wanted to raise it since we're talking drawers. Feel free to ignore this point - I have it tracked in #55623.",
+      "state": "APPROVED",
+      "user": "amy-super"
+    },
+    {
+      "body": "Love how this makes it easier to have different sizes of `Drawer` instead of just an arbitrary `width` \ud83d\ude4c",
+      "state": "COMMENTED",
+      "user": "JoaoSilvaGrafana"
+    },
+    {
+      "body": "Lgtm!",
+      "state": "APPROVED",
+      "user": "JoaoSilvaGrafana"
+    }
+  ],
+  "title": "Drawer: Introduce a size property that set's width percentage and minWidth ",
+  "url": "https://github.com/grafana/grafana/pull/67809"
+}

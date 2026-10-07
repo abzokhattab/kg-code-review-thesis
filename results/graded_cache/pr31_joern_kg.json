@@ -1,0 +1,51 @@
+{
+  "pr_id": 31,
+  "mode": "joern_kg",
+  "mean_scores": {
+    "F3": 0.0,
+    "F4": 1.0,
+    "P1": 2.0,
+    "R2": 0.0,
+    "T3": 2.5
+  },
+  "mean_graded_total": 5.5,
+  "per_judge": [
+    {
+      "model": "gemini:gemini-2.5-flash",
+      "scores": {
+        "F3": 0,
+        "F4": 0,
+        "P1": 2,
+        "R2": 0,
+        "T3": 3
+      },
+      "evidence": {
+        "F3": "The review focuses on the internal correctness of the `predict` method and its output to the end-user, and hypothetical future scenarios. It does not name specific callers, modules, or dependent files within the codebase that are affected by the change or explain concrete integration risks.",
+        "F4": "The review describes a bug fix (incorrect predictive variance) and potential future regression risks (untested `fit_intercept=False`, hypothetical sparse data issues). It does not identify any existing, correct API contract that this PR breaks or changes in a breaking way.",
+        "P1": "The review identifies a specific operation (`X - self.X_offset_`) and a specific data type (`sparse X`) that could lead to 'memory and performance issues' due to 'implicitly convert[ing] it to a dense array'. This is a specific operation with a brief explanation of the concern.",
+        "R2": "The review does not comment on the complexity of the code or suggest any simplifications to the code structure.",
+        "T3": "The review names a specific test file path (`sklearn/linear_model/tests/test_bayes.py`), references an exact test function (`test_std_bayesian_ridge_noncentered`), and explains the missing edge case (`fit_intercept=False`) that needs coverage, including what should be asserted."
+      },
+      "error": ""
+    },
+    {
+      "model": "gemini:gemini-2.5-pro",
+      "scores": {
+        "F3": 0,
+        "F4": 2,
+        "P1": 2,
+        "R2": 0,
+        "T3": 2
+      },
+      "evidence": {
+        "F3": "The review discusses the impact on end-users of the models, but does not mention how the change interacts with any other specific callers, modules, or dependent components within the codebase.",
+        "F4": "The review identifies a specific user expectation that is being changed: \"Users relying on the predictive uncertainty (`y_std`) from `BayesianRidge` or `ARDRegression` with `fit_intercept=True` would receive incorrect standard deviation values, leading to misinformed decisions about model confidence.\" This identifies the `predict(return_std=True)` API contract and the impact of the change.",
+        "P1": "The review identifies a specific operation that could cause a performance issue: \"if X were sparse, the operation `X - self.X_offset_` could implicitly convert it to a dense array, leading to memory and performance issues.\"",
+        "R2": "The review does not contain any comments about unnecessary complexity or suggestions for simplification.",
+        "T3": "The review names a specific test file to be updated: \"Add a specific test case to `sklearn/linear_model/tests/test_bayes.py` within `test_std_bayesian_ridge_noncentered` (or a new test) that initializes `Estimator(fit_intercept=False)`...\""
+      },
+      "error": ""
+    }
+  ],
+  "timestamp": "2026-06-01T18:58:18.550195+00:00"
+}

@@ -1,0 +1,41 @@
+{
+  "candidate_mentions": [
+    {
+      "basename_collision": false,
+      "end": 602,
+      "evidence_id": "M001",
+      "excerpt": "y on the original class name.\n\n## Evidence\n- `sklearn/base.py:153`: The class `BaseEstimator` is renamed to `BaseEstimatorInternal`.\n- Dependent files such as `sklearn/cluster/_affinity_propagation.py`, `sklearn/cluster/_agglomerative.py`, etc., still reference `BaseEstimator` without updates to the new name.\n\n## Impact\n- This change could break existing functionality across multiple modules that depend on `BaseEstimator`. Import errors will occur in any m",
+      "match_kind": "full_path",
+      "match_text": "sklearn/cluster/_affinity_propagation.py",
+      "oracle_path": "sklearn/cluster/_affinity_propagation.py",
+      "start": 562
+    },
+    {
+      "basename_collision": false,
+      "end": 639,
+      "evidence_id": "M002",
+      "excerpt": " `sklearn/base.py:153`: The class `BaseEstimator` is renamed to `BaseEstimatorInternal`.\n- Dependent files such as `sklearn/cluster/_affinity_propagation.py`, `sklearn/cluster/_agglomerative.py`, etc., still reference `BaseEstimator` without updates to the new name.\n\n## Impact\n- This change could break existing functionality across multiple modules that depend on `BaseEstimator`. Import errors will occur in any module that has not been updated to re",
+      "match_kind": "full_path",
+      "match_text": "sklearn/cluster/_agglomerative.py",
+      "oracle_path": "sklearn/cluster/_agglomerative.py",
+      "start": 606
+    }
+  ],
+  "causal_quote": "This change could break existing functionality across multiple modules that depend on `BaseEstimator`. Import errors will occur in any module that has not been updated to reflect the new class name, potentially causing runtime errors and application crashes.",
+  "decision_source": "llm_causal_adjudication",
+  "detected": true,
+  "evidence_id": "M001",
+  "executed_at_utc": "2026-09-19T15:03:01.475076+00:00",
+  "finding_quote": "Dependent files such as `sklearn/cluster/_affinity_propagation.py`, `sklearn/cluster/_agglomerative.py`, etc., still reference `BaseEstimator` without updates to the new name.",
+  "judge": "openai:gpt-4o-mini",
+  "manifest_sha256": "5d4371a93d1b09f0491ecc12279f9f3ff5de23053b7a5e74650a749f58b472b0",
+  "model_alias": "openai:gpt-4o-mini",
+  "model_snapshot": "unavailable-from-original-wrapper",
+  "original_verdict": true,
+  "prompt_sha256": "9a638a381538ffb5a36244a713963460f0bf9d58393cdfd83da14c77814856c8",
+  "reason_code": "specific_cross_file_link",
+  "review_sha256": "02587865ca021957fc85d50a390eb7bce62712df91884ef6a9f610a762c7a630",
+  "schema_sha256": "6a22fcb256437ebed904ab2d879b36be1234fb2e06add1127ac8ea2ab46f60f0",
+  "schema_version": "exp2-adjudication-v2",
+  "system_sha256": "3634314a8fc4231391e4c51174e5c32d7346b0e2ceb5f8c4641e6ba866bd5939"
+}

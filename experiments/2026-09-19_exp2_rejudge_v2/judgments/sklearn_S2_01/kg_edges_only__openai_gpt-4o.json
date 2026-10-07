@@ -1,0 +1,62 @@
+{
+  "candidate_mentions": [
+    {
+      "basename_collision": false,
+      "end": 686,
+      "evidence_id": "M001",
+      "excerpt": "ter.\n\n## Evidence\n- `sklearn/linear_model/_base.py:110`: The function signature of `_preprocess_data` is modified to include `required_ctx`.\n- Callers such as `sklearn/linear_model/_bayes.py::fit`, `sklearn/linear_model/_coordinate_descent.py::fit`, `sklearn/linear_model/_least_angle.py::_fit`, `sklearn/linear_model/_least_angle.py::fit`, and `sklearn/linear_model/_ridge.py::fit` are not updated to pass the new `required_ctx` parameter.\n\n## Impac",
+      "match_kind": "full_path",
+      "match_text": "sklearn/linear_model/_bayes.py",
+      "oracle_path": "sklearn/linear_model/_bayes.py",
+      "start": 656
+    },
+    {
+      "basename_collision": false,
+      "end": 738,
+      "evidence_id": "M002",
+      "excerpt": "el/_base.py:110`: The function signature of `_preprocess_data` is modified to include `required_ctx`.\n- Callers such as `sklearn/linear_model/_bayes.py::fit`, `sklearn/linear_model/_coordinate_descent.py::fit`, `sklearn/linear_model/_least_angle.py::_fit`, `sklearn/linear_model/_least_angle.py::fit`, and `sklearn/linear_model/_ridge.py::fit` are not updated to pass the new `required_ctx` parameter.\n\n## Impact\n- The change will likely cause runtime errors in a",
+      "match_kind": "full_path",
+      "match_text": "sklearn/linear_model/_coordinate_descent.py",
+      "oracle_path": "sklearn/linear_model/_coordinate_descent.py",
+      "start": 695
+    },
+    {
+      "basename_collision": false,
+      "end": 783,
+      "evidence_id": "M003",
+      "excerpt": "cess_data` is modified to include `required_ctx`.\n- Callers such as `sklearn/linear_model/_bayes.py::fit`, `sklearn/linear_model/_coordinate_descent.py::fit`, `sklearn/linear_model/_least_angle.py::_fit`, `sklearn/linear_model/_least_angle.py::fit`, and `sklearn/linear_model/_ridge.py::fit` are not updated to pass the new `required_ctx` parameter.\n\n## Impact\n- The change will likely cause runtime errors in any function that calls `_preprocess_data` wit",
+      "match_kind": "full_path",
+      "match_text": "sklearn/linear_model/_least_angle.py",
+      "oracle_path": "sklearn/linear_model/_least_angle.py",
+      "start": 747
+    },
+    {
+      "basename_collision": false,
+      "end": 872,
+      "evidence_id": "M004",
+      "excerpt": "s.py::fit`, `sklearn/linear_model/_coordinate_descent.py::fit`, `sklearn/linear_model/_least_angle.py::_fit`, `sklearn/linear_model/_least_angle.py::fit`, and `sklearn/linear_model/_ridge.py::fit` are not updated to pass the new `required_ctx` parameter.\n\n## Impact\n- The change will likely cause runtime errors in any function that calls `_preprocess_data` without providing the new `required_ctx` argument, leading to potential failures in model fi",
+      "match_kind": "full_path",
+      "match_text": "sklearn/linear_model/_ridge.py",
+      "oracle_path": "sklearn/linear_model/_ridge.py",
+      "start": 842
+    }
+  ],
+  "causal_quote": "The change will likely cause runtime errors in any function that calls `_preprocess_data` without providing the new `required_ctx` argument, leading to potential failures in model fitting processes.",
+  "decision_source": "llm_causal_adjudication",
+  "detected": true,
+  "evidence_id": "M001",
+  "executed_at_utc": "2026-09-19T15:05:34.419680+00:00",
+  "finding_quote": "Callers such as `sklearn/linear_model/_bayes.py::fit`, `sklearn/linear_model/_coordinate_descent.py::fit`, `sklearn/linear_model/_least_angle.py::_fit`, `sklearn/linear_model/_least_angle.py::fit`, and `sklearn/linear_model/_ridge.py::fit` are not updated to pass the new `required_ctx` parameter.",
+  "judge": "openai:gpt-4o",
+  "manifest_sha256": "5d4371a93d1b09f0491ecc12279f9f3ff5de23053b7a5e74650a749f58b472b0",
+  "model_alias": "openai:gpt-4o",
+  "model_snapshot": "unavailable-from-original-wrapper",
+  "original_verdict": true,
+  "prompt_sha256": "3d6ca913e5c381a48757f2034ebb40eedf7f7ff401284b6d00085229ee33d6ef",
+  "reason_code": "specific_cross_file_link",
+  "response_wrapper": "bare",
+  "review_sha256": "7349e8604dba4813ae0ba33c7ceb37851c00f863ef9fb5c0c829296e46eeedf1",
+  "schema_sha256": "6a22fcb256437ebed904ab2d879b36be1234fb2e06add1127ac8ea2ab46f60f0",
+  "schema_version": "exp2-adjudication-v2",
+  "system_sha256": "3634314a8fc4231391e4c51174e5c32d7346b0e2ceb5f8c4641e6ba866bd5939"
+}

@@ -1,0 +1,124 @@
+{
+  "pr": {
+    "number": 26597,
+    "title": "Add streamLoadedBuilds method to avoid full map copy in getEstimatedDurationCandidates",
+    "body": "Fixes [#26596](https://github.com/jenkinsci/jenkins/issues/26596)\r\n\r\nSee issue for more context. `getLoadedBuilds()` is called by `getEstimatedDurationCandidates()` on every queue maintenance lock. `getLoadedBuilds()` copies the entire `core` map into a new tree map for every call, even though it only needs the 3 most recent completed builds, which is expensive for jobs with large build histories.\r\n\r\nThis PR adds `streamLoadedBuilds` to lazily stream over builds in memory instead of copying into a new map every queue maintenance cycle in `getEstimatedDurationCandidates`. Also simplifies `getLoadedBuilds` to call `streamLoadedBuilds`, which still does create a new map but is needed for plugin compatibility\r\n\r\n### Testing done\r\n\r\nIt's a small change but I sanity checked it by running Jenkins locally before my change, added logging around the `loadedBuilds` and `getEstimatedDurationCandidates`, confirmed that new jobs lazily load 3 builds after examining 4 (since the 4th build is the current one in progress)\r\n\r\n### Screenshots (UI changes only)\r\n\r\n\r\n#### Before\r\n\r\n#### After\r\n\r\n### Proposed changelog entries\r\n- Improve queue maintenance performance for jobs with large build histories\r\n\r\n### Proposed changelog category\r\n\r\n/label bug,rfe\r\n\r\n### Proposed upgrade guidelines\r\n\r\nN/A\r\n\r\n\r\n### Submitter checklist\r\n\r\n- [x] The issue, if it exists, is well-described.\r\n- [x] The changelog entries and upgrade guidelines are appropriate for the audience affected by the change (users or developers, depending on the change) and are in the imperative mood (see [examples](https://github.com/jenkins-infra/jenkins.io/blob/master/content/_data/changelogs/weekly.yml)). Fill in the **Proposed upgrade guidelines** section only if there are breaking changes or changes that may require extra steps from users during upgrade.\r\n- [x] There is automated testing or an explanation as to why this change has no tests.\r\n- [x] New public classes, fields, and methods are annotated with `@Restricted` or have `@since TODO` Javadocs, as appropriate.\r\n- [ ] New deprecations are annotated with `@Deprecated(since = \"TODO\")` or `@Deprecated(forRemoval = true, since = \"TODO\")`, if applicable.\r\n- [ ] UI changes do not introduce regressions when enforcing the current default rules of [Content Security Policy Plugin](https://plugins.jenkins.io/csp/). In particular, new or substantially changed JavaScript is not defined inline and does not call `eval` to ease future introduction of Content Security Policy (CSP) directives (see [documentation](https://www.jenkins.io/doc/developer/security/csp/)).\r\n- [ ] For dependency updates, there are links to external changelogs and, if possible, full differentials.\r\n- [ ] For new APIs and extension points, there is a link to at least one consumer.\r\n\r\n### Desired reviewers\r\n\r\nN/A\r\n\r\nBefore the changes are marked as `ready-for-merge`:\r\n\r\n### Maintainer checklist\r\n\r\n- [ ] There are at least two (2) approvals for the pull request and no outstanding requests for change.\r\n- [ ] Conversations in the pull request are over, or it is explicit that a reviewer is not blocking the change.\r\n- [ ] Changelog entries in the pull request title and/or **Proposed changelog entries** are accurate, human-readable, and in the imperative mood.\r\n- [ ] Proper changelog labels are set so that the changelog can be generated automatically.\r\n- [ ] If the change needs additional upgrade steps from users, the `upgrade-guide-needed` label is set and there is a **Proposed upgrade guidelines** section in the pull request title (see [example](https://github.com/jenkinsci/jenkins/pull/4387)).\r\n- [ ] If it would make sense to backport the change to LTS, be a _Bug_ or _Improvement_, and either the issue or pull request must be labeled as `lts-candidate` to be considered.\r\n",
+    "url": "https://github.com/jenkinsci/jenkins/pull/26597",
+    "repo": "jenkinsci/jenkins",
+    "base_branch": "master",
+    "head_branch": "cap-loaded-builds",
+    "merged_at": "2026-04-13T13:34:34Z",
+    "state": "MERGED"
+  },
+  "changed_files": [
+    {
+      "path": "core/src/main/java/jenkins/model/lazy/AbstractLazyLoadRunMap.java",
+      "language": "java",
+      "added": 16,
+      "deleted": 8
+    },
+    {
+      "path": "core/src/main/java/jenkins/model/lazy/LazyBuildMixIn.java",
+      "language": "java",
+      "added": 1,
+      "deleted": 2
+    },
+    {
+      "path": "core/src/test/java/jenkins/model/lazy/AbstractLazyLoadRunMapTest.java",
+      "language": "java",
+      "added": 14,
+      "deleted": 0
+    }
+  ],
+  "nearest_tests": [
+    {
+      "path": "core/src/test/java/jenkins/model/lazy/AbstractLazyLoadRunMapTest.java",
+      "relationship": "tests",
+      "source_file": "core/src/main/java/jenkins/model/lazy/AbstractLazyLoadRunMap.java"
+    },
+    {
+      "path": "test/src/test/java/jenkins/model/lazy/LazyBuildMixInTest.java",
+      "relationship": "tests",
+      "source_file": "core/src/main/java/jenkins/model/lazy/LazyBuildMixIn.java"
+    }
+  ],
+  "dependent_files": [
+    {
+      "path": "core/src/test/java/jenkins/model/lazy/FakeMap.java",
+      "relationship": "imports",
+      "source_file": "core/src/main/java/jenkins/model/lazy/AbstractLazyLoadRunMap.java"
+    },
+    {
+      "path": "core/src/test/java/jenkins/model/lazy/AbstractLazyLoadRunMapTest.java",
+      "relationship": "imports",
+      "source_file": "core/src/main/java/jenkins/model/lazy/AbstractLazyLoadRunMap.java"
+    },
+    {
+      "path": "core/src/main/java/hudson/model/RunMap.java",
+      "relationship": "imports",
+      "source_file": "core/src/main/java/jenkins/model/lazy/AbstractLazyLoadRunMap.java"
+    },
+    {
+      "path": "core/src/main/java/hudson/model/listeners/RunListener.java",
+      "relationship": "imports",
+      "source_file": "core/src/main/java/jenkins/model/lazy/AbstractLazyLoadRunMap.java"
+    },
+    {
+      "path": "core/src/main/java/jenkins/model/lazy/LazyBuildMixIn.java",
+      "relationship": "imports",
+      "source_file": "core/src/main/java/jenkins/model/lazy/AbstractLazyLoadRunMap.java"
+    },
+    {
+      "path": "core/src/main/java/jenkins/model/lazy/BuildReference.java",
+      "relationship": "imports",
+      "source_file": "core/src/main/java/jenkins/model/lazy/AbstractLazyLoadRunMap.java"
+    },
+    {
+      "path": "core/src/main/java/hudson/model/Run.java",
+      "relationship": "imports",
+      "source_file": "core/src/main/java/jenkins/model/lazy/LazyBuildMixIn.java"
+    },
+    {
+      "path": "core/src/main/java/hudson/model/Job.java",
+      "relationship": "imports",
+      "source_file": "core/src/main/java/jenkins/model/lazy/LazyBuildMixIn.java"
+    },
+    {
+      "path": "core/src/main/java/hudson/model/AbstractBuild.java",
+      "relationship": "imports",
+      "source_file": "core/src/main/java/jenkins/model/lazy/LazyBuildMixIn.java"
+    },
+    {
+      "path": "core/src/main/java/hudson/model/AbstractProject.java",
+      "relationship": "imports",
+      "source_file": "core/src/main/java/jenkins/model/lazy/LazyBuildMixIn.java"
+    },
+    {
+      "path": "core/src/main/java/jenkins/model/ParameterizedJobMixIn.java",
+      "relationship": "imports",
+      "source_file": "core/src/main/java/jenkins/model/lazy/LazyBuildMixIn.java"
+    },
+    {
+      "path": "test/src/test/java/hudson/model/SimpleJobTest.java",
+      "relationship": "imports",
+      "source_file": "core/src/main/java/jenkins/model/lazy/LazyBuildMixIn.java"
+    },
+    {
+      "path": "test/src/test/java/jenkins/model/lazy/LazyBuildMixInTest.java",
+      "relationship": "imports",
+      "source_file": "core/src/main/java/jenkins/model/lazy/LazyBuildMixIn.java"
+    }
+  ],
+  "callers": [],
+  "call_graph_edges": [],
+  "full_diff": "diff --git a/core/src/main/java/jenkins/model/lazy/AbstractLazyLoadRunMap.java b/core/src/main/java/jenkins/model/lazy/AbstractLazyLoadRunMap.java\nindex 1a61a2463107..bb17fd2e0716 100644\n--- a/core/src/main/java/jenkins/model/lazy/AbstractLazyLoadRunMap.java\n+++ b/core/src/main/java/jenkins/model/lazy/AbstractLazyLoadRunMap.java\n@@ -43,6 +43,7 @@\n import java.util.Map;\n import java.util.NavigableMap;\n import java.util.NoSuchElementException;\n+import java.util.Objects;\n import java.util.Set;\n import java.util.SortedMap;\n import java.util.TreeMap;\n@@ -50,6 +51,7 @@\n import java.util.logging.Level;\n import java.util.logging.Logger;\n import java.util.regex.Pattern;\n+import java.util.stream.Stream;\n import jenkins.util.MemoryReductionUtil;\n import org.kohsuke.accmod.Restricted;\n import org.kohsuke.accmod.restrictions.Beta;\n@@ -249,14 +251,20 @@ public boolean containsValue(Object value) {\n      * Returns a read-only view of records that has already been loaded.\n      */\n     public SortedMap<Integer, R> getLoadedBuilds() {\n-        TreeMap<Integer, BuildReference<R>> res = new TreeMap<>(Comparator.reverseOrder());\n-        for (var entry : this.core.entrySet()) {\n-            BuildReference<R> buildRef = entry.getValue();\n-            if (buildRef.isSet() && !buildRef.isUnloadable()) {\n-                res.put(entry.getKey(), buildRef);\n-            }\n-        }\n-        return new BuildReferenceMapAdapter<>(res, buildResolver);\n+        TreeMap<Integer, R> res = new TreeMap<>(Comparator.reverseOrder());\n+        streamLoadedBuilds().forEach(r -> res.put(getNumberOf(r), r));\n+        return res;\n+    }\n+\n+    /**\n+     * Returns a lazy stream of build objects, sorted by newest first, skipping GC builds\n+     * Unlike {@link #getLoadedBuilds()}, this doesn't require copying the entire map\n+     * @since TODO\n+     */\n+    public Stream<R> streamLoadedBuilds() {\n+        return core.values().stream()\n+                .map(BuildReference::get)\n+                .filter(Objects::nonNull);\n     }\n \n     /**\ndiff --git a/core/src/main/java/jenkins/model/lazy/LazyBuildMixIn.java b/core/src/main/java/jenkins/model/lazy/LazyBuildMixIn.java\nindex 1419934e4f82..fdae9970b74d 100644\n--- a/core/src/main/java/jenkins/model/lazy/LazyBuildMixIn.java\n+++ b/core/src/main/java/jenkins/model/lazy/LazyBuildMixIn.java\n@@ -273,10 +273,9 @@ public final RunT getNearestOldBuild(int n) {\n      * @since 2.407\n      */\n     public List<RunT> getEstimatedDurationCandidates() {\n-        var loadedBuilds = builds.getLoadedBuilds().values(); // reverse chronological order\n         List<RunT> candidates = new ArrayList<>(3);\n         for (Result threshold : List.of(Result.UNSTABLE, Result.FAILURE)) {\n-            for (RunT build : loadedBuilds) {\n+            for (RunT build : (Iterable<RunT>) builds.streamLoadedBuilds()::iterator) {\n                 if (candidates.contains(build)) {\n                     continue;\n                 }\ndiff --git a/core/src/test/java/jenkins/model/lazy/AbstractLazyLoadRunMapTest.java b/core/src/test/java/jenkins/model/lazy/AbstractLazyLoadRunMapTest.java\nindex ce1f66c572e6..74542c242f5a 100644\n--- a/core/src/test/java/jenkins/model/lazy/AbstractLazyLoadRunMapTest.java\n+++ b/core/src/test/java/jenkins/model/lazy/AbstractLazyLoadRunMapTest.java\n@@ -40,6 +40,7 @@\n import java.io.IOException;\n import java.util.HashMap;\n import java.util.Iterator;\n+import java.util.List;\n import java.util.Map;\n import java.util.NoSuchElementException;\n import java.util.Set;\n@@ -411,6 +412,19 @@ void toArray() {\n         // TODO check behavior of subMap\n     }\n \n+    @Test\n+    void streamLoadedBuilds() {\n+        a.getByNumber(1);\n+        a.getByNumber(3);\n+        a.getByNumber(5);\n+\n+        var fromStream = a.streamLoadedBuilds().map(b -> b.n).toList();\n+        assertEquals(List.of(5, 3, 1), fromStream);\n+\n+        var firstTwo = a.streamLoadedBuilds().limit(2).map(b -> b.n).toList();\n+        assertEquals(List.of(5, 3), firstTwo);\n+    }\n+\n     @Issue(\"JENKINS-22767\")\n     @Test\n     void slowRetrieve() throws Exception {\n",
+  "diff_summary": "3 files changed",
+  "similar_chunks": [],
+  "metadata": {
+    "experiment": "confirmatory_kg_2026-05-14",
+    "local_id": 11,
+    "v2_diff_truncated": false,
+    "v2_raw_diff_chars": 4073,
+    "v2_raw_body_chars": 3790
+  }
+}

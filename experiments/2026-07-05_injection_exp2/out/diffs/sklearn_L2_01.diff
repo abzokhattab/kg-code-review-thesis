@@ -1,0 +1,11 @@
+--- a/sklearn/cluster/_kmeans.py
++++ b/sklearn/cluster/_kmeans.py
+@@ -156,7 +156,7 @@
+         )
+ 
+     # Check parameters
+-    if x_squared_norms is None:
++    if x_squared_norms is not None:
+         x_squared_norms = row_norms(X, squared=True)
+     else:
+         x_squared_norms = check_array(x_squared_norms, dtype=X.dtype, ensure_2d=False)

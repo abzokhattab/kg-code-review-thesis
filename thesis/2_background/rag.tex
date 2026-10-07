@@ -1,0 +1,38 @@
+\section{Retrieval-Augmented Generation}
+\label{sec:bg-rag}
+
+Retrieval-augmented generation supplies a model with material fetched at
+inference time rather than relying on pre-training
+alone~\cite{lewis2020rag}. A retriever selects passages from a corpus and the
+generator conditions on them together with the query. For software the appeal
+is immediate: a repository at a particular commit is knowledge no pre-trained
+model can have.
+
+Modern retrieval is typically dense. Karpukhin et al.\ showed that a dual
+encoder mapping questions and passages into a shared embedding space
+outperforms sparse baselines on open-domain question
+answering~\cite{karpukhin2020dpr}. Three parameters recur throughout
+Chapter~\ref{chap:approach}: how the corpus is chunked, how the query is
+formed, and how many chunks are kept.
+
+The property that matters for code review is what similarity does and does not
+guarantee. Similarity in embedding space is a claim about resemblance, not
+about consequence. A function that resembles the changed code will rank highly
+whether or not the change affects it; the caller that will actually break may
+share no surface features with the callee and rank poorly. Retrieval optimises
+for looking related; review needs what \emph{is} related.
+
+Graph-structured retrieval is one response.
+GraphRAG~\cite{edge2024graphrag} builds an entity graph over the corpus to
+answer questions about how documents connect rather than about any single
+document. RepoCoder~\cite{zhang2023repocoder} alternates retrieval and
+generation for repository-level completion, on the finding that a single
+similarity query over a diff retrieves poorly. Both are admissions about the
+limits of similarity as a relevance criterion and both point at the comparison
+this thesis makes: if similarity retrieval were adequate, neither iterative
+re-querying nor graph construction would be necessary.
+
+The retrieval arm in this thesis is a deliberately conventional instance of the
+paradigm (chunked corpus, cosine similarity, fixed top-$k$), included not
+as a contribution but as the comparison that makes the structural arm
+interpretable.

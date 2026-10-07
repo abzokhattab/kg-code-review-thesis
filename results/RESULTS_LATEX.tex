@@ -1,0 +1,275 @@
+% ═══════════════════════════════════════════════════════════════
+% LaTeX Tables for Paper — All Results
+% Generated from PROGRESS_REPORT.md and POWER_ANALYSIS.md
+% ═══════════════════════════════════════════════════════════════
+
+% ── Table 1: 14 Criteria Rubric ──────────────────────────────
+
+\begin{table*}[t]
+\centering
+\caption{The 14-criterion rubric, refined from the original 25 criteria by merging overlaps and removing uninformative items.}
+\label{tab:criteria14}
+\begin{tabular}{llp{8cm}}
+\toprule
+\textbf{ID} & \textbf{Category} & \textbf{Description} \\
+\midrule
+F1     & Functionality & Verifies that the change addresses the stated problem/requirement \\
+F2*    & Functionality & Identifies edge cases, boundary conditions, error-path testing needs \textit{(merged F2\,+\,T2)} \\
+F3*    & Functionality & Checks integration with existing components, APIs, architecture fit \textit{(merged F3\,+\,M1)} \\
+F4     & Functionality & Warns about potential breaking changes or impact on dependents \\
+T1     & Tests         & Asks about or discusses the need for unit/integration tests \\
+T3     & Tests         & References specific test files or suggests which tests to add/update \\
+R1     & Readability   & Comments on code clarity, naming conventions, function organization \\
+R2     & Readability   & Identifies unnecessary complexity or suggests simplification \\
+P1     & Performance   & Identifies potential performance issues or inefficiencies \\
+S1     & Security      & Checks for proper input validation or sanitization \\
+S3     & Security      & Assesses error handling and failure recovery \\
+Q3     & Quality       & Distinguishes between blocking issues and minor suggestions \\
+Q5     & Quality       & Explains reasoning behind suggestions (the ``why'') \\
+C2     & Consistency   & Checks if similar problems are solved consistently with existing patterns \\
+\bottomrule
+\end{tabular}
+\end{table*}
+
+
+% ── Table 2: Mode Averages (Cross-Model) ────────────────────
+
+\begin{table}[t]
+\centering
+\caption{Mode rankings across two independent LLM judges. KG ranks \#1 in both models. Gemini~2.5~Flash was attempted but produced unreliable data due to API truncation issues and is excluded.}
+\label{tab:mode-averages}
+\begin{tabular}{lccl}
+\toprule
+\textbf{Mode} & \textbf{GPT-4.1-mini} & \textbf{DeepSeek V3} & \textbf{Rank} \\
+\midrule
+\textbf{KG}   & \textbf{45.7\%} & \textbf{49.2\%} & \textbf{\#1 (2/2)} \\
+RAG            & 45.4\%          & 49.1\%          & \#2 \\
+Hybrid         & 45.2\%          & 47.2\%          & \#3 \\
+Baseline       & 41.7\%          & 43.7\%          & \#4 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+
+% ── Table 3: Per-Criterion Pass Rates (GPT-4.1-mini) ────────
+
+\begin{table*}[t]
+\centering
+\caption{Per-criterion pass rates on 25~PRs evaluated by GPT-4.1-mini. Spread = max $-$ min across modes. KG--BL = KG rate $-$ Baseline rate.}
+\label{tab:per-criterion-gpt}
+\begin{tabular}{llrrrrrc}
+\toprule
+\textbf{ID} & \textbf{Category} & \textbf{Baseline} & \textbf{RAG} & \textbf{KG} & \textbf{Hybrid} & \textbf{Spread} & \textbf{KG--BL} \\
+\midrule
+F3* & Functionality & 20\% & 24\% & \textbf{56\%} & 24\% & 36\% & +36\,pp \\
+R1  & Readability   & \textbf{44\%} & 40\% & 12\% & 16\% & 32\% & $-$32\,pp \\
+C2  & Consistency   & 12\% & \textbf{40\%} & 8\% & 12\% & 32\% & $-$4\,pp \\
+T3  & Tests         & 36\% & 40\% & \textbf{60\%} & 52\% & 24\% & +24\,pp \\
+Q3  & Quality       & 0\% & 12\% & 4\% & \textbf{24\%} & 24\% & +4\,pp \\
+T1  & Tests         & 76\% & 84\% & \textbf{96\%} & 84\% & 20\% & +20\,pp \\
+F4  & Functionality & 84\% & 88\% & 96\% & \textbf{100\%} & 16\% & +12\,pp \\
+R2  & Readability   & \textbf{20\%} & 12\% & 12\% & 4\% & 16\% & $-$8\,pp \\
+S1  & Security      & 12\% & 12\% & 12\% & \textbf{24\%} & 12\% & 0\,pp \\
+F2* & Functionality & 44\% & 48\% & \textbf{52\%} & 48\% & 8\% & +8\,pp \\
+S3  & Security      & 28\% & 28\% & 24\% & \textbf{32\%} & 8\% & $-$4\,pp \\
+P1  & Performance   & 8\% & 8\% & 8\% & \textbf{12\%} & 4\% & 0\,pp \\
+Q5  & Quality       & 100\% & 100\% & 100\% & 100\% & 0\% & 0\,pp \\
+F1  & Functionality & 100\% & 100\% & 100\% & 100\% & 0\% & 0\,pp \\
+\bottomrule
+\end{tabular}
+\end{table*}
+
+
+% ── Table 4: Per-Criterion Pass Rates (DeepSeek V3) ─────────
+
+\begin{table*}[t]
+\centering
+\caption{Per-criterion pass rates on 25~PRs evaluated by DeepSeek~V3.}
+\label{tab:per-criterion-deepseek}
+\begin{tabular}{llrrrrrc}
+\toprule
+\textbf{ID} & \textbf{Category} & \textbf{Baseline} & \textbf{RAG} & \textbf{KG} & \textbf{Hybrid} & \textbf{Spread} & \textbf{KG--BL} \\
+\midrule
+C2  & Consistency   & 36\% & \textbf{68\%} & 44\% & 32\% & 36\% & +8\,pp \\
+F3* & Functionality & 56\% & 76\% & \textbf{80\%} & 68\% & 24\% & +24\,pp \\
+R1  & Readability   & 20\% & \textbf{36\%} & 16\% & 16\% & 20\% & $-$4\,pp \\
+T3  & Tests         & 28\% & 40\% & \textbf{48\%} & 40\% & 20\% & +20\,pp \\
+T1  & Tests         & 72\% & 80\% & \textbf{88\%} & 80\% & 16\% & +16\,pp \\
+R2  & Readability   & \textbf{32\%} & 20\% & 24\% & 16\% & 16\% & $-$8\,pp \\
+S1  & Security      & 20\% & 20\% & 16\% & \textbf{32\%} & 16\% & $-$4\,pp \\
+Q3  & Quality       & 16\% & 8\% & \textbf{24\%} & 20\% & 16\% & +8\,pp \\
+F2* & Functionality & 40\% & 40\% & \textbf{48\%} & 44\% & 8\% & +8\,pp \\
+F4  & Functionality & 72\% & 72\% & \textbf{80\%} & 80\% & 8\% & +8\,pp \\
+S3  & Security      & 24\% & 28\% & 24\% & 28\% & 4\% & 0\,pp \\
+P1  & Performance   & 8\% & 12\% & 8\% & 12\% & 4\% & 0\,pp \\
+F1  & Functionality & 88\% & 88\% & 88\% & \textbf{92\%} & 4\% & 0\,pp \\
+Q5  & Quality       & 100\% & 100\% & 100\% & 100\% & 0\% & 0\,pp \\
+\bottomrule
+\end{tabular}
+\end{table*}
+
+
+% ── Table 5: Top-5 Criteria by Spread (Cross-Model) ─────────
+
+\begin{table}[t]
+\centering
+\caption{Top-5 criteria by discriminative spread, per judge model. 4/5 are shared.}
+\label{tab:top5-spread}
+\begin{tabular}{cll}
+\toprule
+\textbf{Rank} & \textbf{GPT-4.1-mini} & \textbf{DeepSeek V3} \\
+\midrule
+1 & F3* (36\%) & C2 (36\%) \\
+2 & R1 (32\%)  & F3* (24\%) \\
+3 & C2 (32\%)  & R1 (20\%) \\
+4 & T3 (24\%)  & T3 (20\%) \\
+5 & Q3 (24\%)  & T1 (16\%) \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+
+% ── Table 6: Three-Way Criteria Selection ────────────────────
+
+\begin{table}[t]
+\centering
+\caption{Three independent criteria selection methods. Final 5 criteria for the human study are those appearing in $\geq$2 methods, plus T1 for category coverage.}
+\label{tab:criteria-selection}
+\begin{tabular}{lcccc}
+\toprule
+\textbf{Criterion} & \textbf{Spread} & \textbf{KG-$\delta$} & \textbf{Ablation} & \textbf{Count} \\
+\midrule
+\textbf{F3*} & \checkmark & \checkmark & \checkmark & \textbf{3/3} \\
+\textbf{T3}  & \checkmark & \checkmark & \checkmark & \textbf{3/3} \\
+\textbf{R1}  & \checkmark &            & \checkmark & 2/3 \\
+\textbf{F2*} &            & \checkmark & \checkmark & 2/3 \\
+T1           &            & \checkmark &            & 1/3 \\
+C2           & \checkmark &            &            & 1/3 \\
+Q3           & \checkmark &            &            & 1/3 \\
+F4           &            & \checkmark &            & 1/3 \\
+S1           &            &            & \checkmark & 1/3 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+
+% ── Table 7: Final 5 Criteria for Human Study ────────────────
+
+\begin{table}[t]
+\centering
+\caption{The 5 criteria selected for human evaluation.}
+\label{tab:final5}
+\begin{tabular}{llp{5.5cm}l}
+\toprule
+\textbf{ID} & \textbf{Category} & \textbf{Description} & \textbf{Justification} \\
+\midrule
+F3* & Functionality & Integration with components, APIs, architecture fit & All 3 methods \\
+T3  & Tests         & References specific test files or suggests tests & All 3 methods \\
+F2* & Functionality & Edge cases, boundary conditions, error-path testing & KG-$\delta$ + Ablation \\
+R1  & Readability   & Code clarity, naming, function organization & Spread + Ablation \\
+T1  & Tests         & Discusses need for unit/integration tests & KG-$\delta$ + DeepSeek top-5 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+
+% ── Table 8: Ablation Study ──────────────────────────────────
+
+\begin{table}[t]
+\centering
+\caption{Ablation study: removing KG features one at a time (GPT-4.1-mini judge).}
+\label{tab:ablation}
+\begin{tabular}{llcc}
+\toprule
+\textbf{Config} & \textbf{Removed} & \textbf{Full KG $\to$ Ablated} & \textbf{Drop} \\
+\midrule
+\texttt{kg\_no\_tests} & Test info    & 47.3\% $\to$ 43.3\% & $-$4.0\,pp \\
+\texttt{kg\_minimal}   & Tests + deps & 47.3\% $\to$ 45.5\% & $-$1.7\,pp \\
+\texttt{kg\_no\_deps}  & Dep info     & 46.6\% $\to$ 45.7\% & $-$0.9\,pp \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+
+% ── Table 9: Run 1 vs Run 2 Comparison ──────────────────────
+
+\begin{table}[t]
+\centering
+\caption{Comparison between Run~1 (25 criteria, GPT-4o-mini) and Run~2 (14 criteria, GPT-4.1-mini).}
+\label{tab:run-comparison}
+\begin{tabular}{lll}
+\toprule
+\textbf{Aspect} & \textbf{Run 1} & \textbf{Run 2} \\
+\midrule
+Criteria         & 25                      & 14 (merged) \\
+Judge model      & GPT-4o-mini             & GPT-4.1-mini \\
+Mode ranking     & KG $>$ RAG $\approx$ Hybrid $>$ BL & KG $>$ RAG $>$ Hybrid $>$ BL \\
+KG avg score     & 35.4\%                  & 45.7\% \\
+Baseline avg     & 31.4\%                  & 41.7\% \\
+KG--BL gap       & +4.0\,pp                & +4.0\,pp \\
+Top KG criterion & F3 (+40\%)              & F3* (+36\%) \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+
+% ── Table 10: Power Analysis ─────────────────────────────────
+
+\begin{table}[t]
+\centering
+\caption{Power analysis for two planned comparisons ($\alpha = 0.05$, two-sided; power $= 0.80$). Effect sizes estimated from GPT-4.1-mini evaluation on the 6 study PRs.}
+\label{tab:power-analysis}
+\begin{tabular}{lcccc}
+\toprule
+\textbf{Comparison} & $p_1$ & \textbf{Non-ties needed} & \textbf{Min raters} & \textbf{Decision} \\
+\midrule
+Context vs Baseline & 0.90 & 10 & 2  & \multirow{2}{*}{\textbf{20}} \\
+KG vs RAG           & 0.625 & 124 & 16 & \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+
+% ── Table 11: Power Analysis Sensitivity ─────────────────────
+
+\begin{table}[t]
+\centering
+\caption{Sensitivity analysis for the KG~vs~RAG comparison: required raters as a function of effect size and non-tie rate.}
+\label{tab:sensitivity}
+\begin{tabular}{ccc}
+\toprule
+\textbf{Effect ($p_1$)} & \textbf{Raters (27\% NT)} & \textbf{Raters (50\% NT)} \\
+\midrule
+0.55  & 97 & 53 \\
+0.60  & 24 & 13 \\
+\textbf{0.625} & \textbf{16} & \textbf{9} \\
+0.65  & 11 & 6 \\
+0.70  & 6  & 4 \\
+0.75  & 4  & 2 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+
+% ── Table 12: Human Study Design ─────────────────────────────
+
+\begin{table}[t]
+\centering
+\caption{Human evaluation study design.}
+\label{tab:study-design}
+\begin{tabular}{ll}
+\toprule
+\textbf{Parameter} & \textbf{Value} \\
+\midrule
+PRs              & 6 (stratified: 2 high-spread, 2 mid, 2 low) \\
+Comparisons/PR   & 2 (Baseline vs Hybrid; KG vs RAG) \\
+Criteria         & 5 (F3*, F2*, T1, T3, R1) \\
+Rating type      & Binary (criterion met = 1, not met = 0) \\
+Screens/rater    & 12 (6 PRs $\times$ 2 comparisons) \\
+Time estimate    & $\sim$15--20 minutes \\
+Raters (target)  & 20 \\
+Randomization    & Left/right review position randomized per rater \\
+Statistical test & Sign test (one-sample binomial proportion) \\
+\bottomrule
+\end{tabular}
+\end{table}

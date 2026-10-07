@@ -1,0 +1,153 @@
+\section{Experiment 1: Pull-Request Evaluation}
+\label{sec:results-exp1}
+
+This section reports what adding repository context does on 35 pull
+requests scored by the rubric. Five Go-only pull requests are excluded
+because Joern's Go frontend does not emit the method-level nodes the
+queries require. The headline is not that context helps in general (the
+structural arm's aggregate effect is small and fragile) but that the two
+context types help different things: the structural arm concentrates its advantage in the nine
+criteria the mechanism predicts, while retrieval increases rubric coverage
+broadly and evenly. That crossing pattern, not any single number, is the
+principal result.
+
+\subsection{Paired Comparisons}
+\label{sec:results-exp1-paired}
+
+Because every mode reviews every pull request, the informative comparison is
+paired. Table~\ref{tab:exp1-deltas} reports each mode against \baseline{}.
+
+\begin{table}[htbp]
+    \centering
+    \caption{Mean paired differences against \baseline{}, $n = 35$, with
+             95\,\% bootstrap intervals.}
+    \label{tab:exp1-deltas}
+    \small
+    \begin{tabular}{lcc}
+        \toprule
+        Mode & Total /25 $\Delta$ [95\,\% CI] & KG-relevant /9 $\Delta$ [95\,\% CI] \\
+        \midrule
+        \kg{}     & $+0.71$ [$+0.20$, $+1.26$] & $+0.69$ [$+0.29$, $+1.11$] \\
+        \rag{}    & $+1.03$ [$+0.46$, $+1.60$] & $+0.43$ [$-0.03$, $+0.94$] \\
+        \hybrid{} & $+0.57$ [$+0.09$, $+1.11$] & $+0.46$ [$+0.03$, $+0.91$] \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+The governing pre-specified contrast is the \kg{} gain on the KG-relevant
+subscale ($+0.69$, $p = 0.003$, $d_z = +0.56$). \rag{} produces the
+largest total-score gain, while \hybrid{} is smaller on both scales. Full
+permutation tests and effect sizes are reported in
+Appendix~\ref{app:supporting-multiplicity}.
+Figure~\ref{fig:exp1-effects} draws both scales together.
+
+\begin{figure}[htbp]
+    \centering
+    \input{figures/fig_exp1_effects}
+    \caption{Paired differences against \baseline{} on both scales. Bars are
+             95\,\% bootstrap intervals. The modes differ between the total
+             rubric and the KG-relevant subscale.}
+    \label{fig:exp1-effects}
+\end{figure}
+
+The pre-specified \kg{}-versus-\baseline{} contrast remains the governing
+analysis. A Friedman sensitivity detects an omnibus mode effect on the total
+score ($p = 0.003$) but not on the KG-relevant subscale ($p =
+0.084$). The planned contrast remains distinguishable under a
+Bonferroni-corrected Wilcoxon test ($p = 0.011$); this is
+concordance for that contrast, not evidence of an overall mode effect.
+Appendix~\ref{app:supporting-multiplicity} reports the full sensitivity.
+
+\subsection{Criterion-Level Attribution}
+\label{sec:results-exp1-attribution}
+
+Table~\ref{tab:exp1-attribution} counts criterion-level wins and losses,
+split into the nine KG-relevant criteria and the sixteen others. The sixteen
+act as a built-in negative control: a general coverage lift should raise both
+groups together.
+
+\begin{table}[htbp]
+    \centering
+    \caption{Criterion-level wins (W) and losses (L) against \baseline{},
+             split into the nine KG-relevant criteria and the sixteen others,
+             $n = 35$.}
+    \label{tab:exp1-attribution}
+    \small
+    \begin{tabular}{lcccccc}
+        \toprule
+        & \multicolumn{3}{c}{KG-relevant (9)} & \multicolumn{3}{c}{Other (16)} \\
+        \cmidrule(lr){2-4} \cmidrule(lr){5-7}
+        Mode & W & L & net & W & L & net \\
+        \midrule
+        \kg{}  & 35 & 11 & $+24$ & 14 & 13 & $+1$ \\
+        \rag{} & 36 & 21 & $+15$ & 28 & 7 & $+21$ \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+This is the chapter's central observation. \kg{} concentrates its net wins
+on the criteria it has a mechanism for. Among the other sixteen criteria the
+gross movement is not negligible---Q3 gains $+11.4$\,pp while R1 drops $-8.6$\,pp and S1
+drops $-5.7$\,pp---but these gains and losses largely cancel, netting to
+$+1$. The pattern suggests a displacement effect under the fixed
+five-heading format: the review allocates more attention to integration and
+triage and less to clarity and input-validation commentary.
+The R1 decline is consistent with the human study's later finding that
+raters judged the baseline review the better commentary on code clarity
+(H5, Section~\ref{sec:results-human}).
+\rag{} produces a broad, even lift across both bands. The two modes differ
+less in aggregate magnitude than in how selectively they act.
+
+A permutation test confirms the localisation inferentially. If the advantage
+were spread at random, the nine KG-relevant criteria would capture 36\,\% of
+it. \kg{} places 96\,\% there ($p = 0.003$, $B =
+200\,000$); \rag{} places 42\,\% there. This separates the two
+mechanisms where aggregate scores cannot.
+Figure~\ref{fig:criterion-localisation} shows the per-criterion change in
+satisfaction rate for the \kg{} arm relative to the baseline.
+
+\begin{figure}[htbp]
+    \centering
+    \input{figures/fig_criterion_localisation}
+    \caption{Change in criterion satisfaction rate, \kg{} versus \baseline{},
+             sorted by magnitude within each band. Daggers mark criteria at
+             ceiling or floor in both arms.}
+    \label{fig:criterion-localisation}
+\end{figure}
+
+\subsection{Inter-Judge Agreement}
+\label{sec:results-exp1-agreement}
+
+Pairwise Cohen's $\kappa$ among the five judges ranges from $0.701$ to
+$0.893$, substantial to almost perfect under the interpretation in
+Section~\ref{sec:bg-stats}. This supports the stability of majority
+aggregation, although agreement does not establish that the shared verdict is
+correct. Appendix~\ref{app:supporting-agreement} reports all ten pairs,
+raw agreement, valid-cell counts, and abstentions.
+% Source: experiments/2026-09-23_five_judge_panel/RESULTS.md, lines 32--47.
+
+\subsection{Robustness}
+\label{sec:results-exp1-robustness}
+
+The effect was recomputed under several substitutions, varying one element
+each time. Figure~\ref{fig:exp1-robustness} draws the estimates on one axis.
+The primary row uses the final five-judge panel. The judge rows use one
+judge each. The generator and held-out rows are from an earlier
+configuration (text-heuristic builder, $n = 40$, three-judge panel) and are
+retained as directional evidence. The final row group shows an earlier
+generation of the same Joern CPG configuration under the three-judge panel,
+which produced $+0.34$ ($p = 0.111$); the difference from the primary row
+illustrates the regeneration variance discussed in Section~\ref{sec:repro}. Detailed statistics are in
+Appendix~\ref{app:supporting-robustness}.
+
+\begin{figure}[htbp]
+    \centering
+    \input{figures/fig_exp1_robustness}
+    \caption{The KG-relevant effect under alternative configurations. Points
+             are mean paired effects and bars are 95\,\% bootstrap intervals.}
+    \label{fig:exp1-robustness}
+\end{figure}
+
+Every recomputation preserves the positive direction, but the magnitude and
+uncertainty depend on the judge, generator, and sample. The criterion-level
+localisation is more stable than the aggregate magnitude.

@@ -1,0 +1,57 @@
+# Review Note — Evidence-Anchored
+
+**Scope:** This PR applies security patches, including changes to annotation access control, SQL parsing allowlist, plugin resource body size limits, dashboard import permission logic, and various TSDB macro/engine improvements.
+
+## Integration Risk
+*   **`pkg/middleware/auth_test.go` / `pkg/middleware/auth.go`**: The changes to annotation permission scopes (`pkg/api/accesscontrol.go`) and the introduction of `identity.Requester`/`identity.WithServiceIdentity` (`pkg/api/annotations.go`) could alter how authentication and authorization middleware evaluates permissions, potentially leading to incorrect access decisions if not fully compatible with the new identity context. The `clearUserPermissionCache` calls in `pkg/services/accesscontrol/resourcepermissions/service.go` are critical for cache consistency, and any misconfiguration could lead to stale permissions. The `coerceProxyAddress` change in `pkg/services/authn/clients/proxy.go` might affect IP-based authentication or proxy handling if `auth.go` relies on specific IP parsing behavior.
+*   **`pkg/cmd/grafana-cli/commands/datamigrations/to_unified_storage.go`**: The new `AnnotationsAllScopeReplacementMigrationID` in `pkg/services/sqlstore/migrations/accesscontrol/scope_migrator.go` is a database migration. If this migration fails or incorrectly transforms existing `annotations:*` permissions, it could lead to data corruption or incorrect access control for annotations across the entire Grafana instance, impacting any data migration processes.
+*   **`pkg/infra/metrics/metrics.go`**: No direct integration risk identified from the changes.
+*   **`pkg/infra/usagestats/service/service.go` / `pkg/infra/usagestats/service/api.go` / `pkg/infra/usagestats/service/usage_stats_test.go` / `pkg/infra/usagestats/service/api_test.go`**: These services collect usage statistics. Changes to annotation permissions (`pkg/api/accesscontrol.go`, `pkg/api/annotations.go`) could indirectly affect how annotation-related usage data is collected if the collection logic relies on specific permission checks that have now been altered.
+*   **`pkg/infra/filestorage/wrapper.go` / `pkg/infra/filestorage/filter.go`**: No direct integration risk identified from the changes.
+*   **`devenv/docker/blocks/stateful_webhook/main.go`**: No direct integration risk identified from the changes.
+*   **`apps/alerting/alertenrichment/pkg/apis/alertenrichment/v1beta1/object.go` / `apps/alerting/alertenrichment/pkg/apis/alertenrichment/v1beta1/zz_generated.openapi.go` / `apps/alerting/alertenrichment/v1beta1/types.go`**: If these alerting components utilize the SQL parser (`pkg/expr/sql/parser_allow.go`) for query validation, the new restrictions (e.g., rejecting `@@system` variables, `LOCK`/`INTO` clauses) or newly allowed nodes (`Frame`, `Window`) could cause existing valid queries to be rejected or allow previously blocked ones. The new interval validation in TSDB macros (`pkg/tsdb/*/macros.go`) and `applyFill` condition (`pkg/tsdb/*/sqleng/sql_engine.go`) could cause alerting queries using these data sources to fail if they previously relied on zero or negative intervals.
+*   **`apps/alerting/historian/pkg/apis/alertinghistorian_manifest.go`**: Similar to alertenrichment, potential integration risks from the SQL parser changes and TSDB macro/engine changes if it interacts with these components for query processing or validation.
+
+## Test Coverage Assessment
+*   **`pkg/services/accesscontrol/acimpl/accesscontrol_test.go`**: This test file covers core access control. It does not explicitly cover the new `AnnotationsAllScopeReplacementMigrationID` migration or the specific interactions of `identity.WithServiceIdentity` introduced in `pkg/api/annotations.go` with existing access control policies.
+*   **`pkg/services/accesscontrol/accesscontrol_test.go`**: Similar to `acimpl/accesscontrol_test.go`, this file lacks explicit tests for the `AnnotationsAllScopeReplacementMigrationID` and the behavior of `identity.WithServiceIdentity` in various access control scenarios.
+*   **`pkg/services/annotations/accesscontrol/accesscontrol_test.go`**: This file is highly relevant to the annotation permission changes. While it covers annotation access control, it does not contain specific tests to verify the correctness of the `AnnotationsAllScopeReplacementMigrationID` migration or the new `identity.WithServiceIdentity` context for resolving annotation types.
+*   **`pkg/services/dashboards/accesscontrol_test.go`**: This file covers dashboard access control. It lacks a test case for the modified `setDefaultPermissions` logic in `pkg/services/dashboards/service/dashboard_service.go` when an *existing* dashboard (ID != 0) is imported. It also lacks a test for `pkg/api/dashboard_snapshot.go` where a snapshot deletion request includes a dashboard UID.
+*   **`pkg/services/ngalert/provisioning/accesscontrol_test.go`**: This file focuses on alerting provisioning access control. It does not cover the new annotation permission changes or the SQL parser modifications.
+*   **`pkg/tests/api/annotations/annotations_test.go`**: This file provides API-level tests for annotations. It should be extended to include tests for the `AnnotationsAllScopeReplacementMigrationID` and to verify that users with the new `annotations:type:organization` scope have correct access, and that `identity.WithServiceIdentity` functions as expected for annotation type resolution.
+*   **`pkg/api/annotations_test.go`**: This file contains unit tests for `pkg/api/annotations.go`. It needs explicit tests for the `findAnnotationByID` function's new `identity.Requester` parameter and the usage of `identity.WithServiceIdentity` to ensure correct behavior.
+*   **`pkg/api/dashboard_snapshot_test.go`**: This file contains unit tests for `pkg/api/dashboard_snapshot.go`. It lacks a test case for `DeleteDashboardSnapshot` where the snapshot's dashboard JSON contains a `uid` field, to ensure the new logic correctly resolves the dashboard ID and applies guardian checks.
+*   **`pkg/api/plugin_resource_test.go`**: This file now includes a new test case for oversized request bodies returning 413, which adequately covers the `http.MaxBytesReader` and error handling introduced in `pkg/api/plugin_resource.go`. Coverage for this specific change is adequate.
+*   **`pkg/expr/sql/parser_allow_test.go`**: This file is critical for the SQL parser changes. It needs explicit test cases for the new `walkNodes` logic to ensure correct traversal of `SetOp` with `OrderBy`, `With`, `Limit` and `Select` with `Window` clauses. It also requires specific negative test cases to confirm the rejection of `@@system` variables, `LOCK` clauses in `Select`, and `INTO`/`LOCK` clauses in `SetOp`.
+*   **`pkg/infra/metrics/service_test.go`**: No direct coverage for the changes in the diff.
+*   **`pkg/infra/usagestats/statscollector/service_test.go`**: No direct coverage for the changes in the diff.
+
+## Problem
+1.  **Incomplete Test Coverage for Annotation Permission Migration and Identity Context**: The significant changes to annotation permissions, including the scope reduction from `annotations:*` to `annotations:type:organization`, the introduction of `identity.Requester` and `identity.WithServiceIdentity`, and the associated SQL migration, lack comprehensive and explicit test coverage. This gap increases the risk of unexpected permission issues for annotations, especially during upgrades or when using service accounts.
+2.  **Potential Regression in Dashboard Import Permissions**: The modification to `setDefaultPermissions` in `dashboard_service.go` to only apply for newly created dashboards (ID == 0) means that existing dashboards imported or updated will no longer have default permissions automatically set. This could lead to imported dashboards having incorrect or missing permissions, potentially causing accessibility issues or unintended permission configurations.
+3.  **Untested SQL Parser Edge Cases**: While `pkg/expr/sql/parser_allow.go` has been refactored, critical new traversal paths for `SetOp` (with `OrderBy`, `With`, `Limit`) and `Select` (with `Window`) and the explicit rejection of `LOCK`/`INTO` clauses and `@@system` variables are not explicitly covered by dedicated test cases. This leaves open the possibility of security vulnerabilities or unexpected query rejections.
+
+## Evidence
+*   **Problem 1 (Annotation Permissions)**:
+    *   `pkg/api/accesscontrol.go:361-382`: Changes `ScopeAnnotationsAll` to `ScopeAnnotationsTypeOrganization`.
+    *   `pkg/api/annotations.go:539-601`: Changes `user.SignedInUser` to `identity.Requester` and introduces `identity.WithServiceIdentity`.
+    *   `pkg/services/sqlstore/migrations/accesscontrol/scope_migrator.go:34-70`: Adds `AnnotationsAllScopeReplacementMigrationID` migration logic.
+    *   `pkg/services/sqlstore/migrations/migrations.go:112-113`: Enables the new migration.
+    *   `pkg/services/annotations/accesscontrol/accesscontrol_test.go`: Lacks explicit test coverage for the new migration and `identity.WithServiceIdentity` interactions.
+    *   `pkg/tests/api/annotations/annotations_test.go`: Lacks explicit test coverage for the new migration and `identity.WithServiceIdentity` interactions.
+*   **Problem 2 (Dashboard Import Permissions)**:
+    *   `pkg/services/dashboards/service/dashboard_service.go:926-929`: Changes `setDefaultPermissions` to be conditional on `dto.Dashboard.ID == 0`.
+    *   `pkg/services/dashboards/accesscontrol_test.go`: Lacks a specific test for importing an *existing* dashboard (ID != 0) to verify the new conditional logic.
+    *   `pkg/api/dashboard_snapshot.go:225-233`: Adds logic to resolve dashboard ID from UID for snapshot deletion.
+    *   `pkg/api/dashboard_snapshot_test.go`: Lacks a test case for deleting a snapshot with a dashboard UID.
+*   **Problem 3 (SQL Parser Edge Cases)**:
+    *   `pkg/expr/sql/parser_allow.go:20-44`: Refactors `walkSubtree` to `walkNodes` and explicitly adds traversal for `SetOp` and `Select` sub-nodes.
+    *   `pkg/expr/sql/parser_allow.go:63-66`: Adds rejection for `@@system` variables in `ColName`.
+    *   `pkg/expr/sql/parser_allow.go:92`: Rejects `Lock` in `Select`.
+    *   `pkg/expr/sql/parser_allow.go:96`: Rejects `Into` and `Lock` in `SetOp`.
+    *   `pkg/expr/sql/parser_allow_test.go`: This test file exists but needs explicit tests for these new traversal paths and rejection conditions.
+
+## Impact
+*   **Problem 1**: Users might experience incorrect annotation permissions (e.g., inability to read/write annotations they should have access to, or unintended access) after upgrading Grafana or in scenarios involving service accounts. The `AnnotationsAllScopeReplacementMigrationID` could fail or lead to an inconsistent database state if not robustly tested, potentially requiring manual database recovery.
+*   **Problem 2**: Dashboards imported into an existing Grafana instance (e.g., via API or provisioning) will no longer automatically inherit default permissions. This could result in dashboards being inaccessible to users who previously had default access, leading to operational disruptions and increased administrative overhead.
+*   **Problem 3**: The SQL expression parser might still allow certain malicious SQL constructs in previously untraversed parts of the AST (e.

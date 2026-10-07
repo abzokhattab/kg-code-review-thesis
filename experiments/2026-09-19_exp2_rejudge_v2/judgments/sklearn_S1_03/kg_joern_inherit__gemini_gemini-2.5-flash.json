@@ -1,0 +1,52 @@
+{
+  "candidate_mentions": [
+    {
+      "basename_collision": false,
+      "end": 790,
+      "evidence_id": "M001",
+      "excerpt": "ot updated to `LinearModelLossInternal`.\n- `sklearn/linear_model/_logistic.py`: References `LinearModelLoss` in `_logistic_regression_path` but not updated.\n- `sklearn/linear_model/_glm/_newton_solver.py`: Calls `LinearModelLoss` but not updated.\n\n## Impact\n- The renaming could lead to `ImportError` or `AttributeError` in modules that depend on `LinearModelLoss`, causing failures in functionalities like fitting models or logistic regression path calculations.",
+      "match_kind": "full_path",
+      "match_text": "sklearn/linear_model/_glm/_newton_solver.py",
+      "oracle_path": "sklearn/linear_model/_glm/_newton_solver.py",
+      "start": 747
+    },
+    {
+      "basename_collision": false,
+      "end": 553,
+      "evidence_id": "M002",
+      "excerpt": " which could lead to runtime errors.\n\n## Evidence\n- `sklearn/linear_model/_linear_loss.py:36`: Class `LinearModelLoss` renamed to `LinearModelLossInternal`.\n- `sklearn/linear_model/_glm/glm.py`: Imports `LinearModelLoss` but not updated to `LinearModelLossInternal`.\n- `sklearn/linear_model/_logistic.py`: References `LinearModelLoss` in `_logistic_regression_path` but not updated.\n- `sklearn/linear_model/_glm/_newton_solver.py`: Calls `LinearModelLo",
+      "match_kind": "full_path",
+      "match_text": "sklearn/linear_model/_glm/glm.py",
+      "oracle_path": "sklearn/linear_model/_glm/glm.py",
+      "start": 521
+    },
+    {
+      "basename_collision": false,
+      "end": 664,
+      "evidence_id": "M003",
+      "excerpt": "delLoss` renamed to `LinearModelLossInternal`.\n- `sklearn/linear_model/_glm/glm.py`: Imports `LinearModelLoss` but not updated to `LinearModelLossInternal`.\n- `sklearn/linear_model/_logistic.py`: References `LinearModelLoss` in `_logistic_regression_path` but not updated.\n- `sklearn/linear_model/_glm/_newton_solver.py`: Calls `LinearModelLoss` but not updated.\n\n## Impact\n- The renaming could lead to `ImportError` or `AttributeError` in modules that ",
+      "match_kind": "full_path",
+      "match_text": "sklearn/linear_model/_logistic.py",
+      "oracle_path": "sklearn/linear_model/_logistic.py",
+      "start": 631
+    }
+  ],
+  "causal_quote": "The renaming could lead to `ImportError` or `AttributeError` in modules that depend on `LinearModelLoss`, causing failures in functionalities like fitting models or logistic regression path calculations.",
+  "decision_source": "llm_causal_adjudication",
+  "detected": true,
+  "evidence_id": "M002",
+  "executed_at_utc": "2026-09-19T15:06:25.799254+00:00",
+  "finding_quote": "`sklearn/linear_model/_glm/glm.py`: Imports `LinearModelLoss` but not updated to `LinearModelLossInternal`.",
+  "judge": "gemini:gemini-2.5-flash",
+  "manifest_sha256": "5d4371a93d1b09f0491ecc12279f9f3ff5de23053b7a5e74650a749f58b472b0",
+  "model_alias": "gemini:gemini-2.5-flash",
+  "model_snapshot": "unavailable-from-original-wrapper",
+  "original_verdict": true,
+  "prompt_sha256": "485302763813e013ca4daf0870c42e5343e809a8d84bea68f2758f22708f9ef0",
+  "reason_code": "specific_cross_file_link",
+  "response_wrapper": "single_json_fence",
+  "review_sha256": "eb1fca40b19db437057ad5662e7fe72e71d5e93b25c0f95d9e3014f6f66ac140",
+  "schema_sha256": "6a22fcb256437ebed904ab2d879b36be1234fb2e06add1127ac8ea2ab46f60f0",
+  "schema_version": "exp2-adjudication-v2",
+  "system_sha256": "3634314a8fc4231391e4c51174e5c32d7346b0e2ceb5f8c4641e6ba866bd5939"
+}

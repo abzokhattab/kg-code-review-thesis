@@ -1,0 +1,43 @@
+{
+  "useful": 6,
+  "generic": 1,
+  "wrong": 0,
+  "total": 7,
+  "signal": 6,
+  "noise": 1,
+  "snr": 0.857,
+  "points": [
+    {
+      "text": "Validation logic for `Group` and `Resource` is added directly in the `ListModifiedSince` method, which may not be the most appropriate location for such checks.",
+      "label": "useful"
+    },
+    {
+      "text": "The error handling mechanism in the `ListModifiedSince` method could lead to silent failures if not properly managed.",
+      "label": "useful"
+    },
+    {
+      "text": "Placing validation logic directly in the `ListModifiedSince` method could lead to code duplication if similar checks are needed elsewhere, reducing maintainability.",
+      "label": "useful"
+    },
+    {
+      "text": "The current error handling approach might lead to silent failures if the sequence function's error is not properly checked by the caller, potentially causing unexpected behavior in production.",
+      "label": "useful"
+    },
+    {
+      "text": "Consider refactoring the validation logic into a separate function that can be reused across different methods, improving code maintainability.",
+      "label": "useful"
+    },
+    {
+      "text": "Ensure that the error handling mechanism is robust and that any errors are properly logged or handled to prevent silent failures.",
+      "label": "useful"
+    },
+    {
+      "text": "Add additional test cases to verify that the error handling mechanism works as expected and that errors are not silently ignored.",
+      "label": "generic"
+    }
+  ],
+  "parse_ok": true,
+  "pr_id": 36,
+  "mode": "hybrid",
+  "tag": "verbose"
+}

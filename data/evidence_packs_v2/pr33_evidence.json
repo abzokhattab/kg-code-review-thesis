@@ -1,0 +1,282 @@
+{
+  "pr": {
+    "number": 26711,
+    "title": "Stop saving `Run`s in `OldDataMonitor`",
+    "body": "I reviewed a heap dump from a Jenkins controller (2.541.x) which was having severe memory pressure problems; it contained hundreds of thousands of `WorkflowRun` objects, most of which were completed. `FINEST` logging on `RunMap` revealed that almost all of them were being loaded by one of the following code paths (or minor variants):\r\n\r\n```\r\nat hudson.model.RunMap.retrieve(RunMap.java:292)\r\nat hudson.model.RunMap.retrieve(RunMap.java:64)\r\nat jenkins.model.lazy.AbstractLazyLoadRunMap.load(AbstractLazyLoadRunMap.java:451)\r\nat jenkins.model.lazy.AbstractLazyLoadRunMap.load(AbstractLazyLoadRunMap.java:445)\r\nat jenkins.model.lazy.AbstractLazyLoadRunMap.resolveBuildRef(AbstractLazyLoadRunMap.java:371)\r\nat jenkins.model.lazy.AbstractLazyLoadRunMap$BuildReferenceMapAdapterResolver.resolveBuildRef(AbstractLazyLoadRunMap.java:528)\r\nat jenkins.model.lazy.BuildReferenceMapAdapter$EntryAdapter.getValue(BuildReferenceMapAdapter.java:345)\r\nat \u2026\r\nat hudson.tasks.LogRotator.perform(LogRotator.java:194)\r\nat jenkins.model.SimpleGlobalBuildDiscarderStrategy.apply(SimpleGlobalBuildDiscarderStrategy.java:61)\r\nat jenkins.model.BackgroundGlobalBuildDiscarder.lambda$processJob$0(BackgroundGlobalBuildDiscarder.java:75)\r\nat \u2026\r\nat jenkins.model.BackgroundGlobalBuildDiscarder.processJob(BackgroundGlobalBuildDiscarder.java:71)\r\nat jenkins.model.BackgroundGlobalBuildDiscarder.processJob(BackgroundGlobalBuildDiscarder.java:64)\r\nat jenkins.model.BackgroundGlobalBuildDiscarder.execute(BackgroundGlobalBuildDiscarder.java:56)\r\nat \u2026\r\n```\r\n\r\n```\r\nat hudson.model.RunMap.retrieve(RunMap.java:292)\r\nat hudson.model.RunMap.retrieve(RunMap.java:64)\r\nat jenkins.model.lazy.AbstractLazyLoadRunMap.load(AbstractLazyLoadRunMap.java:451)\r\nat jenkins.model.lazy.AbstractLazyLoadRunMap.load(AbstractLazyLoadRunMap.java:445)\r\nat jenkins.model.lazy.AbstractLazyLoadRunMap.resolveBuildRef(AbstractLazyLoadRunMap.java:371)\r\nat jenkins.model.lazy.AbstractLazyLoadRunMap$BuildReferenceMapAdapterResolver.resolveBuildRef(AbstractLazyLoadRunMap.java:528)\r\nat jenkins.model.lazy.BuildReferenceMapAdapter.get(BuildReferenceMapAdapter.java:133)\r\nat jenkins.model.lazy.AbstractLazyLoadRunMap.getByNumber(AbstractLazyLoadRunMap.java:387)\r\nat jenkins.model.lazy.LazyBuildMixIn.getBuildByNumber(LazyBuildMixIn.java:240)\r\nat PluginClassLoader for workflow-job//org.jenkinsci.plugins.workflow.job.WorkflowJob.getBuildByNumber(WorkflowJob.java:233)\r\nat PluginClassLoader for workflow-job//org.jenkinsci.plugins.workflow.job.WorkflowJob.getBuildByNumber(WorkflowJob.java:104)\r\nat hudson.model.Run.fromExternalizableId(Run.java:2474)\r\nat hudson.diagnosis.OldDataMonitor$RunSaveableReference.get(OldDataMonitor.java:431)\r\nat hudson.diagnosis.OldDataMonitor.getData(OldDataMonitor.java:113)\r\nat PluginClassLoader for support-core//com.cloudbees.jenkins.support.impl.AdministrativeMonitors$1.lambda$printTo$2(AdministrativeMonitors.java:85)\r\nat \u2026\r\nat PluginClassLoader for support-core//com.cloudbees.jenkins.support.impl.AdministrativeMonitors$1.printTo(AdministrativeMonitors.java:78)\r\nat PluginClassLoader for support-core//com.cloudbees.jenkins.support.api.PrefilteredPrintedContent.writeTo(PrefilteredPrintedContent.java:63)\r\nat PluginClassLoader for support-core//com.cloudbees.jenkins.support.SupportPlugin.writeBundle(SupportPlugin.java:498)\r\nat PluginClassLoader for support-core//com.cloudbees.jenkins.support.SupportPlugin.writeBundle(SupportPlugin.java:415)\r\nat PluginClassLoader for support-core//com.cloudbees.jenkins.support.SupportAction$SupportBundleAsyncGenerator.compute(SupportAction.java:546)\r\nat jenkins.util.ProgressiveRendering$1.run(ProgressiveRendering.java:121)\r\nat \u2026\r\n```\r\n\r\nReviewing the `admin-monitors.md` showed hundreds of thousands of records like\r\n\r\n`OldData` _Manage Old Data_\r\n--------------\r\n  * Problematic object: `folder/job #12345`\r\n    - CannotResolveClassException: libraryPath\r\n  * Problematic object: `otherfolder/otherjob #67890`\r\n    - CannotResolveClassException: libraryPath\r\n  * \u2026\r\n\r\nThe reported old data appears to trace to https://github.com/jenkinsci/pipeline-groovy-lib-plugin/pull/202#discussion_r2400919309 which indeed deleted this (apparently) unused field.\r\n\r\nThe trigger for the problem seems to have been misuse of `artifactNumToKeep`. If you configure this build discarder option but do _not_ set it to just slightly less than `numToKeep`, and your jobs have thousands of builds, then every hour when the background discarder runs it will be forced to load thousands of historical builds which have not been deleted yet but which might still have artifacts (even though only an hour\u2019s worth of builds could still match). Thus if XStream reported a problem loading those old builds, they would be listed in the monitor. Now 681a8ff3070736610f338972ba433379723346fb (https://github.com/jenkinsci/jenkins/issues/14915) ensured that the memory held in `OldDataMonitor` itself for each build is minimal (just `folder/job#12345` in the example above), _but_ https://github.com/jenkinsci/support-core-plugin/commit/33475d15a6e8a5bbb6561e26f0ab0cb10e43623b means that every support bundle generated will also have to load all of those builds again\u2014merely to call `Run.toString` on them! Taken together, these behaviors effectively defeat lazy loading\u2014or worse, mean that builds do get evicted from heap during full GC cycles, but then soon reloaded, forcing more disk I/O.\r\n\r\nAt first I was considering exposing `SaveableReference` as an API for use by `AdministrativeMonitors` to avoid forcing build loading when just printing data to a support bundle. However after some reflection I realized that there is no compelling reason to save `Run`s to begin with. These are not configuration like global settings or jobs (or even users), so there is no need to \u201cclean up\u201d after a plugin upgrade; in fact it is unusual for a `build.xml` to be resaved after the build is complete (the only common use cases are adding a description manually or marking it `keepLog`). Most builds are deleted eventually by a build discarder anyway. Dropping the requirement to track `Run`s here simplifies the implementation considerably and bypasses any possible unbounded memory consumption.\r\n\r\n[CloudBees-internal issue](https://cloudbees.atlassian.net/browse/BEE-71473)\r\n\r\n### Testing done\r\n\r\n`OldDataMonitorTest` passes locally 57\u00d7.\r\n\r\n### Screenshots (UI changes only)\r\n\r\n#### Before\r\n\r\n#### After\r\n\r\n### Proposed changelog entries\r\n\r\n- Stop retaining build references in the old data monitor.\r\n\r\n### Proposed changelog category\r\n\r\n/label bug\r\n\r\n### Proposed upgrade guidelines\r\n\r\nN/A\r\n\r\n### Desired reviewers\r\n\r\nBefore the changes are marked as `ready-for-merge`:\r\n\r\n### Maintainer checklist\r\n\r\n- [ ] There are at least two (2) approvals for the pull request and no outstanding requests for change.\r\n- [ ] Conversations in the pull request are over, or it is explicit that a reviewer is not blocking the change.\r\n- [ ] Changelog entries in the pull request title and/or **Proposed changelog entries** are accurate, human-readable, and in the imperative mood.\r\n- [ ] Proper changelog labels are set so that the changelog can be generated automatically.\r\n- [ ] If the change needs additional upgrade steps from users, the `upgrade-guide-needed` label is set and there is a **Proposed upgrade guidelines** section in the pull request title (see [example](https://github.com/jenkinsci/jenkins/pull/4387)).\r\n- [ ] If it would make sense to backport the change to LTS, be a _Bug_ or _Improvement_, and either the issue or pull request must be labeled as `lts-candidate` to be considered.\r\n",
+    "url": "https://github.com/jenkinsci/jenkins/pull/26711",
+    "repo": "jenkinsci/jenkins",
+    "base_branch": "master",
+    "head_branch": "OldDataMonitor",
+    "merged_at": "2026-04-29T14:56:46Z",
+    "state": "MERGED"
+  },
+  "changed_files": [
+    {
+      "path": "core/src/main/java/hudson/diagnosis/OldDataMonitor.java",
+      "language": "java",
+      "added": 32,
+      "deleted": 124
+    },
+    {
+      "path": "test/src/test/java/hudson/diagnosis/OldDataMonitorTest.java",
+      "language": "java",
+      "added": 5,
+      "deleted": 48
+    },
+    {
+      "path": "test/src/test/java/hudson/model/ComputerTest.java",
+      "language": "java",
+      "added": 1,
+      "deleted": 1
+    },
+    {
+      "path": "test/src/test/java/hudson/model/FreeStyleProjectTest.java",
+      "language": "java",
+      "added": 1,
+      "deleted": 1
+    },
+    {
+      "path": "test/src/test/java/hudson/model/ItemGroupMixInTest.java",
+      "language": "java",
+      "added": 1,
+      "deleted": 1
+    },
+    {
+      "path": "test/src/test/java/hudson/model/ViewTest.java",
+      "language": "java",
+      "added": 3,
+      "deleted": 3
+    }
+  ],
+  "nearest_tests": [
+    {
+      "path": "test/src/test/java/hudson/diagnosis/OldDataMonitorTest.java",
+      "relationship": "tests",
+      "source_file": "core/src/main/java/hudson/diagnosis/OldDataMonitor.java"
+    }
+  ],
+  "dependent_files": [
+    {
+      "path": "core/src/main/java/hudson/tools/ToolInstallation.java",
+      "relationship": "imports",
+      "source_file": "core/src/main/java/hudson/diagnosis/OldDataMonitor.java"
+    },
+    {
+      "path": "core/src/main/java/hudson/util/RobustReflectionConverter.java",
+      "relationship": "imports",
+      "source_file": "core/src/main/java/hudson/diagnosis/OldDataMonitor.java"
+    },
+    {
+      "path": "core/src/main/java/hudson/util/XStream2.java",
+      "relationship": "imports",
+      "source_file": "core/src/main/java/hudson/diagnosis/OldDataMonitor.java"
+    },
+    {
+      "path": "core/src/main/java/hudson/util/RobustCollectionConverter.java",
+      "relationship": "imports",
+      "source_file": "core/src/main/java/hudson/diagnosis/OldDataMonitor.java"
+    },
+    {
+      "path": "core/src/main/java/hudson/util/RobustMapConverter.java",
+      "relationship": "imports",
+      "source_file": "core/src/main/java/hudson/diagnosis/OldDataMonitor.java"
+    },
+    {
+      "path": "core/src/main/java/hudson/model/ListView.java",
+      "relationship": "imports",
+      "source_file": "core/src/main/java/hudson/diagnosis/OldDataMonitor.java"
+    },
+    {
+      "path": "core/src/main/java/hudson/model/CauseAction.java",
+      "relationship": "imports",
+      "source_file": "core/src/main/java/hudson/diagnosis/OldDataMonitor.java"
+    },
+    {
+      "path": "core/src/main/java/hudson/model/Cause.java",
+      "relationship": "imports",
+      "source_file": "core/src/main/java/hudson/diagnosis/OldDataMonitor.java"
+    },
+    {
+      "path": "core/src/main/java/hudson/model/HealthReport.java",
+      "relationship": "imports",
+      "source_file": "core/src/main/java/hudson/diagnosis/OldDataMonitor.java"
+    },
+    {
+      "path": "core/src/main/java/hudson/model/ParametersAction.java",
+      "relationship": "imports",
+      "source_file": "core/src/main/java/hudson/diagnosis/OldDataMonitor.java"
+    },
+    {
+      "path": "core/src/test/java/hudson/model/ComputerTest.java",
+      "relationship": "imports",
+      "source_file": "test/src/test/java/hudson/model/ComputerTest.java"
+    },
+    {
+      "path": "test/src/test/java/hudson/slaves/SlaveComputerTest.java",
+      "relationship": "imports",
+      "source_file": "test/src/test/java/hudson/model/ComputerTest.java"
+    },
+    {
+      "path": "test/src/test/java/jenkins/model/JenkinsManagePermissionTest.java",
+      "relationship": "imports",
+      "source_file": "test/src/test/java/hudson/model/ComputerTest.java"
+    },
+    {
+      "path": "core/src/test/java/hudson/cli/ListJobsCommandTest.java",
+      "relationship": "imports",
+      "source_file": "test/src/test/java/hudson/model/ViewTest.java"
+    },
+    {
+      "path": "core/src/test/java/hudson/model/ViewTest.java",
+      "relationship": "imports",
+      "source_file": "test/src/test/java/hudson/model/ViewTest.java"
+    }
+  ],
+  "diff_summary": "6 files changed",
+  "full_diff": "diff --git a/core/src/main/java/hudson/diagnosis/OldDataMonitor.java b/core/src/main/java/hudson/diagnosis/OldDataMonitor.java\nindex 90cf635a5277..94cb6d2ea9a9 100644\n--- a/core/src/main/java/hudson/diagnosis/OldDataMonitor.java\n+++ b/core/src/main/java/hudson/diagnosis/OldDataMonitor.java\n@@ -25,7 +25,6 @@\n package hudson.diagnosis;\n \n import com.thoughtworks.xstream.converters.UnmarshallingContext;\n-import edu.umd.cs.findbugs.annotations.CheckForNull;\n import edu.umd.cs.findbugs.annotations.NonNull;\n import hudson.Extension;\n import hudson.ExtensionList;\n@@ -33,23 +32,19 @@\n import hudson.XmlFile;\n import hudson.model.AdministrativeMonitor;\n import hudson.model.Item;\n-import hudson.model.Job;\n import hudson.model.ManagementLink;\n import hudson.model.Run;\n import hudson.model.Saveable;\n import hudson.model.listeners.ItemListener;\n-import hudson.model.listeners.RunListener;\n import hudson.model.listeners.SaveableListener;\n-import hudson.security.ACL;\n-import hudson.security.ACLContext;\n import hudson.util.RobustReflectionConverter;\n import hudson.util.VersionNumber;\n import java.io.IOException;\n import java.util.ArrayList;\n import java.util.Collection;\n+import java.util.Collections;\n import java.util.HashMap;\n import java.util.Iterator;\n-import java.util.List;\n import java.util.Map;\n import java.util.TreeSet;\n import java.util.concurrent.ConcurrentHashMap;\n@@ -80,17 +75,16 @@\n public class OldDataMonitor extends AdministrativeMonitor {\n     private static final Logger LOGGER = Logger.getLogger(OldDataMonitor.class.getName());\n \n-    private ConcurrentMap<SaveableReference, VersionRange> data = new ConcurrentHashMap<>();\n+    private ConcurrentMap<Saveable, VersionRange> data = new ConcurrentHashMap<>();\n \n     /**\n      * Gets instance of the monitor.\n-     * @param j Jenkins instance\n      * @return Monitor instance\n      * @throws IllegalStateException Monitor not found.\n      *              It should never happen since the monitor is located in the core.\n      */\n     @NonNull\n-    static OldDataMonitor get(Jenkins j) throws IllegalStateException {\n+    static OldDataMonitor get() throws IllegalStateException {\n         return ExtensionList.lookupSingleton(OldDataMonitor.class);\n     }\n \n@@ -115,27 +109,11 @@ public ManagementLink getManagementLink() {\n     }\n \n     public Map<Saveable, VersionRange> getData() {\n-        Map<Saveable, VersionRange> r = new HashMap<>();\n-        for (Map.Entry<SaveableReference, VersionRange> entry : this.data.entrySet()) {\n-            Saveable s = entry.getKey().get();\n-            if (s != null) {\n-                r.put(s, entry.getValue());\n-            }\n-        }\n-        return r;\n+        return Collections.unmodifiableMap(new HashMap<>(data));\n     }\n \n-    private static void remove(Saveable obj, boolean isDelete) {\n-        Jenkins j = Jenkins.get();\n-        OldDataMonitor odm = get(j);\n-        try (ACLContext ctx = ACL.as2(ACL.SYSTEM2)) {\n-            odm.data.remove(referTo(obj));\n-            if (isDelete && obj instanceof Job<?, ?>) {\n-                for (Run r : ((Job<?, ?>) obj).getBuilds()) {\n-                    odm.data.remove(referTo(r));\n-                }\n-            }\n-        }\n+    private static void remove(Saveable obj) {\n+        get().data.remove(obj);\n     }\n \n     // Listeners to remove data here if resaved or deleted in regular Hudson usage\n@@ -144,7 +122,7 @@ private static void remove(Saveable obj, boolean isDelete) {\n     public static final SaveableListener changeListener = new SaveableListener() {\n         @Override\n         public void onChange(Saveable obj, XmlFile file) {\n-            remove(obj, false);\n+            remove(obj);\n         }\n     };\n \n@@ -152,15 +130,7 @@ public void onChange(Saveable obj, XmlFile file) {\n     public static final ItemListener itemDeleteListener = new ItemListener() {\n         @Override\n         public void onDeleted(Item item) {\n-            remove(item, true);\n-        }\n-    };\n-\n-    @Extension\n-    public static final RunListener<Run> runDeleteListener = new RunListener<>() {\n-        @Override\n-        public void onDeleted(Run run) {\n-            remove(run, true);\n+            remove(item);\n         }\n     };\n \n@@ -172,14 +142,16 @@ public void onDeleted(Run run) {\n      * @param version Hudson release when the data structure changed.\n      */\n     public static void report(Saveable obj, String version) {\n-        OldDataMonitor odm = get(Jenkins.get());\n+        if (obj instanceof Run<?, ?>) {\n+            return; // somewhat ephemeral\n+        }\n+        OldDataMonitor odm = get();\n         try {\n-            SaveableReference ref = referTo(obj);\n             while (true) {\n-                VersionRange vr = odm.data.get(ref);\n-                if (vr != null && odm.data.replace(ref, vr, new VersionRange(vr, version, null))) {\n+                VersionRange vr = odm.data.get(obj);\n+                if (vr != null && odm.data.replace(obj, vr, new VersionRange(vr, version, null))) {\n                     break;\n-                } else if (odm.data.putIfAbsent(ref, new VersionRange(null, version, null)) == null) {\n+                } else if (odm.data.putIfAbsent(obj, new VersionRange(null, version, null)) == null) {\n                     break;\n                 }\n             }\n@@ -212,6 +184,9 @@ private ReportException(String version) {\n      * @param errors Exception(s) thrown while loading, regarding the unreadable classes/fields.\n      */\n     public static void report(Saveable obj, Collection<Throwable> errors) {\n+        if (obj instanceof Run<?, ?>) {\n+            return; // somewhat ephemeral\n+        }\n         StringBuilder buf = new StringBuilder();\n         int i = 0;\n         for (Throwable e : errors) {\n@@ -234,13 +209,12 @@ public static void report(Saveable obj, Collection<Throwable> errors) {\n             }\n             return;\n         }\n-        OldDataMonitor odm = get(j);\n-        SaveableReference ref = referTo(obj);\n+        OldDataMonitor odm = get();\n         while (true) {\n-            VersionRange vr = odm.data.get(ref);\n-            if (vr != null && odm.data.replace(ref, vr, new VersionRange(vr, null, buf.toString()))) {\n+            VersionRange vr = odm.data.get(obj);\n+            if (vr != null && odm.data.replace(obj, vr, new VersionRange(vr, null, buf.toString()))) {\n                 break;\n-            } else if (odm.data.putIfAbsent(ref, new VersionRange(null, null, buf.toString())) == null) {\n+            } else if (odm.data.putIfAbsent(obj, new VersionRange(null, null, buf.toString())) == null) {\n                 break;\n             }\n         }\n@@ -348,13 +322,13 @@ public HttpResponse doUpgrade(StaplerRequest2 req, StaplerResponse2 rsp) {\n      * Remove those items from the data map.\n      */\n     @RequirePOST\n-    public HttpResponse doDiscard(StaplerRequest2 req, StaplerResponse2 rsp) {\n+    public HttpResponse doDiscard() {\n         saveAndRemoveEntries(entry -> entry.getValue().max == null);\n \n         return HttpResponses.forwardToPreviousPage();\n     }\n \n-    private void saveAndRemoveEntries(Predicate<Map.Entry<SaveableReference, VersionRange>> matchingPredicate) {\n+    private void saveAndRemoveEntries(Predicate<Map.Entry<Saveable, VersionRange>> matchingPredicate) {\n         /*\n          * Note that there a race condition here: we acquire the lock and get localCopy which includes some\n          * project (say); then we go through our loop and save that project; then someone POSTs a new\n@@ -366,16 +340,14 @@ private void saveAndRemoveEntries(Predicate<Map.Entry<SaveableReference, Version\n          * does occur: just means the user will be prompted to discard less than they should have been (and\n          * would see the warning again after next restart).\n          */\n-        List<SaveableReference> removed = new ArrayList<>();\n-        for (Map.Entry<SaveableReference, VersionRange> entry : data.entrySet()) {\n+        var removed = new ArrayList<Saveable>();\n+        for (var entry : data.entrySet()) {\n             if (matchingPredicate.test(entry)) {\n-                Saveable s = entry.getKey().get();\n-                if (s != null) {\n-                    try {\n-                        s.save();\n-                    } catch (Exception x) {\n-                        LOGGER.log(Level.WARNING, \"failed to save \" + s, x);\n-                    }\n+                var s = entry.getKey();\n+                try {\n+                    s.save();\n+                } catch (Exception x) {\n+                    LOGGER.log(Level.WARNING, \"failed to save \" + s, x);\n                 }\n                 removed.add(entry.getKey());\n             }\n@@ -388,70 +360,6 @@ public HttpResponse doIndex(StaplerResponse2 rsp) throws IOException {\n         return new HttpRedirect(\"manage\");\n     }\n \n-    /** Reference to a saveable object that need not actually hold it in heap. */\n-    private interface SaveableReference {\n-        @CheckForNull Saveable get();\n-        // must also define equals, hashCode\n-    }\n-\n-    private static SaveableReference referTo(Saveable s) {\n-        if (s instanceof Run) {\n-            Job parent = ((Run) s).getParent();\n-            if (Jenkins.get().getItemByFullName(parent.getFullName()) == parent) {\n-                return new RunSaveableReference((Run) s);\n-            }\n-        }\n-        return new SimpleSaveableReference(s);\n-    }\n-\n-    private static final class SimpleSaveableReference implements SaveableReference {\n-        private final Saveable instance;\n-\n-        SimpleSaveableReference(Saveable instance) {\n-            this.instance = instance;\n-        }\n-\n-        @Override public Saveable get() {\n-            return instance;\n-        }\n-\n-        @Override public int hashCode() {\n-            return instance.hashCode();\n-        }\n-\n-        @Override public boolean equals(Object obj) {\n-            return obj instanceof SimpleSaveableReference && instance.equals(((SimpleSaveableReference) obj).instance);\n-        }\n-    }\n-\n-    // could easily make an ItemSaveableReference, but Jenkins holds all these strongly, so why bother\n-\n-    private static final class RunSaveableReference implements SaveableReference {\n-        private final String id;\n-\n-        RunSaveableReference(Run<?, ?> r) {\n-            id = r.getExternalizableId();\n-        }\n-\n-        @Override public Saveable get() {\n-            try {\n-                return Run.fromExternalizableId(id);\n-            } catch (IllegalArgumentException x) {\n-                // Typically meaning the job or build was since deleted.\n-                LOGGER.log(Level.FINE, null, x);\n-                return null;\n-            }\n-        }\n-\n-        @Override public int hashCode() {\n-            return id.hashCode();\n-        }\n-\n-        @Override public boolean equals(Object obj) {\n-            return obj instanceof RunSaveableReference && id.equals(((RunSaveableReference) obj).id);\n-        }\n-    }\n-\n     @Extension @Symbol(\"oldData\")\n     public static class ManagementLinkImpl extends ManagementLink {\n         @NonNull\n@@ -482,7 +390,7 @@ public String getDisplayName() {\n \n         @Override\n         public Badge getBadge() {\n-            int size = get(Jenkins.get()).data.size();\n+            int size = get().data.size();\n             if (size > 0) {\n                 return new Badge(Integer.toString(size), Messages.OldDataMonitor_OldDataTooltip(), Badge.Severity.WARNING);\n             }\ndiff --git a/test/src/test/java/hudson/diagnosis/OldDataMonitorTest.java b/test/src/test/java/hudson/diagnosis/OldDataMonitorTest.java\nindex 86d137aa8448..6157a97396fb 100644\n--- a/test/src/test/java/hudson/diagnosis/OldDataMonitorTest.java\n+++ b/test/src/test/java/hudson/diagnosis/OldDataMonitorTest.java\n@@ -28,13 +28,11 @@\n import static org.junit.jupiter.api.Assertions.assertNotNull;\n \n import hudson.XmlFile;\n-import hudson.model.FreeStyleBuild;\n import hudson.model.FreeStyleProject;\n import hudson.model.InvisibleAction;\n import hudson.model.Saveable;\n import java.io.File;\n import java.io.IOException;\n-import java.lang.ref.WeakReference;\n import java.util.Collections;\n import java.util.Set;\n import java.util.concurrent.CountDownLatch;\n@@ -42,25 +40,16 @@\n import java.util.concurrent.ExecutorService;\n import java.util.concurrent.Executors;\n import java.util.concurrent.Future;\n-import jenkins.model.lazy.BuildReference;\n import org.junit.jupiter.api.BeforeEach;\n-import org.junit.jupiter.api.Disabled;\n import org.junit.jupiter.api.Test;\n import org.jvnet.hudson.test.Issue;\n import org.jvnet.hudson.test.JenkinsRule;\n-import org.jvnet.hudson.test.MemoryAssert;\n import org.jvnet.hudson.test.junit.jupiter.WithJenkins;\n import org.jvnet.hudson.test.recipes.LocalData;\n-import org.kohsuke.stapler.Stapler;\n \n @WithJenkins\n class OldDataMonitorTest {\n \n-    static {\n-        // To make memory run faster:\n-        System.setProperty(BuildReference.DefaultHolderFactory.MODE_PROPERTY, \"weak\");\n-    }\n-\n     private JenkinsRule r;\n \n     @BeforeEach\n@@ -68,40 +57,23 @@ void setUp(JenkinsRule rule) {\n         r = rule;\n     }\n \n-    @Disabled(\"constantly failing on CI builders, makes problems for memory()\")\n     @Issue(\"JENKINS-19544\")\n     @LocalData\n     @Test\n     void robustness() {\n-        OldDataMonitor odm = OldDataMonitor.get(r.jenkins);\n+        OldDataMonitor odm = OldDataMonitor.get();\n         FreeStyleProject p = r.jenkins.getItemByFullName(\"busted\", FreeStyleProject.class);\n         assertNotNull(p);\n         assertEquals(Set.of(p), odm.getData().keySet());\n-        odm.doDiscard(null, null);\n+        odm.doDiscard();\n         assertEquals(Collections.emptySet(), odm.getData().keySet());\n         // did not manage to save p, but at least we are not holding onto a reference to it anymore\n     }\n \n-    @Issue(\"JENKINS-19544\")\n-    @Test\n-    void memory() throws Exception {\n-        FreeStyleProject p = r.createFreeStyleProject(\"p\");\n-        FreeStyleBuild b = r.buildAndAssertSuccess(p);\n-        b.addAction(new BadAction2());\n-        b.save();\n-        r.jenkins.getQueue().clearLeftItems();\n-        p._getRuns().purgeCache();\n-        b = p.getBuildByNumber(1);\n-        assertEquals(Set.of(b), OldDataMonitor.get(r.jenkins).getData().keySet());\n-        WeakReference<?> ref = new WeakReference<>(b);\n-        b = null;\n-        MemoryAssert.assertGC(ref, true);\n-    }\n-\n     /**\n      * Note that this doesn't actually run slowly, it just ensures that\n      * the {@link OldDataMonitor#changeListener}'s {@code onChange()} can complete\n-     * while {@link OldDataMonitor#doDiscard(org.kohsuke.stapler.StaplerRequest2, org.kohsuke.stapler.StaplerResponse2)}\n+     * while {@link OldDataMonitor#doDiscard}\n      * is still running.\n      *\n      */\n@@ -109,7 +81,7 @@ void memory() throws Exception {\n     @Issue(\"JENKINS-24763\")\n     @Test\n     void slowDiscard() throws InterruptedException, IOException, ExecutionException {\n-        final OldDataMonitor oldDataMonitor = OldDataMonitor.get(r.jenkins);\n+        final OldDataMonitor oldDataMonitor = OldDataMonitor.get();\n         final CountDownLatch ensureEntry = new CountDownLatch(1);\n         final CountDownLatch preventExit = new CountDownLatch(1);\n         Saveable slowSavable = () -> {\n@@ -124,7 +96,7 @@ void slowDiscard() throws InterruptedException, IOException, ExecutionException\n         ExecutorService executors = Executors.newSingleThreadExecutor();\n \n         Future<Void> discardFuture = executors.submit(() -> {\n-            oldDataMonitor.doDiscard(Stapler.getCurrentRequest2(), Stapler.getCurrentResponse2());\n+            oldDataMonitor.doDiscard();\n             return null;\n         });\n \n@@ -141,21 +113,6 @@ void slowDiscard() throws InterruptedException, IOException, ExecutionException\n \n     }\n \n-    @Issue(\"JENKINS-26718\")\n-    @Test\n-    void unlocatableRun() throws Exception {\n-        OldDataMonitor odm = OldDataMonitor.get(r.jenkins);\n-        FreeStyleProject p = r.createFreeStyleProject();\n-        FreeStyleBuild build = r.buildAndAssertSuccess(p);\n-        p.delete();\n-        OldDataMonitor.report(build, (String) null);\n-\n-        assertEquals(Set.of(build), odm.getData().keySet());\n-        odm.doDiscard(null, null);\n-        assertEquals(Collections.emptySet(), odm.getData().keySet());\n-\n-    }\n-\n     public static final class BadAction extends InvisibleAction {\n         private Object writeReplace() {\n             throw new IllegalStateException(\"broken\");\ndiff --git a/test/src/test/java/hudson/model/ComputerTest.java b/test/src/test/java/hudson/model/ComputerTest.java\nindex 7e57d60423a5..3bd75f2d1fac 100644\n--- a/test/src/test/java/hudson/model/ComputerTest.java\n+++ b/test/src/test/java/hudson/model/ComputerTest.java\n@@ -256,7 +256,7 @@ void configDotXmlWithValidXmlAndBadField() throws Exception {\n \n         assertThat(data.size(), equalTo(0));\n \n-        odm.doDiscard(null, null);\n+        odm.doDiscard();\n \n         User.AllUsers.scanAll();\n         boolean createUser = false;\ndiff --git a/test/src/test/java/hudson/model/FreeStyleProjectTest.java b/test/src/test/java/hudson/model/FreeStyleProjectTest.java\nindex 2792995ad2fd..c926747f2039 100644\n--- a/test/src/test/java/hudson/model/FreeStyleProjectTest.java\n+++ b/test/src/test/java/hudson/model/FreeStyleProjectTest.java\n@@ -208,7 +208,7 @@ void configDotXmlWithValidXmlAndBadField() throws Exception {\n \n         assertThat(data.size(), equalTo(0));\n \n-        odm.doDiscard(null, null);\n+        odm.doDiscard();\n \n         User.AllUsers.scanAll();\n         boolean createUser = false;\ndiff --git a/test/src/test/java/hudson/model/ItemGroupMixInTest.java b/test/src/test/java/hudson/model/ItemGroupMixInTest.java\nindex 17c2a81ce5cc..ac94b364b33a 100644\n--- a/test/src/test/java/hudson/model/ItemGroupMixInTest.java\n+++ b/test/src/test/java/hudson/model/ItemGroupMixInTest.java\n@@ -304,7 +304,7 @@ void doCreateItemWithValidXmlAndBadField() throws Exception {\n \n         assertThat(data.size(), equalTo(0));\n \n-        odm.doDiscard(null, null);\n+        odm.doDiscard();\n \n         User.AllUsers.scanAll();\n         boolean createUser = false;\ndiff --git a/test/src/test/java/hudson/model/ViewTest.java b/test/src/test/java/hudson/model/ViewTest.java\nindex fefae640d0b0..57bc636cc527 100644\n--- a/test/src/test/java/hudson/model/ViewTest.java\n+++ b/test/src/test/java/hudson/model/ViewTest.java\n@@ -725,7 +725,7 @@ void simplifiedOriginalDescription() throws Exception {\n \n         assertThat(data.size(), equalTo(0));\n \n-        odm.doDiscard(null, null);\n+        odm.doDiscard();\n \n         View view = j.getInstance().getView(\"nonexistent\");\n \n@@ -769,7 +769,7 @@ void simplifiedWithValidXmlAndBadField() throws Exception {\n \n         assertThat(data.size(), equalTo(0));\n \n-        odm.doDiscard(null, null);\n+        odm.doDiscard();\n \n         View view = j.getInstance().getView(\"nonexistent\");\n \n@@ -806,7 +806,7 @@ void configDotXmlWithValidXmlAndBadField() throws Exception {\n \n         assertThat(data.size(), equalTo(0));\n \n-        odm.doDiscard(null, null);\n+        odm.doDiscard();\n \n         User.AllUsers.scanAll();\n         boolean createUser = false;\n",
+  "metadata": {
+    "v2_fetcher_version": 1,
+    "v2_fetched_at_unix": 1777987728,
+    "v2_diff_cap_bytes": 50000,
+    "v2_body_cap_bytes": 8000,
+    "v2_diff_truncated": false,
+    "v2_raw_diff_chars": 19150,
+    "v2_raw_body_chars": 7576,
+    "v2_rag_source": "fresh_for_v2_25pr_expansion",
+    "v2_rag_chunks_copied": 8
+  },
+  "similar_chunks": [
+    {
+      "file": "test/src/test/java/hudson/model/ApiTest.java",
+      "start_line": 24,
+      "end_line": 46,
+      "similarity": 0.8568,
+      "related_to": "test/src/test/java/hudson/model/ViewTest.java",
+      "content_preview": "\npackage hudson.model;\n\nimport static org.hamcrest.MatcherAssert.assertThat;\nimport static org.hamcrest.Matchers.containsString;\nimport static org.hamcrest.Matchers.equalTo;\nimport static org.junit.jupiter.api.Assertions.assertEquals;\nimport static org.junit.jupiter.api.Assertions.assertTrue;\nimport static org."
+    },
+    {
+      "file": "test/src/test/java/hudson/model/ComputerSetTest.java",
+      "start_line": 24,
+      "end_line": 47,
+      "similarity": 0.852,
+      "related_to": "test/src/test/java/hudson/model/ViewTest.java",
+      "content_preview": "\npackage hudson.model;\n\nimport static org.hamcrest.MatcherAssert.assertThat;\nimport static org.hamcrest.Matchers.contains;\nimport static org.hamcrest.Matchers.containsString;\nimport static org.hamcrest.Matchers.empty;\nimport static org.hamcrest.Matchers.instanceOf;\nimport static org.hamcrest.Matchers.is;\nimport static org.ha"
+    },
+    {
+      "file": "test/src/test/java/hudson/model/RunTest.java",
+      "start_line": 24,
+      "end_line": 45,
+      "similarity": 0.8458,
+      "related_to": "test/src/test/java/hudson/model/ViewTest.java",
+      "content_preview": "\npackage hudson.model;\n\nimport static org.hamcrest.MatcherAssert.assertThat;\nimport static org.hamcrest.Matchers.containsString;\nimport static org.hamcrest.Matchers.equalTo;\nimport static org.hamcrest.Matchers.hasSize;\nimport static org.hamcrest.Matchers.instanceOf;\nimport static org.hamcrest.Matchers.isA;\nimpo"
+    },
+    {
+      "file": "test/src/test/java/hudson/model/SlaveTest.java",
+      "start_line": 24,
+      "end_line": 45,
+      "similarity": 0.8447,
+      "related_to": "test/src/test/java/hudson/model/ViewTest.java",
+      "content_preview": "\npackage hudson.model;\n\nimport static org.hamcrest.MatcherAssert.assertThat;\nimport static org.hamcrest.Matchers.containsInAnyOrder;\nimport static org.hamcrest.Matchers.hasItem;\nimport static org.hamcrest.Matchers.not;\nimport static org.junit.jupiter.api.Assertions.assertEquals;\nimport static org.junit.jupiter.api.Assertions.assertNotNull;\nimp"
+    },
+    {
+      "file": "test/src/test/java/hudson/model/ViewDescriptorTest.java",
+      "start_line": 24,
+      "end_line": 47,
+      "similarity": 0.8409,
+      "related_to": "test/src/test/java/hudson/model/ViewTest.java",
+      "content_preview": "\npackage hudson.model;\n\nimport static org.hamcrest.MatcherAssert.assertThat;\nimport static org.hamcrest.Matchers.containsString;\nimport static org.junit.jupiter.api.Assertions.assertEquals;\nimport static org.junit.jupiter.api.Assertions.assertFalse;\nimport static org.junit.jupiter.api.Assertions.assertNotNull;\n\nimport java.util.Arrays;\nimport java.util.TreeSet"
+    },
+    {
+      "file": "test/src/test/java/hudson/model/RSSTest.java",
+      "start_line": 24,
+      "end_line": 48,
+      "similarity": 0.8405,
+      "related_to": "test/src/test/java/hudson/model/ViewTest.java",
+      "content_preview": "\npackage hudson.model;\n\nimport static org.hamcrest.MatcherAssert.assertThat;\nimport static org.hamcrest.Matchers.containsInAnyOrder;\nimport static org.hamcrest.Matchers.containsString;\nimport static org.hamcrest.Matchers.emptyString;\nimport static org.hamcrest.Matchers.is;\nimport static org.hamcrest.Matchers.not;\nimport static org.junit.jupiter.api.Asserti"
+    },
+    {
+      "file": "test/src/test/java/hudson/model/ItemsTest.java",
+      "start_line": 24,
+      "end_line": 48,
+      "similarity": 0.8376,
+      "related_to": "test/src/test/java/hudson/model/ViewTest.java",
+      "content_preview": "\npackage hudson.model;\n\nimport static org.hamcrest.MatcherAssert.assertThat;\nimport static org.hamcrest.Matchers.containsInAnyOrder;\nimport static org.junit.jupiter.api.Assertions.assertEquals;\nimport static org.junit.jupiter.api.Assertions.assertFalse;\nimport static org.junit.jupiter.api.Assertions.assertNull;\nimport static org.junit.jupiter.api.Assertions.asser"
+    },
+    {
+      "file": "test/src/test/java/hudson/model/NodeTest.java",
+      "start_line": 24,
+      "end_line": 45,
+      "similarity": 0.8363,
+      "related_to": "test/src/test/java/hudson/model/ViewTest.java",
+      "content_preview": "\npackage hudson.model;\n\nimport static org.hamcrest.MatcherAssert.assertThat;\nimport static org.hamcrest.Matchers.endsWith;\nimport static org.hamcrest.Matchers.instanceOf;\nimport static org.hamcrest.Matchers.is;\nimport static org.hamcrest.Matchers.nullValue;\nimport static org.junit.jupiter.api.Assertions.assertEquals;\nimport static org.junit.jupiter.api.Assertion"
+    }
+  ],
+  "rag_evidence": {
+    "similar_code": [
+      {
+        "file": "test/src/test/java/hudson/model/ApiTest.java",
+        "start_line": 24,
+        "end_line": 46,
+        "similarity": 0.8568,
+        "related_to": "test/src/test/java/hudson/model/ViewTest.java",
+        "content_preview": "\npackage hudson.model;\n\nimport static org.hamcrest.MatcherAssert.assertThat;\nimport static org.hamcrest.Matchers.containsString;\nimport static org.hamcrest.Matchers.equalTo;\nimport static org.junit.jupiter.api.Assertions.assertEquals;\nimport static org.junit.jupiter.api.Assertions.assertTrue;\nimport static org."
+      },
+      {
+        "file": "test/src/test/java/hudson/model/ComputerSetTest.java",
+        "start_line": 24,
+        "end_line": 47,
+        "similarity": 0.852,
+        "related_to": "test/src/test/java/hudson/model/ViewTest.java",
+        "content_preview": "\npackage hudson.model;\n\nimport static org.hamcrest.MatcherAssert.assertThat;\nimport static org.hamcrest.Matchers.contains;\nimport static org.hamcrest.Matchers.containsString;\nimport static org.hamcrest.Matchers.empty;\nimport static org.hamcrest.Matchers.instanceOf;\nimport static org.hamcrest.Matchers.is;\nimport static org.ha"
+      },
+      {
+        "file": "test/src/test/java/hudson/model/RunTest.java",
+        "start_line": 24,
+        "end_line": 45,
+        "similarity": 0.8458,
+        "related_to": "test/src/test/java/hudson/model/ViewTest.java",
+        "content_preview": "\npackage hudson.model;\n\nimport static org.hamcrest.MatcherAssert.assertThat;\nimport static org.hamcrest.Matchers.containsString;\nimport static org.hamcrest.Matchers.equalTo;\nimport static org.hamcrest.Matchers.hasSize;\nimport static org.hamcrest.Matchers.instanceOf;\nimport static org.hamcrest.Matchers.isA;\nimpo"
+      },
+      {
+        "file": "test/src/test/java/hudson/model/SlaveTest.java",
+        "start_line": 24,
+        "end_line": 45,
+        "similarity": 0.8447,
+        "related_to": "test/src/test/java/hudson/model/ViewTest.java",
+        "content_preview": "\npackage hudson.model;\n\nimport static org.hamcrest.MatcherAssert.assertThat;\nimport static org.hamcrest.Matchers.containsInAnyOrder;\nimport static org.hamcrest.Matchers.hasItem;\nimport static org.hamcrest.Matchers.not;\nimport static org.junit.jupiter.api.Assertions.assertEquals;\nimport static org.junit.jupiter.api.Assertions.assertNotNull;\nimp"
+      },
+      {
+        "file": "test/src/test/java/hudson/model/ViewDescriptorTest.java",
+        "start_line": 24,
+        "end_line": 47,
+        "similarity": 0.8409,
+        "related_to": "test/src/test/java/hudson/model/ViewTest.java",
+        "content_preview": "\npackage hudson.model;\n\nimport static org.hamcrest.MatcherAssert.assertThat;\nimport static org.hamcrest.Matchers.containsString;\nimport static org.junit.jupiter.api.Assertions.assertEquals;\nimport static org.junit.jupiter.api.Assertions.assertFalse;\nimport static org.junit.jupiter.api.Assertions.assertNotNull;\n\nimport java.util.Arrays;\nimport java.util.TreeSet"
+      },
+      {
+        "file": "test/src/test/java/hudson/model/RSSTest.java",
+        "start_line": 24,
+        "end_line": 48,
+        "similarity": 0.8405,
+        "related_to": "test/src/test/java/hudson/model/ViewTest.java",
+        "content_preview": "\npackage hudson.model;\n\nimport static org.hamcrest.MatcherAssert.assertThat;\nimport static org.hamcrest.Matchers.containsInAnyOrder;\nimport static org.hamcrest.Matchers.containsString;\nimport static org.hamcrest.Matchers.emptyString;\nimport static org.hamcrest.Matchers.is;\nimport static org.hamcrest.Matchers.not;\nimport static org.junit.jupiter.api.Asserti"
+      },
+      {
+        "file": "test/src/test/java/hudson/model/ItemsTest.java",
+        "start_line": 24,
+        "end_line": 48,
+        "similarity": 0.8376,
+        "related_to": "test/src/test/java/hudson/model/ViewTest.java",
+        "content_preview": "\npackage hudson.model;\n\nimport static org.hamcrest.MatcherAssert.assertThat;\nimport static org.hamcrest.Matchers.containsInAnyOrder;\nimport static org.junit.jupiter.api.Assertions.assertEquals;\nimport static org.junit.jupiter.api.Assertions.assertFalse;\nimport static org.junit.jupiter.api.Assertions.assertNull;\nimport static org.junit.jupiter.api.Assertions.asser"
+      },
+      {
+        "file": "test/src/test/java/hudson/model/NodeTest.java",
+        "start_line": 24,
+        "end_line": 45,
+        "similarity": 0.8363,
+        "related_to": "test/src/test/java/hudson/model/ViewTest.java",
+        "content_preview": "\npackage hudson.model;\n\nimport static org.hamcrest.MatcherAssert.assertThat;\nimport static org.hamcrest.Matchers.endsWith;\nimport static org.hamcrest.Matchers.instanceOf;\nimport static org.hamcrest.Matchers.is;\nimport static org.hamcrest.Matchers.nullValue;\nimport static org.junit.jupiter.api.Assertions.assertEquals;\nimport static org.junit.jupiter.api.Assertion"
+      }
+    ]
+  }
+}

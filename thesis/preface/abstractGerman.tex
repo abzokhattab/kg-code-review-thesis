@@ -1,0 +1,50 @@
+% Deutsche Zusammenfassung; inhaltlich synchron mit preface/abstract.tex.
+
+Code-Reviews sind auf die verfügbaren Informationen beschränkt. Verursacht
+eine Änderung einen Fehler in einer anderen Datei, lässt sich diese Folge weder
+aus dem Diff noch zuverlässig aus dem Gedächtnis ableiten. Diese Arbeit
+untersucht, wie Repository-Kontext die inhaltliche Abdeckung LLM-generierter
+Reviews verändert, ob struktureller Kontext dateiübergreifendes Schlussfolgern
+ermöglicht und ob menschliche Bewertende den daraus resultierenden
+Unterschied wahrnehmen.
+
+Eine Pipeline erzeugt Reviews in vier Modi: eine reine Diff-Basislinie, ein
+struktureller Arm, der Kanten aus einem mit Joern erstellten Code Property Graph
+liefert, ein Retrieval-Arm, der embedding-ähnlichen Code liefert, und eine
+Kombination beider Kontexte. Die Modi werden auf 35~Pull Requests aus fünf
+Repositories, auf 40~kontrollierte Defektinjektionen und in einer
+Nutzerstudie evaluiert.
+
+Auf den Pull Requests bewertete ein Panel aus fünf Sprachmodellen jedes Review
+anhand von 25~Kriterien. Der Graphmodus erzielt einen Zugewinn von
+$+0{,}69$~Punkten bei den neun im Voraus als strukturell relevant festgelegten
+Kriterien, und 96\,\% seines gesamten Zugewinns entfallen auf diese
+Kriterien (jeweils $p = 0{,}003$). Retrieval erzielt den größten Zugewinn auf der
+vollständigen 25-Kriterien-Skala ($+1{,}03$, $p = 0{,}002$). Nach der Korrektur
+für multiple Vergleiche bleibt beim Graphmodus der gezielte Effekt und bei
+Retrieval der Effekt auf der Gesamtskala signifikant; beim Hybridmodus bleibt
+keiner der beiden Effekte signifikant.
+
+Bei 28~injizierten Defekten, deren Folgen außerhalb der editierten Datei
+liegen, erkennt die Basislinie keinen Defekt, Retrieval erkennt 5 und der
+Graph~18. Das Hinzufügen von Vererbungskanten erhöht die Erkennung auf 26 von
+28. Bei
+12~Kontrolldefekten, die in der editierten Datei sichtbar sind, erreichen alle
+Modi eine vollständige oder nahezu vollständige Erkennung. Die acht zusätzlich
+durch Vererbungskanten erkannten Fälle zeigen erhebliches Verbesserungspotenzial
+in der Graphkonstruktion.
+
+In der Nutzerstudie verglichen 27~Teilnehmende Reviews mit Graph-Kontext
+und Reviews der Basislinie. Beim Benennen betroffener Codestellen
+bevorzugten sie das Review mit Graph-Kontext (mittlerer Präferenzwert
+$0{,}710$; $0{,}5$ bezeichnet keine Präferenz; $p = 0{,}0005$). Bei der
+wahrgenommenen Gesamtnützlichkeit zeigte sich keine Präferenz; bei den
+Anmerkungen zur Codeklarheit bevorzugten sie das Review der Basislinie.
+
+Der Beitrag besteht in einem klar abgegrenzten Fähigkeitsgewinn und nicht in
+einer allgemeinen Verbesserung der Reviewqualität. Struktureller Kontext macht
+dateiübergreifende Folgen sichtbar, die im Diff nicht enthalten sind.
+Ähnlichkeitsbasiertes Retrieval erhöht dagegen die Abdeckung des gesamten
+Kriterienrasters, ersetzt strukturelle Informationen jedoch nicht. Der Nutzen
+ist groß, wenn dateiübergreifendes Schlussfolgern erforderlich ist. Im
+Pull-Request-Benchmark fällt er kleiner, aber gezielt aus.

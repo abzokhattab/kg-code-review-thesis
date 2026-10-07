@@ -1,0 +1,68 @@
+{
+  "candidate_mentions": [
+    {
+      "basename_collision": false,
+      "end": 686,
+      "evidence_id": "M001",
+      "excerpt": "ter.\n\n## Evidence\n- `sklearn/linear_model/_base.py:110`: The function signature of `_preprocess_data` is modified to include `required_ctx`.\n- Callers such as `sklearn/linear_model/_bayes.py::fit`, `sklearn/linear_model/_coordinate_descent.py::fit`, `sklearn/linear_model/_least_angle.py::_fit`, `sklearn/linear_model/_least_angle.py::fit`, and `sklearn/linear_model/_ridge.py::fit` are not updated to pass the new `required_ctx` parameter.\n\n## Impac",
+      "finding_passage_id": "P009",
+      "match_kind": "full_path",
+      "match_text": "sklearn/linear_model/_bayes.py",
+      "oracle_path": "sklearn/linear_model/_bayes.py",
+      "start": 656
+    },
+    {
+      "basename_collision": false,
+      "end": 738,
+      "evidence_id": "M002",
+      "excerpt": "el/_base.py:110`: The function signature of `_preprocess_data` is modified to include `required_ctx`.\n- Callers such as `sklearn/linear_model/_bayes.py::fit`, `sklearn/linear_model/_coordinate_descent.py::fit`, `sklearn/linear_model/_least_angle.py::_fit`, `sklearn/linear_model/_least_angle.py::fit`, and `sklearn/linear_model/_ridge.py::fit` are not updated to pass the new `required_ctx` parameter.\n\n## Impact\n- The change will likely cause runtime errors in a",
+      "finding_passage_id": "P009",
+      "match_kind": "full_path",
+      "match_text": "sklearn/linear_model/_coordinate_descent.py",
+      "oracle_path": "sklearn/linear_model/_coordinate_descent.py",
+      "start": 695
+    },
+    {
+      "basename_collision": false,
+      "end": 783,
+      "evidence_id": "M003",
+      "excerpt": "cess_data` is modified to include `required_ctx`.\n- Callers such as `sklearn/linear_model/_bayes.py::fit`, `sklearn/linear_model/_coordinate_descent.py::fit`, `sklearn/linear_model/_least_angle.py::_fit`, `sklearn/linear_model/_least_angle.py::fit`, and `sklearn/linear_model/_ridge.py::fit` are not updated to pass the new `required_ctx` parameter.\n\n## Impact\n- The change will likely cause runtime errors in any function that calls `_preprocess_data` wit",
+      "finding_passage_id": "P009",
+      "match_kind": "full_path",
+      "match_text": "sklearn/linear_model/_least_angle.py",
+      "oracle_path": "sklearn/linear_model/_least_angle.py",
+      "start": 747
+    },
+    {
+      "basename_collision": false,
+      "end": 872,
+      "evidence_id": "M004",
+      "excerpt": "s.py::fit`, `sklearn/linear_model/_coordinate_descent.py::fit`, `sklearn/linear_model/_least_angle.py::_fit`, `sklearn/linear_model/_least_angle.py::fit`, and `sklearn/linear_model/_ridge.py::fit` are not updated to pass the new `required_ctx` parameter.\n\n## Impact\n- The change will likely cause runtime errors in any function that calls `_preprocess_data` without providing the new `required_ctx` argument, leading to potential failures in model fi",
+      "finding_passage_id": "P009",
+      "match_kind": "full_path",
+      "match_text": "sklearn/linear_model/_ridge.py",
+      "oracle_path": "sklearn/linear_model/_ridge.py",
+      "start": 842
+    }
+  ],
+  "causal_passage_id": "P011",
+  "decision_source": "llm_causal_adjudication",
+  "detected": true,
+  "evidence_id": "M001",
+  "evidence_id_normalized": false,
+  "executed_at_utc": "2026-09-19T15:37:32.350259+00:00",
+  "finding_passage_id": "P009",
+  "judge": "deepseek:deepseek-v4-pro",
+  "manifest_sha256": "5d4371a93d1b09f0491ecc12279f9f3ff5de23053b7a5e74650a749f58b472b0",
+  "model_alias": "deepseek:deepseek-v4-pro",
+  "model_evidence_id": "M001",
+  "model_snapshot": "unavailable-from-original-wrapper",
+  "original_verdict": null,
+  "prompt_sha256": "8977aa1b1fce92d41e289569a5565c87b613f76f85026473752c320097a2f0b4",
+  "reason_code": "specific_cross_file_link",
+  "response_wrapper": "bare",
+  "review_sha256": "7349e8604dba4813ae0ba33c7ceb37851c00f863ef9fb5c0c829296e46eeedf1",
+  "schema_sha256": "f70f714868ecd3d25508bb3e00b32ecbe6761b0ebc05f454ee10fa4d28efd013",
+  "schema_version": "exp2-adjudication-v3",
+  "system_sha256": "030b5e701c798b32afdabbbeb22db38f664db8c8fd8b862d2fcb98df63b6fb6b"
+}

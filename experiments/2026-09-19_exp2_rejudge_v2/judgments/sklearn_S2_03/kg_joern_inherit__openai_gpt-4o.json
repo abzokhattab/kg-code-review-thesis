@@ -1,0 +1,42 @@
+{
+  "candidate_mentions": [
+    {
+      "basename_collision": false,
+      "end": 576,
+      "evidence_id": "M001",
+      "excerpt": "_solver` function.\n\n## Evidence\n- `sklearn/linear_model/_sag.py:87`: The `sag_solver` function signature has changed, adding a new parameter `required_ctx`.\n- `sklearn/linear_model/_logistic.py:call-graph`: The `_logistic_regression_path` function calls `sag_solver` but does not pass the new `required_ctx` parameter.\n- `sklearn/linear_model/_ridge.py:call-graph`: The `_ridge_regression` function calls `sag_solver` but does not pass the new `required",
+      "match_kind": "full_path",
+      "match_text": "sklearn/linear_model/_logistic.py",
+      "oracle_path": "sklearn/linear_model/_logistic.py",
+      "start": 543
+    },
+    {
+      "basename_collision": false,
+      "end": 735,
+      "evidence_id": "M002",
+      "excerpt": "learn/linear_model/_logistic.py:call-graph`: The `_logistic_regression_path` function calls `sag_solver` but does not pass the new `required_ctx` parameter.\n- `sklearn/linear_model/_ridge.py:call-graph`: The `_ridge_regression` function calls `sag_solver` but does not pass the new `required_ctx` parameter.\n\n## Impact\n- The introduction of the `required_ctx` parameter without default values could break existing functionality in modules that depend",
+      "match_kind": "full_path",
+      "match_text": "sklearn/linear_model/_ridge.py",
+      "oracle_path": "sklearn/linear_model/_ridge.py",
+      "start": 705
+    }
+  ],
+  "causal_quote": "- The introduction of the `required_ctx` parameter without default values could break existing functionality in modules that depend on `sag_solver`, such as `_logistic_regression_path` and `_ridge_regression`.",
+  "decision_source": "llm_causal_adjudication",
+  "detected": true,
+  "evidence_id": "M001",
+  "executed_at_utc": "2026-09-19T15:05:55.018481+00:00",
+  "finding_quote": "- `sklearn/linear_model/_logistic.py:call-graph`: The `_logistic_regression_path` function calls `sag_solver` but does not pass the new `required_ctx` parameter.",
+  "judge": "openai:gpt-4o",
+  "manifest_sha256": "5d4371a93d1b09f0491ecc12279f9f3ff5de23053b7a5e74650a749f58b472b0",
+  "model_alias": "openai:gpt-4o",
+  "model_snapshot": "unavailable-from-original-wrapper",
+  "original_verdict": true,
+  "prompt_sha256": "0336572f9cdd30377105430009f90f52b6dde611378b45eca5675538e93e38d2",
+  "reason_code": "specific_cross_file_link",
+  "response_wrapper": "bare",
+  "review_sha256": "e9d86ce8dc72dce9482d5ae0ef29bed19b39679f3fe31f485bac4335c3af5a3a",
+  "schema_sha256": "6a22fcb256437ebed904ab2d879b36be1234fb2e06add1127ac8ea2ab46f60f0",
+  "schema_version": "exp2-adjudication-v2",
+  "system_sha256": "3634314a8fc4231391e4c51174e5c32d7346b0e2ceb5f8c4641e6ba866bd5939"
+}

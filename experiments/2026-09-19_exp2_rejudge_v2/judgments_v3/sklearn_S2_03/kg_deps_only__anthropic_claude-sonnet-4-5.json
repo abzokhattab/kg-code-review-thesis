@@ -1,0 +1,46 @@
+{
+  "candidate_mentions": [
+    {
+      "basename_collision": false,
+      "end": 615,
+      "evidence_id": "M001",
+      "excerpt": " parameter `required_ctx`.\n\n## Evidence\n- `sklearn/linear_model/_sag.py:87`: The `sag_solver` function signature has been changed to include `required_ctx`.\n- `sklearn/linear_model/_logistic.py`: This file imports and uses `sag_solver`, but there is no indication that it has been updated to pass the new `required_ctx` parameter.\n- `sklearn/linear_model/_ridge.py`: This file also depends on `sag_solver`, but similar to `_logistic.py`, there is no upd",
+      "finding_passage_id": "P008",
+      "match_kind": "full_path",
+      "match_text": "sklearn/linear_model/_logistic.py",
+      "oracle_path": "sklearn/linear_model/_logistic.py",
+      "start": 582
+    },
+    {
+      "basename_collision": false,
+      "end": 786,
+      "evidence_id": "M002",
+      "excerpt": "_model/_logistic.py`: This file imports and uses `sag_solver`, but there is no indication that it has been updated to pass the new `required_ctx` parameter.\n- `sklearn/linear_model/_ridge.py`: This file also depends on `sag_solver`, but similar to `_logistic.py`, there is no update to accommodate the new parameter.\n\n## Impact\n- The change could lead to runtime errors in modules that rely on `sag_solver` if they do not pass the newly required `req",
+      "finding_passage_id": "P009",
+      "match_kind": "full_path",
+      "match_text": "sklearn/linear_model/_ridge.py",
+      "oracle_path": "sklearn/linear_model/_ridge.py",
+      "start": 756
+    }
+  ],
+  "causal_passage_id": "P011",
+  "decision_source": "llm_causal_adjudication",
+  "detected": true,
+  "evidence_id": "M001",
+  "evidence_id_normalized": false,
+  "executed_at_utc": "2026-09-19T15:37:44.554217+00:00",
+  "finding_passage_id": "P008",
+  "judge": "anthropic:claude-sonnet-4-5",
+  "manifest_sha256": "5d4371a93d1b09f0491ecc12279f9f3ff5de23053b7a5e74650a749f58b472b0",
+  "model_alias": "anthropic:claude-sonnet-4-5",
+  "model_evidence_id": "M001",
+  "model_snapshot": "unavailable-from-original-wrapper",
+  "original_verdict": null,
+  "prompt_sha256": "4ce906f0dd8f7b130ed904c76e63ce19e37fd4898006cd76963518b63b66c55f",
+  "reason_code": "specific_cross_file_link",
+  "response_wrapper": "bare",
+  "review_sha256": "0c5b3c6c04153c6eaa6a489e06f65343ffd06dad9c5ace85ce2bf0d14d2db694",
+  "schema_sha256": "f70f714868ecd3d25508bb3e00b32ecbe6761b0ebc05f454ee10fa4d28efd013",
+  "schema_version": "exp2-adjudication-v3",
+  "system_sha256": "030b5e701c798b32afdabbbeb22db38f664db8c8fd8b862d2fcb98df63b6fb6b"
+}

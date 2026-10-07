@@ -1,0 +1,51 @@
+{
+  "pr_id": 14,
+  "mode": "joern_kg",
+  "mean_scores": {
+    "F3": 1.0,
+    "F4": 3.0,
+    "P1": 0.0,
+    "R2": 0.0,
+    "T3": 0.0
+  },
+  "mean_graded_total": 4.0,
+  "per_judge": [
+    {
+      "model": "gemini:gemini-2.5-flash",
+      "scores": {
+        "F3": 1,
+        "F4": 3,
+        "P1": 0,
+        "R2": 0,
+        "T3": 0
+      },
+      "evidence": {
+        "F3": "This is a breaking change for any existing callers that rely on rendering the drawer within a specific container rather than as a full-page overlay. ... This change might affect z-index, positioning, or styling for existing drawers.",
+        "F4": "1. Breaking Change: Removal of `inline` prop: The `inline` prop has been completely removed from the `Drawer` component's interface and implementation... This is a breaking change for any existing callers that rely on rendering the drawer within a specific container... 2. Inconsistent `getContainer` behavior: The `RcDrawer`'s `getContainer` prop is hardcoded to `'.main-view'`, which changes the rendering context for all drawers... This change might affect z-index, positioning, or styling for exi",
+        "P1": "No mention of performance in the review.",
+        "R2": "No comment on complexity or code structure in the review.",
+        "T3": "No mention of test files in the review."
+      },
+      "error": ""
+    },
+    {
+      "model": "gemini:gemini-2.5-pro",
+      "scores": {
+        "F3": 1,
+        "F4": 3,
+        "P1": 0,
+        "R2": 0,
+        "T3": 0
+      },
+      "evidence": {
+        "F3": "The review notes that the change to the `getContainer` prop \"changes the rendering context for all drawers\" and that the removal of the `inline` prop is a breaking change for \"any existing callers that rely on rendering the drawer within a specific container\". This explains the impact on a class of callers but does not name a specific component or file, which is required for a higher score.",
+        "F4": "The review identifies multiple specific breaking changes. First, \"Breaking Change: Removal of `inline` prop: The `inline` prop has been completely removed from the `Drawer` component's interface and implementation... This is a breaking change\". Second, \"Inconsistent `getContainer` behavior: The `RcDrawer`'s `getContainer` prop is hardcoded to `'.main-view'`, which changes the rendering context for all drawers... Previously... non-inline drawers rendered to `body`.\" It explains the downstream imp",
+        "P1": "The review makes no mention of performance.",
+        "R2": "The review does not comment on code complexity or suggest simplifications.",
+        "T3": "The review makes no mention of tests or test files."
+      },
+      "error": ""
+    }
+  ],
+  "timestamp": "2026-06-01T18:57:29.020828+00:00"
+}

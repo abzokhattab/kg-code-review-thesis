@@ -1,0 +1,51 @@
+{
+  "pr_id": 28,
+  "mode": "baseline",
+  "mean_scores": {
+    "F3": 2.5,
+    "F4": 1.0,
+    "P1": 0.0,
+    "R2": 0.0,
+    "T3": 2.0
+  },
+  "mean_graded_total": 5.5,
+  "per_judge": [
+    {
+      "model": "gemini:gemini-2.5-flash",
+      "scores": {
+        "F3": 3,
+        "F4": 0,
+        "P1": 0,
+        "R2": 0,
+        "T3": 2
+      },
+      "evidence": {
+        "F3": "The logic change in `onLayoutChange` now unconditionally stashes the current sort when switching to Folders, which could lead to issues if not all scenarios are considered. ... The use of localStorage for state management could lead to inconsistencies if multiple tabs or windows are open, as changes in one might not be reflected in another.",
+        "F4": "No mention of breaking changes or API contract violations.",
+        "P1": "No mention of performance.",
+        "R2": "No comment on unnecessary complexity or suggestions for simplification.",
+        "T3": "`public/app/features/search/state/SearchStateManager.test.ts:213-271`: The tests added cover several scenarios, but there might be edge cases not considered, such as concurrent modifications to localStorage. ... Ensure comprehensive test coverage for all possible transitions between layouts and sort states, including edge cases like concurrent localStorage access."
+      },
+      "error": ""
+    },
+    {
+      "model": "gemini:gemini-2.5-pro",
+      "scores": {
+        "F3": 2,
+        "F4": 2,
+        "P1": 0,
+        "R2": 0,
+        "T3": 2
+      },
+      "evidence": {
+        "F3": "The review names a specific integration point/module (`localStorage`) and explains the risk: \"The use of localStorage for state management could lead to inconsistencies if multiple tabs or windows are open, as changes in one might not be reflected in another.\"",
+        "F4": "The review identifies a specific expectation that could be broken (state consistency across tabs): \"The use of localStorage for state management could lead to inconsistencies if multiple tabs or windows are open, as changes in one might not be reflected in another.\"",
+        "P1": "The review makes no mention of performance.",
+        "R2": "The review does not comment on complexity or suggest simplification. It discusses potential bugs and edge cases, which is a correctness concern.",
+        "T3": "The review names one specific test file path: \"`public/app/features/search/state/SearchStateManager.test.ts:213-271`: The tests added cover several scenarios, but there might be edge cases not considered...\""
+      },
+      "error": ""
+    }
+  ],
+  "timestamp": "2026-06-01T18:58:12.176730+00:00"
+}

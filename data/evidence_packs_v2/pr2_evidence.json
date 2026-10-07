@@ -1,0 +1,376 @@
+{
+  "pr": {
+    "number": 69259,
+    "title": "Dashboards: Data source template variable options now specify a current value using uid.",
+    "body": "<!--\r\n\r\nThank you for sending a pull request! Here are some tips:\r\n\r\n1. If this is your first time, please read our contribution guide at https://github.com/grafana/grafana/blob/main/CONTRIBUTING.md\r\n\r\n2. Ensure you include and run the appropriate tests as part of your Pull Request.\r\n\r\n3. In a new feature or configuration option, an update to the documentation is necessary. Everything related to the documentation is under the docs folder in the root of the repository.\r\n\r\n4. If the Pull Request is a work in progress, make use of GitHub's \"Draft PR\" feature and mark it as such.\r\n\r\n5. If you can not merge your Pull Request due to a merge conflict, Rebase it. This gets it in sync with the main branch.\r\n\r\n6. Name your PR as \"<FeatureArea>: Describe your change\", e.g. Alerting: Prevent race condition. If it's a fix or feature relevant for the changelog describe the user impact in the title. The PR title is used to auto-generate the changelog for issues marked with the \"add to changelog\" label.\r\n\r\n7. If your PR content should be added to the What's New document for the next major or minor release, add the **add to what's new** label to your PR. Note that you should add this label to the main PR that introduces the feature; do not add this label to smaller PRs for the feature.\r\n\r\n-->\r\n\r\n**What is this feature?**\r\n\r\nThe goal was to make it possible for a dashboard to specify a provisioned data source as the \"current\" option for a template variable. The only way to currently achieve this is to use the name of the datasource, but for our use case this would vary between grafana cloud instances. \r\n\r\nThe solution makes use of the `value` part of the `{text, value}` structure under a template variable's `options.current`. The `value` field was being completely ignored and was a duplicate of `text`: the name of data source. This PR now takes the `value` into consideration when resolving the initial template variable value, and for data source template variables, the `value` now corresponds to the uid. It will be reflected in new dashboard JSON accordingly. Old dashboard JSON which uses the data source name will still function as before.\r\n\r\n**Why do we need this feature?**\r\n\r\nWhen provisioning dashboards and datasources with specific uids, we might want a dashboard to initially select that specific datasource first, instead of defaulting to alphabetical order and choosing the first on the list. This should also make it possible to set a selected value for query-based template variables as well.\r\n\r\n**Who is this feature for?**\r\n\r\nSpecifically, cloud customers accessing the Cardinality management dashboards with multiple metrics datasources defined. We want the dashboards to choose the provisioned `grafanacloud-prom` to be selected first by default when opening the dashboard, instead of the datasource with the earliest name in alphabetical sort. Since the `grafanacloud-prom` datasource has a inconstant name: `grafanacloud-${instanceName}-prom`, it cannot be specified by setting the `current` value in dashboard JSON. This PR allows specifying that uid through the variable's `current.value` field.\r\n\r\n**Special notes for your reviewer:**\r\n\r\n- There didn't seem to be any place where the documentation needed to know about the specifics of this issue.\r\n- Previously, when a user changes their variable, the `current` fields of `text`, and `value` would both be set to the data source name. Now `text` gets the name, and `value` gets the uid. This will be reflected in the JSON. Old dashboards which use the name for both will still be compatible.\r\n \r\n\r\nPlease check that:\r\n- [x] It works as expected from a user's perspective.\r\n- [x] If this is a pre-GA feature, it is behind a feature toggle.\r\n- [x] The docs are updated, and if this is a [notable improvement](https://grafana.com/docs/writers-toolkit/writing-guide/contribute-release-notes/#how-to-determine-if-content-belongs-in-a-whats-new-document), it's added to our [What's New](https://grafana.com/docs/writers-toolkit/writing-guide/contribute-release-notes/) doc.\r\n\r\n\r\n# Release notice breaking change\r\n\r\nThe data source template variable type has changed the way it represents its options. The `text` field still represents the data source name, but the `value` has been changed to the `uid` of the data source. This allows dashboards to declare the currently selected option by `uid`, however it changes how a datasource template variable value will be rendered by default. If the name of the data source is expected, the variable syntax will have to be changed to specify the [text format](https://grafana.com/docs/grafana/latest/dashboards/variables/variable-syntax/#text).\r\n\r\nFor example, given a data source variable (datasourceVariable), the following string:\r\n\r\n```\r\n${datasourceVariable}<br/>\r\nName: ${datasourceVariable:text}<br/>\r\nUID: ${datasourceVariable:raw}\r\n```\r\nwas previously interpolated as:\r\n```\r\ngrafanacloud-k8smonitoring-prom\r\nName: grafanacloud-k8smonitoring-prom\r\nUID: grafanacloud-k8smonitoring-prom\r\n```\r\nAfter these changes, it's interpolated as:\r\n```\r\nd7bbe725-9e48-4af8-a0cb-6cb255d873a3\r\nName: grafanacloud-k8smonitoring-prom\r\nUID: d7bbe725-9e48-4af8-a0cb-6cb255d873a3\r\n```\r\nAny dashboards that are relying on the data source name being returned by `${datasourceVariable}` will have to update all their usages to `${datasourceVariable:text}` in order to get the previous behavior.\r\n\r\nAffected use cases:\r\n- Using `${datasourceVariable}` to display the data source name in text panel or in the panel title.\r\n- Using `${datasourceVariable}` to use the data source name as part of the query content.\r\n\r\nUnaffected use cases:\r\n- Using the `${datasourceVariable}` to choose which data source to use for a query (through its data source picker) will not be affected since it can use both the name and the uid",
+    "url": "https://github.com/grafana/grafana/pull/69259",
+    "repo": "grafana/grafana",
+    "base_branch": "main",
+    "head_branch": "darrenjaneczek/initial-datasource-variable-select-by-uid",
+    "merged_at": "2023-06-12T08:05:51Z",
+    "state": "MERGED"
+  },
+  "changed_files": [
+    {
+      "path": "devenv/datasources.yaml",
+      "language": "yaml",
+      "added": 1,
+      "deleted": 0
+    },
+    {
+      "path": "devenv/dev-dashboards/feature-templating/testdata-test-variable-output.json",
+      "language": "json",
+      "added": 32,
+      "deleted": 0
+    },
+    {
+      "path": "e2e/dashboards-suite/new-datasource-variable.spec.ts",
+      "language": "typescript",
+      "added": 2,
+      "deleted": 1
+    },
+    {
+      "path": "public/app/features/plugins/datasource_srv.ts",
+      "language": "typescript",
+      "added": 2,
+      "deleted": 1
+    },
+    {
+      "path": "public/app/features/plugins/tests/datasource_srv.test.ts",
+      "language": "typescript",
+      "added": 39,
+      "deleted": 4
+    },
+    {
+      "path": "public/app/features/variables/datasource/reducer.ts",
+      "language": "typescript",
+      "added": 1,
+      "deleted": 1
+    },
+    {
+      "path": "public/app/features/variables/shared/testing/helpers.ts",
+      "language": "typescript",
+      "added": 1,
+      "deleted": 1
+    },
+    {
+      "path": "public/app/features/variables/shared/testing/optionsVariableBuilder.ts",
+      "language": "typescript",
+      "added": 13,
+      "deleted": 7
+    },
+    {
+      "path": "public/app/features/variables/state/actions.test.ts",
+      "language": "typescript",
+      "added": 68,
+      "deleted": 0
+    },
+    {
+      "path": "public/app/features/variables/state/actions.ts",
+      "language": "typescript",
+      "added": 5,
+      "deleted": 2
+    }
+  ],
+  "nearest_tests": [
+    {
+      "path": "pkg/api/datasources_test.go",
+      "relationship": "tests",
+      "source_file": "devenv/datasources.yaml"
+    },
+    {
+      "path": "public/app/features/plugins/datasource_srv.test.ts",
+      "relationship": "tests",
+      "source_file": "public/app/features/plugins/datasource_srv.ts"
+    },
+    {
+      "path": "public/app/plugins/datasource/elasticsearch/components/reducerTester.ts",
+      "relationship": "tests",
+      "source_file": "public/app/features/variables/datasource/reducer.ts"
+    },
+    {
+      "path": "public/app/plugins/datasource/elasticsearch/components/QueryEditor/BucketAggregationsEditor/SettingsEditor/FiltersSettingsEditor/state/reducer.test.ts",
+      "relationship": "tests",
+      "source_file": "public/app/features/variables/datasource/reducer.ts"
+    },
+    {
+      "path": "public/app/plugins/datasource/elasticsearch/components/QueryEditor/BucketAggregationsEditor/state/reducer.test.ts",
+      "relationship": "tests",
+      "source_file": "public/app/features/variables/datasource/reducer.ts"
+    },
+    {
+      "path": "public/app/plugins/datasource/elasticsearch/components/QueryEditor/MetricAggregationsEditor/SettingsEditor/BucketScriptSettingsEditor/state/reducer.test.ts",
+      "relationship": "tests",
+      "source_file": "public/app/features/variables/datasource/reducer.ts"
+    },
+    {
+      "path": "public/app/plugins/datasource/elasticsearch/components/QueryEditor/MetricAggregationsEditor/state/reducer.test.ts",
+      "relationship": "tests",
+      "source_file": "public/app/features/variables/datasource/reducer.ts"
+    },
+    {
+      "path": "public/app/plugins/datasource/graphite/state/helpers.test.ts",
+      "relationship": "tests",
+      "source_file": "public/app/features/variables/shared/testing/helpers.ts"
+    },
+    {
+      "path": "public/app/plugins/datasource/graphite/components/helpers.test.ts",
+      "relationship": "tests",
+      "source_file": "public/app/features/variables/shared/testing/helpers.ts"
+    },
+    {
+      "path": "public/app/features/plugins/admin/helpers.test.ts",
+      "relationship": "tests",
+      "source_file": "public/app/features/variables/shared/testing/helpers.ts"
+    },
+    {
+      "path": "packages/grafana-ui/src/components/JSONFormatter/json_explorer/helpers.test.ts",
+      "relationship": "tests",
+      "source_file": "public/app/features/variables/shared/testing/helpers.ts"
+    },
+    {
+      "path": "packages/grafana-prometheus/src/querybuilder/components/metrics-modal/helpers.test.ts",
+      "relationship": "tests",
+      "source_file": "public/app/features/variables/shared/testing/helpers.ts"
+    },
+    {
+      "path": "public/app/features/datasources/state/actions.test.ts",
+      "relationship": "tests",
+      "source_file": "public/app/features/variables/state/actions.ts"
+    },
+    {
+      "path": "public/app/features/panel/state/actions.test.ts",
+      "relationship": "tests",
+      "source_file": "public/app/features/variables/state/actions.ts"
+    },
+    {
+      "path": "public/app/features/org/state/actions.test.ts",
+      "relationship": "tests",
+      "source_file": "public/app/features/variables/state/actions.ts"
+    }
+  ],
+  "dependent_files": [
+    {
+      "path": "e2e-playwright/various-suite/frontend-sandbox-datasource.spec.ts",
+      "relationship": "imports",
+      "source_file": "devenv/datasources.yaml"
+    },
+    {
+      "path": "e2e-playwright/various-suite/prometheus-editor.spec.ts",
+      "relationship": "imports",
+      "source_file": "devenv/datasources.yaml"
+    },
+    {
+      "path": "e2e-playwright/plugin-e2e/plugin-e2e-api-tests/as-viewer-user/permissions.spec.ts",
+      "relationship": "imports",
+      "source_file": "devenv/datasources.yaml"
+    },
+    {
+      "path": "e2e-playwright/dashboards-suite/new-datasource-variable.spec.ts",
+      "relationship": "imports",
+      "source_file": "devenv/datasources.yaml"
+    },
+    {
+      "path": "e2e-playwright/cloud-plugins-suite/azure-monitor.spec.ts",
+      "relationship": "imports",
+      "source_file": "devenv/datasources.yaml"
+    },
+    {
+      "path": "e2e-playwright/smoke-tests-suite/smoketests.spec.ts",
+      "relationship": "imports",
+      "source_file": "devenv/datasources.yaml"
+    },
+    {
+      "path": "public/app/types/datasources.ts",
+      "relationship": "imports",
+      "source_file": "devenv/datasources.yaml"
+    },
+    {
+      "path": "public/app/types/accessControl.ts",
+      "relationship": "imports",
+      "source_file": "devenv/datasources.yaml"
+    },
+    {
+      "path": "public/app/core/specs/backend_srv.test.ts",
+      "relationship": "imports",
+      "source_file": "devenv/datasources.yaml"
+    },
+    {
+      "path": "public/app/core/utils/explore.ts",
+      "relationship": "imports",
+      "source_file": "devenv/datasources.yaml"
+    },
+    {
+      "path": "public/app/core/utils/explore.test.ts",
+      "relationship": "imports",
+      "source_file": "public/app/features/plugins/datasource_srv.ts"
+    },
+    {
+      "path": "public/app/core/history/RichHistoryLocalStorage.test.ts",
+      "relationship": "imports",
+      "source_file": "public/app/features/plugins/datasource_srv.ts"
+    },
+    {
+      "path": "public/app/core/history/remoteStorageConverter.test.ts",
+      "relationship": "imports",
+      "source_file": "public/app/features/plugins/datasource_srv.ts"
+    },
+    {
+      "path": "public/app/core/history/RichHistoryRemoteStorage.test.ts",
+      "relationship": "imports",
+      "source_file": "public/app/features/plugins/datasource_srv.ts"
+    },
+    {
+      "path": "public/app/core/history/localStorageConverter.test.ts",
+      "relationship": "imports",
+      "source_file": "public/app/features/plugins/datasource_srv.ts"
+    }
+  ],
+  "diff_summary": "10 files changed",
+  "full_diff": "diff --git a/devenv/datasources.yaml b/devenv/datasources.yaml\nindex be050bbe38252..2f352935c23e2 100644\n--- a/devenv/datasources.yaml\n+++ b/devenv/datasources.yaml\n@@ -63,6 +63,7 @@ datasources:\n       prometheusVersion: 2.40.0\n \n   - name: gdev-slow-prometheus\n+    uid: gdev-slow-prometheus-uid\n     type: prometheus\n     access: proxy\n     url: http://localhost:3011\ndiff --git a/devenv/dev-dashboards/feature-templating/testdata-test-variable-output.json b/devenv/dev-dashboards/feature-templating/testdata-test-variable-output.json\nindex ed8abf12fd09a..02c4b8a00e7ec 100644\n--- a/devenv/dev-dashboards/feature-templating/testdata-test-variable-output.json\n+++ b/devenv/dev-dashboards/feature-templating/testdata-test-variable-output.json\n@@ -55,6 +55,38 @@\n       \"pluginVersion\": \"8.4.0-pre\",\n       \"title\": \"Panel Title\",\n       \"type\": \"text\"\n+    },\n+    {\n+      \"gridPos\": {\n+        \"h\": 9,\n+        \"w\": 12,\n+        \"x\": 0,\n+        \"y\": 9\n+      },\n+      \"id\": 2,\n+      \"options\": {\n+        \"mode\": \"markdown\",\n+        \"content\": \"VariableUnderTestText: ${VariableUnderTest:text}\"\n+      },\n+      \"pluginVersion\": \"8.4.0-pre\",\n+      \"title\": \"Panel Title\",\n+      \"type\": \"text\"\n+    },\n+    {\n+      \"gridPos\": {\n+        \"h\": 9,\n+        \"w\": 12,\n+        \"x\": 0,\n+        \"y\": 18\n+      },\n+      \"id\": 2,\n+      \"options\": {\n+        \"mode\": \"markdown\",\n+        \"content\": \"VariableUnderTestRaw: ${VariableUnderTest:raw}\"\n+      },\n+      \"pluginVersion\": \"8.4.0-pre\",\n+      \"title\": \"Panel Title\",\n+      \"type\": \"text\"\n     }\n   ],\n   \"schemaVersion\": 35,\ndiff --git a/e2e/dashboards-suite/new-datasource-variable.spec.ts b/e2e/dashboards-suite/new-datasource-variable.spec.ts\nindex 1008347464e64..1bc784b321315 100644\n--- a/e2e/dashboards-suite/new-datasource-variable.spec.ts\n+++ b/e2e/dashboards-suite/new-datasource-variable.spec.ts\n@@ -38,6 +38,7 @@ describe('Variables - Datasource', () => {\n     e2e.pages.Dashboard.SubMenu.submenuItemValueDropDownOptionTexts('gdev-slow-prometheus').click();\n \n     // Assert it was rendered\n-    e2e().get('.markdown-html').should('include.text', 'VariableUnderTest: gdev-slow-prometheus');\n+    e2e().get('.markdown-html').should('include.text', 'VariableUnderTest: gdev-slow-prometheus-uid');\n+    e2e().get('.markdown-html').should('include.text', 'VariableUnderTestText: gdev-slow-prometheus');\n   });\n });\ndiff --git a/public/app/features/plugins/datasource_srv.ts b/public/app/features/plugins/datasource_srv.ts\nindex c31c13c190081..0ebe1891ce290 100644\n--- a/public/app/features/plugins/datasource_srv.ts\n+++ b/public/app/features/plugins/datasource_srv.ts\n@@ -254,7 +254,8 @@ export class DatasourceSrv implements DataSourceService {\n           // Support for multi-value variables with only one selected datasource\n           dsValue = dsValue[0];\n         }\n-        const dsSettings = !Array.isArray(dsValue) && this.settingsMapByName[dsValue];\n+        const dsSettings =\n+          !Array.isArray(dsValue) && (this.settingsMapByName[dsValue] || this.settingsMapByUid[dsValue]);\n \n         if (dsSettings) {\n           const key = `$\\{${variable.name}\\}`;\ndiff --git a/public/app/features/plugins/tests/datasource_srv.test.ts b/public/app/features/plugins/tests/datasource_srv.test.ts\nindex 319cf5ed141e7..a6ff1cc3b2ca2 100644\n--- a/public/app/features/plugins/tests/datasource_srv.test.ts\n+++ b/public/app/features/plugins/tests/datasource_srv.test.ts\n@@ -18,6 +18,13 @@ const templateSrv: any = {\n         value: 'BBB',\n       },\n     },\n+    {\n+      type: 'datasource',\n+      name: 'datasourceByUid',\n+      current: {\n+        value: 'uid-code-DDDD',\n+      },\n+    },\n     {\n       type: 'datasource',\n       name: 'datasourceDefault',\n@@ -32,6 +39,7 @@ const templateSrv: any = {\n     }\n \n     let result = v.replace('${datasource}', 'BBB');\n+    result = result.replace('${datasourceByUid}', 'DDDD');\n     result = result.replace('${datasourceDefault}', 'default');\n     return result;\n   },\n@@ -103,6 +111,12 @@ describe('datasource_srv', () => {\n       meta: { metrics: true },\n       isDefault: true,\n     },\n+    DDDD: {\n+      type: 'test-db',\n+      name: 'DDDD',\n+      uid: 'uid-code-DDDD',\n+      meta: { metrics: true },\n+    },\n     Jaeger: {\n       type: 'jaeger-db',\n       name: 'Jaeger',\n@@ -165,7 +179,7 @@ describe('datasource_srv', () => {\n         expect(dataSourceSrv.getInstanceSettings({ uid: 'uid-code-mmm' })).toBe(ds);\n       });\n \n-      it('should work with variable', () => {\n+      it('should work with variable by ds name', () => {\n         const ds = dataSourceSrv.getInstanceSettings('${datasource}');\n         expect(ds?.name).toBe('${datasource}');\n         expect(ds?.uid).toBe('${datasource}');\n@@ -177,6 +191,18 @@ describe('datasource_srv', () => {\n         `);\n       });\n \n+      it('should work with variable by ds value (uid)', () => {\n+        const ds = dataSourceSrv.getInstanceSettings('${datasourceByUid}');\n+        expect(ds?.name).toBe('${datasourceByUid}');\n+        expect(ds?.uid).toBe('${datasourceByUid}');\n+        expect(ds?.rawRef).toMatchInlineSnapshot(`\n+          {\n+            \"type\": \"test-db\",\n+            \"uid\": \"uid-code-DDDD\",\n+          }\n+        `);\n+      });\n+\n       it('should work with variable via scopedVars', () => {\n         const ds = dataSourceSrv.getInstanceSettings('${datasource}', {\n           datasource: { text: 'Prom', value: 'uid-code-aaa' },\n@@ -247,7 +273,7 @@ describe('datasource_srv', () => {\n     describe('when getting external metric sources', () => {\n       it('should return list of explore sources', () => {\n         const externalSources = dataSourceSrv.getExternal();\n-        expect(externalSources.length).toBe(6);\n+        expect(externalSources.length).toBe(7);\n       });\n     });\n \n@@ -260,8 +286,9 @@ describe('datasource_srv', () => {\n \n     it('Can get list of data sources with variables: true', () => {\n       const list = dataSourceSrv.getList({ metrics: true, variables: true });\n-      expect(list[0].name).toBe('${datasourceDefault}');\n-      expect(list[1].name).toBe('${datasource}');\n+      expect(list[0].name).toBe('${datasourceByUid}');\n+      expect(list[1].name).toBe('${datasourceDefault}');\n+      expect(list[2].name).toBe('${datasource}');\n     });\n \n     it('Can get list of data sources with tracing: true', () => {\n@@ -300,6 +327,14 @@ describe('datasource_srv', () => {\n             \"type\": \"test-db\",\n             \"uid\": \"uid-code-BBB\",\n           },\n+          {\n+            \"meta\": {\n+              \"metrics\": true,\n+            },\n+            \"name\": \"DDDD\",\n+            \"type\": \"test-db\",\n+            \"uid\": \"uid-code-DDDD\",\n+          },\n           {\n             \"meta\": {\n               \"annotations\": true,\ndiff --git a/public/app/features/variables/datasource/reducer.ts b/public/app/features/variables/datasource/reducer.ts\nindex 9e422dae7b56a..d28abaf014f8b 100644\n--- a/public/app/features/variables/datasource/reducer.ts\n+++ b/public/app/features/variables/datasource/reducer.ts\n@@ -42,7 +42,7 @@ export const dataSourceVariableSlice = createSlice({\n         }\n \n         if (isValid(source, regex)) {\n-          options.push({ text: source.name, value: source.name, selected: false });\n+          options.push({ text: source.name, value: source.uid, selected: false });\n         }\n \n         if (isDefault(source, regex)) {\ndiff --git a/public/app/features/variables/shared/testing/helpers.ts b/public/app/features/variables/shared/testing/helpers.ts\nindex ea9abfb7f48d3..83e02bf29e24a 100644\n--- a/public/app/features/variables/shared/testing/helpers.ts\n+++ b/public/app/features/variables/shared/testing/helpers.ts\n@@ -3,7 +3,7 @@ import { DataSourceInstanceSettings, DataSourceJsonData, DataSourcePluginMeta }\n export function getDataSourceInstanceSetting(name: string, meta: DataSourcePluginMeta): DataSourceInstanceSettings {\n   return {\n     id: 1,\n-    uid: '',\n+    uid: name,\n     type: '',\n     name,\n     meta,\ndiff --git a/public/app/features/variables/shared/testing/optionsVariableBuilder.ts b/public/app/features/variables/shared/testing/optionsVariableBuilder.ts\nindex 18f2100e0b184..97bed58572a00 100644\n--- a/public/app/features/variables/shared/testing/optionsVariableBuilder.ts\n+++ b/public/app/features/variables/shared/testing/optionsVariableBuilder.ts\n@@ -3,14 +3,20 @@ import { VariableOption, VariableWithOptions } from 'app/features/variables/type\n import { VariableBuilder } from './variableBuilder';\n \n export class OptionsVariableBuilder<T extends VariableWithOptions> extends VariableBuilder<T> {\n-  withOptions(...texts: string[]) {\n+  withOptions(...options: Array<string | { text: string; value: string }>) {\n     this.variable.options = [];\n-    for (let index = 0; index < texts.length; index++) {\n-      this.variable.options.push({\n-        text: texts[index],\n-        value: texts[index],\n-        selected: false,\n-      });\n+    for (let index = 0; index < options.length; index++) {\n+      const option = options[index];\n+\n+      if (typeof option === 'string') {\n+        this.variable.options.push({\n+          text: option,\n+          value: option,\n+          selected: false,\n+        });\n+      } else {\n+        this.variable.options.push({ ...option, selected: false });\n+      }\n     }\n     return this;\n   }\ndiff --git a/public/app/features/variables/state/actions.test.ts b/public/app/features/variables/state/actions.test.ts\nindex 3ec73fe3137b9..675c39c3cb4d2 100644\n--- a/public/app/features/variables/state/actions.test.ts\n+++ b/public/app/features/variables/state/actions.test.ts\n@@ -381,6 +381,74 @@ describe('shared actions', () => {\n       });\n     });\n \n+    describe('and not multivalue, but with currentValue specified', () => {\n+      const A = { text: 'A', value: 'a-uid' };\n+      const B = { text: 'B', value: 'b-uid' };\n+      const C = { text: 'C', value: 'c-uid' };\n+\n+      it.each`\n+        withOptions  | currentText  | currentValue | defaultValue | expected\n+        ${[A, B, C]} | ${undefined} | ${undefined} | ${undefined} | ${A}\n+        ${[A, B, C]} | ${'B'}       | ${'b-uid'}   | ${undefined} | ${B}\n+        ${[A, B, C]} | ${'B'}       | ${undefined} | ${undefined} | ${B}\n+        ${[A, B, C]} | ${undefined} | ${'b-uid'}   | ${undefined} | ${B}\n+        ${[A, B, C]} | ${'Old B'}   | ${'b-uid'}   | ${undefined} | ${B}\n+        ${[A, B, C]} | ${undefined} | ${'x-uid'}   | ${'b-uid'}   | ${B}\n+        ${[A, B, C]} | ${undefined} | ${'b-uid'}   | ${'c-uid'}   | ${B}\n+        ${[A, B, C]} | ${undefined} | ${'x-uid'}   | ${undefined} | ${A}\n+        ${undefined} | ${undefined} | ${'b-uid'}   | ${undefined} | ${'should not dispatch setCurrentVariableValue'}\n+      `(\n+        'then correct actions are dispatched',\n+        async ({ withOptions, currentText, currentValue, defaultValue, expected }) => {\n+          let custom;\n+          const key = 'key';\n+          if (!withOptions) {\n+            custom = customBuilder()\n+              .withId('0')\n+              .withRootStateKey(key)\n+              .withCurrent(currentText, currentValue)\n+              .withoutOptions()\n+              .build();\n+          } else {\n+            custom = customBuilder()\n+              .withId('0')\n+              .withRootStateKey(key)\n+              .withOptions(...withOptions)\n+              .withCurrent(currentText, currentValue)\n+              .build();\n+          }\n+\n+          const tester = await reduxTester<TemplatingReducerType>()\n+            .givenRootReducer(getTemplatingRootReducer())\n+            .whenActionIsDispatched(\n+              toKeyedAction(key, addVariable(toVariablePayload(custom, { global: false, index: 0, model: custom })))\n+            )\n+            .whenAsyncActionIsDispatched(\n+              validateVariableSelectionState(toKeyedVariableIdentifier(custom), defaultValue),\n+              true\n+            );\n+\n+          await tester.thenDispatchedActionsPredicateShouldEqual((dispatchedActions) => {\n+            const expectedActions: AnyAction[] = withOptions\n+              ? [\n+                  toKeyedAction(\n+                    key,\n+                    setCurrentVariableValue(\n+                      toVariablePayload(\n+                        { type: 'custom', id: '0' },\n+                        { option: { text: expected.text, value: expected.value, selected: false } }\n+                      )\n+                    )\n+                  ),\n+                ]\n+              : [];\n+            expect(dispatchedActions).toEqual(expectedActions);\n+            return true;\n+          });\n+        }\n+      );\n+    });\n+\n     describe('and multivalue', () => {\n       it.each`\n         withOptions        | withCurrent   | defaultValue | expectedText  | expectedSelected\ndiff --git a/public/app/features/variables/state/actions.ts b/public/app/features/variables/state/actions.ts\nindex b2ce9dafc1c07..0b38df8740885 100644\n--- a/public/app/features/variables/state/actions.ts\n+++ b/public/app/features/variables/state/actions.ts\n@@ -60,6 +60,7 @@ import {\n   ensureStringValues,\n   ExtendedUrlQueryMap,\n   getCurrentText,\n+  getCurrentValue,\n   getVariableRefresh,\n   hasOngoingTransaction,\n   toKeyedVariableIdentifier,\n@@ -522,14 +523,16 @@ export const validateVariableSelectionState = (\n \n     // 1. find the current value\n     const text = getCurrentText(variableInState);\n-    option = variableInState.options?.find((v) => v.text === text);\n+    const value = getCurrentValue(variableInState);\n+\n+    option = variableInState.options?.find((v: VariableOption) => v.text === text || v.value === value);\n     if (option) {\n       return setValue(variableInState, option);\n     }\n \n     // 2. find the default value\n     if (defaultValue) {\n-      option = variableInState.options?.find((v) => v.text === defaultValue);\n+      option = variableInState.options?.find((v) => v.text === defaultValue || v.value === defaultValue);\n       if (option) {\n         return setValue(variableInState, option);\n       }\n",
+  "metadata": {
+    "v2_fetcher_version": 1,
+    "v2_fetched_at_unix": 1777501067,
+    "v2_diff_cap_bytes": 50000,
+    "v2_body_cap_bytes": 8000,
+    "v2_diff_truncated": false,
+    "v2_raw_diff_chars": 13989,
+    "v2_raw_body_chars": 5828,
+    "v2_rag_source": "rebuilt_v2_clean_changed_files",
+    "v2_rag_chunks_copied": 8
+  },
+  "similar_chunks": [
+    {
+      "file": "public/app/features/variables/state/initVariableTransaction.test.ts",
+      "start_line": 40,
+      "end_line": 84,
+      "similarity": 0.8394,
+      "related_to": "public/app/features/variables/state/actions.test.ts",
+      "content_preview": "er(),\n  createConstantVariableAdapter(),\n  createAdHocVariableAdapter(),\n  createDataSourceVariableAdapter(),\n]);\n\nfunction getTestContext(variables?: VariableModel[]) {\n  const key = 'key';\n  const constant = constantBuilder().withId('constant').withName('constant').build();\n  const templating = { list: variables ?? [constant] };\n  const getInstanceSettingsMock = jest.fn().mockReturnValue(undefined);\n  setDataSourceSrv({\n    registerRuntimeDataSource: jest.fn(),\n    get: jest.fn().mockResolvedValue({}),\n    getList: jest.fn().mockReturnValue([]),\n    getInstanceSettings: getInstanceSettingsMock,\n    reload: jest.fn(),\n  });\n  const variableQueryRunner = {\n    cancelRequest: jest.fn(),\n    queueRequest: jest.fn(),\n    getResponse: () => toAsyncOfResult({ state: LoadingState.Done, identifie"
+    },
+    {
+      "file": "public/app/features/variables/state/onTimeRangeUpdated.test.ts",
+      "start_line": 1,
+      "end_line": 42,
+      "similarity": 0.8326,
+      "related_to": "public/app/features/variables/state/actions.test.ts",
+      "content_preview": "import { dateTime, TimeRange, VariableRefresh } from '@grafana/data';\nimport { config, DataSourceSrv } from '@grafana/runtime';\nimport * as runtime from '@grafana/runtime';\nimport { DashboardState } from 'app/types/dashboard';\n\nimport { reduxTester } from '../../../../test/core/redux/reduxTester';\nimport { silenceConsoleOutput } from '../../../../test/core/utils/silenceConsoleOutput';\nimport { appEvents } from '../../../core/app_events';\nimport { notifyApp } from '../../../core/reducers/appNotification';\nimport { DashboardModel } from '../../dashboard/state/DashboardModel';\nimport { createDashboardModelFixture } from '../../dashboard/state/__fixtures__/dashboardFixtures';\nimport { TemplateSrv } from '../../templating/template_srv';\nimport { variableAdapters } from '../adapters';\nimport { c"
+    },
+    {
+      "file": "public/app/features/variables/state/reducers.test.ts",
+      "start_line": 1,
+      "end_line": 61,
+      "similarity": 0.8273,
+      "related_to": "public/app/features/variables/state/actions.test.ts",
+      "content_preview": "import { createAction } from '@reduxjs/toolkit';\nimport { ComponentType } from 'react';\n\nimport { QueryVariableModel, VariableType } from '@grafana/data';\n\nimport { reducerTester } from '../../../../test/core/redux/reducerTester';\nimport { VariableAdapter, variableAdapters } from '../adapters';\nimport { VariableEditorProps } from '../editor/types';\nimport { VariablePickerProps } from '../pickers/types';\nimport { toVariablePayload } from '../utils';\n\nimport { createQueryVariable } from './__tests__/fixtures';\nimport { VariablePayload, VariablesState } from './types';\nimport { cleanVariables, variablesReducer } from './variablesReducer';\n\nconst variableAdapter: VariableAdapter<QueryVariableModel> = {\n  id: 'mock' as unknown as VariableType,\n  name: 'Mock label',\n  description: 'Mock descript"
+    },
+    {
+      "file": "public/app/features/variables/state/initVariableTransaction.test.ts",
+      "start_line": 81,
+      "end_line": 119,
+      "similarity": 0.8208,
+      "related_to": "public/app/features/variables/state/actions.test.ts",
+      "content_preview": "type);\n        expect(dispatchedActions[1].payload.action.payload.id).toEqual('__dashboard');\n        expect(dispatchedActions[2].payload.action.type).toEqual(addVariable.type);\n        expect(dispatchedActions[2].payload.action.payload.id).toEqual('__org');\n        expect(dispatchedActions[3].payload.action.type).toEqual(addVariable.type);\n        expect(dispatchedActions[3].payload.action.payload.id).toEqual('__user');\n        expect(dispatchedActions[4]).toEqual(\n          toKeyedAction(key, addVariable(toVariablePayload(constant, { global: false, index: 0, model: constant })))\n        );\n        expect(dispatchedActions[5]).toEqual(toKeyedAction(key, variableStateNotStarted(toVariablePayload(constant))));\n        expect(dispatchedActions[6]).toEqual(toKeyedAction(key, variableStateComp"
+    },
+    {
+      "file": "public/app/features/variables/state/processVariable.test.ts",
+      "start_line": 1,
+      "end_line": 48,
+      "similarity": 0.8118,
+      "related_to": "public/app/features/variables/state/actions.test.ts",
+      "content_preview": "import { UrlQueryMap, VariableRefresh } from '@grafana/data';\nimport { setDataSourceSrv } from '@grafana/runtime';\nimport { DashboardModel } from 'app/features/dashboard/state/DashboardModel';\nimport { DatasourceSrv } from 'app/features/plugins/datasource_srv';\n\nimport { reduxTester } from '../../../../test/core/redux/reduxTester';\nimport { variableAdapters } from '../adapters';\nimport { createCustomVariableAdapter } from '../custom/adapter';\nimport { createCustomOptionsFromQuery } from '../custom/reducer';\nimport { setVariableQueryRunner, VariableQueryRunner } from '../query/VariableQueryRunner';\nimport { createQueryVariableAdapter } from '../query/adapter';\nimport { updateVariableOptions } from '../query/reducer';\nimport { customBuilder, queryBuilder } from '../shared/testing/builders';\n"
+    },
+    {
+      "file": "public/app/features/variables/state/initVariableTransaction.test.ts",
+      "start_line": 1,
+      "end_line": 48,
+      "similarity": 0.8114,
+      "related_to": "public/app/features/variables/state/actions.test.ts",
+      "content_preview": "import { DataSourceRef, LoadingState } from '@grafana/data';\nimport { setDataSourceSrv } from '@grafana/runtime';\nimport { DashboardModel } from 'app/features/dashboard/state/DashboardModel';\n\nimport { reduxTester } from '../../../../test/core/redux/reduxTester';\nimport { toAsyncOfResult } from '../../query/state/DashboardQueryRunner/testHelpers';\nimport { variableAdapters } from '../adapters';\nimport { createAdHocVariableAdapter } from '../adhoc/adapter';\nimport { createConstantVariableAdapter } from '../constant/adapter';\nimport { createDataSourceVariableAdapter } from '../datasource/adapter';\nimport { createDataSourceOptions } from '../datasource/reducer';\nimport { cleanEditorState } from '../editor/reducer';\nimport { cleanPickerState } from '../pickers/OptionsPicker/reducer';\nimport { "
+    },
+    {
+      "file": "public/app/features/variables/state/sharedReducer.ts",
+      "start_line": 1,
+      "end_line": 45,
+      "similarity": 0.808,
+      "related_to": "public/app/features/variables/datasource/reducer.ts",
+      "content_preview": "import { createSlice, PayloadAction } from '@reduxjs/toolkit';\nimport { cloneDeep, defaults as lodashDefaults } from 'lodash';\n\nimport { LoadingState, VariableType, TypedVariableModel, VariableOption } from '@grafana/data';\n\nimport { variableAdapters } from '../adapters';\nimport { changeVariableNameSucceeded } from '../editor/reducer';\nimport { hasOptions } from '../guard';\nimport { ensureStringValues } from '../utils';\n\nimport { getInstanceState, getNextVariableIndex } from './selectors';\nimport { AddVariable, initialVariablesState, VariablePayload, VariablesState } from './types';\n\nconst sharedReducerSlice = createSlice({\n  name: 'templating/shared',\n  initialState: initialVariablesState,\n  reducers: {\n    addVariable: (state: VariablesState, action: PayloadAction<VariablePayload<AddVari"
+    },
+    {
+      "file": "public/app/features/variables/state/onTimeRangeUpdated.test.ts",
+      "start_line": 91,
+      "end_line": 169,
+      "similarity": 0.7924,
+      "related_to": "public/app/features/variables/state/actions.test.ts",
+      "content_preview": "\n  const startRefreshMock = jest.fn();\n  dashboard.templateVariableValueUpdated = templateVariableValueUpdatedMock;\n  dashboard.startRefresh = startRefreshMock;\n  const dashboardState = {\n    getModel: () => dashboard,\n  } as unknown as DashboardState;\n  const adapterInterval = variableAdapters.get('interval');\n  const adapterQuery = variableAdapters.get('query');\n  const templatingState = {\n    variables: {\n      'interval-0': { ...interval },\n      'constant-1': { ...constant },\n    },\n  };\n  const preloadedState = {\n    dashboard: dashboardState,\n    ...getPreloadedState(key, templatingState),\n  } as unknown as RootReducerType;\n\n  return {\n    key,\n    interval,\n    range,\n    dependencies,\n    adapterInterval,\n    adapterQuery,\n    preloadedState,\n    updateTimeRangeMock,\n    templateV"
+    }
+  ],
+  "rag_evidence": {
+    "similar_code": [
+      {
+        "file": "public/app/features/variables/state/initVariableTransaction.test.ts",
+        "start_line": 40,
+        "end_line": 84,
+        "similarity": 0.8394,
+        "related_to": "public/app/features/variables/state/actions.test.ts",
+        "content_preview": "er(),\n  createConstantVariableAdapter(),\n  createAdHocVariableAdapter(),\n  createDataSourceVariableAdapter(),\n]);\n\nfunction getTestContext(variables?: VariableModel[]) {\n  const key = 'key';\n  const constant = constantBuilder().withId('constant').withName('constant').build();\n  const templating = { list: variables ?? [constant] };\n  const getInstanceSettingsMock = jest.fn().mockReturnValue(undefined);\n  setDataSourceSrv({\n    registerRuntimeDataSource: jest.fn(),\n    get: jest.fn().mockResolvedValue({}),\n    getList: jest.fn().mockReturnValue([]),\n    getInstanceSettings: getInstanceSettingsMock,\n    reload: jest.fn(),\n  });\n  const variableQueryRunner = {\n    cancelRequest: jest.fn(),\n    queueRequest: jest.fn(),\n    getResponse: () => toAsyncOfResult({ state: LoadingState.Done, identifie"
+      },
+      {
+        "file": "public/app/features/variables/state/onTimeRangeUpdated.test.ts",
+        "start_line": 1,
+        "end_line": 42,
+        "similarity": 0.8326,
+        "related_to": "public/app/features/variables/state/actions.test.ts",
+        "content_preview": "import { dateTime, TimeRange, VariableRefresh } from '@grafana/data';\nimport { config, DataSourceSrv } from '@grafana/runtime';\nimport * as runtime from '@grafana/runtime';\nimport { DashboardState } from 'app/types/dashboard';\n\nimport { reduxTester } from '../../../../test/core/redux/reduxTester';\nimport { silenceConsoleOutput } from '../../../../test/core/utils/silenceConsoleOutput';\nimport { appEvents } from '../../../core/app_events';\nimport { notifyApp } from '../../../core/reducers/appNotification';\nimport { DashboardModel } from '../../dashboard/state/DashboardModel';\nimport { createDashboardModelFixture } from '../../dashboard/state/__fixtures__/dashboardFixtures';\nimport { TemplateSrv } from '../../templating/template_srv';\nimport { variableAdapters } from '../adapters';\nimport { c"
+      },
+      {
+        "file": "public/app/features/variables/state/reducers.test.ts",
+        "start_line": 1,
+        "end_line": 61,
+        "similarity": 0.8273,
+        "related_to": "public/app/features/variables/state/actions.test.ts",
+        "content_preview": "import { createAction } from '@reduxjs/toolkit';\nimport { ComponentType } from 'react';\n\nimport { QueryVariableModel, VariableType } from '@grafana/data';\n\nimport { reducerTester } from '../../../../test/core/redux/reducerTester';\nimport { VariableAdapter, variableAdapters } from '../adapters';\nimport { VariableEditorProps } from '../editor/types';\nimport { VariablePickerProps } from '../pickers/types';\nimport { toVariablePayload } from '../utils';\n\nimport { createQueryVariable } from './__tests__/fixtures';\nimport { VariablePayload, VariablesState } from './types';\nimport { cleanVariables, variablesReducer } from './variablesReducer';\n\nconst variableAdapter: VariableAdapter<QueryVariableModel> = {\n  id: 'mock' as unknown as VariableType,\n  name: 'Mock label',\n  description: 'Mock descript"
+      },
+      {
+        "file": "public/app/features/variables/state/initVariableTransaction.test.ts",
+        "start_line": 81,
+        "end_line": 119,
+        "similarity": 0.8208,
+        "related_to": "public/app/features/variables/state/actions.test.ts",
+        "content_preview": "type);\n        expect(dispatchedActions[1].payload.action.payload.id).toEqual('__dashboard');\n        expect(dispatchedActions[2].payload.action.type).toEqual(addVariable.type);\n        expect(dispatchedActions[2].payload.action.payload.id).toEqual('__org');\n        expect(dispatchedActions[3].payload.action.type).toEqual(addVariable.type);\n        expect(dispatchedActions[3].payload.action.payload.id).toEqual('__user');\n        expect(dispatchedActions[4]).toEqual(\n          toKeyedAction(key, addVariable(toVariablePayload(constant, { global: false, index: 0, model: constant })))\n        );\n        expect(dispatchedActions[5]).toEqual(toKeyedAction(key, variableStateNotStarted(toVariablePayload(constant))));\n        expect(dispatchedActions[6]).toEqual(toKeyedAction(key, variableStateComp"
+      },
+      {
+        "file": "public/app/features/variables/state/processVariable.test.ts",
+        "start_line": 1,
+        "end_line": 48,
+        "similarity": 0.8118,
+        "related_to": "public/app/features/variables/state/actions.test.ts",
+        "content_preview": "import { UrlQueryMap, VariableRefresh } from '@grafana/data';\nimport { setDataSourceSrv } from '@grafana/runtime';\nimport { DashboardModel } from 'app/features/dashboard/state/DashboardModel';\nimport { DatasourceSrv } from 'app/features/plugins/datasource_srv';\n\nimport { reduxTester } from '../../../../test/core/redux/reduxTester';\nimport { variableAdapters } from '../adapters';\nimport { createCustomVariableAdapter } from '../custom/adapter';\nimport { createCustomOptionsFromQuery } from '../custom/reducer';\nimport { setVariableQueryRunner, VariableQueryRunner } from '../query/VariableQueryRunner';\nimport { createQueryVariableAdapter } from '../query/adapter';\nimport { updateVariableOptions } from '../query/reducer';\nimport { customBuilder, queryBuilder } from '../shared/testing/builders';\n"
+      },
+      {
+        "file": "public/app/features/variables/state/initVariableTransaction.test.ts",
+        "start_line": 1,
+        "end_line": 48,
+        "similarity": 0.8114,
+        "related_to": "public/app/features/variables/state/actions.test.ts",
+        "content_preview": "import { DataSourceRef, LoadingState } from '@grafana/data';\nimport { setDataSourceSrv } from '@grafana/runtime';\nimport { DashboardModel } from 'app/features/dashboard/state/DashboardModel';\n\nimport { reduxTester } from '../../../../test/core/redux/reduxTester';\nimport { toAsyncOfResult } from '../../query/state/DashboardQueryRunner/testHelpers';\nimport { variableAdapters } from '../adapters';\nimport { createAdHocVariableAdapter } from '../adhoc/adapter';\nimport { createConstantVariableAdapter } from '../constant/adapter';\nimport { createDataSourceVariableAdapter } from '../datasource/adapter';\nimport { createDataSourceOptions } from '../datasource/reducer';\nimport { cleanEditorState } from '../editor/reducer';\nimport { cleanPickerState } from '../pickers/OptionsPicker/reducer';\nimport { "
+      },
+      {
+        "file": "public/app/features/variables/state/sharedReducer.ts",
+        "start_line": 1,
+        "end_line": 45,
+        "similarity": 0.808,
+        "related_to": "public/app/features/variables/datasource/reducer.ts",
+        "content_preview": "import { createSlice, PayloadAction } from '@reduxjs/toolkit';\nimport { cloneDeep, defaults as lodashDefaults } from 'lodash';\n\nimport { LoadingState, VariableType, TypedVariableModel, VariableOption } from '@grafana/data';\n\nimport { variableAdapters } from '../adapters';\nimport { changeVariableNameSucceeded } from '../editor/reducer';\nimport { hasOptions } from '../guard';\nimport { ensureStringValues } from '../utils';\n\nimport { getInstanceState, getNextVariableIndex } from './selectors';\nimport { AddVariable, initialVariablesState, VariablePayload, VariablesState } from './types';\n\nconst sharedReducerSlice = createSlice({\n  name: 'templating/shared',\n  initialState: initialVariablesState,\n  reducers: {\n    addVariable: (state: VariablesState, action: PayloadAction<VariablePayload<AddVari"
+      },
+      {
+        "file": "public/app/features/variables/state/onTimeRangeUpdated.test.ts",
+        "start_line": 91,
+        "end_line": 169,
+        "similarity": 0.7924,
+        "related_to": "public/app/features/variables/state/actions.test.ts",
+        "content_preview": "\n  const startRefreshMock = jest.fn();\n  dashboard.templateVariableValueUpdated = templateVariableValueUpdatedMock;\n  dashboard.startRefresh = startRefreshMock;\n  const dashboardState = {\n    getModel: () => dashboard,\n  } as unknown as DashboardState;\n  const adapterInterval = variableAdapters.get('interval');\n  const adapterQuery = variableAdapters.get('query');\n  const templatingState = {\n    variables: {\n      'interval-0': { ...interval },\n      'constant-1': { ...constant },\n    },\n  };\n  const preloadedState = {\n    dashboard: dashboardState,\n    ...getPreloadedState(key, templatingState),\n  } as unknown as RootReducerType;\n\n  return {\n    key,\n    interval,\n    range,\n    dependencies,\n    adapterInterval,\n    adapterQuery,\n    preloadedState,\n    updateTimeRangeMock,\n    templateV"
+      }
+    ]
+  }
+}

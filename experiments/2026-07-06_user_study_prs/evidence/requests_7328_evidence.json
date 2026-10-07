@@ -1,0 +1,50 @@
+{
+ "pr": {
+  "number": 7328,
+  "title": "Prevent Response self-reference in redirect history",
+  "body": "This PR should address #6295, avoiding the unnecessary addition of the current response in its own redirect history. Ideally, we should remove intermediate `.history` assignment entirely, as `Session.send()` overwrites it on the final response anyway. The intermediary behavior introduces a number of issues both in intuitiveness and a reference explosion delaying the objects being properly cleaned up after use.\r\n\r\nThat's unfortunately a breaking change we'll have to wait on, but this should fix the immediate issue for now.",
+  "repo": "psf/requests",
+  "head_sha": "3ee28b806f8bc414b29f7b4561e53c161924fe66",
+  "merged_at": "2026-04-05T15:31:02Z"
+ },
+ "changed_files": [
+  {
+   "path": "src/requests/sessions.py",
+   "language": "python",
+   "added": 1,
+   "deleted": 2
+  },
+  {
+   "path": "tests/test_requests.py",
+   "language": "python",
+   "added": 8,
+   "deleted": 0
+  }
+ ],
+ "nearest_tests": [
+  {
+   "path": "tests/test_requests.py",
+   "relationship": "tests",
+   "source_file": "requests.sessions"
+  }
+ ],
+ "dependent_files": [
+  {
+   "path": "src/requests/__init__.py",
+   "relationship": "imports",
+   "source_file": "sessions"
+  },
+  {
+   "path": "src/requests/api.py",
+   "relationship": "imports",
+   "source_file": "sessions"
+  }
+ ],
+ "diff_summary": "2 files changed",
+ "full_diff": "diff --git a/src/requests/sessions.py b/src/requests/sessions.py\nindex 578cc44d5c..0f3cdff3f5 100644\n--- a/src/requests/sessions.py\n+++ b/src/requests/sessions.py\n@@ -179,9 +179,8 @@ def resolve_redirects(\n             prepared_request = req.copy()\n \n             # Update history and keep track of redirects.\n-            # resp.history must ignore the original request in this loop\n+            resp.history = hist[:]\n             hist.append(resp)\n-            resp.history = hist[1:]\n \n             try:\n                 resp.content  # Consume socket so it can be released\ndiff --git a/tests/test_requests.py b/tests/test_requests.py\nindex a482dd727d..aa413359b6 100644\n--- a/tests/test_requests.py\n+++ b/tests/test_requests.py\n@@ -217,6 +217,14 @@ def test_HTTP_302_ALLOW_REDIRECT_GET(self, httpbin):\n         assert r.history[0].status_code == 302\n         assert r.history[0].is_redirect\n \n+    def test_redirect_history_no_self_reference(self, httpbin):\n+        r = requests.get(httpbin(\"redirect\", \"3\"))\n+        assert r.status_code == 200\n+        assert len(r.history) == 3\n+        for i, resp in enumerate(r.history):\n+            assert resp not in resp.history\n+            assert resp.history == r.history[:i]\n+\n     def test_HTTP_307_ALLOW_REDIRECT_POST(self, httpbin):\n         r = requests.post(\n             httpbin(\"redirect-to\"),\n",
+ "metadata": {
+  "kg_builder": "ast_import_resolver",
+  "built": "2026-07-06",
+  "note": "AST ImportFrom/Import resolution at PR head SHA; same relation class as deployed Joern+grep pipeline"
+ }
+}

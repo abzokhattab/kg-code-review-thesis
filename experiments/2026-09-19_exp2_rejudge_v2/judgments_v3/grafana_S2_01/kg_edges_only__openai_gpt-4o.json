@@ -1,0 +1,33 @@
+{
+  "candidate_mentions": [
+    {
+      "basename_collision": false,
+      "end": 798,
+      "evidence_id": "M010",
+      "excerpt": "\n\n## Evidence\n- `packages/grafana-data/src/dataframe/processDataFrame.ts:308`: The function signature of `toDataFrame` has changed to include `requiredCtx`.\n- `packages/grafana-data/src/transformations/matchers/mocks.ts`: This file calls `toDataFrame` but is not updated to pass the new `requiredCtx` parameter.\n\n## Impact\n- **Technical Impact:** The change can cause runtime errors in existing code paths that call `toDataFrame` without the new `requiredCtx` parameter. This cou",
+      "finding_passage_id": "P009",
+      "match_kind": "full_path",
+      "match_text": "packages/grafana-data/src/transformations/matchers/mocks.ts",
+      "oracle_path": "packages/grafana-data/src/transformations/matchers/mocks.ts",
+      "start": 739
+    }
+  ],
+  "causal_passage_id": "P011",
+  "decision_source": "llm_causal_adjudication",
+  "detected": true,
+  "evidence_id": "M010",
+  "executed_at_utc": "2026-09-19T15:10:38.043802+00:00",
+  "finding_passage_id": "P009",
+  "judge": "openai:gpt-4o",
+  "manifest_sha256": "5d4371a93d1b09f0491ecc12279f9f3ff5de23053b7a5e74650a749f58b472b0",
+  "model_alias": "openai:gpt-4o",
+  "model_snapshot": "unavailable-from-original-wrapper",
+  "original_verdict": false,
+  "prompt_sha256": "7592998ea40ccc0bde54587baeba84f6a24583824754e3dc9d6a46a9b3704352",
+  "reason_code": "specific_cross_file_link",
+  "response_wrapper": "bare",
+  "review_sha256": "43c3f619583ab77b11fb4e9dd584edf9dae6462e5c309dc9def929b34f0eccff",
+  "schema_sha256": "f70f714868ecd3d25508bb3e00b32ecbe6761b0ebc05f454ee10fa4d28efd013",
+  "schema_version": "exp2-adjudication-v3",
+  "system_sha256": "030b5e701c798b32afdabbbeb22db38f664db8c8fd8b862d2fcb98df63b6fb6b"
+}

@@ -1,0 +1,44 @@
+{
+  "candidate_mentions": [
+    {
+      "basename_collision": false,
+      "end": 576,
+      "evidence_id": "M001",
+      "excerpt": "_solver` function.\n\n## Evidence\n- `sklearn/linear_model/_sag.py:87`: The `sag_solver` function signature has changed, adding a new parameter `required_ctx`.\n- `sklearn/linear_model/_logistic.py:call-graph`: The `_logistic_regression_path` function calls `sag_solver` but does not pass the new `required_ctx` parameter.\n- `sklearn/linear_model/_ridge.py:call-graph`: The `_ridge_regression` function calls `sag_solver` but does not pass the new `required",
+      "finding_passage_id": "P008",
+      "match_kind": "full_path",
+      "match_text": "sklearn/linear_model/_logistic.py",
+      "oracle_path": "sklearn/linear_model/_logistic.py",
+      "start": 543
+    },
+    {
+      "basename_collision": false,
+      "end": 735,
+      "evidence_id": "M002",
+      "excerpt": "learn/linear_model/_logistic.py:call-graph`: The `_logistic_regression_path` function calls `sag_solver` but does not pass the new `required_ctx` parameter.\n- `sklearn/linear_model/_ridge.py:call-graph`: The `_ridge_regression` function calls `sag_solver` but does not pass the new `required_ctx` parameter.\n\n## Impact\n- The introduction of the `required_ctx` parameter without default values could break existing functionality in modules that depend",
+      "finding_passage_id": "P009",
+      "match_kind": "full_path",
+      "match_text": "sklearn/linear_model/_ridge.py",
+      "oracle_path": "sklearn/linear_model/_ridge.py",
+      "start": 705
+    }
+  ],
+  "causal_passage_id": "P011",
+  "decision_source": "llm_causal_adjudication",
+  "detected": true,
+  "evidence_id": "M001",
+  "executed_at_utc": "2026-09-19T15:09:10.369178+00:00",
+  "finding_passage_id": "P008",
+  "judge": "openai:gpt-4o",
+  "manifest_sha256": "5d4371a93d1b09f0491ecc12279f9f3ff5de23053b7a5e74650a749f58b472b0",
+  "model_alias": "openai:gpt-4o",
+  "model_snapshot": "unavailable-from-original-wrapper",
+  "original_verdict": true,
+  "prompt_sha256": "abb529ab63030aa88d757390b7dd098dd1f163b0584e989126e89c6a5a05781e",
+  "reason_code": "specific_cross_file_link",
+  "response_wrapper": "bare",
+  "review_sha256": "e9d86ce8dc72dce9482d5ae0ef29bed19b39679f3fe31f485bac4335c3af5a3a",
+  "schema_sha256": "f70f714868ecd3d25508bb3e00b32ecbe6761b0ebc05f454ee10fa4d28efd013",
+  "schema_version": "exp2-adjudication-v3",
+  "system_sha256": "030b5e701c798b32afdabbbeb22db38f664db8c8fd8b862d2fcb98df63b6fb6b"
+}

@@ -1,0 +1,188 @@
+{
+  "pr": {
+    "number": 68625,
+    "title": "[3.x] Add ability to pick random value from array",
+    "body": "Backport of https://github.com/godotengine/godot/pull/67444.",
+    "url": "https://github.com/godotengine/godot/pull/68625",
+    "repo": "godotengine/godot",
+    "base_branch": "3.x",
+    "head_branch": "pick_random",
+    "merged_at": "2022-11-14T22:52:12Z",
+    "state": "MERGED"
+  },
+  "changed_files": [
+    {
+      "path": "core/array.cpp",
+      "language": "cpp",
+      "added": 5,
+      "deleted": 0
+    },
+    {
+      "path": "core/array.h",
+      "language": "cpp",
+      "added": 1,
+      "deleted": 0
+    },
+    {
+      "path": "core/variant_call.cpp",
+      "language": "cpp",
+      "added": 2,
+      "deleted": 0
+    },
+    {
+      "path": "doc/classes/Array.xml",
+      "language": "xml",
+      "added": 10,
+      "deleted": 0
+    }
+  ],
+  "nearest_tests": [],
+  "dependent_files": [],
+  "diff_summary": "4 files changed",
+  "full_diff": "diff --git a/core/array.cpp b/core/array.cpp\nindex 056ee332f10c..08cdec7323a1 100644\n--- a/core/array.cpp\n+++ b/core/array.cpp\n@@ -31,6 +31,7 @@\n #include \"array.h\"\n \n #include \"core/hashfuncs.h\"\n+#include \"core/math/math_funcs.h\"\n #include \"core/object.h\"\n #include \"core/variant.h\"\n #include \"core/vector.h\"\n@@ -407,6 +408,10 @@ Variant Array::pop_front() {\n \t}\n \treturn Variant();\n }\n+Variant Array::pick_random() const {\n+\tERR_FAIL_COND_V_MSG(_p->array.size() == 0, Variant(), \"Can't take value from empty array.\");\n+\treturn operator[](Math::rand() % _p->array.size());\n+}\n \n Variant Array::pop_at(int p_pos) {\n \tif (_p->array.empty()) {\ndiff --git a/core/array.h b/core/array.h\nindex 09aed83981d5..2fcfc4ba813a 100644\n--- a/core/array.h\n+++ b/core/array.h\n@@ -72,6 +72,7 @@ class Array {\n \tvoid fill(const Variant &p_value);\n \n \tVariant front() const;\n+\tVariant pick_random() const;\n \tVariant back() const;\n \n \tArray &sort();\ndiff --git a/core/variant_call.cpp b/core/variant_call.cpp\nindex e57e6bde0594..db2a4671425e 100644\n--- a/core/variant_call.cpp\n+++ b/core/variant_call.cpp\n@@ -578,6 +578,7 @@ struct _VariantCall {\n \tVCALL_LOCALMEM2(Array, insert);\n \tVCALL_LOCALMEM1(Array, remove);\n \tVCALL_LOCALMEM0R(Array, front);\n+\tVCALL_LOCALMEM0R(Array, pick_random)\n \tVCALL_LOCALMEM0R(Array, back);\n \tVCALL_LOCALMEM2R(Array, find);\n \tVCALL_LOCALMEM2R(Array, rfind);\n@@ -1960,6 +1961,7 @@ void register_variant_methods() {\n \tADDFUNC1NC(ARRAY, NIL, Array, remove, INT, \"position\", varray());\n \tADDFUNC1NC(ARRAY, NIL, Array, erase, NIL, \"value\", varray());\n \tADDFUNC0R(ARRAY, NIL, Array, front, varray());\n+\tADDFUNC0R(ARRAY, NIL, Array, pick_random, varray())\n \tADDFUNC0R(ARRAY, NIL, Array, back, varray());\n \tADDFUNC2R(ARRAY, INT, Array, find, NIL, \"what\", INT, \"from\", varray(0));\n \tADDFUNC2R(ARRAY, INT, Array, rfind, NIL, \"what\", INT, \"from\", varray(-1));\ndiff --git a/doc/classes/Array.xml b/doc/classes/Array.xml\nindex 8ca08eae8a3f..5e9f692dadbb 100644\n--- a/doc/classes/Array.xml\n+++ b/doc/classes/Array.xml\n@@ -263,6 +263,16 @@\n \t\t\t\tReturns the minimum value contained in the array if all elements are of comparable types. If the elements can't be compared, [code]null[/code] is returned.\n \t\t\t</description>\n \t\t</method>\n+\t\t<method name=\"pick_random\">\n+\t\t\t<return type=\"Variant\" />\n+\t\t\t<description>\n+\t\t\t\tReturns a random value from the target array.\n+\t\t\t\t[codeblock]\n+\t\t\t\tvar array: Array[int] = [1, 2, 3, 4]\n+\t\t\t\tprint(array.pick_random())  # Prints either of the four numbers.\n+\t\t\t\t[/codeblock]\n+\t\t\t</description>\n+\t\t</method>\n \t\t<method name=\"pop_at\">\n \t\t\t<return type=\"Variant\" />\n \t\t\t<argument index=\"0\" name=\"position\" type=\"int\" />\n",
+  "metadata": {
+    "v2_fetcher_version": 1,
+    "v2_fetched_at_unix": 1777501230,
+    "v2_diff_cap_bytes": 50000,
+    "v2_body_cap_bytes": 8000,
+    "v2_diff_truncated": false,
+    "v2_raw_diff_chars": 2648,
+    "v2_raw_body_chars": 60,
+    "v2_rag_source": "rebuilt_v2_clean_changed_files",
+    "v2_rag_chunks_copied": 8
+  },
+  "similar_chunks": [
+    {
+      "file": "core/config/project_settings.h",
+      "start_line": 24,
+      "end_line": 81,
+      "similarity": 0.593,
+      "related_to": "doc/classes/Array.xml",
+      "content_preview": "OR A PARTICULAR PURPOSE AND NONINFRINGEMENT. */\n/* IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY   */\n/* CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,   */\n/* TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE      */\n/* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */\n/**************************************************************************/\n\n#pragma once\n\n#include \"core/object/object.h\"\n#include \"core/templates/rb_map.h\"\n\ntemplate <typename T>\nclass TypedArray;\n\nclass ProjectSettings : public Object {\n\tGDCLASS(ProjectSettings, Object);\n\t_THREAD_SAFE_CLASS_\n\tfriend class TestProjectSettingsInternalsAccessor;\n\n\tbool is_changed = false;\n\n\t// Starting version from 1 ensures that all callers can reset thei"
+    },
+    {
+      "file": "core/extension/extension_api_dump.cpp",
+      "start_line": 237,
+      "end_line": 286,
+      "similarity": 0.5884,
+      "related_to": "core/array.h",
+      "content_preview": "at64Array mismatch\");\n\t\tstatic_assert(type_size_array[Variant::PACKED_STRING_ARRAY][sizeof(void *)] == sizeof(PackedStringArray), \"Size of PackedStringArray mismatch\");\n\t\tstatic_assert(type_size_array[Variant::PACKED_VECTOR2_ARRAY][sizeof(void *)] == sizeof(PackedVector2Array), \"Size of PackedVector2Array mismatch\");\n\t\tstatic_assert(type_size_array[Variant::PACKED_VECTOR3_ARRAY][sizeof(void *)] == sizeof(PackedVector3Array), \"Size of PackedVector3Array mismatch\");\n\t\tstatic_assert(type_size_array[Variant::PACKED_COLOR_ARRAY][sizeof(void *)] == sizeof(PackedColorArray), \"Size of PackedColorArray mismatch\");\n\t\tstatic_assert(type_size_array[Variant::PACKED_VECTOR4_ARRAY][sizeof(void *)] == sizeof(PackedVector4Array), \"Size of PackedVector4Array mismatch\");\n\t\tstatic_assert(type_size_array[Varia"
+    },
+    {
+      "file": "core/io/marshalls.cpp",
+      "start_line": 787,
+      "end_line": 873,
+      "similarity": 0.5876,
+      "related_to": "core/variant_call.cpp",
+      "content_preview": ";\n\t\tcase Variant::CALLABLE: {\n\t\t\tr_variant = Callable();\n\t\t} break;\n\t\tcase Variant::SIGNAL: {\n\t\t\tString name;\n\t\t\tError err = _decode_string(buf, len, r_len, name);\n\t\t\tif (err) {\n\t\t\t\treturn err;\n\t\t\t}\n\n\t\t\tERR_FAIL_COND_V(len < 8, ERR_INVALID_DATA);\n\t\t\tObjectID id = ObjectID(decode_uint64(buf));\n\t\t\tif (r_len) {\n\t\t\t\t(*r_len) += 8;\n\t\t\t}\n\n\t\t\tr_variant = Signal(id, StringName(name));\n\t\t} break;\n\t\tcase Variant::DICTIONARY: {\n\t\t\tContainerType key_type;\n\n\t\t\t{\n\t\t\t\tContainerTypeKind key_type_kind = GET_CONTAINER_TYPE_KIND(header, TYPED_DICTIONARY_KEY);\n\t\t\t\tError err = _decode_container_type(buf, len, r_len, p_allow_objects, key_type_kind, key_type);\n\t\t\t\tif (err) {\n\t\t\t\t\treturn err;\n\t\t\t\t}\n\t\t\t}\n\n\t\t\tContainerType value_type;\n\n\t\t\t{\n\t\t\t\tContainerTypeKind value_type_kind = GET_CONTAINER_TYPE_KIND(header, TYP"
+    },
+    {
+      "file": "core/io/json.cpp",
+      "start_line": 1423,
+      "end_line": 1489,
+      "similarity": 0.5516,
+      "related_to": "doc/classes/Array.xml",
+      "content_preview": "arr.write[i] = Vector2(args[i * 2 + 0], args[i * 2 + 1]);\n\t\t\t\t\t}\n\n\t\t\t\t\treturn arr;\n\t\t\t\t} break;\n\t\t\t\tcase Variant::PACKED_VECTOR3_ARRAY: {\n\t\t\t\t\tLOAD_ARGS_CHECK_FACTOR(3);\n\n\t\t\t\t\tPackedVector3Array arr;\n\t\t\t\t\tarr.resize(args.size() / 3);\n\t\t\t\t\tfor (int i = 0; i < arr.size(); i++) {\n\t\t\t\t\t\tarr.write[i] = Vector3(args[i * 3 + 0], args[i * 3 + 1], args[i * 3 + 2]);\n\t\t\t\t\t}\n\n\t\t\t\t\treturn arr;\n\t\t\t\t} break;\n\t\t\t\tcase Variant::PACKED_COLOR_ARRAY: {\n\t\t\t\t\tLOAD_ARGS_CHECK_FACTOR(4);\n\n\t\t\t\t\tPackedColorArray arr;\n\t\t\t\t\tarr.resize(args.size() / 4);\n\t\t\t\t\tfor (int i = 0; i < arr.size(); i++) {\n\t\t\t\t\t\tarr.write[i] = Color(args[i * 4 + 0], args[i * 4 + 1], args[i * 4 + 2], args[i * 4 + 3]);\n\t\t\t\t\t}\n\n\t\t\t\t\treturn arr;\n\t\t\t\t} break;\n\t\t\t\tcase Variant::PACKED_VECTOR4_ARRAY: {\n\t\t\t\t\tLOAD_ARGS_CHECK_FACTOR(4);\n\n\t\t\t\t\tPackedVecto"
+    },
+    {
+      "file": "core/io/json.cpp",
+      "start_line": 764,
+      "end_line": 828,
+      "similarity": 0.5495,
+      "related_to": "core/variant_call.cpp",
+      "content_preview": " args = { aabb.position.x, aabb.position.y, aabb.position.z, aabb.size.x, aabb.size.y, aabb.size.z };\n\t\t\tRETURN_ARGS;\n\t\t} break;\n\t\tcase Variant::BASIS: {\n\t\t\tconst Basis b = p_variant;\n\n\t\t\tArray args = { b.get_column(0).x, b.get_column(0).y, b.get_column(0).z,\n\t\t\t\tb.get_column(1).x, b.get_column(1).y, b.get_column(1).z,\n\t\t\t\tb.get_column(2).x, b.get_column(2).y, b.get_column(2).z };\n\n\t\t\tRETURN_ARGS;\n\t\t} break;\n\t\tcase Variant::TRANSFORM3D: {\n\t\t\tconst Transform3D t = p_variant;\n\n\t\t\tArray args = { t.basis.get_column(0).x, t.basis.get_column(0).y, t.basis.get_column(0).z,\n\t\t\t\tt.basis.get_column(1).x, t.basis.get_column(1).y, t.basis.get_column(1).z,\n\t\t\t\tt.basis.get_column(2).x, t.basis.get_column(2).y, t.basis.get_column(2).z,\n\t\t\t\tt.origin.x, t.origin.y, t.origin.z };\n\n\t\t\tRETURN_ARGS;\n\t\t} break;"
+    },
+    {
+      "file": "core/extension/gdextension_interface.cpp",
+      "start_line": 1712,
+      "end_line": 1753,
+      "similarity": 0.5471,
+      "related_to": "core/variant_call.cpp",
+      "content_preview": "TER_INTERFACE_FUNC(print_warning);\n\tREGISTER_INTERFACE_FUNC(print_warning_with_message);\n\tREGISTER_INTERFACE_FUNC(print_script_error);\n\tREGISTER_INTERFACE_FUNC(print_script_error_with_message);\n\tREGISTER_INTERFACE_FUNC(get_native_struct_size);\n\tREGISTER_INTERFACE_FUNC(variant_new_copy);\n\tREGISTER_INTERFACE_FUNC(variant_new_nil);\n\tREGISTER_INTERFACE_FUNC(variant_destroy);\n\tREGISTER_INTERFACE_FUNC(variant_call);\n\tREGISTER_INTERFACE_FUNC(variant_call_static);\n\tREGISTER_INTERFACE_FUNC(variant_evaluate);\n\tREGISTER_INTERFACE_FUNC(variant_set);\n\tREGISTER_INTERFACE_FUNC(variant_set_named);\n\tREGISTER_INTERFACE_FUNC(variant_set_keyed);\n\tREGISTER_INTERFACE_FUNC(variant_set_indexed);\n\tREGISTER_INTERFACE_FUNC(variant_get);\n\tREGISTER_INTERFACE_FUNC(variant_get_named);\n\tREGISTER_INTERFACE_FUNC(variant_ge"
+    },
+    {
+      "file": "core/extension/extension_api_dump.cpp",
+      "start_line": 431,
+      "end_line": 495,
+      "similarity": 0.544,
+      "related_to": "core/variant_call.cpp",
+      "content_preview": "hile (true) {\n\t\t\t\tVariant::Type t = member_offset_array[idx].type;\n\t\t\t\tif (t != previous_type) {\n\t\t\t\t\tif (previous_type != Variant::NIL) {\n\t\t\t\t\t\td2[\"members\"] = members;\n\t\t\t\t\t\ttype_offsets.push_back(d2);\n\t\t\t\t\t}\n\t\t\t\t\tif (t == Variant::NIL) {\n\t\t\t\t\t\tbreak;\n\t\t\t\t\t}\n\n\t\t\t\t\tString name = t == Variant::VARIANT_MAX ? String(\"Variant\") : Variant::get_type_name(t);\n\t\t\t\t\td2 = Dictionary();\n\t\t\t\t\tmembers = Array();\n\t\t\t\t\toffset = 0;\n\t\t\t\t\td2[\"name\"] = name;\n\t\t\t\t\tprevious_type = t;\n\t\t\t\t}\n\t\t\t\tDictionary d3;\n\t\t\t\tconst char *member_meta = nullptr;\n\t\t\t\tuint32_t member_size = 0;\n\t\t\t\tswitch (i) {\n\t\t\t\t\tcase 0:\n\t\t\t\t\t\tmember_meta = member_offset_array[idx].member_meta_32_bits_real_float;\n\t\t\t\t\t\tmember_size = member_offset_array[idx].member_size_32_bits_real_float;\n\t\t\t\t\t\tbreak;\n\t\t\t\t\tcase 1:\n\t\t\t\t\t\tmember_meta = member_"
+    },
+    {
+      "file": "core/io/json.cpp",
+      "start_line": 695,
+      "end_line": 770,
+      "similarity": 0.5439,
+      "related_to": "core/variant_call.cpp",
+      "content_preview": "ant::NODE_PATH: {\n\t\t\treturn \"np:\" + String(p_variant);\n\t\t} break;\n\n\t\tcase Variant::RID:\n\t\tcase Variant::CALLABLE:\n\t\tcase Variant::SIGNAL: {\n\t\t\tDictionary ret;\n\t\t\tret[TYPE] = Variant::get_type_name(p_variant.get_type());\n\t\t\treturn ret;\n\t\t} break;\n\n\t\tcase Variant::VECTOR2: {\n\t\t\tconst Vector2 v = p_variant;\n\t\t\tArray args = { v.x, v.y };\n\t\t\tRETURN_ARGS;\n\t\t} break;\n\t\tcase Variant::VECTOR2I: {\n\t\t\tconst Vector2i v = p_variant;\n\t\t\tArray args = { v.x, v.y };\n\t\t\tRETURN_ARGS;\n\t\t} break;\n\t\tcase Variant::RECT2: {\n\t\t\tconst Rect2 r = p_variant;\n\t\t\tArray args = { r.position.x, r.position.y, r.size.width, r.size.height };\n\t\t\tRETURN_ARGS;\n\t\t} break;\n\t\tcase Variant::RECT2I: {\n\t\t\tconst Rect2i r = p_variant;\n\t\t\tArray args = { r.position.x, r.position.y, r.size.width, r.size.height };\n\t\t\tRETURN_ARGS;\n\t\t} break;"
+    }
+  ],
+  "rag_evidence": {
+    "similar_code": [
+      {
+        "file": "core/config/project_settings.h",
+        "start_line": 24,
+        "end_line": 81,
+        "similarity": 0.593,
+        "related_to": "doc/classes/Array.xml",
+        "content_preview": "OR A PARTICULAR PURPOSE AND NONINFRINGEMENT. */\n/* IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY   */\n/* CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,   */\n/* TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE      */\n/* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */\n/**************************************************************************/\n\n#pragma once\n\n#include \"core/object/object.h\"\n#include \"core/templates/rb_map.h\"\n\ntemplate <typename T>\nclass TypedArray;\n\nclass ProjectSettings : public Object {\n\tGDCLASS(ProjectSettings, Object);\n\t_THREAD_SAFE_CLASS_\n\tfriend class TestProjectSettingsInternalsAccessor;\n\n\tbool is_changed = false;\n\n\t// Starting version from 1 ensures that all callers can reset thei"
+      },
+      {
+        "file": "core/extension/extension_api_dump.cpp",
+        "start_line": 237,
+        "end_line": 286,
+        "similarity": 0.5884,
+        "related_to": "core/array.h",
+        "content_preview": "at64Array mismatch\");\n\t\tstatic_assert(type_size_array[Variant::PACKED_STRING_ARRAY][sizeof(void *)] == sizeof(PackedStringArray), \"Size of PackedStringArray mismatch\");\n\t\tstatic_assert(type_size_array[Variant::PACKED_VECTOR2_ARRAY][sizeof(void *)] == sizeof(PackedVector2Array), \"Size of PackedVector2Array mismatch\");\n\t\tstatic_assert(type_size_array[Variant::PACKED_VECTOR3_ARRAY][sizeof(void *)] == sizeof(PackedVector3Array), \"Size of PackedVector3Array mismatch\");\n\t\tstatic_assert(type_size_array[Variant::PACKED_COLOR_ARRAY][sizeof(void *)] == sizeof(PackedColorArray), \"Size of PackedColorArray mismatch\");\n\t\tstatic_assert(type_size_array[Variant::PACKED_VECTOR4_ARRAY][sizeof(void *)] == sizeof(PackedVector4Array), \"Size of PackedVector4Array mismatch\");\n\t\tstatic_assert(type_size_array[Varia"
+      },
+      {
+        "file": "core/io/marshalls.cpp",
+        "start_line": 787,
+        "end_line": 873,
+        "similarity": 0.5876,
+        "related_to": "core/variant_call.cpp",
+        "content_preview": ";\n\t\tcase Variant::CALLABLE: {\n\t\t\tr_variant = Callable();\n\t\t} break;\n\t\tcase Variant::SIGNAL: {\n\t\t\tString name;\n\t\t\tError err = _decode_string(buf, len, r_len, name);\n\t\t\tif (err) {\n\t\t\t\treturn err;\n\t\t\t}\n\n\t\t\tERR_FAIL_COND_V(len < 8, ERR_INVALID_DATA);\n\t\t\tObjectID id = ObjectID(decode_uint64(buf));\n\t\t\tif (r_len) {\n\t\t\t\t(*r_len) += 8;\n\t\t\t}\n\n\t\t\tr_variant = Signal(id, StringName(name));\n\t\t} break;\n\t\tcase Variant::DICTIONARY: {\n\t\t\tContainerType key_type;\n\n\t\t\t{\n\t\t\t\tContainerTypeKind key_type_kind = GET_CONTAINER_TYPE_KIND(header, TYPED_DICTIONARY_KEY);\n\t\t\t\tError err = _decode_container_type(buf, len, r_len, p_allow_objects, key_type_kind, key_type);\n\t\t\t\tif (err) {\n\t\t\t\t\treturn err;\n\t\t\t\t}\n\t\t\t}\n\n\t\t\tContainerType value_type;\n\n\t\t\t{\n\t\t\t\tContainerTypeKind value_type_kind = GET_CONTAINER_TYPE_KIND(header, TYP"
+      },
+      {
+        "file": "core/io/json.cpp",
+        "start_line": 1423,
+        "end_line": 1489,
+        "similarity": 0.5516,
+        "related_to": "doc/classes/Array.xml",
+        "content_preview": "arr.write[i] = Vector2(args[i * 2 + 0], args[i * 2 + 1]);\n\t\t\t\t\t}\n\n\t\t\t\t\treturn arr;\n\t\t\t\t} break;\n\t\t\t\tcase Variant::PACKED_VECTOR3_ARRAY: {\n\t\t\t\t\tLOAD_ARGS_CHECK_FACTOR(3);\n\n\t\t\t\t\tPackedVector3Array arr;\n\t\t\t\t\tarr.resize(args.size() / 3);\n\t\t\t\t\tfor (int i = 0; i < arr.size(); i++) {\n\t\t\t\t\t\tarr.write[i] = Vector3(args[i * 3 + 0], args[i * 3 + 1], args[i * 3 + 2]);\n\t\t\t\t\t}\n\n\t\t\t\t\treturn arr;\n\t\t\t\t} break;\n\t\t\t\tcase Variant::PACKED_COLOR_ARRAY: {\n\t\t\t\t\tLOAD_ARGS_CHECK_FACTOR(4);\n\n\t\t\t\t\tPackedColorArray arr;\n\t\t\t\t\tarr.resize(args.size() / 4);\n\t\t\t\t\tfor (int i = 0; i < arr.size(); i++) {\n\t\t\t\t\t\tarr.write[i] = Color(args[i * 4 + 0], args[i * 4 + 1], args[i * 4 + 2], args[i * 4 + 3]);\n\t\t\t\t\t}\n\n\t\t\t\t\treturn arr;\n\t\t\t\t} break;\n\t\t\t\tcase Variant::PACKED_VECTOR4_ARRAY: {\n\t\t\t\t\tLOAD_ARGS_CHECK_FACTOR(4);\n\n\t\t\t\t\tPackedVecto"
+      },
+      {
+        "file": "core/io/json.cpp",
+        "start_line": 764,
+        "end_line": 828,
+        "similarity": 0.5495,
+        "related_to": "core/variant_call.cpp",
+        "content_preview": " args = { aabb.position.x, aabb.position.y, aabb.position.z, aabb.size.x, aabb.size.y, aabb.size.z };\n\t\t\tRETURN_ARGS;\n\t\t} break;\n\t\tcase Variant::BASIS: {\n\t\t\tconst Basis b = p_variant;\n\n\t\t\tArray args = { b.get_column(0).x, b.get_column(0).y, b.get_column(0).z,\n\t\t\t\tb.get_column(1).x, b.get_column(1).y, b.get_column(1).z,\n\t\t\t\tb.get_column(2).x, b.get_column(2).y, b.get_column(2).z };\n\n\t\t\tRETURN_ARGS;\n\t\t} break;\n\t\tcase Variant::TRANSFORM3D: {\n\t\t\tconst Transform3D t = p_variant;\n\n\t\t\tArray args = { t.basis.get_column(0).x, t.basis.get_column(0).y, t.basis.get_column(0).z,\n\t\t\t\tt.basis.get_column(1).x, t.basis.get_column(1).y, t.basis.get_column(1).z,\n\t\t\t\tt.basis.get_column(2).x, t.basis.get_column(2).y, t.basis.get_column(2).z,\n\t\t\t\tt.origin.x, t.origin.y, t.origin.z };\n\n\t\t\tRETURN_ARGS;\n\t\t} break;"
+      },
+      {
+        "file": "core/extension/gdextension_interface.cpp",
+        "start_line": 1712,
+        "end_line": 1753,
+        "similarity": 0.5471,
+        "related_to": "core/variant_call.cpp",
+        "content_preview": "TER_INTERFACE_FUNC(print_warning);\n\tREGISTER_INTERFACE_FUNC(print_warning_with_message);\n\tREGISTER_INTERFACE_FUNC(print_script_error);\n\tREGISTER_INTERFACE_FUNC(print_script_error_with_message);\n\tREGISTER_INTERFACE_FUNC(get_native_struct_size);\n\tREGISTER_INTERFACE_FUNC(variant_new_copy);\n\tREGISTER_INTERFACE_FUNC(variant_new_nil);\n\tREGISTER_INTERFACE_FUNC(variant_destroy);\n\tREGISTER_INTERFACE_FUNC(variant_call);\n\tREGISTER_INTERFACE_FUNC(variant_call_static);\n\tREGISTER_INTERFACE_FUNC(variant_evaluate);\n\tREGISTER_INTERFACE_FUNC(variant_set);\n\tREGISTER_INTERFACE_FUNC(variant_set_named);\n\tREGISTER_INTERFACE_FUNC(variant_set_keyed);\n\tREGISTER_INTERFACE_FUNC(variant_set_indexed);\n\tREGISTER_INTERFACE_FUNC(variant_get);\n\tREGISTER_INTERFACE_FUNC(variant_get_named);\n\tREGISTER_INTERFACE_FUNC(variant_ge"
+      },
+      {
+        "file": "core/extension/extension_api_dump.cpp",
+        "start_line": 431,
+        "end_line": 495,
+        "similarity": 0.544,
+        "related_to": "core/variant_call.cpp",
+        "content_preview": "hile (true) {\n\t\t\t\tVariant::Type t = member_offset_array[idx].type;\n\t\t\t\tif (t != previous_type) {\n\t\t\t\t\tif (previous_type != Variant::NIL) {\n\t\t\t\t\t\td2[\"members\"] = members;\n\t\t\t\t\t\ttype_offsets.push_back(d2);\n\t\t\t\t\t}\n\t\t\t\t\tif (t == Variant::NIL) {\n\t\t\t\t\t\tbreak;\n\t\t\t\t\t}\n\n\t\t\t\t\tString name = t == Variant::VARIANT_MAX ? String(\"Variant\") : Variant::get_type_name(t);\n\t\t\t\t\td2 = Dictionary();\n\t\t\t\t\tmembers = Array();\n\t\t\t\t\toffset = 0;\n\t\t\t\t\td2[\"name\"] = name;\n\t\t\t\t\tprevious_type = t;\n\t\t\t\t}\n\t\t\t\tDictionary d3;\n\t\t\t\tconst char *member_meta = nullptr;\n\t\t\t\tuint32_t member_size = 0;\n\t\t\t\tswitch (i) {\n\t\t\t\t\tcase 0:\n\t\t\t\t\t\tmember_meta = member_offset_array[idx].member_meta_32_bits_real_float;\n\t\t\t\t\t\tmember_size = member_offset_array[idx].member_size_32_bits_real_float;\n\t\t\t\t\t\tbreak;\n\t\t\t\t\tcase 1:\n\t\t\t\t\t\tmember_meta = member_"
+      },
+      {
+        "file": "core/io/json.cpp",
+        "start_line": 695,
+        "end_line": 770,
+        "similarity": 0.5439,
+        "related_to": "core/variant_call.cpp",
+        "content_preview": "ant::NODE_PATH: {\n\t\t\treturn \"np:\" + String(p_variant);\n\t\t} break;\n\n\t\tcase Variant::RID:\n\t\tcase Variant::CALLABLE:\n\t\tcase Variant::SIGNAL: {\n\t\t\tDictionary ret;\n\t\t\tret[TYPE] = Variant::get_type_name(p_variant.get_type());\n\t\t\treturn ret;\n\t\t} break;\n\n\t\tcase Variant::VECTOR2: {\n\t\t\tconst Vector2 v = p_variant;\n\t\t\tArray args = { v.x, v.y };\n\t\t\tRETURN_ARGS;\n\t\t} break;\n\t\tcase Variant::VECTOR2I: {\n\t\t\tconst Vector2i v = p_variant;\n\t\t\tArray args = { v.x, v.y };\n\t\t\tRETURN_ARGS;\n\t\t} break;\n\t\tcase Variant::RECT2: {\n\t\t\tconst Rect2 r = p_variant;\n\t\t\tArray args = { r.position.x, r.position.y, r.size.width, r.size.height };\n\t\t\tRETURN_ARGS;\n\t\t} break;\n\t\tcase Variant::RECT2I: {\n\t\t\tconst Rect2i r = p_variant;\n\t\t\tArray args = { r.position.x, r.position.y, r.size.width, r.size.height };\n\t\t\tRETURN_ARGS;\n\t\t} break;"
+      }
+    ]
+  }
+}

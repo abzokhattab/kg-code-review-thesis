@@ -1,0 +1,1415 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PR Review — Human Evaluation Study (v4)</title>
+<style>
+:root {
+  --bg0:#0d1117;--bg1:#161b22;--bg2:#21262d;--bg3:#292e36;
+  --brd:#30363d;--t1:#e6edf3;--t2:#adbac7;--t3:#848d97;
+  --blue:#58a6ff;--green:#3fb950;--red:#f85149;
+  --orange:#d29922;--purple:#a371f7;--pink:#db61a2;
+  --diff-add-bg:rgba(63,185,80,.13);--diff-add-txt:#aff5b4;
+  --diff-del-bg:rgba(248,81,73,.13);--diff-del-txt:#ffd7d5;
+}
+[data-theme="light"] {
+  --bg0:#ffffff;--bg1:#f6f8fa;--bg2:#e8ecf0;--bg3:#d0d7de;
+  --brd:#d0d7de;--t1:#1f2328;--t2:#656d76;--t3:#8b949e;
+  --blue:#0969da;--green:#1a7f37;--red:#cf222e;
+  --orange:#9a6700;--purple:#8250df;--pink:#bf3989;
+  --diff-add-bg:rgba(26,127,55,.12);--diff-add-txt:#1a7f37;
+  --diff-del-bg:rgba(207,34,46,.12);--diff-del-txt:#cf222e;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;background:var(--bg0);color:var(--t1);min-height:100vh;line-height:1.6}
+.container{max-width:1600px;margin:0 auto;padding:20px}
+.screen{display:none}.screen.active{display:block}
+
+/* ── Welcome ── */
+#welcome.active{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:90vh;text-align:center}
+#welcome h1{font-size:2rem;font-weight:700;margin-bottom:6px;color:var(--blue)}
+#welcome .sub{color:var(--t2);margin-bottom:28px}
+.wcard{background:var(--bg1);border:1px solid var(--brd);border-radius:12px;padding:28px;max-width:640px;width:100%;text-align:left}
+.wcard p,.wcard li{color:var(--t2);font-size:.92rem;margin-bottom:6px}
+.wcard ol,.wcard ul{margin-left:18px;margin-bottom:12px}
+.igroup{margin-top:20px;display:flex;gap:10px}
+.igroup input{flex:1;background:var(--bg2);border:1px solid var(--brd);border-radius:8px;padding:10px 14px;color:var(--t1);font-size:.95rem;outline:none}
+.igroup input:focus{border-color:var(--blue)}
+#resumeNote{margin-top:10px;font-size:.82rem;color:var(--green);display:none}
+
+/* ── Consent ── */
+#consent.active{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:90vh;text-align:center}
+.consent-card{background:var(--bg1);border:1px solid var(--brd);border-radius:12px;padding:28px 32px;max-width:720px;width:100%;text-align:left}
+.consent-card h2{font-size:1.2rem;color:var(--blue);margin-bottom:16px;text-align:center}
+.consent-card p{color:var(--t2);font-size:.9rem;margin-bottom:10px;line-height:1.65}
+.consent-card ul{margin-left:18px;margin-bottom:14px}
+.consent-card li{color:var(--t2);font-size:.9rem;margin-bottom:4px}
+.consent-check{display:flex;align-items:flex-start;gap:10px;margin:20px 0 16px;padding:14px;background:var(--bg2);border-radius:8px;border:1px solid var(--brd)}
+.consent-check input[type=checkbox]{margin-top:3px;width:18px;height:18px;accent-color:var(--blue);flex-shrink:0}
+.consent-check label{color:var(--t1);font-size:.9rem;font-weight:600;cursor:pointer}
+
+/* ── Demographics ── */
+#demographics.active{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:90vh}
+.demo-card{background:var(--bg1);border:1px solid var(--brd);border-radius:12px;padding:28px 32px;max-width:720px;width:100%;text-align:left}
+.demo-card h2{font-size:1.2rem;color:var(--blue);margin-bottom:6px;text-align:center}
+.demo-card p.demo-sub{color:var(--t2);font-size:.88rem;margin-bottom:18px;text-align:center}
+.demo-group{margin-bottom:16px}
+.demo-group .demo-q{display:block;font-size:.88rem;font-weight:600;color:var(--t1);margin-bottom:6px}
+.demo-opts{display:flex;gap:0;flex-wrap:wrap}
+.demo-opts label{flex:1;min-width:0;text-align:center;cursor:pointer;padding:8px 6px;border:1px solid var(--brd);background:var(--bg2);color:var(--t3);font-size:.78rem;font-weight:600;transition:all .15s;white-space:nowrap}
+.demo-opts label:first-child{border-radius:6px 0 0 6px}
+.demo-opts label:last-child{border-radius:0 6px 6px 0}
+.demo-opts label:hover{background:var(--bg3);color:var(--t2)}
+.demo-opts input{display:none}
+.demo-opts label.selected{background:var(--blue);border-color:var(--blue);color:#fff}
+
+/* ── Briefing ── */
+#briefing .brief-card{background:var(--bg1);border:1px solid var(--brd);border-radius:12px;padding:28px;margin-bottom:20px;max-width:900px;margin-left:auto;margin-right:auto}
+#briefing .brief-card h2{font-size:1.15rem;color:var(--blue);margin-bottom:12px}
+#briefing .brief-card h3{font-size:1rem;color:var(--purple);margin:16px 0 8px}
+#briefing .brief-card p,#briefing .brief-card li{color:var(--t2);font-size:.9rem;margin-bottom:6px;line-height:1.6}
+#briefing .brief-card ol,#briefing .brief-card ul{margin-left:18px;margin-bottom:12px}
+.brief-nav{display:flex;justify-content:center;gap:12px;margin:24px auto 0;max-width:900px}
+
+/* ── Buttons ── */
+.btn{display:inline-flex;align-items:center;gap:6px;padding:10px 20px;border-radius:8px;border:none;font-size:.9rem;font-weight:600;cursor:pointer;transition:all .15s}
+.btn:disabled{opacity:.4;cursor:not-allowed}
+.btn-p{background:var(--blue);color:#fff}.btn-p:hover:not(:disabled){filter:brightness(1.15)}
+.btn-s{background:var(--bg2);color:var(--t1);border:1px solid var(--brd)}.btn-s:hover{background:var(--bg3)}
+.btn-g{background:var(--green);color:#fff}.btn-g:hover{filter:brightness(1.15)}
+
+/* ── Topbar ── */
+.topbar{display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--brd);margin-bottom:16px;flex-wrap:wrap;gap:10px}
+.topbar .logo{font-weight:700;color:var(--blue);font-size:.95rem}
+.pbar{width:180px;height:5px;background:var(--bg2);border-radius:3px;overflow:hidden;display:inline-block;vertical-align:middle;margin:0 8px}
+.pfill{height:100%;background:linear-gradient(90deg,var(--blue),var(--purple));border-radius:3px;transition:width .3s}
+.ptxt{font-size:.82rem;color:var(--t2)}
+.timer{font-family:monospace;font-size:.82rem;color:var(--t3)}
+
+/* ── PR Header ── */
+.prh{background:var(--bg1);border:1px solid var(--brd);border-radius:10px;padding:16px;margin-bottom:12px}
+.prh .title{font-size:1.05rem;font-weight:600;margin-bottom:4px}
+.prh .meta{font-size:.82rem;color:var(--t2);display:flex;gap:14px;flex-wrap:wrap}
+.prh .meta a{color:var(--blue);text-decoration:none}
+
+/* ── Diff ── */
+.diff-section{background:var(--bg1);border:1px solid var(--brd);border-radius:8px;margin-bottom:12px;overflow:hidden}
+.diff-header{padding:8px 14px;font-weight:600;font-size:.85rem;color:var(--t2);background:var(--bg2);border-bottom:1px solid var(--brd);cursor:pointer;display:flex;align-items:center;justify-content:space-between;user-select:none}
+.diff-header:hover{background:var(--bg3)}
+.diff-toggle{font-size:.7rem;color:var(--t3);font-weight:400}
+.diff-view{font-family:'SF Mono',SFMono-Regular,Consolas,'Liberation Mono',Menlo,monospace;font-size:.8rem;line-height:1.6;overflow-x:auto;max-height:420px;overflow-y:auto}
+.diff-section.collapsed .diff-view{display:none}
+.diff-section.collapsed .diff-header{border-bottom:none}
+.diff-file{margin-bottom:2px}
+.diff-fname{padding:7px 12px;font-weight:600;font-size:.8rem;color:var(--t2);background:var(--bg2);border-bottom:1px solid var(--bg3)}
+.diff-tbl{width:100%;border-collapse:collapse}
+.diff-tbl td{padding:0;vertical-align:top;white-space:pre-wrap;word-break:break-all}
+.diff-tbl .dg{width:24px;min-width:24px;text-align:center;color:var(--t3);user-select:none;font-weight:600;padding:1px 4px;border-right:1px solid var(--bg3)}
+.diff-tbl .dc{padding:1px 12px}
+.diff-tbl tr.add{background:var(--diff-add-bg)}.diff-tbl tr.add .dg{color:var(--green)}.diff-tbl tr.add .dc{color:var(--diff-add-txt)}
+.diff-tbl tr.del{background:var(--diff-del-bg)}.diff-tbl tr.del .dg{color:var(--red)}.diff-tbl tr.del .dc{color:var(--diff-del-txt)}
+.diff-tbl tr.hunk .dc{color:var(--blue);font-style:italic;padding:3px 12px}.diff-tbl tr.hunk .dg{color:var(--blue)}
+.diff-tbl tr.ctx .dc{color:var(--t2)}
+
+/* ── Review Side-by-Side ── */
+.comparison-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:16px}
+@media(max-width:900px){.comparison-grid{grid-template-columns:1fr}}
+.review-card{background:var(--bg1);border:1px solid var(--brd);border-radius:10px;overflow:hidden;display:flex;flex-direction:column}
+.review-card-header{padding:8px 14px;font-weight:700;font-size:.85rem;border-bottom:1px solid var(--bg3);display:flex;align-items:center;gap:8px}
+.review-card-body{padding:12px;overflow-y:auto;flex:1;max-height:600px}
+.rsummary{background:var(--bg3);border:1px solid var(--brd);border-radius:8px;padding:8px 10px 8px 12px;margin-bottom:12px}
+.rsummary-label{font-size:.66rem;font-weight:800;letter-spacing:.6px;text-transform:uppercase;color:var(--t3);margin-bottom:5px;display:flex;align-items:center;gap:5px}
+.rsummary-label::before{content:"";width:6px;height:6px;border-radius:50%;background:var(--t3);display:inline-block}
+.rsummary ul{margin:0;padding-left:16px}
+.rsummary li{font-size:.78rem;line-height:1.45;margin-bottom:3px;color:var(--t2)}
+.rsummary li:last-child{margin-bottom:0}
+.rsummary code{font-size:.74rem}
+/* concrete-item count strip (LLM-precomputed, see generate_review_counts.py) */
+.rcounts{margin-bottom:12px;border:1px solid var(--brd);border-radius:8px;padding:8px 10px;background:var(--bg2)}
+.rcounts-label{font-size:.66rem;font-weight:800;letter-spacing:.6px;text-transform:uppercase;color:var(--t3);margin-bottom:6px;display:flex;align-items:center;gap:5px}
+.rcounts-label::before{content:"#";font-weight:900;color:var(--t3)}
+.rcounts-chips{display:flex;flex-wrap:wrap;gap:6px}
+.rcount-chip{display:inline-flex;align-items:center;gap:5px;font-size:.72rem;color:var(--t2);background:var(--bg1);border:1px solid var(--brd);border-radius:20px;padding:2px 9px;cursor:default}
+.rcount-chip b{font-size:.76rem;font-weight:800;color:var(--blue);min-width:10px;text-align:center}
+.rcount-chip.zero{opacity:.45}.rcount-chip.zero b{color:var(--t3)}
+.rcontent{font-size:.83rem;line-height:1.5}
+.rcontent h1,.rcontent h2,.rcontent h3{margin-top:10px;margin-bottom:3px;color:var(--t2);font-weight:600;text-transform:uppercase;letter-spacing:.5px;padding-top:6px;border-top:1px solid var(--bg3)}
+.rcontent h1:first-child,.rcontent h2:first-child,.rcontent h3:first-child{margin-top:0;padding-top:0;border-top:none}
+.rcontent h1{font-size:.76rem}.rcontent h2{font-size:.74rem}.rcontent h3{font-size:.72rem}
+.rcontent p{margin:0 0 4px}
+.rcontent p:empty{display:none}
+.rcontent ul,.rcontent ol{margin-left:14px;margin-bottom:4px}
+.rcontent li{margin-bottom:1px}
+.rcontent code{font-family:monospace;font-size:.82em;background:var(--bg2);padding:1px 4px;border-radius:3px}
+.rcontent strong{color:var(--orange)}
+/* unique-sentence highlighting */
+.rcontent .uniq-A{background:rgba(88,166,255,0.16);border-left:3px solid #58a6ff;padding-left:6px;margin-left:-9px;border-radius:2px}
+.rcontent .uniq-B{background:rgba(163,113,247,0.16);border-left:3px solid #a371f7;padding-left:6px;margin-left:-9px;border-radius:2px}
+#diffLegend{display:flex;gap:14px;align-items:center;font-size:.78rem;color:var(--t2);margin:6px 0 8px;flex-wrap:wrap}
+#diffLegend .swatch{display:inline-block;width:12px;height:12px;border-radius:2px;margin-right:5px;vertical-align:middle}
+#diffLegend .toggle-uniq{margin-left:auto;cursor:pointer;color:var(--t2);text-decoration:underline;font-size:.78rem;background:none;border:none;padding:0}
+.diff-hidden .uniq-A,.diff-hidden .uniq-B{background:transparent;border-left:0;padding-left:0;margin-left:0}
+
+/* ── 5-point Preference Scale ── */
+.pref5-section{margin:18px 0;padding:18px;background:var(--bg1);border:1px solid var(--brd);border-radius:10px}
+.pref5-section h4{font-size:.95rem;color:var(--t1);margin-bottom:6px;font-weight:600}
+.pref5-section .pref5-sub{font-size:.82rem;color:var(--t3);margin-bottom:14px}
+.pref5-opts{display:flex;gap:0;width:100%}
+.pref5-opts label{flex:1;text-align:center;cursor:pointer;padding:12px 6px;border:1px solid var(--brd);background:var(--bg2);color:var(--t3);font-size:.8rem;font-weight:600;transition:all .15s;line-height:1.3}
+.pref5-opts label:first-child{border-radius:8px 0 0 8px}
+.pref5-opts label:last-child{border-radius:0 8px 8px 0}
+.pref5-opts label:hover{background:var(--bg3);color:var(--t2)}
+.pref5-opts input{display:none}
+.pref5-opts label[data-v="2"].selected{background:rgba(88,166,255,.2);border-color:#58a6ff;color:#58a6ff}
+.pref5-opts label[data-v="1"].selected{background:rgba(88,166,255,.1);border-color:#58a6ff;color:#58a6ff}
+.pref5-opts label[data-v="0"].selected{background:var(--blue);border-color:var(--blue);color:#fff}
+.pref5-opts label[data-v="-1"].selected{background:rgba(163,113,247,.1);border-color:#a371f7;color:#a371f7}
+.pref5-opts label[data-v="-2"].selected{background:rgba(163,113,247,.2);border-color:#a371f7;color:#a371f7}
+.pref5-missing{box-shadow:0 0 0 2px var(--red),0 0 0 4px rgba(248,81,73,.25);border-radius:8px}
+/* Per-criterion relevance grid (Review A / Both / Neither / Review B per criterion) */
+.crit-grid{display:flex;flex-direction:column;gap:10px}
+.crit-row{display:grid;grid-template-columns:1fr 400px;gap:16px;align-items:center;padding:11px 13px;background:var(--bg2);border:1px solid var(--brd);border-radius:8px;transition:box-shadow .15s}
+.crit-q{font-size:.85rem;color:var(--t1);line-height:1.4}
+.crit-q .crit-cat{display:block;font-size:.7rem;font-weight:700;color:var(--t3);text-transform:uppercase;letter-spacing:.04em;margin-bottom:3px}
+.crit-opts{display:flex;gap:0}
+.crit-opts label{flex:1;text-align:center;cursor:pointer;padding:9px 6px;border:1px solid var(--brd);background:var(--bg1);color:var(--t3);font-size:.78rem;font-weight:600;transition:all .15s;white-space:nowrap}
+.crit-opts label:first-child{border-radius:7px 0 0 7px}
+.crit-opts label:last-child{border-radius:0 7px 7px 0}
+.crit-opts label:hover{background:var(--bg3);color:var(--t2)}
+.crit-opts input{display:none}
+.crit-opts label[data-c="A"].selected{background:rgba(88,166,255,.18);border-color:#58a6ff;color:#58a6ff}
+.crit-opts label[data-c="both"].selected{background:rgba(63,185,80,.16);border-color:#3fb950;color:#3fb950}
+.crit-opts label[data-c="neither"].selected{background:rgba(139,148,158,.2);border-color:#8b949e;color:#c9d1d9}
+.crit-opts label[data-c="B"].selected{background:rgba(163,113,247,.18);border-color:#a371f7;color:#a371f7}
+.crit-row.crit-missing{box-shadow:0 0 0 2px var(--red),0 0 0 3px rgba(248,81,73,.2)}
+@media(max-width:720px){.crit-row{grid-template-columns:1fr}}
+
+/* Overall holistic preference (one question, in addition to the 6 criteria) */
+.overall-section{margin:12px 0;padding:14px;background:var(--bg1);border:1px solid var(--brd);border-radius:10px}
+.overall-section h4{font-size:.85rem;color:var(--t2);margin-bottom:6px;font-weight:600}
+.overall-section .pref5-sub{margin-bottom:10px}
+.overall-opts{display:flex;gap:10px;flex-wrap:wrap}
+.overall-opts label{flex:1;min-width:150px;text-align:center;cursor:pointer;background:var(--bg2);border:1px solid var(--brd);border-radius:8px;padding:11px 12px;font-size:.84rem;font-weight:600;color:var(--t3);transition:all .15s}
+.overall-opts label:hover{background:var(--bg3);color:var(--t2)}
+.overall-opts input{display:none}
+.overall-opts label[data-c="A"].selected{background:rgba(88,166,255,.18);border-color:#58a6ff;color:#58a6ff}
+.overall-opts label[data-c="equal"].selected{background:var(--bg3);border-color:var(--t2);color:var(--t1)}
+.overall-opts label[data-c="B"].selected{background:rgba(163,113,247,.18);border-color:#a371f7;color:#a371f7}
+.overall-section.overall-missing{box-shadow:0 0 0 2px var(--red),0 0 0 3px rgba(248,81,73,.2)}
+
+/* ── Why textarea ── */
+.why-section{margin:12px 0;padding:14px;background:var(--bg1);border:1px solid var(--brd);border-radius:10px}
+.why-section h4{font-size:.85rem;color:var(--t2);margin-bottom:6px;font-weight:600}
+.why-section .why-sub{font-size:.78rem;color:var(--t3);margin-bottom:8px}
+.why-section textarea{width:100%;min-height:70px;max-height:160px;background:var(--bg2);border:1px solid var(--brd);border-radius:6px;padding:8px 10px;color:var(--t1);font-size:.82rem;font-family:inherit;resize:vertical;outline:none}
+.why-section textarea:focus{border-color:var(--blue)}
+.why-section textarea::placeholder{color:var(--t3)}
+
+/* ── Difficulty ── */
+.difficulty-section{margin:14px 0;padding:14px;background:var(--bg1);border:1px solid var(--brd);border-radius:10px}
+.difficulty-section h4{font-size:.88rem;color:var(--t2);margin-bottom:10px}
+.diff-scale{display:flex;gap:0;justify-content:center}
+.diff-scale label{flex:1;max-width:140px;text-align:center;cursor:pointer;padding:10px 8px;border:1px solid var(--brd);background:var(--bg2);color:var(--t3);font-size:.78rem;font-weight:600;transition:all .15s;white-space:nowrap}
+.diff-scale label:first-child{border-radius:8px 0 0 8px}
+.diff-scale label:last-child{border-radius:0 8px 8px 0}
+.diff-scale label:hover{background:var(--bg3);color:var(--t2)}
+.diff-scale input{display:none}
+.diff-scale label.selected{background:var(--blue);border-color:var(--blue);color:#fff}
+
+/* ── Nav ── */
+.navbar{display:flex;align-items:center;justify-content:space-between;padding:14px 0;border-top:1px solid var(--brd);margin-top:6px}
+.uwarn{color:var(--red);font-size:.85rem;font-weight:700;display:none}
+
+/* ── Feedback ── */
+#feedback.active{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:70vh;text-align:center}
+.feedback-card{background:var(--bg1);border:1px solid var(--brd);border-radius:12px;padding:28px 32px;max-width:700px;width:100%;text-align:left}
+.feedback-card h2{font-size:1.15rem;color:var(--blue);margin-bottom:8px;text-align:center}
+.feedback-card p{color:var(--t2);font-size:.88rem;margin-bottom:16px;text-align:center}
+.feedback-card textarea{width:100%;min-height:120px;background:var(--bg2);border:1px solid var(--brd);border-radius:8px;padding:12px;color:var(--t1);font-size:.9rem;font-family:inherit;resize:vertical;outline:none}
+.feedback-card textarea:focus{border-color:var(--blue)}
+.feedback-card .fb-btns{display:flex;justify-content:center;gap:12px;margin-top:16px}
+
+/* ── Completion ── */
+#completion{text-align:center;padding-top:10vh}
+#completion h1{font-size:1.8rem;color:var(--green);margin-bottom:10px}
+#completion p{color:var(--t2);margin-bottom:20px}
+.sgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px;max-width:550px;margin:0 auto 28px}
+.scard{background:var(--bg1);border:1px solid var(--brd);border-radius:10px;padding:14px}
+.scard .sl{font-size:.75rem;color:var(--t3);text-transform:uppercase;letter-spacing:.5px}
+.scard .sv{font-size:1.4rem;font-weight:700;color:var(--blue)}
+
+kbd{display:inline-block;font-family:monospace;font-size:.7rem;background:var(--bg2);border:1px solid var(--brd);border-radius:3px;padding:1px 4px;color:var(--t3);vertical-align:middle}
+.jump-btn{position:fixed;bottom:80px;right:24px;z-index:100;padding:10px 18px;border-radius:8px;border:none;background:var(--blue);color:#fff;font-weight:700;font-size:.82rem;cursor:pointer;box-shadow:0 4px 12px rgba(0,0,0,.4);transition:all .2s;opacity:0;pointer-events:none}
+.jump-btn.visible{opacity:1;pointer-events:auto}
+.jump-btn:hover{filter:brightness(1.15);transform:translateY(-1px)}
+.theme-toggle{position:fixed;top:16px;right:16px;z-index:200;width:38px;height:38px;border-radius:50%;border:1px solid var(--brd);background:var(--bg1);color:var(--t2);cursor:pointer;font-size:1.1rem;display:flex;align-items:center;justify-content:center;transition:all .15s;box-shadow:0 2px 8px rgba(0,0,0,.15)}
+.theme-toggle:hover{background:var(--bg2);border-color:var(--t3);transform:scale(1.08)}
+#warmup .topbar{border-bottom-color:var(--orange)}
+
+/* PR body rendered markdown */
+#bodyC .md-h3{font-size:.96rem;font-weight:600;margin:.85em 0 .3em;color:var(--t1)}
+#bodyC .md-h4{font-size:.9rem;font-weight:600;margin:.7em 0 .25em;color:var(--t1)}
+#bodyC .md-p{margin:.45em 0;line-height:1.55}
+#bodyC .md-p:first-child{margin-top:0}
+#bodyC .md-p:last-child{margin-bottom:0}
+#bodyC .md-ul,#bodyC .md-ol{margin:.45em 0;padding-left:1.4em}
+#bodyC .md-ul li,#bodyC .md-ol li{margin:.15em 0;line-height:1.5}
+#bodyC strong{color:var(--t1);font-weight:600}
+#bodyC em{font-style:italic}
+#bodyC a{color:var(--blue);text-decoration:underline}
+#bodyC .md-code{background:var(--bg2);border:1px solid var(--bg3);border-radius:3px;padding:.5px 4px;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:.84em;color:var(--t1)}
+#bodyC .md-pre{margin:.55em 0;padding:8px 10px;background:var(--bg2);border:1px solid var(--bg3);border-radius:4px;overflow-x:auto;font-size:.82em;line-height:1.4}
+#bodyC .md-img{display:inline-block;padding:1px 6px;margin:0 2px;background:var(--bg2);border:1px solid var(--bg3);border-radius:3px;font-size:.78em;color:var(--t2);font-style:italic}
+</style>
+</head>
+<body>
+<button class="theme-toggle" id="themeToggle" title="Toggle light/dark mode">&#9790;</button>
+<div class="container">
+
+<!-- ═══ WELCOME ═══ -->
+<div id="welcome" class="screen active">
+  <h1>PR Review Evaluation Study</h1>
+  <p class="sub">Human evaluation of AI-generated code review comments &mdash; HPI Master's Thesis</p>
+  <div class="wcard">
+    <p>You will read <strong>6 Pull Requests</strong> from real open-source projects and compare two AI-generated reviews for each.</p>
+    <p style="color:var(--t3);font-size:.85rem;margin-bottom:16px">Takes approximately 20&ndash;30 minutes. Progress is saved automatically &mdash; you can take breaks.</p>
+    <div class="igroup">
+      <input type="text" id="raterInput" placeholder="Enter your name or rater ID" autocomplete="off" />
+      <button class="btn btn-p" id="startBtn" disabled>Start</button>
+    </div>
+    <p id="resumeNote"></p>
+  </div>
+</div>
+
+<!-- ═══ CONSENT ═══ -->
+<div id="consent" class="screen">
+  <div class="consent-card">
+    <h2>Informed Consent</h2>
+    <p>You are being invited to participate in a research study on AI-assisted code review quality, conducted as part of a Master's thesis at the Hasso Plattner Institute, University of Potsdam.</p>
+    <p><strong>What you will do:</strong> For each of 6 Pull Requests, you will read the code diff and two AI-generated reviews side by side, then judge which review is more useful. The study takes approximately 20&ndash;30 minutes.</p>
+    <p><strong>Data collected:</strong></p>
+    <ul>
+      <li>A rater ID that you choose freely (not linked to your real name)</li>
+      <li>Background information: role, programming experience, PR review frequency</li>
+      <li>Your preference judgment and brief reasoning for each PR pair</li>
+      <li>Time spent per comparison</li>
+      <li>Optional open-ended feedback at the end</li>
+    </ul>
+    <p><strong>No personally identifiable data</strong> (name, email, IP address) is collected or stored. All data is used solely for academic research.</p>
+    <p><strong>Participation is voluntary.</strong> You may quit at any time. Contact: <a href="mailto:Abdelrahman.Khattab@student.hpi.uni-potsdam.de" style="color:var(--blue)">Abdelrahman Khattab</a> &mdash; Hasso Plattner Institute.</p>
+    <div class="consent-check">
+      <input type="checkbox" id="consentBox" />
+      <label for="consentBox">I have read and understood the above. I voluntarily agree to participate.</label>
+    </div>
+    <div style="text-align:center">
+      <button class="btn btn-s" onclick="showScreen('welcome')" style="margin-right:8px">&larr; Back</button>
+      <button class="btn btn-p" id="consentBtn" disabled>I Agree &mdash; Continue &rarr;</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ DEMOGRAPHICS ═══ -->
+<div id="demographics" class="screen">
+  <div class="demo-card">
+    <h2>About You</h2>
+    <p class="demo-sub">Three quick questions before we start.</p>
+    <div class="demo-group">
+      <span class="demo-q">Current role</span>
+      <div class="demo-opts" data-field="role">
+        <label onclick="demoSelect(this)"><input type="radio" name="d_role" value="student">Student</label>
+        <label onclick="demoSelect(this)"><input type="radio" name="d_role" value="junior_dev">Junior Developer</label>
+        <label onclick="demoSelect(this)"><input type="radio" name="d_role" value="software_engineer">Software Engineer</label>
+        <label onclick="demoSelect(this)"><input type="radio" name="d_role" value="senior_engineer">Senior Engineer</label>
+        <label onclick="demoSelect(this)"><input type="radio" name="d_role" value="other">Other</label>
+      </div>
+    </div>
+    <div class="demo-group">
+      <span class="demo-q">Years of programming experience</span>
+      <div class="demo-opts" data-field="exp_years">
+        <label onclick="demoSelect(this)"><input type="radio" name="d_exp" value="<1">&lt;1</label>
+        <label onclick="demoSelect(this)"><input type="radio" name="d_exp" value="1-3">1&ndash;3</label>
+        <label onclick="demoSelect(this)"><input type="radio" name="d_exp" value="3-5">3&ndash;5</label>
+        <label onclick="demoSelect(this)"><input type="radio" name="d_exp" value="5-10">5&ndash;10</label>
+        <label onclick="demoSelect(this)"><input type="radio" name="d_exp" value="10+">10+</label>
+      </div>
+    </div>
+    <div class="demo-group">
+      <span class="demo-q">How often do you review Pull Requests / Merge Requests?</span>
+      <div class="demo-opts" data-field="freq_review_pr">
+        <label onclick="demoSelect(this)"><input type="radio" name="d_rpr" value="never">Never</label>
+        <label onclick="demoSelect(this)"><input type="radio" name="d_rpr" value="rarely">Rarely</label>
+        <label onclick="demoSelect(this)"><input type="radio" name="d_rpr" value="monthly">Monthly</label>
+        <label onclick="demoSelect(this)"><input type="radio" name="d_rpr" value="weekly">Weekly</label>
+        <label onclick="demoSelect(this)"><input type="radio" name="d_rpr" value="daily">Daily</label>
+      </div>
+    </div>
+    <div style="text-align:center;margin-top:20px">
+      <button class="btn btn-s" onclick="showScreen('consent')" style="margin-right:8px">&larr; Back</button>
+      <button class="btn btn-p" id="demoBtn" disabled>Continue &rarr;</button>
+    </div>
+    <p id="demoWarn" style="display:none;color:var(--orange);font-size:.82rem;text-align:center;margin-top:8px;font-weight:600"></p>
+  </div>
+</div>
+
+<!-- ═══ BRIEFING ═══ -->
+<div id="briefing" class="screen">
+  <div class="brief-card">
+    <h2>What You'll Do</h2>
+    <p>For each of <strong>6 real Pull Requests</strong> from open-source projects, you will:</p>
+    <ol>
+      <li><strong>Read the PR context</strong> &mdash; title, description, and the code diff (what actually changed). You don't need to understand every line; focus on the overall intent of the change.</li>
+      <li><strong>Read both AI-generated reviews</strong> side by side &mdash; <strong style="color:#58a6ff">Review A</strong> and <strong style="color:#a371f7">Review B</strong>. You won't know which AI strategy produced which review. Each review starts with a short <em>AI summary</em> to help you orient quickly &mdash; it's just a reading aid; please base your judgement on the <strong>full review</strong> below it.</li>
+      <li><strong>Judge each review on 6 criteria</strong> &mdash; for every criterion, mark whether <strong style="color:#58a6ff">Review A</strong> does it better, <strong style="color:#a371f7">Review B</strong> does it better, <strong style="color:#3fb950">Both</strong> address it about equally, or <strong>Neither</strong> addresses it.</li>
+      <li><strong>Give one overall preference</strong> &mdash; after the 6 criteria, make a single holistic call: which review is more useful overall (or about the same).</li>
+      <li><strong>Briefly explain why</strong> in a text box (2&ndash;3 sentences is enough).</li>
+      <li><strong>Rate the difficulty</strong> of the comparison (1&ndash;5).</li>
+    </ol>
+
+    <h3>What makes a review more useful?</h3>
+    <p>Imagine you are the <strong>author</strong> of the PR. A useful review:</p>
+    <ul>
+      <li>Identifies <strong>specific</strong> problems or risks &mdash; not generic advice</li>
+      <li>Points to <strong>concrete</strong> code locations, file names, or function names</li>
+      <li>Explains <strong>why</strong> something is a problem, not just that it is</li>
+      <li>Mentions <strong>specific test files</strong> or test scenarios that should be covered</li>
+      <li>Covers the <strong>main issues</strong> without obvious gaps</li>
+    </ul>
+    <p><strong>Concrete example of the difference:</strong></p>
+    <table style="width:100%;border-collapse:collapse;font-size:.85rem;margin:10px 0 14px">
+      <tr>
+        <td style="padding:8px 10px;background:rgba(248,81,73,.07);border:1px solid var(--brd);border-radius:4px 0 0 0;vertical-align:top;width:50%"><span style="color:var(--red);font-weight:700">Vague (less useful)</span><br><span style="color:var(--t2)">"The test coverage may be insufficient for edge cases."</span></td>
+        <td style="padding:8px 10px;background:rgba(63,185,80,.07);border:1px solid var(--brd);border-radius:0 4px 0 0;vertical-align:top"><span style="color:var(--green);font-weight:700">Specific (more useful)</span><br><span style="color:var(--t2)">"The new test <code>test_bayes.py:185</code> does not cover the <code>fit_intercept=False</code> path, so that variant goes untested."</span></td>
+      </tr>
+    </table>
+    <p style="color:var(--t3);font-size:.88rem">You do <em>not</em> need deep knowledge of the codebase. Judge the review text itself: is it specific and grounded in the diff, or vague and generic?</p>
+
+    <h3>Two reading aids we pre-computed for you</h3>
+    <p><strong>1. Highlighted differences.</strong> Sentences highlighted in <span style="background:rgba(88,166,255,0.16);border-left:3px solid #58a6ff;padding:1px 6px;border-radius:2px;font-size:.85rem">blue</span> are unique to Review A; <span style="background:rgba(163,113,247,0.16);border-left:3px solid #a371f7;padding:1px 6px;border-radius:2px;font-size:.85rem">purple</span> are unique to Review B. Unshaded text is roughly the same point in both. This lets you focus on what actually <em>differs</em> rather than re-reading overlap.</p>
+    <p><strong>2. A concrete-item count strip</strong> sits on top of each review. We automatically counted the concrete things each review names &mdash; <strong>Components/APIs</strong>, <strong>Files</strong>, <strong>Test targets</strong>, <strong>Edge cases</strong>, and <strong>Reasoned claims</strong> (a suggestion with an explicit "X could cause Y"). <em>Hover any chip to see exactly which items were counted.</em> A higher count is <em>not automatically better</em> &mdash; it just shows how much concrete substance each review has. Your job is to judge whether the difference actually <strong>matters</strong> for this PR.</p>
+
+    <h3>Using the diff</h3>
+    <p>The diff shows exactly what code changed. Use it to check: does the review reference actual file names or line numbers from the diff? Does it describe a real risk in the changed code, or a hypothetical one?</p>
+
+    <h3>Tips</h3>
+    <ul>
+      <li>There are no right or wrong answers &mdash; we want your honest impression.</li>
+      <li>Some pairs will look similar. That's expected. Even a small but concrete difference counts.</li>
+      <li>If you're unsure, "no preference" is a valid answer &mdash; don't force a pick.</li>
+      <li>The "why" text box is important &mdash; even one sentence helps us understand your reasoning.</li>
+    </ul>
+  </div>
+
+  <div class="brief-card">
+    <h2>The 6 Criteria</h2>
+    <p>Instead of one overall "who wins", you judge the reviews on <strong>6 specific criteria</strong>. For <em>each</em> one you choose one of four: <strong style="color:#58a6ff">Review A</strong> does it better, <strong style="color:#a371f7">Review B</strong> does it better, <strong style="color:#3fb950">Both</strong> address it about equally well, or <strong>Neither</strong> addresses it at all.</p>
+    <table style="width:100%;border-collapse:collapse;font-size:.86rem;margin-top:10px">
+      <tr style="border-bottom:1px solid var(--brd)">
+        <td style="padding:8px 10px;color:var(--t1);font-weight:700;white-space:nowrap;vertical-align:top">Components / APIs</td>
+        <td style="padding:8px 10px;color:var(--t2)">Names concrete components, APIs, or design patterns affected by the change</td>
+      </tr>
+      <tr style="border-bottom:1px solid var(--brd)">
+        <td style="padding:8px 10px;color:var(--t1);font-weight:700;white-space:nowrap;vertical-align:top">Edge cases</td>
+        <td style="padding:8px 10px;color:var(--t2)">Describes concrete edge cases, boundary conditions, or error-handling gaps</td>
+      </tr>
+      <tr style="border-bottom:1px solid var(--brd)">
+        <td style="padding:8px 10px;color:var(--t1);font-weight:700;white-space:nowrap;vertical-align:top">Tests</td>
+        <td style="padding:8px 10px;color:var(--t2)">References concrete test files or says which tests should be added/updated</td>
+      </tr>
+      <tr style="border-bottom:1px solid var(--brd)">
+        <td style="padding:8px 10px;color:var(--t1);font-weight:700;white-space:nowrap;vertical-align:top">Reasoning</td>
+        <td style="padding:8px 10px;color:var(--t2)">Gives a concrete reason for each suggestion (e.g. "X could cause Y")</td>
+      </tr>
+      <tr style="border-bottom:1px solid var(--brd)">
+        <td style="padding:8px 10px;color:var(--t1);font-weight:700;white-space:nowrap;vertical-align:top">Readability</td>
+        <td style="padding:8px 10px;color:var(--t2)">Comments on code clarity, naming conventions, or function organization</td>
+      </tr>
+      <tr>
+        <td style="padding:8px 10px;color:var(--t1);font-weight:700;white-space:nowrap;vertical-align:top">Completeness</td>
+        <td style="padding:8px 10px;color:var(--t2)">Covers the obvious issues in the PR without obvious gaps</td>
+      </tr>
+    </table>
+    <p style="margin-top:12px;color:var(--t3);font-size:.85rem">Use <strong style="color:#3fb950">Both</strong> and <strong>Neither</strong> freely &mdash; pick <strong>Both</strong> when the two reviews handle a criterion about equally well, and <strong>Neither</strong> when <em>neither</em> review addresses it. Only pick A or B when one is genuinely better <em>for that specific criterion</em>.</p>
+  </div>
+
+  <div class="brief-nav">
+    <button class="btn btn-s" onclick="showScreen('demographics')">&larr; Back</button>
+    <button class="btn btn-p" id="beginBtn">Got it &mdash; start with a practice round &rarr;</button>
+  </div>
+</div>
+
+<!-- ═══ WARMUP ═══ -->
+<div id="warmup" class="screen">
+  <div class="topbar">
+    <div style="display:flex;align-items:center;gap:14px">
+      <span class="logo">Practice Round</span>
+      <span style="font-size:.82rem;color:var(--orange);font-weight:600">This does not count &mdash; just get familiar with the interface</span>
+    </div>
+  </div>
+
+  <div class="prh">
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:4px">
+      <span style="font-size:.75rem;font-weight:700;background:var(--orange);color:#fff;padding:2px 8px;border-radius:4px">Practice</span>
+      <span class="title">Add retry logic to API client</span>
+    </div>
+    <div class="meta"><span>example/web-service</span></div>
+  </div>
+
+  <div class="diff-section">
+    <div class="diff-header" onclick="this.closest('.diff-section').classList.toggle('collapsed');this.querySelector('.diff-toggle').textContent=this.closest('.diff-section').classList.contains('collapsed')?'click to expand':'click to collapse'">
+      <span>Diff</span><span class="diff-toggle">click to collapse</span>
+    </div>
+    <div class="diff-view">
+      <div class="diff-file">
+        <div class="diff-fname">src/api_client.py</div>
+        <table class="diff-tbl">
+          <tr class="hunk"><td class="dg">@@</td><td class="dc">@@ -12,8 +12,19 @@ class ApiClient:</td></tr>
+          <tr class="ctx"><td class="dg"></td><td class="dc">     def __init__(self, base_url, timeout=30):</td></tr>
+          <tr class="ctx"><td class="dg"></td><td class="dc">         self.base_url = base_url</td></tr>
+          <tr class="add"><td class="dg">+</td><td class="dc">         self.max_retries = 3</td></tr>
+          <tr class="del"><td class="dg">&#8722;</td><td class="dc">     def fetch(self, endpoint):</td></tr>
+          <tr class="del"><td class="dg">&#8722;</td><td class="dc">         response = requests.get(f"{self.base_url}/{endpoint}", timeout=self.timeout)</td></tr>
+          <tr class="del"><td class="dg">&#8722;</td><td class="dc">         return response.json()</td></tr>
+          <tr class="add"><td class="dg">+</td><td class="dc">     def fetch(self, endpoint, retries=None):</td></tr>
+          <tr class="add"><td class="dg">+</td><td class="dc">         retries = retries or self.max_retries</td></tr>
+          <tr class="add"><td class="dg">+</td><td class="dc">         for attempt in range(retries):</td></tr>
+          <tr class="add"><td class="dg">+</td><td class="dc">             try:</td></tr>
+          <tr class="add"><td class="dg">+</td><td class="dc">                 response = requests.get(f"{self.base_url}/{endpoint}", timeout=self.timeout)</td></tr>
+          <tr class="add"><td class="dg">+</td><td class="dc">                 return response.json()</td></tr>
+          <tr class="add"><td class="dg">+</td><td class="dc">             except requests.RequestException:</td></tr>
+          <tr class="add"><td class="dg">+</td><td class="dc">                 if attempt == retries - 1: raise</td></tr>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <div class="comparison-grid">
+    <div class="review-card">
+      <div class="review-card-header"><span style="width:24px;height:24px;border-radius:6px;background:#58a6ff;display:inline-flex;align-items:center;justify-content:center;font-size:.75rem;font-weight:800;color:#fff">A</span><span style="color:#58a6ff">Review A</span></div>
+      <div class="review-card-body"><div class="rsummary"><div class="rsummary-label">AI summary &mdash; orientation only</div><ul><li>Flags that the retry loop has <strong>no backoff</strong> between attempts, risking a burst of requests on transient failures.</li><li>Recommends <strong>exponential backoff</strong> and a test in <code>tests/test_api_client.py</code> for the exhausted-retries case.</li></ul></div><div class="rcounts"><div class="rcounts-label">Concrete items named (auto-counted &mdash; hover to see them)</div><div class="rcounts-chips"><span class="rcount-chip" title="Components/APIs:&#10;• ApiClient.fetch()&#10;• RequestException">Components/APIs <b>2</b></span><span class="rcount-chip" title="Files:&#10;• tests/test_api_client.py">Files <b>1</b></span><span class="rcount-chip" title="Test targets:&#10;• tests/test_api_client.py&#10;• exhausted-retries case">Test targets <b>2</b></span><span class="rcount-chip" title="Edge cases:&#10;• transient failure / rate limiting">Edge cases <b>1</b></span><span class="rcount-chip" title="Reasoned claims:&#10;• no backoff could overwhelm the server">Reasoned claims <b>1</b></span></div></div><div class="rcontent"><h2>Problem</h2><p>The <code>fetch()</code> retry loop has <span class="uniq-A">no backoff between attempts</span>, so a transient failure turns into a tight burst of requests against the upstream service.</p><h2>Evidence</h2><p><code>ApiClient.fetch()</code>: <span class="uniq-A">the retry loop catches all <code>RequestException</code> subtypes including <code>ConnectionError</code> and <code>Timeout</code>, with no delay between attempts.</span></p><h2>Impact</h2><p>Without backoff, rapid repeated requests could overwhelm the server or trigger rate limiting under transient failures.</p><h2>Recommendation</h2><p><span class="uniq-A">Add exponential backoff (e.g. <code>time.sleep(2 ** attempt)</code>) between retries. Add tests in <code>tests/test_api_client.py</code> covering the exhausted-retries case.</span></p></div></div>
+    </div>
+    <div class="review-card">
+      <div class="review-card-header"><span style="width:24px;height:24px;border-radius:6px;background:#a371f7;display:inline-flex;align-items:center;justify-content:center;font-size:.75rem;font-weight:800;color:#fff">B</span><span style="color:#a371f7">Review B</span></div>
+      <div class="review-card-body"><div class="rsummary"><div class="rsummary-label">AI summary &mdash; orientation only</div><ul><li>Says the retry logic <em>may not be robust enough</em>, but doesn't pinpoint why.</li><li>Suggests adding error handling and tests in general terms, without naming files or cases.</li></ul></div><div class="rcounts"><div class="rcounts-label">Concrete items named (auto-counted &mdash; hover to see them)</div><div class="rcounts-chips"><span class="rcount-chip" title="Components/APIs:&#10;• fetch()">Components/APIs <b>1</b></span><span class="rcount-chip zero" title="Files:&#10;none">Files <b>0</b></span><span class="rcount-chip zero" title="Test targets:&#10;none">Test targets <b>0</b></span><span class="rcount-chip zero" title="Edge cases:&#10;none">Edge cases <b>0</b></span><span class="rcount-chip zero" title="Reasoned claims:&#10;none">Reasoned claims <b>0</b></span></div></div><div class="rcontent"><h2>Problem</h2><p>The retry logic in <code>fetch()</code> may not handle failures robustly enough.</p><h2>Evidence</h2><p><code>fetch()</code> method retry loop.</p><h2>Impact</h2><p>The retry mechanism looks reasonable but could be improved.</p><h2>Recommendation</h2><p>Consider adding some error handling and tests. <span class="uniq-B">The code should also follow best practices for retry logic.</span></p></div></div>
+    </div>
+  </div>
+
+  <div class="pref5-section">
+    <h4>For each criterion, which review better addresses it?</h4>
+    <p class="pref5-sub">For each criterion, choose <strong style="color:#58a6ff">Review A</strong>, <strong style="color:#a371f7">Review B</strong>, <strong style="color:#3fb950">Both</strong>, or <strong>Neither</strong>. Scroll up to re-read the reviews if needed.</p>
+    <div class="crit-grid" id="warmCritGrid"></div>
+  </div>
+
+  <div class="overall-section">
+    <h4>Overall, which review is more useful?</h4>
+    <p class="pref5-sub">One holistic call, taking everything above together.</p>
+    <div class="overall-opts">
+      <label data-c="A"><input type="radio" name="overall_warm" value="A">Review A is more useful</label>
+      <label data-c="equal"><input type="radio" name="overall_warm" value="equal">About the same</label>
+      <label data-c="B"><input type="radio" name="overall_warm" value="B">Review B is more useful</label>
+    </div>
+  </div>
+
+  <div class="why-section">
+    <h4>Why? <span style="font-weight:400;color:var(--t3)">(optional in practice round)</span></h4>
+    <p class="why-sub">What made you choose that option? 1&ndash;2 sentences is enough.</p>
+    <textarea id="warmWhy" placeholder="e.g. Review A names the specific file and explains the backoff risk concretely; Review B is vague..."></textarea>
+  </div>
+
+  <div class="difficulty-section">
+    <h4>How difficult was this comparison?</h4>
+    <div class="diff-scale" id="warmDiffScale">
+      <label onclick="diffScaleSelect(this,'warmDiffScale')"><input type="radio" name="warmDiff" value="1"><span>1 &mdash; Very Easy</span></label>
+      <label onclick="diffScaleSelect(this,'warmDiffScale')"><input type="radio" name="warmDiff" value="2"><span>2</span></label>
+      <label onclick="diffScaleSelect(this,'warmDiffScale')"><input type="radio" name="warmDiff" value="3"><span>3</span></label>
+      <label onclick="diffScaleSelect(this,'warmDiffScale')"><input type="radio" name="warmDiff" value="4"><span>4</span></label>
+      <label onclick="diffScaleSelect(this,'warmDiffScale')"><input type="radio" name="warmDiff" value="5"><span>5 &mdash; Very Hard</span></label>
+    </div>
+  </div>
+
+  <div style="text-align:center;padding:20px 0;border-top:1px solid var(--brd);margin-top:6px">
+    <p style="color:var(--t3);font-size:.85rem;margin-bottom:14px">Answer all 6 criteria and a difficulty rating to unlock the button.</p>
+    <button class="btn btn-g" id="warmDoneBtn" style="font-size:1rem;padding:12px 28px" disabled>I'm ready &mdash; start the real study &rarr;</button>
+  </div>
+</div>
+
+<!-- ═══ EVALUATION ═══ -->
+<div id="evaluation" class="screen">
+  <div class="topbar">
+    <div style="display:flex;align-items:center;gap:14px">
+      <span class="logo">PR Review Study</span>
+      <span class="pbar"><span class="pfill" id="pFill"></span></span>
+      <span class="ptxt" id="pTxt">0 / 6</span>
+    </div>
+    <span class="timer" id="timer">0:00</span>
+  </div>
+
+  <div class="prh">
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:4px">
+      <span style="font-size:.75rem;font-weight:700;background:var(--blue);color:#fff;padding:2px 8px;border-radius:4px;white-space:nowrap" id="prCounter"></span>
+      <span class="title" id="prTitle"></span>
+    </div>
+    <div class="meta">
+      <span id="prRepo"></span>
+      <span id="prNumber" style="color:var(--t3)"></span>
+      <a id="prLink" href="#" target="_blank" rel="noopener">View on GitHub</a>
+    </div>
+    <div id="bodySection" style="display:none;margin-top:10px;padding-top:10px;border-top:1px solid var(--bg3);font-size:.88rem;color:var(--t1);line-height:1.5">
+      <div id="bodyC"></div>
+    </div>
+  </div>
+
+  <div class="diff-section" id="diffSection">
+    <div class="diff-header" onclick="document.getElementById('diffSection').classList.toggle('collapsed');this.querySelector('.diff-toggle').textContent=this.closest('.diff-section').classList.contains('collapsed')?'click to expand':'click to collapse'">
+      <span>Diff &mdash; read this first, then check whether the reviews below reference real files and functions from this diff</span><span class="diff-toggle">click to collapse</span>
+    </div>
+    <div class="diff-view" id="diffC"></div>
+  </div>
+
+  <div id="diffLegend">
+    <span><span class="swatch" style="background:rgba(88,166,255,0.16);border-left:3px solid #58a6ff"></span>unique to Review A</span>
+    <span><span class="swatch" style="background:rgba(163,113,247,0.16);border-left:3px solid #a371f7"></span>unique to Review B</span>
+    <span style="color:var(--t3)">unshaded = roughly the same point in both</span>
+    <button class="toggle-uniq" id="toggleUniqBtn" type="button">hide highlighting</button>
+  </div>
+
+  <div class="comparison-grid" id="reviewGrid"></div>
+
+  <button class="jump-btn" id="jumpBtn">&#8595; Jump to Questions</button>
+
+  <div class="pref5-section" id="pref5Section">
+    <h4>For each criterion, which review better addresses it?</h4>
+    <p class="pref5-sub">Don't pick an overall winner. For each of the 6 criteria below, choose: <strong style="color:#58a6ff">Review A</strong> does it better, <strong style="color:#a371f7">Review B</strong> does it better, <strong style="color:#3fb950">Both</strong> address it about equally, or <strong>Neither</strong> addresses it. Use the <strong>highlighted differences</strong> and the <strong>count strip</strong> &mdash; but a difference only counts if it actually <strong>matters</strong> for that criterion on this PR.</p>
+    <div class="crit-grid" id="critGrid"></div>
+  </div>
+
+  <div class="overall-section" id="overallSection">
+    <h4>Overall, which review is more useful?</h4>
+    <p class="pref5-sub">One holistic call, taking everything above together. This is your single overall preference for this PR.</p>
+    <div class="overall-opts" id="overallOpts">
+      <label data-c="A"><input type="radio" name="overall_task" value="A">Review A is more useful</label>
+      <label data-c="equal"><input type="radio" name="overall_task" value="equal">About the same</label>
+      <label data-c="B"><input type="radio" name="overall_task" value="B">Review B is more useful</label>
+    </div>
+  </div>
+
+  <div class="why-section">
+    <h4>Why did you choose that? <span style="font-weight:400;color:var(--t3);font-size:.82rem">(required &mdash; 1&ndash;3 sentences)</span></h4>
+    <p class="why-sub">What specific difference in the reviews drove your choice? E.g. "Review A named the exact test file; Review B only said 'add tests'."</p>
+    <textarea id="whyText" placeholder="e.g. 'Review A named the specific function and line number; Review B only said the method is risky.' or 'Both said the same thing about test coverage but Review B was more concrete about which file to add tests to.'"></textarea>
+  </div>
+
+  <div class="difficulty-section">
+    <h4>How difficult was this comparison?</h4>
+    <div class="diff-scale" id="diffScale"></div>
+  </div>
+
+  <div class="navbar">
+    <button class="btn btn-s" id="prevBtn">&#8592; Previous</button>
+    <span class="uwarn" id="uWarn"></span>
+    <button class="btn btn-p" id="nextBtn">Submit &amp; Next &#8594;</button>
+  </div>
+</div>
+
+<!-- ═══ FEEDBACK ═══ -->
+<div id="feedback" class="screen">
+  <div class="feedback-card">
+    <h2>Thank You!</h2>
+    <p>Before we finish, we'd love to hear your thoughts. This is optional.</p>
+    <textarea id="feedbackText" placeholder="Any feedback on the study? What was confusing, what was clear, any suggestions?"></textarea>
+    <div class="fb-btns">
+      <button class="btn btn-s" id="skipFbBtn">Skip</button>
+      <button class="btn btn-p" id="submitFbBtn">Submit Feedback</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ COMPLETION ═══ -->
+<div id="completion" class="screen">
+  <h1>Study Complete</h1>
+  <p>Thank you for participating!</p>
+  <div class="sgrid">
+    <div class="scard"><div class="sl">PRs reviewed</div><div class="sv" id="stR">6</div></div>
+    <div class="scard"><div class="sl">Total Time</div><div class="sv" id="stT">--</div></div>
+    <div class="scard"><div class="sl">Avg / PR</div><div class="sv" id="stA">--</div></div>
+  </div>
+  <p style="color:var(--t2)">Your responses have been saved automatically.</p>
+  <div id="exportBackup" style="margin-top:14px;padding:14px;border:1px solid var(--brd);border-radius:10px;max-width:560px;margin-left:auto;margin-right:auto;background:var(--bg1)">
+    <p style="font-size:.9rem;color:var(--t1);margin:0 0 8px"><strong>Backup copy</strong></p>
+    <p style="font-size:.85rem;color:var(--t2);margin:0 0 10px">If the researcher asked you to email your responses, click below to download them as a JSON file.</p>
+    <button id="downloadBackupBtn" class="btn btn-s" style="font-size:.9rem">Download my responses (.json)</button>
+  </div>
+</div>
+
+</div><!-- .container -->
+
+<script>
+/* ═══════════════════════════════════════════════════════
+   Human Evaluation Study v4
+   - 6 PRs: max-divergence baseline vs KG (joern) pairs
+   - Order randomized per rater (seeded shuffle)
+   - Single comparison per PR: baseline vs KG (blind A/B)
+   - Task: per-criterion relevance (Review A / Both / Neither / Review B
+     on each of 6 criteria) + why text + difficulty
+   - Validates LLM-judge per-criterion ranking against human judgement
+   ═══════════════════════════════════════════════════════ */
+
+const STUDY_ID = "human_eval_v4";
+let STUDY = null;
+
+async function loadStudy() {
+  if (window.__STUDY_DATA) { STUDY = window.__STUDY_DATA; return; }
+  const r = await fetch("study_data.json");
+  STUDY = await r.json();
+}
+
+let raterId = "", taskOrder = [], modeMap = {}, ratings = {},
+    curTask = 0, taskMs = 0, timerH = null, startedAt = null,
+    demographics = {}, githubClickLog = {}, submittedSig = {};
+
+// Minimum characters for the mandatory "why" rationale. Must match the
+// completeness check (isComplete) and the submit-time validation so a
+// half-typed rationale is never treated as a finished, submittable task.
+const MIN_WHY = 10;
+
+// A rating only counts as finished once all three mandatory fields are
+// present (preference, a rationale of at least MIN_WHY chars, difficulty).
+// firstOpen() relies on this so a partially-filled task that the rater
+// navigated away from is still revisited on resume rather than silently
+// skipped (and therefore never submitted to the Sheet).
+function isComplete(r) {
+  return !!r
+    && critComplete(r.criteria)
+    && !!r.overall
+    && typeof r.why === "string" && r.why.trim().length >= MIN_WHY
+    && !!r.difficulty;
+}
+
+/* ═══ Seeded RNG (for reproducible A/B flip per rater) ═══ */
+function hash(s) { let h=0; for(let i=0;i<s.length;i++) h=((h<<5)-h+s.charCodeAt(i))|0; return h>>>0; }
+function rng(seed) {
+  return function() {
+    seed|=0; seed=(seed+0x6d2b79f5)|0;
+    let t=Math.imul(seed^(seed>>>15),1|seed);
+    t=(t+Math.imul(t^(t>>>7),61|t))^t;
+    return((t^(t>>>14))>>>0)/4294967296;
+  };
+}
+
+/* ═══ Build task order ═══ */
+function buildOrder() {
+  const r = rng(hash(raterId));
+  // Shuffle PR order per rater so no one sees wins-then-losses pattern
+  const prIndices = STUDY.prs.map((_,i) => i);
+  for (let i = prIndices.length - 1; i > 0; i--) {
+    const j = Math.floor(r() * (i + 1));
+    [prIndices[i], prIndices[j]] = [prIndices[j], prIndices[i]];
+  }
+  taskOrder = []; modeMap = {};
+  for (let pi of prIndices) {
+    const pr = STUDY.prs[pi];
+    for (let ci = 0; ci < STUDY.comparisons.length; ci++) {
+      const comp = STUDY.comparisons[ci];
+      const flip = r() < 0.5;
+      const left  = flip ? comp.mode_b : comp.mode_a;
+      const right = flip ? comp.mode_a : comp.mode_b;
+      const taskId = `${pr.pr_id}_${comp.id}`;
+      taskOrder.push({ prIdx: pi, compIdx: ci, taskId });
+      modeMap[taskId] = { A: left, B: right };
+    }
+  }
+}
+
+/* ═══ Storage ═══ */
+function sKey() { return "heval4_" + raterId; }
+function save() {
+  localStorage.setItem(sKey(), JSON.stringify({
+    raterId, startedAt, curTask, ratings, modeMap, taskOrder, demographics, githubClickLog, submittedSig
+  }));
+}
+function load() {
+  try {
+    const d = JSON.parse(localStorage.getItem(sKey()));
+    if (d && d.taskOrder && d.ratings) {
+      taskOrder=d.taskOrder; ratings=d.ratings; modeMap=d.modeMap;
+      startedAt=d.startedAt; demographics=d.demographics||{};
+      githubClickLog=d.githubClickLog||{}; submittedSig=d.submittedSig||{};
+      curTask=firstOpen();
+      return true;
+    }
+  } catch(e) {}
+  return false;
+}
+function firstOpen() {
+  for (let i=0; i<taskOrder.length; i++) {
+    if (!isComplete(ratings[taskOrder[i].taskId])) return i;
+  }
+  return taskOrder.length;
+}
+
+/* ═══ Inline-only markdown (for AI summary bullets) ═══ */
+function mdInline(s) {
+  return (s||"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;")
+    .replace(/\*\*(.+?)\*\*/g,"<strong>$1</strong>")
+    .replace(/`([^`]+)`/g,"<code>$1</code>");
+}
+
+/* ═══ Simple Markdown ═══ */
+function md(s) {
+  if (!s) return "";
+  s = s.replace(/\r\n/g,"\n").replace(/\n{3,}/g,"\n\n");
+  return s.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;")
+    .replace(/^### (.+)$/gm,"<h3>$1</h3>").replace(/^## (.+)$/gm,"<h2>$1</h2>").replace(/^# (.+)$/gm,"<h1>$1</h1>")
+    .replace(/\*\*(.+?)\*\*/g,"<strong>$1</strong>").replace(/\*(.+?)\*/g,"<em>$1</em>")
+    .replace(/`([^`]+)`/g,"<code>$1</code>")
+    .replace(/^[\-\*] (.+)$/gm,"<li>$1</li>").replace(/^\d+\. (.+)$/gm,"<li>$1</li>")
+    .replace(/\[([^\]]+)\]\(([^)]+)\)/g,'<a href="$2" target="_blank">$1</a>')
+    .replace(/((?:<li>.*?<\/li>\n?)+)/g,m=>"<ul>"+m+"</ul>")
+    .replace(/\n\n/g,"</p><p>").replace(/\n/g," ")
+    .replace(/^/,"<p>").replace(/$/,"</p>")
+    .replace(/<p>\s*(<h[123]>)/g,"$1").replace(/(<\/h[123]>)\s*<\/p>/g,"$1")
+    .replace(/<p>\s*(<ul>)/g,"$1").replace(/(<\/ul>)\s*<\/p>/g,"$1")
+    .replace(/<p>\s*<\/p>/g,"");
+}
+
+function renderPRBody(text) {
+  if (!text) return "";
+  const esc = s => s.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+  const fenced = [];
+  text = text.replace(/```(\w*)\n?([\s\S]*?)```/g, (_,_l,b) => {
+    fenced.push(`<pre class="md-pre"><code>${esc(b.replace(/\n$/,""))}</code></pre>`);
+    return ` F${fenced.length-1} `;
+  });
+  const inline = [];
+  text = text.replace(/`([^`\n]+?)`/g, (_,b) => {
+    inline.push(`<code class="md-code">${esc(b)}</code>`);
+    return ` I${inline.length-1} `;
+  });
+  text = esc(text);
+  text = text.replace(/!\[([^\]]*)\]\(([^)]+)\)/g, (_,alt) => `<span class="md-img">[image: ${alt||"image"}]</span>`);
+  text = text.replace(/\[([^\]]+)\]\(([^)]+)\)/g, (_,t,u) => `<a href="${u}" target="_blank" rel="noopener">${t}</a>`);
+  text = text.replace(/\*\*([^*\n]+?)\*\*/g, "<strong>$1</strong>");
+  text = text.replace(/(^|[^*\w])\*([^*\n]+?)\*(?!\w)/g, "$1<em>$2</em>");
+  const lines = text.split(/\r?\n/);
+  const out = []; let listKind=null, paraBuf=[];
+  const closeList = () => { if(listKind){out.push(`</${listKind}>`);listKind=null;} };
+  const flushPara = () => { if(paraBuf.length){out.push(`<p class="md-p">${paraBuf.join("<br>")}</p>`);paraBuf=[];} };
+  for (const ln of lines) {
+    let m;
+    if ((m=ln.match(/^(#{1,3})\s+(.+)$/))) { flushPara();closeList(); const lvl=m[1].length+2; out.push(`<h${lvl} class="md-h${lvl}">${m[2].trim()}</h${lvl}>`); }
+    else if ((m=ln.match(/^\s*[-*+]\s+(.+)$/))) { flushPara(); if(listKind!=="ul"){closeList();out.push(`<ul class="md-ul">`);listKind="ul"} out.push(`<li>${m[1]}</li>`); }
+    else if ((m=ln.match(/^\s*\d+\.\s+(.+)$/))) { flushPara(); if(listKind!=="ol"){closeList();out.push(`<ol class="md-ol">`);listKind="ol"} out.push(`<li>${m[1]}</li>`); }
+    else if (ln.trim()==="") { flushPara();closeList(); }
+    else { closeList(); paraBuf.push(ln); }
+  }
+  flushPara(); closeList();
+  let html = out.join("\n");
+  html = html.replace(/ I(\d+) /g, (_,n) => inline[+n]);
+  html = html.replace(/ F(\d+) /g, (_,n) => fenced[+n]);
+  return html;
+}
+
+function renderDiff(d) {
+  if (!d) return "<span style='color:var(--t3)'>No diff available</span>";
+  const esc = s => s.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+  const lines = d.split("\n");
+  let html="", curFile=null, rows=[];
+  function flush() {
+    if (!rows.length) return;
+    let out = "";
+    if (curFile) out += `<div class="diff-fname">${esc(curFile)}</div>`;
+    out += `<table class="diff-tbl">${rows.join("")}</table>`;
+    html += `<div class="diff-file">${out}</div>`;
+    rows = [];
+  }
+  for (const l of lines) {
+    if (l.startsWith("diff ")) { flush(); curFile=null; continue; }
+    if (l.startsWith("index ")||l.startsWith("new file")||l.startsWith("deleted file")) continue;
+    if (l.startsWith("--- ")) continue;
+    if (l.startsWith("+++ ")) { flush(); let f=l.slice(4); if(f.startsWith("b/"))f=f.slice(2); curFile=f; continue; }
+    if (l.startsWith("@@")) {
+      const label = esc(l.match(/@@ .+? @@/)?.[0]||l);
+      const m = l.match(/@@ .+? @@(.*)/);
+      const ctx = m&&m[1]?` ${esc(m[1].trim())}` : "";
+      rows.push(`<tr class="hunk"><td class="dg">@@</td><td class="dc">${label}${ctx}</td></tr>`);
+    } else if (l.startsWith("+")) {
+      rows.push(`<tr class="add"><td class="dg">+</td><td class="dc">${esc(l.slice(1))}</td></tr>`);
+    } else if (l.startsWith("-")) {
+      rows.push(`<tr class="del"><td class="dg">−</td><td class="dc">${esc(l.slice(1))}</td></tr>`);
+    } else {
+      rows.push(`<tr class="ctx"><td class="dg"></td><td class="dc">${esc(l)}</td></tr>`);
+    }
+  }
+  flush();
+  return html;
+}
+
+/* ═══ Curated semantic uniqueness (Chris spec): highlight only blocks whose
+   text contains a genuinely-unique key for that mode; shared/paraphrased
+   points carry no key and stay unshaded. ═══ */
+function shadeByKeys(html, keys, cls) {
+  const t = document.createElement("div"); t.innerHTML = html;
+  const lk = (keys || []).map(k => k.toLowerCase());
+  if (lk.length) {
+    t.querySelectorAll("p,li").forEach(el => {
+      const txt = (el.textContent || "").toLowerCase();
+      if (lk.some(k => txt.includes(k))) el.classList.add(cls);
+    });
+  }
+  return t.innerHTML;
+}
+
+/* ═══ Lexical fallback (legacy) ═══ */
+const SIM_THRESHOLD = 0.50;
+function _normTokens(s) {
+  return new Set((s||"").toLowerCase().replace(/[`*_~]/g,"").replace(/[^a-z0-9 ]/g," ").split(/\s+/).filter(t=>t.length>=3));
+}
+function _jaccard(a,b) {
+  if (!a.size && !b.size) return 1;
+  let inter=0; for(const t of a) if(b.has(t)) inter++;
+  const uni = a.size+b.size-inter;
+  return uni===0 ? 1 : inter/uni;
+}
+function shadeUniqueBlocks(htmlA, htmlB) {
+  const tA=document.createElement("div"); tA.innerHTML=htmlA;
+  const tB=document.createElement("div"); tB.innerHTML=htmlB;
+  const bA=Array.from(tA.querySelectorAll("p,li"));
+  const bB=Array.from(tB.querySelectorAll("p,li"));
+  const tokB=bB.map(b=>_normTokens(b.textContent));
+  const tokA=bA.map(a=>_normTokens(a.textContent));
+  bA.forEach((el,i)=>{ const t=tokA[i]; if(t.size<2)return; let best=0; for(const u of tokB) best=Math.max(best,_jaccard(t,u)); if(best<SIM_THRESHOLD) el.classList.add("uniq-A"); });
+  bB.forEach((el,i)=>{ const t=tokB[i]; if(t.size<2)return; let best=0; for(const u of tokA) best=Math.max(best,_jaccard(t,u)); if(best<SIM_THRESHOLD) el.classList.add("uniq-B"); });
+  return [tA.innerHTML, tB.innerHTML];
+}
+
+/* ═══ Build review pair ═══ */
+function buildReviewPair(pr, taskId) {
+  const grid = document.getElementById("reviewGrid");
+  grid.innerHTML = "";
+  const asgn = modeMap[taskId];
+  const rawHtml = { A: md(pr.reviews[asgn.A]), B: md(pr.reviews[asgn.B]) };
+  // Highlighting: prefer curated semantic unique-content markers (Chris spec —
+  // paraphrases of shared points stay unshaded); fall back to the lexical
+  // heuristic only if a PR has no curated markers.
+  const uniq = pr.review_unique || null;
+  let shadedA, shadedB;
+  if (uniq) {
+    shadedA = shadeByKeys(rawHtml.A, uniq[asgn.A] || [], "uniq-A");
+    shadedB = shadeByKeys(rawHtml.B, uniq[asgn.B] || [], "uniq-B");
+  } else {
+    [shadedA, shadedB] = shadeUniqueBlocks(rawHtml.A, rawHtml.B);
+  }
+  const summaries = pr.review_summaries || {};
+  const counts = pr.review_counts || {};
+  ["A","B"].forEach(lbl => {
+    const color = lbl==="A" ? "#58a6ff" : "#a371f7";
+    const card = document.createElement("div");
+    card.className = "review-card";
+    const summ = summaries[asgn[lbl]] || [];
+    const summHtml = summ.length
+      ? `<div class="rsummary"><div class="rsummary-label">AI summary &mdash; orientation only</div><ul>${summ.map(b=>`<li>${mdInline(b)}</li>`).join("")}</ul></div>`
+      : "";
+    const countHtml = buildCountStrip(counts[asgn[lbl]]);
+    card.innerHTML = `<div class="review-card-header"><span style="width:24px;height:24px;border-radius:6px;background:${color};display:inline-flex;align-items:center;justify-content:center;font-size:.75rem;font-weight:800;color:#fff;flex-shrink:0">${lbl}</span><span style="color:${color}">Review ${lbl}</span></div><div class="review-card-body">${summHtml}${countHtml}<div class="rcontent">${lbl==="A"?shadedA:shadedB}</div></div>`;
+    grid.appendChild(card);
+  });
+}
+
+/* ═══ Concrete-item count strip (precomputed, blinding-safe) ═══ */
+const COUNT_LABELS = {
+  components_apis: "Components/APIs",
+  files: "Files",
+  test_targets: "Test targets",
+  edge_cases: "Edge cases",
+  reasoned_claims: "Reasoned claims",
+};
+function _attr(s) {
+  return (s||"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
+}
+function buildCountStrip(c) {
+  if (!c) return "";
+  const chips = Object.keys(COUNT_LABELS).map(cat => {
+    const cell = c[cat] || { n: 0, items: [] };
+    const n = cell.n || 0;
+    const tip = (cell.items && cell.items.length)
+      ? cell.items.map(s => "• " + s).join("\n") : "none";
+    return `<span class="rcount-chip${n===0?" zero":""}" title="${_attr(COUNT_LABELS[cat] + ":\n" + tip)}">${COUNT_LABELS[cat]} <b>${n}</b></span>`;
+  }).join("");
+  return `<div class="rcounts"><div class="rcounts-label">Concrete items named (auto-counted &mdash; hover to see them)</div><div class="rcounts-chips">${chips}</div></div>`;
+}
+
+/* ═══ Per-criterion relevance (Review A / Both / Neither / Review B for each of 6 criteria) ═══ */
+// Criterion ids contain "*" (F3*, F2*), which is invalid in a radio name —
+// sanitise to a safe key for the input name, but always store answers keyed
+// by the real criterion id from STUDY.criteria.
+function critKey(id) { return id.replace(/[^a-z0-9]/gi, ""); }
+
+function buildCritGrid(containerId, namePrefix) {
+  const el = document.getElementById(containerId);
+  if (!el) return;
+  el.innerHTML = "";
+  (STUDY.criteria || []).forEach(c => {
+    const k = namePrefix + "_" + critKey(c.id);
+    const row = document.createElement("div");
+    row.className = "crit-row";
+    row.dataset.cid = c.id;
+    row.innerHTML =
+      `<div class="crit-q"><span class="crit-cat">${c.category}</span>${c.description}</div>` +
+      `<div class="crit-opts">` +
+      `<label data-c="A"><input type="radio" name="${k}" value="A">Review A</label>` +
+      `<label data-c="both"><input type="radio" name="${k}" value="both">Both</label>` +
+      `<label data-c="neither"><input type="radio" name="${k}" value="neither">Neither</label>` +
+      `<label data-c="B"><input type="radio" name="${k}" value="B">Review B</label>` +
+      `</div>`;
+    row.querySelectorAll(".crit-opts label").forEach(lab => {
+      lab.onclick = () => {
+        row.querySelectorAll(".crit-opts label").forEach(l => l.classList.remove("selected"));
+        lab.classList.add("selected");
+        row.classList.remove("crit-missing");
+      };
+    });
+    el.appendChild(row);
+  });
+}
+
+function getCriteria(namePrefix) {
+  const out = {};
+  (STUDY.criteria || []).forEach(c => {
+    const ch = document.querySelector(`input[name="${namePrefix + "_" + critKey(c.id)}"]:checked`);
+    out[c.id] = ch ? ch.value : null;
+  });
+  return out;
+}
+
+function critComplete(obj) {
+  if (!obj) return false;
+  return (STUDY.criteria || []).every(c => ["A", "B", "both", "neither"].includes(obj[c.id]));
+}
+
+/* ═══ Overall holistic preference (one question per PR, alongside the 6 criteria) ═══ */
+function wireOverall(prefix) {
+  document.querySelectorAll(`.overall-opts input[name="overall_${prefix}"]`).forEach(inp => {
+    inp.closest("label").onclick = () => {
+      const grp = inp.closest(".overall-opts");
+      grp.querySelectorAll("label").forEach(l => l.classList.remove("selected"));
+      inp.closest("label").classList.add("selected");
+      inp.checked = true;
+      const sec = grp.closest(".overall-section");
+      if (sec) sec.classList.remove("overall-missing");
+    };
+  });
+}
+function getOverall(prefix) {
+  const ch = document.querySelector(`.overall-opts input[name="overall_${prefix}"]:checked`);
+  return ch ? ch.value : null;
+}
+function clearOverall(prefix) {
+  document.querySelectorAll(`.overall-opts input[name="overall_${prefix}"]`).forEach(i => {
+    i.checked = false; i.closest("label").classList.remove("selected");
+  });
+}
+function restoreOverall(prefix, val) {
+  if (!val) return;
+  const r = document.querySelector(`.overall-opts input[name="overall_${prefix}"][value="${val}"]`);
+  if (r) { r.checked = true; r.closest("label").classList.add("selected"); }
+}
+
+// Convenience signal for analysis: net lean across criteria (+ = toward A).
+function critNet(obj) {
+  if (!obj) return 0;
+  let n = 0;
+  (STUDY.criteria || []).forEach(c => { if (obj[c.id] === "A") n++; else if (obj[c.id] === "B") n--; });
+  return n;
+}
+
+function clearCrit(containerId) {
+  const el = document.getElementById(containerId);
+  if (!el) return;
+  el.querySelectorAll(".crit-opts label").forEach(l => l.classList.remove("selected"));
+  el.querySelectorAll("input").forEach(r => { r.checked = false; });
+  el.querySelectorAll(".crit-row").forEach(r => r.classList.remove("crit-missing"));
+}
+
+function restoreCrit(containerId, namePrefix, obj) {
+  if (!obj) return;
+  (STUDY.criteria || []).forEach(c => {
+    const v = obj[c.id];
+    if (!v) return;
+    const radio = document.querySelector(`input[name="${namePrefix + "_" + critKey(c.id)}"][value="${v}"]`);
+    if (radio) { radio.checked = true; radio.closest("label").classList.add("selected"); }
+  });
+}
+
+/* ═══ Difficulty scale ═══ */
+function buildDiffScale() {
+  const el = document.getElementById("diffScale");
+  const labels = ["1 &mdash; Very Easy","2","3","4","5 &mdash; Very Hard"];
+  el.innerHTML = "";
+  labels.forEach((txt,i) => {
+    const lab = document.createElement("label");
+    lab.innerHTML = `<input type="radio" name="taskDiff" value="${i+1}"><span>${txt}</span>`;
+    lab.onclick = () => diffScaleSelect(lab, "diffScale");
+    el.appendChild(lab);
+  });
+}
+function diffScaleSelect(label, containerId) {
+  document.getElementById(containerId).querySelectorAll("label").forEach(l => l.classList.remove("selected"));
+  label.classList.add("selected");
+}
+function getDifficulty() {
+  const checked = document.querySelector('input[name="taskDiff"]:checked');
+  return checked ? parseInt(checked.value) : 0;
+}
+
+/* ═══ Timer ═══ */
+function startT() {
+  taskMs=0; clearInterval(timerH);
+  const el=document.getElementById("timer");
+  timerH=setInterval(()=>{ taskMs+=1000; const s=Math.floor(taskMs/1000); const txt=Math.floor(s/60)+":"+String(s%60).padStart(2,"0"); if(el.textContent!==txt)el.textContent=txt; },1000);
+}
+function stopT() { clearInterval(timerH); return taskMs; }
+
+/* ═══ Render task ═══ */
+function render(idx) {
+  if (idx >= taskOrder.length) { showFeedback(); return; }
+  const task = taskOrder[idx];
+  const pr   = STUDY.prs[task.prIdx];
+
+  document.getElementById("prCounter").textContent = `PR ${curTask+1} of ${taskOrder.length}`;
+  document.getElementById("prTitle").textContent   = pr.title;
+  document.getElementById("prRepo").textContent    = pr.repo;
+  document.getElementById("prNumber").textContent  = `#${pr.pr_number}`;
+  const ghLink = document.getElementById("prLink");
+  ghLink.href = pr.url;
+  ghLink.onclick = function() { if(!githubClickLog[task.taskId]) githubClickLog[task.taskId]=0; githubClickLog[task.taskId]++; save(); };
+
+  if (pr.body) { document.getElementById("bodySection").style.display="block"; document.getElementById("bodyC").innerHTML=renderPRBody(pr.body); }
+  else document.getElementById("bodySection").style.display="none";
+
+  document.getElementById("diffC").innerHTML = renderDiff(pr.diff);
+  // Start diff expanded
+  const ds = document.getElementById("diffSection");
+  ds.classList.remove("collapsed");
+  ds.querySelector(".diff-toggle").textContent = "click to collapse";
+
+  buildReviewPair(pr, task.taskId);
+
+  // Wire highlight toggle
+  const toggleBtn = document.getElementById("toggleUniqBtn");
+  const grid = document.getElementById("reviewGrid");
+  grid.classList.remove("diff-hidden");
+  toggleBtn.textContent = "hide highlighting";
+  toggleBtn.onclick = function() {
+    const on = grid.classList.toggle("diff-hidden");
+    toggleBtn.textContent = on ? "show highlighting" : "hide highlighting";
+  };
+
+  clearCrit("critGrid");
+  clearOverall("task");
+  document.getElementById("whyText").value = "";
+  buildDiffScale();
+
+  // Restore if returning
+  if (ratings[task.taskId]) {
+    const saved = ratings[task.taskId];
+    restoreCrit("critGrid", "task", saved.criteria);
+    restoreOverall("task", saved.overall);
+    if (saved.why) document.getElementById("whyText").value = saved.why;
+    if (saved.difficulty) {
+      const radio = document.querySelector(`input[name="taskDiff"][value="${saved.difficulty}"]`);
+      if (radio) { radio.checked=true; radio.closest("label").classList.add("selected"); }
+    }
+  }
+
+  document.getElementById("uWarn").style.display = "none";
+  updProg();
+  startT();
+
+  document.getElementById("prevBtn").disabled = idx===0;
+  const nb = document.getElementById("nextBtn");
+  if (idx === taskOrder.length-1) { nb.innerHTML="Submit &amp; Finish &#10003;"; nb.classList.add("btn-g"); nb.classList.remove("btn-p"); }
+  else { nb.innerHTML="Submit &amp; Next &#8594;"; nb.classList.add("btn-p"); nb.classList.remove("btn-g"); }
+
+  window.scrollTo({ top:0, behavior:"smooth" });
+}
+
+function updProg() {
+  const total = taskOrder.length;
+  document.getElementById("pFill").style.width = ((curTask+1)/total*100)+"%";
+  document.getElementById("pTxt").textContent   = (curTask+1)+" / "+total;
+}
+
+/* ═══ Submit task ═══ */
+function submitTask() {
+  const crit = getCriteria("task");
+  const overall = getOverall("task");
+  const why  = document.getElementById("whyText").value.trim();
+  const diff = getDifficulty();
+
+  if (!critComplete(crit)) {
+    let first = null;
+    document.querySelectorAll("#critGrid .crit-row").forEach(row => {
+      if (!row.querySelector("input:checked")) {
+        row.classList.add("crit-missing");
+        if (!first) first = row;
+      }
+    });
+    const w = document.getElementById("uWarn");
+    w.textContent = "⚠ Please answer every criterion (Review A / Both / Neither / Review B)";
+    w.style.display = "inline";
+    if (first) first.scrollIntoView({ behavior:"smooth", block:"center" });
+    return false;
+  }
+  if (!overall) {
+    const sec = document.getElementById("overallSection");
+    sec.classList.add("overall-missing");
+    const w = document.getElementById("uWarn");
+    w.textContent = "⚠ Please pick the overall more-useful review";
+    w.style.display = "inline";
+    sec.scrollIntoView({ behavior:"smooth", block:"center" });
+    return false;
+  }
+  if (!why || why.length < MIN_WHY) {
+    document.getElementById("whyText").focus();
+    const w = document.getElementById("uWarn");
+    w.textContent = "⚠ Please write a brief reason for your choices (1 sentence is enough)";
+    w.style.display = "inline";
+    return false;
+  }
+  if (!diff) {
+    const w = document.getElementById("uWarn");
+    w.textContent = "⚠ Please rate the difficulty (1–5)";
+    w.style.display = "inline";
+    return false;
+  }
+
+  document.getElementById("uWarn").style.display = "none";
+
+  const task = taskOrder[curTask];
+  ratings[task.taskId] = {
+    taskId: task.taskId,
+    criteria: crit,
+    overall: overall,
+    why: why,
+    difficulty: diff,
+    time_spent_ms: stopT(),
+    github_clicks: githubClickLog[task.taskId] || 0,
+  };
+  save();
+  submitTaskToSheet(task.taskId);
+  return true;
+}
+
+function goNext() { if (!submitTask()) return; curTask++; curTask>=taskOrder.length ? showFeedback() : render(curTask); }
+function goPrev() {
+  const task = taskOrder[curTask];
+  const crit = getCriteria("task");
+  const overall = getOverall("task");
+  const why  = document.getElementById("whyText").value.trim();
+  const diff = getDifficulty();
+  if (Object.values(crit).some(v => v) || overall || why || diff) {
+    ratings[task.taskId] = { taskId:task.taskId, criteria:crit, overall:overall, why:why, difficulty:diff, time_spent_ms:stopT(), github_clicks:githubClickLog[task.taskId]||0 };
+    save();
+  }
+  if (curTask > 0) { curTask--; render(curTask); }
+}
+
+/* ═══ Webhook ═══ */
+const SHEET_URL = "https://script.google.com/macros/s/AKfycbwEJLBbmO18y3GF7nnox4BvevFOnfKaYrk6igTt8v3Mp1n8tcMZ-RL648MZpUp5VjuOIQ/exec";
+
+function _outboxKey() { return "heval4_outbox_"+STUDY_ID+"_"+(raterId||"_anon"); }
+function appendToOutbox(payload) {
+  try { const key=_outboxKey(); const cur=JSON.parse(localStorage.getItem(key)||"[]"); cur.push({queued_at:new Date().toISOString(),payload}); localStorage.setItem(key,JSON.stringify(cur)); } catch(e) {}
+}
+function loadOutbox() { try { return JSON.parse(localStorage.getItem(_outboxKey())||"[]"); } catch(e) { return []; } }
+function downloadResponseBackup() {
+  const data={study_id:STUDY_ID,rater_id:raterId,exported_at:new Date().toISOString(),payloads:loadOutbox()};
+  const blob=new Blob([JSON.stringify(data,null,2)],{type:"application/json"});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement("a"); a.href=url; a.download=STUDY_ID+"_"+(raterId||"anon")+"_"+new Date().toISOString().replace(/[:.]/g,"-")+".json";
+  document.body.appendChild(a); a.click(); document.body.removeChild(a); URL.revokeObjectURL(url);
+}
+function sendToSheet(payload, retries=3) {
+  appendToOutbox(payload);
+  function attempt(n) {
+    try { fetch(SHEET_URL,{method:"POST",body:JSON.stringify(payload),mode:"no-cors"}).catch(()=>{if(n>1)setTimeout(()=>attempt(n-1),2000*(4-n))}); }
+    catch(e) { if(n>1) setTimeout(()=>attempt(n-1),2000*(4-n)); }
+  }
+  attempt(retries);
+}
+function submitTaskToSheet(taskId) {
+  const r = ratings[taskId]; if (!r) return;
+  const parts = taskId.split("_");
+  const prId  = parseInt(parts[0]);
+  const compId= parts.slice(1).join("_");
+  const asgn  = modeMap[taskId];
+  // Skip re-POSTing an unchanged answer. submitTask() runs on every
+  // "Submit & Next", so navigating Prev -> Next without editing would
+  // otherwise write a duplicate Sheet row for the same (rater, pr,
+  // comparison). We only resend when the answer actually changed; the
+  // analysis should still dedupe by (rater_id, pr_id, comparison),
+  // keeping the latest, in case a genuine edit produces two rows.
+  const sig = JSON.stringify([r.criteria, r.overall, r.why, r.difficulty]);
+  if (submittedSig[taskId] === sig) return;
+  submittedSig[taskId] = sig;
+  const payload = {
+    study_id: STUDY_ID,
+    rater_id: raterId,
+    completed_at: new Date().toISOString(),
+    demographics: demographics,
+    ratings: [{
+      pr_id: prId,
+      comparison: compId,
+      mode_A: asgn.A,
+      mode_B: asgn.B,
+      criteria: r.criteria,             // {criterion_id: "A"|"B"|"both"|"neither"} for all 6
+      criteria_net: critNet(r.criteria),// + = leans A, - = leans B, 0 = both/neither/balanced
+      overall: r.overall,               // holistic preference: "A" | "equal" | "B"
+      why: r.why,
+      difficulty: r.difficulty,
+      time_spent_ms: r.time_spent_ms,
+      github_clicks: r.github_clicks,
+    }]
+  };
+  sendToSheet(payload);
+  save();
+}
+function submitFeedbackToSheet(text) {
+  if (!text) return;
+  sendToSheet({study_id:STUDY_ID,rater_id:raterId,completed_at:new Date().toISOString(),feedback:text});
+}
+
+/* ═══ Feedback & completion ═══ */
+function showFeedback() {
+  showScreen("feedback");
+  document.getElementById("skipFbBtn").onclick  = showDone;
+  document.getElementById("submitFbBtn").onclick = () => { const txt=document.getElementById("feedbackText").value.trim(); if(txt) submitFeedbackToSheet(txt); showDone(); };
+}
+function showDone() {
+  showScreen("completion");
+  const n = Object.keys(ratings).length;
+  document.getElementById("stR").textContent = n;
+  let tt=0;
+  for (const r of Object.values(ratings)) tt += r.time_spent_ms||0;
+  const m = Math.round(tt/60000);
+  document.getElementById("stT").textContent = m<60 ? m+"m" : Math.floor(m/60)+"h "+m%60+"m";
+  document.getElementById("stA").textContent = n>0 ? Math.round(tt/n/1000)+"s" : "--";
+  const dlBtn = document.getElementById("downloadBackupBtn");
+  if (dlBtn) dlBtn.onclick = downloadResponseBackup;
+}
+
+/* ═══ Screen routing ═══ */
+function showScreen(id) { document.querySelectorAll(".screen").forEach(s=>s.classList.remove("active")); document.getElementById(id).classList.add("active"); }
+
+/* ═══ Demographics ═══ */
+function demoSelect(label) {
+  label.closest('.demo-opts').querySelectorAll('label').forEach(l=>l.classList.remove('selected'));
+  label.classList.add('selected');
+  let ok=true;
+  document.querySelectorAll('#demographics .demo-opts').forEach(f=>{if(!f.querySelector('label.selected'))ok=false});
+  document.getElementById('demoBtn').disabled=!ok;
+}
+function getDemographics() {
+  const r={};
+  document.querySelectorAll('#demographics .demo-opts').forEach(c=>{const s=c.querySelector('input:checked');if(s)r[c.dataset.field]=s.value});
+  return r;
+}
+
+/* ═══ Jump button ═══ */
+function setupJumpBtn() {
+  const btn=document.getElementById("jumpBtn");
+  const matrixEl=document.getElementById("pref5Section");
+  const gridEl=document.getElementById("reviewGrid");
+  if(!matrixEl||!gridEl)return;
+  const matrixObs=new IntersectionObserver(([e])=>{
+    if(e.isIntersecting){btn.innerHTML="&#8593; Back to Reviews";btn.onclick=()=>gridEl.scrollIntoView({behavior:"smooth"})}
+    else{btn.innerHTML="&#8595; Jump to Questions";btn.onclick=()=>matrixEl.scrollIntoView({behavior:"smooth"})}
+  },{threshold:0});
+  matrixObs.observe(matrixEl);
+  const topbar=document.querySelector("#evaluation .topbar");
+  if(topbar){
+    const topObs=new IntersectionObserver(([e])=>{btn.classList.toggle("visible",!e.isIntersecting)},{threshold:0});
+    topObs.observe(topbar);
+  }
+}
+
+/* ═══ Warmup ═══ */
+function warmupComplete() {
+  if (!critComplete(getCriteria("warm"))) return false;
+  if (!getOverall("warm")) return false;
+  if (!document.querySelector('input[name="warmDiff"]:checked')) return false;
+  return true;
+}
+function showWarmup() {
+  showScreen("warmup");
+  buildCritGrid("warmCritGrid", "warm");
+  wireOverall("warm");
+  const btn=document.getElementById("warmDoneBtn"); btn.disabled=true;
+  const refresh=()=>{btn.disabled=!warmupComplete()};
+  document.getElementById("warmup").addEventListener("click",refresh);
+  btn.onclick=()=>{if(warmupComplete())beginEval()};
+}
+function beginEval() {
+  showScreen("evaluation");
+  buildCritGrid("critGrid", "task");
+  wireOverall("task");
+  document.getElementById("nextBtn").onclick = goNext;
+  document.getElementById("prevBtn").onclick = goPrev;
+  setupJumpBtn();
+  render(curTask);
+}
+
+/* ═══ Init ═══ */
+let hasExistingProgress = false;
+async function init() {
+  await loadStudy();
+  const inp=document.getElementById("raterInput"), btn=document.getElementById("startBtn");
+  inp.addEventListener("input", () => {
+    const v=inp.value.trim(); btn.disabled=!v;
+    if(v){
+      try {
+        const d=JSON.parse(localStorage.getItem("heval4_"+v));
+        if(d&&d.ratings){ const n=Object.keys(d.ratings).length; document.getElementById("resumeNote").style.display="block"; document.getElementById("resumeNote").textContent=`Saved progress (${n}/${STUDY.prs.length} PRs). Click Start to resume.`; }
+        else document.getElementById("resumeNote").style.display="none";
+      } catch(e) { document.getElementById("resumeNote").style.display="none"; }
+    } else document.getElementById("resumeNote").style.display="none";
+  });
+  btn.onclick = start;
+  inp.addEventListener("keydown", e=>{if(e.key==="Enter"&&inp.value.trim())start()});
+
+  const cb=document.getElementById("consentBox"), cbtn=document.getElementById("consentBtn");
+  cb.onchange=()=>{cbtn.disabled=!cb.checked};
+  cbtn.onclick=()=>{ if(hasExistingProgress&&Object.keys(demographics).length>0) showScreen("briefing"); else showScreen("demographics"); };
+  document.getElementById("demoBtn").onclick=function(){demographics=getDemographics();save();showScreen("briefing")};
+  document.getElementById("beginBtn").onclick=function(){if(hasExistingProgress)beginEval();else showWarmup()};
+}
+
+function start() {
+  raterId=document.getElementById("raterInput").value.trim(); if(!raterId)return;
+  const lockKey="heval4_lock_"+raterId;
+  const lockVal=localStorage.getItem(lockKey);
+  if(lockVal){ const elapsed=Date.now()-parseInt(lockVal,10); if(elapsed<300000){if(!confirm("This rater ID appears active in another tab.\n\nContinue anyway?")){return}}}
+  localStorage.setItem(lockKey,String(Date.now()));
+  setInterval(()=>localStorage.setItem(lockKey,String(Date.now())),60000);
+  buildOrder();
+  hasExistingProgress=load();
+  if(!hasExistingProgress) startedAt=new Date().toISOString();
+  showScreen("consent");
+}
+
+/* ═══ Theme toggle ═══ */
+(function(){
+  const btn=document.getElementById("themeToggle");
+  const saved=localStorage.getItem("heval_theme");
+  if(saved==="light"){document.documentElement.setAttribute("data-theme","light");btn.innerHTML="&#9728;"}
+  btn.onclick=()=>{
+    const isLight=document.documentElement.getAttribute("data-theme")==="light";
+    if(isLight){document.documentElement.removeAttribute("data-theme");btn.innerHTML="&#9790;";localStorage.setItem("heval_theme","dark")}
+    else{document.documentElement.setAttribute("data-theme","light");btn.innerHTML="&#9728;";localStorage.setItem("heval_theme","light")}
+  };
+})();
+
+init();
+</script>
+</body>
+</html>

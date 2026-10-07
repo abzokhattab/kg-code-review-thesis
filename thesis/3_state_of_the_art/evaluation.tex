@@ -1,0 +1,47 @@
+\section{Evaluation of Generated Review Comments}
+\label{sec:sota-evaluation}
+
+How to score a generated review is contested, and the contest has moved through
+three positions.
+
+The first was reference-based text similarity: compare the generated comment with
+the comment a human actually wrote, using BLEU or a relative. DeepCRCEval
+dismantles this, showing that overlap metrics fail to capture the qualitative
+dimensions that make a review useful and that models ranked highly by them are not
+ranked highly by humans; the authors replace the metric with a criterion-based
+rubric scored by a language model~\cite{hong2024deepcrceval}. The objection is not
+merely empirical but structural: a change admits many valid reviews, so agreement
+with one of them is a poor proxy for quality.
+
+The second position is reference-free scoring grounded in program analysis.
+CRScore constructs pseudo-references from claims and code smells detected by
+language models and static analysers, then measures conciseness,
+comprehensiveness and relevance against those, reporting the strongest alignment
+with human judgement among open-source metrics~\cite{naik2025crscore}. This is
+the closest prior work to the evaluation in this thesis in spirit because both
+refuse a single human reference and ground scoring in what the code contains.
+They differ in instrument: CRScore is one metric pipeline, whereas this thesis
+uses a panel of judges scoring an explicit rubric.
+
+The third position is benchmark construction with human validation attached, which
+is where the 2025 literature sits. SWR-Bench pairs a thousand verified pull
+requests with an evaluation method its authors report as agreeing with human
+assessment about ninety percent of the time~\cite{zeng2025swrbench}. CodeFuse-CR-Bench
+combines rule-based and model-based scoring over repository-level
+instances~\cite{guo2025codefusecrbench}. Khan et al.\ survey code-review
+benchmarks and evaluation practice across a decade and catalogue how heterogeneous
+the protocols remain~\cite{khan2026crsurvey}. Widyasari et al.\ approach quality
+from the human side, finding that a substantial fraction of real review comments
+offer a suggestion with no explanation at
+all~\cite{widyasari2025explanations}. Davila and Nunes, reviewing modern code review
+broadly, note that evaluations of review-supporting approaches are frequently
+conducted without human involvement~\cite{davila2021mcrslr}.
+
+Two gaps persist across this body of work. The evaluations that adopt a language
+model as the scorer overwhelmingly use a \emph{single} judge, so the reliability of
+the instrument is neither measured nor reported; the LLM-as-a-judge literature
+reviewed next has established that single-judge scoring is exposed to biases that
+panels and agreement statistics are designed to expose. And the rubrics measure
+whether a review addresses a topic, not whether what it says about that topic is
+true. This distinction becomes decisive when the intervention under test
+supplies the review with facts it might state incorrectly.

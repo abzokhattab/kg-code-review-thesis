@@ -1,0 +1,51 @@
+{
+  "pr_id": 40,
+  "mode": "baseline",
+  "mean_scores": {
+    "F3": 3.0,
+    "F4": 2.0,
+    "P1": 0.0,
+    "R2": 0.0,
+    "T3": 2.5
+  },
+  "mean_graded_total": 7.5,
+  "per_judge": [
+    {
+      "model": "gemini:gemini-2.5-flash",
+      "scores": {
+        "F3": 3,
+        "F4": 2,
+        "P1": 0,
+        "R2": 0,
+        "T3": 3
+      },
+      "evidence": {
+        "F3": "Evidence: `GroupCoordinatorShard.java:1081-1106`: Removal of `offsetMetadataManager.onMetadataUpdate` calls. ... Impact: The removal of metadata image handling could lead to issues if topic IDs are not correctly resolved or if there are discrepancies between the topic ID and the actual metadata. This could result in incorrect offset commits or failures in transactional operations.",
+        "F4": "Impact: The removal of metadata image handling could lead to issues if topic IDs are not correctly resolved or if there are discrepancies between the topic ID and the actual metadata. This could result in incorrect offset commits or failures in transactional operations.",
+        "P1": "No mention of performance in the review.",
+        "R2": "No comment on complexity or code structure in the review.",
+        "T3": "Evidence: `OffsetMetadataManagerTest.java:1273-1304`: Removal of tests verifying `onMetadataUpdate` calls. ... Recommendation: Add comprehensive test cases to cover scenarios where topic IDs might be unresolved or incorrect, ensuring that the system handles these gracefully."
+      },
+      "error": ""
+    },
+    {
+      "model": "gemini:gemini-2.5-pro",
+      "scores": {
+        "F3": 3,
+        "F4": 2,
+        "P1": 0,
+        "R2": 0,
+        "T3": 2
+      },
+      "evidence": {
+        "F3": "Names multiple specific components (`GroupCoordinatorShard.java`, `OffsetMetadataManager.java`) and explains the concrete integration risk: 'The removal of metadata image handling could lead to issues if topic IDs are not correctly resolved... This could result in incorrect offset commits or failures in transactional operations.'",
+        "F4": "Identifies a specific expectation that is broken (validation of topic IDs against metadata) and the impact: 'The removal of metadata image handling could lead to issues if topic IDs are not correctly resolved... This could result in incorrect offset commits or failures in transactional operations.'",
+        "P1": "The review does not mention performance.",
+        "R2": "The review does not comment on unnecessary complexity or suggest simplification. It focuses on the risks of removing a previous mechanism.",
+        "T3": "Names one specific test file path: `OffsetMetadataManagerTest.java`."
+      },
+      "error": ""
+    }
+  ],
+  "timestamp": "2026-06-01T18:58:31.393344+00:00"
+}

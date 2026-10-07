@@ -1,0 +1,52 @@
+{
+  "candidate_mentions": [
+    {
+      "basename_collision": false,
+      "end": 567,
+      "evidence_id": "M001",
+      "excerpt": "earClassifierMixin`.\n\n## Evidence\n- `sklearn/linear_model/_base.py:333`: Class name changed from `LinearClassifierMixin` to `LinearClassifierMixinInternal`.\n- `sklearn/linear_model/_logistic.py`: Imports `LinearClassifierMixin` from `_base.py`.\n- `sklearn/linear_model/_ridge.py`: Imports `LinearClassifierMixin` from `_base.py`.\n- `sklearn/linear_model/_stochastic_gradient.py`: Imports `LinearClassifierMixin` from `_base.py`.\n\n## Impact\n- The renamin",
+      "match_kind": "full_path",
+      "match_text": "sklearn/linear_model/_logistic.py",
+      "oracle_path": "sklearn/linear_model/_logistic.py",
+      "start": 534
+    },
+    {
+      "basename_collision": false,
+      "end": 652,
+      "evidence_id": "M002",
+      "excerpt": "ged from `LinearClassifierMixin` to `LinearClassifierMixinInternal`.\n- `sklearn/linear_model/_logistic.py`: Imports `LinearClassifierMixin` from `_base.py`.\n- `sklearn/linear_model/_ridge.py`: Imports `LinearClassifierMixin` from `_base.py`.\n- `sklearn/linear_model/_stochastic_gradient.py`: Imports `LinearClassifierMixin` from `_base.py`.\n\n## Impact\n- The renaming could lead to `ImportError` in modules that depend on the original class name if th",
+      "match_kind": "full_path",
+      "match_text": "sklearn/linear_model/_ridge.py",
+      "oracle_path": "sklearn/linear_model/_ridge.py",
+      "start": 622
+    },
+    {
+      "basename_collision": false,
+      "end": 751,
+      "evidence_id": "M003",
+      "excerpt": "r_model/_logistic.py`: Imports `LinearClassifierMixin` from `_base.py`.\n- `sklearn/linear_model/_ridge.py`: Imports `LinearClassifierMixin` from `_base.py`.\n- `sklearn/linear_model/_stochastic_gradient.py`: Imports `LinearClassifierMixin` from `_base.py`.\n\n## Impact\n- The renaming could lead to `ImportError` in modules that depend on the original class name if they are not updated accordingly.\n- This could cause runtime errors in any downstream applications or",
+      "match_kind": "full_path",
+      "match_text": "sklearn/linear_model/_stochastic_gradient.py",
+      "oracle_path": "sklearn/linear_model/_stochastic_gradient.py",
+      "start": 707
+    }
+  ],
+  "causal_quote": "The renaming could lead to `ImportError` in modules that depend on the original class name if they are not updated accordingly.",
+  "decision_source": "llm_causal_adjudication",
+  "detected": true,
+  "evidence_id": "M001",
+  "executed_at_utc": "2026-09-19T15:06:06.879399+00:00",
+  "finding_quote": "- `sklearn/linear_model/_logistic.py`: Imports `LinearClassifierMixin` from `_base.py`.",
+  "judge": "openai:gpt-4o",
+  "manifest_sha256": "5d4371a93d1b09f0491ecc12279f9f3ff5de23053b7a5e74650a749f58b472b0",
+  "model_alias": "openai:gpt-4o",
+  "model_snapshot": "unavailable-from-original-wrapper",
+  "original_verdict": true,
+  "prompt_sha256": "ff73c3da028ba9a85e18c33795bb13ed16d0b322de880047157f6d26e3fc4a3f",
+  "reason_code": "specific_cross_file_link",
+  "response_wrapper": "bare",
+  "review_sha256": "d42da708ef81f1af9f4c4f061f6bea08d019962a4483fb9ccd26cb2d7fc6b126",
+  "schema_sha256": "6a22fcb256437ebed904ab2d879b36be1234fb2e06add1127ac8ea2ab46f60f0",
+  "schema_version": "exp2-adjudication-v2",
+  "system_sha256": "3634314a8fc4231391e4c51174e5c32d7346b0e2ceb5f8c4641e6ba866bd5939"
+}

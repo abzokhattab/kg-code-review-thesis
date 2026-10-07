@@ -1,0 +1,48 @@
+{
+  "body": "**What is this feature?**\n\nThis feature adds a notification to the Reduce component in Grafana when \"Strict Mode\" is selected. It informs users about the behavior of the fill(null) function in InfluxQL, which results in NaN.\n\n**Why do we need this feature?**\n\nUsers unfamiliar with the behavior of \"Strict Mode\" may find the NaN result confusing when using fill(null). This notification provides clarity and directs users to the relevant documentation, improving the user experience.\n\n**Who is this feature for?**\n\nThis feature is for Grafana users who use the Reduce component with \"Strict Mode\" enabled, especially those working with InfluxQL queries.\n\n**Which issue(s) does this PR fix?**:\nFixes \n\n\nFixes #79315 \n\n**Special notes for your reviewer:**\n\nPlease check that:\n- [ ] It works as expected from a user's perspective.\n- [ ] If this is a pre-GA feature, it is behind a feaxture toggle.\n- [ ] The docs are updated, and if this is a [notable improvement](https://grafana.com/docs/writers-toolkit/contribute/release-notes/#how-to-determine-if-content-belongs-in-whats-new), it's added to our [What's New](https://grafana.com/docs/writers-toolkit/contribute/release-notes/) doc.\n\n[image]",
+  "issue_comments": [
+    {
+      "body": "[![CLA assistant check](https://cla-assistant.io/pull/badge/signed)](https://cla-assistant.io/grafana/grafana?pullRequest=97224) <br/>All committers have signed the CLA.",
+      "created_at": "2024-12-02T03:50:34Z",
+      "user": "CLAassistant"
+    }
+  ],
+  "merged_at": "2024-12-29T11:58:21Z",
+  "owner_repo": "grafana/grafana",
+  "pr_id": 3,
+  "pr_number": 97224,
+  "review_comments": [
+    {
+      "body": "You need to add the key in this file https://github.com/grafana/grafana/blob/main/public/locales/en-US/grafana.json\nAnd then run `make i18n-extract` then commit the files.",
+      "line": 81,
+      "path": "public/app/features/expressions/components/Reduce.tsx",
+      "user": "itsmylife"
+    },
+    {
+      "body": "Added the translations keys, an incorrect rebase which I now reverted, made the grafana-pr-automation add extra tags to the issue. I don't think I have the permission to remove these. \n@itsmylife Can you please review?",
+      "line": 81,
+      "path": "public/app/features/expressions/components/Reduce.tsx",
+      "user": "shubhankarunhale"
+    },
+    {
+      "body": "This looks good. Thank you!",
+      "line": 80,
+      "path": "public/app/features/expressions/components/Reduce.tsx",
+      "user": "itsmylife"
+    }
+  ],
+  "review_summaries": [
+    {
+      "body": "LGTM but i18n check is failing due to the key must be added to the translations file. Could you please add it too?",
+      "state": "CHANGES_REQUESTED",
+      "user": "itsmylife"
+    },
+    {
+      "body": "\ud83d\ude80",
+      "state": "APPROVED",
+      "user": "itsmylife"
+    }
+  ],
+  "title": "Expressions: Add notification for Strict Mode behavior in Reduce component",
+  "url": "https://github.com/grafana/grafana/pull/97224"
+}

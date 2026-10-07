@@ -1,0 +1,42 @@
+{
+  "candidate_mentions": [
+    {
+      "basename_collision": false,
+      "end": 596,
+      "evidence_id": "M002",
+      "excerpt": "ests to accommodate the name change.\n\n## Evidence\n- `sklearn/linear_model/_linear_loss.py:36`: Class `LinearModelLoss` renamed to `LinearModelLossInternal`.\n- `sklearn/linear_model/_glm/glm.py`: This file depends on `LinearModelLoss` but shows no changes in the PR.\n- `sklearn/linear_model/_logistic.py`: This file also depends on `LinearModelLoss` but shows no changes in the PR.\n\n## Impact\nThe renaming of a class that is used in other modules withou",
+      "match_kind": "full_path",
+      "match_text": "sklearn/linear_model/_glm/glm.py",
+      "oracle_path": "sklearn/linear_model/_glm/glm.py",
+      "start": 564
+    },
+    {
+      "basename_collision": false,
+      "end": 706,
+      "evidence_id": "M003",
+      "excerpt": "odelLoss` renamed to `LinearModelLossInternal`.\n- `sklearn/linear_model/_glm/glm.py`: This file depends on `LinearModelLoss` but shows no changes in the PR.\n- `sklearn/linear_model/_logistic.py`: This file also depends on `LinearModelLoss` but shows no changes in the PR.\n\n## Impact\nThe renaming of a class that is used in other modules without updating those modules can lead to runtime errors due to unresolved references. This can break functionality",
+      "match_kind": "full_path",
+      "match_text": "sklearn/linear_model/_logistic.py",
+      "oracle_path": "sklearn/linear_model/_logistic.py",
+      "start": 673
+    }
+  ],
+  "causal_quote": "The renaming of a class that is used in other modules without updating those modules can lead to runtime errors due to unresolved references. This can break functionality in modules that depend on `LinearModelLoss`, such as GLM fitting and logistic regression path calculations.",
+  "decision_source": "llm_causal_adjudication",
+  "detected": true,
+  "evidence_id": "M002",
+  "executed_at_utc": "2026-09-19T15:06:19.929472+00:00",
+  "finding_quote": "- `sklearn/linear_model/_glm/glm.py`: This file depends on `LinearModelLoss` but shows no changes in the PR.",
+  "judge": "gemini:gemini-2.5-flash",
+  "manifest_sha256": "5d4371a93d1b09f0491ecc12279f9f3ff5de23053b7a5e74650a749f58b472b0",
+  "model_alias": "gemini:gemini-2.5-flash",
+  "model_snapshot": "unavailable-from-original-wrapper",
+  "original_verdict": true,
+  "prompt_sha256": "054942840f2ad8571b2c88996ef1ef2fbcbce7e8e4a3d3f4eb23ab5aa08912d2",
+  "reason_code": "specific_cross_file_link",
+  "response_wrapper": "single_json_fence",
+  "review_sha256": "711a1614f2aabab575752ca881eb34b6cd9c9ac9c794a393bd6a2c930a98838e",
+  "schema_sha256": "6a22fcb256437ebed904ab2d879b36be1234fb2e06add1127ac8ea2ab46f60f0",
+  "schema_version": "exp2-adjudication-v2",
+  "system_sha256": "3634314a8fc4231391e4c51174e5c32d7346b0e2ceb5f8c4641e6ba866bd5939"
+}

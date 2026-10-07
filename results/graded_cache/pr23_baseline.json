@@ -1,0 +1,51 @@
+{
+  "pr_id": 23,
+  "mode": "baseline",
+  "mean_scores": {
+    "F3": 2.0,
+    "F4": 2.0,
+    "P1": 0.0,
+    "R2": 2.0,
+    "T3": 2.0
+  },
+  "mean_graded_total": 8.0,
+  "per_judge": [
+    {
+      "model": "gemini:gemini-2.5-flash",
+      "scores": {
+        "F3": 2,
+        "F4": 2,
+        "P1": 0,
+        "R2": 2,
+        "T3": 2
+      },
+      "evidence": {
+        "F3": "Removal of the `requires_y` tag in `_sequential.py` might affect estimators that rely on this tag for validation. ... Removing the `requires_y` tag without ensuring all dependent components are updated could lead to runtime errors if any estimator still relies on this tag.",
+        "F4": "Removal of the `requires_y` tag in `_sequential.py` might affect estimators that rely on this tag for validation. ... Removing the `requires_y` tag without ensuring all dependent components are updated could lead to runtime errors if any estimator still relies on this tag.",
+        "P1": "No mention of performance in the review.",
+        "R2": "The `_deprecate_positional_args` function is retained in the codebase despite being unused. ... Retaining unused code like `_deprecate_positional_args` can lead to confusion and maintenance overhead. ... Consider removing `_deprecate_positional_args` entirely if there is no foreseeable use, or document its purpose clearly if it is to be retained.",
+        "T3": "The test for deprecated positional arguments in `test_regression.py` has been removed without replacement, potentially reducing test coverage. ... `sklearn/metrics/tests/test_regression.py:444-463`: The test `test_deprecation_positional_arguments_mape` has been removed. ... Replace the removed test with new tests that ensure the same level of coverage for positional argument handling, especially in public APIs."
+      },
+      "error": ""
+    },
+    {
+      "model": "gemini:gemini-2.5-pro",
+      "scores": {
+        "F3": 2,
+        "F4": 2,
+        "P1": 0,
+        "R2": 2,
+        "T3": 2
+      },
+      "evidence": {
+        "F3": "The review names a specific file where a change might impact dependents: 'Removal of the `requires_y` tag in `_sequential.py` might affect estimators that rely on this tag for validation.' It provides the file path `sklearn/feature_selection/_sequential.py:306`.",
+        "F4": "The review identifies a specific expectation that could be broken: 'Removing the `requires_y` tag without ensuring all dependent components are updated could lead to runtime errors if any estimator still relies on this tag.' This points to the implicit contract of the tag's existence for validation.",
+        "P1": "The review does not mention performance, speed, or resource usage.",
+        "R2": "The review points to a specific function that is unused and suggests its removal: 'The `_deprecate_positional_args` function is retained in the codebase despite being unused... Consider removing `_deprecate_positional_args` entirely if there is no foreseeable use...'",
+        "T3": "The review names a specific test file that is affected by the change: 'The test for deprecated positional arguments in `test_regression.py` has been removed... Evidence: `sklearn/metrics/tests/test_regression.py:444-463`.'"
+      },
+      "error": ""
+    }
+  ],
+  "timestamp": "2026-06-01T18:57:55.863686+00:00"
+}

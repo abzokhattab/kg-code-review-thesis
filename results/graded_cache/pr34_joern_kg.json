@@ -1,0 +1,51 @@
+{
+  "pr_id": 34,
+  "mode": "joern_kg",
+  "mean_scores": {
+    "F3": 2.5,
+    "F4": 1.5,
+    "P1": 0.0,
+    "R2": 1.0,
+    "T3": 2.0
+  },
+  "mean_graded_total": 7.0,
+  "per_judge": [
+    {
+      "model": "gemini:gemini-2.5-flash",
+      "scores": {
+        "F3": 2,
+        "F4": 0,
+        "P1": 0,
+        "R2": 0,
+        "T3": 2
+      },
+      "evidence": {
+        "F3": "Implicit dependency on `toggleDrawer` behavior: The cleanup logic ... assumes that `toggleDrawer()` reliably closes the drawer if it was open, and that its state can be accurately checked immediately after. While likely true, this creates a tight coupling and could lead to unexpected behavior if `toggleDrawer`'s internal implementation changes or if asynchronous operations are involved. ... Future changes to `scopesDashboardsService.toggleDrawer` or other components interacting with the sidebar ",
+        "F4": "The review does not identify any specific API contract or caller expectation that is broken by the changes in the PR. It discusses potential inconsistencies in UI state and dependencies on other components' implementations, but not broken contracts.",
+        "P1": "The review does not mention performance or potential inefficiencies in the changed code.",
+        "R2": "The review does not comment on unnecessary complexity or suggest simplification of the code structure. It suggests a more robust state management solution for correctness, but not to reduce complexity.",
+        "T3": "Add a test case to `public/app/features/scopes/tests/editMode.test.ts` that simulates `scopesServices` being `null` or `undefined` to ensure the component handles this gracefully without errors. Add a test case to `public/app/features/scopes/tests/editMode.test.ts` where the user manually toggles the sidebar *after* entering edit mode, then exits edit mode, and assert the expected restoration behavior (e.g., it reverts to the state *before* editing, or it respects the user's last action)."
+      },
+      "error": ""
+    },
+    {
+      "model": "gemini:gemini-2.5-pro",
+      "scores": {
+        "F3": 3,
+        "F4": 3,
+        "P1": 0,
+        "R2": 2,
+        "T3": 2
+      },
+      "evidence": {
+        "F3": "The review names the component being changed (`DashboardSceneRenderer.tsx`) and multiple specific dependent services (`scopesDashboardsService`, `scopesSelectorService`) and functions (`toggleDrawer`). It explains the integration risk: \"Implicit dependency on `toggleDrawer` behavior... creates a tight coupling and could lead to unexpected behavior if `toggleDrawer`'s internal implementation changes...\" and \"Future changes to `scopesDashboardsService.toggleDrawer` or other components interacting ",
+        "F4": "The review identifies multiple specific broken expectations/contracts with file references. 1. User expectation: \"If a user manually toggles the sidebar... while in edit mode, the cleanup function will still restore the sidebar to its state before entering edit mode, potentially overriding the user's explicit action...\" (references `DashboardSceneRenderer.tsx:39-41`). 2. API contract: \"Implicit dependency on `toggleDrawer` behavior... could lead to unexpected behavior if `toggleDrawer`'s interna",
+        "P1": "The review does not mention performance, efficiency, or potential bottlenecks.",
+        "R2": "The review points to a specific block of code (the `useEffect` hook in `DashboardSceneRenderer.tsx`) and identifies its complexity: \"Implicit dependency on `toggleDrawer` behavior... creates a tight coupling...\". It then suggests a concrete simplification: \"Consider storing the `drawerWasOpen` state in a `useRef` or a more robust state management solution...\"",
+        "T3": "The review names one specific test file path that should be updated: \"Add a test case to `public/app/features/scopes/tests/editMode.test.ts`...\""
+      },
+      "error": ""
+    }
+  ],
+  "timestamp": "2026-06-01T18:58:35.053648+00:00"
+}

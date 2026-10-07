@@ -1,0 +1,260 @@
+\section{Experimental Design}
+
+The evaluation rests on three studies that approach the same question from
+complementary methodological directions.
+
+\textbf{Experiment~1} is observational. Four review-generation modes are run
+over 35 pull requests and scored against a 25-criterion rubric by a panel
+of five LLM judges, with the majority verdict as the cell of record. A
+language-model panel is used because the rubric requires 3\,500 binary
+judgements per scorer (140 reviews $\times$ 25 criteria); a human gold
+standard at that scale was not feasible, so human judgement is instead
+reserved for the primary criterion in the third study. Experiment~1's
+strength is direct evidence on pull-request reviews; its weakness is that it
+establishes no causal mechanism and that the rubric measures coverage rather
+than correctness.
+
+\textbf{Experiment~2} is controlled. A defect is injected so that its
+consequences lie in a different file from the edit; the outcome is whether the
+review names a genuinely broken dependent site. Here the ground truth is known,
+so a causal claim becomes available. The cost is that the defects are synthetic.
+
+\textbf{The human study} asks people. Twenty-seven raters compare blinded
+baseline and graph-augmented reviews on six pull requests, scoring
+which review better identifies affected code and which is more useful overall.
+Its strength is independent human judgement; its weakness is a smaller
+stimulus set,
+whose graph edges are resolved from import statements rather than from the
+Joern CPG.
+
+Each design covers a weakness of the others, although none removes them
+all. The headline arms of Experiments~1 and~2 share their generator, judge
+panel, and aggregation rule so that differences cannot be attributed to
+those choices. The human study corroborates the panel's primary finding
+against independent human judgement on a separate stimulus set; it does not
+validate the panel itself.
+
+\subsection{Research Questions}
+\label{sec:rqs-addressed}
+
+Experiment~1 addresses RQ1 by comparing rubric coverage across the four review
+modes. Experiment~2 addresses RQ2 by testing detection of consequences outside
+the diff; its component analyses explain which forms of structural evidence
+support that capability. The human study addresses RQ3 through blinded
+pairwise comparisons.
+
+\subsection{Dataset}
+\label{sec:dataset}
+
+The evaluation uses 35 pull requests drawn from the pool curated by
+Mariotto et~al.~\cite{mariotto2025esem}, sampling from five repositories:
+\texttt{grafana/grafana}, \texttt{apache/kafka},
+\texttt{scikit-learn/scikit-learn}, \texttt{godotengine/godot} and
+\texttt{jenkinsci/jenkins}, spanning Go, TypeScript, Java, Scala, Python, and
+C++.\footnote{Five Go-only pull requests from \texttt{grafana/grafana} are
+excluded because Joern's Go frontend does not emit method-level nodes,
+preventing construction of the call-graph edges required by the \kg{} arm.}
+Table~\ref{tab:dataset-composition} gives the composition.
+
+\begin{table}[htbp]
+    \centering
+    \caption{Composition of the evaluation dataset.}
+    \label{tab:dataset-composition}
+    \begin{tabular}{lrl}
+        \toprule
+        Repository & Total & Languages \\
+        \midrule
+        \texttt{grafana/grafana}             &  8 & Go, TS \\
+        \texttt{apache/kafka}                &  8 & Java, Scala \\
+        \texttt{scikit-learn/scikit-learn}   &  8 & Python \\
+        \texttt{godotengine/godot}           &  6 & C++ \\
+        \texttt{jenkinsci/jenkins}           &  5 & Java \\
+        \midrule
+        Total                                & 35 & \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+Every candidate was screened against seven criteria, all properties of the pull
+request rather than of any model output. A pull request is included only if it
+was merged, is not a revert or backport, changes code (not only documentation),
+touches only languages the parser supports, has a diff under 50\,000 characters, carries a
+description of at least 100~characters, and does not have a purely cosmetic
+title. This guarantees that all four modes, including \baseline{}, receive the
+maintainer's own description.
+
+At $n=35$, a two-sided paired permutation test at $\alpha = 0.05$ reaches
+80\,\% power at
+$d_z \approx 0.47$ and 70\,\% at $d_z \approx 0.42$,
+bracketing the effects reported in Chapter~\ref{chap:results}.
+
+\subsection{Rubric}
+\label{sec:rubric}
+
+Each review is scored against 25 binary criteria grouped into eight categories
+(Table~\ref{tab:rubric-categories}). A criterion is satisfied if the review
+addresses it; the score is the count of criteria satisfied.
+
+\begin{table}[htbp]
+    \centering
+    \caption{The eight rubric categories. The KG-relevant subset comprises the
+             nine criteria structural data can in principle inform.}
+    \label{tab:rubric-categories}
+    \begin{tabular}{llrl}
+        \toprule
+        Category & Criteria & $n$ & KG-relevant \\
+        \midrule
+        Functionality \& Integration & F1--F4 & 4 & F3, F4 \\
+        Tests \& Verification        & T1--T3 & 3 & T1, T2, T3 \\
+        Readability \& Structure     & R1--R3 & 3 & --- \\
+        Maintainability \& Design    & M1--M3 & 3 & M1, M3 \\
+        Consistency \& Style         & C1--C2 & 2 & C2 \\
+        Performance                  & P1--P2 & 2 & --- \\
+        Security \& Robustness       & S1--S3 & 3 & --- \\
+        Review Quality (meta)        & Q1--Q5 & 5 & Q2 \\
+        \midrule
+        Total                        &        & 25 & 9 \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+Every category is grounded in published sources: empirical studies of
+review~\cite{bacchelli2013,bosu2015,sadowski2018}, evaluation frameworks for
+generated comments~\cite{li2022codereviewer,hong2024deepcrceval}, and
+ISO/IEC~25010~\cite{iso25010}.
+
+\subsubsection{The KG-Relevant Subset}
+
+Nine criteria are designated KG-relevant. The designation was fixed before
+data collection and appears in the project's analysis plan committed to the
+repository. A criterion qualifies if structural repository data can
+substantively inform an answer to it. F4, for instance, asks whether the
+review warns about impact on dependent code, which the caller fields can
+answer, whereas R1 (naming and clarity) they cannot. This yields a testable
+prediction: if the knowledge graph works as intended, its effect should
+concentrate in these nine criteria. An independent re-annotation achieved
+$\kappa = 0.615$ (84\,\% raw agreement).
+
+\subsubsection{Rubric Discrimination}
+
+To confirm the rubric distinguishes good from bad reviews, five deliberately
+degraded review styles were scored on five pull requests. Four scored 5--9
+points below the real \baseline{}. The fifth, a hallucinated review citing
+fabricated files, scored 9.2 against the real \baseline{}'s 9.0. The rubric
+measures whether a review \emph{addresses} a concern, not whether what it says
+is \emph{true}. This is why every result is framed as coverage, not
+correctness, and why Experiment~2's oracle is needed.
+
+An operational note: seven of the 25 criteria sit at $0\,\%$ or $100\,\%$ in
+both arms (Appendix, Table~\ref{tab:exp1-criteria}) and therefore cannot
+register a difference in either direction, diluting the aggregate. This is
+one reason the nine-criterion subscale is reported alongside the total.
+
+\subsection{Experiment 2: Controlled Defect Injection}
+\label{sec:injection-design}
+
+Experiment~2 was designed to close the gap between coverage and correctness on
+a narrow question: when a defect's consequences lie outside the edited file,
+does context let the reviewer name them?
+
+\subsubsection{Defect Taxonomy}
+
+Injections are stratified into five structural bands (consequence in another
+file) and two local control bands (consequence in the same file).
+
+\begin{table}[htbp]
+    \centering
+    \caption{Injection bands. Structural bands require cross-file reasoning;
+             control bands serve as negative controls, where no graph
+             advantage is expected.}
+    \label{tab:injection-bands}
+    \small
+    \begin{tabular}{llll}
+        \toprule
+        Band & Operator & Breaks at & Relationship \\
+        \midrule
+        S1 & Symbol rename          & Importers          & imports \\
+        S2 & Signature change       & Callers            & calls \\
+        S3 & Return-type change     & Consumers          & calls, data flow \\
+        S4 & Base-class change      & Subclasses         & inheritance \\
+        S5 & Import removal         & Importers          & imports \\
+        \midrule
+        L1 & Off-by-one             & Same file          & --- \\
+        L2 & Removed null check     & Same file          & --- \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+Band sizes are uneven (S1 9, S2 9, S3 1, S4 6, S5 3; six in each control
+band), so S3 and S5 support no band-level claims.
+
+The control bands carry the argument: a knowledge graph that improved detection
+everywhere would be evidence of a context-volume effect rather than structural
+reasoning. The prediction is asymmetric: advantage on structural bands,
+parity on local. This is what makes the result falsifiable.
+
+Forty injections were realised: 28 structural and 12 control, across three
+of the Experiment~1 repositories: \texttt{scikit-learn/scikit-learn}
+(Python), \texttt{apache/kafka} (Java) and \texttt{grafana/grafana}
+(TypeScript). The four deployed modes of
+Experiment~1 are carried over with the same prompts, builder and renderer;
+only the diff cap is tightened to 12\,000 characters
+(Table~\ref{tab:config}). Two further arms are included for the mechanism
+argument: an \emph{idealised} graph that is given the oracle's own list of
+true dependents (the ceiling), and a graph with inheritance edges added
+(\kg{} + inheritance).
+
+Detection is binary and adjudicated in two stages. First, the review text is
+searched for exact full-path or basename matches against the statically
+resolved true dependents; if none is found, the verdict is deterministically
+\emph{false} and no model call is made. When at least one true dependent is
+mentioned, the review passages and matched evidence are sent to each judge,
+which decides only whether the review links the mentioned file to the injected
+change as broken or requiring an update. The majority of five judges is the
+cell of record, with ties resolved to \emph{false}.
+
+This two-stage procedure was finalised after an audit of the initial judge
+prompt, which required judges to both locate filenames and assess causality in
+a single step. Retained rationales exposed false negatives: reviews that
+named a true dependent were sometimes judged as not detecting it. The
+correction is post-hoc; the original judgments are preserved in the audit
+trail and both sets of verdicts are available for recomputation.
+
+\subsubsection{Component Analyses}
+
+Two pre-registered follow-ups isolate the structural evidence supplied to the
+reviewer. On the 28 structural injections, one ablation arm receives only the
+dependent-file list (without edge annotations) and another only the resolved
+call edges; both use the final five-judge adjudication. A separate
+\emph{test band} of 28 further Grafana/TypeScript injections, in which a
+renamed symbol breaks test files, tests the related-test section by
+removing and restoring it. It keeps its original three-judge panel and is
+reported in the appendix.
+
+A post-hoc relevance control holds the number of context items fixed while
+replacing them with unrelated or true-dependent edges. That control uses
+gpt-4o at $T=0.0$ and the corrected historical three-judge panel, so it is
+reported as supporting evidence rather than pooled with the headline rates.
+
+\subsection{Statistical Analysis}
+\label{sec:stats}
+
+For Experiment~1's rubric scores, confidence intervals are percentile
+bootstrap intervals ($B = 10\,000$).
+Significance is assessed by paired sign-flip permutation tests
+($B = 20\,000$), two-sided, reported alongside $d_z$. The pairing is by pull
+request.
+
+The governing RQ1 test is the pre-specified \kg{}--\baseline{} contrast on the
+nine KG-relevant criteria. A rank-based multiplicity sensitivity and
+per-criterion corrections are retained in
+Appendix~\ref{app:supporting-multiplicity}, rather than treated as additional
+headline tests.
+
+For Experiment~2's binary detection outcomes, exact McNemar tests compare
+paired arms and Wilson intervals replace bootstrap intervals (the appropriate
+method for binomial proportions at small $n$).
+Decision rules were fixed before the run: $+0.30$ detection
+rate advantage at $p < 0.05$ for \kg{} on structural bands, parity on control
+bands within $[-0.15, +0.15]$, and $+0.30$ for \kg{} + inheritance on the
+structural bands.

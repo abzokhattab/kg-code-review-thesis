@@ -1,0 +1,320 @@
+{
+  "meta": {
+    "seed": 2026,
+    "B_boot": 10000,
+    "B_perm": 20000,
+    "judges": [
+      "openai:gpt-4o-mini",
+      "openai:gpt-4o",
+      "gemini:gemini-2.5-flash"
+    ],
+    "rule": "majority of 3, ties to 0",
+    "pre_registration": "experiments/2026-07-05_injection_exp2/docs/PRE_REGISTRATION_feature_ablation.md"
+  },
+  "groups": {
+    "structural": {
+      "ids": [
+        "grafana_S1_01",
+        "grafana_S1_02",
+        "grafana_S1_03",
+        "grafana_S2_01",
+        "grafana_S2_02",
+        "grafana_S2_03",
+        "grafana_S4_01",
+        "grafana_S4_02",
+        "grafana_S5_01",
+        "grafana_S5_02",
+        "kafka_S1_01",
+        "kafka_S1_02",
+        "kafka_S1_03",
+        "kafka_S2_01",
+        "kafka_S2_02",
+        "kafka_S2_03",
+        "kafka_S4_01",
+        "kafka_S4_02",
+        "sklearn_S1_01",
+        "sklearn_S1_02",
+        "sklearn_S1_03",
+        "sklearn_S2_01",
+        "sklearn_S2_02",
+        "sklearn_S2_03",
+        "sklearn_S3_01",
+        "sklearn_S4_01",
+        "sklearn_S4_02",
+        "sklearn_S5_01"
+      ],
+      "rates": {
+        "baseline": {
+          "k": 0,
+          "n": 28,
+          "rate": 0.0,
+          "wilson95": [
+            0.0,
+            0.12064330481563733
+          ]
+        },
+        "rag": {
+          "k": 1,
+          "n": 28,
+          "rate": 0.03571428571428571,
+          "wilson95": [
+            0.006332519846951601,
+            0.1771219774818545
+          ]
+        },
+        "kg_deps_only": {
+          "k": 9,
+          "n": 28,
+          "rate": 0.32142857142857145,
+          "wilson95": [
+            0.17933246919948714,
+            0.506611568234669
+          ]
+        },
+        "kg_edges_only": {
+          "k": 12,
+          "n": 28,
+          "rate": 0.42857142857142855,
+          "wilson95": [
+            0.2650854712091894,
+            0.6092921437644729
+          ]
+        },
+        "kg": {
+          "k": 15,
+          "n": 28,
+          "rate": 0.5357142857142857,
+          "wilson95": [
+            0.358126892307121,
+            0.7046843002060477
+          ]
+        },
+        "kg_joern_inherit": {
+          "k": 21,
+          "n": 28,
+          "rate": 0.75,
+          "wilson95": [
+            0.566443296764684,
+            0.8732350508274973
+          ]
+        },
+        "kg_idealised": {
+          "k": 26,
+          "n": 28,
+          "rate": 0.9285714285714286,
+          "wilson95": [
+            0.7735463742680097,
+            0.9801879358900155
+          ]
+        },
+        "hybrid": {
+          "k": 12,
+          "n": 28,
+          "rate": 0.42857142857142855,
+          "wilson95": [
+            0.2650854712091894,
+            0.6092921437644729
+          ]
+        }
+      },
+      "contrasts": {
+        "kg_deps_only - baseline": {
+          "delta": 0.32142857142857145,
+          "ci95": [
+            0.14285714285714285,
+            0.5
+          ],
+          "discordant_ref_only": 0,
+          "discordant_arm_only": 9,
+          "p_mcnemar_exact": 0.00390625,
+          "p_perm": 0.003799810009499525,
+          "p_holm": 0.01171875,
+          "significant": true
+        },
+        "kg_edges_only - baseline": {
+          "delta": 0.42857142857142855,
+          "ci95": [
+            0.25,
+            0.6071428571428571
+          ],
+          "discordant_ref_only": 0,
+          "discordant_arm_only": 12,
+          "p_mcnemar_exact": 0.00048828125,
+          "p_perm": 0.0005499725013749313,
+          "p_holm": 0.001953125,
+          "significant": true
+        },
+        "kg_deps_only - kg": {
+          "delta": -0.21428571428571425,
+          "ci95": [
+            -0.42857142857142855,
+            0.0
+          ],
+          "discordant_ref_only": 9,
+          "discordant_arm_only": 3,
+          "p_mcnemar_exact": 0.14599609375,
+          "p_perm": 0.13884305784710765,
+          "p_holm": 0.2919921875,
+          "significant": false
+        },
+        "kg_edges_only - kg": {
+          "delta": -0.10714285714285715,
+          "ci95": [
+            -0.21428571428571427,
+            0.0
+          ],
+          "discordant_ref_only": 3,
+          "discordant_arm_only": 0,
+          "p_mcnemar_exact": 0.25,
+          "p_perm": 0.2438878056097195,
+          "p_holm": 0.2919921875,
+          "significant": false
+        }
+      }
+    },
+    "local_control": {
+      "ids": [
+        "grafana_L1_01",
+        "grafana_L1_02",
+        "grafana_L2_01",
+        "grafana_L2_02",
+        "kafka_L1_01",
+        "kafka_L1_02",
+        "kafka_L2_01",
+        "kafka_L2_02",
+        "sklearn_L1_01",
+        "sklearn_L1_02",
+        "sklearn_L2_01",
+        "sklearn_L2_02"
+      ],
+      "rates": {
+        "baseline": {
+          "k": 11,
+          "n": 12,
+          "rate": 0.9166666666666666,
+          "wilson95": [
+            0.6461200887821221,
+            0.9851349055999992
+          ]
+        },
+        "rag": {
+          "k": 12,
+          "n": 12,
+          "rate": 1.0,
+          "wilson95": [
+            0.7575059932585454,
+            0.9999999999999999
+          ]
+        },
+        "kg_deps_only": {
+          "k": 12,
+          "n": 12,
+          "rate": 1.0,
+          "wilson95": [
+            0.7575059932585454,
+            0.9999999999999999
+          ]
+        },
+        "kg_edges_only": {
+          "k": 10,
+          "n": 12,
+          "rate": 0.8333333333333334,
+          "wilson95": [
+            0.5519691376768493,
+            0.9530348578288478
+          ]
+        },
+        "kg": {
+          "k": 10,
+          "n": 12,
+          "rate": 0.8333333333333334,
+          "wilson95": [
+            0.5519691376768493,
+            0.9530348578288478
+          ]
+        },
+        "kg_joern_inherit": {
+          "k": 10,
+          "n": 12,
+          "rate": 0.8333333333333334,
+          "wilson95": [
+            0.5519691376768493,
+            0.9530348578288478
+          ]
+        },
+        "kg_idealised": {
+          "k": 10,
+          "n": 12,
+          "rate": 0.8333333333333334,
+          "wilson95": [
+            0.5519691376768493,
+            0.9530348578288478
+          ]
+        },
+        "hybrid": {
+          "k": 11,
+          "n": 12,
+          "rate": 0.9166666666666666,
+          "wilson95": [
+            0.6461200887821221,
+            0.9851349055999992
+          ]
+        }
+      },
+      "contrasts": {
+        "kg_deps_only - baseline": {
+          "delta": 0.08333333333333337,
+          "ci95": [
+            0.0,
+            0.25
+          ],
+          "discordant_ref_only": 0,
+          "discordant_arm_only": 1,
+          "p_mcnemar_exact": 1.0,
+          "p_perm": 1.0,
+          "p_holm": 1.0,
+          "significant": false
+        },
+        "kg_edges_only - baseline": {
+          "delta": -0.08333333333333326,
+          "ci95": [
+            -0.25,
+            0.0
+          ],
+          "discordant_ref_only": 1,
+          "discordant_arm_only": 0,
+          "p_mcnemar_exact": 1.0,
+          "p_perm": 1.0,
+          "p_holm": 1.0,
+          "significant": false
+        },
+        "kg_deps_only - kg": {
+          "delta": 0.16666666666666663,
+          "ci95": [
+            0.0,
+            0.4166666666666667
+          ],
+          "discordant_ref_only": 0,
+          "discordant_arm_only": 2,
+          "p_mcnemar_exact": 0.5,
+          "p_perm": 0.4999750012499375,
+          "p_holm": 1.0,
+          "significant": false
+        },
+        "kg_edges_only - kg": {
+          "delta": 0.0,
+          "ci95": [
+            -0.25,
+            0.25
+          ],
+          "discordant_ref_only": 1,
+          "discordant_arm_only": 1,
+          "p_mcnemar_exact": 1.0,
+          "p_perm": 1.0,
+          "p_holm": 1.0,
+          "significant": false
+        }
+      }
+    }
+  }
+}

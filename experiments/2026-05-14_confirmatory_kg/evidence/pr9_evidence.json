@@ -1,0 +1,47 @@
+{
+  "pr": {
+    "number": 119428,
+    "title": "Fix Android plugin signal regression",
+    "body": "Fixes regression caused by https://github.com/godotengine/godot/pull/119233. Connecting signal using `_plugin_singleton.connected.connect(_on_plugin_connected)`, started throwing error `Invalid access to property or key 'connected' on a base object of type 'JNISingleton'`",
+    "url": "https://github.com/godotengine/godot/pull/119428",
+    "repo": "godotengine/godot",
+    "base_branch": "master",
+    "head_branch": "plugin-signal-fix-final",
+    "merged_at": "2026-05-13T14:58:23Z",
+    "state": "MERGED"
+  },
+  "changed_files": [
+    {
+      "path": "platform/android/api/jni_singleton.cpp",
+      "language": "cpp",
+      "added": 9,
+      "deleted": 0
+    },
+    {
+      "path": "platform/android/api/jni_singleton.h",
+      "language": "cpp",
+      "added": 1,
+      "deleted": 0
+    },
+    {
+      "path": "platform/android/java/app/src/instrumented/assets/test/android_plugin/signal_tests.gd",
+      "language": "gdscript",
+      "added": 16,
+      "deleted": 0
+    }
+  ],
+  "nearest_tests": [],
+  "dependent_files": [],
+  "callers": [],
+  "call_graph_edges": [],
+  "full_diff": "diff --git a/platform/android/api/jni_singleton.cpp b/platform/android/api/jni_singleton.cpp\nindex c84f967d2650..226dad117701 100644\n--- a/platform/android/api/jni_singleton.cpp\n+++ b/platform/android/api/jni_singleton.cpp\n@@ -36,6 +36,15 @@ void JNISingleton::_bind_methods() {\n \tClassDB::bind_method(D_METHOD(\"has_java_method\", \"method\"), &JNISingleton::has_java_method);\n }\n \n+bool JNISingleton::_get(const StringName &p_name, Variant &r_property) const {\n+\tif (has_signal(p_name)) {\n+\t\tr_property = Signal(this, p_name);\n+\t\treturn true;\n+\t}\n+\n+\treturn false;\n+}\n+\n Variant JNISingleton::callp(const StringName &p_method, const Variant **p_args, int p_argcount, Callable::CallError &r_error) {\n \t// Godot methods take precedence.\n \tVariant ret = Object::callp(p_method, p_args, p_argcount, r_error);\ndiff --git a/platform/android/api/jni_singleton.h b/platform/android/api/jni_singleton.h\nindex f6bafce6ae72..432ada0fa39f 100644\n--- a/platform/android/api/jni_singleton.h\n+++ b/platform/android/api/jni_singleton.h\n@@ -48,6 +48,7 @@ class JNISingleton : public Object {\n \n protected:\n \tstatic void _bind_methods();\n+\tbool _get(const StringName &p_name, Variant &r_property) const;\n \n public:\n \tvirtual Variant callp(const StringName &p_method, const Variant **p_args, int p_argcount, Callable::CallError &r_error) override;\ndiff --git a/platform/android/java/app/src/instrumented/assets/test/android_plugin/signal_tests.gd b/platform/android/java/app/src/instrumented/assets/test/android_plugin/signal_tests.gd\nindex 74f5b1bb7673..0c26b3570cc9 100644\n--- a/platform/android/java/app/src/instrumented/assets/test/android_plugin/signal_tests.gd\n+++ b/platform/android/java/app/src/instrumented/assets/test/android_plugin/signal_tests.gd\n@@ -15,6 +15,7 @@ func run_tests():\n \n \t__exec_test(test_plugin_exists)\n \t__exec_test(test_signal_registration)\n+\t__exec_test(test_signal_connection)\n \tawait __exec_test(test_signal_emission)\n \n \tprint(\"Android plugin signal tests completed.\")\n@@ -35,6 +36,21 @@ func test_signal_registration() -> bool:\n \n \treturn true\n \n+func test_signal_connection() -> bool:\n+\t_plugin.connect(emission_test_signal, _on_emission_test_signal_emitted)\n+\tassert_equal(_plugin.has_connections(emission_test_signal), true)\n+\n+\t_plugin.disconnect(emission_test_signal, _on_emission_test_signal_emitted)\n+\tassert_equal(_plugin.has_connections(emission_test_signal), false)\n+\n+\t_plugin.emission_test_signal.connect(_on_emission_test_signal_emitted)\n+\tassert_equal(_plugin.has_connections(emission_test_signal), true)\n+\n+\t_plugin.emission_test_signal.disconnect(_on_emission_test_signal_emitted)\n+\tassert_equal(_plugin.has_connections(emission_test_signal), false)\n+\n+\treturn true\n+\n func test_signal_emission() -> bool:\n \tvar err1 = _plugin.connect(emission_test_signal, _on_emission_test_signal_emitted)\n \tassert_equal(err1, OK)\n",
+  "diff_summary": "3 files changed",
+  "similar_chunks": [],
+  "metadata": {
+    "experiment": "confirmatory_kg_2026-05-14",
+    "local_id": 9,
+    "v2_diff_truncated": false,
+    "v2_raw_diff_chars": 2846,
+    "v2_raw_body_chars": 272
+  }
+}

@@ -1,0 +1,44 @@
+{
+  "candidate_mentions": [
+    {
+      "basename_collision": false,
+      "end": 652,
+      "evidence_id": "M002",
+      "excerpt": "type.\n\n## Evidence\n- `sklearn/base.py:1348`: The return statement is modified from `return decorator` to `return (decorator, None)`.\n- Dependent files such as `sklearn/cluster/_agglomerative.py`, `sklearn/cluster/_optics.py`, and others rely on the `_fit_context` function and may not handle a tuple return type.\n\n## Impact\n- The change could lead to runtime errors in any dependent code that expects a single return value from `_fit_context`. This coul",
+      "finding_passage_id": "P008",
+      "match_kind": "full_path",
+      "match_text": "sklearn/cluster/_agglomerative.py",
+      "oracle_path": "sklearn/cluster/_agglomerative.py",
+      "start": 619
+    },
+    {
+      "basename_collision": false,
+      "end": 682,
+      "evidence_id": "M010",
+      "excerpt": ":1348`: The return statement is modified from `return decorator` to `return (decorator, None)`.\n- Dependent files such as `sklearn/cluster/_agglomerative.py`, `sklearn/cluster/_optics.py`, and others rely on the `_fit_context` function and may not handle a tuple return type.\n\n## Impact\n- The change could lead to runtime errors in any dependent code that expects a single return value from `_fit_context`. This could manifest as unpacking errors",
+      "finding_passage_id": "P008",
+      "match_kind": "full_path",
+      "match_text": "sklearn/cluster/_optics.py",
+      "oracle_path": "sklearn/cluster/_optics.py",
+      "start": 656
+    }
+  ],
+  "causal_passage_id": "P008",
+  "decision_source": "llm_causal_adjudication",
+  "detected": true,
+  "evidence_id": "M002",
+  "executed_at_utc": "2026-09-19T15:09:07.588225+00:00",
+  "finding_passage_id": "P008",
+  "judge": "gemini:gemini-2.5-flash",
+  "manifest_sha256": "5d4371a93d1b09f0491ecc12279f9f3ff5de23053b7a5e74650a749f58b472b0",
+  "model_alias": "gemini:gemini-2.5-flash",
+  "model_snapshot": "unavailable-from-original-wrapper",
+  "original_verdict": true,
+  "prompt_sha256": "8fa2ba30b59fdb08736d96e347be88834badc320250dbbdfcab9b433565b71e0",
+  "reason_code": "specific_cross_file_link",
+  "response_wrapper": "single_json_fence",
+  "review_sha256": "621f2a1b0f9f7fb89c2d77b316b1ae8dfd6a804a949d6a66dfab752bb5ba9b9d",
+  "schema_sha256": "f70f714868ecd3d25508bb3e00b32ecbe6761b0ebc05f454ee10fa4d28efd013",
+  "schema_version": "exp2-adjudication-v3",
+  "system_sha256": "030b5e701c798b32afdabbbeb22db38f664db8c8fd8b862d2fcb98df63b6fb6b"
+}

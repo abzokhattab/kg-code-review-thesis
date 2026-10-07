@@ -1,0 +1,55 @@
+{
+  "candidate_mentions": [
+    {
+      "basename_collision": false,
+      "end": 710,
+      "evidence_id": "M013",
+      "excerpt": "sions.\n\n## Evidence\n- **streams/src/main/java/org/apache/kafka/streams/KeyValue.java:25**: The class name is changed from `KeyValue` to `KeyValueInternal`.\n- **streams/src/main/java/org/apache/kafka/streams/kstream/internals/KStreamImpl.java**: The constructor of `KeyValue` is used in a lambda, indicating a direct dependency.\n- **streams/src/main/java/org/apache/kafka/streams/processor/assignment/TaskAssignmentUtils.java**: Multiple lambda expressions rely on the `KeyValue` constructor.\n- **strea",
+      "finding_passage_id": "P009",
+      "match_kind": "full_path",
+      "match_text": "streams/src/main/java/org/apache/kafka/streams/kstream/internals/KStreamImpl.java",
+      "oracle_path": "streams/src/main/java/org/apache/kafka/streams/kstream/internals/KStreamImpl.java",
+      "start": 629
+    },
+    {
+      "basename_collision": false,
+      "end": 893,
+      "evidence_id": "M023",
+      "excerpt": "main/java/org/apache/kafka/streams/kstream/internals/KStreamImpl.java**: The constructor of `KeyValue` is used in a lambda, indicating a direct dependency.\n- **streams/src/main/java/org/apache/kafka/streams/processor/assignment/TaskAssignmentUtils.java**: Multiple lambda expressions rely on the `KeyValue` constructor.\n- **streams/src/main/java/org/apache/kafka/streams/state/internals/AbstractRocksDBSegmentedBytesStore.java**: The `KeyValue` constructor is called, showing integration with other components.\n\n",
+      "finding_passage_id": "P010",
+      "match_kind": "full_path",
+      "match_text": "streams/src/main/java/org/apache/kafka/streams/processor/assignment/TaskAssignmentUtils.java",
+      "oracle_path": "streams/src/main/java/org/apache/kafka/streams/processor/assignment/TaskAssignmentUtils.java",
+      "start": 801
+    },
+    {
+      "basename_collision": false,
+      "end": 1067,
+      "evidence_id": "M039",
+      "excerpt": "ams/src/main/java/org/apache/kafka/streams/processor/assignment/TaskAssignmentUtils.java**: Multiple lambda expressions rely on the `KeyValue` constructor.\n- **streams/src/main/java/org/apache/kafka/streams/state/internals/AbstractRocksDBSegmentedBytesStore.java**: The `KeyValue` constructor is called, showing integration with other components.\n\n## Impact\n- **Technical Impact**: The renaming could lead to compilation errors in any downstream projects or modules that depend on the `KeyValue` class. This change affects",
+      "finding_passage_id": "P011",
+      "match_kind": "full_path",
+      "match_text": "streams/src/main/java/org/apache/kafka/streams/state/internals/AbstractRocksDBSegmentedBytesStore.java",
+      "oracle_path": "streams/src/main/java/org/apache/kafka/streams/state/internals/AbstractRocksDBSegmentedBytesStore.java",
+      "start": 965
+    }
+  ],
+  "causal_passage_id": "P013",
+  "decision_source": "llm_causal_adjudication",
+  "detected": true,
+  "evidence_id": "M013",
+  "executed_at_utc": "2026-09-19T15:09:56.062579+00:00",
+  "finding_passage_id": "P009",
+  "judge": "openai:gpt-4o",
+  "manifest_sha256": "5d4371a93d1b09f0491ecc12279f9f3ff5de23053b7a5e74650a749f58b472b0",
+  "model_alias": "openai:gpt-4o",
+  "model_snapshot": "unavailable-from-original-wrapper",
+  "original_verdict": false,
+  "prompt_sha256": "d81131aa41b837f845aa2fd73b616cfbc62d4720ca78e120025e0af14f618c10",
+  "reason_code": "specific_cross_file_link",
+  "response_wrapper": "bare",
+  "review_sha256": "cb80f8694bad7a170d558ef011508bba9df2a419a03664365d238e6628c75807",
+  "schema_sha256": "f70f714868ecd3d25508bb3e00b32ecbe6761b0ebc05f454ee10fa4d28efd013",
+  "schema_version": "exp2-adjudication-v3",
+  "system_sha256": "030b5e701c798b32afdabbbeb22db38f664db8c8fd8b862d2fcb98df63b6fb6b"
+}

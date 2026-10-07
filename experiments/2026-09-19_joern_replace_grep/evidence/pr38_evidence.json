@@ -1,0 +1,392 @@
+{
+  "pr": {
+    "number": 124557,
+    "title": "HomePage: Fix redirect when served under a subpath",
+    "body": "<!--\r\n\r\nThank you for sending a pull request! Here are some tips:\r\n\r\n1. If this is your first time, please read our contribution guide at https://github.com/grafana/grafana/blob/main/CONTRIBUTING.md\r\n\r\n2. Ensure you include and run the appropriate tests as part of your Pull Request.\r\n\r\n3. In a new feature or configuration option, an update to the documentation is necessary. Everything related to the documentation is under the docs folder in the root of the repository.\r\n\r\n4. If the Pull Request is a work in progress, make use of GitHub's \"Draft PR\" feature and mark it as such.\r\n\r\n5. If you can not merge your Pull Request due to a merge conflict, Rebase it. This gets it in sync with the main branch.\r\n\r\n6. Name your PR as \"<FeatureArea>: Describe your change\", e.g. Alerting: Prevent race condition. If it's a fix or feature relevant for the changelog describe the user impact in the title. The PR title is used to auto-generate the changelog for issues marked with the \"add to changelog\" label.\r\n\r\n7. If your PR content should be added to the What's New document for the next major or minor release, add the **add to what's new** label to your PR. Note that you should add this label to the main PR that introduces the feature; do not add this label to smaller PRs for the feature.\r\n\r\n-->\r\n\r\n**What is this feature?**\r\n\r\n- correctly redirects to a custom `home_page` when served under a subpath\r\n- this regressed in https://github.com/grafana/grafana/pull/118829\r\n\r\n**Why do we need this feature?**\r\n\r\n- so `home_page` redirects work correctly when served under a subpath\r\n\r\n**Who is this feature for?**\r\n\r\n- anyone using a subpath\r\n\r\n**Which issue(s) does this PR fix?**:\r\n\r\n<!--\r\n\r\n- Automatically closes linked issue when the Pull Request is merged.\r\n\r\nUsage: \"Fixes #<issue number>\", or \"Fixes (paste link of issue)\"\r\n\r\n-->\r\n\r\nFixes #\r\n\r\n**Special notes for your reviewer:**\r\n\r\n- see https://grafanalabs.enterprise.slack.com/archives/C0B2MGAEV45\r\n\r\nPlease check that:\r\n- [ ] It works as expected from a user's perspective.\r\n- [ ] If this is a pre-GA feature, it is behind a feature toggle.\r\n- [ ] The docs are updated, and if this is a [notable improvement](https://grafana.com/docs/writers-toolkit/contribute/release-notes/#how-to-determine-if-content-belongs-in-whats-new), it's added to our [What's New](https://grafana.com/docs/writers-toolkit/contribute/release-notes/) doc.\r\n",
+    "url": "https://github.com/grafana/grafana/pull/124557",
+    "repo": "grafana/grafana",
+    "base_branch": "main",
+    "head_branch": "ash/fix-home-page-redirect",
+    "merged_at": "2026-05-11T12:03:38Z",
+    "state": "MERGED"
+  },
+  "changed_files": [
+    {
+      "path": "packages/grafana-data/src/utils/location.test.ts",
+      "language": "typescript",
+      "added": 21,
+      "deleted": 0
+    },
+    {
+      "path": "packages/grafana-data/src/utils/location.ts",
+      "language": "typescript",
+      "added": 5,
+      "deleted": 1
+    }
+  ],
+  "nearest_tests": [
+    {
+      "path": "public/app/features/geo/utils/location.test.ts",
+      "relationship": "tests",
+      "source_file": "packages/grafana-data/src/utils/location.ts"
+    },
+    {
+      "path": "packages/grafana-data/src/utils/location.test.ts",
+      "relationship": "tests",
+      "source_file": "packages/grafana-data/src/utils/location.ts"
+    }
+  ],
+  "dependent_files": [
+    "features/geo/editor/locationModeEditor.tsx",
+    "features/geo/utils/frameVectorSource.ts",
+    "features/geo/utils/location.ts"
+  ],
+  "diff_summary": "2 files changed",
+  "full_diff": "diff --git a/packages/grafana-data/src/utils/location.test.ts b/packages/grafana-data/src/utils/location.test.ts\nindex c7ffe163d129f..4eaa6dfd76860 100644\n--- a/packages/grafana-data/src/utils/location.test.ts\n+++ b/packages/grafana-data/src/utils/location.test.ts\n@@ -340,6 +340,27 @@ describe('locationUtil', () => {\n         const result = locationUtil.processRedirectUri(redirectUri, currentLocation);\n         expect(result).toBe('http://www.domain.com:1234/grafana/a/custom-home-plugin?tab=overview&theme=dark');\n       });\n+\n+      test('handles relative path without subpath prefix (e.g. home_page = /admin/users)', () => {\n+        const redirectUri = '/admin/users';\n+        const currentLocation = { ...mockLocation, search: '' };\n+        const result = locationUtil.processRedirectUri(redirectUri, currentLocation);\n+        expect(result).toBe('/admin/users');\n+      });\n+\n+      test('merges current params into relative path without subpath prefix', () => {\n+        const redirectUri = '/admin/users';\n+        const currentLocation = { ...mockLocation, search: '?orgId=2' };\n+        const result = locationUtil.processRedirectUri(redirectUri, currentLocation);\n+        expect(result).toBe('/admin/users?orgId=2');\n+      });\n+\n+      test('redirect URI params take precedence over current params when no subpath prefix', () => {\n+        const redirectUri = '/admin/users?tab=access';\n+        const currentLocation = { ...mockLocation, search: '?tab=profile&orgId=2' };\n+        const result = locationUtil.processRedirectUri(redirectUri, currentLocation);\n+        expect(result).toBe('/admin/users?tab=access&orgId=2');\n+      });\n     });\n   });\n });\ndiff --git a/packages/grafana-data/src/utils/location.ts b/packages/grafana-data/src/utils/location.ts\nindex fab13539d8f65..58702731349d0 100644\n--- a/packages/grafana-data/src/utils/location.ts\n+++ b/packages/grafana-data/src/utils/location.ts\n@@ -168,7 +168,11 @@ export const locationUtil = {\n         }\n       });\n \n-      return stripBaseFromUrl(redirectUrl.href);\n+      // For relative paths, use pathname+search rather than href. new URL(relativePath, origin)\n+      // produces an absolute URL without the appSubUrl prefix, which stripBaseFromUrl cannot strip,\n+      // causing the router to treat the full URL string as a literal path.\n+      const isAbsoluteUri = redirectUri.startsWith('http');\n+      return stripBaseFromUrl(isAbsoluteUri ? redirectUrl.href : redirectUrl.pathname + redirectUrl.search);\n     } catch {\n       return stripBaseFromUrl(redirectUri);\n     }\n",
+  "metadata": {
+    "v2_fetcher_version": 1,
+    "v2_fetched_at_unix": 1778582578,
+    "v2_diff_cap_bytes": 50000,
+    "v2_body_cap_bytes": 8000,
+    "v2_diff_truncated": false,
+    "v2_raw_diff_chars": 2562,
+    "v2_raw_body_chars": 2393,
+    "v2_rag_source": "fresh_for_v2_40pr_expansion",
+    "v2_rag_chunks_copied": 8,
+    "joern_enriched": true,
+    "joern_callers_count": 6,
+    "joern_functions_count": 15
+  },
+  "similar_chunks": [
+    {
+      "file": "packages/grafana-data/src/utils/url.test.ts",
+      "start_line": 62,
+      "end_line": 128,
+      "similarity": 0.5949,
+      "related_to": "packages/grafana-data/src/utils/location.ts",
+      "content_preview": "zeParams({\n      bool1: true,\n      bool2: false,\n    });\n    expect(url).toBe('bool1=true&bool2=false');\n  });\n});\n\ndescribe('parseKeyValue', () => {\n  it('should parse url search params to object', () => {\n    const obj = urlUtil.parseKeyValue('param=value&param2=value2&kiosk');\n    expect(obj).toEqual({ param: 'value', param2: 'value2', kiosk: true });\n  });\n\n  it('should parse same url key multiple times to array', () => {\n    const obj = urlUtil.parseKeyValue('servers=A&servers=B');\n    expect(obj).toEqual({ servers: ['A', 'B'] });\n  });\n\n  it('should parse numeric params', () => {\n    const obj = urlUtil.parseKeyValue('num1=12&num2=12.2');\n    expect(obj).toEqual({ num1: '12', num2: '12.2' });\n  });\n\n  it('should not parse empty string as number', () => {\n    const obj = urlUtil.pars"
+    },
+    {
+      "file": "packages/grafana-data/src/utils/url.ts",
+      "start_line": 4,
+      "end_line": 62,
+      "similarity": 0.5907,
+      "related_to": "packages/grafana-data/src/utils/location.ts",
+      "content_preview": "\nimport { isDateTime } from '../datetime/moment_wrapper';\nimport { ExploreUrlState, URLRange } from '../types/explore';\nimport { RawTimeRange } from '../types/time';\n\n/**\n * Type to represent the value of a single query variable.\n *\n * @public\n */\nexport type UrlQueryValue = string | number | boolean | string[] | number[] | boolean[] | undefined | null;\n\n/**\n * Type to represent the values parsed from the query string.\n *\n * @public\n */\nexport type UrlQueryMap = Record<string, UrlQueryValue>;\n\nfunction renderUrl(path: string, query: UrlQueryMap | undefined): string {\n  if (query && Object.keys(query).length > 0) {\n    path += '?' + toUrlParams(query);\n  }\n  return path;\n}\n\nfunction encodeURIComponentAsAngularJS(val: EncodeURIComponentParams, pctEncodeSpaces?: boolean) {\n  return encodeURIC"
+    },
+    {
+      "file": "packages/grafana-data/src/utils/url.ts",
+      "start_line": 185,
+      "end_line": 255,
+      "similarity": 0.5894,
+      "related_to": "packages/grafana-data/src/utils/location.ts",
+      "content_preview": "   parsedVal = val;\n        }\n\n        if (!obj.hasOwnProperty(key)) {\n          obj[key] = isNaN(parsedVal) ? val : parsedVal;\n        } else if (Array.isArray(obj[key])) {\n          obj[key].push(val);\n        } else {\n          obj[key] = [obj[key], isNaN(parsedVal) ? val : parsedVal];\n        }\n      }\n    }\n  }\n\n  return obj;\n}\n\nfunction tryDecodeURIComponent(value: string): string | undefined {\n  try {\n    return decodeURIComponent(value);\n  } catch (e) {\n    return undefined;\n  }\n}\n\nexport const urlUtil = {\n  renderUrl,\n  toUrlParams,\n  appendQueryToUrl,\n  getUrlSearchParams,\n  parseKeyValue,\n  serializeParams,\n};\n\n/**\n * Create an string that is used in URL to represent the Explore state. This is basically just a stringified json\n * that is used as a state of a single Explore pane "
+    },
+    {
+      "file": "packages/grafana-data/src/field/fieldOverrides.test.ts",
+      "start_line": 1031,
+      "end_line": 1096,
+      "similarity": 0.5805,
+      "related_to": "packages/grafana-data/src/utils/location.test.ts",
+      "content_preview": "        data: [],\n        field: { type: FieldType.number } as Field,\n        dataFrameIndex: 0,\n      }\n    );\n\n    expect(config.mappings).toHaveLength(3);\n    expect(config.mappings![0]).toEqual({ type: MappingType.ValueToText, options: { existing: { text: 'existing' } } });\n    expect(config.mappings![1]).toEqual({ type: MappingType.ValueToText, options: { first: { text: 'first' } } });\n    expect(config.mappings![2]).toEqual({ type: MappingType.ValueToText, options: { second: { text: 'second' } } });\n  });\n});\n\ndescribe('getLinksSupplier', () => {\n  it('will replace variables in url and title of the data link', () => {\n    locationUtil.initialize({\n      config: {} as GrafanaConfig,\n      getVariablesUrlParams: () => ({}),\n      getTimeRangeForUrl: () => ({ from: 'now-7d', to: 'now' }"
+    },
+    {
+      "file": "packages/grafana-data/src/utils/url.ts",
+      "start_line": 57,
+      "end_line": 134,
+      "similarity": 0.5743,
+      "related_to": "packages/grafana-data/src/utils/location.ts",
+      "content_preview": " {\n    return Object.prototype.toString.call(obj) === '[object Array]';\n  };\n\n  const add = (k: string, v: any) => {\n    v = typeof v === 'function' ? v() : v === null ? '' : v === undefined ? '' : v;\n    s[s.length] = encodingFunction(k, true) + '=' + encodingFunction(v, true);\n  };\n\n  const buildParams = (prefix: string, obj: any) => {\n    let i, len, key;\n\n    if (prefix) {\n      if (isArray(obj)) {\n        for (i = 0, len = obj.length; i < len; i++) {\n          if (rbracket.test(prefix)) {\n            add(prefix, obj[i]);\n          } else {\n            buildParams(prefix, obj[i]);\n          }\n        }\n      } else if (obj && String(obj) === '[object Object]') {\n        for (key in obj) {\n          buildParams(prefix + '[' + key + ']', obj[key]);\n        }\n      } else {\n        add(pr"
+    },
+    {
+      "file": "packages/grafana-data/src/index.ts",
+      "start_line": 200,
+      "end_line": 244,
+      "similarity": 0.5658,
+      "related_to": "packages/grafana-data/src/utils/location.ts",
+      "content_preview": "s,\n  type StatsPickerConfigSettings,\n  type FieldNamePickerConfigSettings,\n  dataLinksOverrideProcessor,\n  valueMappingsOverrideProcessor,\n  selectOverrideProcessor,\n  stringOverrideProcessor,\n  thresholdsOverrideProcessor,\n  unitOverrideProcessor,\n  booleanOverrideProcessor,\n  FieldNamePickerBaseNameMode,\n} from './field/overrides/processors';\n\n// Utils\nexport { PanelOptionsEditorBuilder, FieldConfigEditorBuilder } from './utils/OptionsUIBuilders';\nexport { getFlotPairs, getFlotPairsConstant } from './utils/flotPairs';\nexport { locationUtil } from './utils/location';\nexport { urlUtil, type UrlQueryMap, type UrlQueryValue, serializeStateToUrlParam, toURLRange } from './utils/url';\nexport { DataLinkBuiltInVars, mapInternalLinkToExplore } from './utils/dataLinks';\nexport { DocsId } from './u"
+    },
+    {
+      "file": "packages/grafana-data/src/index.ts",
+      "start_line": 384,
+      "end_line": 448,
+      "similarity": 0.5652,
+      "related_to": "packages/grafana-data/src/utils/location.ts",
+      "content_preview": "from './datetime/moment_wrapper';\nexport {\n  InternalTimeZones,\n  timeZoneFormatUserFriendly,\n  getZone,\n  type TimeZoneCountry,\n  type TimeZoneInfo,\n  type GroupedTimeZones,\n  getTimeZoneInfo,\n  getTimeZones,\n  getTimeZoneGroups,\n} from './datetime/timezones';\nexport {\n  type SystemDateFormatSettings,\n  SystemDateFormatsState,\n  localTimeFormat,\n  systemDateFormats,\n} from './datetime/formats';\nexport {\n  type DateTimeOptionsWithFormat,\n  dateTimeFormat,\n  dateTimeFormatISO,\n  dateTimeFormatTimeAgo,\n  dateTimeFormatWithAbbrevation,\n  timeZoneAbbrevation,\n} from './datetime/formatter';\nexport { type DateTimeOptionsWhenParsing, dateTimeParse } from './datetime/parser';\nexport {\n  intervalToAbbreviatedDurationString,\n  parseDuration,\n  reverseParseDuration,\n  addDurationToDate,\n  durationToM"
+    },
+    {
+      "file": "packages/grafana-data/src/datetime/datemath.test.ts",
+      "start_line": 97,
+      "end_line": 169,
+      "similarity": 0.5567,
+      "related_to": "packages/grafana-data/src/utils/location.test.ts",
+      "content_preview": "expected.getTime());\n      });\n    });\n  });\n\n  describe('subtraction', () => {\n    let now: DateTime;\n    let anchored: DateTime;\n\n    beforeEach(() => {\n      jest.useFakeTimers({ now: unix });\n      now = dateTime();\n      anchored = dateTime(anchor);\n    });\n\n    each(spans, (span) => {\n      const nowEx = 'now-5' + span;\n      const thenEx = anchor + '||-5' + span;\n\n      it('should return 5' + span + ' ago', () => {\n        expect(dateMath.parse(nowEx)!.format(format)).toEqual(now.subtract(5, span).format(format));\n      });\n\n      it('should return 5' + span + ' before ' + anchor, () => {\n        expect(dateMath.parse(thenEx)!.format(format)).toEqual(anchored.subtract(5, span).format(format));\n      });\n    });\n\n    afterEach(() => {\n      jest.useRealTimers();\n    });\n  });\n\n  desc"
+    }
+  ],
+  "rag_evidence": {
+    "similar_code": [
+      {
+        "file": "packages/grafana-data/src/utils/url.test.ts",
+        "start_line": 62,
+        "end_line": 128,
+        "similarity": 0.5949,
+        "related_to": "packages/grafana-data/src/utils/location.ts",
+        "content_preview": "zeParams({\n      bool1: true,\n      bool2: false,\n    });\n    expect(url).toBe('bool1=true&bool2=false');\n  });\n});\n\ndescribe('parseKeyValue', () => {\n  it('should parse url search params to object', () => {\n    const obj = urlUtil.parseKeyValue('param=value&param2=value2&kiosk');\n    expect(obj).toEqual({ param: 'value', param2: 'value2', kiosk: true });\n  });\n\n  it('should parse same url key multiple times to array', () => {\n    const obj = urlUtil.parseKeyValue('servers=A&servers=B');\n    expect(obj).toEqual({ servers: ['A', 'B'] });\n  });\n\n  it('should parse numeric params', () => {\n    const obj = urlUtil.parseKeyValue('num1=12&num2=12.2');\n    expect(obj).toEqual({ num1: '12', num2: '12.2' });\n  });\n\n  it('should not parse empty string as number', () => {\n    const obj = urlUtil.pars"
+      },
+      {
+        "file": "packages/grafana-data/src/utils/url.ts",
+        "start_line": 4,
+        "end_line": 62,
+        "similarity": 0.5907,
+        "related_to": "packages/grafana-data/src/utils/location.ts",
+        "content_preview": "\nimport { isDateTime } from '../datetime/moment_wrapper';\nimport { ExploreUrlState, URLRange } from '../types/explore';\nimport { RawTimeRange } from '../types/time';\n\n/**\n * Type to represent the value of a single query variable.\n *\n * @public\n */\nexport type UrlQueryValue = string | number | boolean | string[] | number[] | boolean[] | undefined | null;\n\n/**\n * Type to represent the values parsed from the query string.\n *\n * @public\n */\nexport type UrlQueryMap = Record<string, UrlQueryValue>;\n\nfunction renderUrl(path: string, query: UrlQueryMap | undefined): string {\n  if (query && Object.keys(query).length > 0) {\n    path += '?' + toUrlParams(query);\n  }\n  return path;\n}\n\nfunction encodeURIComponentAsAngularJS(val: EncodeURIComponentParams, pctEncodeSpaces?: boolean) {\n  return encodeURIC"
+      },
+      {
+        "file": "packages/grafana-data/src/utils/url.ts",
+        "start_line": 185,
+        "end_line": 255,
+        "similarity": 0.5894,
+        "related_to": "packages/grafana-data/src/utils/location.ts",
+        "content_preview": "   parsedVal = val;\n        }\n\n        if (!obj.hasOwnProperty(key)) {\n          obj[key] = isNaN(parsedVal) ? val : parsedVal;\n        } else if (Array.isArray(obj[key])) {\n          obj[key].push(val);\n        } else {\n          obj[key] = [obj[key], isNaN(parsedVal) ? val : parsedVal];\n        }\n      }\n    }\n  }\n\n  return obj;\n}\n\nfunction tryDecodeURIComponent(value: string): string | undefined {\n  try {\n    return decodeURIComponent(value);\n  } catch (e) {\n    return undefined;\n  }\n}\n\nexport const urlUtil = {\n  renderUrl,\n  toUrlParams,\n  appendQueryToUrl,\n  getUrlSearchParams,\n  parseKeyValue,\n  serializeParams,\n};\n\n/**\n * Create an string that is used in URL to represent the Explore state. This is basically just a stringified json\n * that is used as a state of a single Explore pane "
+      },
+      {
+        "file": "packages/grafana-data/src/field/fieldOverrides.test.ts",
+        "start_line": 1031,
+        "end_line": 1096,
+        "similarity": 0.5805,
+        "related_to": "packages/grafana-data/src/utils/location.test.ts",
+        "content_preview": "        data: [],\n        field: { type: FieldType.number } as Field,\n        dataFrameIndex: 0,\n      }\n    );\n\n    expect(config.mappings).toHaveLength(3);\n    expect(config.mappings![0]).toEqual({ type: MappingType.ValueToText, options: { existing: { text: 'existing' } } });\n    expect(config.mappings![1]).toEqual({ type: MappingType.ValueToText, options: { first: { text: 'first' } } });\n    expect(config.mappings![2]).toEqual({ type: MappingType.ValueToText, options: { second: { text: 'second' } } });\n  });\n});\n\ndescribe('getLinksSupplier', () => {\n  it('will replace variables in url and title of the data link', () => {\n    locationUtil.initialize({\n      config: {} as GrafanaConfig,\n      getVariablesUrlParams: () => ({}),\n      getTimeRangeForUrl: () => ({ from: 'now-7d', to: 'now' }"
+      },
+      {
+        "file": "packages/grafana-data/src/utils/url.ts",
+        "start_line": 57,
+        "end_line": 134,
+        "similarity": 0.5743,
+        "related_to": "packages/grafana-data/src/utils/location.ts",
+        "content_preview": " {\n    return Object.prototype.toString.call(obj) === '[object Array]';\n  };\n\n  const add = (k: string, v: any) => {\n    v = typeof v === 'function' ? v() : v === null ? '' : v === undefined ? '' : v;\n    s[s.length] = encodingFunction(k, true) + '=' + encodingFunction(v, true);\n  };\n\n  const buildParams = (prefix: string, obj: any) => {\n    let i, len, key;\n\n    if (prefix) {\n      if (isArray(obj)) {\n        for (i = 0, len = obj.length; i < len; i++) {\n          if (rbracket.test(prefix)) {\n            add(prefix, obj[i]);\n          } else {\n            buildParams(prefix, obj[i]);\n          }\n        }\n      } else if (obj && String(obj) === '[object Object]') {\n        for (key in obj) {\n          buildParams(prefix + '[' + key + ']', obj[key]);\n        }\n      } else {\n        add(pr"
+      },
+      {
+        "file": "packages/grafana-data/src/index.ts",
+        "start_line": 200,
+        "end_line": 244,
+        "similarity": 0.5658,
+        "related_to": "packages/grafana-data/src/utils/location.ts",
+        "content_preview": "s,\n  type StatsPickerConfigSettings,\n  type FieldNamePickerConfigSettings,\n  dataLinksOverrideProcessor,\n  valueMappingsOverrideProcessor,\n  selectOverrideProcessor,\n  stringOverrideProcessor,\n  thresholdsOverrideProcessor,\n  unitOverrideProcessor,\n  booleanOverrideProcessor,\n  FieldNamePickerBaseNameMode,\n} from './field/overrides/processors';\n\n// Utils\nexport { PanelOptionsEditorBuilder, FieldConfigEditorBuilder } from './utils/OptionsUIBuilders';\nexport { getFlotPairs, getFlotPairsConstant } from './utils/flotPairs';\nexport { locationUtil } from './utils/location';\nexport { urlUtil, type UrlQueryMap, type UrlQueryValue, serializeStateToUrlParam, toURLRange } from './utils/url';\nexport { DataLinkBuiltInVars, mapInternalLinkToExplore } from './utils/dataLinks';\nexport { DocsId } from './u"
+      },
+      {
+        "file": "packages/grafana-data/src/index.ts",
+        "start_line": 384,
+        "end_line": 448,
+        "similarity": 0.5652,
+        "related_to": "packages/grafana-data/src/utils/location.ts",
+        "content_preview": "from './datetime/moment_wrapper';\nexport {\n  InternalTimeZones,\n  timeZoneFormatUserFriendly,\n  getZone,\n  type TimeZoneCountry,\n  type TimeZoneInfo,\n  type GroupedTimeZones,\n  getTimeZoneInfo,\n  getTimeZones,\n  getTimeZoneGroups,\n} from './datetime/timezones';\nexport {\n  type SystemDateFormatSettings,\n  SystemDateFormatsState,\n  localTimeFormat,\n  systemDateFormats,\n} from './datetime/formats';\nexport {\n  type DateTimeOptionsWithFormat,\n  dateTimeFormat,\n  dateTimeFormatISO,\n  dateTimeFormatTimeAgo,\n  dateTimeFormatWithAbbrevation,\n  timeZoneAbbrevation,\n} from './datetime/formatter';\nexport { type DateTimeOptionsWhenParsing, dateTimeParse } from './datetime/parser';\nexport {\n  intervalToAbbreviatedDurationString,\n  parseDuration,\n  reverseParseDuration,\n  addDurationToDate,\n  durationToM"
+      },
+      {
+        "file": "packages/grafana-data/src/datetime/datemath.test.ts",
+        "start_line": 97,
+        "end_line": 169,
+        "similarity": 0.5567,
+        "related_to": "packages/grafana-data/src/utils/location.test.ts",
+        "content_preview": "expected.getTime());\n      });\n    });\n  });\n\n  describe('subtraction', () => {\n    let now: DateTime;\n    let anchored: DateTime;\n\n    beforeEach(() => {\n      jest.useFakeTimers({ now: unix });\n      now = dateTime();\n      anchored = dateTime(anchor);\n    });\n\n    each(spans, (span) => {\n      const nowEx = 'now-5' + span;\n      const thenEx = anchor + '||-5' + span;\n\n      it('should return 5' + span + ' ago', () => {\n        expect(dateMath.parse(nowEx)!.format(format)).toEqual(now.subtract(5, span).format(format));\n      });\n\n      it('should return 5' + span + ' before ' + anchor, () => {\n        expect(dateMath.parse(thenEx)!.format(format)).toEqual(anchored.subtract(5, span).format(format));\n      });\n    });\n\n    afterEach(() => {\n      jest.useRealTimers();\n    });\n  });\n\n  desc"
+      }
+    ]
+  },
+  "callers": [
+    {
+      "path": "features/geo/editor/locationModeEditor.tsx",
+      "from_function": "<lambda>2",
+      "calls_function": "getGeometryField",
+      "caller_line": 63,
+      "callee_file": "features/geo/utils/location.ts",
+      "callee_line": 182
+    },
+    {
+      "path": "features/geo/editor/locationModeEditor.tsx",
+      "from_function": "<lambda>1",
+      "calls_function": "getLocationMatchers",
+      "caller_line": 61,
+      "callee_file": "features/geo/utils/location.ts",
+      "callee_line": 81
+    },
+    {
+      "path": "features/geo/utils/frameVectorSource.ts",
+      "from_function": "update",
+      "calls_function": "getGeometryField",
+      "caller_line": 26,
+      "callee_file": "features/geo/utils/location.ts",
+      "callee_line": 182
+    },
+    {
+      "path": "features/geo/utils/location.ts",
+      "from_function": "getLocationMatchers",
+      "calls_function": "getFieldFinder",
+      "caller_line": 81,
+      "callee_file": "features/geo/utils/location.ts",
+      "callee_line": 20
+    },
+    {
+      "path": "features/geo/utils/location.ts",
+      "from_function": "getGeometryField",
+      "calls_function": "getLocationFields",
+      "caller_line": 182,
+      "callee_file": "features/geo/utils/location.ts",
+      "callee_line": 129
+    },
+    {
+      "path": "features/geo/utils/location.ts",
+      "from_function": ":program",
+      "calls_function": "matchLowerNames",
+      "caller_line": 1,
+      "callee_file": "features/geo/utils/location.ts",
+      "callee_line": 31
+    }
+  ],
+  "call_graph_edges": [
+    {
+      "from": "features/geo/editor/locationModeEditor.tsx::<lambda>2",
+      "to": "features/geo/utils/location.ts::getGeometryField"
+    },
+    {
+      "from": "features/geo/editor/locationModeEditor.tsx::<lambda>1",
+      "to": "features/geo/utils/location.ts::getLocationMatchers"
+    },
+    {
+      "from": "features/geo/utils/frameVectorSource.ts::update",
+      "to": "features/geo/utils/location.ts::getGeometryField"
+    },
+    {
+      "from": "features/geo/utils/location.ts::getLocationMatchers",
+      "to": "features/geo/utils/location.ts::getFieldFinder"
+    },
+    {
+      "from": "features/geo/utils/location.ts::getGeometryField",
+      "to": "features/geo/utils/location.ts::getLocationFields"
+    },
+    {
+      "from": "features/geo/utils/location.ts:::program",
+      "to": "features/geo/utils/location.ts::matchLowerNames"
+    }
+  ],
+  "functions_in_changed_files": [
+    {
+      "name": ":program",
+      "full_name": "features/geo/utils/location.ts::program",
+      "file": "features/geo/utils/location.ts",
+      "start_line": 1,
+      "end_line": 239,
+      "signature": ""
+    },
+    {
+      "name": "<lambda>0",
+      "full_name": "features/geo/utils/location.ts::program:getFieldFinder:<lambda>0",
+      "file": "features/geo/utils/location.ts",
+      "start_line": 21,
+      "end_line": 28,
+      "signature": ""
+    },
+    {
+      "name": "getFieldFinder",
+      "full_name": "features/geo/utils/location.ts::program:getFieldFinder",
+      "file": "features/geo/utils/location.ts",
+      "start_line": 20,
+      "end_line": 29,
+      "signature": ""
+    },
+    {
+      "name": "<lambda>1",
+      "full_name": "features/geo/utils/location.ts::program:matchLowerNames:<lambda>1",
+      "file": "features/geo/utils/location.ts",
+      "start_line": 32,
+      "end_line": 43,
+      "signature": ""
+    },
+    {
+      "name": "matchLowerNames",
+      "full_name": "features/geo/utils/location.ts::program:matchLowerNames",
+      "file": "features/geo/utils/location.ts",
+      "start_line": 31,
+      "end_line": 44,
+      "signature": ""
+    },
+    {
+      "name": "<lambda>3",
+      "full_name": "features/geo/utils/location.ts::program:<lambda>2:<lambda>3",
+      "file": "features/geo/utils/location.ts",
+      "start_line": 68,
+      "end_line": 68,
+      "signature": ""
+    },
+    {
+      "name": "geo",
+      "full_name": "features/geo/utils/location.ts::program:geo",
+      "file": "features/geo/utils/location.ts",
+      "start_line": 68,
+      "end_line": 68,
+      "signature": ""
+    },
+    {
+      "name": "getDefaultLocationMatchers",
+      "full_name": "features/geo/utils/location.ts::program:getDefaultLocationMatchers",
+      "file": "features/geo/utils/location.ts",
+      "start_line": 74,
+      "end_line": 79,
+      "signature": ""
+    },
+    {
+      "name": "<lambda>4",
+      "full_name": "features/geo/utils/location.ts::program:getLocationMatchers:<lambda>4",
+      "file": "features/geo/utils/location.ts",
+      "start_line": 92,
+      "end_line": 92,
+      "signature": ""
+    },
+    {
+      "name": "getLocationMatchers",
+      "full_name": "features/geo/utils/location.ts::program:getLocationMatchers",
+      "file": "features/geo/utils/location.ts",
+      "start_line": 81,
+      "end_line": 115,
+      "signature": ""
+    },
+    {
+      "name": "<lambda>5",
+      "full_name": "features/geo/utils/location.ts::program:getLocationMatchers:<lambda>5",
+      "file": "features/geo/utils/location.ts",
+      "start_line": 105,
+      "end_line": 105,
+      "signature": ""
+    },
+    {
+      "name": "<lambda>6",
+      "full_name": "features/geo/utils/location.ts::program:getLocationMatchers:<lambda>6",
+      "file": "features/geo/utils/location.ts",
+      "start_line": 110,
+      "end_line": 110,
+      "signature": ""
+    },
+    {
+      "name": "getLocationFields",
+      "full_name": "features/geo/utils/location.ts::program:getLocationFields",
+      "file": "features/geo/utils/location.ts",
+      "start_line": 129,
+      "end_line": 173,
+      "signature": ""
+    },
+    {
+      "name": "getGeometryField",
+      "full_name": "features/geo/utils/location.ts::program:getGeometryField",
+      "file": "features/geo/utils/location.ts",
+      "start_line": 182,
+      "end_line": 238,
+      "signature": ""
+    },
+    {
+      "name": ":program",
+      "full_name": "types/location.ts::program",
+      "file": "types/location.ts",
+      "start_line": 1,
+      "end_line": 11,
+      "signature": ""
+    }
+  ]
+}

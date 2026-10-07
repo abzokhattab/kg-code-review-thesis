@@ -1,0 +1,42 @@
+{
+  "candidate_mentions": [
+    {
+      "basename_collision": false,
+      "end": 912,
+      "evidence_id": "M002",
+      "excerpt": "ors in the dependent modules.\n\n## Evidence\n- `sklearn/linear_model/_linear_loss.py:36`: The class `LinearModelLoss` is renamed to `LinearModelLossInternal`.\n- `sklearn/linear_model/_glm/glm.py`: This file depends on `LinearModelLoss` and may not have been updated.\n- `sklearn/linear_model/_logistic.py`: This file calls `LinearModelLoss`, which may lead to errors if not updated.\n\n## Impact\n- **Technical Impact:** The renaming could lead to `ImportErr",
+      "match_kind": "full_path",
+      "match_text": "sklearn/linear_model/_glm/glm.py",
+      "oracle_path": "sklearn/linear_model/_glm/glm.py",
+      "start": 880
+    },
+    {
+      "basename_collision": false,
+      "end": 1021,
+      "evidence_id": "M003",
+      "excerpt": "elLoss` is renamed to `LinearModelLossInternal`.\n- `sklearn/linear_model/_glm/glm.py`: This file depends on `LinearModelLoss` and may not have been updated.\n- `sklearn/linear_model/_logistic.py`: This file calls `LinearModelLoss`, which may lead to errors if not updated.\n\n## Impact\n- **Technical Impact:** The renaming could lead to `ImportError` or `AttributeError` in dependent modules if they are not updated accordingly. This could cause failures i",
+      "match_kind": "full_path",
+      "match_text": "sklearn/linear_model/_logistic.py",
+      "oracle_path": "sklearn/linear_model/_logistic.py",
+      "start": 988
+    }
+  ],
+  "causal_quote": "The renaming could lead to `ImportError` or `AttributeError` in dependent modules if they are not updated accordingly.",
+  "decision_source": "llm_causal_adjudication",
+  "detected": true,
+  "evidence_id": "M002",
+  "executed_at_utc": "2026-09-19T15:06:09.645367+00:00",
+  "finding_quote": "ors in the dependent modules.\n\n## Evidence\n- `sklearn/linear_model/_linear_loss.py:36`: The class `LinearModelLoss` is renamed to `LinearModelLossInternal`.\n- `sklearn/linear_model/_glm/glm.py`: This file depends on `LinearModelLoss` and may not have been updated.\n- `sklearn/linear_model/_logistic.py`: This file calls `LinearModelLoss`, which may lead to errors if not updated.\n\n## Impact\n- **Technical Impact:** The renaming could lead to `ImportErr",
+  "judge": "openai:gpt-4o-mini",
+  "manifest_sha256": "5d4371a93d1b09f0491ecc12279f9f3ff5de23053b7a5e74650a749f58b472b0",
+  "model_alias": "openai:gpt-4o-mini",
+  "model_snapshot": "unavailable-from-original-wrapper",
+  "original_verdict": true,
+  "prompt_sha256": "cf57f2ed9fd3f89df0d757c03b578699404a811b54ca6c8dc215712e565a1db4",
+  "reason_code": "specific_cross_file_link",
+  "response_wrapper": "bare",
+  "review_sha256": "14e9ab6eeb545e2b04c7dc73596c0f3042844a36d248c15f7e96178d57f2b8af",
+  "schema_sha256": "6a22fcb256437ebed904ab2d879b36be1234fb2e06add1127ac8ea2ab46f60f0",
+  "schema_version": "exp2-adjudication-v2",
+  "system_sha256": "3634314a8fc4231391e4c51174e5c32d7346b0e2ceb5f8c4641e6ba866bd5939"
+}

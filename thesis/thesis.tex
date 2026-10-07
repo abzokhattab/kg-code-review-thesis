@@ -1,0 +1,163 @@
+\documentclass
+[
+    twoside,                 % The thesis is formatted like a book. That is, odd and even pages are handled differently.
+    openany,                 % Chapters start on the next available page. Was `openright`, which forces each
+                             % chapter onto an odd page and inserts a blank whenever the previous one ended
+                             % on an odd page -- a binding convention that costs several empty pages in a PDF.
+                             % Restore `openright` if the thesis is printed and bound double-sided.
+    cleardoublepage = empty, % Any clear page that does get inserted is formatted with an empty style.
+    fontsize = 12 pt,        % The size of the font.
+    american,                % Support for American English.
+    captions = tableheading, % Places the correct amount of space when the caption of a table is above the table.
+    numbers = noenddot,      % Does not use a period at the end of numbered titles, such as sections or figures.
+    footheight = 35 pt,      % Defines the height of the foot. Due to the line, it needs extra height.
+%    draft,                   % Only displays boxes of figures. This option is useful if compilation takes a long time.
+]
+{scrbook}
+
+
+\input{core/preamble/document_settings} % Contains commands that are used for certain information that is printed.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Please adjust your options here. %%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+    % This section contains commands with important data for your thesis. Please adjust them in order for the document to be printed correctly.
+
+    % Defines the length of the amount that a printed page will be cut from EACH side (including the inner side). This option only takes effect with \printVersiontrue and \professionalPrinttrue.
+    \extraBorder{3 mm}
+
+    % Shifts the inner margin outward by the amount specified. When the book is bound, part of the page will not be seen anymore. This option compensates for this loss. It only takes effect with \printVersiontrue.
+    \bindingCorrection{6 mm}
+
+    % Use the following command if this is a master thesis.
+    \bachelorThesisfalse
+
+%    \printVersiontrue      % Use this value if you want to prepare your thesis for physical printing. In this case, links will not be colored. Without \professionalPrinttrue, the content will be moved outward by the binding correction, increasing the inner margin and decreasing the outer margin.
+%    \professionalPrinttrue % Use this value if you want to have extra border for cutting and are not bound to paper formats (like A4). This option will increase the page size by the extra border on every side plus the binding correction once for the width. It only takes effect in combination with \printVersiontrue.
+%    \fancyTheoremsfalse  % Use this value if you want to use the classical theorem style, where the text is italic. Further, with this style, the QED symbol is colorless.
+%    \boldNumberSetsfalse % Use this value if you want variables for number sets (like N or R) to appear in blackboard bold rather than bold.
+
+    % The title of the thesis. The first argument is for the English name, the second is for the German name.
+    \myTitle{An Empirical Study of Knowledge-Graph-Driven Context Retrieval for LLM-Based Pull-Request Review Comments}{Eine empirische Studie zur wissens\-graph\-gestützten Kontext\-abfrage für LLM-basierte Pull-Request-Review-Kommentare}
+
+    % The author’s name.
+    \myName{Abdelrahman Khattab}
+
+    % The author’s program.
+    \myProgram{Computer Science}
+
+    % The date when the thesis will be handed in.
+    \dateOfHandingIn{8 October 2026}
+
+     % The name and affiliation of the author’s supervisor.
+    \nameOfMySupervisor{Prof.\,Dr. Holger Giese}
+
+     % The name and affiliation of the author’s supervisor.
+    \nameOfMySecondSupervisor{Prof.\,Dr. Walid Maalej}
+
+    % A list with the names of the additional examiners.
+    \additionalExaminers{Christian Medeiros Adriano}
+
+    % A short summary of the thesis. These information will be used for the PDF meta data.
+    \mySubject{Knowledge-graph and retrieval-augmented context for LLM-generated code review}
+
+    % Some keywords of the thesis. These information will be used for the PDF meta data. Please use | as a separator and try to avoid commas.
+    \myKeywords{code review | large language models | knowledge graphs | retrieval-augmented generation | empirical software engineering}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% End of options to adjust. %%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+\input{core/preamble/format}                        % Contains commands that define the general format and layout of the thesis.
+\input{core/bibliography/bibliography_format}       % Contains commands for the layout of the bibliography.
+\input{packages_and_commands/standard_packages}     % Contains the packages that this template provides.
+\input{packages_and_commands/general_commands}      % Contains newly defined commands useful for mathematics.
+\input{packages_and_commands/user-defined_commands} % This is where user-defined commands should go.
+
+
+% This is the thesis. The front matter as well as the references should not be changed. The main matter can be edited freely.
+\begin{document}
+
+
+    \frontmatter
+    \include{core/title_page/title_page}
+
+    \pagestyle{plain}
+
+    \addchap{Abstract}
+    \input{preface/abstract}
+
+    \selectlanguage{ngerman}
+    \addchap{Zusammenfassung}
+    \input{preface/abstractGerman}
+    \selectlanguage{american}
+
+    \addchap{Acknowledgments}
+    \input{preface/acknowledgments}
+
+    \setuptoc{toc}{totoc}
+    \tableofcontents
+
+    \pagestyle{headings}
+    \mainmatter
+
+    \chapter{Introduction}\label{chap:introduction}
+    \input{1_introduction/introduction}
+
+
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    %% Please add the content of your thesis here. %%
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    
+    \chapter{Background and Related Work}\label{chap:background}
+    \input{2_background/background}
+
+    \chapter{Approach}\label{chap:approach}
+    \input{4_approach/approach}
+
+    \chapter{Experimental Design and Setup}\label{chap:edas}
+    \input{5_evaluation/evaluation}
+
+    \chapter{Results and Discussion}\label{chap:results}
+    \input{6_results_and_discussion/results_and_discussion}
+
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    %% End of adding your content. %%
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+    % Add the following chapters not to the current ›part‹ but one level above instead.
+    \makeatletter
+        \def\toclevel@chapter{-1}
+        \def\toclevel@section{0}
+    \makeatother
+
+    \chapter{Conclusions \& Future Work}\label{chap:conclusion}
+    \input{7_conclusions/conclusions}
+
+    % Following are the files and commands for the bibliography and the author’s publications.
+    \pagestyle{plain}
+
+    \renewcommand*{\bibfont}{\small}
+    \printbibheading
+    \addcontentsline{toc}{chapter}{Bibliography}
+    \printbibliography[heading = none]
+
+    \appendix
+    \chapter{Supporting Analyses}\label{app:supporting-analyses}
+    \input{8_appendix/supporting_analyses}
+
+    \chapter{Review Example}\label{app:review-example-chapter}
+    \input{8_appendix/review_example}
+
+    \chapter{Prompts}\label{chap:appendix-prompts}
+    \input{8_appendix/prompts}
+
+    \addchap{Statement of Independent Work}
+    \input{core/declaration_of_authorship/declaration_of_authorship}
+
+
+\end{document}

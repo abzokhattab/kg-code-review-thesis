@@ -1,0 +1,51 @@
+{
+  "pr_id": 28,
+  "mode": "joern_kg",
+  "mean_scores": {
+    "F3": 3.0,
+    "F4": 2.5,
+    "P1": 0.0,
+    "R2": 2.0,
+    "T3": 2.5
+  },
+  "mean_graded_total": 10.0,
+  "per_judge": [
+    {
+      "model": "gemini:gemini-2.5-flash",
+      "scores": {
+        "F3": 3,
+        "F4": 2,
+        "P1": 0,
+        "R2": 2,
+        "T3": 3
+      },
+      "evidence": {
+        "F3": "Names multiple specific callers or dependent components with file paths or function names, and explains the concrete integration risk for each: \"Review callers for implicit assumptions: ... review how public/app/features/browse-dashboards/components/BrowseActions/BrowseActions.tsx and public/app/features/browse-dashboards/components/BrowseFilters.tsx consume the SearchStateManager's state to confirm no implicit assumptions about prevSort restoration are violated by the new sort ?? prevSort logic",
+        "F4": "Identifies at least one specific API contract or caller expectation that could break: \"Potential for subtle regressions in sort restoration logic: ... it's crucial to ensure no existing callers implicitly relied on prevSort always being restored, even if sort was already present.\"",
+        "P1": "No mention of performance.",
+        "R2": "Points to a specific function or block that is unnecessarily complex and suggests a concrete simplification: \"Lack of explicit documentation for prevSort lifecycle: The prevSort state variable is critical to this fix, but its lifecycle and intended behavior ... are not explicitly documented. This could lead to future confusion or bugs...\" and suggests \"Add JSDoc for prevSort... This will improve maintainability for future developers.\"",
+        "T3": "Names multiple specific test file paths, references the exact test scenarios or functions within those files that need coverage, and explains what edge cases are currently missing: \"Add a test case to public/app/features/search/state/SearchStateManager.test.ts that explicitly sets stm.state.sort to '' (empty string) and verifies the expected behavior when switching layouts. ... This specific edge case is not explicitly covered by the new tests.\""
+      },
+      "error": ""
+    },
+    {
+      "model": "gemini:gemini-2.5-pro",
+      "scores": {
+        "F3": 3,
+        "F4": 3,
+        "P1": 0,
+        "R2": 2,
+        "T3": 2
+      },
+      "evidence": {
+        "F3": "Names multiple specific callers (`public/app/features/browse-dashboards/components/BrowseActions/BrowseActions.tsx` and `public/app/features/browse-dashboards/components/BrowseFilters.tsx`) and explains the concrete integration risk for each ('to confirm no implicit assumptions about `prevSort` restoration are violated by the new `sort ?? prevSort` logic').",
+        "F4": "Identifies multiple specific contract expectations that could break: 1) 'no existing callers implicitly relied on `prevSort` always being restored, even if `sort` was already present', and 2) 'If `sort` could be an empty string `''` to signify a cleared state, the `??` operator would treat `''` as a valid sort... instead of restoring `prevSort`.' It explains the downstream behavior for both.",
+        "P1": "The review does not mention performance, efficiency, or speed.",
+        "R2": "Points to a specific source of complexity: 'The `prevSort` state variable is critical to this fix, but its lifecycle and intended behavior... are not explicitly documented.' It suggests a concrete simplification: 'Add JSDoc for `prevSort`... to explain the purpose and lifecycle of the `prevSort` property'.",
+        "T3": "Names one specific test file path that should be updated: 'Add a test case to `public/app/features/search/state/SearchStateManager.test.ts`'."
+      },
+      "error": ""
+    }
+  ],
+  "timestamp": "2026-06-01T18:58:10.724719+00:00"
+}

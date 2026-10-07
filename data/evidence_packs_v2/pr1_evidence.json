@@ -1,0 +1,182 @@
+{
+  "pr": {
+    "number": 73144,
+    "title": "Replaced OpenXR operating system alert dialog with a warning log message",
+    "body": "Fixes #73141\r\n\r\nThis pull request replaces (at user discretion) an alert dialog when OpenXR fails to initialize (usually due to StreamVR not running, or an HMD is disconnected or in standby) with a **WARN** log message. A new project setting exists (**Startup Alert**), which defaults to true, and toggles this behavior to account for users with an XR-only device.\r\n\r\n### Justification\r\n\r\n- Operating system alert dialog is intrusive and harmful to (in my opinion) the development workflow\r\n    - Dialog causes significant delay when starting a project (several seconds)\r\n    - Dialog requires user input before starting the project; making adjustments is painful because the dialog must be dismissed on every run\r\n- The warning message shows up in the Errors tab (editor), in addition to a Console output window (if available), which is consistent behavior when compared to other OpenXR failure modes (eg. **create_instance** failure)\r\n- The impact on the codebase is minimal (one statement, using existing technology)\r\n\r\n### Personal Impact\r\n\r\nThis issue became personal. Godot is incredible software and I was inspired to work on a VR project. The dialog was damaging to my workflow, which I argue is probably not uncommon: my workflow consists of implementing game logic, behavior, visual effects, environments, etc. and then testing and iterating outside of VR (fast feedback loop). I launch and perform testing in an HMD when new features have gone through some iterations, and are ready for testing and feedback.\r\n\r\n### Possible Workarounds\r\n\r\nIt is possible to workaround this issue to some extent, by disabling OpenXR in the project settings; however, this requires the user to restart the editor which is similarly intrusive. If the user desires to perform testing in VR they must modify the project setting again (and restart). \r\n\r\nAnother workaround is to ensure an OpenXR runtime is running (SteamVR), and an HMD is connected. My argument against this is that during development it's not uncommon for the HMD to enter standby mode, or to close StreamVR, or to just open Godot and begin working without initializing SteamVR or plugging in an HMD.\r\n\r\nIt is my opinion that these workarounds are hostile to the user\r\n\r\n### Screenshots\r\n\r\nAttached are screenshots depicting the warning message in the console window and in the **Errors** tab.\r\n\r\n![log_example](https://user-images.githubusercontent.com/2136005/218293226-52fc619c-b0c1-4436-99a9-3d86a8455571.png)\r\n![openxr_errors_tab_example](https://user-images.githubusercontent.com/2136005/218293237-d8533245-1b0b-4343-9946-c538d8b82938.png)\r\n\r\n![image](https://user-images.githubusercontent.com/2136005/218386058-c4ad31ad-5b7d-410b-a65e-d6f352d92ed2.png)\r\n\r\n",
+    "url": "https://github.com/godotengine/godot/pull/73144",
+    "repo": "godotengine/godot",
+    "base_branch": "master",
+    "head_branch": "bug/openxr-init-alert-dialog",
+    "merged_at": "2023-03-15T13:07:05Z",
+    "state": "MERGED"
+  },
+  "changed_files": [
+    {
+      "path": "doc/classes/ProjectSettings.xml",
+      "language": "xml",
+      "added": 3,
+      "deleted": 0
+    },
+    {
+      "path": "main/main.cpp",
+      "language": "cpp",
+      "added": 1,
+      "deleted": 0
+    },
+    {
+      "path": "modules/openxr/register_types.cpp",
+      "language": "cpp",
+      "added": 14,
+      "deleted": 4
+    }
+  ],
+  "nearest_tests": [],
+  "dependent_files": [],
+  "diff_summary": "3 files changed",
+  "full_diff": "diff --git a/doc/classes/ProjectSettings.xml b/doc/classes/ProjectSettings.xml\nindex 21be5e4beed8..88b8fe82e1ea 100644\n--- a/doc/classes/ProjectSettings.xml\n+++ b/doc/classes/ProjectSettings.xml\n@@ -2378,6 +2378,9 @@\n \t\t<member name=\"xr/openxr/reference_space\" type=\"int\" setter=\"\" getter=\"\" default=\"&quot;1&quot;\">\n \t\t\tSpecify the default reference space.\n \t\t</member>\n+\t\t<member name=\"xr/openxr/startup_alert\" type=\"bool\" setter=\"\" getter=\"\" default=\"true\">\n+\t\t\tIf [code]true[/code], Godot will display an alert modal when OpenXR initialization fails on startup.\n+\t\t</member>\n \t\t<member name=\"xr/openxr/submit_depth_buffer\" type=\"bool\" setter=\"\" getter=\"\" default=\"false\">\n \t\t\tIf [code]true[/code], OpenXR will manage the depth buffer and use the depth buffer for advanced reprojection provided this is supported by the XR runtime. Note that some rendering features in Godot can't be used with this feature.\n \t\t</member>\ndiff --git a/main/main.cpp b/main/main.cpp\nindex 3aa9a44a21d1..c18c33542ab5 100644\n--- a/main/main.cpp\n+++ b/main/main.cpp\n@@ -1829,6 +1829,7 @@ Error Main::setup(const char *execpath, int argc, char *argv[], bool p_second_ph\n \tGLOBAL_DEF_BASIC(PropertyInfo(Variant::INT, \"xr/openxr/reference_space\", PROPERTY_HINT_ENUM, \"Local,Stage\"), \"1\");\n \n \tGLOBAL_DEF_BASIC(\"xr/openxr/submit_depth_buffer\", false);\n+\tGLOBAL_DEF_BASIC(\"xr/openxr/startup_alert\", true);\n \n #ifdef TOOLS_ENABLED\n \t// Disabled for now, using XR inside of the editor we'll be working on during the coming months.\ndiff --git a/modules/openxr/register_types.cpp b/modules/openxr/register_types.cpp\nindex c39e49387a5e..b7d239fc7379 100644\n--- a/modules/openxr/register_types.cpp\n+++ b/modules/openxr/register_types.cpp\n@@ -29,6 +29,7 @@\n /**************************************************************************/\n \n #include \"register_types.h\"\n+#include \"core/config/project_settings.h\"\n #include \"main/main.h\"\n \n #include \"openxr_interface.h\"\n@@ -113,10 +114,19 @@ void initialize_openxr_module(ModuleInitializationLevel p_level) {\n \t\t\tERR_FAIL_NULL(openxr_api);\n \n \t\t\tif (!openxr_api->initialize(Main::get_rendering_driver_name())) {\n-\t\t\t\tOS::get_singleton()->alert(\"OpenXR was requested but failed to start.\\n\"\n-\t\t\t\t\t\t\t\t\t\t   \"Please check if your HMD is connected.\\n\"\n-\t\t\t\t\t\t\t\t\t\t   \"When using Windows MR please note that WMR only has DirectX support, make sure SteamVR is your default OpenXR runtime.\\n\"\n-\t\t\t\t\t\t\t\t\t\t   \"Godot will start in normal mode.\\n\");\n+\t\t\t\tconst char *init_error_message =\n+\t\t\t\t\t\t\"OpenXR was requested but failed to start.\\n\"\n+\t\t\t\t\t\t\"Please check if your HMD is connected.\\n\"\n+\t\t\t\t\t\t\"When using Windows MR please note that WMR only has DirectX support, make sure SteamVR is your default OpenXR runtime.\\n\"\n+\t\t\t\t\t\t\"Godot will start in normal mode.\\n\";\n+\n+\t\t\t\tWARN_PRINT(init_error_message);\n+\n+\t\t\t\tbool init_show_startup_alert = GLOBAL_GET(\"xr/openxr/startup_alert\");\n+\t\t\t\tif (init_show_startup_alert) {\n+\t\t\t\t\tOS::get_singleton()->alert(init_error_message);\n+\t\t\t\t}\n+\n \t\t\t\tmemdelete(openxr_api);\n \t\t\t\topenxr_api = nullptr;\n \t\t\t\treturn;\n",
+  "metadata": {
+    "v2_fetcher_version": 1,
+    "v2_fetched_at_unix": 1777500994,
+    "v2_diff_cap_bytes": 50000,
+    "v2_body_cap_bytes": 8000,
+    "v2_diff_truncated": false,
+    "v2_raw_diff_chars": 3051,
+    "v2_raw_body_chars": 2721,
+    "v2_rag_source": "rebuilt_v2_clean_changed_files",
+    "v2_rag_chunks_copied": 8
+  },
+  "similar_chunks": [
+    {
+      "file": "main/main.h",
+      "start_line": 1,
+      "end_line": 26,
+      "similarity": 0.7507,
+      "related_to": "main/main.cpp",
+      "content_preview": "/**************************************************************************/\n/*  main.h                                                                */\n/**************************************************************************/\n/*                         This file is part of:                          */\n/*                             GODOT ENGINE                               */\n/*                        https://godotengine.org                         */\n/**************************************************************************/\n/* Copyright (c) 2014-present Godot Engine contributors (see AUTHORS.md). */\n/* Copyright (c) 2007-2014 Juan Linietsky, Ariel Manzur.                  */\n/*                                                                        */\n/* Permission is hereby grante"
+    },
+    {
+      "file": "modules/openxr/openxr_api_extension.h",
+      "start_line": 1,
+      "end_line": 26,
+      "similarity": 0.7326,
+      "related_to": "modules/openxr/register_types.cpp",
+      "content_preview": "/**************************************************************************/\n/*  openxr_api_extension.h                                                */\n/**************************************************************************/\n/*                         This file is part of:                          */\n/*                             GODOT ENGINE                               */\n/*                        https://godotengine.org                         */\n/**************************************************************************/\n/* Copyright (c) 2014-present Godot Engine contributors (see AUTHORS.md). */\n/* Copyright (c) 2007-2014 Juan Linietsky, Ariel Manzur.                  */\n/*                                                                        */\n/* Permission is hereby grante"
+    },
+    {
+      "file": "modules/openxr/openxr_api_extension.cpp",
+      "start_line": 1,
+      "end_line": 26,
+      "similarity": 0.7319,
+      "related_to": "modules/openxr/register_types.cpp",
+      "content_preview": "/**************************************************************************/\n/*  openxr_api_extension.cpp                                              */\n/**************************************************************************/\n/*                         This file is part of:                          */\n/*                             GODOT ENGINE                               */\n/*                        https://godotengine.org                         */\n/**************************************************************************/\n/* Copyright (c) 2014-present Godot Engine contributors (see AUTHORS.md). */\n/* Copyright (c) 2007-2014 Juan Linietsky, Ariel Manzur.                  */\n/*                                                                        */\n/* Permission is hereby grante"
+    },
+    {
+      "file": "modules/openxr/openxr_api.cpp",
+      "start_line": 3804,
+      "end_line": 3852,
+      "similarity": 0.716,
+      "related_to": "modules/openxr/register_types.cpp",
+      "content_preview": "\n\tXrHapticVibration vibration = {\n\t\tXR_TYPE_HAPTIC_VIBRATION, // type\n\t\tnullptr, // next\n\t\tp_duration_ns, // duration\n\t\tp_frequency, // frequency\n\t\tp_amplitude, // amplitude\n\t};\n\n\tXrResult result = xrApplyHapticFeedback(session, &action_info, (const XrHapticBaseHeader *)&vibration);\n\tif (XR_FAILED(result)) {\n\t\tprint_line(\"OpenXR: failed to apply haptic feedback! [\", get_error_string(result), \"]\");\n\t\treturn false;\n\t}\n\n\treturn true;\n}\n\nvoid OpenXRAPI::register_composition_layer_provider(OpenXRExtensionWrapper *p_extension) {\n\tERR_FAIL_COND_MSG(running, \"Cannot register OpenXR composition layer providers while the session is running.\");\n\tcomposition_layer_providers.append(p_extension);\n}\n\nvoid OpenXRAPI::unregister_composition_layer_provider(OpenXRExtensionWrapper *p_extension) {\n\tERR_FAIL_CO"
+    },
+    {
+      "file": "modules/openxr/openxr_api.h",
+      "start_line": 24,
+      "end_line": 86,
+      "similarity": 0.7158,
+      "related_to": "modules/openxr/register_types.cpp",
+      "content_preview": "OR A PARTICULAR PURPOSE AND NONINFRINGEMENT. */\n/* IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY   */\n/* CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,   */\n/* TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE      */\n/* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */\n/**************************************************************************/\n\n#pragma once\n\n#include \"action_map/openxr_action.h\"\n#include \"extensions/openxr_extension_wrapper.h\"\n#include \"util.h\"\n\n#include \"core/error/error_macros.h\"\n#include \"core/math/projection.h\"\n#include \"core/math/transform_3d.h\"\n#include \"core/math/vector2.h\"\n#include \"core/string/ustring.h\"\n#include \"core/templates/rid_owner.h\"\n#include \"core/templates/vector.h\"\n#i"
+    },
+    {
+      "file": "modules/openxr/openxr_api.cpp",
+      "start_line": 1,
+      "end_line": 26,
+      "similarity": 0.7052,
+      "related_to": "modules/openxr/register_types.cpp",
+      "content_preview": "/**************************************************************************/\n/*  openxr_api.cpp                                                        */\n/**************************************************************************/\n/*                         This file is part of:                          */\n/*                             GODOT ENGINE                               */\n/*                        https://godotengine.org                         */\n/**************************************************************************/\n/* Copyright (c) 2014-present Godot Engine contributors (see AUTHORS.md). */\n/* Copyright (c) 2007-2014 Juan Linietsky, Ariel Manzur.                  */\n/*                                                                        */\n/* Permission is hereby grante"
+    },
+    {
+      "file": "modules/openxr/openxr_api.h",
+      "start_line": 1,
+      "end_line": 26,
+      "similarity": 0.703,
+      "related_to": "modules/openxr/register_types.cpp",
+      "content_preview": "/**************************************************************************/\n/*  openxr_api.h                                                          */\n/**************************************************************************/\n/*                         This file is part of:                          */\n/*                             GODOT ENGINE                               */\n/*                        https://godotengine.org                         */\n/**************************************************************************/\n/* Copyright (c) 2014-present Godot Engine contributors (see AUTHORS.md). */\n/* Copyright (c) 2007-2014 Juan Linietsky, Ariel Manzur.                  */\n/*                                                                        */\n/* Permission is hereby grante"
+    },
+    {
+      "file": "modules/openxr/openxr_util.cpp",
+      "start_line": 1,
+      "end_line": 26,
+      "similarity": 0.7022,
+      "related_to": "modules/openxr/register_types.cpp",
+      "content_preview": "/**************************************************************************/\n/*  openxr_util.cpp                                                       */\n/**************************************************************************/\n/*                         This file is part of:                          */\n/*                             GODOT ENGINE                               */\n/*                        https://godotengine.org                         */\n/**************************************************************************/\n/* Copyright (c) 2014-present Godot Engine contributors (see AUTHORS.md). */\n/* Copyright (c) 2007-2014 Juan Linietsky, Ariel Manzur.                  */\n/*                                                                        */\n/* Permission is hereby grante"
+    }
+  ],
+  "rag_evidence": {
+    "similar_code": [
+      {
+        "file": "main/main.h",
+        "start_line": 1,
+        "end_line": 26,
+        "similarity": 0.7507,
+        "related_to": "main/main.cpp",
+        "content_preview": "/**************************************************************************/\n/*  main.h                                                                */\n/**************************************************************************/\n/*                         This file is part of:                          */\n/*                             GODOT ENGINE                               */\n/*                        https://godotengine.org                         */\n/**************************************************************************/\n/* Copyright (c) 2014-present Godot Engine contributors (see AUTHORS.md). */\n/* Copyright (c) 2007-2014 Juan Linietsky, Ariel Manzur.                  */\n/*                                                                        */\n/* Permission is hereby grante"
+      },
+      {
+        "file": "modules/openxr/openxr_api_extension.h",
+        "start_line": 1,
+        "end_line": 26,
+        "similarity": 0.7326,
+        "related_to": "modules/openxr/register_types.cpp",
+        "content_preview": "/**************************************************************************/\n/*  openxr_api_extension.h                                                */\n/**************************************************************************/\n/*                         This file is part of:                          */\n/*                             GODOT ENGINE                               */\n/*                        https://godotengine.org                         */\n/**************************************************************************/\n/* Copyright (c) 2014-present Godot Engine contributors (see AUTHORS.md). */\n/* Copyright (c) 2007-2014 Juan Linietsky, Ariel Manzur.                  */\n/*                                                                        */\n/* Permission is hereby grante"
+      },
+      {
+        "file": "modules/openxr/openxr_api_extension.cpp",
+        "start_line": 1,
+        "end_line": 26,
+        "similarity": 0.7319,
+        "related_to": "modules/openxr/register_types.cpp",
+        "content_preview": "/**************************************************************************/\n/*  openxr_api_extension.cpp                                              */\n/**************************************************************************/\n/*                         This file is part of:                          */\n/*                             GODOT ENGINE                               */\n/*                        https://godotengine.org                         */\n/**************************************************************************/\n/* Copyright (c) 2014-present Godot Engine contributors (see AUTHORS.md). */\n/* Copyright (c) 2007-2014 Juan Linietsky, Ariel Manzur.                  */\n/*                                                                        */\n/* Permission is hereby grante"
+      },
+      {
+        "file": "modules/openxr/openxr_api.cpp",
+        "start_line": 3804,
+        "end_line": 3852,
+        "similarity": 0.716,
+        "related_to": "modules/openxr/register_types.cpp",
+        "content_preview": "\n\tXrHapticVibration vibration = {\n\t\tXR_TYPE_HAPTIC_VIBRATION, // type\n\t\tnullptr, // next\n\t\tp_duration_ns, // duration\n\t\tp_frequency, // frequency\n\t\tp_amplitude, // amplitude\n\t};\n\n\tXrResult result = xrApplyHapticFeedback(session, &action_info, (const XrHapticBaseHeader *)&vibration);\n\tif (XR_FAILED(result)) {\n\t\tprint_line(\"OpenXR: failed to apply haptic feedback! [\", get_error_string(result), \"]\");\n\t\treturn false;\n\t}\n\n\treturn true;\n}\n\nvoid OpenXRAPI::register_composition_layer_provider(OpenXRExtensionWrapper *p_extension) {\n\tERR_FAIL_COND_MSG(running, \"Cannot register OpenXR composition layer providers while the session is running.\");\n\tcomposition_layer_providers.append(p_extension);\n}\n\nvoid OpenXRAPI::unregister_composition_layer_provider(OpenXRExtensionWrapper *p_extension) {\n\tERR_FAIL_CO"
+      },
+      {
+        "file": "modules/openxr/openxr_api.h",
+        "start_line": 24,
+        "end_line": 86,
+        "similarity": 0.7158,
+        "related_to": "modules/openxr/register_types.cpp",
+        "content_preview": "OR A PARTICULAR PURPOSE AND NONINFRINGEMENT. */\n/* IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY   */\n/* CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,   */\n/* TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE      */\n/* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */\n/**************************************************************************/\n\n#pragma once\n\n#include \"action_map/openxr_action.h\"\n#include \"extensions/openxr_extension_wrapper.h\"\n#include \"util.h\"\n\n#include \"core/error/error_macros.h\"\n#include \"core/math/projection.h\"\n#include \"core/math/transform_3d.h\"\n#include \"core/math/vector2.h\"\n#include \"core/string/ustring.h\"\n#include \"core/templates/rid_owner.h\"\n#include \"core/templates/vector.h\"\n#i"
+      },
+      {
+        "file": "modules/openxr/openxr_api.cpp",
+        "start_line": 1,
+        "end_line": 26,
+        "similarity": 0.7052,
+        "related_to": "modules/openxr/register_types.cpp",
+        "content_preview": "/**************************************************************************/\n/*  openxr_api.cpp                                                        */\n/**************************************************************************/\n/*                         This file is part of:                          */\n/*                             GODOT ENGINE                               */\n/*                        https://godotengine.org                         */\n/**************************************************************************/\n/* Copyright (c) 2014-present Godot Engine contributors (see AUTHORS.md). */\n/* Copyright (c) 2007-2014 Juan Linietsky, Ariel Manzur.                  */\n/*                                                                        */\n/* Permission is hereby grante"
+      },
+      {
+        "file": "modules/openxr/openxr_api.h",
+        "start_line": 1,
+        "end_line": 26,
+        "similarity": 0.703,
+        "related_to": "modules/openxr/register_types.cpp",
+        "content_preview": "/**************************************************************************/\n/*  openxr_api.h                                                          */\n/**************************************************************************/\n/*                         This file is part of:                          */\n/*                             GODOT ENGINE                               */\n/*                        https://godotengine.org                         */\n/**************************************************************************/\n/* Copyright (c) 2014-present Godot Engine contributors (see AUTHORS.md). */\n/* Copyright (c) 2007-2014 Juan Linietsky, Ariel Manzur.                  */\n/*                                                                        */\n/* Permission is hereby grante"
+      },
+      {
+        "file": "modules/openxr/openxr_util.cpp",
+        "start_line": 1,
+        "end_line": 26,
+        "similarity": 0.7022,
+        "related_to": "modules/openxr/register_types.cpp",
+        "content_preview": "/**************************************************************************/\n/*  openxr_util.cpp                                                       */\n/**************************************************************************/\n/*                         This file is part of:                          */\n/*                             GODOT ENGINE                               */\n/*                        https://godotengine.org                         */\n/**************************************************************************/\n/* Copyright (c) 2014-present Godot Engine contributors (see AUTHORS.md). */\n/* Copyright (c) 2007-2014 Juan Linietsky, Ariel Manzur.                  */\n/*                                                                        */\n/* Permission is hereby grante"
+      }
+    ]
+  }
+}

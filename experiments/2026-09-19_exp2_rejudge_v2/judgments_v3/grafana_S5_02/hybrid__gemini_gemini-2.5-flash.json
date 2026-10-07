@@ -1,0 +1,44 @@
+{
+  "candidate_mentions": [
+    {
+      "basename_collision": false,
+      "end": 752,
+      "evidence_id": "M004",
+      "excerpt": " on `MutableDataFrame`:\n  - `packages/grafana-data/src/utils/csv.ts::<lambda>2`\n  - `packages/grafana-data/src/dataframe/MutableDataFrame.ts::addFieldFor`\n  - `packages/grafana-data/src/transformations/transformers/merge.ts::<lambda>4`\n\n## Impact\n- Removing `MutableDataFrame` from exports can lead to runtime errors in parts of the codebase that still depend on it.\n- Potentially breaks backward compatibility if external modules or plugins rely on this export.\n\n## Recommendation (",
+      "finding_passage_id": "P011",
+      "match_kind": "full_path",
+      "match_text": "packages/grafana-data/src/transformations/transformers/merge.ts",
+      "oracle_path": "packages/grafana-data/src/transformations/transformers/merge.ts",
+      "start": 689
+    },
+    {
+      "basename_collision": false,
+      "end": 596,
+      "evidence_id": "M007",
+      "excerpt": "ges/grafana-data/src/index.ts:12`: `MutableDataFrame` is removed from the export list.\n- Call-graph indicates multiple dependencies on `MutableDataFrame`:\n  - `packages/grafana-data/src/utils/csv.ts::<lambda>2`\n  - `packages/grafana-data/src/dataframe/MutableDataFrame.ts::addFieldFor`\n  - `packages/grafana-data/src/transformations/transformers/merge.ts::<lambda>4`\n\n## Impact\n- Removing `MutableDataFrame` from exports can lead to runtime errors in parts o",
+      "finding_passage_id": "P009",
+      "match_kind": "full_path",
+      "match_text": "packages/grafana-data/src/utils/csv.ts",
+      "oracle_path": "packages/grafana-data/src/utils/csv.ts",
+      "start": 558
+    }
+  ],
+  "causal_passage_id": "P013",
+  "decision_source": "llm_causal_adjudication",
+  "detected": true,
+  "evidence_id": "M007",
+  "executed_at_utc": "2026-09-19T15:11:12.871208+00:00",
+  "finding_passage_id": "P009",
+  "judge": "gemini:gemini-2.5-flash",
+  "manifest_sha256": "5d4371a93d1b09f0491ecc12279f9f3ff5de23053b7a5e74650a749f58b472b0",
+  "model_alias": "gemini:gemini-2.5-flash",
+  "model_snapshot": "unavailable-from-original-wrapper",
+  "original_verdict": true,
+  "prompt_sha256": "7827bcdf9efb202bcb00ce5d3e1bf502d9da7facb2d1afefc899feed7d893c15",
+  "reason_code": "specific_cross_file_link",
+  "response_wrapper": "single_json_fence",
+  "review_sha256": "bf27e91201603e60f42216615a5ca90a21341ece041347cc5d308506c5d9c26d",
+  "schema_sha256": "f70f714868ecd3d25508bb3e00b32ecbe6761b0ebc05f454ee10fa4d28efd013",
+  "schema_version": "exp2-adjudication-v3",
+  "system_sha256": "030b5e701c798b32afdabbbeb22db38f664db8c8fd8b862d2fcb98df63b6fb6b"
+}

@@ -1,0 +1,79 @@
+\section{Knowledge Graphs for Code}
+\label{sec:sota-kg}
+
+Graph representations of programs have a long history as analysis artefacts, and a
+short one as prompt material. The code property graph unified syntax, control flow
+and data dependence into a queryable structure and demonstrated it on vulnerability
+discovery~\cite{yamaguchi2014cpg}; learning directly over program graphs was shown
+to beat learning over token sequences on tasks requiring reasoning about variable
+use~\cite{allamanis2018programgraphs}. Both predate the current interest in
+supplying graphs to language models, and both supply its justification: the
+relationships that matter for correctness are often distant in the token stream and
+adjacent in the graph.
+
+Three recent systems build repository-scale graphs to serve a language model, and
+each targets a different task. GraphCoder retrieves context for repository-level
+code completion by traversing a code-context graph rather than by embedding
+similarity, and reports gains over similarity retrieval on that
+task~\cite{liu2024graphcoder}. KGCompass links repository artefacts, including
+issues and pull requests, to code entities in one graph and uses paths through it to
+localise faults for automated repair, reporting that the large majority of the
+bugs it localises successfully are reachable only by traversing more than one edge
+and are missed by approaches without the graph~\cite{yang2025kgcompass}. Prometheus
+maintains a repository graph as persistent memory for an agent navigating a
+long-horizon programming task~\cite{pan2025prometheus}. All three report their
+results on repository-level benchmarks such as
+SWE-bench~\cite{jimenez2024swebench}.
+
+Two observations about this body of work shape what follows.
+
+The first is the gap in task coverage. Completion, repair and navigation are all
+tasks with a checkable outcome: the code compiles, the test passes, the patch
+resolves the issue. Review-comment generation has no such outcome, which is
+presumably why the graph literature has not addressed it. The same absence of
+an automatic success signal also makes the problem worth addressing, since it is the
+condition under which evaluation methodology becomes part of the contribution.
+
+The second is that these systems' graphs are built by static analysis, so their
+edges are resolved rather than guessed. This thesis follows the same approach: the
+structural context in Chapters~\ref{chap:approach} and~\ref{chap:results} is
+extracted from a code property graph produced by Joern, which resolves calls and
+data-flow edges across files. The unexamined question is not what kind of graph to
+build, but whether a resolved graph helps on a task---review-comment
+generation---where no prior work has tested it.
+
+\subsection{Change Impact Analysis}
+\label{sec:sota-cia}
+
+The dependency information this thesis supplies to the reviewer is, in
+substance, a change impact analysis: given an edit, identify the programme
+elements that may be affected~\cite{bohner1996cia}. The field has over
+thirty years of work, from Weiser's programme
+slicing~\cite{weiser1984slicing} through call-graph and data-flow
+reachability~\cite{ryder2001cia} to modern test-impact analysis that
+selects the subset of a test suite exercising changed
+code~\cite{legunsen2016testimpact}. What is new in this thesis is not the
+dependency computation---the CPG resolves the same edges these analyses
+do---but the delivery mechanism: the impact set is rendered as natural
+language and handed to a generative model rather than used as a programme
+transformation. Experiment~2 isolates this delivery step by measuring how
+much of the analyser's output the model preserves.
+
+\subsection{Agentic Code Review}
+\label{sec:sota-agentic}
+
+Tool-using language models can navigate a repository by issuing file-open,
+grep, and static-analysis commands during generation. Systems such as
+SWE-agent~\cite{yang2024sweagent} and
+Agentless~\cite{xia2024agentless} already do this for issue resolution.
+Agentic code reviewers that browse the repository during review are a
+natural extension.
+
+This thesis takes the complementary approach: pre-computed structural
+context supplied in a single prompt, with no tool calls during generation.
+Pre-computation offers determinism (the context is frozen and reproducible),
+bounded cost (one CPG build per PR, no iterative model calls), and
+auditability (the evidence pack is a human-readable JSON file). The
+trade-off is that the model cannot ask follow-up questions or explore paths
+the builder did not anticipate. A direct comparison between pre-computed
+context and agent-driven navigation is left to future work.

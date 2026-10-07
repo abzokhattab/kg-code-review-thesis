@@ -1,0 +1,654 @@
+{
+  "metadata": {
+    "criterion_id": "C6",
+    "criterion_name": "Completeness",
+    "criterion_description": "Does the review cover the obvious issues in the PR without obvious missing information?",
+    "origin": "Added post-pilot following supervisor feedback; aligns with DeepCRCEval C6 (Lu et al., 2024). Multi-judge panel per Zheng et al. (2023) to mitigate single-judge bias.",
+    "judges": [
+      "openai:gpt-4o-mini",
+      "openai:gpt-4o",
+      "gemini:gemini-2.5-flash"
+    ],
+    "aggregation": "majority_vote (ties \u2192 N)",
+    "study_data_version": "6-criterion-v3-pairwise",
+    "study_data_path": "human_eval/study_data.json",
+    "timestamp": "2026-04-23T19:04:50.141244Z",
+    "max_review_chars": 4000,
+    "max_diff_chars": 6000,
+    "max_body_chars": 500
+  },
+  "scores": [
+    {
+      "pr_id": 10,
+      "mode": "baseline",
+      "score": 0,
+      "unanimous": true,
+      "n_judges": 3,
+      "n_valid": 3,
+      "n_yes": 0,
+      "verdicts": [
+        {
+          "model": "openai:gpt-4o-mini",
+          "score": 0,
+          "evidence": "The review does not mention the need to update any existing tests that may rely on the removed compatibility code, which is crucial.",
+          "error": ""
+        },
+        {
+          "model": "openai:gpt-4o",
+          "score": 0,
+          "evidence": "The review misses checking if the removal of `_joblib_parallel_args` affects any other parts of the codebase that might still rely on it.",
+          "error": ""
+        },
+        {
+          "model": "gemini:gemini-2.5-flash",
+          "score": 0,
+          "evidence": "The review hallucinates changes in `sklearn/pipeline.py` and `sklearn/tests/test_pipeline.py` which are not present in the provided truncated diff. A competent reviewer would either flag this discrepancy or not comment on non-visible changes.",
+          "error": ""
+        }
+      ],
+      "timestamp": "2026-04-23T15:13:51.149046Z"
+    },
+    {
+      "pr_id": 10,
+      "mode": "kg",
+      "score": 0,
+      "unanimous": true,
+      "n_judges": 3,
+      "n_valid": 3,
+      "n_yes": 0,
+      "verdicts": [
+        {
+          "model": "openai:gpt-4o-mini",
+          "score": 0,
+          "evidence": "The review does not mention the need to update any existing tests to ensure compatibility with Joblib 1.0.0, which is a critical oversight.",
+          "error": ""
+        },
+        {
+          "model": "openai:gpt-4o",
+          "score": 0,
+          "evidence": "The review misses checking if all instances of _joblib_parallel_args are removed and if any other files need updating for the new Joblib version.",
+          "error": ""
+        },
+        {
+          "model": "gemini:gemini-2.5-flash",
+          "score": 0,
+          "evidence": "The review misses explicitly citing the removal of the CPU affinity detection logic in `sklearn/_build_utils/__init__.py` as evidence, despite it being a core part of the PR description and visible in the diff.",
+          "error": ""
+        }
+      ],
+      "timestamp": "2026-04-23T15:14:04.008731Z"
+    },
+    {
+      "pr_id": 10,
+      "mode": "rag",
+      "score": 0,
+      "unanimous": false,
+      "n_judges": 3,
+      "n_valid": 3,
+      "n_yes": 1,
+      "verdicts": [
+        {
+          "model": "openai:gpt-4o-mini",
+          "score": 0,
+          "evidence": "The review misses mentioning the removal of compatibility code and its potential impact on users with older joblib versions.",
+          "error": ""
+        },
+        {
+          "model": "openai:gpt-4o",
+          "score": 0,
+          "evidence": "The review misses checking if the removal of `_joblib_parallel_args` affects any other parts of the codebase that might still rely on it.",
+          "error": ""
+        },
+        {
+          "model": "gemini:gemini-2.5-flash",
+          "score": 1,
+          "evidence": "The review covers all visible changes in the provided diff (version bumps, removal of joblib compat code). The mention of files not in the diff is an accuracy issue, not an omission of visible information.",
+          "error": ""
+        }
+      ],
+      "timestamp": "2026-04-23T15:14:27.993731Z"
+    },
+    {
+      "pr_id": 14,
+      "mode": "baseline",
+      "score": 0,
+      "unanimous": false,
+      "n_judges": 3,
+      "n_valid": 3,
+      "n_yes": 1,
+      "verdicts": [
+        {
+          "model": "openai:gpt-4o-mini",
+          "score": 0,
+          "evidence": "The review misses mentioning the need to update the documentation for the new `size` property and the impact of removing the `InLine` story.",
+          "error": ""
+        },
+        {
+          "model": "openai:gpt-4o",
+          "score": 1,
+          "evidence": "The review covers the use of 'vh' instead of 'vw', deprecation of 'inline' without alternatives, and lack of tests for 'size'. No obvious omissions in the review.",
+          "error": ""
+        },
+        {
+          "model": "gemini:gemini-2.5-flash",
+          "score": 0,
+          "evidence": "The review misses two obvious points: 1) The conditional application of `size` styles (only if `width` is not provided). 2) The hardcoded `getContainer={'.main-view'}` which removes previous flexibility for inline rendering.",
+          "error": ""
+        }
+      ],
+      "timestamp": "2026-04-23T15:14:46.606245Z"
+    },
+    {
+      "pr_id": 14,
+      "mode": "kg",
+      "score": 0,
+      "unanimous": true,
+      "n_judges": 3,
+      "n_valid": 3,
+      "n_yes": 0,
+      "verdicts": [
+        {
+          "model": "openai:gpt-4o-mini",
+          "score": 0,
+          "evidence": "The review misses mentioning the need to update documentation for the new 'size' property and its implications on existing usage.",
+          "error": ""
+        },
+        {
+          "model": "openai:gpt-4o",
+          "score": 0,
+          "evidence": "The review misses mentioning the removal of the 'InLine' story, which could impact documentation or testing of the Drawer component's inline functionality.",
+          "error": ""
+        },
+        {
+          "model": "gemini:gemini-2.5-flash",
+          "score": 0,
+          "evidence": "The review misses the critical discrepancy in width units (vh vs vw) between Drawer.mdx and Drawer.tsx JSDoc. It also doesn't explicitly flag the deprecation and removal of the `inline` prop and its associated story/behavior, or the change in `getContainer` logic.",
+          "error": ""
+        }
+      ],
+      "timestamp": "2026-04-23T15:14:59.010039Z"
+    },
+    {
+      "pr_id": 14,
+      "mode": "rag",
+      "score": 0,
+      "unanimous": false,
+      "n_judges": 3,
+      "n_valid": 3,
+      "n_yes": 1,
+      "verdicts": [
+        {
+          "model": "openai:gpt-4o-mini",
+          "score": 0,
+          "evidence": "The review misses mentioning the deprecation of the `width` prop and its implications for existing users.",
+          "error": ""
+        },
+        {
+          "model": "openai:gpt-4o",
+          "score": 1,
+          "evidence": "The review covers all obvious issues: mismatch in documentation vs. implementation, removal of a story affecting testing, and hardcoded container limiting flexibility.",
+          "error": ""
+        },
+        {
+          "model": "gemini:gemini-2.5-flash",
+          "score": 0,
+          "evidence": "The review misses mentioning the explicit deprecation of the `width` and `inline` props, which are clearly marked `@deprecated` in the diff.",
+          "error": ""
+        }
+      ],
+      "timestamp": "2026-04-23T15:15:13.446051Z"
+    },
+    {
+      "pr_id": 15,
+      "mode": "baseline",
+      "score": 0,
+      "unanimous": false,
+      "n_judges": 3,
+      "n_valid": 3,
+      "n_yes": 1,
+      "verdicts": [
+        {
+          "model": "openai:gpt-4o-mini",
+          "score": 0,
+          "evidence": "The review misses mentioning the need to verify the visual impact of style removals, which is crucial for UI integrity.",
+          "error": ""
+        },
+        {
+          "model": "openai:gpt-4o",
+          "score": 0,
+          "evidence": "The review misses mentioning the incomplete refactoring of aria-labels to data-testid in the diff, as some aria-labels are still present in the code.",
+          "error": ""
+        },
+        {
+          "model": "gemini:gemini-2.5-flash",
+          "score": 1,
+          "evidence": "The review covers the visible changes in the diff, including style removals and selector refactoring. While phrasing for selector changes could be more precise, no obvious topics are missed.",
+          "error": ""
+        }
+      ],
+      "timestamp": "2026-04-23T15:16:18.542638Z"
+    },
+    {
+      "pr_id": 15,
+      "mode": "kg",
+      "score": 0,
+      "unanimous": false,
+      "n_judges": 3,
+      "n_valid": 2,
+      "n_yes": 1,
+      "verdicts": [
+        {
+          "model": "openai:gpt-4o-mini",
+          "score": 0,
+          "evidence": "The review misses mentioning the need to update the `IconButton` component usage in the `CalendarHeader`, which is a significant change.",
+          "error": ""
+        },
+        {
+          "model": "openai:gpt-4o",
+          "score": 1,
+          "evidence": "The review covers inconsistent selector usage, potential UI regression due to style removal, and test coverage gaps, addressing all obvious issues in the PR.",
+          "error": ""
+        },
+        {
+          "model": "gemini:gemini-2.5-flash",
+          "score": -1,
+          "evidence": "The review makes a claim about \"Test Coverage Gaps\" without any test files being present in the provided diff. A competent human reviewer would not make such a claim without evidence visible in the di",
+          "error": "parse_error: no JSON object in response: 'The review makes a claim about \"Test Coverage Gaps\" without any test files being present in the provided diff. A competent human reviewer would not make such a claim without evidence visible in the di'"
+        }
+      ],
+      "timestamp": "2026-04-23T15:16:45.253318Z"
+    },
+    {
+      "pr_id": 15,
+      "mode": "rag",
+      "score": 0,
+      "unanimous": false,
+      "n_judges": 3,
+      "n_valid": 3,
+      "n_yes": 1,
+      "verdicts": [
+        {
+          "model": "openai:gpt-4o-mini",
+          "score": 0,
+          "evidence": "The review misses mentioning the need to check for accessibility implications due to the removal of aria-labels.",
+          "error": ""
+        },
+        {
+          "model": "openai:gpt-4o",
+          "score": 1,
+          "evidence": "The review covers inconsistent selector updates, CSS removal without replacement, and test coverage issues, addressing all obvious concerns in the PR.",
+          "error": ""
+        },
+        {
+          "model": "gemini:gemini-2.5-flash",
+          "score": 0,
+          "evidence": "The review makes a claim about `TimePickerContent.test.tsx` still referencing `aria-label`, but this file is not present in the provided diff. Furthermore, the `betterer.results` diff suggests `aria-label` issues were *removed* for related components, contradicting the claim.",
+          "error": ""
+        }
+      ],
+      "timestamp": "2026-04-23T15:17:09.763089Z"
+    },
+    {
+      "pr_id": 18,
+      "mode": "baseline",
+      "score": 0,
+      "unanimous": false,
+      "n_judges": 3,
+      "n_valid": 3,
+      "n_yes": 1,
+      "verdicts": [
+        {
+          "model": "openai:gpt-4o-mini",
+          "score": 0,
+          "evidence": "The review misses mentioning the need for unit tests for the new capitalization logic, which is crucial for ensuring correctness.",
+          "error": ""
+        },
+        {
+          "model": "openai:gpt-4o",
+          "score": 1,
+          "evidence": "The review covers the main issues: custom capitalization logic risks, null checks, and internationalization concerns. No obvious omissions in the context of the diff.",
+          "error": ""
+        },
+        {
+          "model": "gemini:gemini-2.5-flash",
+          "score": 0,
+          "evidence": "The review missed the change from `org.apache.commons.lang.StringUtils` to `org.apache.commons.lang3.StringUtils` in test files, which is an upgrade, not a reduction in usage, and should be noted.",
+          "error": ""
+        }
+      ],
+      "timestamp": "2026-04-23T19:04:23.445070Z"
+    },
+    {
+      "pr_id": 18,
+      "mode": "kg",
+      "score": 0,
+      "unanimous": false,
+      "n_judges": 3,
+      "n_valid": 3,
+      "n_yes": 1,
+      "verdicts": [
+        {
+          "model": "openai:gpt-4o-mini",
+          "score": 0,
+          "evidence": "The review misses mentioning the need for null checks in the new capitalization logic, which could lead to null pointer exceptions.",
+          "error": ""
+        },
+        {
+          "model": "openai:gpt-4o",
+          "score": 1,
+          "evidence": "The review identifies potential null pointer exceptions and suggests using Objects.requireNonNull and StringUtils.capitalize for consistency, covering the obvious issues.",
+          "error": ""
+        },
+        {
+          "model": "gemini:gemini-2.5-flash",
+          "score": 0,
+          "evidence": "The review misdiagnoses null handling in `Descriptor.java` and `FormValidation.java`. It misses the `StringIndexOutOfBoundsException` for empty strings in `PluginWrapperTest.java`. It also fails to note that two test files *retain* `StringUtils` usage (just upgrading the dependency), which contradicts the PR's stated goal of *reducing* usages.",
+          "error": ""
+        }
+      ],
+      "timestamp": "2026-04-23T19:04:37.009011Z"
+    },
+    {
+      "pr_id": 18,
+      "mode": "rag",
+      "score": 0,
+      "unanimous": false,
+      "n_judges": 3,
+      "n_valid": 3,
+      "n_yes": 1,
+      "verdicts": [
+        {
+          "model": "openai:gpt-4o-mini",
+          "score": 0,
+          "evidence": "The review misses mentioning the change from `StringUtils` to `Character.toTitleCase`, which could lead to locale issues.",
+          "error": ""
+        },
+        {
+          "model": "openai:gpt-4o",
+          "score": 1,
+          "evidence": "The review covers the obvious issues: manual capitalization logic risks and code duplication. It suggests using a library method or utility function and adding tests.",
+          "error": ""
+        },
+        {
+          "model": "gemini:gemini-2.5-flash",
+          "score": 0,
+          "evidence": "Missed the inconsistent capitalization logic in `PluginWrapperTest.java` (lacks null/empty check), the `Objects.requireNonNull` addition, and the migration from `commons-lang` to `commons-lang3` in test files.",
+          "error": ""
+        }
+      ],
+      "timestamp": "2026-04-23T19:04:50.141016Z"
+    },
+    {
+      "pr_id": 21,
+      "mode": "baseline",
+      "score": 1,
+      "unanimous": false,
+      "n_judges": 3,
+      "n_valid": 3,
+      "n_yes": 2,
+      "verdicts": [
+        {
+          "model": "openai:gpt-4o-mini",
+          "score": 0,
+          "evidence": "The review does not mention the need for backward compatibility checks or potential issues for users still on older Java versions.",
+          "error": ""
+        },
+        {
+          "model": "openai:gpt-4o",
+          "score": 1,
+          "evidence": "The review covers the removal of Java version checks, potential runtime issues, and backward compatibility concerns, which are the obvious issues in the PR.",
+          "error": ""
+        },
+        {
+          "model": "gemini:gemini-2.5-flash",
+          "score": 1,
+          "evidence": "The review accurately identifies the core changes (JDK 11 assumptions in SSL and ByteBuffer unmapping) and their impact, providing relevant recommendations.",
+          "error": ""
+        }
+      ],
+      "timestamp": "2026-04-23T15:17:21.149325Z"
+    },
+    {
+      "pr_id": 21,
+      "mode": "kg",
+      "score": 0,
+      "unanimous": false,
+      "n_judges": 3,
+      "n_valid": 3,
+      "n_yes": 1,
+      "verdicts": [
+        {
+          "model": "openai:gpt-4o-mini",
+          "score": 0,
+          "evidence": "The review misses mentioning the removal of the `Java` utility class and its implications for backward compatibility.",
+          "error": ""
+        },
+        {
+          "model": "openai:gpt-4o",
+          "score": 1,
+          "evidence": "The review covers compatibility risks, runtime exceptions, and testing gaps, which are the obvious issues in the PR related to JDK 11 migration.",
+          "error": ""
+        },
+        {
+          "model": "gemini:gemini-2.5-flash",
+          "score": 0,
+          "evidence": "The review misses explicitly mentioning the significant changes in `ByteBufferUnmapper.java` in its 'Evidence' and 'Recommendation' sections, despite it being a key part of the PR diff and description.",
+          "error": ""
+        }
+      ],
+      "timestamp": "2026-04-23T15:17:32.888248Z"
+    },
+    {
+      "pr_id": 21,
+      "mode": "rag",
+      "score": 0,
+      "unanimous": true,
+      "n_judges": 3,
+      "n_valid": 3,
+      "n_yes": 0,
+      "verdicts": [
+        {
+          "model": "openai:gpt-4o-mini",
+          "score": 0,
+          "evidence": "The review does not mention the need for updating or removing any existing tests that may rely on the removed Java version checks.",
+          "error": ""
+        },
+        {
+          "model": "openai:gpt-4o",
+          "score": 0,
+          "evidence": "The review misses mentioning the removal of commented-out code in KafkaCompletableFuture.java, which is relevant to the JDK 11 migration.",
+          "error": ""
+        },
+        {
+          "model": "gemini:gemini-2.5-flash",
+          "score": 0,
+          "evidence": "The review misses the changes in `KafkaCompletableFuture.java` where `@Override` annotations are added to methods introduced in Java 9+, explicitly signaling the new minimum JDK requirement.",
+          "error": ""
+        }
+      ],
+      "timestamp": "2026-04-23T15:17:43.039748Z"
+    },
+    {
+      "pr_id": 22,
+      "mode": "baseline",
+      "score": 0,
+      "unanimous": true,
+      "n_judges": 3,
+      "n_valid": 3,
+      "n_yes": 0,
+      "verdicts": [
+        {
+          "model": "openai:gpt-4o-mini",
+          "score": 0,
+          "evidence": "The review misses mentioning the potential impact of moving tests on existing test coverage and the need to verify that all tests still pass after the move.",
+          "error": ""
+        },
+        {
+          "model": "openai:gpt-4o",
+          "score": 0,
+          "evidence": "The review misses checking if the moved tests are still correctly integrated into the test suite and if any documentation updates are needed for the package changes.",
+          "error": ""
+        },
+        {
+          "model": "gemini:gemini-2.5-flash",
+          "score": 0,
+          "evidence": "The review misses the contradiction of adding `hamcrest` dependency while removing `hamcrest` assertions. It also fails to mention the `checkstyle/import-control.xml` change.",
+          "error": ""
+        }
+      ],
+      "timestamp": "2026-04-23T15:15:26.966287Z"
+    },
+    {
+      "pr_id": 22,
+      "mode": "kg",
+      "score": 0,
+      "unanimous": false,
+      "n_judges": 3,
+      "n_valid": 3,
+      "n_yes": 1,
+      "verdicts": [
+        {
+          "model": "openai:gpt-4o-mini",
+          "score": 0,
+          "evidence": "The review misses mentioning potential impacts on test execution context and configurations after moving tests, which is crucial for integration tests.",
+          "error": ""
+        },
+        {
+          "model": "openai:gpt-4o",
+          "score": 1,
+          "evidence": "The review covers dependency changes, package updates, and potential risks. It suggests reviewing dependencies and updating test workflows, addressing obvious issues.",
+          "error": ""
+        },
+        {
+          "model": "gemini:gemini-2.5-flash",
+          "score": 0,
+          "evidence": "The review misses the inconsistency of adding `testRuntimeOnly libs.hamcrest` in `build.gradle` while the moved tests are explicitly switching from Hamcrest to JUnit assertions.",
+          "error": ""
+        }
+      ],
+      "timestamp": "2026-04-23T15:15:38.947482Z"
+    },
+    {
+      "pr_id": 22,
+      "mode": "rag",
+      "score": 0,
+      "unanimous": false,
+      "n_judges": 3,
+      "n_valid": 3,
+      "n_yes": 1,
+      "verdicts": [
+        {
+          "model": "openai:gpt-4o-mini",
+          "score": 0,
+          "evidence": "The review misses mentioning the need to verify that the moved tests still function correctly in the new module context.",
+          "error": ""
+        },
+        {
+          "model": "openai:gpt-4o",
+          "score": 1,
+          "evidence": "The review covers dependency management and assertion changes, which are the main issues visible in the diff. No obvious omissions are present.",
+          "error": ""
+        },
+        {
+          "model": "gemini:gemini-2.5-flash",
+          "score": 0,
+          "evidence": "Missed the addition of `testRuntimeOnly libs.hamcrest` in `build.gradle` which contradicts the removal of Hamcrest assertions. Also missed the `checkstyle/import-control.xml` change.",
+          "error": ""
+        }
+      ],
+      "timestamp": "2026-04-23T15:15:52.109946Z"
+    }
+  ],
+  "summary": {
+    "by_mode_majority": {
+      "baseline": {
+        "n": 6,
+        "yes_count_majority": 1,
+        "yes_rate_pct_majority": 16.7,
+        "unanimous_count": 2
+      },
+      "kg": {
+        "n": 6,
+        "yes_count_majority": 0,
+        "yes_rate_pct_majority": 0.0,
+        "unanimous_count": 2
+      },
+      "rag": {
+        "n": 6,
+        "yes_count_majority": 0,
+        "yes_rate_pct_majority": 0.0,
+        "unanimous_count": 1
+      }
+    },
+    "by_judge": {
+      "openai:gpt-4o-mini": {
+        "baseline": {
+          "n": 6,
+          "yes_count": 0,
+          "yes_rate_pct": 0.0
+        },
+        "kg": {
+          "n": 6,
+          "yes_count": 0,
+          "yes_rate_pct": 0.0
+        },
+        "rag": {
+          "n": 6,
+          "yes_count": 0,
+          "yes_rate_pct": 0.0
+        }
+      },
+      "openai:gpt-4o": {
+        "baseline": {
+          "n": 6,
+          "yes_count": 3,
+          "yes_rate_pct": 50.0
+        },
+        "kg": {
+          "n": 6,
+          "yes_count": 4,
+          "yes_rate_pct": 66.7
+        },
+        "rag": {
+          "n": 6,
+          "yes_count": 4,
+          "yes_rate_pct": 66.7
+        }
+      },
+      "gemini:gemini-2.5-flash": {
+        "baseline": {
+          "n": 6,
+          "yes_count": 2,
+          "yes_rate_pct": 33.3
+        },
+        "kg": {
+          "n": 5,
+          "yes_count": 0,
+          "yes_rate_pct": 0.0
+        },
+        "rag": {
+          "n": 6,
+          "yes_count": 1,
+          "yes_rate_pct": 16.7
+        }
+      }
+    },
+    "inter_judge_agreement": {
+      "openai:gpt-4o-mini vs openai:gpt-4o": {
+        "pairs": 18,
+        "agreed": 7,
+        "agreement_pct": 38.9
+      },
+      "openai:gpt-4o-mini vs gemini:gemini-2.5-flash": {
+        "pairs": 17,
+        "agreed": 14,
+        "agreement_pct": 82.4
+      },
+      "openai:gpt-4o vs gemini:gemini-2.5-flash": {
+        "pairs": 17,
+        "agreed": 6,
+        "agreement_pct": 35.3
+      }
+    }
+  }
+}

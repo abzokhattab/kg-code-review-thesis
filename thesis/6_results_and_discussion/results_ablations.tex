@@ -1,0 +1,96 @@
+\section{Component Contributions}
+\label{sec:results-ablations}
+\label{app:supporting-components}
+
+These component analyses support RQ2 by testing which parts of the graph block
+contribute to cross-file detection. The rubric's regeneration variance
+(Section~\ref{sec:repro}) makes it too coarse to separate sub-components, so
+the analyses use the detection oracle instead.
+
+The deployed graph arm supplies two kinds of dependency evidence
+simultaneously: a file-level dependency list and resolved call-graph edges from
+the code property graph. Table~\ref{tab:exp2-features} isolates each.
+
+\begin{table}[htbp]
+    \centering
+    \caption{Detection on structural bands with one kind of dependency
+        evidence at a time. Reviews use gpt-4o at $T=0.0$; rates are majority
+        votes from five judges at $T=0.0$. The $p$~values are exact McNemar,
+        Holm-corrected.}
+    \label{tab:exp2-features}
+    \begin{tabular}{llcc}
+        \toprule
+        Arm & Evidence supplied & Detected & Rate \\
+        \midrule
+        \baseline{}        & none                        & 0/28  & 0\,\% \\
+        \texttt{deps only} & file-level dependency list   & 16/28 & 57\,\% \\
+        \texttt{edges only}& resolved call edges         & 17/28 & 61\,\% \\
+        \kg{}              & both                        & 18/28 & 64\,\% \\
+        \midrule
+        \multicolumn{2}{l}{Contrast} & $\Delta$ & $p$ (Holm) \\
+        \midrule
+        \multicolumn{2}{l}{\texttt{deps only} $-$ \baseline{}}  & $+57$pp & $< 0.001$ \\
+        \multicolumn{2}{l}{\texttt{edges only} $-$ \baseline{}} & $+61$pp & $< 0.001$ \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+Either component alone lifts detection from zero to over half, and both
+survive correction. The dependency list recovers sixteen of the eighteen
+combined-arm detections, while resolved call edges recover seventeen. Neither
+component is significantly below the combined arm at $n=28$. The result
+therefore supports partial substitutability, not the necessity or superiority
+of resolved edges: the causal claim is that useful structural pointers enable
+cross-file detection, while this sample cannot identify one representation as
+uniquely responsible.
+
+A pre-registered, Grafana/TypeScript-only test band, evaluated by its original
+three-judge panel, addressed the test component. On 28 injections where a
+renamed symbol provably breaks test files, the filename-convention test
+matcher of Section~\ref{sec:approach-kg-render} named a broken test in 24 of 28 cases (86\,\%), compared with 27/28 (96\,\%)
+when given the ground truth; the difference is not significant ($p = 0.38$).
+Without the test
+section, neither \baseline{} nor \kg{} named a broken test in any case. This
+shows that the test block contributes detections the dependency block alone
+does not.
+
+\subsection{Context Relevance}
+\label{sec:results-context-relevance}
+
+The component ablation shows that dependency edges help, but does not rule
+out a prompt-length confound: the reviewer might try harder whenever it sees
+\emph{any} dependency block, regardless of content. A post-hoc control tests
+this possibility.
+Table~\ref{tab:exp2-signal-noise} tests this by holding the number of
+context items constant and varying only their relevance.
+% Source: experiments/2026-09-19_joern_replace_grep/context_ablation/RESULTS_SIGNAL_NOISE_V3.md
+% Design follows Yang et al. (EMNLP 2025) GSM-DC matched-distractor methodology.
+
+\begin{table}[htbp]
+    \centering
+    \caption{Detection under matched-quantity contexts that differ only in
+        relevance. \texttt{noise} draws the same number of edges from
+        unrelated symbols in the same repository; \texttt{relevant} filters
+        the deployed edges to those pointing at true dependents.
+        All arms use gpt-4o at $T=0.0$ and the corrected three-judge panel.}
+    \label{tab:exp2-signal-noise}
+    \begin{tabular}{llcc}
+        \toprule
+        Arm & Context relevance & Detected & Rate \\
+        \midrule
+        \baseline{}             & none             & 0/28  & 0\,\% \\
+        \texttt{noise}          & wrong edges, matched count & 1/28  & 4\,\% \\
+        \kg{}                   & deployed mix     & 18/28 & 64\,\% \\
+        \texttt{relevant only}  & true-dependent edges only & 25/28 & 89\,\% \\
+        \texttt{idealised}      & ground-truth resolver & 26/28 & 93\,\% \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+The noise arm differs little from \baseline{} ($1/28$ versus $0/28$):
+matched-volume edges drawn from unrelated symbols provide no comparable
+detection gain. Filtering the deployed edges to only those pointing at true
+dependents raises detection from 18 to 25 of 28. This post-hoc staircase is
+consistent with the context-rot finding that
+irrelevant tokens degrade output quality even when the answer is present in
+the input~\cite{hong2025contextrot, gupta2025contextlength}.

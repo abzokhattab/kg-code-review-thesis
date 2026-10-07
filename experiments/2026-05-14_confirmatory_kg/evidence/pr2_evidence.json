@@ -1,0 +1,157 @@
+{
+  "pr": {
+    "number": 124903,
+    "title": "IAM: Source team search membercount from Team object",
+    "body": "## Summary\n\n- Team search's `membercount=true` enrichment now reads from the Team object's `Spec.Members` instead of listing TeamBindings filtered by `spec.teamRef.name`. The Team object is the source of truth for membership, so a single Get per hit replaces a List per hit.\n- `TeamSearchHandler.teamBindingStore` (a `k8srest.Lister`) is replaced by `teamGetter` (a `k8srest.Getter`), wired in `UpdateTeamsAPIGroup` where the team storage is built.\n- Unit tests updated: `mockTeamBindingLister` \u2192 `mockTeamGetter`; cases return `Team` objects with `Spec.Members` populated.\n\n## Test plan\n\n- [ ] `go test ./pkg/registry/apis/iam/... -run TestTeamSearchMemberCount -count=1`\n- [ ] `go test ./pkg/registry/apis/iam/... -run TestEnrichWithMemberCounts -count=1`\n- [ ] `go test ./pkg/tests/apis/iam/... -count=1 -timeout 600s`\n- [ ] Manual: hit the team search endpoint with `membercount=true` and confirm counts match `len(team.spec.members)` for each returned team.",
+    "url": "https://github.com/grafana/grafana/pull/124903",
+    "repo": "grafana/grafana",
+    "base_branch": "main",
+    "head_branch": "mgyongyosi/team-search-membercount-from-team",
+    "merged_at": "2026-05-14T16:14:37Z",
+    "state": "MERGED"
+  },
+  "changed_files": [
+    {
+      "path": "pkg/registry/apis/iam/register.go",
+      "language": "go",
+      "added": 4,
+      "deleted": 3
+    },
+    {
+      "path": "pkg/registry/apis/iam/team_search.go",
+      "language": "go",
+      "added": 19,
+      "deleted": 17
+    },
+    {
+      "path": "pkg/registry/apis/iam/team_search_test.go",
+      "language": "go",
+      "added": 59,
+      "deleted": 63
+    },
+    {
+      "path": "pkg/tests/apis/iam/team/helpers_test.go",
+      "language": "go",
+      "added": 0,
+      "deleted": 7
+    },
+    {
+      "path": "pkg/tests/apis/iam/team/team_search_integration_test.go",
+      "language": "go",
+      "added": 18,
+      "deleted": 9
+    },
+    {
+      "path": "pkg/tests/apis/iam/team/team_test.go",
+      "language": "go",
+      "added": 0,
+      "deleted": 6
+    }
+  ],
+  "nearest_tests": [
+    {
+      "path": "apps/advisor/pkg/app/checktyperegisterer/checktyperegisterer_test.go",
+      "relationship": "tests",
+      "source_file": "pkg/registry/apis/iam/register.go"
+    },
+    {
+      "path": "pkg/registry/apis/userstorage/register_test.go",
+      "relationship": "tests",
+      "source_file": "pkg/registry/apis/iam/register.go"
+    },
+    {
+      "path": "pkg/registry/apis/dashboard/register_test.go",
+      "relationship": "tests",
+      "source_file": "pkg/registry/apis/iam/register.go"
+    },
+    {
+      "path": "pkg/registry/apis/folders/register_test.go",
+      "relationship": "tests",
+      "source_file": "pkg/registry/apis/iam/register.go"
+    },
+    {
+      "path": "pkg/registry/apps/alerting/rules/register_test.go",
+      "relationship": "tests",
+      "source_file": "pkg/registry/apis/iam/register.go"
+    },
+    {
+      "path": "pkg/api/routing/route_register_test.go",
+      "relationship": "tests",
+      "source_file": "pkg/registry/apis/iam/register.go"
+    },
+    {
+      "path": "pkg/tests/apis/iam/team_search_integration_test.go",
+      "relationship": "tests",
+      "source_file": "pkg/registry/apis/iam/team_search.go"
+    },
+    {
+      "path": "pkg/registry/apis/iam/team_search_test.go",
+      "relationship": "tests",
+      "source_file": "pkg/registry/apis/iam/team_search.go"
+    }
+  ],
+  "dependent_files": [
+    {
+      "path": "apps/advisor/pkg/apis/advisor_manifest.go",
+      "relationship": "imports",
+      "source_file": "pkg/registry/apis/iam/register.go"
+    },
+    {
+      "path": "apps/advisor/pkg/app/checkscheduler/checkscheduler.go",
+      "relationship": "imports",
+      "source_file": "pkg/registry/apis/iam/register.go"
+    },
+    {
+      "path": "apps/advisor/pkg/app/checktyperegisterer/checktyperegisterer_test.go",
+      "relationship": "imports",
+      "source_file": "pkg/registry/apis/iam/register.go"
+    },
+    {
+      "path": "apps/advisor/pkg/app/checktyperegisterer/checktyperegisterer.go",
+      "relationship": "imports",
+      "source_file": "pkg/registry/apis/iam/register.go"
+    },
+    {
+      "path": "apps/advisor/pkg/app/app.go",
+      "relationship": "imports",
+      "source_file": "pkg/registry/apis/iam/register.go"
+    },
+    {
+      "path": "apps/plugins/pkg/app/install/registrar_test.go",
+      "relationship": "imports",
+      "source_file": "pkg/registry/apis/iam/register.go"
+    },
+    {
+      "path": "apps/plugins/pkg/app/install/registrar.go",
+      "relationship": "imports",
+      "source_file": "pkg/registry/apis/iam/register.go"
+    },
+    {
+      "path": "apps/example/pkg/app/authorizer.go",
+      "relationship": "imports",
+      "source_file": "pkg/registry/apis/iam/register.go"
+    },
+    {
+      "path": "apps/example/pkg/app/app.go",
+      "relationship": "imports",
+      "source_file": "pkg/registry/apis/iam/register.go"
+    },
+    {
+      "path": "apps/folder/pkg/apis/folder/v1beta1/register.go",
+      "relationship": "imports",
+      "source_file": "pkg/registry/apis/iam/register.go"
+    }
+  ],
+  "callers": [],
+  "call_graph_edges": [],
+  "full_diff": "diff --git a/pkg/registry/apis/iam/register.go b/pkg/registry/apis/iam/register.go\nindex b8c430c19c16a..1eeea6e6c39e0 100644\n--- a/pkg/registry/apis/iam/register.go\n+++ b/pkg/registry/apis/iam/register.go\n@@ -506,6 +506,10 @@ func (b *IdentityAccessManagementAPIBuilder) UpdateTeamsAPIGroup(opts builder.AP\n \n \tstorage[teamResource.StoragePath(\"members\")] = team.NewTeamMembersREST(b.teamGetter, b.tracing, b.features)\n \n+\tif b.teamSearch != nil {\n+\t\tb.teamSearch.teamGetter = b.teamGetter\n+\t}\n+\n \t// addmember / removemember mutate a single Spec.Members entry through\n \t// the dual-writer storage, so they work uniformly across all modes.\n \tstorage[teamResource.StoragePath(\"addmember\")] = team.NewTeamAddMemberREST(teamStorage, b.tracing)\n@@ -554,9 +558,6 @@ func (b *IdentityAccessManagementAPIBuilder) UpdateTeamBindingsAPIGroup(opts bui\n \t\tstorewrapper.WithObserver(storageObserver{}),\n \t)\n \tstorage[teamBindingResource.StoragePath()] = authzWrapper\n-\tif b.teamSearch != nil {\n-\t\tb.teamSearch.teamBindingStore = authzWrapper\n-\t}\n \treturn nil\n }\n \ndiff --git a/pkg/registry/apis/iam/team_search.go b/pkg/registry/apis/iam/team_search.go\nindex a876066b8cbd0..b6bc513b9ae63 100644\n--- a/pkg/registry/apis/iam/team_search.go\n+++ b/pkg/registry/apis/iam/team_search.go\n@@ -14,8 +14,8 @@ import (\n \tauthlib \"github.com/grafana/authlib/types\"\n \t\"go.opentelemetry.io/otel/trace\"\n \t\"golang.org/x/sync/errgroup\"\n-\t\"k8s.io/apimachinery/pkg/apis/meta/internalversion\"\n-\t\"k8s.io/apimachinery/pkg/fields\"\n+\tapierrors \"k8s.io/apimachinery/pkg/api/errors\"\n+\tmetav1 \"k8s.io/apimachinery/pkg/apis/meta/v1\"\n \t\"k8s.io/apimachinery/pkg/selection\"\n \t\"k8s.io/apiserver/pkg/endpoints/request\"\n \tk8srest \"k8s.io/apiserver/pkg/registry/rest\"\n@@ -61,12 +61,12 @@ var teamAccessControlChecks = []teamAccessControlCheck{\n }\n \n type TeamSearchHandler struct {\n-\tlog              log.Logger\n-\tclient           resourcepb.ResourceIndexClient\n-\ttracer           trace.Tracer\n-\tfeatures         featuremgmt.FeatureToggles\n-\taccessClient     authlib.AccessClient\n-\tteamBindingStore k8srest.Lister\n+\tlog          log.Logger\n+\tclient       resourcepb.ResourceIndexClient\n+\ttracer       trace.Tracer\n+\tfeatures     featuremgmt.FeatureToggles\n+\taccessClient authlib.AccessClient\n+\tteamGetter   k8srest.Getter\n }\n \n func NewTeamSearchHandler(tracer trace.Tracer, dual dualwrite.Service, legacyTeamSearcher resourcepb.ResourceIndexClient, resourceClient resource.ResourceClient, features featuremgmt.FeatureToggles, accessClient authlib.AccessClient) *TeamSearchHandler {\n@@ -406,7 +406,7 @@ func (s *TeamSearchHandler) DoTeamSearch(w http.ResponseWriter, r *http.Request)\n \t\treturn\n \t}\n \n-\tif queryParams.Get(\"membercount\") == \"true\" && s.teamBindingStore != nil {\n+\tif queryParams.Get(\"membercount\") == \"true\" && s.teamGetter != nil {\n \t\tif err := s.enrichWithMemberCounts(ctx, requester.GetNamespace(), searchResults.Hits); err != nil {\n \t\t\terrhttp.Write(ctx, err, w)\n \t\t\treturn\n@@ -469,7 +469,8 @@ func (s *TeamSearchHandler) stampAccessControl(ctx context.Context, requester id\n \treturn nil\n }\n \n-// enrichWithMemberCounts fetches member counts for each team hit concurrently.\n+// enrichWithMemberCounts fetches each team concurrently and sets MemberCount\n+// from len(team.Spec.Members) \u2014 the team is the source of truth for membership.\n // errgroup is used as a bounded concurrency pool (SetLimit); the first error\n // from any goroutine is propagated to the caller.\n func (s *TeamSearchHandler) enrichWithMemberCounts(ctx context.Context, namespace string, hits []iamv0alpha1.GetSearchTeamsTeamHit) error {\n@@ -483,17 +484,18 @@ func (s *TeamSearchHandler) enrichWithMemberCounts(ctx context.Context, namespac\n \tfor i := range hits {\n \t\tg.Go(func() error {\n \t\t\toutgoingCtx := request.WithNamespace(ctx, namespace)\n-\t\t\tobj, err := s.teamBindingStore.List(outgoingCtx, &internalversion.ListOptions{\n-\t\t\t\tFieldSelector: fields.OneTermEqualSelector(\"spec.teamRef.name\", hits[i].Name),\n-\t\t\t})\n+\t\t\tobj, err := s.teamGetter.Get(outgoingCtx, hits[i].Name, &metav1.GetOptions{})\n \t\t\tif err != nil {\n-\t\t\t\treturn fmt.Errorf(\"failed to list team bindings for team %s: %w\", hits[i].Name, err)\n+\t\t\t\tif apierrors.IsNotFound(err) {\n+\t\t\t\t\treturn nil\n+\t\t\t\t}\n+\t\t\t\treturn fmt.Errorf(\"failed to get team %s: %w\", hits[i].Name, err)\n \t\t\t}\n-\t\t\tlist, ok := obj.(*iamv0alpha1.TeamBindingList)\n+\t\t\tteam, ok := obj.(*iamv0alpha1.Team)\n \t\t\tif !ok {\n-\t\t\t\treturn fmt.Errorf(\"unexpected type from team binding list for team %s: %T\", hits[i].Name, obj)\n+\t\t\t\treturn fmt.Errorf(\"unexpected type from team get for team %s: %T\", hits[i].Name, obj)\n \t\t\t}\n-\t\t\tcount := int64(len(list.Items))\n+\t\t\tcount := int64(len(team.Spec.Members))\n \t\t\thits[i].MemberCount = &count\n \t\t\treturn nil\n \t\t})\ndiff --git a/pkg/registry/apis/iam/team_search_test.go b/pkg/registry/apis/iam/team_search_test.go\nindex fa3020293f018..6659b675645bf 100644\n--- a/pkg/registry/apis/iam/team_search_test.go\n+++ b/pkg/registry/apis/iam/team_search_test.go\n@@ -13,9 +13,10 @@ import (\n \t\"github.com/stretchr/testify/assert\"\n \t\"github.com/stretchr/testify/require\"\n \t\"google.golang.org/grpc\"\n-\t\"k8s.io/apimachinery/pkg/apis/meta/internalversion\"\n+\tapierrors \"k8s.io/apimachinery/pkg/api/errors\"\n \tmetav1 \"k8s.io/apimachinery/pkg/apis/meta/v1\"\n \t\"k8s.io/apimachinery/pkg/runtime\"\n+\t\"k8s.io/apimachinery/pkg/runtime/schema\"\n \n \tiamv0alpha1 \"github.com/grafana/grafana/apps/iam/pkg/apis/iam/v0alpha1\"\n \t\"github.com/grafana/grafana/pkg/apimachinery/identity\"\n@@ -444,19 +445,21 @@ func TestTeamAccessControl(t *testing.T) {\n }\n \n func TestTeamSearchMemberCount(t *testing.T) {\n-\tmockLister := &mockTeamBindingLister{\n-\t\tlistFunc: func(_ context.Context, options *internalversion.ListOptions) (runtime.Object, error) {\n-\t\t\treturn &iamv0alpha1.TeamBindingList{Items: make([]iamv0alpha1.TeamBinding, 3)}, nil\n+\tmockGetter := &mockTeamGetter{\n+\t\tgetFunc: func(_ context.Context, _ string, _ *metav1.GetOptions) (runtime.Object, error) {\n+\t\t\treturn &iamv0alpha1.Team{\n+\t\t\t\tSpec: iamv0alpha1.TeamSpec{Members: make([]iamv0alpha1.TeamTeamMember, 3)},\n+\t\t\t}, nil\n \t\t},\n \t}\n \n \tt.Run(\"membercount absent - no member counts on hits\", func(t *testing.T) {\n \t\tsearchHandler := &TeamSearchHandler{\n-\t\t\tlog:              log.New(\"grafana-apiserver.teams.search\"),\n-\t\t\tclient:           mockTeamClientWithHits(),\n-\t\t\ttracer:           tracing.NewNoopTracerService(),\n-\t\t\tfeatures:         featuremgmt.WithFeatures(),\n-\t\t\tteamBindingStore: mockLister,\n+\t\t\tlog:        log.New(\"grafana-apiserver.teams.search\"),\n+\t\t\tclient:     mockTeamClientWithHits(),\n+\t\t\ttracer:     tracing.NewNoopTracerService(),\n+\t\t\tfeatures:   featuremgmt.WithFeatures(),\n+\t\t\tteamGetter: mockGetter,\n \t\t}\n \n \t\trr := httptest.NewRecorder()\n@@ -478,11 +481,11 @@ func TestTeamSearchMemberCount(t *testing.T) {\n \n \tt.Run(\"membercount=false - no member counts on hits\", func(t *testing.T) {\n \t\tsearchHandler := &TeamSearchHandler{\n-\t\t\tlog:              log.New(\"grafana-apiserver.teams.search\"),\n-\t\t\tclient:           mockTeamClientWithHits(),\n-\t\t\ttracer:           tracing.NewNoopTracerService(),\n-\t\t\tfeatures:         featuremgmt.WithFeatures(),\n-\t\t\tteamBindingStore: mockLister,\n+\t\t\tlog:        log.New(\"grafana-apiserver.teams.search\"),\n+\t\t\tclient:     mockTeamClientWithHits(),\n+\t\t\ttracer:     tracing.NewNoopTracerService(),\n+\t\t\tfeatures:   featuremgmt.WithFeatures(),\n+\t\t\tteamGetter: mockGetter,\n \t\t}\n \n \t\trr := httptest.NewRecorder()\n@@ -504,11 +507,11 @@ func TestTeamSearchMemberCount(t *testing.T) {\n \n \tt.Run(\"membercount=true - member counts populated\", func(t *testing.T) {\n \t\tsearchHandler := &TeamSearchHandler{\n-\t\t\tlog:              log.New(\"grafana-apiserver.teams.search\"),\n-\t\t\tclient:           mockTeamClientWithHits(),\n-\t\t\ttracer:           tracing.NewNoopTracerService(),\n-\t\t\tfeatures:         featuremgmt.WithFeatures(),\n-\t\t\tteamBindingStore: mockLister,\n+\t\t\tlog:        log.New(\"grafana-apiserver.teams.search\"),\n+\t\t\tclient:     mockTeamClientWithHits(),\n+\t\t\ttracer:     tracing.NewNoopTracerService(),\n+\t\t\tfeatures:   featuremgmt.WithFeatures(),\n+\t\t\tteamGetter: mockGetter,\n \t\t}\n \n \t\trr := httptest.NewRecorder()\n@@ -529,19 +532,19 @@ func TestTeamSearchMemberCount(t *testing.T) {\n \t\t}\n \t})\n \n-\tt.Run(\"membercount=true - lister error returns 500\", func(t *testing.T) {\n-\t\terrorLister := &mockTeamBindingLister{\n-\t\t\tlistFunc: func(_ context.Context, options *internalversion.ListOptions) (runtime.Object, error) {\n+\tt.Run(\"membercount=true - getter error returns 500\", func(t *testing.T) {\n+\t\terrorGetter := &mockTeamGetter{\n+\t\t\tgetFunc: func(_ context.Context, _ string, _ *metav1.GetOptions) (runtime.Object, error) {\n \t\t\t\treturn nil, fmt.Errorf(\"store unavailable\")\n \t\t\t},\n \t\t}\n \n \t\tsearchHandler := &TeamSearchHandler{\n-\t\t\tlog:              log.New(\"grafana-apiserver.teams.search\"),\n-\t\t\tclient:           mockTeamClientWithHits(),\n-\t\t\ttracer:           tracing.NewNoopTracerService(),\n-\t\t\tfeatures:         featuremgmt.WithFeatures(),\n-\t\t\tteamBindingStore: errorLister,\n+\t\t\tlog:        log.New(\"grafana-apiserver.teams.search\"),\n+\t\t\tclient:     mockTeamClientWithHits(),\n+\t\t\ttracer:     tracing.NewNoopTracerService(),\n+\t\t\tfeatures:   featuremgmt.WithFeatures(),\n+\t\t\tteamGetter: errorGetter,\n \t\t}\n \n \t\trr := httptest.NewRecorder()\n@@ -557,24 +560,23 @@ func TestTeamSearchMemberCount(t *testing.T) {\n \n func TestEnrichWithMemberCounts(t *testing.T) {\n \tt.Run(\"all succeed - sets correct member counts\", func(t *testing.T) {\n-\t\tmockLister := &mockTeamBindingLister{\n-\t\t\tlistFunc: func(_ context.Context, options *internalversion.ListOptions) (runtime.Object, error) {\n-\t\t\t\tteamName, _ := options.FieldSelector.RequiresExactMatch(\"spec.teamRef.name\")\n-\t\t\t\tswitch teamName {\n+\t\tmockGetter := &mockTeamGetter{\n+\t\t\tgetFunc: func(_ context.Context, name string, _ *metav1.GetOptions) (runtime.Object, error) {\n+\t\t\t\tswitch name {\n \t\t\t\tcase \"team-1\":\n-\t\t\t\t\treturn &iamv0alpha1.TeamBindingList{Items: make([]iamv0alpha1.TeamBinding, 3)}, nil\n+\t\t\t\t\treturn &iamv0alpha1.Team{Spec: iamv0alpha1.TeamSpec{Members: make([]iamv0alpha1.TeamTeamMember, 3)}}, nil\n \t\t\t\tcase \"team-2\":\n-\t\t\t\t\treturn &iamv0alpha1.TeamBindingList{Items: make([]iamv0alpha1.TeamBinding, 0)}, nil\n+\t\t\t\t\treturn &iamv0alpha1.Team{Spec: iamv0alpha1.TeamSpec{Members: nil}}, nil\n \t\t\t\tdefault:\n-\t\t\t\t\treturn &iamv0alpha1.TeamBindingList{}, nil\n+\t\t\t\t\treturn &iamv0alpha1.Team{}, nil\n \t\t\t\t}\n \t\t\t},\n \t\t}\n \n \t\thandler := &TeamSearchHandler{\n-\t\t\tlog:              log.New(\"test\"),\n-\t\t\ttracer:           tracing.NewNoopTracerService(),\n-\t\t\tteamBindingStore: mockLister,\n+\t\t\tlog:        log.New(\"test\"),\n+\t\t\ttracer:     tracing.NewNoopTracerService(),\n+\t\t\tteamGetter: mockGetter,\n \t\t}\n \n \t\thits := []iamv0alpha1.GetSearchTeamsTeamHit{\n@@ -591,20 +593,19 @@ func TestEnrichWithMemberCounts(t *testing.T) {\n \t})\n \n \tt.Run(\"one fails - returns error\", func(t *testing.T) {\n-\t\tmockLister := &mockTeamBindingLister{\n-\t\t\tlistFunc: func(_ context.Context, options *internalversion.ListOptions) (runtime.Object, error) {\n-\t\t\t\tteamName, _ := options.FieldSelector.RequiresExactMatch(\"spec.teamRef.name\")\n-\t\t\t\tif teamName == \"team-bad\" {\n-\t\t\t\t\treturn nil, fmt.Errorf(\"teambinding list failed for team-bad\")\n+\t\tmockGetter := &mockTeamGetter{\n+\t\t\tgetFunc: func(_ context.Context, name string, _ *metav1.GetOptions) (runtime.Object, error) {\n+\t\t\t\tif name == \"team-bad\" {\n+\t\t\t\t\treturn nil, fmt.Errorf(\"team get failed for team-bad\")\n \t\t\t\t}\n-\t\t\t\treturn &iamv0alpha1.TeamBindingList{Items: make([]iamv0alpha1.TeamBinding, 2)}, nil\n+\t\t\t\treturn &iamv0alpha1.Team{Spec: iamv0alpha1.TeamSpec{Members: make([]iamv0alpha1.TeamTeamMember, 2)}}, nil\n \t\t\t},\n \t\t}\n \n \t\thandler := &TeamSearchHandler{\n-\t\t\tlog:              log.New(\"test\"),\n-\t\t\ttracer:           tracing.NewNoopTracerService(),\n-\t\t\tteamBindingStore: mockLister,\n+\t\t\tlog:        log.New(\"test\"),\n+\t\t\ttracer:     tracing.NewNoopTracerService(),\n+\t\t\tteamGetter: mockGetter,\n \t\t}\n \n \t\thits := []iamv0alpha1.GetSearchTeamsTeamHit{\n@@ -619,16 +620,16 @@ func TestEnrichWithMemberCounts(t *testing.T) {\n \t})\n \n \tt.Run(\"unexpected type - returns error\", func(t *testing.T) {\n-\t\tmockLister := &mockTeamBindingLister{\n-\t\t\tlistFunc: func(_ context.Context, options *internalversion.ListOptions) (runtime.Object, error) {\n+\t\tmockGetter := &mockTeamGetter{\n+\t\t\tgetFunc: func(_ context.Context, _ string, _ *metav1.GetOptions) (runtime.Object, error) {\n \t\t\t\treturn &iamv0alpha1.TeamList{}, nil\n \t\t\t},\n \t\t}\n \n \t\thandler := &TeamSearchHandler{\n-\t\t\tlog:              log.New(\"test\"),\n-\t\t\ttracer:           tracing.NewNoopTracerService(),\n-\t\t\tteamBindingStore: mockLister,\n+\t\t\tlog:        log.New(\"test\"),\n+\t\t\ttracer:     tracing.NewNoopTracerService(),\n+\t\t\tteamGetter: mockGetter,\n \t\t}\n \n \t\thits := []iamv0alpha1.GetSearchTeamsTeamHit{\n@@ -641,20 +642,15 @@ func TestEnrichWithMemberCounts(t *testing.T) {\n \t})\n }\n \n-type mockTeamBindingLister struct {\n-\tlistFunc func(ctx context.Context, options *internalversion.ListOptions) (runtime.Object, error)\n+type mockTeamGetter struct {\n+\tgetFunc func(ctx context.Context, name string, options *metav1.GetOptions) (runtime.Object, error)\n }\n \n-func (m *mockTeamBindingLister) NewList() runtime.Object {\n-\treturn &iamv0alpha1.TeamBindingList{}\n-}\n-\n-func (m *mockTeamBindingLister) List(ctx context.Context, options *internalversion.ListOptions) (runtime.Object, error) {\n-\treturn m.listFunc(ctx, options)\n-}\n-\n-func (m *mockTeamBindingLister) ConvertToTable(_ context.Context, _ runtime.Object, _ runtime.Object) (*metav1.Table, error) {\n-\treturn nil, nil\n+func (m *mockTeamGetter) Get(ctx context.Context, name string, options *metav1.GetOptions) (runtime.Object, error) {\n+\tif m.getFunc != nil {\n+\t\treturn m.getFunc(ctx, name, options)\n+\t}\n+\treturn nil, apierrors.NewNotFound(schema.GroupResource{Resource: \"teams\"}, name)\n }\n \n type mockTeamAccessClient struct {\ndiff --git a/pkg/tests/apis/iam/team/helpers_test.go b/pkg/tests/apis/iam/team/helpers_test.go\nindex 92bf8eefbd9b3..06fdf298f2c0e 100644\n--- a/pkg/tests/apis/iam/team/helpers_test.go\n+++ b/pkg/tests/apis/iam/team/helpers_test.go\n@@ -14,10 +14,3 @@ func createTeamObject(helper *apis.K8sTestHelper, teamName string, title string,\n \n \treturn teamObj\n }\n-\n-func createTeamBindingObject(helper *apis.K8sTestHelper, userName, teamName string) *unstructured.Unstructured {\n-\tobj := helper.LoadYAMLOrJSONFile(\"../testdata/teambinding-test-create-v0.yaml\")\n-\tobj.Object[\"spec\"].(map[string]interface{})[\"subject\"].(map[string]interface{})[\"name\"] = userName\n-\tobj.Object[\"spec\"].(map[string]interface{})[\"teamRef\"].(map[string]interface{})[\"name\"] = teamName\n-\treturn obj\n-}\ndiff --git a/pkg/tests/apis/iam/team/team_search_integration_test.go b/pkg/tests/apis/iam/team/team_search_integration_test.go\nindex 631a029c0983a..811c412d1ad56 100644\n--- a/pkg/tests/apis/iam/team/team_search_integration_test.go\n+++ b/pkg/tests/apis/iam/team/team_search_integration_test.go\n@@ -2,6 +2,7 @@ package team\n \n import (\n \t\"context\"\n+\t\"encoding/json\"\n \t\"fmt\"\n \t\"net/http\"\n \t\"net/url\"\n@@ -483,12 +484,6 @@ func doTeamSearchMemberCountTests(t *testing.T, helper *apis.K8sTestHelper) {\n \t\tNamespace: namespace,\n \t\tGVR:       gvrUsers,\n \t})\n-\ttbClient := helper.GetResourceClient(apis.ResourceClientArgs{\n-\t\tUser:      helper.Org1.Admin,\n-\t\tNamespace: namespace,\n-\t\tGVR:       gvrTeamBindings,\n-\t})\n-\n \t// Create teamA with 3 members\n \tteamA, err := teamClient.Resource.Create(ctx, createTeamObject(helper, \"mc-team-a\", \"MemberCount Team A\", \"mc-team-a@example.com\"), metav1.CreateOptions{})\n \trequire.NoError(t, err)\n@@ -497,7 +492,11 @@ func doTeamSearchMemberCountTests(t *testing.T, helper *apis.K8sTestHelper) {\n \tteamB, err := teamClient.Resource.Create(ctx, createTeamObject(helper, \"mc-team-b\", \"MemberCount Team B\", \"mc-team-b@example.com\"), metav1.CreateOptions{})\n \trequire.NoError(t, err)\n \n-\t// Create 3 users and bind them to teamA\n+\t// Create 3 users and add them to teamA via the addmember subresource\n+\t// (Spec.Members is the source of truth for membership across all\n+\t// dual-writer modes; TeamBinding writes don't sync to Spec.Members in\n+\t// Mode 5).\n+\taddMemberPath := fmt.Sprintf(\"/apis/iam.grafana.app/v0alpha1/namespaces/%s/teams/%s/addmember\", namespace, teamA.GetName())\n \tfor i := 1; i <= 3; i++ {\n \t\tuObj := helper.LoadYAMLOrJSONFile(\"../testdata/user-test-create-v0.yaml\")\n \t\tuObj.Object[\"metadata\"].(map[string]any)[\"name\"] = fmt.Sprintf(\"mc-user-%d\", i)\n@@ -507,9 +506,19 @@ func doTeamSearchMemberCountTests(t *testing.T, helper *apis.K8sTestHelper) {\n \t\tu, err := userClient.Resource.Create(ctx, uObj, metav1.CreateOptions{})\n \t\trequire.NoError(t, err)\n \n-\t\ttbObj := createTeamBindingObject(helper, u.GetName(), teamA.GetName())\n-\t\t_, err = tbClient.Resource.Create(ctx, tbObj, metav1.CreateOptions{})\n+\t\tbody, err := json.Marshal(map[string]any{\n+\t\t\t\"name\":       u.GetName(),\n+\t\t\t\"permission\": \"member\",\n+\t\t\t\"external\":   false,\n+\t\t})\n \t\trequire.NoError(t, err)\n+\t\trsp := apis.DoRequest(helper, apis.RequestParams{\n+\t\t\tUser:   helper.Org1.Admin,\n+\t\t\tMethod: http.MethodPost,\n+\t\t\tPath:   addMemberPath,\n+\t\t\tBody:   body,\n+\t\t}, &map[string]any{})\n+\t\trequire.Equal(t, http.StatusCreated, rsp.Response.StatusCode, \"addmember for %s: %s\", u.GetName(), string(rsp.Body))\n \t}\n \n \tt.Run(\"should return correct member counts for teams with and without members\", func(t *testing.T) {\ndiff --git a/pkg/tests/apis/iam/team/team_test.go b/pkg/tests/apis/iam/team/team_test.go\nindex adc845f72f72e..724ca0e25fa04 100644\n--- a/pkg/tests/apis/iam/team/team_test.go\n+++ b/pkg/tests/apis/iam/team/team_test.go\n@@ -20,12 +20,6 @@ var gvrUsers = schema.GroupVersionResource{\n \tResource: \"users\",\n }\n \n-var gvrTeamBindings = schema.GroupVersionResource{\n-\tGroup:    \"iam.grafana.app\",\n-\tVersion:  \"v0alpha1\",\n-\tResource: \"teambindings\",\n-}\n-\n func TestMain(m *testing.M) {\n \ttestsuite.Run(m)\n }\n",
+  "diff_summary": "6 files changed",
+  "similar_chunks": [],
+  "metadata": {
+    "experiment": "confirmatory_kg_2026-05-14",
+    "local_id": 2,
+    "v2_diff_truncated": false,
+    "v2_raw_diff_chars": 17746,
+    "v2_raw_body_chars": 962
+  }
+}

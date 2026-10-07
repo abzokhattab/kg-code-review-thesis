@@ -1,0 +1,33 @@
+{
+  "candidate_mentions": [
+    {
+      "basename_collision": false,
+      "end": 599,
+      "evidence_id": "M001",
+      "excerpt": "ans` does not affect dependent modules or external codebases.\n\n## Evidence\n- `sklearn/cluster/__init__.py:22`: The line removing `k_means` from the exports.\n- `sklearn/cluster/_spectral.py::fit`: This function calls `k_means`, indicating a dependency that might be affected by this change.\n\n## Impact\n- Removing `k_means` from the exports can lead to runtime errors in any code that imports it directly from `sklearn.cluster`.\n- There is a risk of ",
+      "finding_passage_id": "P008",
+      "match_kind": "full_path",
+      "match_text": "sklearn/cluster/_spectral.py",
+      "oracle_path": "sklearn/cluster/_spectral.py",
+      "start": 571
+    }
+  ],
+  "causal_passage_id": "P008",
+  "decision_source": "llm_causal_adjudication",
+  "detected": true,
+  "evidence_id": "M001",
+  "executed_at_utc": "2026-09-19T15:09:23.519369+00:00",
+  "finding_passage_id": "P008",
+  "judge": "gemini:gemini-2.5-flash",
+  "manifest_sha256": "5d4371a93d1b09f0491ecc12279f9f3ff5de23053b7a5e74650a749f58b472b0",
+  "model_alias": "gemini:gemini-2.5-flash",
+  "model_snapshot": "unavailable-from-original-wrapper",
+  "original_verdict": true,
+  "prompt_sha256": "40cdfac00ea6eed1b57204964e6d3a7c62fe0a1c46ef302d1f7226bccd68a597",
+  "reason_code": "specific_cross_file_link",
+  "response_wrapper": "single_json_fence",
+  "review_sha256": "f9deb6ea296a6b96498e1b7bbcf62f11217d476243e2e12178186ce7262213cc",
+  "schema_sha256": "f70f714868ecd3d25508bb3e00b32ecbe6761b0ebc05f454ee10fa4d28efd013",
+  "schema_version": "exp2-adjudication-v3",
+  "system_sha256": "030b5e701c798b32afdabbbeb22db38f664db8c8fd8b862d2fcb98df63b6fb6b"
+}

@@ -1,0 +1,11 @@
+--- a/streams/src/main/java/org/apache/kafka/streams/processor/internals/DefaultStateUpdater.java
++++ b/streams/src/main/java/org/apache/kafka/streams/processor/internals/DefaultStateUpdater.java
+@@ -870,7 +870,7 @@
+             while (now <= deadline && result.isEmpty()) {
+                 restoredActiveTasksLock.lock();
+                 try {
+-                    while (restoredActiveTasks.isEmpty() && now <= deadline) {
++                    while (restoredActiveTasks.isEmpty() && now < deadline) {
+                         // We can ignore whether the deadline expired during await, as the while loop condition will
+                         // check again for deadline expiration.
+                         @SuppressWarnings("UnusedLocalVariable")

@@ -1,0 +1,73 @@
+{
+  "body": "Backport of https://github.com/godotengine/godot/pull/67444.",
+  "issue_comments": [
+    {
+      "body": "Please squash your commits into one, and use a descriptive yet concise commit message, e.g. \"Add ability to pick random value from array\" like the original PR.\n\nYou can read more about squashing in our documentation if you're not familiar: https://docs.godotengine.org/en/stable/community/contributing/pr_workflow.html#the-interactive-rebase",
+      "created_at": "2022-11-14T14:01:08Z",
+      "user": "YuriSizov"
+    },
+    {
+      "body": "The best would even be to have used `git cherry-pick -x 9f4dbf415da6d150788915cb35a9c3dc7f04c547` to do a proper cherry-pick commit of #67444, keeping @nonunknown as the author. There would be a few conflicts to resolve as done in this PR, which can be amended into the cherry-pick commit. Then you can also give yourself some credit for the backporting work by adding `Co-authored-by: Your name <your email>` at the end of the backported commit's message.",
+      "created_at": "2022-11-14T14:06:50Z",
+      "user": "akien-mga"
+    },
+    {
+      "body": "alright I squashed the commits, I tried doing the cherry pick to have @nonunknown as the author but it wouldn't stay when I would squash again.",
+      "created_at": "2022-11-14T17:32:41Z",
+      "user": "BleedingXiko"
+    },
+    {
+      "body": "Thanks! Yeah doing a cherry-pick after the fact in the branch where you already have the backport would be tricky. I went ahead and applied some Git magic to restore the author/date from the original PR, and added you as co-author :)",
+      "created_at": "2022-11-14T18:12:52Z",
+      "user": "akien-mga"
+    },
+    {
+      "body": "Thanks! And congrats for your first merged Godot contribution :tada:",
+      "created_at": "2022-11-14T22:52:34Z",
+      "user": "akien-mga"
+    },
+    {
+      "body": "Sweet! \ud83d\ude01",
+      "created_at": "2022-11-14T23:36:28Z",
+      "user": "BleedingXiko"
+    },
+    {
+      "body": "This is nice. Thanks! Lots of code with the pattern `array[randi() % array.size()]` will get replaced by this.",
+      "created_at": "2022-11-16T10:14:33Z",
+      "user": "oeleo1"
+    },
+    {
+      "body": "@BleedingXiko @akien @Calinou Can we have the same for dicts too? Or is it too much asking?",
+      "created_at": "2022-11-16T10:18:30Z",
+      "user": "oeleo1"
+    },
+    {
+      "body": "Sorry @akien, I meant @akien-mga. Mea culpa.",
+      "created_at": "2022-11-16T10:22:25Z",
+      "user": "oeleo1"
+    },
+    {
+      "body": "@oeleo1 Dictionaries have a less clear use-case, since they are a collection of key-value pairs, not an indexed list of values. It probably needs a new proposal, or at least a PR implementing it to start a new discussion.\n\nAlso, please don't leave multiple comments in the row, this creates multiple notification for maintainers and anyone else subscribed to this repository. Use the edit button instead.",
+      "created_at": "2022-11-16T14:50:16Z",
+      "user": "YuriSizov"
+    },
+    {
+      "body": "Thanks for your response. I see your point, but in my mind, and in practical terms, the use case is clear had the method been called `get_random` instead of `pick_random`. It's a shortcut of the pattern `array/dict.get(randi() % array/dict.size())`.\n\nConsequently, for dictionaries, this method would be a shortcut of the `dict[ dict.keys()[ randi() % dict.size() ] ]`. This is obviously an optimization we have lived without for years, but since the `pick_random` for arrays has made it to the core, it is appreciated, and deemed quite useful. Experience shows that the same pattern for dicts is a common use case.",
+      "created_at": "2022-11-16T16:11:37Z",
+      "user": "oeleo1"
+    },
+    {
+      "body": "> It probably needs a new proposal, or at least a PR implementing it to start a new discussion.\n\nAgreed, but we focus on game making and deliberately refrain from entering the PR business, so all I can offer is an opinion from our experience at face value. Up to the dev team / volunteers to pick up on that or not. We won't complain either way as it's not our territory :-)",
+      "created_at": "2022-11-16T18:37:53Z",
+      "user": "oeleo1"
+    }
+  ],
+  "merged_at": "2022-11-14T22:52:12Z",
+  "owner_repo": "godotengine/godot",
+  "pr_id": 12,
+  "pr_number": 68625,
+  "review_comments": [],
+  "review_summaries": [],
+  "title": "[3.x] Add ability to pick random value from array",
+  "url": "https://github.com/godotengine/godot/pull/68625"
+}

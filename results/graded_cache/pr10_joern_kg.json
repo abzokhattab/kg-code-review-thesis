@@ -1,0 +1,51 @@
+{
+  "pr_id": 10,
+  "mode": "joern_kg",
+  "mean_scores": {
+    "F3": 3.0,
+    "F4": 3.0,
+    "P1": 2.5,
+    "R2": 0.0,
+    "T3": 3.0
+  },
+  "mean_graded_total": 11.5,
+  "per_judge": [
+    {
+      "model": "gemini:gemini-2.5-flash",
+      "scores": {
+        "F3": 3,
+        "F4": 3,
+        "P1": 2,
+        "R2": 0,
+        "T3": 3
+      },
+      "evidence": {
+        "F3": "Names multiple specific callers or dependent components with file paths or function names, and explains the concrete integration risk for each. For example: 'Problem 1 (CPU Count): `sklearn/_build_utils/__init__.py:64-69`... Incorrect `n_jobs` values during build could lead to resource contention... Problem 2 (Memory Edge Case): `sklearn/pipeline.py:326-339`... If `memory.location is None` does not correctly prevent cloning... Problem 3 (Parallel Behavior): `sklearn/ensemble/_forest.py:249`... R",
+        "F4": "Identifies multiple specific contract violations with file/function references and explains exactly what downstream behavior would change. For example: 'Problem 1 (CPU Count): The removal of the `joblib.__version__` check... assumes `joblib 1.0.0`'s `cpu_count()` reliably accounts for CPU affinity constraints... If this assumption is incorrect, it could lead to over-estimation of available CPUs... Problem 2 (Memory Edge Case): The logic for `joblib.Memory` instantiation and its interaction with ",
+        "P1": "Identifies multiple specific performance issues with code references and explains the complexity or bottleneck. For example: 'Problem 1: Incorrect `n_jobs` values during build could lead to resource contention, slower builds... Problem 2: If `memory.location is None` does not correctly prevent cloning... it could lead to unexpected object copying, increased memory usage, or performance degradation... Problem 3: Regressions in parallel execution could manifest as performance bottlenecks...' Howev",
+        "R2": "The review does not identify any unnecessary complexity in the changed code or suggest simplification. It focuses on potential risks and untested edge cases resulting from simplifications made by the PR.",
+        "T3": "Names multiple specific test file paths, references the exact test scenarios or functions within those files that need coverage, and explains what edge cases are currently missing. For example: '1. Tests for CPU Count: Add a dedicated test case... to `sklearn/tests/test_config.py`... that verifies `joblib.cpu_count()` returns an accurate number of CPUs under simulated CPU affinity constraints... 2. Tests for `joblib.Memory` with `location=None`: Enhance `sklearn/tests/test_pipeline.py` (specific"
+      },
+      "error": ""
+    },
+    {
+      "model": "gemini:gemini-2.5-pro",
+      "scores": {
+        "F3": 3,
+        "F4": 3,
+        "P1": 3,
+        "R2": 0,
+        "T3": 3
+      },
+      "evidence": {
+        "F3": "Names multiple specific callers or dependent components with file paths or function names, and explains the concrete integration risk for each. For example: 'Regressions in parallel execution could manifest as performance bottlenecks... Specific callers like `sklearn/ensemble/_forest.py` (`fit`, `predict_proba`, `predict`), `sklearn/linear_model/_logistic.py` (`fit`), and `sklearn/neighbors/_base.py` (`kneighbors`, `radius_neighbors`) are at risk.' It also identifies risks in `sklearn/_build_uti",
+        "F4": "Identifies multiple specific contract violations with file/function references and explains exactly what downstream behavior would change. For example, it notes the assumption that `joblib 1.0.0`'s `cpu_count()` handles affinity constraints in `_build_utils/__init__.py`, the changed logic for `Pipeline` cloning when `memory.location is None` in `sklearn/pipeline.py`, and the subtle behavior changes of `Parallel` arguments in multiple estimator files.",
+        "P1": "Identifies multiple specific performance issues with code references and explains the bottleneck. It mentions potential for 'slower builds' due to incorrect CPU count in `sklearn/_build_utils/__init__.py`, 'increased memory usage, or performance degradation' from unexpected object copying in `sklearn/pipeline.py`, and 'performance bottlenecks' from regressions in parallel execution in various estimators like `sklearn/ensemble/_forest.py`.",
+        "R2": "The review does not identify unnecessary complexity or suggest simplification. The PR itself is a simplification, and the review focuses on the potential negative consequences and risks of that simplification, not on any remaining complexity.",
+        "T3": "Names multiple specific test file paths, references the exact test scenarios or functions within those files that need coverage, and explains what edge cases are currently missing. Specifically, it recommends adding tests to `sklearn/tests/test_config.py` for CPU affinity constraints and enhancing `sklearn/tests/test_pipeline.py` (specifically `test_pipeline_memory` or `test_make_pipeline_memory`) to cover the `location=None` edge case."
+      },
+      "error": ""
+    }
+  ],
+  "timestamp": "2026-06-01T18:57:41.339952+00:00"
+}

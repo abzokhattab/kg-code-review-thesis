@@ -1,0 +1,66 @@
+{
+  "candidate_mentions": [
+    {
+      "basename_collision": false,
+      "end": 934,
+      "evidence_id": "M001",
+      "excerpt": "ages/grafana-data/src/transformations/transformers/histogram.ts: buildHistogram` and `histogramFieldsToFrame` call `getDisplayProcessor`.\n- Test files such as `packages/grafana-data/src/field/displayProcessor.test.ts` and `packages/grafana-data/src/field/fieldDisplay.test.ts` reference `getDisplayProcessor`.\n\n## Impact\n- **Technical Impact:** Removing `getDisplayProcessor` from exports can lead to runtime errors in any module that imports it, potentially causing applicati",
+      "finding_passage_id": "P010",
+      "match_kind": "full_path",
+      "match_text": "packages/grafana-data/src/field/displayProcessor.test.ts",
+      "oracle_path": "packages/grafana-data/src/field/displayProcessor.test.ts",
+      "start": 878
+    },
+    {
+      "basename_collision": false,
+      "end": 993,
+      "evidence_id": "M002",
+      "excerpt": ": buildHistogram` and `histogramFieldsToFrame` call `getDisplayProcessor`.\n- Test files such as `packages/grafana-data/src/field/displayProcessor.test.ts` and `packages/grafana-data/src/field/fieldDisplay.test.ts` reference `getDisplayProcessor`.\n\n## Impact\n- **Technical Impact:** Removing `getDisplayProcessor` from exports can lead to runtime errors in any module that imports it, potentially causing application failures.\n- **Risk of Undetected Errors:** If tests do n",
+      "finding_passage_id": "P010",
+      "match_kind": "full_path",
+      "match_text": "packages/grafana-data/src/field/fieldDisplay.test.ts",
+      "oracle_path": "packages/grafana-data/src/field/fieldDisplay.test.ts",
+      "start": 941
+    },
+    {
+      "basename_collision": false,
+      "end": 620,
+      "evidence_id": "M003",
+      "excerpt": " undetected issues in dependent functionalities.\n\n## Evidence\n- `packages/grafana-data/src/index.ts:180`: `getDisplayProcessor` is removed from the exports.\n- `packages/grafana-data/src/field/fieldDisplay.ts: createNoValuesFieldDisplay` and `getFieldDisplayValues` depend on `getDisplayProcessor`.\n- `packages/grafana-data/src/transformations/transformers/histogram.ts: buildHistogram` and `histogramFieldsToFrame` call `getDisplayProcessor`.\n- Test files such as `pa",
+      "finding_passage_id": "P008",
+      "match_kind": "full_path",
+      "match_text": "packages/grafana-data/src/field/fieldDisplay.ts",
+      "oracle_path": "packages/grafana-data/src/field/fieldDisplay.ts",
+      "start": 573
+    },
+    {
+      "basename_collision": false,
+      "end": 781,
+      "evidence_id": "M007",
+      "excerpt": "om the exports.\n- `packages/grafana-data/src/field/fieldDisplay.ts: createNoValuesFieldDisplay` and `getFieldDisplayValues` depend on `getDisplayProcessor`.\n- `packages/grafana-data/src/transformations/transformers/histogram.ts: buildHistogram` and `histogramFieldsToFrame` call `getDisplayProcessor`.\n- Test files such as `packages/grafana-data/src/field/displayProcessor.test.ts` and `packages/grafana-data/src/field/fieldDisplay.test.ts` reference `getDisplayProcessor`.\n\n## Impact\n- ",
+      "finding_passage_id": "P009",
+      "match_kind": "full_path",
+      "match_text": "packages/grafana-data/src/transformations/transformers/histogram.ts",
+      "oracle_path": "packages/grafana-data/src/transformations/transformers/histogram.ts",
+      "start": 714
+    }
+  ],
+  "causal_passage_id": "P004",
+  "decision_source": "llm_causal_adjudication",
+  "detected": true,
+  "evidence_id": "M003",
+  "executed_at_utc": "2026-09-19T15:11:03.116914+00:00",
+  "finding_passage_id": "P008",
+  "judge": "openai:gpt-4o",
+  "manifest_sha256": "5d4371a93d1b09f0491ecc12279f9f3ff5de23053b7a5e74650a749f58b472b0",
+  "model_alias": "openai:gpt-4o",
+  "model_snapshot": "unavailable-from-original-wrapper",
+  "original_verdict": true,
+  "prompt_sha256": "ef564f4deb925bad5eb53cd85e5a39f9766ecd03e71d22bc54aa52b6220b27d5",
+  "reason_code": "specific_cross_file_link",
+  "response_wrapper": "bare",
+  "review_sha256": "40ca117e7676adcebf80714358325ff0faf6083ccc03e88ee2e9681ca3f04bcc",
+  "schema_sha256": "f70f714868ecd3d25508bb3e00b32ecbe6761b0ebc05f454ee10fa4d28efd013",
+  "schema_version": "exp2-adjudication-v3",
+  "system_sha256": "030b5e701c798b32afdabbbeb22db38f664db8c8fd8b862d2fcb98df63b6fb6b"
+}

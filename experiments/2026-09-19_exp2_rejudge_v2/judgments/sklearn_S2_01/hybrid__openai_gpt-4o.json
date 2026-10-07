@@ -1,0 +1,32 @@
+{
+  "candidate_mentions": [
+    {
+      "basename_collision": false,
+      "end": 620,
+      "evidence_id": "M003",
+      "excerpt": "/_base.py:108`: The `_preprocess_data` function signature is changed to include `required_ctx`.\n- Dependent files such as `sklearn/linear_model/_quantile.py`, `sklearn/linear_model/_least_angle.py`, `sklearn/linear_model/_glm/glm.py`, etc., rely on `_preprocess_data` but are not updated in this PR.\n\n## Impact\n- Existing calls to `_preprocess_data` across various modules may fail due to the missing `required_ctx` argument, leading to runtime errors.\n- L",
+      "match_kind": "full_path",
+      "match_text": "sklearn/linear_model/_least_angle.py",
+      "oracle_path": "sklearn/linear_model/_least_angle.py",
+      "start": 584
+    }
+  ],
+  "causal_quote": "Existing calls to `_preprocess_data` across various modules may fail due to the missing `required_ctx` argument, leading to runtime errors.",
+  "decision_source": "llm_causal_adjudication",
+  "detected": true,
+  "evidence_id": "M003",
+  "executed_at_utc": "2026-09-19T15:05:28.853125+00:00",
+  "finding_quote": "Dependent files such as `sklearn/linear_model/_quantile.py`, `sklearn/linear_model/_least_angle.py`, `sklearn/linear_model/_glm/glm.py`, etc., rely on `_preprocess_data` but are not updated in this PR.",
+  "judge": "openai:gpt-4o",
+  "manifest_sha256": "5d4371a93d1b09f0491ecc12279f9f3ff5de23053b7a5e74650a749f58b472b0",
+  "model_alias": "openai:gpt-4o",
+  "model_snapshot": "unavailable-from-original-wrapper",
+  "original_verdict": false,
+  "prompt_sha256": "eae5c9ad0c95738151e91fafe0a9f77ddc4f8c37444d6c43b73869192e283744",
+  "reason_code": "specific_cross_file_link",
+  "response_wrapper": "bare",
+  "review_sha256": "7e699a6e3267cfbbebe55585b8e181b54713f6bafe34c36ffcb21297c1adddae",
+  "schema_sha256": "6a22fcb256437ebed904ab2d879b36be1234fb2e06add1127ac8ea2ab46f60f0",
+  "schema_version": "exp2-adjudication-v2",
+  "system_sha256": "3634314a8fc4231391e4c51174e5c32d7346b0e2ceb5f8c4641e6ba866bd5939"
+}

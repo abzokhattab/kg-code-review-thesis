@@ -1,0 +1,110 @@
+\section{Discussion}
+\label{sec:discussion}
+
+Three studies have been reported: an observational comparison, a controlled
+injection experiment, and a human preference study. Together they distinguish
+targeted affected-code grounding from general review quality.
+
+\subsection{Reconciling Capability and Aggregate Gains}
+\label{sec:discussion-reconciliation}
+
+The two experiments appear to disagree about effect size by an order of
+magnitude. They estimate different quantities. Experiment~2 conditions on
+the mechanism applying: every injected defect was placed so that its
+consequence lay outside the edited file. It measures a capability (can the
+reviewer see such a consequence at all?) and answers that a diff-only
+reviewer cannot and a graph-equipped one often can (18/28 in this injection
+sample). Experiment~1 samples pull requests without conditioning on that
+mechanism, and its average graph effect is correspondingly smaller.
+
+The graph gives the reviewer a new ability, while its average effect is small
+on the 35 pull requests in Experiment~1. The experiment does not estimate how
+often that ability would matter in the broader population of pull requests.
+
+The join is conceptual rather than based on a shared criterion label.
+Experiment~1's advantage concentrates in the nine structurally relevant
+criteria, with integration (F3) and breaking-change impact (F4) among the
+largest movers. Experiment~2 directly tests whether a review names an affected
+dependent outside the diff. The human study's primary item (H1) asks which
+review better names affected code.
+These results converge on affected-code grounding. The exploratory clarity
+item (H5) favours the baseline, which
+further limits any claim of general review improvement.
+
+\subsection{Complementarity of Structure and Similarity}
+\label{sec:discussion-complementarity}
+
+Retrieval answers a similarity question: which parts of this repository
+resemble the change. That lifts many criteria a little. A dependency graph
+answers a reachability question: what is connected to what changed. That
+helps a narrow set of criteria a great deal and most criteria not at all.
+
+Experiment~2 shows the two are not interchangeable. Retrieval scored 5/28
+on cross-file defects against the graph's 18/28. A file that breaks because
+it calls a renamed function need not resemble the file that changed.
+Retrieval is not a substitute for structural cross-file detection, although it
+remains competitive on broader rubric coverage.
+
+The hybrid arm detects twenty-one of twenty-eight, numerically above both
+inputs. The paired difference against the graph is not significant
+($p = 0.375$), so it provides evidence of neither superiority nor dilution.
+On the pull requests the picture is less favourable: the hybrid trails the
+leading single arm on both scales and both arms on the total
+(Table~\ref{tab:exp1-deltas}), so under naive concatenation the rubric
+shows no additive gain.
+Together with the crossing pattern in Experiment~1, the result is consistent
+with complementary mechanisms, but does not show that naive concatenation
+combines their benefits.
+
+\subsection{Implications for Evaluation Design}
+\label{sec:discussion-measurement}
+
+Structural context produces a large detection gain under oracle-scored
+injection, but a smaller and evaluator-dependent coverage gain on the rubric.
+The studies use different outcomes, so their effect magnitudes are not directly
+comparable. Experiment~1 estimates average rubric coverage; Experiment~2 tests
+a cross-file capability under a known oracle.
+% Source: results/BOOTSTRAP_STATS_joern_parity.md.
+
+Three weaknesses were measured. The rubric magnitude is panel-dependent:
+the same reviews yield effects ranging from significant to not, depending on
+which judges are polled. It is generator-dependent: three substitute
+generators, tested in the earlier text-heuristic configuration, yield no
+significant effect. And it is structurally diluted: 7
+of 25 criteria sit at floor or ceiling and cannot register a difference.
+
+The practical recommendation generalises past this thesis: a
+generate-then-LLM-judge design should not be the sole evidence for a context
+mechanism. Where a mechanism can be stated precisely enough to build an
+oracle, the oracle should be built.
+
+\subsection{Practical Implications}
+\label{sec:discussion-practical}
+
+Commercial AI review tools already index repositories before reviewing a
+change: CodeRabbit builds an AST-level dependency graph, and Greptile
+traverses a function-call graph to locate affected
+code~\cite{coderabbit2026,greptile2026}. In these systems the graph
+traversal is performed by the tool's own pipeline, and the model receives
+pre-digested findings. The experiments in this thesis show that a model
+given raw CPG context can itself name affected code outside the diff, and
+that the gain is sharply localised to cross-file criteria; no comparison
+with these commercial tools was run. Three positions follow for
+pipeline builders.
+
+\emph{Supply the graph selectively.} The graph earns its place on changes
+with cross-file consequences and contributes little elsewhere. A pull
+request's structural fan-out can be computed before any review is generated,
+so the decision whether to include graph context can itself be automated.
+
+\emph{Resolve structure at function granularity where the analyser supports
+it.} The human study's graph block carries file-level import edges, and a
+module-level import does not imply that a change reaches the importer. This is a precision argument, not evidence that
+function-level edges are always necessary: in Experiment~2 the file-level
+dependency list alone recovers sixteen of the graph arm's eighteen
+detections.
+
+\emph{Invest in the analyser, not only the model.} Within Experiment~2 the
+detection ladder moves substantially when the analyser changes and the model
+is held fixed. Whether analyser improvements should take priority for
+broader pull-request review remains untested.

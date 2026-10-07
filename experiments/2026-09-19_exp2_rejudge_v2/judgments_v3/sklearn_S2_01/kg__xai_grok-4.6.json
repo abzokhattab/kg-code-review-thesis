@@ -1,0 +1,68 @@
+{
+  "candidate_mentions": [
+    {
+      "basename_collision": false,
+      "end": 742,
+      "evidence_id": "M001",
+      "excerpt": " updated parameter.\n\n## Evidence\n- `sklearn/linear_model/_base.py:108`: The function `_preprocess_data` now requires an additional parameter `required_ctx`.\n- `sklearn/linear_model/_bayes.py`, `sklearn/linear_model/_coordinate_descent.py`, `sklearn/linear_model/_least_angle.py`, `sklearn/linear_model/_ridge.py`: These files call `_preprocess_data` and may not have been updated to pass the new parameter.\n\n## Impact\n- Existing code that calls `_pre",
+      "finding_passage_id": "P009",
+      "match_kind": "full_path",
+      "match_text": "sklearn/linear_model/_bayes.py",
+      "oracle_path": "sklearn/linear_model/_bayes.py",
+      "start": 712
+    },
+    {
+      "basename_collision": false,
+      "end": 789,
+      "evidence_id": "M002",
+      "excerpt": " `sklearn/linear_model/_base.py:108`: The function `_preprocess_data` now requires an additional parameter `required_ctx`.\n- `sklearn/linear_model/_bayes.py`, `sklearn/linear_model/_coordinate_descent.py`, `sklearn/linear_model/_least_angle.py`, `sklearn/linear_model/_ridge.py`: These files call `_preprocess_data` and may not have been updated to pass the new parameter.\n\n## Impact\n- Existing code that calls `_preprocess_data` without the `required_ctx` parame",
+      "finding_passage_id": "P009",
+      "match_kind": "full_path",
+      "match_text": "sklearn/linear_model/_coordinate_descent.py",
+      "oracle_path": "sklearn/linear_model/_coordinate_descent.py",
+      "start": 746
+    },
+    {
+      "basename_collision": false,
+      "end": 829,
+      "evidence_id": "M003",
+      "excerpt": "ion `_preprocess_data` now requires an additional parameter `required_ctx`.\n- `sklearn/linear_model/_bayes.py`, `sklearn/linear_model/_coordinate_descent.py`, `sklearn/linear_model/_least_angle.py`, `sklearn/linear_model/_ridge.py`: These files call `_preprocess_data` and may not have been updated to pass the new parameter.\n\n## Impact\n- Existing code that calls `_preprocess_data` without the `required_ctx` parameter will raise a `TypeError`, potentiall",
+      "finding_passage_id": "P009",
+      "match_kind": "full_path",
+      "match_text": "sklearn/linear_model/_least_angle.py",
+      "oracle_path": "sklearn/linear_model/_least_angle.py",
+      "start": 793
+    },
+    {
+      "basename_collision": false,
+      "end": 863,
+      "evidence_id": "M004",
+      "excerpt": "dditional parameter `required_ctx`.\n- `sklearn/linear_model/_bayes.py`, `sklearn/linear_model/_coordinate_descent.py`, `sklearn/linear_model/_least_angle.py`, `sklearn/linear_model/_ridge.py`: These files call `_preprocess_data` and may not have been updated to pass the new parameter.\n\n## Impact\n- Existing code that calls `_preprocess_data` without the `required_ctx` parameter will raise a `TypeError`, potentially breaking functionality across mu",
+      "finding_passage_id": "P009",
+      "match_kind": "full_path",
+      "match_text": "sklearn/linear_model/_ridge.py",
+      "oracle_path": "sklearn/linear_model/_ridge.py",
+      "start": 833
+    }
+  ],
+  "causal_passage_id": "P009",
+  "decision_source": "llm_causal_adjudication",
+  "detected": true,
+  "evidence_id": "M001",
+  "evidence_id_normalized": false,
+  "executed_at_utc": "2026-09-19T15:37:29.288470+00:00",
+  "finding_passage_id": "P009",
+  "judge": "xai:grok-4.6",
+  "manifest_sha256": "5d4371a93d1b09f0491ecc12279f9f3ff5de23053b7a5e74650a749f58b472b0",
+  "model_alias": "xai:grok-4.6",
+  "model_evidence_id": "M001",
+  "model_snapshot": "unavailable-from-original-wrapper",
+  "original_verdict": null,
+  "prompt_sha256": "106a6e77a6dd0d4771b94f0c0e9fab9f52a1e5a7b7e9a4fde58e3df8ea7a4b1e",
+  "reason_code": "specific_cross_file_link",
+  "response_wrapper": "bare",
+  "review_sha256": "6ea0c409f7d14f57131bfbd30658bfaa98abe351950fe99e688a61a61ce61271",
+  "schema_sha256": "f70f714868ecd3d25508bb3e00b32ecbe6761b0ebc05f454ee10fa4d28efd013",
+  "schema_version": "exp2-adjudication-v3",
+  "system_sha256": "030b5e701c798b32afdabbbeb22db38f664db8c8fd8b862d2fcb98df63b6fb6b"
+}

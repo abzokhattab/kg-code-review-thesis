@@ -1,0 +1,35 @@
+\section{Retrieval-Augmented Generation for Software Tasks}
+\label{sec:sota-rag}
+
+Retrieval is the default answer to the repository-context problem, and for good
+reason: it needs no language-specific tooling, scales to any file the embedder can
+read, and requires nothing of the repository beyond that it be
+readable~\cite{lewis2020rag,karpukhin2020dpr}. RepoCoder applies it to
+repository-level completion and, notably, does not apply it once: it alternates
+retrieval and generation so that partially generated code can re-query the
+repository, on the finding that a single query formed from the immediate context
+retrieves poorly~\cite{zhang2023repocoder}. GraphRAG responds to the same weakness
+from a different direction, building an entity graph over the corpus because some
+questions are about how documents connect rather than about any one
+document~\cite{edge2024graphrag}.
+
+Both are, read together, admissions about the limits of similarity as a relevance
+criterion, and both point at the comparison this thesis makes. If similarity
+retrieval were adequate for repository context, neither iterative re-querying nor
+graph construction would be necessary. If it were useless, it would not be the
+default. The interesting question is what each kind of selection is good \emph{at},
+and that question is only answerable by an experiment in which the two are given
+the same task, model, evidence pack and evaluation under a matched prompt template.
+In this thesis, the rendered context and the instruction sentence that names it
+vary by arm, a limitation reported explicitly in Chapter~\ref{chap:results}.
+
+That framing also predicts where the two should differ, which is what makes the
+comparison falsifiable rather than exploratory. Similarity retrieval returns code
+that resembles the change, which should help a reviewer say something well-informed
+about the change's own subject matter, including conventions, comparable
+implementations, and local idiom. Structural traversal returns code connected to the change, which
+should help specifically with the questions about consequence: what else depends on
+this, what tests exercise it, what breaks. A study that reports only a single
+aggregate quality score cannot see this distinction even if it is present, and one
+of the design decisions in Chapter~\ref{chap:edas} is to report the targeted subset
+of criteria separately for exactly that reason.

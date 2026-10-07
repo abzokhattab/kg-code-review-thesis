@@ -1,0 +1,708 @@
+{
+  "pr": {
+    "number": 17441,
+    "title": "KAFKA-17741: Cleanup code base for JDK 11",
+    "body": "JIRA: [KAFKA-17741](https://issues.apache.org/jira/browse/KAFKA-17741)\r\n>We are planning to drop JDK 8. This is part of the upgrade from JDK 8 to JDK 11. You can see the full plan here: [KAFKA-12894](https://issues.apache.org/jira/browse/KAFKA-12894)\r\n> 1. `KafkaCompletableFuture` has many override methods from java 9, and they all need `@Override`annotation\r\n> 2. remove `IS_JAVA9_COMPATIBLE` and `IS_JAVA11_COMPATIBLE`\r\n\r\n### Committer Checklist (excluded from commit message)\r\n- [ ] Verify design and implementation \r\n- [ ] Verify test coverage and CI build status\r\n- [ ] Verify documentation (including upgrade notes)\r\n",
+    "url": "https://github.com/apache/kafka/pull/17441",
+    "repo": "apache/kafka",
+    "base_branch": "trunk",
+    "head_branch": "KAFKA-17741",
+    "merged_at": "2024-10-16T15:05:39Z",
+    "state": "MERGED"
+  },
+  "changed_files": [
+    {
+      "path": "clients/src/main/java/org/apache/kafka/common/config/SslConfigs.java",
+      "language": "java",
+      "added": 2,
+      "deleted": 13
+    },
+    {
+      "path": "clients/src/main/java/org/apache/kafka/common/internals/KafkaCompletableFuture.java",
+      "language": "java",
+      "added": 4,
+      "deleted": 4
+    },
+    {
+      "path": "clients/src/main/java/org/apache/kafka/common/utils/ByteBufferUnmapper.java",
+      "language": "java",
+      "added": 7,
+      "deleted": 47
+    },
+    {
+      "path": "clients/src/main/java/org/apache/kafka/common/utils/Checksums.java",
+      "language": "java",
+      "added": 4,
+      "deleted": 6
+    },
+    {
+      "path": "clients/src/main/java/org/apache/kafka/common/utils/Crc32C.java",
+      "language": "java",
+      "added": 14,
+      "deleted": 41
+    },
+    {
+      "path": "clients/src/main/java/org/apache/kafka/common/utils/Java.java",
+      "language": "java",
+      "added": 0,
+      "deleted": 48
+    },
+    {
+      "path": "clients/src/test/java/org/apache/kafka/common/KafkaFutureTest.java",
+      "language": "java",
+      "added": 14,
+      "deleted": 19
+    },
+    {
+      "path": "clients/src/test/java/org/apache/kafka/common/network/SslTransportLayerTest.java",
+      "language": "java",
+      "added": 1,
+      "deleted": 4
+    },
+    {
+      "path": "clients/src/test/java/org/apache/kafka/common/network/SslVersionsTransportLayerTest.java",
+      "language": "java",
+      "added": 15,
+      "deleted": 19
+    },
+    {
+      "path": "clients/src/test/java/org/apache/kafka/common/utils/JavaTest.java",
+      "language": "java",
+      "added": 0,
+      "deleted": 34
+    },
+    {
+      "path": "core/src/test/scala/integration/kafka/api/SslEndToEndAuthorizationTest.scala",
+      "language": "scala",
+      "added": 1,
+      "deleted": 2
+    }
+  ],
+  "nearest_tests": [
+    {
+      "path": "clients/src/test/java/org/apache/kafka/common/utils/ByteBufferUnmapperTest.java",
+      "relationship": "tests",
+      "source_file": "clients/src/main/java/org/apache/kafka/common/utils/ByteBufferUnmapper.java"
+    },
+    {
+      "path": "clients/src/test/java/org/apache/kafka/common/utils/ChecksumsTest.java",
+      "relationship": "tests",
+      "source_file": "clients/src/main/java/org/apache/kafka/common/utils/Checksums.java"
+    },
+    {
+      "path": "clients/src/test/java/org/apache/kafka/common/utils/Crc32CTest.java",
+      "relationship": "tests",
+      "source_file": "clients/src/main/java/org/apache/kafka/common/utils/Crc32C.java"
+    },
+    {
+      "path": "clients/src/test/java/org/apache/kafka/common/utils/JavaTest.java",
+      "relationship": "tests",
+      "source_file": "clients/src/main/java/org/apache/kafka/common/utils/Java.java"
+    }
+  ],
+  "dependent_files": [
+    "main/java/org/apache/kafka/common/config/ConfigDef.java",
+    "main/java/org/apache/kafka/common/internals/KafkaCompletableFuture.java",
+    "main/java/org/apache/kafka/common/internals/KafkaFutureImpl.java",
+    "main/java/org/apache/kafka/common/network/SslTransportLayer.java",
+    "main/java/org/apache/kafka/common/record/DefaultRecordBatch.java",
+    "main/java/org/apache/kafka/common/record/LegacyRecord.java",
+    "main/java/org/apache/kafka/common/utils/Checksums.java",
+    "main/java/org/apache/kafka/common/utils/Crc32C.java",
+    "main/java/org/apache/kafka/common/utils/Java.java"
+  ],
+  "diff_summary": "11 files changed",
+  "full_diff": "diff --git a/clients/src/main/java/org/apache/kafka/common/config/SslConfigs.java b/clients/src/main/java/org/apache/kafka/common/config/SslConfigs.java\nindex 0b8aea7582afc..45cf064e36b6e 100644\n--- a/clients/src/main/java/org/apache/kafka/common/config/SslConfigs.java\n+++ b/clients/src/main/java/org/apache/kafka/common/config/SslConfigs.java\n@@ -17,7 +17,6 @@\n package org.apache.kafka.common.config;\n \n import org.apache.kafka.common.config.internals.BrokerSecurityConfigs;\n-import org.apache.kafka.common.utils.Java;\n \n import java.util.Set;\n \n@@ -39,7 +38,7 @@ public class SslConfigs {\n         + \"the server does not support 'TLSv1.3'. If this config is set to 'TLSv1.2', clients will not use 'TLSv1.3' even \"\n         + \"if it is one of the values in ssl.enabled.protocols and the server only supports 'TLSv1.3'.\";\n \n-    public static final String DEFAULT_SSL_PROTOCOL;\n+    public static final String DEFAULT_SSL_PROTOCOL = \"TLSv1.3\";\n \n     public static final String SSL_PROVIDER_CONFIG = \"ssl.provider\";\n     public static final String SSL_PROVIDER_DOC = \"The name of the security provider used for SSL connections. Default value is the default security provider of the JVM.\";\n@@ -54,17 +53,7 @@ public class SslConfigs {\n         + \"default value for Java 11, clients and servers will prefer TLSv1.3 if both support it and fallback \"\n         + \"to TLSv1.2 otherwise (assuming both support at least TLSv1.2). This default should be fine for most \"\n         + \"cases. Also see the config documentation for `ssl.protocol`.\";\n-    public static final String DEFAULT_SSL_ENABLED_PROTOCOLS;\n-\n-    static {\n-        if (Java.IS_JAVA11_COMPATIBLE) {\n-            DEFAULT_SSL_PROTOCOL = \"TLSv1.3\";\n-            DEFAULT_SSL_ENABLED_PROTOCOLS = \"TLSv1.2,TLSv1.3\";\n-        } else {\n-            DEFAULT_SSL_PROTOCOL = \"TLSv1.2\";\n-            DEFAULT_SSL_ENABLED_PROTOCOLS = \"TLSv1.2\";\n-        }\n-    }\n+    public static final String DEFAULT_SSL_ENABLED_PROTOCOLS = \"TLSv1.2,TLSv1.3\";\n \n     public static final String SSL_KEYSTORE_TYPE_CONFIG = \"ssl.keystore.type\";\n     public static final String SSL_KEYSTORE_TYPE_DOC = \"The file format of the key store file. \"\ndiff --git a/clients/src/main/java/org/apache/kafka/common/internals/KafkaCompletableFuture.java b/clients/src/main/java/org/apache/kafka/common/internals/KafkaCompletableFuture.java\nindex 8c75ea4653fdd..4204b0d9cde52 100644\n--- a/clients/src/main/java/org/apache/kafka/common/internals/KafkaCompletableFuture.java\n+++ b/clients/src/main/java/org/apache/kafka/common/internals/KafkaCompletableFuture.java\n@@ -69,22 +69,22 @@ public void obtrudeException(Throwable ex) {\n         throw erroneousCompletionException();\n     }\n \n-    //@Override // enable once Kafka no longer supports Java 8\n+    @Override\n     public <U> CompletableFuture<U> newIncompleteFuture() {\n         return new KafkaCompletableFuture<>();\n     }\n \n-    //@Override // enable once Kafka no longer supports Java 8\n+    @Override\n     public CompletableFuture<T> completeAsync(Supplier<? extends T> supplier, Executor executor) {\n         throw erroneousCompletionException();\n     }\n \n-    //@Override // enable once Kafka no longer supports Java 8\n+    @Override\n     public CompletableFuture<T> completeAsync(Supplier<? extends T> supplier) {\n         throw erroneousCompletionException();\n     }\n \n-    //@Override // enable once Kafka no longer supports Java 8\n+    @Override\n     public CompletableFuture<T> completeOnTimeout(T value, long timeout, TimeUnit unit) {\n         throw erroneousCompletionException();\n     }\ndiff --git a/clients/src/main/java/org/apache/kafka/common/utils/ByteBufferUnmapper.java b/clients/src/main/java/org/apache/kafka/common/utils/ByteBufferUnmapper.java\nindex 68e182d22784a..a760f817b815f 100644\n--- a/clients/src/main/java/org/apache/kafka/common/utils/ByteBufferUnmapper.java\n+++ b/clients/src/main/java/org/apache/kafka/common/utils/ByteBufferUnmapper.java\n@@ -21,13 +21,8 @@\n import java.lang.invoke.MethodHandle;\n import java.lang.invoke.MethodHandles;\n import java.lang.reflect.Field;\n-import java.lang.reflect.Method;\n import java.nio.ByteBuffer;\n \n-import static java.lang.invoke.MethodHandles.constant;\n-import static java.lang.invoke.MethodHandles.dropArguments;\n-import static java.lang.invoke.MethodHandles.filterReturnValue;\n-import static java.lang.invoke.MethodHandles.guardWithTest;\n import static java.lang.invoke.MethodHandles.lookup;\n import static java.lang.invoke.MethodType.methodType;\n \n@@ -87,51 +82,16 @@ public static void unmap(String resourceDescription, ByteBuffer buffer) throws I\n     private static MethodHandle lookupUnmapMethodHandle() {\n         final MethodHandles.Lookup lookup = lookup();\n         try {\n-            if (Java.IS_JAVA9_COMPATIBLE)\n-                return unmapJava9(lookup);\n-            else\n-                return unmapJava7Or8(lookup);\n+            Class<?> unsafeClass = Class.forName(\"sun.misc.Unsafe\");\n+            MethodHandle unmapper = lookup.findVirtual(unsafeClass, \"invokeCleaner\",\n+                    methodType(void.class, ByteBuffer.class));\n+            Field f = unsafeClass.getDeclaredField(\"theUnsafe\");\n+            f.setAccessible(true);\n+            Object theUnsafe = f.get(null);\n+            return unmapper.bindTo(theUnsafe);\n         } catch (ReflectiveOperationException | RuntimeException e1) {\n             throw new UnsupportedOperationException(\"Unmapping is not supported on this platform, because internal \" +\n                 \"Java APIs are not compatible with this Kafka version\", e1);\n         }\n     }\n-\n-    private static MethodHandle unmapJava7Or8(MethodHandles.Lookup lookup) throws ReflectiveOperationException {\n-        /* \"Compile\" a MethodHandle that is roughly equivalent to the following lambda:\n-         *\n-         * (ByteBuffer buffer) -> {\n-         *   sun.misc.Cleaner cleaner = ((java.nio.DirectByteBuffer) byteBuffer).cleaner();\n-         *   if (nonNull(cleaner))\n-         *     cleaner.clean();\n-         *   else\n-         *     noop(cleaner); // the noop is needed because MethodHandles#guardWithTest always needs both if and else\n-         * }\n-         */\n-        Class<?> directBufferClass = Class.forName(\"java.nio.DirectByteBuffer\");\n-        Method m = directBufferClass.getMethod(\"cleaner\");\n-        m.setAccessible(true);\n-        MethodHandle directBufferCleanerMethod = lookup.unreflect(m);\n-        Class<?> cleanerClass = directBufferCleanerMethod.type().returnType();\n-        MethodHandle cleanMethod = lookup.findVirtual(cleanerClass, \"clean\", methodType(void.class));\n-        MethodHandle nonNullTest = lookup.findStatic(ByteBufferUnmapper.class, \"nonNull\",\n-                methodType(boolean.class, Object.class)).asType(methodType(boolean.class, cleanerClass));\n-        MethodHandle noop = dropArguments(constant(Void.class, null).asType(methodType(void.class)), 0, cleanerClass);\n-        return filterReturnValue(directBufferCleanerMethod, guardWithTest(nonNullTest, cleanMethod, noop))\n-                .asType(methodType(void.class, ByteBuffer.class));\n-    }\n-\n-    private static MethodHandle unmapJava9(MethodHandles.Lookup lookup) throws ReflectiveOperationException {\n-        Class<?> unsafeClass = Class.forName(\"sun.misc.Unsafe\");\n-        MethodHandle unmapper = lookup.findVirtual(unsafeClass, \"invokeCleaner\",\n-                methodType(void.class, ByteBuffer.class));\n-        Field f = unsafeClass.getDeclaredField(\"theUnsafe\");\n-        f.setAccessible(true);\n-        Object theUnsafe = f.get(null);\n-        return unmapper.bindTo(theUnsafe);\n-    }\n-\n-    private static boolean nonNull(Object o) {\n-        return o != null;\n-    }\n }\ndiff --git a/clients/src/main/java/org/apache/kafka/common/utils/Checksums.java b/clients/src/main/java/org/apache/kafka/common/utils/Checksums.java\nindex 17a31edc9a97d..f3ebfddb1a31d 100644\n--- a/clients/src/main/java/org/apache/kafka/common/utils/Checksums.java\n+++ b/clients/src/main/java/org/apache/kafka/common/utils/Checksums.java\n@@ -36,13 +36,11 @@ public final class Checksums {\n \n     static {\n         MethodHandle byteBufferUpdate = null;\n-        if (Java.IS_JAVA9_COMPATIBLE) {\n-            try {\n-                byteBufferUpdate = MethodHandles.publicLookup().findVirtual(Checksum.class, \"update\",\n+        try {\n+            byteBufferUpdate = MethodHandles.publicLookup().findVirtual(Checksum.class, \"update\",\n                     MethodType.methodType(void.class, ByteBuffer.class));\n-            } catch (Throwable t) {\n-                handleUpdateThrowable(t);\n-            }\n+        } catch (Throwable t) {\n+            handleUpdateThrowable(t);\n         }\n         BYTE_BUFFER_UPDATE = byteBufferUpdate;\n     }\ndiff --git a/clients/src/main/java/org/apache/kafka/common/utils/Crc32C.java b/clients/src/main/java/org/apache/kafka/common/utils/Crc32C.java\nindex dfe22e8b35131..49ad34d19648a 100644\n--- a/clients/src/main/java/org/apache/kafka/common/utils/Crc32C.java\n+++ b/clients/src/main/java/org/apache/kafka/common/utils/Crc32C.java\n@@ -26,7 +26,7 @@\n /**\n  * A class that can be used to compute the CRC32C (Castagnoli) of a ByteBuffer or array of bytes.\n  *\n- * We use java.util.zip.CRC32C (introduced in Java 9) if it is available and fallback to PureJavaCrc32C, otherwise.\n+ * We use java.util.zip.CRC32C (introduced in Java 9).\n  * java.util.zip.CRC32C is significantly faster on reasonably modern CPUs as it uses the CRC32 instruction introduced\n  * in SSE4.2.\n  *\n@@ -34,13 +34,16 @@\n  */\n public final class Crc32C {\n \n-    private static final ChecksumFactory CHECKSUM_FACTORY;\n+    private static final MethodHandle CRC32C_CONSTRUCTOR;\n \n     static {\n-        if (Java.IS_JAVA9_COMPATIBLE)\n-            CHECKSUM_FACTORY = new Java9ChecksumFactory();\n-        else\n-            CHECKSUM_FACTORY = new PureJavaChecksumFactory();\n+        try {\n+            Class<?> cls = Class.forName(\"java.util.zip.CRC32C\");\n+            CRC32C_CONSTRUCTOR = MethodHandles.publicLookup().findConstructor(cls, MethodType.methodType(void.class));\n+        } catch (ReflectiveOperationException e) {\n+            // Should never happen\n+            throw new RuntimeException(e);\n+        }\n     }\n \n     private Crc32C() {}\n@@ -74,41 +77,11 @@ public static long compute(ByteBuffer buffer, int offset, int size) {\n     }\n \n     public static Checksum create() {\n-        return CHECKSUM_FACTORY.create();\n-    }\n-\n-    private interface ChecksumFactory {\n-        Checksum create();\n-    }\n-\n-    private static class Java9ChecksumFactory implements ChecksumFactory {\n-        private static final MethodHandle CONSTRUCTOR;\n-\n-        static {\n-            try {\n-                Class<?> cls = Class.forName(\"java.util.zip.CRC32C\");\n-                CONSTRUCTOR = MethodHandles.publicLookup().findConstructor(cls, MethodType.methodType(void.class));\n-            } catch (ReflectiveOperationException e) {\n-                // Should never happen\n-                throw new RuntimeException(e);\n-            }\n-        }\n-\n-        @Override\n-        public Checksum create() {\n-            try {\n-                return (Checksum) CONSTRUCTOR.invoke();\n-            } catch (Throwable throwable) {\n-                // Should never happen\n-                throw new RuntimeException(throwable);\n-            }\n-        }\n-    }\n-\n-    private static class PureJavaChecksumFactory implements ChecksumFactory {\n-        @Override\n-        public Checksum create() {\n-            return new PureJavaCrc32C();\n+        try {\n+            return (Checksum) CRC32C_CONSTRUCTOR.invoke();\n+        } catch (Throwable throwable) {\n+            // Should never happen\n+            throw new RuntimeException(throwable);\n         }\n     }\n }\ndiff --git a/clients/src/main/java/org/apache/kafka/common/utils/Java.java b/clients/src/main/java/org/apache/kafka/common/utils/Java.java\nindex 2552db250d55a..339892d6694f7 100644\n--- a/clients/src/main/java/org/apache/kafka/common/utils/Java.java\n+++ b/clients/src/main/java/org/apache/kafka/common/utils/Java.java\n@@ -16,30 +16,10 @@\n  */\n package org.apache.kafka.common.utils;\n \n-import java.util.StringTokenizer;\n-\n public final class Java {\n \n     private Java() { }\n \n-    private static final Version VERSION = parseVersion(System.getProperty(\"java.specification.version\"));\n-\n-    // Package private for testing\n-    static Version parseVersion(String versionString) {\n-        final StringTokenizer st = new StringTokenizer(versionString, \".\");\n-        int majorVersion = Integer.parseInt(st.nextToken());\n-        int minorVersion;\n-        if (st.hasMoreTokens())\n-            minorVersion = Integer.parseInt(st.nextToken());\n-        else\n-            minorVersion = 0;\n-        return new Version(majorVersion, minorVersion);\n-    }\n-\n-    // Having these as static final provides the best opportunity for compiler optimization\n-    public static final boolean IS_JAVA9_COMPATIBLE = VERSION.isJava9Compatible();\n-    public static final boolean IS_JAVA11_COMPATIBLE = VERSION.isJava11Compatible();\n-\n     public static boolean isIbmJdk() {\n         return System.getProperty(\"java.vendor\").contains(\"IBM\");\n     }\n@@ -47,32 +27,4 @@ public static boolean isIbmJdk() {\n     public static boolean isIbmJdkSemeru() {\n         return isIbmJdk() && System.getProperty(\"java.runtime.name\", \"\").contains(\"Semeru\");\n     }\n-\n-    // Package private for testing\n-    static class Version {\n-        public final int majorVersion;\n-        public final int minorVersion;\n-\n-        private Version(int majorVersion, int minorVersion) {\n-            this.majorVersion = majorVersion;\n-            this.minorVersion = minorVersion;\n-        }\n-\n-        @Override\n-        public String toString() {\n-            return \"Version(majorVersion=\" + majorVersion +\n-                    \", minorVersion=\" + minorVersion + \")\";\n-        }\n-\n-        // Package private for testing\n-        boolean isJava9Compatible() {\n-            return majorVersion >= 9;\n-        }\n-\n-        boolean isJava11Compatible() {\n-            return majorVersion >= 11;\n-        }\n-\n-    }\n-\n }\ndiff --git a/clients/src/test/java/org/apache/kafka/common/KafkaFutureTest.java b/clients/src/test/java/org/apache/kafka/common/KafkaFutureTest.java\nindex 454c2a0b34530..ceb819dee8f6a 100644\n--- a/clients/src/test/java/org/apache/kafka/common/KafkaFutureTest.java\n+++ b/clients/src/test/java/org/apache/kafka/common/KafkaFutureTest.java\n@@ -17,7 +17,6 @@\n package org.apache.kafka.common;\n \n import org.apache.kafka.common.internals.KafkaFutureImpl;\n-import org.apache.kafka.common.utils.Java;\n \n import org.junit.jupiter.api.Test;\n import org.junit.jupiter.api.Timeout;\n@@ -606,29 +605,25 @@ public void testLeakCompletableFuture() throws Throwable {\n         CompletableFuture<String> comfut = kfut.toCompletionStage().toCompletableFuture();\n         assertThrows(UnsupportedOperationException.class, () -> comfut.complete(\"\"));\n         assertThrows(UnsupportedOperationException.class, () -> comfut.completeExceptionally(new RuntimeException()));\n-        // Annoyingly CompletableFuture added some more methods in Java 9, but the tests need to run on Java 8\n-        // so test reflectively\n-        if (Java.IS_JAVA9_COMPATIBLE) {\n-            Method completeOnTimeout = CompletableFuture.class.getDeclaredMethod(\"completeOnTimeout\", Object.class, Long.TYPE, TimeUnit.class);\n-            assertThrows(UnsupportedOperationException.class, () -> invokeOrThrow(completeOnTimeout, comfut, \"\", 1L, TimeUnit.MILLISECONDS));\n+        Method completeOnTimeout = CompletableFuture.class.getDeclaredMethod(\"completeOnTimeout\", Object.class, Long.TYPE, TimeUnit.class);\n+        assertThrows(UnsupportedOperationException.class, () -> invokeOrThrow(completeOnTimeout, comfut, \"\", 1L, TimeUnit.MILLISECONDS));\n \n-            Method completeAsync = CompletableFuture.class.getDeclaredMethod(\"completeAsync\", Supplier.class);\n-            assertThrows(UnsupportedOperationException.class, () -> invokeOrThrow(completeAsync, comfut, (Supplier<String>) () -> \"\"));\n+        Method completeAsync = CompletableFuture.class.getDeclaredMethod(\"completeAsync\", Supplier.class);\n+        assertThrows(UnsupportedOperationException.class, () -> invokeOrThrow(completeAsync, comfut, (Supplier<String>) () -> \"\"));\n \n-            Method obtrudeValue = CompletableFuture.class.getDeclaredMethod(\"obtrudeValue\", Object.class);\n-            assertThrows(UnsupportedOperationException.class, () -> invokeOrThrow(obtrudeValue, comfut, \"\"));\n+        Method obtrudeValue = CompletableFuture.class.getDeclaredMethod(\"obtrudeValue\", Object.class);\n+        assertThrows(UnsupportedOperationException.class, () -> invokeOrThrow(obtrudeValue, comfut, \"\"));\n \n-            Method obtrudeException = CompletableFuture.class.getDeclaredMethod(\"obtrudeException\", Throwable.class);\n-            assertThrows(UnsupportedOperationException.class, () -> invokeOrThrow(obtrudeException, comfut, new RuntimeException()));\n+        Method obtrudeException = CompletableFuture.class.getDeclaredMethod(\"obtrudeException\", Throwable.class);\n+        assertThrows(UnsupportedOperationException.class, () -> invokeOrThrow(obtrudeException, comfut, new RuntimeException()));\n \n-            // Check the CF from a minimal CompletionStage doesn't cause completion of the original KafkaFuture\n-            Method minimal = CompletableFuture.class.getDeclaredMethod(\"minimalCompletionStage\");\n-            CompletionStage<String> cs = (CompletionStage<String>) invokeOrThrow(minimal, comfut);\n-            cs.toCompletableFuture().complete(\"\");\n+        // Check the CF from a minimal CompletionStage doesn't cause completion of the original KafkaFuture\n+        Method minimal = CompletableFuture.class.getDeclaredMethod(\"minimalCompletionStage\");\n+        CompletionStage<String> cs = (CompletionStage<String>) invokeOrThrow(minimal, comfut);\n+        cs.toCompletableFuture().complete(\"\");\n \n-            assertFalse(kfut.isDone());\n-            assertFalse(comfut.isDone());\n-        }\n+        assertFalse(kfut.isDone());\n+        assertFalse(comfut.isDone());\n     }\n \n }\ndiff --git a/clients/src/test/java/org/apache/kafka/common/network/SslTransportLayerTest.java b/clients/src/test/java/org/apache/kafka/common/network/SslTransportLayerTest.java\nindex 8ad4dccc4f244..94baffad0bfff 100644\n--- a/clients/src/test/java/org/apache/kafka/common/network/SslTransportLayerTest.java\n+++ b/clients/src/test/java/org/apache/kafka/common/network/SslTransportLayerTest.java\n@@ -29,7 +29,6 @@\n import org.apache.kafka.common.security.auth.SecurityProtocol;\n import org.apache.kafka.common.security.ssl.DefaultSslEngineFactory;\n import org.apache.kafka.common.security.ssl.SslFactory;\n-import org.apache.kafka.common.utils.Java;\n import org.apache.kafka.common.utils.LogContext;\n import org.apache.kafka.common.utils.Time;\n import org.apache.kafka.common.utils.Utils;\n@@ -146,9 +145,7 @@ public Stream<? extends Arguments> provideArguments(ExtensionContext context) th\n             List<Arguments> parameters = new ArrayList<>();\n             parameters.add(Arguments.of(new Args(\"TLSv1.2\", false)));\n             parameters.add(Arguments.of(new Args(\"TLSv1.2\", true)));\n-            if (Java.IS_JAVA11_COMPATIBLE) {\n-                parameters.add(Arguments.of(new Args(\"TLSv1.3\", false)));\n-            }\n+            parameters.add(Arguments.of(new Args(\"TLSv1.3\", false)));\n             return parameters.stream();\n         }\n     }\ndiff --git a/clients/src/test/java/org/apache/kafka/common/network/SslVersionsTransportLayerTest.java b/clients/src/test/java/org/apache/kafka/common/network/SslVersionsTransportLayerTest.java\nindex be318bcc16432..a1b8213d12962 100644\n--- a/clients/src/test/java/org/apache/kafka/common/network/SslVersionsTransportLayerTest.java\n+++ b/clients/src/test/java/org/apache/kafka/common/network/SslVersionsTransportLayerTest.java\n@@ -20,7 +20,6 @@\n import org.apache.kafka.common.metrics.Metrics;\n import org.apache.kafka.common.security.TestSecurityConfig;\n import org.apache.kafka.common.security.auth.SecurityProtocol;\n-import org.apache.kafka.common.utils.Java;\n import org.apache.kafka.common.utils.LogContext;\n import org.apache.kafka.common.utils.Time;\n import org.apache.kafka.test.TestUtils;\n@@ -54,24 +53,21 @@ public static Stream<Arguments> parameters() {\n         List<Arguments> parameters = new ArrayList<>();\n \n         parameters.add(Arguments.of(Collections.singletonList(\"TLSv1.2\"), Collections.singletonList(\"TLSv1.2\")));\n-\n-        if (Java.IS_JAVA11_COMPATIBLE) {\n-            parameters.add(Arguments.of(Collections.singletonList(\"TLSv1.2\"), Collections.singletonList(\"TLSv1.3\")));\n-            parameters.add(Arguments.of(Collections.singletonList(\"TLSv1.3\"), Collections.singletonList(\"TLSv1.2\")));\n-            parameters.add(Arguments.of(Collections.singletonList(\"TLSv1.3\"), Collections.singletonList(\"TLSv1.3\")));\n-            parameters.add(Arguments.of(Collections.singletonList(\"TLSv1.2\"), Arrays.asList(\"TLSv1.2\", \"TLSv1.3\")));\n-            parameters.add(Arguments.of(Collections.singletonList(\"TLSv1.2\"), Arrays.asList(\"TLSv1.3\", \"TLSv1.2\")));\n-            parameters.add(Arguments.of(Collections.singletonList(\"TLSv1.3\"), Arrays.asList(\"TLSv1.2\", \"TLSv1.3\")));\n-            parameters.add(Arguments.of(Collections.singletonList(\"TLSv1.3\"), Arrays.asList(\"TLSv1.3\", \"TLSv1.2\")));\n-            parameters.add(Arguments.of(Arrays.asList(\"TLSv1.3\", \"TLSv1.2\"), Collections.singletonList(\"TLSv1.3\")));\n-            parameters.add(Arguments.of(Arrays.asList(\"TLSv1.3\", \"TLSv1.2\"), Collections.singletonList(\"TLSv1.2\")));\n-            parameters.add(Arguments.of(Arrays.asList(\"TLSv1.3\", \"TLSv1.2\"), Arrays.asList(\"TLSv1.2\", \"TLSv1.3\")));\n-            parameters.add(Arguments.of(Arrays.asList(\"TLSv1.3\", \"TLSv1.2\"), Arrays.asList(\"TLSv1.3\", \"TLSv1.2\")));\n-            parameters.add(Arguments.of(Arrays.asList(\"TLSv1.2\", \"TLSv1.3\"), Collections.singletonList(\"TLSv1.3\")));\n-            parameters.add(Arguments.of(Arrays.asList(\"TLSv1.2\", \"TLSv1.3\"), Collections.singletonList(\"TLSv1.2\")));\n-            parameters.add(Arguments.of(Arrays.asList(\"TLSv1.2\", \"TLSv1.3\"), Arrays.asList(\"TLSv1.2\", \"TLSv1.3\")));\n-            parameters.add(Arguments.of(Arrays.asList(\"TLSv1.2\", \"TLSv1.3\"), Arrays.asList(\"TLSv1.3\", \"TLSv1.2\")));\n-        }\n+        parameters.add(Arguments.of(Collections.singletonList(\"TLSv1.2\"), Collections.singletonList(\"TLSv1.3\")));\n+        parameters.add(Arguments.of(Collections.singletonList(\"TLSv1.3\"), Collections.singletonList(\"TLSv1.2\")));\n+        parameters.add(Arguments.of(Collections.singletonList(\"TLSv1.3\"), Collections.singletonList(\"TLSv1.3\")));\n+        parameters.add(Arguments.of(Collections.singletonList(\"TLSv1.2\"), Arrays.asList(\"TLSv1.2\", \"TLSv1.3\")));\n+        parameters.add(Arguments.of(Collections.singletonList(\"TLSv1.2\"), Arrays.asList(\"TLSv1.3\", \"TLSv1.2\")));\n+        parameters.add(Arguments.of(Collections.singletonList(\"TLSv1.3\"), Arrays.asList(\"TLSv1.2\", \"TLSv1.3\")));\n+        parameters.add(Arguments.of(Collections.singletonList(\"TLSv1.3\"), Arrays.asList(\"TLSv1.3\", \"TLSv1.2\")));\n+        parameters.add(Arguments.of(Arrays.asList(\"TLSv1.3\", \"TLSv1.2\"), Collections.singletonList(\"TLSv1.3\")));\n+        parameters.add(Arguments.of(Arrays.asList(\"TLSv1.3\", \"TLSv1.2\"), Collections.singletonList(\"TLSv1.2\")));\n+        parameters.add(Arguments.of(Arrays.asList(\"TLSv1.3\", \"TLSv1.2\"), Arrays.asList(\"TLSv1.2\", \"TLSv1.3\")));\n+        parameters.add(Arguments.of(Arrays.asList(\"TLSv1.3\", \"TLSv1.2\"), Arrays.asList(\"TLSv1.3\", \"TLSv1.2\")));\n+        parameters.add(Arguments.of(Arrays.asList(\"TLSv1.2\", \"TLSv1.3\"), Collections.singletonList(\"TLSv1.3\")));\n+        parameters.add(Arguments.of(Arrays.asList(\"TLSv1.2\", \"TLSv1.3\"), Collections.singletonList(\"TLSv1.2\")));\n+        parameters.add(Arguments.of(Arrays.asList(\"TLSv1.2\", \"TLSv1.3\"), Arrays.asList(\"TLSv1.2\", \"TLSv1.3\")));\n+        parameters.add(Arguments.of(Arrays.asList(\"TLSv1.2\", \"TLSv1.3\"), Arrays.asList(\"TLSv1.3\", \"TLSv1.2\")));\n \n         return parameters.stream();\n     }\ndiff --git a/clients/src/test/java/org/apache/kafka/common/utils/JavaTest.java b/clients/src/test/java/org/apache/kafka/common/utils/JavaTest.java\nindex 0b91c831fed1e..6f5a12acfc820 100644\n--- a/clients/src/test/java/org/apache/kafka/common/utils/JavaTest.java\n+++ b/clients/src/test/java/org/apache/kafka/common/utils/JavaTest.java\n@@ -20,7 +20,6 @@\n import org.junit.jupiter.api.BeforeEach;\n import org.junit.jupiter.api.Test;\n \n-import static org.junit.jupiter.api.Assertions.assertEquals;\n import static org.junit.jupiter.api.Assertions.assertFalse;\n import static org.junit.jupiter.api.Assertions.assertTrue;\n \n@@ -69,37 +68,4 @@ public void testLoadKerberosLoginModule() throws ClassNotFoundException {\n                 : \"com.sun.security.auth.module.Krb5LoginModule\";\n         Class.forName(clazz);\n     }\n-\n-    @Test\n-    public void testJavaVersion() {\n-        Java.Version v = Java.parseVersion(\"9\");\n-        assertEquals(9, v.majorVersion);\n-        assertEquals(0, v.minorVersion);\n-        assertTrue(v.isJava9Compatible());\n-\n-        v = Java.parseVersion(\"9.0.1\");\n-        assertEquals(9, v.majorVersion);\n-        assertEquals(0, v.minorVersion);\n-        assertTrue(v.isJava9Compatible());\n-\n-        v = Java.parseVersion(\"9.0.0.15\"); // Azul Zulu\n-        assertEquals(9, v.majorVersion);\n-        assertEquals(0, v.minorVersion);\n-        assertTrue(v.isJava9Compatible());\n-\n-        v = Java.parseVersion(\"9.1\");\n-        assertEquals(9, v.majorVersion);\n-        assertEquals(1, v.minorVersion);\n-        assertTrue(v.isJava9Compatible());\n-\n-        v = Java.parseVersion(\"1.8.0_152\");\n-        assertEquals(1, v.majorVersion);\n-        assertEquals(8, v.minorVersion);\n-        assertFalse(v.isJava9Compatible());\n-\n-        v = Java.parseVersion(\"1.7.0_80\");\n-        assertEquals(1, v.majorVersion);\n-        assertEquals(7, v.minorVersion);\n-        assertFalse(v.isJava9Compatible());\n-    }\n }\ndiff --git a/core/src/test/scala/integration/kafka/api/SslEndToEndAuthorizationTest.scala b/core/src/test/scala/integration/kafka/api/SslEndToEndAuthorizationTest.scala\nindex 11cbf83e178ba..9f2065c42a9c7 100644\n--- a/core/src/test/scala/integration/kafka/api/SslEndToEndAuthorizationTest.scala\n+++ b/core/src/test/scala/integration/kafka/api/SslEndToEndAuthorizationTest.scala\n@@ -25,7 +25,6 @@ import org.apache.kafka.common.config.internals.BrokerSecurityConfigs\n import org.apache.kafka.common.network.ConnectionMode\n import org.apache.kafka.common.security.auth._\n import org.apache.kafka.common.security.authenticator.DefaultKafkaPrincipalBuilder\n-import org.apache.kafka.common.utils.Java\n import org.junit.jupiter.api.{BeforeEach, TestInfo}\n \n import java.util.Optional\n@@ -58,7 +57,7 @@ class SslEndToEndAuthorizationTest extends EndToEndAuthorizationTest {\n \n   override protected def securityProtocol = SecurityProtocol.SSL\n   // Since there are other E2E tests that enable SSL, running this test with TLSv1.3 if supported\n-  private  val tlsProtocol = if (Java.IS_JAVA11_COMPATIBLE) \"TLSv1.3\" else \"TLSv1.2\"\n+  private  val tlsProtocol = \"TLSv1.3\"\n \n   this.serverConfig.setProperty(BrokerSecurityConfigs.SSL_CLIENT_AUTH_CONFIG, \"required\")\n   this.serverConfig.setProperty(BrokerSecurityConfigs.PRINCIPAL_BUILDER_CLASS_CONFIG, classOf[TestPrincipalBuilder].getName)\n",
+  "metadata": {
+    "v2_fetcher_version": 1,
+    "v2_fetched_at_unix": 1777501342,
+    "v2_diff_cap_bytes": 50000,
+    "v2_body_cap_bytes": 8000,
+    "v2_diff_truncated": false,
+    "v2_raw_diff_chars": 27418,
+    "v2_raw_body_chars": 625,
+    "v2_rag_source": "merged_from_v1",
+    "v2_rag_chunks_copied": 8,
+    "joern_enriched": true
+  },
+  "similar_chunks": [
+    {
+      "file": "core/src/test/scala/integration/kafka/api/SaslPlainSslEndToEndAuthorizationTest.scala",
+      "start_line": 16,
+      "end_line": 45,
+      "similarity": 0.8931,
+      "related_to": "core/src/test/scala/integration/kafka/api/SslEndToEndAuthorizationTest.scala",
+      "content_preview": " */\npackage kafka.api\n\nimport kafka.security.JaasTestUtils._\nimport kafka.security.{JaasModule, JaasTestUtils}\nimport kafka.utils.TestUtils\nimport org.apache.kafka.common.config.SaslConfigs\nimport org.apache.kafka.common.config.internals.BrokerSecurityConfigs\nimport org.apache.kafka.common.internals.SecurityManagerCompatibility\nimport org.apache.kafka.common.network.ConnectionMode\nimport org.apache.kafka.common.security.auth._\nimport org.apache.kafka.common.security.authenticator.DefaultKafkaPrincipalBuilder\nimport org.apache.kafka.common.security.plain.PlainAuthenticateCallback\nimport org.apache.kafka.test.TestSslUtils\nimport org.junit.jupiter.api.Assertions.assertTrue\n\nimport java.util\nimport j"
+    },
+    {
+      "file": "clients/src/test/java/org/apache/kafka/common/network/SslSelectorTest.java",
+      "start_line": 16,
+      "end_line": 45,
+      "similarity": 0.8853,
+      "related_to": "clients/src/test/java/org/apache/kafka/common/network/SslTransportLayerTest.java",
+      "content_preview": " */\npackage org.apache.kafka.common.network;\n\nimport org.apache.kafka.common.config.SecurityConfig;\nimport org.apache.kafka.common.memory.MemoryPool;\nimport org.apache.kafka.common.memory.SimpleMemoryPool;\nimport org.apache.kafka.common.metrics.Metrics;\nimport org.apache.kafka.common.security.auth.SecurityProtocol;\nimport org.apache.kafka.common.security.ssl.SslFactory;\nimport org.apache.kafka.common.security.ssl.mock.TestKeyManagerFactory;\nimport org.apache.kafka.common.security.ssl.mock.TestProviderCreator;\nimport org.apache.kafka.common.security.ssl.mock.TestTrustManagerFactory;\nimport org.apache.kafka.common.utils.LogContext;\nimport org.apache.kafka.common.utils.MockTime;\nimport org.apache.ka"
+    },
+    {
+      "file": "core/src/test/scala/integration/kafka/api/SaslScramSslEndToEndAuthorizationTest.scala",
+      "start_line": 16,
+      "end_line": 42,
+      "similarity": 0.8744,
+      "related_to": "core/src/test/scala/integration/kafka/api/SslEndToEndAuthorizationTest.scala",
+      "content_preview": "  */\npackage kafka.api\n\nimport kafka.security.JaasTestUtils\n\nimport java.util.Properties\nimport kafka.utils._\nimport org.apache.kafka.common.security.auth.KafkaPrincipal\nimport org.apache.kafka.common.security.scram.internals.ScramMechanism\nimport org.apache.kafka.metadata.storage.Formatter\nimport org.apache.kafka.test.TestSslUtils\n\nimport scala.jdk.CollectionConverters._\nimport org.junit.jupiter.api.Assertions._\nimport org.junit.jupiter.api.{BeforeEach, Test, TestInfo}\n\nclass SaslScramSslEndToEndAuthorizationTest extends SaslEndToEndAuthorizationTest {\n  override protected def kafkaClientSaslMechanism = \"SCRAM-SHA-256\"\n  override protected def kafkaServerSaslMechanisms = ScramMecha"
+    },
+    {
+      "file": "core/src/test/scala/integration/kafka/api/GroupEndToEndAuthorizationTest.scala",
+      "start_line": 16,
+      "end_line": 44,
+      "similarity": 0.8726,
+      "related_to": "core/src/test/scala/integration/kafka/api/SslEndToEndAuthorizationTest.scala",
+      "content_preview": "  */\npackage kafka.api\n\nimport kafka.api.GroupEndToEndAuthorizationTest._\nimport kafka.security.JaasTestUtils\nimport org.apache.kafka.common.config.internals.BrokerSecurityConfigs\nimport org.apache.kafka.common.security.auth.{AuthenticationContext, KafkaPrincipal, SaslAuthenticationContext}\nimport org.apache.kafka.common.security.authenticator.DefaultKafkaPrincipalBuilder\n\nobject GroupEndToEndAuthorizationTest {\n  val GroupPrincipalType = \"Group\"\n  val ClientGroup = \"testGroup\"\n  class GroupPrincipalBuilder extends DefaultKafkaPrincipalBuilder(null, null) {\n    override def build(context: AuthenticationContext): KafkaPrincipal = {\n      context match {\n        case ctx: SaslAuthenti"
+    },
+    {
+      "file": "core/src/test/scala/integration/kafka/api/SaslGssapiSslEndToEndAuthorizationTest.scala",
+      "start_line": 16,
+      "end_line": 38,
+      "similarity": 0.8649,
+      "related_to": "core/src/test/scala/integration/kafka/api/SslEndToEndAuthorizationTest.scala",
+      "content_preview": "  */\npackage kafka.api\n\nimport kafka.security.JaasTestUtils\nimport org.apache.kafka.common.config.SslConfigs\nimport org.apache.kafka.common.config.internals.BrokerSecurityConfigs\nimport org.apache.kafka.common.security.auth._\nimport org.junit.jupiter.api.Assertions.assertNull\n\nclass SaslGssapiSslEndToEndAuthorizationTest extends SaslEndToEndAuthorizationTest {\n  override val clientPrincipal = new KafkaPrincipal(KafkaPrincipal.USER_TYPE,\n    JaasTestUtils.KAFKA_CLIENT_PRINCIPAL_UNQUALIFIED_NAME)\n  override val kafkaPrincipal = new KafkaPrincipal(KafkaPrincipal.USER_TYPE,\n    JaasTestUtils.KAFKA_SERVER_PRINCIPAL_UNQUALIFIED_NAME)\n\n  override protected def kafkaClientSaslMechanism = \"G"
+    },
+    {
+      "file": "core/src/test/scala/integration/kafka/api/PlaintextEndToEndAuthorizationTest.scala",
+      "start_line": 16,
+      "end_line": 41,
+      "similarity": 0.8516,
+      "related_to": "core/src/test/scala/integration/kafka/api/SslEndToEndAuthorizationTest.scala",
+      "content_preview": " */\npackage kafka.api\n\nimport org.apache.kafka.common.config.internals.BrokerSecurityConfigs\nimport org.apache.kafka.common.network.ListenerName\nimport org.apache.kafka.common.security.auth._\nimport org.apache.kafka.common.security.authenticator.DefaultKafkaPrincipalBuilder\nimport org.apache.kafka.clients.admin.AdminClientConfig\nimport org.junit.jupiter.api.{BeforeEach, Test, TestInfo}\nimport org.junit.jupiter.api.Assertions._\nimport org.apache.kafka.common.errors.TopicAuthorizationException\n\n// This test case uses a separate listener for client and inter-broker communication, from\n// which we derive corresponding principals\nobject PlaintextEndToEndAuthorizationTest {\n  @volatile\n  private var cl"
+    },
+    {
+      "file": "core/src/test/scala/integration/kafka/api/SaslEndToEndAuthorizationTest.scala",
+      "start_line": 16,
+      "end_line": 39,
+      "similarity": 0.8473,
+      "related_to": "core/src/test/scala/integration/kafka/api/SslEndToEndAuthorizationTest.scala",
+      "content_preview": "  */\npackage kafka.api\n\nimport kafka.utils.TestInfoUtils\nimport org.apache.kafka.clients.consumer.ConsumerConfig\nimport org.apache.kafka.common.config.SaslConfigs\nimport org.apache.kafka.common.security.auth.SecurityProtocol\nimport org.apache.kafka.common.errors.{GroupAuthorizationException, TopicAuthorizationException}\nimport org.junit.jupiter.api.{BeforeEach, TestInfo, Timeout}\nimport org.junit.jupiter.api.Assertions.{assertEquals, assertTrue, fail}\nimport org.junit.jupiter.params.ParameterizedTest\nimport org.junit.jupiter.params.provider.MethodSource\n\nabstract class SaslEndToEndAuthorizationTest extends EndToEndAuthorizationTest {\n  override protected def securityProtocol = Secur"
+    },
+    {
+      "file": "core/src/test/scala/integration/kafka/api/SaslOAuthBearerSslEndToEndAuthorizationTest.scala",
+      "start_line": 16,
+      "end_line": 28,
+      "similarity": 0.8428,
+      "related_to": "core/src/test/scala/integration/kafka/api/SslEndToEndAuthorizationTest.scala",
+      "content_preview": " */\npackage kafka.api\n\nimport kafka.security.JaasTestUtils\nimport org.apache.kafka.common.security.auth._\n\nclass SaslOAuthBearerSslEndToEndAuthorizationTest extends SaslEndToEndAuthorizationTest {\n  override protected def kafkaClientSaslMechanism = \"OAUTHBEARER\"\n  override protected def kafkaServerSaslMechanisms = List(kafkaClientSaslMechanism)\n  override val clientPrincipal = new KafkaPrincipal(KafkaPrincipal.USER_TYPE, JaasTestUtils.KAFKA_OAUTH_BEARER_USER)\n  override val kafkaPrincipal = new KafkaPrincipal(KafkaPrincipal.USER_TYPE, JaasTestUtils.KAFKA_OAUTH_BEARER_ADMIN)\n}\n"
+    }
+  ],
+  "rag_evidence": {
+    "similar_code": [
+      {
+        "file": "core/src/test/scala/integration/kafka/api/SaslPlainSslEndToEndAuthorizationTest.scala",
+        "start_line": 16,
+        "end_line": 45,
+        "similarity": 0.8931,
+        "related_to": "core/src/test/scala/integration/kafka/api/SslEndToEndAuthorizationTest.scala",
+        "content_preview": " */\npackage kafka.api\n\nimport kafka.security.JaasTestUtils._\nimport kafka.security.{JaasModule, JaasTestUtils}\nimport kafka.utils.TestUtils\nimport org.apache.kafka.common.config.SaslConfigs\nimport org.apache.kafka.common.config.internals.BrokerSecurityConfigs\nimport org.apache.kafka.common.internals.SecurityManagerCompatibility\nimport org.apache.kafka.common.network.ConnectionMode\nimport org.apache.kafka.common.security.auth._\nimport org.apache.kafka.common.security.authenticator.DefaultKafkaPrincipalBuilder\nimport org.apache.kafka.common.security.plain.PlainAuthenticateCallback\nimport org.apache.kafka.test.TestSslUtils\nimport org.junit.jupiter.api.Assertions.assertTrue\n\nimport java.util\nimport j"
+      },
+      {
+        "file": "clients/src/test/java/org/apache/kafka/common/network/SslSelectorTest.java",
+        "start_line": 16,
+        "end_line": 45,
+        "similarity": 0.8853,
+        "related_to": "clients/src/test/java/org/apache/kafka/common/network/SslTransportLayerTest.java",
+        "content_preview": " */\npackage org.apache.kafka.common.network;\n\nimport org.apache.kafka.common.config.SecurityConfig;\nimport org.apache.kafka.common.memory.MemoryPool;\nimport org.apache.kafka.common.memory.SimpleMemoryPool;\nimport org.apache.kafka.common.metrics.Metrics;\nimport org.apache.kafka.common.security.auth.SecurityProtocol;\nimport org.apache.kafka.common.security.ssl.SslFactory;\nimport org.apache.kafka.common.security.ssl.mock.TestKeyManagerFactory;\nimport org.apache.kafka.common.security.ssl.mock.TestProviderCreator;\nimport org.apache.kafka.common.security.ssl.mock.TestTrustManagerFactory;\nimport org.apache.kafka.common.utils.LogContext;\nimport org.apache.kafka.common.utils.MockTime;\nimport org.apache.ka"
+      },
+      {
+        "file": "core/src/test/scala/integration/kafka/api/SaslScramSslEndToEndAuthorizationTest.scala",
+        "start_line": 16,
+        "end_line": 42,
+        "similarity": 0.8744,
+        "related_to": "core/src/test/scala/integration/kafka/api/SslEndToEndAuthorizationTest.scala",
+        "content_preview": "  */\npackage kafka.api\n\nimport kafka.security.JaasTestUtils\n\nimport java.util.Properties\nimport kafka.utils._\nimport org.apache.kafka.common.security.auth.KafkaPrincipal\nimport org.apache.kafka.common.security.scram.internals.ScramMechanism\nimport org.apache.kafka.metadata.storage.Formatter\nimport org.apache.kafka.test.TestSslUtils\n\nimport scala.jdk.CollectionConverters._\nimport org.junit.jupiter.api.Assertions._\nimport org.junit.jupiter.api.{BeforeEach, Test, TestInfo}\n\nclass SaslScramSslEndToEndAuthorizationTest extends SaslEndToEndAuthorizationTest {\n  override protected def kafkaClientSaslMechanism = \"SCRAM-SHA-256\"\n  override protected def kafkaServerSaslMechanisms = ScramMecha"
+      },
+      {
+        "file": "core/src/test/scala/integration/kafka/api/GroupEndToEndAuthorizationTest.scala",
+        "start_line": 16,
+        "end_line": 44,
+        "similarity": 0.8726,
+        "related_to": "core/src/test/scala/integration/kafka/api/SslEndToEndAuthorizationTest.scala",
+        "content_preview": "  */\npackage kafka.api\n\nimport kafka.api.GroupEndToEndAuthorizationTest._\nimport kafka.security.JaasTestUtils\nimport org.apache.kafka.common.config.internals.BrokerSecurityConfigs\nimport org.apache.kafka.common.security.auth.{AuthenticationContext, KafkaPrincipal, SaslAuthenticationContext}\nimport org.apache.kafka.common.security.authenticator.DefaultKafkaPrincipalBuilder\n\nobject GroupEndToEndAuthorizationTest {\n  val GroupPrincipalType = \"Group\"\n  val ClientGroup = \"testGroup\"\n  class GroupPrincipalBuilder extends DefaultKafkaPrincipalBuilder(null, null) {\n    override def build(context: AuthenticationContext): KafkaPrincipal = {\n      context match {\n        case ctx: SaslAuthenti"
+      },
+      {
+        "file": "core/src/test/scala/integration/kafka/api/SaslGssapiSslEndToEndAuthorizationTest.scala",
+        "start_line": 16,
+        "end_line": 38,
+        "similarity": 0.8649,
+        "related_to": "core/src/test/scala/integration/kafka/api/SslEndToEndAuthorizationTest.scala",
+        "content_preview": "  */\npackage kafka.api\n\nimport kafka.security.JaasTestUtils\nimport org.apache.kafka.common.config.SslConfigs\nimport org.apache.kafka.common.config.internals.BrokerSecurityConfigs\nimport org.apache.kafka.common.security.auth._\nimport org.junit.jupiter.api.Assertions.assertNull\n\nclass SaslGssapiSslEndToEndAuthorizationTest extends SaslEndToEndAuthorizationTest {\n  override val clientPrincipal = new KafkaPrincipal(KafkaPrincipal.USER_TYPE,\n    JaasTestUtils.KAFKA_CLIENT_PRINCIPAL_UNQUALIFIED_NAME)\n  override val kafkaPrincipal = new KafkaPrincipal(KafkaPrincipal.USER_TYPE,\n    JaasTestUtils.KAFKA_SERVER_PRINCIPAL_UNQUALIFIED_NAME)\n\n  override protected def kafkaClientSaslMechanism = \"G"
+      },
+      {
+        "file": "core/src/test/scala/integration/kafka/api/PlaintextEndToEndAuthorizationTest.scala",
+        "start_line": 16,
+        "end_line": 41,
+        "similarity": 0.8516,
+        "related_to": "core/src/test/scala/integration/kafka/api/SslEndToEndAuthorizationTest.scala",
+        "content_preview": " */\npackage kafka.api\n\nimport org.apache.kafka.common.config.internals.BrokerSecurityConfigs\nimport org.apache.kafka.common.network.ListenerName\nimport org.apache.kafka.common.security.auth._\nimport org.apache.kafka.common.security.authenticator.DefaultKafkaPrincipalBuilder\nimport org.apache.kafka.clients.admin.AdminClientConfig\nimport org.junit.jupiter.api.{BeforeEach, Test, TestInfo}\nimport org.junit.jupiter.api.Assertions._\nimport org.apache.kafka.common.errors.TopicAuthorizationException\n\n// This test case uses a separate listener for client and inter-broker communication, from\n// which we derive corresponding principals\nobject PlaintextEndToEndAuthorizationTest {\n  @volatile\n  private var cl"
+      },
+      {
+        "file": "core/src/test/scala/integration/kafka/api/SaslEndToEndAuthorizationTest.scala",
+        "start_line": 16,
+        "end_line": 39,
+        "similarity": 0.8473,
+        "related_to": "core/src/test/scala/integration/kafka/api/SslEndToEndAuthorizationTest.scala",
+        "content_preview": "  */\npackage kafka.api\n\nimport kafka.utils.TestInfoUtils\nimport org.apache.kafka.clients.consumer.ConsumerConfig\nimport org.apache.kafka.common.config.SaslConfigs\nimport org.apache.kafka.common.security.auth.SecurityProtocol\nimport org.apache.kafka.common.errors.{GroupAuthorizationException, TopicAuthorizationException}\nimport org.junit.jupiter.api.{BeforeEach, TestInfo, Timeout}\nimport org.junit.jupiter.api.Assertions.{assertEquals, assertTrue, fail}\nimport org.junit.jupiter.params.ParameterizedTest\nimport org.junit.jupiter.params.provider.MethodSource\n\nabstract class SaslEndToEndAuthorizationTest extends EndToEndAuthorizationTest {\n  override protected def securityProtocol = Secur"
+      },
+      {
+        "file": "core/src/test/scala/integration/kafka/api/SaslOAuthBearerSslEndToEndAuthorizationTest.scala",
+        "start_line": 16,
+        "end_line": 28,
+        "similarity": 0.8428,
+        "related_to": "core/src/test/scala/integration/kafka/api/SslEndToEndAuthorizationTest.scala",
+        "content_preview": " */\npackage kafka.api\n\nimport kafka.security.JaasTestUtils\nimport org.apache.kafka.common.security.auth._\n\nclass SaslOAuthBearerSslEndToEndAuthorizationTest extends SaslEndToEndAuthorizationTest {\n  override protected def kafkaClientSaslMechanism = \"OAUTHBEARER\"\n  override protected def kafkaServerSaslMechanisms = List(kafkaClientSaslMechanism)\n  override val clientPrincipal = new KafkaPrincipal(KafkaPrincipal.USER_TYPE, JaasTestUtils.KAFKA_OAUTH_BEARER_USER)\n  override val kafkaPrincipal = new KafkaPrincipal(KafkaPrincipal.USER_TYPE, JaasTestUtils.KAFKA_OAUTH_BEARER_ADMIN)\n}\n"
+      }
+    ]
+  },
+  "callers": [
+    {
+      "path": "main/java/org/apache/kafka/common/config/ConfigDef.java",
+      "from_function": "withClientSslSupport",
+      "calls_function": "addClientSslSupport",
+      "caller_line": 493,
+      "callee_file": "main/java/org/apache/kafka/common/config/SslConfigs.java",
+      "callee_line": 126
+    },
+    {
+      "path": "main/java/org/apache/kafka/common/internals/KafkaCompletableFuture.java",
+      "from_function": "complete",
+      "calls_function": "erroneousCompletionException",
+      "caller_line": 52,
+      "callee_file": "main/java/org/apache/kafka/common/internals/KafkaCompletableFuture.java",
+      "callee_line": 92
+    },
+    {
+      "path": "main/java/org/apache/kafka/common/internals/KafkaCompletableFuture.java",
+      "from_function": "completeExceptionally",
+      "calls_function": "erroneousCompletionException",
+      "caller_line": 57,
+      "callee_file": "main/java/org/apache/kafka/common/internals/KafkaCompletableFuture.java",
+      "callee_line": 92
+    },
+    {
+      "path": "main/java/org/apache/kafka/common/internals/KafkaCompletableFuture.java",
+      "from_function": "obtrudeValue",
+      "calls_function": "erroneousCompletionException",
+      "caller_line": 62,
+      "callee_file": "main/java/org/apache/kafka/common/internals/KafkaCompletableFuture.java",
+      "callee_line": 92
+    },
+    {
+      "path": "main/java/org/apache/kafka/common/internals/KafkaCompletableFuture.java",
+      "from_function": "obtrudeException",
+      "calls_function": "erroneousCompletionException",
+      "caller_line": 67,
+      "callee_file": "main/java/org/apache/kafka/common/internals/KafkaCompletableFuture.java",
+      "callee_line": 92
+    },
+    {
+      "path": "main/java/org/apache/kafka/common/internals/KafkaCompletableFuture.java",
+      "from_function": "completeAsync",
+      "calls_function": "erroneousCompletionException",
+      "caller_line": 77,
+      "callee_file": "main/java/org/apache/kafka/common/internals/KafkaCompletableFuture.java",
+      "callee_line": 92
+    },
+    {
+      "path": "main/java/org/apache/kafka/common/internals/KafkaCompletableFuture.java",
+      "from_function": "completeAsync",
+      "calls_function": "erroneousCompletionException",
+      "caller_line": 82,
+      "callee_file": "main/java/org/apache/kafka/common/internals/KafkaCompletableFuture.java",
+      "callee_line": 92
+    },
+    {
+      "path": "main/java/org/apache/kafka/common/internals/KafkaCompletableFuture.java",
+      "from_function": "completeOnTimeout",
+      "calls_function": "erroneousCompletionException",
+      "caller_line": 87,
+      "callee_file": "main/java/org/apache/kafka/common/internals/KafkaCompletableFuture.java",
+      "callee_line": 92
+    },
+    {
+      "path": "main/java/org/apache/kafka/common/internals/KafkaFutureImpl.java",
+      "from_function": "complete",
+      "calls_function": "kafkaComplete",
+      "caller_line": 110,
+      "callee_file": "main/java/org/apache/kafka/common/internals/KafkaCompletableFuture.java",
+      "callee_line": 38
+    },
+    {
+      "path": "main/java/org/apache/kafka/common/internals/KafkaFutureImpl.java",
+      "from_function": "completeExceptionally",
+      "calls_function": "kafkaCompleteExceptionally",
+      "caller_line": 115,
+      "callee_file": "main/java/org/apache/kafka/common/internals/KafkaCompletableFuture.java",
+      "callee_line": 48
+    },
+    {
+      "path": "main/java/org/apache/kafka/common/internals/KafkaFutureImpl.java",
+      "from_function": "<lambda>1",
+      "calls_function": "kafkaCompleteExceptionally",
+      "caller_line": 82,
+      "callee_file": "main/java/org/apache/kafka/common/internals/KafkaCompletableFuture.java",
+      "callee_line": 48
+    },
+    {
+      "path": "main/java/org/apache/kafka/common/internals/KafkaFutureImpl.java",
+      "from_function": "<lambda>1",
+      "calls_function": "kafkaComplete",
+      "caller_line": 82,
+      "callee_file": "main/java/org/apache/kafka/common/internals/KafkaCompletableFuture.java",
+      "callee_line": 38
+    },
+    {
+      "path": "main/java/org/apache/kafka/common/network/SslTransportLayer.java",
+      "from_function": "close",
+      "calls_function": "unmap",
+      "caller_line": 177,
+      "callee_file": "main/java/org/apache/kafka/common/utils/ByteBufferUnmapper.java",
+      "callee_line": 69
+    },
+    {
+      "path": "main/java/org/apache/kafka/common/record/DefaultRecordBatch.java",
+      "from_function": "computeChecksum",
+      "calls_function": "compute",
+      "caller_line": 398,
+      "callee_file": "main/java/org/apache/kafka/common/utils/Crc32C.java",
+      "callee_line": 55
+    },
+    {
+      "path": "main/java/org/apache/kafka/common/record/DefaultRecordBatch.java",
+      "from_function": "writeHeader",
+      "calls_function": "compute",
+      "caller_line": 459,
+      "callee_file": "main/java/org/apache/kafka/common/utils/Crc32C.java",
+      "callee_line": 55
+    },
+    {
+      "path": "main/java/org/apache/kafka/common/record/LegacyRecord.java",
+      "from_function": "crc32",
+      "calls_function": "update",
+      "caller_line": 507,
+      "callee_file": "main/java/org/apache/kafka/common/utils/Checksums.java",
+      "callee_line": 44
+    },
+    {
+      "path": "main/java/org/apache/kafka/common/record/LegacyRecord.java",
+      "from_function": "computeChecksum",
+      "calls_function": "updateLong",
+      "caller_line": 516,
+      "callee_file": "main/java/org/apache/kafka/common/utils/Checksums.java",
+      "callee_line": 77
+    },
+    {
+      "path": "main/java/org/apache/kafka/common/record/LegacyRecord.java",
+      "from_function": "computeChecksum",
+      "calls_function": "updateInt",
+      "caller_line": 516,
+      "callee_file": "main/java/org/apache/kafka/common/utils/Checksums.java",
+      "callee_line": 70
+    },
+    {
+      "path": "main/java/org/apache/kafka/common/record/LegacyRecord.java",
+      "from_function": "computeChecksum",
+      "calls_function": "update",
+      "caller_line": 516,
+      "callee_file": "main/java/org/apache/kafka/common/utils/Checksums.java",
+      "callee_line": 36
+    },
+    {
+      "path": "main/java/org/apache/kafka/common/utils/Checksums.java",
+      "from_function": "update",
+      "calls_function": "update",
+      "caller_line": 36,
+      "callee_file": "main/java/org/apache/kafka/common/utils/Checksums.java",
+      "callee_line": 44
+    },
+    {
+      "path": "main/java/org/apache/kafka/common/utils/Crc32C.java",
+      "from_function": "compute",
+      "calls_function": "update",
+      "caller_line": 55,
+      "callee_file": "main/java/org/apache/kafka/common/utils/Checksums.java",
+      "callee_line": 44
+    },
+    {
+      "path": "main/java/org/apache/kafka/common/utils/Java.java",
+      "from_function": "isIbmJdkSemeru",
+      "calls_function": "isIbmJdk",
+      "caller_line": 27,
+      "callee_file": "main/java/org/apache/kafka/common/utils/Java.java",
+      "callee_line": 23
+    }
+  ],
+  "call_graph_edges": [
+    {
+      "from": "main/java/org/apache/kafka/common/config/ConfigDef.java::withClientSslSupport",
+      "to": "main/java/org/apache/kafka/common/config/SslConfigs.java::addClientSslSupport"
+    },
+    {
+      "from": "main/java/org/apache/kafka/common/internals/KafkaCompletableFuture.java::complete",
+      "to": "main/java/org/apache/kafka/common/internals/KafkaCompletableFuture.java::erroneousCompletionException"
+    },
+    {
+      "from": "main/java/org/apache/kafka/common/internals/KafkaCompletableFuture.java::completeExceptionally",
+      "to": "main/java/org/apache/kafka/common/internals/KafkaCompletableFuture.java::erroneousCompletionException"
+    },
+    {
+      "from": "main/java/org/apache/kafka/common/internals/KafkaCompletableFuture.java::obtrudeValue",
+      "to": "main/java/org/apache/kafka/common/internals/KafkaCompletableFuture.java::erroneousCompletionException"
+    },
+    {
+      "from": "main/java/org/apache/kafka/common/internals/KafkaCompletableFuture.java::obtrudeException",
+      "to": "main/java/org/apache/kafka/common/internals/KafkaCompletableFuture.java::erroneousCompletionException"
+    },
+    {
+      "from": "main/java/org/apache/kafka/common/internals/KafkaCompletableFuture.java::completeAsync",
+      "to": "main/java/org/apache/kafka/common/internals/KafkaCompletableFuture.java::erroneousCompletionException"
+    },
+    {
+      "from": "main/java/org/apache/kafka/common/internals/KafkaCompletableFuture.java::completeAsync",
+      "to": "main/java/org/apache/kafka/common/internals/KafkaCompletableFuture.java::erroneousCompletionException"
+    },
+    {
+      "from": "main/java/org/apache/kafka/common/internals/KafkaCompletableFuture.java::completeOnTimeout",
+      "to": "main/java/org/apache/kafka/common/internals/KafkaCompletableFuture.java::erroneousCompletionException"
+    },
+    {
+      "from": "main/java/org/apache/kafka/common/internals/KafkaFutureImpl.java::complete",
+      "to": "main/java/org/apache/kafka/common/internals/KafkaCompletableFuture.java::kafkaComplete"
+    },
+    {
+      "from": "main/java/org/apache/kafka/common/internals/KafkaFutureImpl.java::completeExceptionally",
+      "to": "main/java/org/apache/kafka/common/internals/KafkaCompletableFuture.java::kafkaCompleteExceptionally"
+    },
+    {
+      "from": "main/java/org/apache/kafka/common/internals/KafkaFutureImpl.java::<lambda>1",
+      "to": "main/java/org/apache/kafka/common/internals/KafkaCompletableFuture.java::kafkaCompleteExceptionally"
+    },
+    {
+      "from": "main/java/org/apache/kafka/common/internals/KafkaFutureImpl.java::<lambda>1",
+      "to": "main/java/org/apache/kafka/common/internals/KafkaCompletableFuture.java::kafkaComplete"
+    },
+    {
+      "from": "main/java/org/apache/kafka/common/network/SslTransportLayer.java::close",
+      "to": "main/java/org/apache/kafka/common/utils/ByteBufferUnmapper.java::unmap"
+    },
+    {
+      "from": "main/java/org/apache/kafka/common/record/DefaultRecordBatch.java::computeChecksum",
+      "to": "main/java/org/apache/kafka/common/utils/Crc32C.java::compute"
+    },
+    {
+      "from": "main/java/org/apache/kafka/common/record/DefaultRecordBatch.java::writeHeader",
+      "to": "main/java/org/apache/kafka/common/utils/Crc32C.java::compute"
+    },
+    {
+      "from": "main/java/org/apache/kafka/common/record/LegacyRecord.java::crc32",
+      "to": "main/java/org/apache/kafka/common/utils/Checksums.java::update"
+    },
+    {
+      "from": "main/java/org/apache/kafka/common/record/LegacyRecord.java::computeChecksum",
+      "to": "main/java/org/apache/kafka/common/utils/Checksums.java::updateLong"
+    },
+    {
+      "from": "main/java/org/apache/kafka/common/record/LegacyRecord.java::computeChecksum",
+      "to": "main/java/org/apache/kafka/common/utils/Checksums.java::updateInt"
+    },
+    {
+      "from": "main/java/org/apache/kafka/common/record/LegacyRecord.java::computeChecksum",
+      "to": "main/java/org/apache/kafka/common/utils/Checksums.java::update"
+    },
+    {
+      "from": "main/java/org/apache/kafka/common/utils/Checksums.java::update",
+      "to": "main/java/org/apache/kafka/common/utils/Checksums.java::update"
+    },
+    {
+      "from": "main/java/org/apache/kafka/common/utils/Crc32C.java::compute",
+      "to": "main/java/org/apache/kafka/common/utils/Checksums.java::update"
+    },
+    {
+      "from": "main/java/org/apache/kafka/common/utils/Java.java::isIbmJdkSemeru",
+      "to": "main/java/org/apache/kafka/common/utils/Java.java::isIbmJdk"
+    }
+  ],
+  "functions_in_changed_files": [
+    {
+      "name": "addClientSslSupport",
+      "full_name": "org.apache.kafka.common.config.SslConfigs.addClientSslSupport:void(org.apache.kafka.common.config.ConfigDef)",
+      "file": "main/java/org/apache/kafka/common/config/SslConfigs.java",
+      "start_line": 126,
+      "end_line": 146,
+      "signature": "void(org.apache.kafka.common.config.ConfigDef)"
+    },
+    {
+      "name": "kafkaComplete",
+      "full_name": "org.apache.kafka.common.internals.KafkaCompletableFuture.kafkaComplete:boolean(java.lang.Object)",
+      "file": "main/java/org/apache/kafka/common/internals/KafkaCompletableFuture.java",
+      "start_line": 38,
+      "end_line": 40,
+      "signature": "boolean(java.lang.Object)"
+    },
+    {
+      "name": "kafkaCompleteExceptionally",
+      "full_name": "org.apache.kafka.common.internals.KafkaCompletableFuture.kafkaCompleteExceptionally:boolean(java.lang.Throwable)",
+      "file": "main/java/org/apache/kafka/common/internals/KafkaCompletableFuture.java",
+      "start_line": 48,
+      "end_line": 50,
+      "signature": "boolean(java.lang.Throwable)"
+    },
+    {
+      "name": "complete",
+      "full_name": "org.apache.kafka.common.internals.KafkaCompletableFuture.complete:boolean(java.lang.Object)",
+      "file": "main/java/org/apache/kafka/common/internals/KafkaCompletableFuture.java",
+      "start_line": 52,
+      "end_line": 55,
+      "signature": "boolean(java.lang.Object)"
+    },
+    {
+      "name": "completeExceptionally",
+      "full_name": "org.apache.kafka.common.internals.KafkaCompletableFuture.completeExceptionally:boolean(java.lang.Throwable)",
+      "file": "main/java/org/apache/kafka/common/internals/KafkaCompletableFuture.java",
+      "start_line": 57,
+      "end_line": 60,
+      "signature": "boolean(java.lang.Throwable)"
+    },
+    {
+      "name": "obtrudeValue",
+      "full_name": "org.apache.kafka.common.internals.KafkaCompletableFuture.obtrudeValue:void(java.lang.Object)",
+      "file": "main/java/org/apache/kafka/common/internals/KafkaCompletableFuture.java",
+      "start_line": 62,
+      "end_line": 65,
+      "signature": "void(java.lang.Object)"
+    },
+    {
+      "name": "obtrudeException",
+      "full_name": "org.apache.kafka.common.internals.KafkaCompletableFuture.obtrudeException:void(java.lang.Throwable)",
+      "file": "main/java/org/apache/kafka/common/internals/KafkaCompletableFuture.java",
+      "start_line": 67,
+      "end_line": 70,
+      "signature": "void(java.lang.Throwable)"
+    },
+    {
+      "name": "newIncompleteFuture",
+      "full_name": "org.apache.kafka.common.internals.KafkaCompletableFuture.newIncompleteFuture:java.util.concurrent.CompletableFuture()",
+      "file": "main/java/org/apache/kafka/common/internals/KafkaCompletableFuture.java",
+      "start_line": 72,
+      "end_line": 75,
+      "signature": "java.util.concurrent.CompletableFuture()"
+    },
+    {
+      "name": "completeAsync",
+      "full_name": "org.apache.kafka.common.internals.KafkaCompletableFuture.completeAsync:java.util.concurrent.CompletableFuture(java.util.function.Supplier,java.util.concurrent.Executor)",
+      "file": "main/java/org/apache/kafka/common/internals/KafkaCompletableFuture.java",
+      "start_line": 77,
+      "end_line": 80,
+      "signature": "java.util.concurrent.CompletableFuture(java.util.function.Supplier,java.util.concurrent.Executor)"
+    },
+    {
+      "name": "completeAsync",
+      "full_name": "org.apache.kafka.common.internals.KafkaCompletableFuture.completeAsync:java.util.concurrent.CompletableFuture(java.util.function.Supplier)",
+      "file": "main/java/org/apache/kafka/common/internals/KafkaCompletableFuture.java",
+      "start_line": 82,
+      "end_line": 85,
+      "signature": "java.util.concurrent.CompletableFuture(java.util.function.Supplier)"
+    },
+    {
+      "name": "completeOnTimeout",
+      "full_name": "org.apache.kafka.common.internals.KafkaCompletableFuture.completeOnTimeout:java.util.concurrent.CompletableFuture(java.lang.Object,long,java.util.concurrent.TimeUnit)",
+      "file": "main/java/org/apache/kafka/common/internals/KafkaCompletableFuture.java",
+      "start_line": 87,
+      "end_line": 90,
+      "signature": "java.util.concurrent.CompletableFuture(java.lang.Object,long,java.util.concurrent.TimeUnit)"
+    },
+    {
+      "name": "erroneousCompletionException",
+      "full_name": "org.apache.kafka.common.internals.KafkaCompletableFuture.erroneousCompletionException:java.lang.UnsupportedOperationException()",
+      "file": "main/java/org/apache/kafka/common/internals/KafkaCompletableFuture.java",
+      "start_line": 92,
+      "end_line": 94,
+      "signature": "java.lang.UnsupportedOperationException()"
+    },
+    {
+      "name": "unmap",
+      "full_name": "org.apache.kafka.common.utils.ByteBufferUnmapper.unmap:void(java.lang.String,java.nio.ByteBuffer)",
+      "file": "main/java/org/apache/kafka/common/utils/ByteBufferUnmapper.java",
+      "start_line": 69,
+      "end_line": 80,
+      "signature": "void(java.lang.String,java.nio.ByteBuffer)"
+    },
+    {
+      "name": "lookupUnmapMethodHandle",
+      "full_name": "org.apache.kafka.common.utils.ByteBufferUnmapper.lookupUnmapMethodHandle:java.lang.invoke.MethodHandle()",
+      "file": "main/java/org/apache/kafka/common/utils/ByteBufferUnmapper.java",
+      "start_line": 82,
+      "end_line": 96,
+      "signature": "java.lang.invoke.MethodHandle()"
+    },
+    {
+      "name": "update",
+      "full_name": "org.apache.kafka.common.utils.Checksums.update:void(java.util.zip.Checksum,java.nio.ByteBuffer,int)",
+      "file": "main/java/org/apache/kafka/common/utils/Checksums.java",
+      "start_line": 36,
+      "end_line": 38,
+      "signature": "void(java.util.zip.Checksum,java.nio.ByteBuffer,int)"
+    },
+    {
+      "name": "update",
+      "full_name": "org.apache.kafka.common.utils.Checksums.update:void(java.util.zip.Checksum,java.nio.ByteBuffer,int,int)",
+      "file": "main/java/org/apache/kafka/common/utils/Checksums.java",
+      "start_line": 44,
+      "end_line": 68,
+      "signature": "void(java.util.zip.Checksum,java.nio.ByteBuffer,int,int)"
+    },
+    {
+      "name": "updateInt",
+      "full_name": "org.apache.kafka.common.utils.Checksums.updateInt:void(java.util.zip.Checksum,int)",
+      "file": "main/java/org/apache/kafka/common/utils/Checksums.java",
+      "start_line": 70,
+      "end_line": 75,
+      "signature": "void(java.util.zip.Checksum,int)"
+    },
+    {
+      "name": "updateLong",
+      "full_name": "org.apache.kafka.common.utils.Checksums.updateLong:void(java.util.zip.Checksum,long)",
+      "file": "main/java/org/apache/kafka/common/utils/Checksums.java",
+      "start_line": 77,
+      "end_line": 86,
+      "signature": "void(java.util.zip.Checksum,long)"
+    },
+    {
+      "name": "compute",
+      "full_name": "org.apache.kafka.common.utils.Crc32C.compute:long(byte[],int,int)",
+      "file": "main/java/org/apache/kafka/common/utils/Crc32C.java",
+      "start_line": 41,
+      "end_line": 45,
+      "signature": "long(byte[],int,int)"
+    },
+    {
+      "name": "compute",
+      "full_name": "org.apache.kafka.common.utils.Crc32C.compute:long(java.nio.ByteBuffer,int,int)",
+      "file": "main/java/org/apache/kafka/common/utils/Crc32C.java",
+      "start_line": 55,
+      "end_line": 59,
+      "signature": "long(java.nio.ByteBuffer,int,int)"
+    },
+    {
+      "name": "isIbmJdk",
+      "full_name": "org.apache.kafka.common.utils.Java.isIbmJdk:boolean()",
+      "file": "main/java/org/apache/kafka/common/utils/Java.java",
+      "start_line": 23,
+      "end_line": 25,
+      "signature": "boolean()"
+    },
+    {
+      "name": "isIbmJdkSemeru",
+      "full_name": "org.apache.kafka.common.utils.Java.isIbmJdkSemeru:boolean()",
+      "file": "main/java/org/apache/kafka/common/utils/Java.java",
+      "start_line": 27,
+      "end_line": 29,
+      "signature": "boolean()"
+    }
+  ]
+}

@@ -1,0 +1,68 @@
+{
+  "pr": {
+    "number": 22269,
+    "title": "KAFKA-20572: Fix NPE when using listener-prefixed SSL configs",
+    "body": "Fixes NPE when starting Kafka Connect 4.2.0 with listener-prefixed SSL\nconfigs.\n\nJIRA: https://issues.apache.org/jira/browse/KAFKA-20572\n\nThis is a regression introduced on\nhttps://github.com/apache/kafka/pull/20334\n\nReviewers: Chia-Ping Tsai <chia7712@gmail.com>\n",
+    "url": "https://github.com/apache/kafka/pull/22269",
+    "repo": "apache/kafka",
+    "base_branch": "trunk",
+    "head_branch": "KAFKA-20572-connect-ssl-npe",
+    "merged_at": "2026-05-13T02:32:38Z",
+    "state": "MERGED"
+  },
+  "changed_files": [
+    {
+      "path": "connect/runtime/src/main/java/org/apache/kafka/connect/runtime/rest/util/SSLUtils.java",
+      "language": "java",
+      "added": 1,
+      "deleted": 1
+    },
+    {
+      "path": "connect/runtime/src/test/java/org/apache/kafka/connect/runtime/rest/util/SSLUtilsTest.java",
+      "language": "java",
+      "added": 31,
+      "deleted": 0
+    }
+  ],
+  "nearest_tests": [
+    {
+      "path": "connect/runtime/src/test/java/org/apache/kafka/connect/runtime/rest/util/SSLUtilsTest.java",
+      "relationship": "tests",
+      "source_file": "connect/runtime/src/main/java/org/apache/kafka/connect/runtime/rest/util/SSLUtils.java"
+    }
+  ],
+  "dependent_files": [
+    {
+      "path": "connect/runtime/src/test/java/org/apache/kafka/connect/integration/RestForwardingIntegrationTest.java",
+      "relationship": "imports",
+      "source_file": "connect/runtime/src/main/java/org/apache/kafka/connect/runtime/rest/util/SSLUtils.java"
+    },
+    {
+      "path": "connect/runtime/src/test/java/org/apache/kafka/connect/runtime/rest/util/SSLUtilsTest.java",
+      "relationship": "imports",
+      "source_file": "connect/runtime/src/main/java/org/apache/kafka/connect/runtime/rest/util/SSLUtils.java"
+    },
+    {
+      "path": "connect/runtime/src/main/java/org/apache/kafka/connect/runtime/rest/RestServer.java",
+      "relationship": "imports",
+      "source_file": "connect/runtime/src/main/java/org/apache/kafka/connect/runtime/rest/util/SSLUtils.java"
+    },
+    {
+      "path": "connect/runtime/src/main/java/org/apache/kafka/connect/runtime/rest/RestClient.java",
+      "relationship": "imports",
+      "source_file": "connect/runtime/src/main/java/org/apache/kafka/connect/runtime/rest/util/SSLUtils.java"
+    }
+  ],
+  "callers": [],
+  "call_graph_edges": [],
+  "full_diff": "diff --git a/connect/runtime/src/main/java/org/apache/kafka/connect/runtime/rest/util/SSLUtils.java b/connect/runtime/src/main/java/org/apache/kafka/connect/runtime/rest/util/SSLUtils.java\nindex 83a175e8d5fff..a8863f19be7b4 100644\n--- a/connect/runtime/src/main/java/org/apache/kafka/connect/runtime/rest/util/SSLUtils.java\n+++ b/connect/runtime/src/main/java/org/apache/kafka/connect/runtime/rest/util/SSLUtils.java\n@@ -135,7 +135,7 @@ protected static void configureSslContextFactoryAlgorithms(SslContextFactory ssl\n \n         List<String> sslCipherSuites = (List<String>) sslConfigValues.get(SslConfigs.SSL_CIPHER_SUITES_CONFIG);\n \n-        if (!sslCipherSuites.isEmpty())\n+        if (sslCipherSuites != null && !sslCipherSuites.isEmpty())\n             ssl.setIncludeCipherSuites(sslCipherSuites.toArray(new String[0]));\n \n         ssl.setKeyManagerFactoryAlgorithm((String) getOrDefault(sslConfigValues, SslConfigs.SSL_KEYMANAGER_ALGORITHM_CONFIG, SslConfigs.DEFAULT_SSL_KEYMANGER_ALGORITHM));\ndiff --git a/connect/runtime/src/test/java/org/apache/kafka/connect/runtime/rest/util/SSLUtilsTest.java b/connect/runtime/src/test/java/org/apache/kafka/connect/runtime/rest/util/SSLUtilsTest.java\nindex c9eedccdc64ee..d88ca5bda8a8f 100644\n--- a/connect/runtime/src/test/java/org/apache/kafka/connect/runtime/rest/util/SSLUtilsTest.java\n+++ b/connect/runtime/src/test/java/org/apache/kafka/connect/runtime/rest/util/SSLUtilsTest.java\n@@ -30,6 +30,7 @@\n import java.util.Map;\n \n import static org.junit.jupiter.api.Assertions.assertArrayEquals;\n+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;\n import static org.junit.jupiter.api.Assertions.assertEquals;\n import static org.junit.jupiter.api.Assertions.assertFalse;\n import static org.junit.jupiter.api.Assertions.assertTrue;\n@@ -163,6 +164,36 @@ public void testCreateServerSideSslContextFactoryDefaultValues() {\n         assertFalse(ssl.getWantClientAuth());\n     }\n \n+    @Test\n+    public void testCreateServerSideSslContextFactoryWithListenerPrefixedConfigs() {\n+        Map<String, String> configMap = new HashMap<>();\n+        // Use listener-prefixed SSL configs (but not all of them).\n+        // This triggers the \"all\" branch of valuesWithPrefixAllOrNothing,\n+        // which returns only prefixed entries \u2014 keys without a prefixed\n+        // counterpart (like ssl.cipher.suites) will be absent from the map.\n+        configMap.put(\"listeners.https.ssl.keystore.location\", keystorePath);\n+        configMap.put(\"listeners.https.ssl.keystore.password\", keystorePassword.value());\n+        configMap.put(\"listeners.https.ssl.key.password\", keystorePassword.value());\n+        configMap.put(\"listeners.https.ssl.truststore.location\", truststorePath);\n+        configMap.put(\"listeners.https.ssl.truststore.password\", truststorePassword.value());\n+\n+        RestServerConfig config = RestServerConfig.forPublic(null, configMap);\n+        assertDoesNotThrow(() -> SSLUtils.createServerSideSslContextFactory(config));\n+    }\n+\n+    @Test\n+    public void testCreateClientSideSslContextFactoryWithListenerPrefixedConfigs() {\n+        Map<String, String> configMap = new HashMap<>();\n+        configMap.put(\"listeners.https.ssl.keystore.location\", keystorePath);\n+        configMap.put(\"listeners.https.ssl.keystore.password\", keystorePassword.value());\n+        configMap.put(\"listeners.https.ssl.key.password\", keystorePassword.value());\n+        configMap.put(\"listeners.https.ssl.truststore.location\", truststorePath);\n+        configMap.put(\"listeners.https.ssl.truststore.password\", truststorePassword.value());\n+\n+        RestServerConfig config = RestServerConfig.forPublic(null, configMap);\n+        assertDoesNotThrow(() -> SSLUtils.createClientSideSslContextFactory(config));\n+    }\n+\n     @Test\n     public void testCreateClientSideSslContextFactoryDefaultValues() {\n         Map<String, String> configMap = new HashMap<>();\n",
+  "diff_summary": "2 files changed",
+  "similar_chunks": [],
+  "metadata": {
+    "experiment": "confirmatory_kg_2026-05-14",
+    "local_id": 5,
+    "v2_diff_truncated": false,
+    "v2_raw_diff_chars": 3909,
+    "v2_raw_body_chars": 264
+  }
+}

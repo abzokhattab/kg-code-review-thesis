@@ -1,0 +1,1082 @@
+{
+  "version": "python-prs-study-v4-diff-default-r14",
+  "criteria": [
+    {
+      "id": "F3*",
+      "category": "Functionality",
+      "short": "Names the affected code",
+      "description": "Which review better names the specific functions, classes, or files that this change could affect?"
+    },
+    {
+      "id": "F2*",
+      "category": "Functionality",
+      "short": "Describes failure cases",
+      "description": "Which review better describes specific situations where the changed code could fail or misbehave (unusual inputs, empty values, error cases)?"
+    },
+    {
+      "id": "T3",
+      "category": "Tests",
+      "short": "Points to tests",
+      "description": "Which review better points to specific test files, or says which tests should be added or updated?"
+    },
+    {
+      "id": "Q5",
+      "category": "Quality",
+      "short": "Explains why",
+      "description": "Which review better explains WHY something is a problem (\"X could cause Y\"), rather than just saying it is one?"
+    },
+    {
+      "id": "R1",
+      "category": "Readability",
+      "short": "Comments on code clarity",
+      "description": "Which review better comments on how clear and well-organized the code is (naming, structure)?"
+    },
+    {
+      "id": "C6",
+      "category": "Completeness",
+      "short": "Covers the important issues",
+      "description": "Which review better covers the important issues in this PR, without obvious gaps?"
+    }
+  ],
+  "modes": [
+    "baseline_strict",
+    "kg"
+  ],
+  "comparisons": [
+    {
+      "id": "bl_vs_kg",
+      "label": "Baseline vs KG",
+      "mode_a": "baseline_strict",
+      "mode_b": "kg"
+    }
+  ],
+  "prs": [
+    {
+      "pr_id": 101,
+      "repo": "psf/requests",
+      "pr_number": 7433,
+      "title": "Fix `prepare_body` stream detection for `__getattr__`-based file wrappers",
+      "url": "https://github.com/psf/requests/pull/7433",
+      "body": "Resolves #7432 .\r\n\r\nAdd `hasattr(data, \"__iter__\")` as a fallback stream detector:\r\n```python\r\nif (\r\n    isinstance(data, Iterable) or hasattr(data, \"__iter__\")\r\n) and not isinstance(data, (str, bytes, list, tuple, Mapping)):\r\n```\r\nThis catches file-like objects that proxy their interface through `__getattr__`, restoring the 2.33.1 behavior without reverting the isinstance(Iterable) modernization for standard iterables.",
+      "pr_context": "`requests` is the most widely used Python library for making HTTP calls. When you attach data to a request, an internal function called `prepare_body` decides how to send it \u2014 as a plain value or as a stream (read bit by bit). This PR adjusts the check that detects \"file-like\" data so a special kind of wrapper object is correctly treated as a stream, and adds one test for that case.",
+      "diff": "diff --git a/src/requests/models.py b/src/requests/models.py\nindex 4142f2a4bb..57e114866d 100644\n--- a/src/requests/models.py\n+++ b/src/requests/models.py\n@@ -596,9 +596,9 @@ def prepare_body(\n             if not isinstance(body, bytes):\n                 body = body.encode(\"utf-8\")\n \n-        if isinstance(data, Iterable) and not isinstance(\n-            data, (str, bytes, list, tuple, Mapping)\n-        ):\n+        # data that proxies attributes to underlying objects needs hasattr\n+        is_iterable = isinstance(data, Iterable) or hasattr(data, \"__iter__\")\n+        if is_iterable and not isinstance(data, (str, bytes, list, tuple, Mapping)):\n             try:\n                 length = super_len(data)\n             except (TypeError, AttributeError, UnsupportedOperation):\ndiff --git a/tests/test_requests.py b/tests/test_requests.py\nindex 09cd4a388a..571535fe79 100644\n--- a/tests/test_requests.py\n+++ b/tests/test_requests.py\n@@ -2073,6 +2073,21 @@ def __iter__(self):\n \n         assert \"Unable to rewind request body\" in str(e)\n \n+    def test_getattr_proxy_stream_follows_redirect(self, httpbin):\n+        \"\"\"Ensure stream wrappers that don't implement __iter__ directly are still detected.\"\"\"\n+\n+        class AttrProxy:\n+            def __init__(self):\n+                self._file = io.BytesIO(b\"data\")\n+\n+            def __getattr__(self, name):\n+                return getattr(self._file, name)\n+\n+        r = requests.post(\n+            httpbin(\"redirect-to?url=/post&status_code=307\"), data=AttrProxy()\n+        )\n+        assert r.json()[\"data\"] == \"data\"\n+\n     def _patch_adapter_gzipped_redirect(self, session, url):\n         adapter = session.get_adapter(url=url)\n         org_build_response = adapter.build_response\n",
+      "reviews": {
+        "baseline_strict": "## Problems found\n1. The change introduces a new condition in the `prepare_body` function that could affect how data is processed, potentially impacting any caller relying on the previous behavior.\n2. There is a lack of tests for other potential edge cases of file-like objects that might not directly implement `__iter__` but still behave as iterables.\n3. The modification slightly complicates the logic in `prepare_body`, which could affect maintainability if similar patterns are not consistently updated.\n4. The change does not include updates to any API documentation that might describe the behavior of `prepare_body`.\n\n## Files and lines referenced\n- `src/requests/models.py:596-600`\n- `tests/test_requests.py:2073-2088`\n\n## What could go wrong\n- The change could potentially break existing functionality if there are callers that depend on the previous iterable detection logic. The integration risk is primarily with components that pass data to `prepare_body`.\n- There is a risk of regression if other parts of the codebase rely on the old behavior of `prepare_body`.\n- The test added only covers a specific case of `__getattr__` proxying. Other similar cases might not be covered.\n\n## Suggestions\n1. **Fix:** Ensure that the logic in `prepare_body` is consistent with other parts of the codebase that handle iterables.\n2. **Tests:** Add additional tests for other edge cases of file-like objects that might not directly implement `__iter__`.\n3. **Documentation:** Update the API documentation to reflect the new behavior of `prepare_body`.\n4. **Risks:** Evaluate the impact on existing callers and consider adding deprecation warnings if necessary.\n",
+        "kg": "## Problems found\n1. The change could potentially break existing functionality by altering how iterables are detected, especially if there are edge cases not covered by the current logic.\n2. The change might violate existing API contracts if callers expect specific behavior from `prepare_body` when handling non-standard iterables.\n3. The modification could affect other components that rely on `prepare_body`, such as `src/requests/sessions.py` and `src/requests/api.py`, which are critical for request handling.\n4. There is a lack of tests for other `__getattr__`-based proxies that might not implement `__iter__` but still behave like streams.\n\n## Files and lines referenced\n- `src/requests/models.py:596-600`: Modified logic for detecting iterables.\n- `tests/test_requests.py:2073-2087`: Added test for `__getattr__` proxy stream detection.\n- `src/requests/sessions.py`: Calls `prepare_body` and could be affected by changes in stream detection.\n- `src/requests/api.py`: Utilizes `prepare_body` for request preparation.\n- `tests/test_requests.py`: Contains existing tests for request body preparation.\n\n## What could go wrong\n- Potential breakage in request handling if the new iterable detection logic does not cover all edge cases.\n- Existing functionality might regress if the change inadvertently affects other iterable types.\n- Other forms of attribute proxying or iterable-like behavior might not be covered by the current test suite.\n\n## Suggestions\n1. **Fix:** Ensure that the iterable detection logic is robust against all forms of iterable-like objects, possibly by expanding the conditions or adding more specific checks.\n2. **Tests:** Add tests for other `__getattr__`-based proxies and edge cases to ensure comprehensive coverage.\n3. **Risks:** Review the integration points in `src/requests/sessions.py` and `src/requests/api.py` to ensure that changes do not disrupt existing workflows.\n"
+      },
+      "review_summaries": {
+        "baseline_strict": [
+          "Warns that the new stream-detection logic in `prepare_body` could break code that relied on the old behavior.",
+          "Notes the new test in `tests/test_requests.py` covers only the one wrapper type this PR fixes; other file-like objects stay untested.",
+          "Flags that the documentation was not updated for the new behavior."
+        ],
+        "kg": [
+          "Lists `src/requests/sessions.py` and `src/requests/api.py` as files that use `prepare_body` and could be affected.",
+          "Warns the new detection logic could break other code that relied on how `prepare_body` behaved before.",
+          "Notes the new test in `tests/test_requests.py` covers only the one wrapper type this PR fixes; other wrapper types stay untested."
+        ]
+      },
+      "review_unique": {
+        "baseline_strict": [
+          "deprecation warnings"
+        ],
+        "kg": [
+          "src/requests/sessions.py",
+          "src/requests/api.py"
+        ]
+      },
+      "answer_key": {
+        "baseline_strict": {
+          "src/requests/models.py": {
+            "existence": "exists",
+            "relationship": "changed",
+            "basis": "This file is changed by the PR itself."
+          },
+          "tests/test_requests.py": {
+            "existence": "exists",
+            "relationship": "changed",
+            "basis": "This file is changed by the PR itself."
+          }
+        },
+        "kg": {
+          "src/requests/api.py": {
+            "existence": "exists",
+            "relationship": "indirect",
+            "basis": "Public API calls Session.request, which reaches request-body preparation."
+          },
+          "src/requests/models.py": {
+            "existence": "exists",
+            "relationship": "changed",
+            "basis": "This file is changed by the PR itself."
+          },
+          "src/requests/sessions.py": {
+            "existence": "exists",
+            "relationship": "indirect",
+            "basis": "Session prepares a PreparedRequest; PreparedRequest.prepare then calls prepare_body."
+          },
+          "tests/test_requests.py": {
+            "existence": "exists",
+            "relationship": "changed",
+            "basis": "This file is changed by the PR itself."
+          }
+        }
+      },
+      "review_counts": {
+        "baseline_strict": {
+          "components_apis": {
+            "items": [
+              "prepare_body"
+            ],
+            "n": 1
+          },
+          "files": {
+            "items": [
+              "src/requests/models.py",
+              "tests/test_requests.py"
+            ],
+            "n": 2
+          },
+          "test_targets": {
+            "items": [
+              "tests/test_requests.py:2073-2088"
+            ],
+            "n": 1
+          },
+          "edge_cases": {
+            "items": [
+              "file-like objects that might not directly implement __iter__"
+            ],
+            "n": 1
+          },
+          "reasoned_claims": {
+            "items": [
+              "The change could potentially break existing functionality if there are callers that depend on the previous iterable detection logic."
+            ],
+            "n": 1
+          },
+          "total": 6
+        },
+        "kg": {
+          "components_apis": {
+            "items": [
+              "prepare_body",
+              "__getattr__",
+              "src/requests/sessions.py",
+              "src/requests/api.py"
+            ],
+            "n": 4
+          },
+          "files": {
+            "items": [
+              "src/requests/models.py",
+              "tests/test_requests.py",
+              "src/requests/sessions.py",
+              "src/requests/api.py"
+            ],
+            "n": 4
+          },
+          "test_targets": {
+            "items": [
+              "tests/test_requests.py:2073-2087"
+            ],
+            "n": 1
+          },
+          "edge_cases": {
+            "items": [
+              "non-standard iterables",
+              "other __getattr__-based proxies that might not implement __iter__"
+            ],
+            "n": 2
+          },
+          "reasoned_claims": {
+            "items": [
+              "The change could potentially break existing functionality by altering how iterables are detected",
+              "The change might violate existing API contracts if callers expect specific behavior from prepare_body",
+              "The modification could affect other components that rely on prepare_body",
+              "Potential breakage in request handling if the new iterable detection logic does not cover all edge cases",
+              "Existing functionality might regress if the change inadvertently affects other iterable types"
+            ],
+            "n": 5
+          },
+          "total": 16
+        }
+      }
+    },
+    {
+      "pr_id": 102,
+      "repo": "pallets/flask",
+      "pr_number": 5637,
+      "title": "configure and check `request.trusted_hosts`",
+      "url": "https://github.com/pallets/flask/pull/5637",
+      "body": "Add `TRUSTED_HOSTS` config. In `Flask.create_url_adapter`, which is called when creating a `RequestContext`, set `request.trusted_hosts` to the config. Call `get_host` with the config, and assign it to `request.host` to pre-cache the property.\r\n\r\nI considered making `flask.Request.trusted_hosts` a property, so that setting it would trigger validation again automatically. I'm not confident this difference in behavior from Werkzeug, where only accessing `request.host` triggers validation, would be good. If it's a good idea, it can be done in Werkzeug.\r\n\r\nfixes #5636",
+      "pr_context": "`flask` is a popular Python web framework. This PR adds a new setting called `TRUSTED_HOSTS`: a list of website host names the app should accept requests for. When it is set, requests sent to any other host name get rejected with an error. The check runs in the code that prepares every incoming request.",
+      "diff": "diff --git a/CHANGES.rst b/CHANGES.rst\nindex e8820b4f86..6118d981de 100644\n--- a/CHANGES.rst\n+++ b/CHANGES.rst\n@@ -26,6 +26,8 @@ Unreleased\n -   Fix how setting ``host_matching=True`` or ``subdomain_matching=False``\n     interacts with ``SERVER_NAME``. Setting ``SERVER_NAME`` no longer restricts\n     requests to only that domain. :issue:`5553`\n+-   ``Request.trusted_hosts`` is checked during routing, and can be set through\n+    the ``TRUSTED_HOSTS`` config. :issue:`5636`\n \n \n Version 3.0.3\ndiff --git a/docs/config.rst b/docs/config.rst\nindex ed68160e46..5695bbd053 100644\n--- a/docs/config.rst\n+++ b/docs/config.rst\n@@ -258,6 +258,21 @@ The following configuration values are used internally by Flask:\n \n     Default: ``None``\n \n+.. py:data:: TRUSTED_HOSTS\n+\n+    Validate :attr:`.Request.host` and other attributes that use it against\n+    these trusted values. Raise a :exc:`~werkzeug.exceptions.SecurityError` if\n+    the host is invalid, which results in a 400 error. If it is ``None``, all\n+    hosts are valid. Each value is either an exact match, or can start with\n+    a dot ``.`` to match any subdomain.\n+\n+    Validation is done during routing against this value. ``before_request`` and\n+    ``after_request`` callbacks will still be called.\n+\n+    Default: ``None``\n+\n+    .. versionadded:: 3.1\n+\n .. py:data:: SERVER_NAME\n \n     Inform the application what host and port it is bound to.\ndiff --git a/src/flask/app.py b/src/flask/app.py\nindex 166a129fd9..905b247705 100644\n--- a/src/flask/app.py\n+++ b/src/flask/app.py\n@@ -24,6 +24,7 @@\n from werkzeug.routing import Rule\n from werkzeug.serving import is_running_from_reloader\n from werkzeug.wrappers import Response as BaseResponse\n+from werkzeug.wsgi import get_host\n \n from . import cli\n from . import typing as ft\n@@ -183,6 +184,7 @@ class Flask(App):\n             \"SECRET_KEY_FALLBACKS\": None,\n             \"PERMANENT_SESSION_LIFETIME\": timedelta(days=31),\n             \"USE_X_SENDFILE\": False,\n+            \"TRUSTED_HOSTS\": None,\n             \"SERVER_NAME\": None,\n             \"APPLICATION_ROOT\": \"/\",\n             \"SESSION_COOKIE_NAME\": \"session\",\n@@ -441,6 +443,11 @@ def create_url_adapter(self, request: Request | None) -> MapAdapter | None:\n         .. versionadded:: 0.6\n         \"\"\"\n         if request is not None:\n+            if (trusted_hosts := self.config[\"TRUSTED_HOSTS\"]) is not None:\n+                request.trusted_hosts = trusted_hosts\n+\n+            # Check trusted_hosts here until bind_to_environ does.\n+            request.host = get_host(request.environ, request.trusted_hosts)  # pyright: ignore\n             subdomain = None\n             server_name = self.config[\"SERVER_NAME\"]\n \ndiff --git a/tests/test_request.py b/tests/test_request.py\nindex 7839a69339..3e95ab320c 100644\n--- a/tests/test_request.py\n+++ b/tests/test_request.py\n@@ -52,3 +52,19 @@ def test_limit_config(app: Flask):\n         assert r.max_content_length == 90\n         assert r.max_form_memory_size == 30\n         assert r.max_form_parts == 4\n+\n+\n+def test_trusted_hosts_config(app: Flask) -> None:\n+    app.config[\"TRUSTED_HOSTS\"] = [\"example.test\", \".other.test\"]\n+\n+    @app.get(\"/\")\n+    def index() -> str:\n+        return \"\"\n+\n+    client = app.test_client()\n+    r = client.get(base_url=\"http://example.test\")\n+    assert r.status_code == 200\n+    r = client.get(base_url=\"http://a.other.test\")\n+    assert r.status_code == 200\n+    r = client.get(base_url=\"http://bad.test\")\n+    assert r.status_code == 400\n",
+      "reviews": {
+        "baseline_strict": "## Problems found\n1. The change modifies the `create_url_adapter` method in `Flask` class, which is a critical part of request handling. This could affect any component relying on URL routing.\n2. The current tests do not cover scenarios where `TRUSTED_HOSTS` is set to `None`, which is the default value, or where the list contains invalid host patterns.\n3. The introduction of `request.trusted_hosts` directly in `create_url_adapter` may not align with existing architecture patterns, as it introduces host validation logic directly into the URL adapter creation process.\n4. The documentation update in `docs/config.rst` does not provide examples of how to configure `TRUSTED_HOSTS` in different environments (e.g., development vs. production).\n\n## Files and lines referenced\n- `src/flask/app.py:443`: Modification of `create_url_adapter` to include `trusted_hosts`.\n- `tests/test_request.py:56`: Addition of `test_trusted_hosts_config` to test the new configuration.\n- `docs/config.rst:258`: Documentation update for `TRUSTED_HOSTS`.\n\n## What could go wrong\n- Potential breakage in URL routing if `TRUSTED_HOSTS` is misconfigured, leading to unexpected 400 errors.\n- Existing applications that rely on flexible host handling might face issues if `TRUSTED_HOSTS` is inadvertently set.\n- Lack of tests for default `None` configuration and invalid host patterns could lead to unhandled exceptions or security vulnerabilities.\n\n## Suggestions\n1. **Fix:** Ensure that the `create_url_adapter` method's changes are backward compatible by adding checks or fallbacks for existing configurations.\n2. **Tests:** Add tests for scenarios where `TRUSTED_HOSTS` is `None` and where invalid host patterns are provided.\n3. **Documentation:** Enhance the documentation with examples and best practices for configuring `TRUSTED_HOSTS` in different environments.\n4. **Risk Mitigation:** Consider adding logging or warnings when `TRUSTED_HOSTS` is set to potentially problematic values.\n",
+        "kg": "## Problems found\n1. The change could potentially break existing applications that rely on unrestricted host access, as it introduces host validation.\n2. The behavior of `request.host` now depends on the `TRUSTED_HOSTS` configuration, which might not align with existing expectations where all hosts were previously valid.\n3. The change affects the `create_url_adapter` method, which is integral to request handling. This could impact any component relying on request context creation, such as `src/flask/logging.py` and `src/flask/sessions.py`.\n4. There are no tests for scenarios where `TRUSTED_HOSTS` is set to `None` or an empty list, which should allow all hosts.\n\n## Files and lines referenced\n- `src/flask/app.py:443`: Introduction of `TRUSTED_HOSTS` in `create_url_adapter`.\n- `tests/test_request.py:56`: Tests added for specific trusted hosts.\n- `src/flask/logging.py`: Depends on request context, potentially affected by host validation.\n- `tests/test_instance_config.py`: Existing test file that could include tests for `TRUSTED_HOSTS` set to `None`.\n\n## What could go wrong\n- Applications may experience unexpected 400 errors if hosts are not configured correctly in `TRUSTED_HOSTS`.\n- Existing applications without `TRUSTED_HOSTS` configured might face issues if they rely on unrestricted host access.\n- Lack of tests for `TRUSTED_HOSTS` being `None` or empty could lead to unhandled cases in production.\n\n## Suggestions\n1. **Fix:** Ensure backward compatibility by defaulting `TRUSTED_HOSTS` to allow all hosts if not explicitly set.\n2. **Tests:** Add tests for `TRUSTED_HOSTS` being `None` or an empty list in `tests/test_instance_config.py`.\n3. **Documentation:** Update API documentation to clearly state the new behavior and its implications.\n4. **Risk Mitigation:** Communicate the change prominently in release notes to alert users of potential breaking changes.\n"
+      },
+      "review_summaries": {
+        "baseline_strict": [
+          "Cautions that a wrongly configured `TRUSTED_HOSTS` would make the app reject requests with unexpected \"400\" errors (request refused).",
+          "Flags missing tests for `TRUSTED_HOSTS` left unset (`None`) and for invalid host patterns; the test file is `tests/test_request.py`.",
+          "Notes `docs/config.rst` gives no examples for development vs production setups."
+        ],
+        "kg": [
+          "Warns `request.host` behavior now depends on configuration \u2014 a breaking change to call out in release notes.",
+          "Suggests adding tests for `TRUSTED_HOSTS` set to `None` or empty in `tests/test_instance_config.py`.",
+          "Names `src/flask/logging.py` and `src/flask/sessions.py` as files that read request data and could be affected by the new host check."
+        ]
+      },
+      "review_unique": {
+        "baseline_strict": [
+          "docs/config.rst",
+          "invalid host patterns",
+          "logging or warnings"
+        ],
+        "kg": [
+          "src/flask/logging.py",
+          "src/flask/sessions.py",
+          "tests/test_instance_config.py",
+          "release notes",
+          "request.host"
+        ]
+      },
+      "answer_key": {
+        "baseline_strict": {
+          "docs/config.rst": {
+            "existence": "exists",
+            "relationship": "changed",
+            "basis": "This file is changed by the PR itself."
+          },
+          "src/flask/app.py": {
+            "existence": "exists",
+            "relationship": "changed",
+            "basis": "This file is changed by the PR itself."
+          },
+          "tests/test_request.py": {
+            "existence": "exists",
+            "relationship": "changed",
+            "basis": "This file is changed by the PR itself."
+          }
+        },
+        "kg": {
+          "src/flask/app.py": {
+            "existence": "exists",
+            "relationship": "changed",
+            "basis": "This file is changed by the PR itself."
+          },
+          "src/flask/logging.py": {
+            "existence": "exists",
+            "relationship": "exists",
+            "basis": "Reads request.environ; no import of changed app.py or TRUSTED_HOSTS behavior connection was established."
+          },
+          "src/flask/sessions.py": {
+            "existence": "exists",
+            "relationship": "type_only",
+            "basis": "References Flask for typing; no host-validation behavior connection was established."
+          },
+          "tests/test_instance_config.py": {
+            "existence": "exists",
+            "relationship": "exists",
+            "basis": "File exists, but its tests do not establish a TRUSTED_HOSTS connection."
+          },
+          "tests/test_request.py": {
+            "existence": "exists",
+            "relationship": "changed",
+            "basis": "This file is changed by the PR itself."
+          }
+        }
+      },
+      "review_counts": {
+        "baseline_strict": {
+          "components_apis": {
+            "items": [
+              "create_url_adapter",
+              "TRUSTED_HOSTS",
+              "request.trusted_hosts"
+            ],
+            "n": 3
+          },
+          "files": {
+            "items": [
+              "src/flask/app.py",
+              "tests/test_request.py",
+              "docs/config.rst"
+            ],
+            "n": 3
+          },
+          "test_targets": {
+            "items": [
+              "test_trusted_hosts_config"
+            ],
+            "n": 1
+          },
+          "edge_cases": {
+            "items": [
+              "TRUSTED_HOSTS is set to None",
+              "invalid host patterns"
+            ],
+            "n": 2
+          },
+          "reasoned_claims": {
+            "items": [
+              "Potential breakage in URL routing if TRUSTED_HOSTS is misconfigured, leading to unexpected 400 errors",
+              "Existing applications that rely on flexible host handling might face issues if TRUSTED_HOSTS is inadvertently set",
+              "Lack of tests for default None configuration and invalid host patterns could lead to unhandled exceptions or security vulnerabilities"
+            ],
+            "n": 3
+          },
+          "total": 12
+        },
+        "kg": {
+          "components_apis": {
+            "items": [
+              "TRUSTED_HOSTS",
+              "create_url_adapter",
+              "request.host"
+            ],
+            "n": 3
+          },
+          "files": {
+            "items": [
+              "src/flask/app.py",
+              "src/flask/logging.py",
+              "src/flask/sessions.py",
+              "tests/test_request.py",
+              "tests/test_instance_config.py"
+            ],
+            "n": 5
+          },
+          "test_targets": {
+            "items": [
+              "tests/test_request.py:56",
+              "tests/test_instance_config.py"
+            ],
+            "n": 2
+          },
+          "edge_cases": {
+            "items": [
+              "TRUSTED_HOSTS set to None",
+              "TRUSTED_HOSTS set to an empty list"
+            ],
+            "n": 2
+          },
+          "reasoned_claims": {
+            "items": [
+              "The change could potentially break existing applications that rely on unrestricted host access, as it introduces host validation.",
+              "The behavior of request.host now depends on the TRUSTED_HOSTS configuration, which might not align with existing expectations where all hosts were previously valid.",
+              "Applications may experience unexpected 400 errors if hosts are not configured correctly in TRUSTED_HOSTS.",
+              "Existing applications without TRUSTED_HOSTS configured might face issues if they rely on unrestricted host access.",
+              "Lack of tests for TRUSTED_HOSTS being None or empty could lead to unhandled cases in production."
+            ],
+            "n": 5
+          },
+          "total": 17
+        }
+      }
+    },
+    {
+      "pr_id": 103,
+      "repo": "pallets/click",
+      "pr_number": 3493,
+      "title": "Handle empty bytes in echo",
+      "url": "https://github.com/pallets/click/pull/3493",
+      "body": "Previously, an empty byte string could cause an exception if `nl=True`.\r\n\r\nThis PR narrows the type scope of `out`, to `bytes() | bytearray() | str` and handles all cases exhaustively.\r\n\r\nWe also change from `typing.Any`, which effectively disables typing for a variable, to `object`, which is more restrictive. See  https://mypy.readthedocs.io/en/latest/dynamic_typing.html#any-vs-object for more.\r\n\r\nfixes #3487",
+      "pr_context": "`click` is a Python library for building command-line tools. Its `echo` function prints text to the terminal (handling colors, pipes, and other quirks for you). This PR fixes a crash when printing an empty byte string, and tightens the declared type of what the function accepts.",
+      "diff": "diff --git a/CHANGES.rst b/CHANGES.rst\nindex eb32cd87d..c64074013 100644\n--- a/CHANGES.rst\n+++ b/CHANGES.rst\n@@ -10,6 +10,8 @@ Unreleased\n -   Zsh completion scripts parse correctly on Windows. :issue:`3277`\n -   Shell completion of `Choice` `Enum` values produces a valid completion\n     result. :issue:`3015`\n+-   Fix empty byte-string handling in echo. :issue:`3487`\n+\n \n Version 8.4.0\n -------------\ndiff --git a/src/click/utils.py b/src/click/utils.py\nindex 223d6b8d7..67922b894 100644\n--- a/src/click/utils.py\n+++ b/src/click/utils.py\n@@ -232,7 +232,7 @@ def __iter__(self) -> cabc.Iterator[t.AnyStr]:\n \n \n def echo(\n-    message: t.Any | None = None,\n+    message: object = None,\n     file: t.IO[t.Any] | None = None,\n     nl: bool = True,\n     err: bool = False,\n@@ -287,14 +287,15 @@ def echo(\n         if file is None:\n             return\n \n-    # Convert non bytes/text into the native string type.\n-    if message is not None and not isinstance(message, (str, bytes, bytearray)):\n-        out: str | bytes | bytearray | None = str(message)\n-    else:\n-        out = message\n+    match message:\n+        case str() | bytes() | bytearray():\n+            out = message\n+        case None:\n+            out = \"\"\n+        case _:\n+            out = str(message)\n \n     if nl:\n-        out = out or \"\"\n         if isinstance(out, str):\n             out += \"\\n\"\n         else:\n@@ -310,7 +311,6 @@ def echo(\n     # would expect. Eg: you can write to StringIO for other cases.\n     if isinstance(out, (bytes, bytearray)):\n         binary_file = _find_binary_writer(file)\n-\n         if binary_file is not None:\n             file.flush()\n             binary_file.write(out)\ndiff --git a/tests/test_utils.py b/tests/test_utils.py\nindex a16493b2d..6dd0ede11 100644\n--- a/tests/test_utils.py\n+++ b/tests/test_utils.py\n@@ -8,6 +8,7 @@\n from decimal import Decimal\n from fractions import Fraction\n from functools import partial\n+from io import BytesIO\n from io import StringIO\n from unittest.mock import patch\n \n@@ -97,6 +98,10 @@ def test_echo_custom_file():\n     click.echo(\"hello\", file=f)\n     assert f.getvalue() == \"hello\\n\"\n \n+    b = BytesIO()\n+    click.echo(b\"\", b)\n+    assert b.getvalue() == b\"\\n\"\n+\n \n def test_echo_no_streams(monkeypatch, runner):\n     \"\"\"echo should not fail when stdout and stderr are None with pythonw on Windows.\"\"\"\n",
+      "reviews": {
+        "baseline_strict": "## Problems found\n1. The change in type from `t.Any` to `object` for the `message` parameter may introduce compatibility issues with existing code that relies on more permissive typing.\n2. The use of pattern matching with `match` statements may not be compatible with older Python versions, potentially causing runtime errors if the environment is not updated.\n3. The handling of `None` as a message is not explicitly tested, which could lead to unexpected behavior if not properly managed.\n4. The change in handling of `nl` when `message` is `None` or empty is not thoroughly tested for all data types.\n\n## Files and lines referenced\n- `src/click/utils.py:236`: Change from `t.Any` to `object` for `message` parameter.\n- `src/click/utils.py:287-295`: Introduction of `match` statement for type checking.\n- `tests/test_utils.py:98-102`: New test case for handling empty byte strings.\n\n## What could go wrong\n- The change in typing could break existing code that passes types not explicitly handled by the new `match` statement.\n- Older Python environments may not support the `match` statement, leading to runtime errors.\n- Handling of `None` and empty strings with `nl=False` is not explicitly tested.\n\n## Suggestions\n1. **Fix:** Ensure compatibility with older Python versions or specify the minimum required version in the documentation.\n2. **Tests:** Add test cases for `None` and empty strings with `nl=False` to ensure consistent behavior across all scenarios.\n3. **Risks:** Review and document any potential backward compatibility issues due to the change in typing from `t.Any` to `object`.\n",
+        "kg": "## Problems found\n1. The change in type handling from `t.Any` to `object` might break existing functionality where `echo` is called with types not explicitly handled.\n2. The change in type handling could violate existing API contracts if callers expect `echo` to accept types other than `str`, `bytes`, or `bytearray`.\n3. The `echo` function is widely used across the codebase, including in `src/click/core.py` and `src/click/termui.py`, which could lead to unexpected behavior if not all use cases are covered.\n4. There is no test for `echo` with complex objects that are not `str`, `bytes`, or `bytearray`, which could reveal issues with the new type handling.\n\n## Files and lines referenced\n- `src/click/utils.py:232-311`: Changes in the `echo` function, including type handling and message processing.\n- `tests/test_utils.py:98-104`: Added test for handling empty byte strings.\n- `src/click/core.py`: Uses `echo` for command-line output.\n- `src/click/termui.py`: Utilizes `echo` for terminal UI interactions.\n- `tests/test_utils.py`: Contains tests for `echo`.\n- `src/click/testing.py`: Related testing utilities that might indirectly test `echo`.\n\n## What could go wrong\n- Potential breakage of existing functionality where `echo` is used with unsupported types.\n- High risk of regression in components relying on `echo` for output, especially if they pass non-standard types.\n- Lack of tests for non-standard types could lead to undetected issues in production.\n\n## Suggestions\n1. **Fix:** Ensure that all types previously accepted by `echo` are still supported or provide clear migration paths.\n2. **Tests:** Add tests for `echo` with complex objects and other types that might have been supported implicitly before.\n3. **Risks:** Review all callers of `echo` to ensure compatibility with the new type handling.\n"
+      },
+      "review_summaries": {
+        "baseline_strict": [
+          "Points out that changing the `message` parameter from `t.Any` to `object` could break code that passes other kinds of values.",
+          "Questions whether the new `match` statement (a newer Python feature) works on older Python versions.",
+          "Flags that `None` and empty text with the `nl=False` option (print without a line break) are untested; the test file is `tests/test_utils.py`."
+        ],
+        "kg": [
+          "Warns the stricter type could break code that calls `echo` with anything other than text or bytes.",
+          "Identifies `src/click/core.py` and `src/click/termui.py` as files that use `echo`, and `src/click/testing.py` as a related testing helper.",
+          "Flags there is no test for calling `echo` with values that are not text or bytes (`str`/`bytes`/`bytearray`)."
+        ]
+      },
+      "review_unique": {
+        "baseline_strict": [
+          "older Python versions",
+          "pattern matching with",
+          "nl=False"
+        ],
+        "kg": [
+          "src/click/core.py",
+          "src/click/termui.py",
+          "src/click/testing.py",
+          "complex objects",
+          "widely used across the codebase"
+        ]
+      },
+      "answer_key": {
+        "baseline_strict": {
+          "src/click/utils.py": {
+            "existence": "exists",
+            "relationship": "changed",
+            "basis": "This file is changed by the PR itself."
+          },
+          "tests/test_utils.py": {
+            "existence": "exists",
+            "relationship": "changed",
+            "basis": "This file is changed by the PR itself."
+          }
+        },
+        "kg": {
+          "src/click/core.py": {
+            "existence": "exists",
+            "relationship": "direct",
+            "basis": "Contains runtime call sites of echo, the function changed by this PR."
+          },
+          "src/click/termui.py": {
+            "existence": "exists",
+            "relationship": "direct",
+            "basis": "Contains runtime call sites of echo, the function changed by this PR."
+          },
+          "src/click/testing.py": {
+            "existence": "exists",
+            "relationship": "module_only",
+            "basis": "Imports utilities from the changed module, but no changed echo behavior connection was established."
+          },
+          "src/click/utils.py": {
+            "existence": "exists",
+            "relationship": "changed",
+            "basis": "This file is changed by the PR itself."
+          },
+          "tests/test_utils.py": {
+            "existence": "exists",
+            "relationship": "changed",
+            "basis": "This file is changed by the PR itself."
+          }
+        }
+      },
+      "review_counts": {
+        "baseline_strict": {
+          "components_apis": {
+            "items": [
+              "echo",
+              "message",
+              "match"
+            ],
+            "n": 3
+          },
+          "files": {
+            "items": [
+              "src/click/utils.py",
+              "tests/test_utils.py"
+            ],
+            "n": 2
+          },
+          "test_targets": {
+            "items": [
+              "tests/test_utils.py:98-102"
+            ],
+            "n": 1
+          },
+          "edge_cases": {
+            "items": [
+              "None as a message",
+              "empty byte strings",
+              "None and empty strings with nl=False"
+            ],
+            "n": 3
+          },
+          "reasoned_claims": {
+            "items": [
+              "The change in type from t.Any to object for the message parameter may introduce compatibility issues with existing code that relies on more permissive typing.",
+              "The use of pattern matching with match statements may not be compatible with older Python versions, potentially causing runtime errors if the environment is not updated.",
+              "The handling of None as a message is not explicitly tested, which could lead to unexpected behavior if not properly managed.",
+              "The change in handling of nl when message is None or empty is not thoroughly tested for all data types."
+            ],
+            "n": 4
+          },
+          "total": 13
+        },
+        "kg": {
+          "components_apis": {
+            "items": [
+              "echo"
+            ],
+            "n": 1
+          },
+          "files": {
+            "items": [
+              "src/click/core.py",
+              "src/click/termui.py",
+              "src/click/utils.py",
+              "tests/test_utils.py",
+              "src/click/testing.py"
+            ],
+            "n": 5
+          },
+          "test_targets": {
+            "items": [
+              "tests/test_utils.py:98-104"
+            ],
+            "n": 1
+          },
+          "edge_cases": {
+            "items": [
+              "empty byte strings",
+              "complex objects that are not str, bytes, or bytearray"
+            ],
+            "n": 2
+          },
+          "reasoned_claims": {
+            "items": [
+              "The change in type handling from t.Any to object might break existing functionality where echo is called with types not explicitly handled.",
+              "The change in type handling could violate existing API contracts if callers expect echo to accept types other than str, bytes, or bytearray.",
+              "The echo function is widely used across the codebase, which could lead to unexpected behavior if not all use cases are covered."
+            ],
+            "n": 3
+          },
+          "total": 12
+        }
+      }
+    },
+    {
+      "pr_id": 104,
+      "repo": "psf/requests",
+      "pr_number": 7328,
+      "title": "Prevent Response self-reference in redirect history",
+      "url": "https://github.com/psf/requests/pull/7328",
+      "body": "This PR should address #6295, avoiding the unnecessary addition of the current response in its own redirect history. Ideally, we should remove intermediate `.history` assignment entirely, as `Session.send()` overwrites it on the final response anyway. The intermediary behavior introduces a number of issues both in intuitiveness and a reference explosion delaying the objects being properly cleaned up after use.\r\n\r\nThat's unfortunately a breaking change we'll have to wait on, but this should fix the immediate issue for now.",
+      "pr_context": "`requests` is the most widely used Python library for making HTTP calls. When a URL redirects, the library follows the redirect and records the chain of hops in `response.history`. This PR fixes a quirk where a response could appear inside its own history list, and adds a test for that.",
+      "diff": "diff --git a/src/requests/sessions.py b/src/requests/sessions.py\nindex 578cc44d5c..0f3cdff3f5 100644\n--- a/src/requests/sessions.py\n+++ b/src/requests/sessions.py\n@@ -179,9 +179,8 @@ def resolve_redirects(\n             prepared_request = req.copy()\n \n             # Update history and keep track of redirects.\n-            # resp.history must ignore the original request in this loop\n+            resp.history = hist[:]\n             hist.append(resp)\n-            resp.history = hist[1:]\n \n             try:\n                 resp.content  # Consume socket so it can be released\ndiff --git a/tests/test_requests.py b/tests/test_requests.py\nindex a482dd727d..aa413359b6 100644\n--- a/tests/test_requests.py\n+++ b/tests/test_requests.py\n@@ -217,6 +217,14 @@ def test_HTTP_302_ALLOW_REDIRECT_GET(self, httpbin):\n         assert r.history[0].status_code == 302\n         assert r.history[0].is_redirect\n \n+    def test_redirect_history_no_self_reference(self, httpbin):\n+        r = requests.get(httpbin(\"redirect\", \"3\"))\n+        assert r.status_code == 200\n+        assert len(r.history) == 3\n+        for i, resp in enumerate(r.history):\n+            assert resp not in resp.history\n+            assert resp.history == r.history[:i]\n+\n     def test_HTTP_307_ALLOW_REDIRECT_POST(self, httpbin):\n         r = requests.post(\n             httpbin(\"redirect-to\"),\n",
+      "reviews": {
+        "baseline_strict": "## Problems found\n1. The change in `resolve_redirects` may affect how redirect history is managed, potentially impacting any logic that relies on the previous behavior.\n2. The modification introduces a breaking change that could affect existing integrations relying on the current redirect history behavior.\n3. The test coverage does not include scenarios where redirects are nested or involve complex chains, which could reveal edge cases.\n4. The change does not address potential documentation updates needed for the altered behavior of redirect history.\n\n## Files and lines referenced\n- `src/requests/sessions.py:182`: The line modifying `resp.history` to prevent self-reference.\n- `tests/test_requests.py:223`: The new test `test_redirect_history_no_self_reference` added to verify the absence of self-references in redirect history.\n\n## What could go wrong\n- The change could break existing functionality for users who depend on the current behavior of redirect history.\n- There is a risk of regression in any component that processes redirect history, especially if it assumes the previous behavior.\n- Complex redirect chains or nested redirects are not covered by the current tests.\n\n## Suggestions\n1. **Fix:** Ensure that any dependent components or documentation are updated to reflect the new behavior of redirect history.\n2. **Tests:** Add tests for nested redirects and complex redirect chains to ensure comprehensive coverage.\n3. **Risks:** Clearly document the breaking change and provide guidance for users on how to adapt to the new behavior.\n",
+        "kg": "## Problems found\n1. The change may break existing functionality where clients expect the original request to be part of the history.\n2. The modification could violate existing API contracts, particularly if clients rely on the current behavior of `resp.history`.\n3. There is a risk of integration issues with components that depend on the `resolve_redirects` function, such as those in `src/requests/api.py`.\n4. The test coverage does not include scenarios where redirects are nested or involve complex chains, which could lead to untested edge cases.\n\n## Files and lines referenced\n- `src/requests/sessions.py:179-183` \u2014 Modification of how `resp.history` is assigned.\n- `tests/test_requests.py:217-225` \u2014 Addition of a new test for redirect history.\n- `src/requests/__init__.py` and `src/requests/api.py` depend on `resolve_redirects`.\n- Existing tests in `tests/test_requests.py` cover basic redirect scenarios but lack complex chain tests.\n\n## What could go wrong\n- Potential breaking change for clients relying on the current `resp.history` behavior.\n- Regression risk is high for clients expecting the original request in the history.\n- Complex redirect chains and nested redirects are not covered.\n\n## Suggestions\n1. **Fix:** Consider maintaining backward compatibility by optionally including the original request in the history.\n2. **Tests:** Add tests for nested and complex redirect chains to `tests/test_requests.py`.\n3. **Risks:** Document the change clearly in the API documentation to inform users of the new behavior.\n"
+      },
+      "review_summaries": {
+        "baseline_strict": [
+          "Warns that changing how `resp.history` is built could break integrations that rely on the previous redirect-history behavior.",
+          "Names the new test `test_redirect_history_no_self_reference` in `tests/test_requests.py`.",
+          "Flags that long or multi-step redirect chains stay untested."
+        ],
+        "kg": [
+          "Warns the change could break code that expects the original request to still appear in `resp.history`, and suggests keeping it there so existing code works.",
+          "Points to `src/requests/__init__.py` and `src/requests/api.py` as files that depend on `resolve_redirects`.",
+          "Notes the new test in `tests/test_requests.py` covers only the self-reference case; longer redirect chains stay untested."
+        ]
+      },
+      "review_unique": {
+        "baseline_strict": [
+          "test_redirect_history_no_self_reference"
+        ],
+        "kg": [
+          "src/requests/__init__.py",
+          "src/requests/api.py",
+          "optionally including the original request"
+        ]
+      },
+      "answer_key": {
+        "baseline_strict": {
+          "src/requests/sessions.py": {
+            "existence": "exists",
+            "relationship": "changed",
+            "basis": "This file is changed by the PR itself."
+          },
+          "tests/test_requests.py": {
+            "existence": "exists",
+            "relationship": "changed",
+            "basis": "This file is changed by the PR itself."
+          }
+        },
+        "kg": {
+          "src/requests/__init__.py": {
+            "existence": "exists",
+            "relationship": "indirect",
+            "basis": "Exports the public request API; redirect handling is reached indirectly through Session."
+          },
+          "src/requests/api.py": {
+            "existence": "exists",
+            "relationship": "indirect",
+            "basis": "Public API constructs a Session, whose redirect path reaches resolve_redirects."
+          },
+          "src/requests/sessions.py": {
+            "existence": "exists",
+            "relationship": "changed",
+            "basis": "This file is changed by the PR itself."
+          },
+          "tests/test_requests.py": {
+            "existence": "exists",
+            "relationship": "changed",
+            "basis": "This file is changed by the PR itself."
+          }
+        }
+      },
+      "review_counts": {
+        "baseline_strict": {
+          "components_apis": {
+            "items": [
+              "resolve_redirects",
+              "resp.history",
+              "test_redirect_history_no_self_reference"
+            ],
+            "n": 3
+          },
+          "files": {
+            "items": [
+              "src/requests/sessions.py",
+              "tests/test_requests.py"
+            ],
+            "n": 2
+          },
+          "test_targets": {
+            "items": [
+              "test_redirect_history_no_self_reference"
+            ],
+            "n": 1
+          },
+          "edge_cases": {
+            "items": [
+              "nested redirects",
+              "complex redirect chains"
+            ],
+            "n": 2
+          },
+          "reasoned_claims": {
+            "items": [
+              "The change in resolve_redirects may affect how redirect history is managed, potentially impacting any logic that relies on the previous behavior.",
+              "The modification introduces a breaking change that could affect existing integrations relying on the current redirect history behavior.",
+              "There is a risk of regression in any component that processes redirect history, especially if it assumes the previous behavior."
+            ],
+            "n": 3
+          },
+          "total": 11
+        },
+        "kg": {
+          "components_apis": {
+            "items": [
+              "resolve_redirects",
+              "resp.history"
+            ],
+            "n": 2
+          },
+          "files": {
+            "items": [
+              "src/requests/api.py",
+              "src/requests/__init__.py",
+              "src/requests/sessions.py",
+              "tests/test_requests.py"
+            ],
+            "n": 4
+          },
+          "test_targets": {
+            "items": [
+              "tests/test_requests.py:217-225"
+            ],
+            "n": 1
+          },
+          "edge_cases": {
+            "items": [
+              "nested redirects",
+              "complex chains"
+            ],
+            "n": 2
+          },
+          "reasoned_claims": {
+            "items": [
+              "The change may break existing functionality where clients expect the original request to be part of the history.",
+              "The modification could violate existing API contracts, particularly if clients rely on the current behavior of resp.history.",
+              "There is a risk of integration issues with components that depend on the resolve_redirects function."
+            ],
+            "n": 3
+          },
+          "total": 12
+        }
+      }
+    },
+    {
+      "pr_id": 105,
+      "repo": "pallets/flask",
+      "pr_number": 5799,
+      "title": "refactor stream_with_context for async views",
+      "url": "https://github.com/pallets/flask/pull/5799",
+      "body": "Store the app context as well as the request context when creating the generator. This prevents the request context from automatically creating and pushing a different app context. Then push the app context first, and push them only when iteration starts, not during setup. This prevents the request context from automatically popping the app context, and avoids associating the internal ContextVar with the temporary event loop in async views.\r\n\r\nfixes #5774",
+      "pr_context": "`flask` is a popular Python web framework. Its helper `stream_with_context` lets a page send its response piece by piece (streaming) while still having access to the current request. This PR reworks how the helper sets up its internal state so it also works in async views (a newer style of writing request handlers).",
+      "diff": "diff --git a/CHANGES.rst b/CHANGES.rst\nindex a5761bc22b..b8625dc180 100644\n--- a/CHANGES.rst\n+++ b/CHANGES.rst\n@@ -3,6 +3,7 @@ Version 3.1.2\n \n Unreleased\n \n+-   ``stream_with_context`` does not fail inside async views. :issue:`5774`\n -   When using ``follow_redirects`` in the test client, the final state\n     of ``session`` is correct. :issue:`5786`\n -   Relax type hint for passing bytes IO to ``send_file``. :issue:`5776`\ndiff --git a/src/flask/helpers.py b/src/flask/helpers.py\nindex 081548a97b..5d412c90f2 100644\n--- a/src/flask/helpers.py\n+++ b/src/flask/helpers.py\n@@ -13,6 +13,7 @@\n from werkzeug.utils import redirect as _wz_redirect\n from werkzeug.wrappers import Response as BaseResponse\n \n+from .globals import _cv_app\n from .globals import _cv_request\n from .globals import current_app\n from .globals import request\n@@ -62,35 +63,40 @@ def stream_with_context(\n def stream_with_context(\n     generator_or_function: t.Iterator[t.AnyStr] | t.Callable[..., t.Iterator[t.AnyStr]],\n ) -> t.Iterator[t.AnyStr] | t.Callable[[t.Iterator[t.AnyStr]], t.Iterator[t.AnyStr]]:\n-    \"\"\"Request contexts disappear when the response is started on the server.\n-    This is done for efficiency reasons and to make it less likely to encounter\n-    memory leaks with badly written WSGI middlewares.  The downside is that if\n-    you are using streamed responses, the generator cannot access request bound\n-    information any more.\n+    \"\"\"Wrap a response generator function so that it runs inside the current\n+    request context. This keeps :data:`request`, :data:`session`, and :data:`g`\n+    available, even though at the point the generator runs the request context\n+    will typically have ended.\n \n-    This function however can help you keep the context around for longer::\n+    Use it as a decorator on a generator function:\n+\n+    .. code-block:: python\n \n         from flask import stream_with_context, request, Response\n \n-        @app.route('/stream')\n+        @app.get(\"/stream\")\n         def streamed_response():\n             @stream_with_context\n             def generate():\n-                yield 'Hello '\n-                yield request.args['name']\n-                yield '!'\n+                yield \"Hello \"\n+                yield request.args[\"name\"]\n+                yield \"!\"\n+\n             return Response(generate())\n \n-    Alternatively it can also be used around a specific generator::\n+    Or use it as a wrapper around a created generator:\n+\n+    .. code-block:: python\n \n         from flask import stream_with_context, request, Response\n \n-        @app.route('/stream')\n+        @app.get(\"/stream\")\n         def streamed_response():\n             def generate():\n-                yield 'Hello '\n-                yield request.args['name']\n-                yield '!'\n+                yield \"Hello \"\n+                yield request.args[\"name\"]\n+                yield \"!\"\n+\n             return Response(stream_with_context(generate()))\n \n     .. versionadded:: 0.9\n@@ -105,35 +111,36 @@ def decorator(*args: t.Any, **kwargs: t.Any) -> t.Any:\n \n         return update_wrapper(decorator, generator_or_function)  # type: ignore[arg-type]\n \n-    def generator() -> t.Iterator[t.AnyStr | None]:\n-        ctx = _cv_request.get(None)\n-        if ctx is None:\n+    def generator() -> t.Iterator[t.AnyStr]:\n+        if (req_ctx := _cv_request.get(None)) is None:\n             raise RuntimeError(\n                 \"'stream_with_context' can only be used when a request\"\n                 \" context is active, such as in a view function.\"\n             )\n-        with ctx:\n-            # Dummy sentinel.  Has to be inside the context block or we're\n-            # not actually keeping the context around.\n-            yield None\n-\n-            # The try/finally is here so that if someone passes a WSGI level\n-            # iterator in we're still running the cleanup logic.  Generators\n-            # don't need that because they are closed on their destruction\n-            # automatically.\n+\n+        app_ctx = _cv_app.get()\n+        # Setup code below will run the generator to this point, so that the\n+        # current contexts are recorded. The contexts must be pushed after,\n+        # otherwise their ContextVar will record the wrong event loop during\n+        # async view functions.\n+        yield None  # type: ignore[misc]\n+\n+        # Push the app context first, so that the request context does not\n+        # automatically create and push a different app context.\n+        with app_ctx, req_ctx:\n             try:\n                 yield from gen\n             finally:\n+                # Clean up in case the user wrapped a WSGI iterator.\n                 if hasattr(gen, \"close\"):\n                     gen.close()\n \n-    # The trick is to start the generator.  Then the code execution runs until\n-    # the first dummy None is yielded at which point the context was already\n-    # pushed.  This item is discarded.  Then when the iteration continues the\n-    # real generator is executed.\n+    # Execute the generator to the sentinel value. This ensures the context is\n+    # preserved in the generator's state. Further iteration will push the\n+    # context and yield from the original iterator.\n     wrapped_g = generator()\n     next(wrapped_g)\n-    return wrapped_g  # type: ignore[return-value]\n+    return wrapped_g\n \n \n def make_response(*args: t.Any) -> Response:\ndiff --git a/tests/test_helpers.py b/tests/test_helpers.py\nindex ee77f1760c..efd22aa909 100644\n--- a/tests/test_helpers.py\n+++ b/tests/test_helpers.py\n@@ -306,6 +306,29 @@ def gen():\n         rv = client.get(\"/\")\n         assert rv.data == b\"flask\"\n \n+    def test_async_view(self, app, client):\n+        @app.route(\"/\")\n+        async def index():\n+            flask.session[\"test\"] = \"flask\"\n+\n+            @flask.stream_with_context\n+            def gen():\n+                yield flask.session[\"test\"]\n+\n+            return flask.Response(gen())\n+\n+        # response is closed without reading stream\n+        client.get().close()\n+        # response stream is read\n+        assert client.get().text == \"flask\"\n+\n+        # same as above, but with client context preservation\n+        with client:\n+            client.get().close()\n+\n+        with client:\n+            assert client.get().text == \"flask\"\n+\n \n class TestHelpers:\n     @pytest.mark.parametrize(\n",
+      "reviews": {
+        "baseline_strict": "## Problems found\n1. The refactoring changes how contexts are managed, which could affect any existing async views using `stream_with_context`.\n2. The change in context management might not align with existing expectations for context availability during generator execution.\n3. There is a lack of tests for edge cases such as nested context usage or error handling within the generator.\n4. The updated docstring in `stream_with_context` might not fully clarify the implications of the changes for existing users.\n\n## Files and lines referenced\n- `src/flask/helpers.py:63-111`: Refactored `stream_with_context` function.\n- `tests/test_helpers.py:306-335`: Added test for async view using `stream_with_context`.\n\n## What could go wrong\n- Existing async views using `stream_with_context` might break if they rely on the previous context management behavior.\n- Changes in context handling could lead to unexpected behavior in views that were previously functioning correctly.\n- Lack of tests for nested contexts or error scenarios within the generator could lead to unhandled exceptions.\n\n## Suggestions\n1. **Fix:** Ensure backward compatibility by providing a fallback mechanism for existing views that might rely on the old behavior.\n2. **Tests:** Add tests for nested context usage and error handling within the generator to cover potential edge cases.\n3. **Documentation:** Update the documentation to clearly explain the changes and their implications for existing users, including any potential migration steps.\n",
+        "kg": "## Problems found\n1. The refactor may inadvertently break existing functionality where `stream_with_context` is used synchronously, as the context management logic has changed significantly.\n2. The change in context management could violate existing API contracts, especially if callers expect the context to be managed differently.\n3. The refactor could affect components that rely on `stream_with_context`, such as `src/flask/templating.py` and `src/flask/blueprints.py`, which may not handle the new context management correctly.\n4. There are no tests for scenarios where the generator raises exceptions or when the context is manually popped before iteration.\n\n## Files and lines referenced\n- `src/flask/helpers.py:63-111`: Refactored `stream_with_context` function.\n- `tests/test_helpers.py:306-335`: Added tests for async view usage.\n- `src/flask/templating.py`: Uses `stream_with_context` for template streaming.\n- `src/flask/blueprints.py`: May use `stream_with_context` in blueprint routes.\n- `tests/test_helpers.py`: Contains tests for `stream_with_context`.\n\n## What could go wrong\n- Potential breakage of synchronous usage of `stream_with_context`, leading to runtime errors if contexts are not managed as expected.\n- High risk of regression in components that depend on the previous context management behavior.\n- Lack of tests for exception handling within the generator and manual context manipulation.\n\n## Suggestions\n1. **Fix:** Ensure backward compatibility by adding logic to handle both synchronous and asynchronous contexts appropriately.\n2. **Tests:** Add tests for edge cases, including exception handling within the generator and scenarios where contexts are manually manipulated.\n3. **Risks:** Review and update dependent components (`src/flask/templating.py`, `src/flask/blueprints.py`) to ensure compatibility with the new context management.\n"
+      },
+      "review_summaries": {
+        "baseline_strict": [
+          "Notes the `stream_with_context` rewrite changes when request information is available during streaming, which could break existing async views.",
+          "Flags missing tests for nested usage and for errors raised mid-stream; the test file is `tests/test_helpers.py`.",
+          "Notes the updated documentation text may not fully explain the change for existing users."
+        ],
+        "kg": [
+          "Names `src/flask/templating.py` and `src/flask/blueprints.py` as files that use `stream_with_context` and could be affected.",
+          "Warns the rewrite could break ordinary (non-async) views that use `stream_with_context`, because it changes how request information is kept during streaming.",
+          "Flags missing tests for an error raised mid-stream or for the context being manually popped before iteration."
+        ]
+      },
+      "review_unique": {
+        "baseline_strict": [
+          "nested context usage",
+          "fallback mechanism",
+          "migration steps"
+        ],
+        "kg": [
+          "src/flask/templating.py",
+          "src/flask/blueprints.py",
+          "manually popped",
+          "used synchronously"
+        ]
+      },
+      "answer_key": {
+        "baseline_strict": {
+          "src/flask/helpers.py": {
+            "existence": "exists",
+            "relationship": "changed",
+            "basis": "This file is changed by the PR itself."
+          },
+          "tests/test_helpers.py": {
+            "existence": "exists",
+            "relationship": "changed",
+            "basis": "This file is changed by the PR itself."
+          }
+        },
+        "kg": {
+          "src/flask/blueprints.py": {
+            "existence": "exists",
+            "relationship": "module_only",
+            "basis": "Imports another helper from helpers.py; it does not use stream_with_context."
+          },
+          "src/flask/helpers.py": {
+            "existence": "exists",
+            "relationship": "changed",
+            "basis": "This file is changed by the PR itself."
+          },
+          "src/flask/templating.py": {
+            "existence": "exists",
+            "relationship": "direct",
+            "basis": "Directly imports and calls stream_with_context when streaming templates."
+          },
+          "tests/test_helpers.py": {
+            "existence": "exists",
+            "relationship": "changed",
+            "basis": "This file is changed by the PR itself."
+          }
+        }
+      },
+      "review_counts": {
+        "baseline_strict": {
+          "components_apis": {
+            "items": [
+              "stream_with_context"
+            ],
+            "n": 1
+          },
+          "files": {
+            "items": [
+              "src/flask/helpers.py:63-111",
+              "tests/test_helpers.py:306-335"
+            ],
+            "n": 2
+          },
+          "test_targets": {
+            "items": [
+              "test for async view using stream_with_context",
+              "nested context usage",
+              "error handling within the generator"
+            ],
+            "n": 3
+          },
+          "edge_cases": {
+            "items": [
+              "nested context usage",
+              "error handling within the generator"
+            ],
+            "n": 2
+          },
+          "reasoned_claims": {
+            "items": [
+              "The refactoring changes how contexts are managed, which could affect any existing async views using stream_with_context.",
+              "The change in context management might not align with existing expectations for context availability during generator execution.",
+              "Changes in context handling could lead to unexpected behavior in views that were previously functioning correctly."
+            ],
+            "n": 3
+          },
+          "total": 11
+        },
+        "kg": {
+          "components_apis": {
+            "items": [
+              "stream_with_context",
+              "src/flask/templating.py",
+              "src/flask/blueprints.py",
+              "src/flask/helpers.py"
+            ],
+            "n": 4
+          },
+          "files": {
+            "items": [
+              "src/flask/helpers.py",
+              "tests/test_helpers.py",
+              "src/flask/templating.py",
+              "src/flask/blueprints.py"
+            ],
+            "n": 4
+          },
+          "test_targets": {
+            "items": [
+              "tests/test_helpers.py"
+            ],
+            "n": 1
+          },
+          "edge_cases": {
+            "items": [
+              "generator raises exceptions",
+              "context is manually popped before iteration"
+            ],
+            "n": 2
+          },
+          "reasoned_claims": {
+            "items": [
+              "The refactor may inadvertently break existing functionality where stream_with_context is used synchronously",
+              "The change in context management could violate existing API contracts",
+              "The refactor could affect components that rely on stream_with_context",
+              "Potential breakage of synchronous usage of stream_with_context, leading to runtime errors if contexts are not managed as expected",
+              "High risk of regression in components that depend on the previous context management behavior"
+            ],
+            "n": 5
+          },
+          "total": 16
+        }
+      }
+    },
+    {
+      "pr_id": 106,
+      "repo": "pallets/click",
+      "pr_number": 3578,
+      "title": "Fix double-bracketing of choices in synopsis",
+      "url": "https://github.com/pallets/click/pull/3578",
+      "body": "A small rendering issue of choices being enclosed into double-brackets when argument is optional.\r\n\r\nIssue was likely unnoticed in the original https://github.com/pallets/click/issues/1272 / https://github.com/pallets/click/issues/1273 PR.\r\n\r\nThis mirrors the similar fix I implemented for commands in https://github.com/pallets/click/pull/3507",
+      "pr_context": "`click` is a Python library for building command-line tools. The usage line of a command shows placeholders for its arguments, e.g. `[a|b]` for an optional choice between a and b. This PR fixes a small display bug where such placeholders got doubled square brackets (`[[a|b]]`), and adds tests.",
+      "diff": "diff --git a/CHANGES.md b/CHANGES.md\nindex 8991e8257..90b93ed80 100644\n--- a/CHANGES.md\n+++ b/CHANGES.md\n@@ -18,6 +18,8 @@ Unreleased\n   stream when no external pager runs, completing the partial\n   `I/O operation on closed file` fix from {pr}`3482`. {issue}`3449`\n   {pr}`3533`\n+- Fix CLI usage symopsis for optional arguments producing double square brackets\n+  `[[a|b|c]]...` whose type already brackets their metavar. {pr}`3578`\n \n ## Version 8.4.1\n \ndiff --git a/src/click/core.py b/src/click/core.py\nindex d2db291d0..d7ecbefbc 100644\n--- a/src/click/core.py\n+++ b/src/click/core.py\n@@ -3571,9 +3571,14 @@ def make_metavar(self, ctx: Context) -> str:\n         var = self.type.get_metavar(param=self, ctx=ctx)\n         if not var:\n             var = self.name.upper()\n+        # Types like ``Choice`` and ``DateTime`` already surround their metavar\n+        # with square brackets to enumerate the allowed values. Reuse those\n+        # outer brackets as the optional-argument indicator instead of wrapping\n+        # the metavar in a second pair, which would produce ``[[a|b|c]]``.\n+        already_bracketed = var.startswith(\"[\") and var.endswith(\"]\")\n         if self.deprecated:\n             var += \"!\"\n-        if not self.required:\n+        if not self.required and not already_bracketed:\n             var = f\"[{var}]\"\n         if self.nargs != 1:\n             var += \"...\"\ndiff --git a/tests/test_basic.py b/tests/test_basic.py\nindex 3f7352879..0d5411586 100644\n--- a/tests/test_basic.py\n+++ b/tests/test_basic.py\n@@ -569,6 +569,46 @@ def cli(method: str | None):\n     assert result.output.startswith(\"Usage: cli [OPTIONS] {not-none|none}\\n\")\n \n \n+def test_choice_argument_optional_metavar(runner):\n+    \"\"\"Optional Choice arguments reuse the type's brackets instead of doubling.\n+\n+    Without this the usage line for a ``Choice`` argument with ``nargs=-1`` or\n+    ``required=False`` rendered as ``[[a|b|c]]``: one pair from ``Choice`` to\n+    enumerate values, a second pair from ``Argument`` to mark it optional.\n+    \"\"\"\n+\n+    @click.command()\n+    @click.argument(\"method\", type=click.Choice([\"foo\", \"bar\", \"baz\"]), nargs=-1)\n+    def cli_variadic(method):\n+        pass\n+\n+    @click.command()\n+    @click.argument(\"method\", type=click.Choice([\"foo\", \"bar\", \"baz\"]), required=False)\n+    def cli_optional(method):\n+        pass\n+\n+    variadic = runner.invoke(cli_variadic, [\"--help\"]).output\n+    assert \"Usage: cli-variadic [OPTIONS] [foo|bar|baz]...\\n\" in variadic\n+    assert \"[[foo|bar|baz]]\" not in variadic\n+\n+    optional = runner.invoke(cli_optional, [\"--help\"]).output\n+    assert \"Usage: cli-optional [OPTIONS] [foo|bar|baz]\\n\" in optional\n+    assert \"[[foo|bar|baz]]\" not in optional\n+\n+\n+def test_datetime_argument_optional_metavar(runner):\n+    \"\"\"``DateTime`` arguments behave the same way as ``Choice``.\"\"\"\n+\n+    @click.command()\n+    @click.argument(\"when\", type=click.DateTime(formats=[\"%Y-%m-%d\"]), required=False)\n+    def cli(when):\n+        pass\n+\n+    result = runner.invoke(cli, [\"--help\"])\n+    assert \"Usage: cli [OPTIONS] [%Y-%m-%d]\\n\" in result.output\n+    assert \"[[%Y-%m-%d]]\" not in result.output\n+\n+\n def test_datetime_option_default(runner):\n     @click.command()\n     @click.option(\"--start_date\", type=click.DateTime())\n",
+      "reviews": {
+        "baseline_strict": "## Problems found\n1. The change might affect how optional arguments are displayed across the CLI, potentially impacting other components that rely on this formatting.\n2. There is a risk of breaking existing integrations if other parts of the codebase expect the previous double-bracketed format.\n3. The fix might not cover all edge cases, such as other types that might also use brackets in their metavar.\n4. The documentation in `CHANGES.md` is updated, but there might be other documentation or API contracts that need updating.\n\n## Files and lines referenced\n- `src/click/core.py:3571-3578`: Changes in the `make_metavar` method to avoid double-bracketing.\n- `tests/test_basic.py:569-613`: New tests added to verify the correct rendering of optional arguments with `Choice` and `DateTime` types.\n\n## What could go wrong\n- The change alters the output format of CLI usage messages, which could break scripts or integrations that parse these messages.\n- Existing scripts or documentation that rely on the previous format might not work as expected.\n- Other types similar to `Choice` and `DateTime` that might also use brackets in their metavar are not explicitly tested.\n\n## Suggestions\n1. **Fix:** Ensure that all types that might use brackets in their metavar are identified and handled similarly.\n2. **Tests:** Add tests for other types that might be affected by this change to ensure comprehensive coverage.\n3. **Risks:** Review and update any documentation or API contracts that might be affected by this change to prevent integration issues.\n",
+        "kg": "## Problems found\n1. The change in `make_metavar` could potentially affect other parameter types that rely on the same logic for rendering their metavar, leading to unexpected behavior if not properly accounted for.\n2. The modification might impact other components that depend on `make_metavar`, such as `src/click/types.py` and `src/click/parser.py`, which could lead to inconsistencies in how metavars are displayed.\n3. While new tests are added, edge cases such as nested choice types or combinations with other parameter decorators are not explicitly tested.\n4. The change in behavior for optional arguments with choices is not documented in the API documentation, which could lead to confusion for developers relying on the previous behavior.\n\n## Files and lines referenced\n- `src/click/core.py:3571-3578`: Changes in `make_metavar` function logic.\n- `tests/test_basic.py:569-611`: New tests for choice and datetime arguments.\n- `src/click/types.py`: Uses `make_metavar` for type handling.\n- `src/click/parser.py`: Relies on metavar formatting for parsing logic.\n- `tests/test_shell_completion.py`: Related to argument completion.\n- `tests/test_context.py`: Tests context handling which might be affected by metavar changes.\n- `tests/test_defaults.py`: Tests default values which could interact with metavar logic.\n\n## What could go wrong\n- Potential breakage in metavar rendering for other parameter types if they are not correctly handled by the new logic.\n- Existing CLI tools using `click` might display incorrect usage messages if they rely on the previous behavior.\n- Nested choice types or combinations with other decorators might not render correctly.\n\n## Suggestions\n1. **Fix:** Ensure that the `make_metavar` logic is robust for all parameter types, not just `Choice` and `DateTime`.\n2. **Tests:** Add tests for nested choice types and combinations with other decorators to ensure comprehensive coverage.\n3. **Documentation:** Update the API documentation to reflect the changes in metavar rendering for optional arguments with choices.\n"
+      },
+      "review_summaries": {
+        "baseline_strict": [
+          "Notes new tests in `tests/test_basic.py` cover `Choice` and `DateTime` placeholders; other bracketed placeholder types stay untested.",
+          "Warns the fix changes the usage message shown to users, which could break scripts that parse that output.",
+          "Suggests checking the codebase for other places that format placeholders the same way."
+        ],
+        "kg": [
+          "Lists `src/click/types.py` and `src/click/parser.py` as files that rely on `make_metavar` (the function that builds those placeholders), where the fix could break how placeholders are shown.",
+          "Points to `tests/test_shell_completion.py`, `tests/test_context.py`, and `tests/test_defaults.py` as related test files.",
+          "Flags that nested choice placeholders stay untested and the API documentation was not updated."
+        ]
+      },
+      "review_unique": {
+        "baseline_strict": [
+          "parse these messages",
+          "CHANGES.md"
+        ],
+        "kg": [
+          "src/click/types.py",
+          "src/click/parser.py",
+          "tests/test_shell_completion.py",
+          "tests/test_context.py",
+          "tests/test_defaults.py",
+          "nested choice types"
+        ]
+      },
+      "answer_key": {
+        "baseline_strict": {
+          "CHANGES.md": {
+            "existence": "exists",
+            "relationship": "changed",
+            "basis": "This file is changed by the PR itself."
+          },
+          "src/click/core.py": {
+            "existence": "exists",
+            "relationship": "changed",
+            "basis": "This file is changed by the PR itself."
+          },
+          "tests/test_basic.py": {
+            "existence": "exists",
+            "relationship": "changed",
+            "basis": "This file is changed by the PR itself."
+          }
+        },
+        "kg": {
+          "src/click/core.py": {
+            "existence": "exists",
+            "relationship": "changed",
+            "basis": "This file is changed by the PR itself."
+          },
+          "src/click/parser.py": {
+            "existence": "exists",
+            "relationship": "type_only",
+            "basis": "References core parameter classes only for typing; no make_metavar display connection was established."
+          },
+          "src/click/types.py": {
+            "existence": "exists",
+            "relationship": "related",
+            "basis": "Choice and DateTime provide bracketed metavar text consumed by Argument.make_metavar."
+          },
+          "tests/test_basic.py": {
+            "existence": "exists",
+            "relationship": "changed",
+            "basis": "This file is changed by the PR itself."
+          },
+          "tests/test_context.py": {
+            "existence": "exists",
+            "relationship": "exists",
+            "basis": "File exists, but no test of the changed metavar behavior was established."
+          },
+          "tests/test_defaults.py": {
+            "existence": "exists",
+            "relationship": "exists",
+            "basis": "File exists, but no test of the changed metavar behavior was established."
+          },
+          "tests/test_shell_completion.py": {
+            "existence": "exists",
+            "relationship": "exists",
+            "basis": "Tests Choice completion; no data-flow connection to changed usage-message formatting was established."
+          }
+        }
+      },
+      "review_counts": {
+        "baseline_strict": {
+          "components_apis": {
+            "items": [
+              "make_metavar"
+            ],
+            "n": 1
+          },
+          "files": {
+            "items": [
+              "src/click/core.py",
+              "tests/test_basic.py",
+              "CHANGES.md"
+            ],
+            "n": 3
+          },
+          "test_targets": {
+            "items": [
+              "tests/test_basic.py:569-613"
+            ],
+            "n": 1
+          },
+          "edge_cases": {
+            "items": [
+              "other types that might also use brackets in their metavar"
+            ],
+            "n": 1
+          },
+          "reasoned_claims": {
+            "items": [
+              "The change might affect how optional arguments are displayed across the CLI, potentially impacting other components that rely on this formatting.",
+              "There is a risk of breaking existing integrations if other parts of the codebase expect the previous double-bracketed format.",
+              "The fix might not cover all edge cases, such as other types that might also use brackets in their metavar."
+            ],
+            "n": 3
+          },
+          "total": 9
+        },
+        "kg": {
+          "components_apis": {
+            "items": [
+              "make_metavar",
+              "src/click/types.py",
+              "src/click/parser.py",
+              "src/click/core.py"
+            ],
+            "n": 4
+          },
+          "files": {
+            "items": [
+              "src/click/core.py",
+              "tests/test_basic.py",
+              "src/click/types.py",
+              "src/click/parser.py",
+              "tests/test_shell_completion.py",
+              "tests/test_context.py",
+              "tests/test_defaults.py"
+            ],
+            "n": 7
+          },
+          "test_targets": {
+            "items": [
+              "tests/test_basic.py",
+              "tests/test_shell_completion.py",
+              "tests/test_context.py",
+              "tests/test_defaults.py"
+            ],
+            "n": 4
+          },
+          "edge_cases": {
+            "items": [
+              "nested choice types",
+              "combinations with other parameter decorators"
+            ],
+            "n": 2
+          },
+          "reasoned_claims": {
+            "items": [
+              "The change in `make_metavar` could potentially affect other parameter types that rely on the same logic for rendering their metavar.",
+              "The modification might impact other components that depend on `make_metavar`, which could lead to inconsistencies in how metatvars are displayed.",
+              "Existing CLI tools using `click` might display incorrect usage messages if they rely on the previous behavior."
+            ],
+            "n": 3
+          },
+          "total": 20
+        }
+      }
+    }
+  ],
+  "summary_meta": {
+    "model": "hand-authored",
+    "note": "Summary of review claims from review text only (not researcher-verified facts; blinding-safe), identifiers preserved; v3 convention. Reworded 2026-07-13 into plainer language for raters unfamiliar with the repos/Python (same points, same identifiers, arm-symmetric edits). 2026-08-01 amendment: opening verbs varied and bullets ordered by position in the review body (order_bullets), removing the per-arm signature pattern (kg always led with 'Names', baseline with 'Warns')."
+  },
+  "pr_context_meta": {
+    "method": "hand-written from PR title/body/diff only (never from a review) \u2014 arm-neutral, blinding-safe",
+    "note": "One plain-language paragraph per PR: what the library is, what the change does. Added 2026-07-13 because raters know neither the repos nor necessarily Python."
+  },
+  "highlight_meta": {
+    "method": "curated-semantic",
+    "note": "Hand-curated 2026-07-06 (Chris spec, same as final v3): a phrase is a marker only if the point/identifier is absent from the other review; paraphrases of shared points stay unshaded."
+  },
+  "answer_key_meta": {
+    "method": "build_answer_key.py \u2014 existence check plus source-audited relationship classification at PR head SHA",
+    "warning": "Relationship evidence does not validate the review's risk or consequence claim.",
+    "legend": {
+      "changed": "file is part of the PR's changed files",
+      "direct": "direct runtime use/call of the changed symbol",
+      "indirect": "indirect execution or public-entry path",
+      "related": "participates in a related data flow",
+      "module_only": "module import only; behavioral relevance unestablished",
+      "type_only": "type-only reference; behavioral relevance unestablished",
+      "exists": "file exists; connection unestablished",
+      "not_found": "no such file found at the pinned commit"
+    }
+  },
+  "count_meta": {
+    "model": "openai:gpt-4o-mini",
+    "categories": [
+      "components_apis",
+      "files",
+      "test_targets",
+      "edge_cases",
+      "reasoned_claims"
+    ],
+    "criterion_map": {
+      "components_apis": "F3*",
+      "test_targets": "T3",
+      "edge_cases": "F2*",
+      "reasoned_claims": "Q5"
+    },
+    "note": "Neutral concrete-item counts extracted from review text only (blinding-safe). See generate_review_counts.py."
+  }
+}

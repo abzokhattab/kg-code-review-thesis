@@ -1,0 +1,67 @@
+\section{Positioning and Research Gap}
+\label{sec:bg-positioning}
+
+Table~\ref{tab:rw-positioning} places this thesis against the six most
+directly comparable systems.
+
+\begin{table}[htbp]
+    \centering
+    \caption{Positioning against the closest prior work. \textbf{DC} =
+             DeepCRCEval~\cite{hong2024deepcrceval}, \textbf{CR} =
+             CRScore~\cite{naik2025crscore}, \textbf{GC} =
+             GraphCoder~\cite{liu2024graphcoder}, \textbf{KGC} =
+             KGCompass~\cite{yang2025kgcompass}, \textbf{JA} =
+             Jaoua et al.~\cite{jaoua2025combining}, \textbf{LxC} =
+             LLMxCPG~\cite{lekssays2025llmxcpg}. ``n/a'' marks systems scored by
+             program execution.}
+    \label{tab:rw-positioning}
+    \small
+    \begin{tabularx}{\textwidth}{@{}Xccccccc@{}}
+        \toprule
+          & DC & CR & GC & KGC & JA & LxC & \textbf{This thesis} \\
+        \midrule
+        Task is review comments
+          & $\bullet$ & $\bullet$ & --- & --- & $\bullet$ & --- & $\bullet$ \\
+        Adds out-of-diff context
+          & --- & --- & $\bullet$ & $\bullet$ & $\bullet$ & $\bullet$ & $\bullet$ \\
+        Structural (graph) context
+          & --- & --- & $\bullet$ & $\bullet$ & --- & $\bullet$ & $\bullet$ \\
+        Static-analysis input
+          & --- & $\bullet$ & --- & --- & $\bullet$ & $\bullet$ & $\bullet$ \\
+        Retrieval and structure as matched arms
+          & --- & --- & $\bullet$ & --- & $\bullet$ & --- & $\bullet$ \\
+        Independent LLM scorers
+          & 1 & 1 & n/a & n/a & --- & --- & \textbf{5}\footnotemark \\
+        Inter-scorer agreement reported
+          & --- & --- & n/a & n/a & --- & --- & $\bullet$ \\
+        Detection adjudication checked against oracle
+          & --- & --- & n/a & n/a & --- & n/a & $\bullet$ \\
+        Human corroboration of targeted criterion
+          & $\bullet$ & $\bullet$ & --- & --- & --- & --- & $\bullet$ \\
+        \bottomrule
+    \end{tabularx}
+\end{table}
+\footnotetext{Five-provider panel, aggregated by a strict majority of at least
+four valid votes; pairwise Cohen's $\kappa$ is reported in
+Section~\ref{sec:results-exp1-agreement}. Experiment~2 additionally uses a
+deterministic file oracle.}
+
+\subsection*{Research Gap}
+
+No existing study compares structural and similarity-based out-of-diff context
+for review-comment generation within one matched generation and evaluation
+pipeline, while also measuring sensitivity to the evaluator. GraphCoder runs a
+matched comparison on code completion with checkable outcomes, while
+DeepCRCEval and CRScore evaluate review comments but do not vary context or
+report scorer sensitivity. Two recent studies narrow different parts of the
+gap: Jaoua et al.\ compare three ways of injecting linter output into an LLM
+reviewer but do not supply structural graph context, and LLMxCPG feeds Joern
+CPG slices to an LLM but targets vulnerability detection, not review-comment
+generation.
+
+This thesis occupies the remaining gap along three dimensions the table makes
+visible. It compares selection strategies rather than proposing one, using
+matched arms on the same pull requests (Chapter~\ref{chap:approach}). It
+treats the evaluation instrument as an object of study, reporting how much the
+conclusion moves across individual judges and generators. And it corroborates
+a coverage rubric with a deterministic oracle and a human study.

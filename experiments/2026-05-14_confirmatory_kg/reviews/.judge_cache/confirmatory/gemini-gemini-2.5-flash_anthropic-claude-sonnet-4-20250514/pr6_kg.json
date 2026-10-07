@@ -1,0 +1,331 @@
+{
+  "pr_id": 6,
+  "mode": "kg",
+  "total_score": 8,
+  "max_score": 25,
+  "percentage": 32.0,
+  "kg_relevant_score": 5,
+  "kg_relevant_max": 9,
+  "kg_relevant_percentage": 55.6,
+  "criteria_scores": [
+    {
+      "criterion_id": "F1",
+      "score": 0,
+      "evidence": "The review discusses changes related to `RackAwareAssignor` and flakiness, which is a different problem than the one stated in the PR title: 'Introduce remote.fetch.max.timeout.ms to configure DelayedRemoteFetch timeout'.",
+      "n_yes": 0,
+      "n_valid": 2,
+      "unanimous": true
+    },
+    {
+      "criterion_id": "F2",
+      "score": 0,
+      "evidence": "Review does not identify edge cases related to the timeout configuration",
+      "n_yes": 1,
+      "n_valid": 2,
+      "unanimous": false
+    },
+    {
+      "criterion_id": "F3",
+      "score": 1,
+      "evidence": "The review checks integration with existing tests: 'This file is updated to use the new `RackAwareTestAssignor` name. The behavioral change in the assignor... is intended to improve stability, so it's unlikely to break existing assertions in this test...'",
+      "n_yes": 2,
+      "n_valid": 2,
+      "unanimous": true
+    },
+    {
+      "criterion_id": "F4",
+      "score": 1,
+      "evidence": "The review warns about potential breaking changes: 'Any other test files... that might have been directly referencing `org.apache.kafka.clients.consumer.RackAwareAssignor` would now fail to compile due to the rename. This is a potential integration risk...'",
+      "n_yes": 2,
+      "n_valid": 2,
+      "unanimous": true
+    },
+    {
+      "criterion_id": "T1",
+      "score": 1,
+      "evidence": "The review has a 'Test Coverage Assessment' section and discusses the need for more specific tests: 'Coverage is adequate for its original purpose, but not for the specific behavioral change introduced in the assignor.'",
+      "n_yes": 2,
+      "n_valid": 2,
+      "unanimous": true
+    },
+    {
+      "criterion_id": "T2",
+      "score": 0,
+      "evidence": "Review does not mention testing edge cases or failure scenarios for the timeout configuration",
+      "n_yes": 1,
+      "n_valid": 2,
+      "unanimous": false
+    },
+    {
+      "criterion_id": "T3",
+      "score": 1,
+      "evidence": "The review references specific test files and suggests updates: 'clients/clients-integration-tests/src/test/java/org/apache/kafka/clients/consumer/ConsumerIntegrationTest.java: No new assertions related to assignor tolerance.'",
+      "n_yes": 2,
+      "n_valid": 2,
+      "unanimous": true
+    },
+    {
+      "criterion_id": "R1",
+      "score": 0,
+      "evidence": "The review mentions a rename but does not comment on the clarity, naming conventions, or organization of the code itself.",
+      "n_yes": 0,
+      "n_valid": 2,
+      "unanimous": true
+    },
+    {
+      "criterion_id": "R2",
+      "score": 0,
+      "evidence": "The review does not identify unnecessary complexity or suggest simplification.",
+      "n_yes": 0,
+      "n_valid": 2,
+      "unanimous": true
+    },
+    {
+      "criterion_id": "R3",
+      "score": 0,
+      "evidence": "The review does not check if code comments explain the 'why' behind decisions.",
+      "n_yes": 0,
+      "n_valid": 2,
+      "unanimous": true
+    },
+    {
+      "criterion_id": "M1",
+      "score": 0,
+      "evidence": "The review discusses the impact of the change on existing tests but does not explicitly assess its fit within the broader architecture or design patterns.",
+      "n_yes": 0,
+      "n_valid": 2,
+      "unanimous": true
+    },
+    {
+      "criterion_id": "M2",
+      "score": 0,
+      "evidence": "The review does not flag if the PR scope is too large or should be split.",
+      "n_yes": 0,
+      "n_valid": 2,
+      "unanimous": true
+    },
+    {
+      "criterion_id": "M3",
+      "score": 0,
+      "evidence": "The review does not check if public APIs or interfaces are properly documented.",
+      "n_yes": 0,
+      "n_valid": 2,
+      "unanimous": true
+    },
+    {
+      "criterion_id": "C1",
+      "score": 0,
+      "evidence": "The review does not check adherence to project style guides or coding conventions.",
+      "n_yes": 0,
+      "n_valid": 2,
+      "unanimous": true
+    },
+    {
+      "criterion_id": "C2",
+      "score": 0,
+      "evidence": "The review does not check if similar problems are solved consistently with existing patterns.",
+      "n_yes": 0,
+      "n_valid": 2,
+      "unanimous": true
+    },
+    {
+      "criterion_id": "P1",
+      "score": 0,
+      "evidence": "The review does not identify potential performance issues or inefficiencies.",
+      "n_yes": 0,
+      "n_valid": 2,
+      "unanimous": true
+    },
+    {
+      "criterion_id": "P2",
+      "score": 0,
+      "evidence": "The review does not ask about benchmarks or performance testing for critical paths.",
+      "n_yes": 0,
+      "n_valid": 2,
+      "unanimous": true
+    },
+    {
+      "criterion_id": "S1",
+      "score": 0,
+      "evidence": "The review does not check for proper input validation or sanitization.",
+      "n_yes": 0,
+      "n_valid": 2,
+      "unanimous": true
+    },
+    {
+      "criterion_id": "S2",
+      "score": 0,
+      "evidence": "The review does not flag hardcoded secrets, credentials, or sensitive data.",
+      "n_yes": 0,
+      "n_valid": 2,
+      "unanimous": true
+    },
+    {
+      "criterion_id": "S3",
+      "score": 0,
+      "evidence": "Review does not assess error handling and failure recovery",
+      "n_yes": 1,
+      "n_valid": 2,
+      "unanimous": false
+    },
+    {
+      "criterion_id": "Q1",
+      "score": 1,
+      "evidence": "The 'Scope' section provides an overall summary of the changes being reviewed: 'This PR renames `RackAwareAssignor` to `RackAwareTestAssignor`, modifies its behavior...'",
+      "n_yes": 2,
+      "n_valid": 2,
+      "unanimous": true
+    },
+    {
+      "criterion_id": "Q2",
+      "score": 1,
+      "evidence": "The review comments are anchored to specific code locations: 'clients/clients-integration-tests/src/test/java/org/apache/kafka/clients/consumer/RackAwareTestAssignor.java:83'.",
+      "n_yes": 2,
+      "n_valid": 2,
+      "unanimous": true
+    },
+    {
+      "criterion_id": "Q3",
+      "score": 1,
+      "evidence": "The 'Problem' section lists significant issues like 'Untested New Assignor Behavior' and 'Potential for Unhandled Rename References,' implying they are blocking issues.",
+      "n_yes": 2,
+      "n_valid": 2,
+      "unanimous": true
+    },
+    {
+      "criterion_id": "Q4",
+      "score": 0,
+      "evidence": "The review makes direct statements about identified problems and missing tests rather than asking clarifying questions.",
+      "n_yes": 0,
+      "n_valid": 2,
+      "unanimous": true
+    },
+    {
+      "criterion_id": "Q5",
+      "score": 1,
+      "evidence": "The review explains the reasoning behind suggestions, e.g., 'it does not explicitly assert that partitions are correctly left unassigned when no rack-local member is available, which is the core change in the assignor's logic.'",
+      "n_yes": 2,
+      "n_valid": 2,
+      "unanimous": true
+    }
+  ],
+  "per_judge": [
+    {
+      "model": "gemini:gemini-2.5-flash",
+      "scores": {
+        "F1": 0,
+        "F2": 1,
+        "F3": 1,
+        "F4": 1,
+        "T1": 1,
+        "T2": 1,
+        "T3": 1,
+        "R1": 0,
+        "R2": 0,
+        "R3": 0,
+        "M1": 0,
+        "M2": 0,
+        "M3": 0,
+        "C1": 0,
+        "C2": 0,
+        "P1": 0,
+        "P2": 0,
+        "S1": 0,
+        "S2": 0,
+        "S3": 1,
+        "Q1": 1,
+        "Q2": 1,
+        "Q3": 1,
+        "Q4": 0,
+        "Q5": 1
+      },
+      "evidence": {
+        "F1": "The review discusses changes related to `RackAwareAssignor` and flakiness, which is a different problem than the one stated in the PR title: 'Introduce remote.fetch.max.timeout.ms to configure DelayedRemoteFetch timeout'.",
+        "F2": "The review identifies an edge case for the rename: 'Any other test files within the `clients-integration-tests` module (not listed in the diff) that might have been directly referencing `org.apache.kafka.clients.consumer.RackAwareAssignor` would now fail to compile due to the rename.'",
+        "F3": "The review checks integration with existing tests: 'This file is updated to use the new `RackAwareTestAssignor` name. The behavioral change in the assignor... is intended to improve stability, so it's unlikely to break existing assertions in this test...'",
+        "F4": "The review warns about potential breaking changes: 'Any other test files... that might have been directly referencing `org.apache.kafka.clients.consumer.RackAwareAssignor` would now fail to compile due to the rename. This is a potential integration risk...'",
+        "T1": "The review has a 'Test Coverage Assessment' section and discusses the need for more specific tests: 'Coverage is adequate for its original purpose, but not for the specific behavioral change introduced in the assignor.'",
+        "T2": "The review mentions testing the new tolerant behavior (an error path change): 'it does not explicitly assert that partitions are correctly left unassigned when no rack-local member is available, which is the core change in the assignor's logic.'",
+        "T3": "The review references specific test files and suggests updates: 'clients/clients-integration-tests/src/test/java/org/apache/kafka/clients/consumer/ConsumerIntegrationTest.java: No new assertions related to assignor tolerance.'",
+        "R1": "The review mentions a rename but does not comment on the clarity, naming conventions, or organization of the code itself.",
+        "R2": "The review does not identify unnecessary complexity or suggest simplification.",
+        "R3": "The review does not check if code comments explain the 'why' behind decisions.",
+        "M1": "The review discusses the impact of the change on existing tests but does not explicitly assess its fit within the broader architecture or design patterns.",
+        "M2": "The review does not flag if the PR scope is too large or should be split.",
+        "M3": "The review does not check if public APIs or interfaces are properly documented.",
+        "C1": "The review does not check adherence to project style guides or coding conventions.",
+        "C2": "The review does not check if similar problems are solved consistently with existing patterns.",
+        "P1": "The review does not identify potential performance issues or inefficiencies.",
+        "P2": "The review does not ask about benchmarks or performance testing for critical paths.",
+        "S1": "The review does not check for proper input validation or sanitization.",
+        "S2": "The review does not flag hardcoded secrets, credentials, or sensitive data.",
+        "S3": "The review assesses a change in error handling: 'clients/clients-integration-tests/src/test/java/org/apache/kafka/clients/consumer/RackAwareTestAssignor.java:83: `break;` replaces `throw new PartitionAssignorException(...)`.'",
+        "Q1": "The 'Scope' section provides an overall summary of the changes being reviewed: 'This PR renames `RackAwareAssignor` to `RackAwareTestAssignor`, modifies its behavior...'",
+        "Q2": "The review comments are anchored to specific code locations: 'clients/clients-integration-tests/src/test/java/org/apache/kafka/clients/consumer/RackAwareTestAssignor.java:83'.",
+        "Q3": "The 'Problem' section lists significant issues like 'Untested New Assignor Behavior' and 'Potential for Unhandled Rename References,' implying they are blocking issues.",
+        "Q4": "The review makes direct statements about identified problems and missing tests rather than asking clarifying questions.",
+        "Q5": "The review explains the reasoning behind suggestions, e.g., 'it does not explicitly assert that partitions are correctly left unassigned when no rack-local member is available, which is the core change in the assignor's logic.'"
+      },
+      "error": ""
+    },
+    {
+      "model": "anthropic:claude-sonnet-4-20250514",
+      "scores": {
+        "F1": 0,
+        "F2": 0,
+        "F3": 1,
+        "F4": 1,
+        "T1": 1,
+        "T2": 0,
+        "T3": 1,
+        "R1": 0,
+        "R2": 0,
+        "R3": 0,
+        "M1": 0,
+        "M2": 0,
+        "M3": 0,
+        "C1": 0,
+        "C2": 0,
+        "P1": 0,
+        "P2": 0,
+        "S1": 0,
+        "S2": 0,
+        "S3": 0,
+        "Q1": 1,
+        "Q2": 1,
+        "Q3": 1,
+        "Q4": 0,
+        "Q5": 1
+      },
+      "evidence": {
+        "F1": "Review does not verify that the change addresses the stated problem of configuring DelayedRemoteFetch timeout",
+        "F2": "Review does not identify edge cases related to the timeout configuration",
+        "F3": "Review discusses integration risks: 'This file is updated to use the new RackAwareTestAssignor name' and mentions potential compilation failures",
+        "F4": "Review warns about breaking changes: 'Any other test files... would now fail to compile due to the rename'",
+        "T1": "Review discusses test coverage: 'Test Coverage Assessment' section evaluates existing tests",
+        "T2": "Review does not mention testing edge cases or failure scenarios for the timeout configuration",
+        "T3": "Review references specific test files: 'ConsumerIntegrationTest.java' and 'ShareConsumerRackAwareTest.java'",
+        "R1": "Review does not comment on code clarity or naming conventions",
+        "R2": "Review does not identify unnecessary complexity or suggest simplification",
+        "R3": "Review does not check if code comments explain the 'why' behind decisions",
+        "M1": "Review does not assess whether the change fits existing architecture",
+        "M2": "Review does not flag if PR scope is too large or should be split",
+        "M3": "Review does not check if public APIs are properly documented",
+        "C1": "Review does not check adherence to coding conventions",
+        "C2": "Review does not check consistency with existing patterns",
+        "P1": "Review does not identify potential performance issues",
+        "P2": "Review does not ask about benchmarks or performance testing",
+        "S1": "Review does not check for proper input validation",
+        "S2": "Review does not flag hardcoded secrets or credentials",
+        "S3": "Review does not assess error handling and failure recovery",
+        "Q1": "Review provides overall summary: 'Scope: This PR renames RackAwareAssignor to RackAwareTestAssignor'",
+        "Q2": "Review anchors comments to specific locations: 'clients/clients-integration-tests/src/test/java/...' and line numbers like ':83'",
+        "Q3": "Review distinguishes issues by categorizing them under 'Problem' section with numbered points",
+        "Q4": "Review does not ask clarifying questions",
+        "Q5": "Review explains reasoning: 'The behavioral change in the assignor... is intended to improve stability'"
+      },
+      "error": ""
+    }
+  ],
+  "evaluation_timestamp": "2026-05-14T17:49:49.718284Z"
+}

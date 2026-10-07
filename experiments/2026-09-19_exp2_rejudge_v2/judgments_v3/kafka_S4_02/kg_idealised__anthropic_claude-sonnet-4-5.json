@@ -1,0 +1,46 @@
+{
+  "candidate_mentions": [
+    {
+      "basename_collision": false,
+      "end": 759,
+      "evidence_id": "M001",
+      "excerpt": "a/streams/state/KeyValueIterator.java:31** - The interface name is changed from `KeyValueIterator` to `KeyValueIteratorInternal`.\n- **Dependent files** (e.g., `streams/src/main/java/org/apache/kafka/streams/state/WindowStoreIterator.java`, `streams/src/main/java/org/apache/kafka/streams/state/internals/CompositeKeyValueIterator.java`) still reference `KeyValueIterator`.\n\n## Impact\n- **Technical Impact:** The incomplete renaming can lead to compilation errors in files that depend on the `KeyVa",
+      "finding_passage_id": "P008",
+      "match_kind": "full_path",
+      "match_text": "streams/src/main/java/org/apache/kafka/streams/state/WindowStoreIterator.java",
+      "oracle_path": "streams/src/main/java/org/apache/kafka/streams/state/WindowStoreIterator.java",
+      "start": 682
+    },
+    {
+      "basename_collision": false,
+      "end": 856,
+      "evidence_id": "M004",
+      "excerpt": "KeyValueIterator` to `KeyValueIteratorInternal`.\n- **Dependent files** (e.g., `streams/src/main/java/org/apache/kafka/streams/state/WindowStoreIterator.java`, `streams/src/main/java/org/apache/kafka/streams/state/internals/CompositeKeyValueIterator.java`) still reference `KeyValueIterator`.\n\n## Impact\n- **Technical Impact:** The incomplete renaming can lead to compilation errors in files that depend on the `KeyValueIterator` interface. This can disrupt the build process and lead to runtime failures if the ch",
+      "finding_passage_id": "P008",
+      "match_kind": "full_path",
+      "match_text": "streams/src/main/java/org/apache/kafka/streams/state/internals/CompositeKeyValueIterator.java",
+      "oracle_path": "streams/src/main/java/org/apache/kafka/streams/state/internals/CompositeKeyValueIterator.java",
+      "start": 763
+    }
+  ],
+  "causal_passage_id": "P010",
+  "decision_source": "llm_causal_adjudication",
+  "detected": true,
+  "evidence_id": "M001",
+  "evidence_id_normalized": false,
+  "executed_at_utc": "2026-09-19T15:40:42.719566+00:00",
+  "finding_passage_id": "P008",
+  "judge": "anthropic:claude-sonnet-4-5",
+  "manifest_sha256": "5d4371a93d1b09f0491ecc12279f9f3ff5de23053b7a5e74650a749f58b472b0",
+  "model_alias": "anthropic:claude-sonnet-4-5",
+  "model_evidence_id": "M001",
+  "model_snapshot": "unavailable-from-original-wrapper",
+  "original_verdict": null,
+  "prompt_sha256": "eb255d3469d487bb7b2dcf4af127652c1846747e653206b2d4f47f3e97a50017",
+  "reason_code": "specific_cross_file_link",
+  "response_wrapper": "bare",
+  "review_sha256": "0afe88a69584ca99fa368c19c75b75322a4a43d2249bf9439c74509d981193a9",
+  "schema_sha256": "f70f714868ecd3d25508bb3e00b32ecbe6761b0ebc05f454ee10fa4d28efd013",
+  "schema_version": "exp2-adjudication-v3",
+  "system_sha256": "030b5e701c798b32afdabbbeb22db38f664db8c8fd8b862d2fcb98df63b6fb6b"
+}

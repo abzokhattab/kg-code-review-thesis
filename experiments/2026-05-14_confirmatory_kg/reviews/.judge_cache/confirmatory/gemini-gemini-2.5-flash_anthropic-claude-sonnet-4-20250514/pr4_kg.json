@@ -1,0 +1,331 @@
+{
+  "pr_id": 4,
+  "mode": "kg",
+  "total_score": 9,
+  "max_score": 25,
+  "percentage": 36.0,
+  "kg_relevant_score": 6,
+  "kg_relevant_max": 9,
+  "kg_relevant_percentage": 66.7,
+  "criteria_scores": [
+    {
+      "criterion_id": "F1",
+      "score": 0,
+      "evidence": "The review summarizes the PR's stated purpose but does not verify if the changes actually address the problem or requirement effectively. It focuses on the impact of the changes.",
+      "n_yes": 0,
+      "n_valid": 2,
+      "unanimous": true
+    },
+    {
+      "criterion_id": "F2",
+      "score": 1,
+      "evidence": "Review mentions: 'If `auth.go` makes assumptions about the `user.SignedInUser` type or its population, this change could lead to unexpected authorization failures or bypasses.' and 'Usage stats or dev environment webhooks might be affected if they exceed these new limits.'",
+      "n_yes": 2,
+      "n_valid": 2,
+      "unanimous": true
+    },
+    {
+      "criterion_id": "F3",
+      "score": 1,
+      "evidence": "The 'Integration Risk' section explicitly details how changes in the PR might interact with existing components, e.g., 'The changes in `pkg/api/annotations.go` to use `identity.Requester`... could subtly change how user context and permissions are handled for annotation-related requests.'",
+      "n_yes": 2,
+      "n_valid": 2,
+      "unanimous": true
+    },
+    {
+      "criterion_id": "F4",
+      "score": 1,
+      "evidence": "Review warns: 'Any alerting component that previously relied on `ScopeAnnotationsAll`... will now fail, potentially breaking existing alerting configurations or enrichment processes.' and 'could cause `413 Request Entity Too Large` errors for existing clients'.",
+      "n_yes": 2,
+      "n_valid": 2,
+      "unanimous": true
+    },
+    {
+      "criterion_id": "T1",
+      "score": 1,
+      "evidence": "The 'Test Coverage Assessment' section is entirely dedicated to discussing the need for unit/integration tests, stating what 'should cover' or 'needs specific coverage'.",
+      "n_yes": 2,
+      "n_valid": 2,
+      "unanimous": true
+    },
+    {
+      "criterion_id": "T2",
+      "score": 1,
+      "evidence": "Review mentions: 'It should verify that users with basic roles can no longer access dashboard-scoped annotations' (a failure scenario) and 'It should verify the behavior for importing dashboards with pre-existing IDs' (an edge case).",
+      "n_yes": 2,
+      "n_valid": 2,
+      "unanimous": true
+    },
+    {
+      "criterion_id": "T3",
+      "score": 1,
+      "evidence": "The review references specific test files and suggests what tests should be added/updated within them, e.g., '`pkg/services/accesscontrol/acimpl/accesscontrol_test.go`: This test suite should cover the cache invalidation logic...'",
+      "n_yes": 2,
+      "n_valid": 2,
+      "unanimous": true
+    },
+    {
+      "criterion_id": "R1",
+      "score": 0,
+      "evidence": "The review does not comment on code clarity, naming conventions, or function organization.",
+      "n_yes": 0,
+      "n_valid": 2,
+      "unanimous": true
+    },
+    {
+      "criterion_id": "R2",
+      "score": 0,
+      "evidence": "The review does not identify unnecessary complexity or suggest simplification.",
+      "n_yes": 0,
+      "n_valid": 2,
+      "unanimous": true
+    },
+    {
+      "criterion_id": "R3",
+      "score": 0,
+      "evidence": "The review does not check if code comments explain the 'why' behind decisions.",
+      "n_yes": 0,
+      "n_valid": 2,
+      "unanimous": true
+    },
+    {
+      "criterion_id": "M1",
+      "score": 0,
+      "evidence": "While it discusses integration risks, the review does not explicitly assess whether the new changes fit the existing architecture or design patterns, but rather focuses on potential conflicts.",
+      "n_yes": 0,
+      "n_valid": 2,
+      "unanimous": true
+    },
+    {
+      "criterion_id": "M2",
+      "score": 0,
+      "evidence": "The review does not flag if the PR scope is too large or should be split.",
+      "n_yes": 0,
+      "n_valid": 2,
+      "unanimous": true
+    },
+    {
+      "criterion_id": "M3",
+      "score": 0,
+      "evidence": "The review does not check if public APIs or interfaces are properly documented.",
+      "n_yes": 0,
+      "n_valid": 2,
+      "unanimous": true
+    },
+    {
+      "criterion_id": "C1",
+      "score": 0,
+      "evidence": "The review does not check adherence to project style guides or coding conventions.",
+      "n_yes": 0,
+      "n_valid": 2,
+      "unanimous": true
+    },
+    {
+      "criterion_id": "C2",
+      "score": 0,
+      "evidence": "The review points out potential conflicts with existing logic but does not explicitly check if similar problems are solved consistently with existing patterns.",
+      "n_yes": 0,
+      "n_valid": 2,
+      "unanimous": true
+    },
+    {
+      "criterion_id": "P1",
+      "score": 0,
+      "evidence": "The review mentions potential `413 Request Entity Too Large` errors due to new limits, which is a functional error, not a performance inefficiency concern (e.g., CPU, memory, query time).",
+      "n_yes": 0,
+      "n_valid": 2,
+      "unanimous": true
+    },
+    {
+      "criterion_id": "P2",
+      "score": 0,
+      "evidence": "The review does not ask about benchmarks or performance testing for critical paths.",
+      "n_yes": 0,
+      "n_valid": 2,
+      "unanimous": true
+    },
+    {
+      "criterion_id": "S1",
+      "score": 0,
+      "evidence": "The review discusses the *effects* of security-related changes (like access control and size limits) but does not explicitly check the *implementation* of input validation or sanitization within the PR's code.",
+      "n_yes": 1,
+      "n_valid": 2,
+      "unanimous": false
+    },
+    {
+      "criterion_id": "S2",
+      "score": 0,
+      "evidence": "The review does not flag hardcoded secrets, credentials, or sensitive data.",
+      "n_yes": 0,
+      "n_valid": 2,
+      "unanimous": true
+    },
+    {
+      "criterion_id": "S3",
+      "score": 0,
+      "evidence": "The review identifies potential failures ('unexpected authorization failures', '413 Request Entity Too Large' errors) but does not assess the quality of error handling or failure recovery mechanisms within the PR's code.",
+      "n_yes": 0,
+      "n_valid": 2,
+      "unanimous": true
+    },
+    {
+      "criterion_id": "Q1",
+      "score": 1,
+      "evidence": "The 'Scope' section at the beginning provides a clear summary of the changes introduced by the PR.",
+      "n_yes": 2,
+      "n_valid": 2,
+      "unanimous": true
+    },
+    {
+      "criterion_id": "Q2",
+      "score": 1,
+      "evidence": "All comments are anchored to specific file paths, e.g., '`pkg/middleware/auth.go`: The changes in `pkg/api/annotations.go`...'",
+      "n_yes": 2,
+      "n_valid": 2,
+      "unanimous": true
+    },
+    {
+      "criterion_id": "Q3",
+      "score": 0,
+      "evidence": "The review identifies potential risks and test gaps but does not explicitly distinguish between blocking issues and minor suggestions.",
+      "n_yes": 0,
+      "n_valid": 2,
+      "unanimous": true
+    },
+    {
+      "criterion_id": "Q4",
+      "score": 0,
+      "evidence": "The review makes assertive statements about potential impacts and missing tests rather than asking clarifying questions.",
+      "n_yes": 0,
+      "n_valid": 2,
+      "unanimous": true
+    },
+    {
+      "criterion_id": "Q5",
+      "score": 1,
+      "evidence": "The review explains the reasoning behind its points, e.g., 'If `auth.go` makes assumptions... this change could lead to unexpected authorization failures or bypasses.'",
+      "n_yes": 2,
+      "n_valid": 2,
+      "unanimous": true
+    }
+  ],
+  "per_judge": [
+    {
+      "model": "gemini:gemini-2.5-flash",
+      "scores": {
+        "F1": 0,
+        "F2": 1,
+        "F3": 1,
+        "F4": 1,
+        "T1": 1,
+        "T2": 1,
+        "T3": 1,
+        "R1": 0,
+        "R2": 0,
+        "R3": 0,
+        "M1": 0,
+        "M2": 0,
+        "M3": 0,
+        "C1": 0,
+        "C2": 0,
+        "P1": 0,
+        "P2": 0,
+        "S1": 0,
+        "S2": 0,
+        "S3": 0,
+        "Q1": 1,
+        "Q2": 1,
+        "Q3": 0,
+        "Q4": 0,
+        "Q5": 1
+      },
+      "evidence": {
+        "F1": "The review summarizes the PR's stated purpose but does not verify if the changes actually address the problem or requirement effectively. It focuses on the impact of the changes.",
+        "F2": "Review mentions: 'If `auth.go` makes assumptions about the `user.SignedInUser` type or its population, this change could lead to unexpected authorization failures or bypasses.' and 'Usage stats or dev environment webhooks might be affected if they exceed these new limits.'",
+        "F3": "The 'Integration Risk' section explicitly details how changes in the PR might interact with existing components, e.g., 'The changes in `pkg/api/annotations.go` to use `identity.Requester`... could subtly change how user context and permissions are handled for annotation-related requests.'",
+        "F4": "Review warns: 'Any alerting component that previously relied on `ScopeAnnotationsAll`... will now fail, potentially breaking existing alerting configurations or enrichment processes.' and 'could cause `413 Request Entity Too Large` errors for existing clients'.",
+        "T1": "The 'Test Coverage Assessment' section is entirely dedicated to discussing the need for unit/integration tests, stating what 'should cover' or 'needs specific coverage'.",
+        "T2": "Review mentions: 'It should verify that users with basic roles can no longer access dashboard-scoped annotations' (a failure scenario) and 'It should verify the behavior for importing dashboards with pre-existing IDs' (an edge case).",
+        "T3": "The review references specific test files and suggests what tests should be added/updated within them, e.g., '`pkg/services/accesscontrol/acimpl/accesscontrol_test.go`: This test suite should cover the cache invalidation logic...'",
+        "R1": "The review does not comment on code clarity, naming conventions, or function organization.",
+        "R2": "The review does not identify unnecessary complexity or suggest simplification.",
+        "R3": "The review does not check if code comments explain the 'why' behind decisions.",
+        "M1": "While it discusses integration risks, the review does not explicitly assess whether the new changes fit the existing architecture or design patterns, but rather focuses on potential conflicts.",
+        "M2": "The review does not flag if the PR scope is too large or should be split.",
+        "M3": "The review does not check if public APIs or interfaces are properly documented.",
+        "C1": "The review does not check adherence to project style guides or coding conventions.",
+        "C2": "The review points out potential conflicts with existing logic but does not explicitly check if similar problems are solved consistently with existing patterns.",
+        "P1": "The review mentions potential `413 Request Entity Too Large` errors due to new limits, which is a functional error, not a performance inefficiency concern (e.g., CPU, memory, query time).",
+        "P2": "The review does not ask about benchmarks or performance testing for critical paths.",
+        "S1": "The review discusses the *effects* of security-related changes (like access control and size limits) but does not explicitly check the *implementation* of input validation or sanitization within the PR's code.",
+        "S2": "The review does not flag hardcoded secrets, credentials, or sensitive data.",
+        "S3": "The review identifies potential failures ('unexpected authorization failures', '413 Request Entity Too Large' errors) but does not assess the quality of error handling or failure recovery mechanisms within the PR's code.",
+        "Q1": "The 'Scope' section at the beginning provides a clear summary of the changes introduced by the PR.",
+        "Q2": "All comments are anchored to specific file paths, e.g., '`pkg/middleware/auth.go`: The changes in `pkg/api/annotations.go`...'",
+        "Q3": "The review identifies potential risks and test gaps but does not explicitly distinguish between blocking issues and minor suggestions.",
+        "Q4": "The review makes assertive statements about potential impacts and missing tests rather than asking clarifying questions.",
+        "Q5": "The review explains the reasoning behind its points, e.g., 'If `auth.go` makes assumptions... this change could lead to unexpected authorization failures or bypasses.'"
+      },
+      "error": ""
+    },
+    {
+      "model": "anthropic:claude-sonnet-4-20250514",
+      "scores": {
+        "F1": 0,
+        "F2": 1,
+        "F3": 1,
+        "F4": 1,
+        "T1": 1,
+        "T2": 1,
+        "T3": 1,
+        "R1": 0,
+        "R2": 0,
+        "R3": 0,
+        "M1": 0,
+        "M2": 0,
+        "M3": 0,
+        "C1": 0,
+        "C2": 0,
+        "P1": 0,
+        "P2": 0,
+        "S1": 1,
+        "S2": 0,
+        "S3": 0,
+        "Q1": 1,
+        "Q2": 1,
+        "Q3": 0,
+        "Q4": 0,
+        "Q5": 1
+      },
+      "evidence": {
+        "F1": "Review does not verify that changes address the stated PR requirements of 'Coding Quality Improvements'",
+        "F2": "Review identifies edge cases: 'If auth.go makes assumptions about the user.SignedInUser type or its population, this change could lead to unexpected authorization failures'",
+        "F3": "Review extensively covers integration: 'The changes in pkg/api/annotations.go to use identity.Requester... could subtly change how user context and permissions are handled'",
+        "F4": "Review warns of breaking changes: 'Any alerting component that previously relied on ScopeAnnotationsAll to read/write dashboard-level annotations via these basic roles will now fail'",
+        "T1": "Review discusses test needs: 'This test suite should cover the cache invalidation logic added to pkg/services/accesscontrol/resourcepermissions/service.go'",
+        "T2": "Review mentions error scenarios: 'could cause 413 Request Entity Too Large errors for existing clients that send large payloads'",
+        "T3": "Review references specific test files: 'pkg/services/accesscontrol/acimpl/accesscontrol_test.go', 'pkg/services/annotations/accesscontrol/accesscontrol_test.go'",
+        "R1": "Review does not comment on code clarity, naming conventions, or function organization",
+        "R2": "Review does not identify unnecessary complexity or suggest simplification",
+        "R3": "Review does not check if code comments explain the 'why' behind decisions",
+        "M1": "Review does not assess if changes fit existing architecture or design patterns",
+        "M2": "Review does not flag if PR scope is too large or should be split",
+        "M3": "Review does not check if public APIs or interfaces are properly documented",
+        "C1": "Review does not check adherence to project style guides or coding conventions",
+        "C2": "Review does not check if similar problems are solved consistently with existing patterns",
+        "P1": "Review does not identify potential performance issues or inefficiencies",
+        "P2": "Review does not ask about benchmarks or performance testing",
+        "S1": "Review mentions security improvements: 'introducing request body size limits for plugin resources and live push'",
+        "S2": "Review does not flag hardcoded secrets, credentials, or sensitive data",
+        "S3": "Review does not assess error handling and failure recovery",
+        "Q1": "Review provides overall summary: 'This PR applies several security patches, including tightening access control for annotations'",
+        "Q2": "Review comments are anchored to specific files: 'pkg/middleware/auth.go', 'pkg/api/annotations.go', etc.",
+        "Q3": "Review does not distinguish between blocking issues and minor suggestions",
+        "Q4": "Review does not ask clarifying questions, makes statements about potential issues",
+        "Q5": "Review explains reasoning: 'If auth.go makes assumptions about the user.SignedInUser type... this change could lead to unexpected authorization failures'"
+      },
+      "error": ""
+    }
+  ],
+  "evaluation_timestamp": "2026-05-14T17:47:52.505418Z"
+}

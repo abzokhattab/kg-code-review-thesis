@@ -1,0 +1,51 @@
+{
+  "pr_id": 21,
+  "mode": "baseline",
+  "mean_scores": {
+    "F3": 2.0,
+    "F4": 2.0,
+    "P1": 0.0,
+    "R2": 0.0,
+    "T3": 2.5
+  },
+  "mean_graded_total": 6.5,
+  "per_judge": [
+    {
+      "model": "gemini:gemini-2.5-flash",
+      "scores": {
+        "F3": 3,
+        "F4": 2,
+        "P1": 0,
+        "R2": 0,
+        "T3": 3
+      },
+      "evidence": {
+        "F3": "Names multiple specific callers or dependent components with file paths or function names, and explains the concrete integration risk for each. The review names `clients/src/main/java/org/apache/kafka/common/config/SslConfigs.java` and `clients/src/main/java/org/apache/kafka/common/utils/Java.java` in the 'Evidence' section. It explains the risk for `SslConfigs.java`: 'potentially causing failures in SSL configurations' and for `Java.java`: 'could affect other parts of the codebase that might re",
+        "F4": "Identifies at least one specific API contract or caller expectation that could break. The review states: 'The removal of Java version checks could lead to runtime errors if any dependencies or parts of the codebase still require Java 8. This could also affect backward compatibility for users who have not yet upgraded to Java 11.' This identifies the expectation that Kafka works on Java 8 as broken. It also points to 'SSL configurations' as a specific area where 'failures' could occur.",
+        "P1": "No mention of performance.",
+        "R2": "No comment on complexity or code structure.",
+        "T3": "Names multiple specific test file paths, references the exact test scenarios or functions within those files that need coverage, and explains what edge cases are currently missing. The review names `clients/src/test/java/org/apache/kafka/common/KafkaFutureTest.java` and `clients/src/test/java/org/apache/kafka/common/utils/JavaTest.java`. It references 'removal of conditional test logic based on Java version' and 'removal of tests related to Java version parsing' as scenarios, and explains the mi"
+      },
+      "error": ""
+    },
+    {
+      "model": "gemini:gemini-2.5-pro",
+      "scores": {
+        "F3": 1,
+        "F4": 2,
+        "P1": 0,
+        "R2": 0,
+        "T3": 2
+      },
+      "evidence": {
+        "F3": "The review vaguely notes that integration may be affected, for example: \"The removal of the `Java` utility class's version parsing and compatibility checks could affect other parts of the codebase that might rely on these utilities.\" However, it does not name any specific dependent components.",
+        "F4": "The review identifies a specific caller expectation that could break: Java 8 compatibility. It points to a specific area of impact: \"There is a risk of introducing bugs in environments where Java 8 is still in use, potentially causing failures in SSL configurations...\" This is linked to the evidence provided for `SslConfigs.java`.",
+        "P1": "The review does not mention performance.",
+        "R2": "The review does not comment on complexity or suggest simplifications.",
+        "T3": "The review names two specific test files in the 'Evidence' section: `clients/src/test/java/org/apache/kafka/common/KafkaFutureTest.java` and `clients/src/test/java/org/apache/kafka/common/utils/JavaTest.java`."
+      },
+      "error": ""
+    }
+  ],
+  "timestamp": "2026-06-01T18:57:56.426287+00:00"
+}

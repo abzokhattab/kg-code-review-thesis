@@ -1,0 +1,55 @@
+{
+  "useful": 7,
+  "generic": 3,
+  "wrong": 0,
+  "total": 10,
+  "signal": 7,
+  "noise": 3,
+  "snr": 0.7,
+  "points": [
+    {
+      "text": "Undo session logic may not handle rapid toggling of the pilot preview state correctly.",
+      "label": "useful"
+    },
+    {
+      "text": "_pilot_commit_undo_session is called in multiple places, which could lead to redundant or conflicting undo actions.",
+      "label": "useful"
+    },
+    {
+      "text": "_pilot_commit_undo_session is called when toggling freelook, which might not be necessary if no movement occurred.",
+      "label": "useful"
+    },
+    {
+      "text": "_pilot_commit_undo_session is called when toggling camera preview, potentially leading to redundant commits.",
+      "label": "useful"
+    },
+    {
+      "text": "_pilot_commit_undo_session is called when switching preview cameras, which might conflict with ongoing sessions.",
+      "label": "useful"
+    },
+    {
+      "text": "Redundant undo actions could clutter the undo stack, making it harder for users to navigate their history.",
+      "label": "generic"
+    },
+    {
+      "text": "Conflicting undo sessions might lead to unexpected behavior or errors when users attempt to undo/redo actions.",
+      "label": "generic"
+    },
+    {
+      "text": "Ensure that _pilot_commit_undo_session is only called when necessary by checking if any actual movement occurred since the last commit.",
+      "label": "useful"
+    },
+    {
+      "text": "Consider consolidating the logic for committing undo sessions to reduce redundancy and potential conflicts.",
+      "label": "useful"
+    },
+    {
+      "text": "Add unit tests to verify that undo/redo functionality behaves correctly under rapid state changes and multiple toggles.",
+      "label": "generic"
+    }
+  ],
+  "parse_ok": true,
+  "pr_id": 46,
+  "mode": "rag",
+  "tag": "concise"
+}

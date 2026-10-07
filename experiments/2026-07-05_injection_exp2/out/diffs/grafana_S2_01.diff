@@ -1,0 +1,11 @@
+--- a/packages/grafana-data/src/dataframe/processDataFrame.ts
++++ b/packages/grafana-data/src/dataframe/processDataFrame.ts
+@@ -305,7 +305,7 @@
+ /**
+  * Inspect any object and return the results as a DataFrame
+  */
+-export function toDataFrame(data: any): DataFrame {
++export function toDataFrame(requiredCtx: RequiredContext, data: any): DataFrame {
+   if ('fields' in data) {
+     // DataFrameDTO does not have length
+     if ('length' in data && data.fields[0]?.values?.get) {

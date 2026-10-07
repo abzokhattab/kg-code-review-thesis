@@ -1,0 +1,331 @@
+{
+  "pr_id": 10,
+  "mode": "baseline",
+  "total_score": 13,
+  "max_score": 25,
+  "percentage": 52.0,
+  "kg_relevant_score": 8,
+  "kg_relevant_max": 9,
+  "kg_relevant_percentage": 88.9,
+  "criteria_scores": [
+    {
+      "criterion_id": "F1",
+      "score": 1,
+      "evidence": "The review questions whether the 'Inconsistent \"Legacy\" Blending Logic' actually represents the 'exact previous \"incorrect\" behavior across all scenarios', indicating a check on whether the change truly addresses the problem of providing a precise legacy option.",
+      "n_yes": 2,
+      "n_valid": 2,
+      "unanimous": true
+    },
+    {
+      "criterion_id": "F2",
+      "score": 1,
+      "evidence": "The review identifies edge cases such as 'alignment or packing issues across different GPU drivers or platforms' and 'across all relevant fog configurations (e.g., volumetric fog only, environment fog only, both combined)'.",
+      "n_yes": 2,
+      "n_valid": 2,
+      "unanimous": true
+    },
+    {
+      "criterion_id": "F3",
+      "score": 1,
+      "evidence": "The review checks integration by noting 'The \"legacy\" blending behavior is implemented with different equations in `sky.glsl` and `scene_forward_clustered.glsl`'.",
+      "n_yes": 2,
+      "n_valid": 2,
+      "unanimous": true
+    },
+    {
+      "criterion_id": "F4",
+      "score": 1,
+      "evidence": "The 'Impact' section warns about 'Rendering Artifacts/Crashes', 'Subtle Visual Inconsistencies', and 'Regression Risk'.",
+      "n_yes": 2,
+      "n_valid": 2,
+      "unanimous": true
+    },
+    {
+      "criterion_id": "T1",
+      "score": 1,
+      "evidence": "The review identifies 'Lack of Specific Test Coverage' as a problem and recommends 'Add Visual Regression Tests (or Manual Verification Plan)'.",
+      "n_yes": 2,
+      "n_valid": 2,
+      "unanimous": true
+    },
+    {
+      "criterion_id": "T2",
+      "score": 1,
+      "evidence": "The review suggests testing to 'verify that the \"legacy\" behavior precisely matches the intended older behavior or that the \"new\" behavior remains correct when the flag is off', covering different scenarios.",
+      "n_yes": 2,
+      "n_valid": 2,
+      "unanimous": true
+    },
+    {
+      "criterion_id": "T3",
+      "score": 1,
+      "evidence": "The review notes 'No new test files or modifications to existing test files are present in the diff' and suggests 'visual regression tests or dedicated unit tests for the blending math'.",
+      "n_yes": 2,
+      "n_valid": 2,
+      "unanimous": true
+    },
+    {
+      "criterion_id": "R1",
+      "score": 0,
+      "evidence": "The review does not comment on code clarity, naming conventions, or function organization.",
+      "n_yes": 0,
+      "n_valid": 2,
+      "unanimous": true
+    },
+    {
+      "criterion_id": "R2",
+      "score": 0,
+      "evidence": "While it mentions 'Increased Maintenance Burden: Maintaining two distinct blending code paths adds complexity', it doesn't suggest simplification of the code itself, but rather notes the inherent complexity of the approach.",
+      "n_yes": 0,
+      "n_valid": 2,
+      "unanimous": true
+    },
+    {
+      "criterion_id": "R3",
+      "score": 0,
+      "evidence": "The review does not mention code comments.",
+      "n_yes": 0,
+      "n_valid": 2,
+      "unanimous": true
+    },
+    {
+      "criterion_id": "M1",
+      "score": 1,
+      "evidence": "The review assesses architectural fit by discussing UBO struct changes in C++ and GLSL, the use of `std140`, and the consistency of blending logic across different shaders (`sky.glsl`, `scene_forward_clustered.glsl`).",
+      "n_yes": 2,
+      "n_valid": 2,
+      "unanimous": true
+    },
+    {
+      "criterion_id": "M2",
+      "score": 0,
+      "evidence": "The review does not comment on the PR's scope being too large or needing to be split.",
+      "n_yes": 0,
+      "n_valid": 2,
+      "unanimous": true
+    },
+    {
+      "criterion_id": "M3",
+      "score": 0,
+      "evidence": "The review does not mention documentation for public APIs or interfaces.",
+      "n_yes": 0,
+      "n_valid": 2,
+      "unanimous": true
+    },
+    {
+      "criterion_id": "C1",
+      "score": 0,
+      "evidence": "The review does not explicitly mention adherence to project style guides or coding conventions, though it discusses type consistency as a correctness issue.",
+      "n_yes": 0,
+      "n_valid": 2,
+      "unanimous": true
+    },
+    {
+      "criterion_id": "C2",
+      "score": 1,
+      "evidence": "The review highlights inconsistency in problem-solving by stating 'The \"legacy\" blending behavior is implemented with different equations in `sky.glsl` and `scene_forward_clustered.glsl`'.",
+      "n_yes": 2,
+      "n_valid": 2,
+      "unanimous": true
+    },
+    {
+      "criterion_id": "P1",
+      "score": 0,
+      "evidence": "The review does not identify potential performance issues or inefficiencies.",
+      "n_yes": 0,
+      "n_valid": 2,
+      "unanimous": true
+    },
+    {
+      "criterion_id": "P2",
+      "score": 0,
+      "evidence": "The review does not ask about benchmarks or performance testing.",
+      "n_yes": 0,
+      "n_valid": 2,
+      "unanimous": true
+    },
+    {
+      "criterion_id": "S1",
+      "score": 0,
+      "evidence": "The review does not discuss input validation or sanitization.",
+      "n_yes": 0,
+      "n_valid": 2,
+      "unanimous": true
+    },
+    {
+      "criterion_id": "S2",
+      "score": 0,
+      "evidence": "The review does not flag hardcoded secrets, credentials, or sensitive data.",
+      "n_yes": 0,
+      "n_valid": 2,
+      "unanimous": true
+    },
+    {
+      "criterion_id": "S3",
+      "score": 0,
+      "evidence": "While the review mentions 'Rendering Artifacts/Crashes' as an impact, it does not assess error handling or failure recovery mechanisms within the code.",
+      "n_yes": 1,
+      "n_valid": 2,
+      "unanimous": false
+    },
+    {
+      "criterion_id": "Q1",
+      "score": 1,
+      "evidence": "The 'Scope' section provides an overall summary: 'This pull request introduces a new project setting to allow users to revert to a \"legacy\" volumetric fog blending behavior'.",
+      "n_yes": 2,
+      "n_valid": 2,
+      "unanimous": true
+    },
+    {
+      "criterion_id": "Q2",
+      "score": 1,
+      "evidence": "The 'Evidence' section explicitly anchors comments to specific code locations with file paths and line numbers, e.g., '`servers/rendering/renderer_rd/environment/sky.h:158-161`'.",
+      "n_yes": 2,
+      "n_valid": 2,
+      "unanimous": true
+    },
+    {
+      "criterion_id": "Q3",
+      "score": 1,
+      "evidence": "The 'Problem' and 'Impact' sections clearly outline significant risks like 'Rendering Artifacts/Crashes' and 'Subtle Visual Inconsistencies', implying these are not minor suggestions.",
+      "n_yes": 2,
+      "n_valid": 2,
+      "unanimous": true
+    },
+    {
+      "criterion_id": "Q4",
+      "score": 0,
+      "evidence": "The review primarily makes statements and recommendations rather than asking clarifying questions.",
+      "n_yes": 1,
+      "n_valid": 2,
+      "unanimous": false
+    },
+    {
+      "criterion_id": "Q5",
+      "score": 1,
+      "evidence": "The review explains the reasoning behind suggestions, for example, recommending `uint` over `bool` for UBO because it 'removes any ambiguity and potential for driver-specific packing issues'.",
+      "n_yes": 2,
+      "n_valid": 2,
+      "unanimous": true
+    }
+  ],
+  "per_judge": [
+    {
+      "model": "gemini:gemini-2.5-flash",
+      "scores": {
+        "F1": 1,
+        "F2": 1,
+        "F3": 1,
+        "F4": 1,
+        "T1": 1,
+        "T2": 1,
+        "T3": 1,
+        "R1": 0,
+        "R2": 0,
+        "R3": 0,
+        "M1": 1,
+        "M2": 0,
+        "M3": 0,
+        "C1": 0,
+        "C2": 1,
+        "P1": 0,
+        "P2": 0,
+        "S1": 0,
+        "S2": 0,
+        "S3": 0,
+        "Q1": 1,
+        "Q2": 1,
+        "Q3": 1,
+        "Q4": 0,
+        "Q5": 1
+      },
+      "evidence": {
+        "F1": "The review questions whether the 'Inconsistent \"Legacy\" Blending Logic' actually represents the 'exact previous \"incorrect\" behavior across all scenarios', indicating a check on whether the change truly addresses the problem of providing a precise legacy option.",
+        "F2": "The review identifies edge cases such as 'alignment or packing issues across different GPU drivers or platforms' and 'across all relevant fog configurations (e.g., volumetric fog only, environment fog only, both combined)'.",
+        "F3": "The review checks integration by noting 'The \"legacy\" blending behavior is implemented with different equations in `sky.glsl` and `scene_forward_clustered.glsl`'.",
+        "F4": "The 'Impact' section warns about 'Rendering Artifacts/Crashes', 'Subtle Visual Inconsistencies', and 'Regression Risk'.",
+        "T1": "The review identifies 'Lack of Specific Test Coverage' as a problem and recommends 'Add Visual Regression Tests (or Manual Verification Plan)'.",
+        "T2": "The review suggests testing to 'verify that the \"legacy\" behavior precisely matches the intended older behavior or that the \"new\" behavior remains correct when the flag is off', covering different scenarios.",
+        "T3": "The review notes 'No new test files or modifications to existing test files are present in the diff' and suggests 'visual regression tests or dedicated unit tests for the blending math'.",
+        "R1": "The review does not comment on code clarity, naming conventions, or function organization.",
+        "R2": "While it mentions 'Increased Maintenance Burden: Maintaining two distinct blending code paths adds complexity', it doesn't suggest simplification of the code itself, but rather notes the inherent complexity of the approach.",
+        "R3": "The review does not mention code comments.",
+        "M1": "The review assesses architectural fit by discussing UBO struct changes in C++ and GLSL, the use of `std140`, and the consistency of blending logic across different shaders (`sky.glsl`, `scene_forward_clustered.glsl`).",
+        "M2": "The review does not comment on the PR's scope being too large or needing to be split.",
+        "M3": "The review does not mention documentation for public APIs or interfaces.",
+        "C1": "The review does not explicitly mention adherence to project style guides or coding conventions, though it discusses type consistency as a correctness issue.",
+        "C2": "The review highlights inconsistency in problem-solving by stating 'The \"legacy\" blending behavior is implemented with different equations in `sky.glsl` and `scene_forward_clustered.glsl`'.",
+        "P1": "The review does not identify potential performance issues or inefficiencies.",
+        "P2": "The review does not ask about benchmarks or performance testing.",
+        "S1": "The review does not discuss input validation or sanitization.",
+        "S2": "The review does not flag hardcoded secrets, credentials, or sensitive data.",
+        "S3": "While the review mentions 'Rendering Artifacts/Crashes' as an impact, it does not assess error handling or failure recovery mechanisms within the code.",
+        "Q1": "The 'Scope' section provides an overall summary: 'This pull request introduces a new project setting to allow users to revert to a \"legacy\" volumetric fog blending behavior'.",
+        "Q2": "The 'Evidence' section explicitly anchors comments to specific code locations with file paths and line numbers, e.g., '`servers/rendering/renderer_rd/environment/sky.h:158-161`'.",
+        "Q3": "The 'Problem' and 'Impact' sections clearly outline significant risks like 'Rendering Artifacts/Crashes' and 'Subtle Visual Inconsistencies', implying these are not minor suggestions.",
+        "Q4": "The review primarily makes statements and recommendations rather than asking clarifying questions.",
+        "Q5": "The review explains the reasoning behind suggestions, for example, recommending `uint` over `bool` for UBO because it 'removes any ambiguity and potential for driver-specific packing issues'."
+      },
+      "error": ""
+    },
+    {
+      "model": "anthropic:claude-sonnet-4-20250514",
+      "scores": {
+        "F1": 1,
+        "F2": 1,
+        "F3": 1,
+        "F4": 1,
+        "T1": 1,
+        "T2": 1,
+        "T3": 1,
+        "R1": 0,
+        "R2": 0,
+        "R3": 0,
+        "M1": 1,
+        "M2": 0,
+        "M3": 0,
+        "C1": 0,
+        "C2": 1,
+        "P1": 0,
+        "P2": 0,
+        "S1": 0,
+        "S2": 0,
+        "S3": 1,
+        "Q1": 1,
+        "Q2": 1,
+        "Q3": 1,
+        "Q4": 1,
+        "Q5": 1
+      },
+      "evidence": {
+        "F1": "Review states: 'This pull request introduces a new project setting to allow users to revert to a \"legacy\" volumetric fog blending behavior from previous Godot versions, primarily for visual compatibility during engine upgrades'",
+        "F2": "Review identifies edge cases: 'UBO/Shader Mismatch Risk' and 'Inconsistent \"Legacy\" Blending Logic' across different scenarios and shader paths",
+        "F3": "Review examines integration across multiple components: 'sky.glsl and scene_forward_clustered.glsl' and discusses UBO changes in both C++ and GLSL",
+        "F4": "Review warns: 'Increased Maintenance Burden: Maintaining two distinct blending code paths adds complexity and potential for bugs in the long term'",
+        "T1": "Review explicitly states: 'Lack of Specific Test Coverage' and discusses 'no specific tests (e.g., visual regression tests or dedicated unit tests for the blending math)'",
+        "T2": "Review mentions testing edge cases: 'visual regression tests or dedicated unit tests for the blending math' and 'testing edge cases, error paths, or failure scenarios'",
+        "T3": "Review notes: 'No new test files or modifications to existing test files are present in the diff' and suggests 'Add Visual Regression Tests'",
+        "R1": "Review does not comment on code clarity, naming conventions, or function organization",
+        "R2": "Review does not identify unnecessary complexity or suggest simplification",
+        "R3": "Review does not check if code comments explain the 'why' behind decisions",
+        "M1": "Review assesses architectural fit by examining UBO structure changes and shader integration patterns across multiple rendering components",
+        "M2": "Review does not flag if the PR scope is too large or should be split",
+        "M3": "Review does not check if public APIs or interfaces are properly documented",
+        "C1": "Review does not check adherence to project style guides or coding conventions",
+        "C2": "Review checks consistency: 'different equations in sky.glsl and scene_forward_clustered.glsl' and questions if they 'collectively represent the exact previous \"incorrect\" behavior'",
+        "P1": "Review does not identify potential performance issues or inefficiencies",
+        "P2": "Review does not ask about benchmarks or performance testing",
+        "S1": "Review does not check for proper input validation or sanitization",
+        "S2": "Review does not flag hardcoded secrets, credentials, or sensitive data",
+        "S3": "Review assesses error scenarios: 'visual artifacts, corrupted rendering, or even GPU crashes' and discusses 'Regression Risk'",
+        "Q1": "Review provides comprehensive summary with Problem, Evidence, Impact, and Recommendation sections",
+        "Q2": "Review anchors comments to specific locations: 'servers/rendering/renderer_rd/environment/sky.h:158-161' and multiple other file:line references",
+        "Q3": "Review distinguishes severity with structured sections for 'Problem', 'Impact', and 'Recommendation' showing different levels of concern",
+        "Q4": "Review asks clarifying questions: 'It's not immediately clear if these distinct equations collectively represent the exact previous \"incorrect\" behavior'",
+        "Q5": "Review explains reasoning: 'While bool might work due to std140 rules, uint removes any ambiguity and potential for driver-specific packing issues'"
+      },
+      "error": ""
+    }
+  ],
+  "evaluation_timestamp": "2026-05-14T17:54:00.545445Z"
+}

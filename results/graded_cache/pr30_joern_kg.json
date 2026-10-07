@@ -1,0 +1,51 @@
+{
+  "pr_id": 30,
+  "mode": "joern_kg",
+  "mean_scores": {
+    "F3": 3.0,
+    "F4": 2.0,
+    "P1": 0.0,
+    "R2": 0.0,
+    "T3": 2.5
+  },
+  "mean_graded_total": 7.5,
+  "per_judge": [
+    {
+      "model": "gemini:gemini-2.5-flash",
+      "scores": {
+        "F3": 3,
+        "F4": 2,
+        "P1": 0,
+        "R2": 0,
+        "T3": 3
+      },
+      "evidence": {
+        "F3": "Names multiple specific callers or dependent components with file paths or function names, and explains the concrete integration risk for each. For example: 'This doesn't cover how TextureRect behaves when placed inside various Container nodes (e.g., HBoxContainer, VBoxContainer, GridContainer), where its minimum size and expansion properties are critical for layout calculations.' and 'Structural context: scene/gui/box_container.h, scene/gui/grid_container.h, scene/gui/margin_container.h (common",
+        "F4": "Identifies at least one specific API contract or caller expectation that could break. For example: 'The test explicitly checks that TextureRect::get_mouse_filter() defaults to Control::MOUSE_FILTER_PASS, which differs from the base Control class's default of MOUSE_FILTER_STOP. While tested, this deviation might not be clearly documented for users, leading to unexpected behavior.' and 'Structural context: scene/gui/control.h (defines Control::MOUSE_FILTER_STOP as default in its constructor or pro",
+        "P1": "No mention of performance.",
+        "R2": "No comment on complexity or code structure.",
+        "T3": "Names multiple specific test file paths, references the exact test scenarios or functions within those files that need coverage, and explains what edge cases are currently missing. For example: 'tests/scene/test_texture_rect.cpp:50: Ref<ImageTexture> tex = ImageTexture::create_from_image(image); ... No other Texture2D derived types are instantiated or tested.' and 'tests/scene/test_texture_rect.cpp:139: Window *root = SceneTree::get_singleton()->get_root(); ... The TextureRect is added directly "
+      },
+      "error": ""
+    },
+    {
+      "model": "gemini:gemini-2.5-pro",
+      "scores": {
+        "F3": 3,
+        "F4": 2,
+        "P1": 0,
+        "R2": 0,
+        "T3": 2
+      },
+      "evidence": {
+        "F3": "The review names multiple specific callers/dependents (`HBoxContainer`, `VBoxContainer`, `GridContainer`) and provides their file paths (`scene/gui/box_container.h`, etc.). It explains the concrete integration risk: \"This doesn't cover how `TextureRect` behaves when placed inside various `Container` nodes... where its minimum size and expansion properties are critical for layout calculations.\"",
+        "F4": "The review identifies a specific API contract/caller expectation that is broken: \"The test explicitly checks that `TextureRect::get_mouse_filter()` defaults to `Control::MOUSE_FILTER_PASS`, which differs from the base `Control` class's default of `MOUSE_FILTER_STOP`.\" It provides context from the base class file: `scene/gui/control.h`.",
+        "P1": "The review does not mention performance, efficiency, or potential bottlenecks.",
+        "R2": "The review does not comment on code complexity or suggest any simplifications or refactoring.",
+        "T3": "The review names one specific test file path that should be updated: `tests/scene/test_texture_rect.cpp`. It does not name multiple test files."
+      },
+      "error": ""
+    }
+  ],
+  "timestamp": "2026-06-01T18:58:19.567119+00:00"
+}

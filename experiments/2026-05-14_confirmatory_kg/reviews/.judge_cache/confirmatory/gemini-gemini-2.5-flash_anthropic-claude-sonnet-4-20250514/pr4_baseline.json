@@ -1,0 +1,279 @@
+{
+  "pr_id": 4,
+  "mode": "baseline",
+  "total_score": 14,
+  "max_score": 25,
+  "percentage": 56.0,
+  "kg_relevant_score": 7,
+  "kg_relevant_max": 9,
+  "kg_relevant_percentage": 77.8,
+  "criteria_scores": [
+    {
+      "criterion_id": "F1",
+      "score": 1,
+      "evidence": "The 'Evidence' section directly links code changes to the 'Problem' statements, e.g., 'Extensive changes to AllowQuery and allowedNode functions... Addition of s.clearUserPermissionCache calls... Introduction of maxResourceBodySize...'",
+      "n_yes": 1,
+      "n_valid": 1,
+      "unanimous": true
+    },
+    {
+      "criterion_id": "F2",
+      "score": 1,
+      "evidence": "Under 'Recommendation' for SQL Parser, it suggests 'specifically targeting edge cases with SetOp, Select (with Window, Lock), and ColName (with @@ prefixes)'.",
+      "n_yes": 1,
+      "n_valid": 1,
+      "unanimous": true
+    },
+    {
+      "criterion_id": "F3",
+      "score": 1,
+      "evidence": "The review discusses 'Addition of s.clearUserPermissionCache calls after SetUserPermission and SetPermissions methods' and 'Introduction of maxResourceBodySize, http.MaxBytesReader', showing integration with existing methods and components.",
+      "n_yes": 1,
+      "n_valid": 1,
+      "unanimous": true
+    },
+    {
+      "criterion_id": "F4",
+      "score": 1,
+      "evidence": "Under 'Recommendation' for SQL Parser, it states 'Risks: Overly restrictive rules could break legitimate queries; overly permissive rules could reintroduce vulnerabilities.'",
+      "n_yes": 1,
+      "n_valid": 1,
+      "unanimous": true
+    },
+    {
+      "criterion_id": "T1",
+      "score": 1,
+      "evidence": "The 'Recommendation' section has a dedicated 'Tests' sub-section for each problem, e.g., 'Add more comprehensive integration tests for the SQL parser'.",
+      "n_yes": 1,
+      "n_valid": 1,
+      "unanimous": true
+    },
+    {
+      "criterion_id": "T2",
+      "score": 1,
+      "evidence": "For SQL Parser tests, it mentions 'specifically targeting edge cases with SetOp, Select (with Window, Lock), and ColName (with @@ prefixes)'.",
+      "n_yes": 1,
+      "n_valid": 1,
+      "unanimous": true
+    },
+    {
+      "criterion_id": "T3",
+      "score": 0,
+      "evidence": "The review suggests 'integration tests for the SQL parser' but does not reference specific test files or suggest exact locations for new/updated tests.",
+      "n_yes": 0,
+      "n_valid": 1,
+      "unanimous": true
+    },
+    {
+      "criterion_id": "R1",
+      "score": 0,
+      "evidence": "The review does not comment on code clarity, naming conventions, or function organization.",
+      "n_yes": 0,
+      "n_valid": 1,
+      "unanimous": true
+    },
+    {
+      "criterion_id": "R2",
+      "score": 0,
+      "evidence": "The review does not identify unnecessary complexity or suggest simplification.",
+      "n_yes": 0,
+      "n_valid": 1,
+      "unanimous": true
+    },
+    {
+      "criterion_id": "R3",
+      "score": 0,
+      "evidence": "The review does not check if code comments explain the 'why' behind decisions.",
+      "n_yes": 0,
+      "n_valid": 1,
+      "unanimous": true
+    },
+    {
+      "criterion_id": "M1",
+      "score": 1,
+      "evidence": "The discussion of adding cache invalidation calls to existing service methods and using `http.MaxBytesReader` implies an assessment of fitting into the existing architecture.",
+      "n_yes": 1,
+      "n_valid": 1,
+      "unanimous": true
+    },
+    {
+      "criterion_id": "M2",
+      "score": 0,
+      "evidence": "The review does not flag the PR scope as too large or suggest splitting it.",
+      "n_yes": 0,
+      "n_valid": 1,
+      "unanimous": true
+    },
+    {
+      "criterion_id": "M3",
+      "score": 0,
+      "evidence": "The review does not check if public APIs or interfaces are properly documented.",
+      "n_yes": 0,
+      "n_valid": 1,
+      "unanimous": true
+    },
+    {
+      "criterion_id": "C1",
+      "score": 0,
+      "evidence": "The review does not check adherence to project style guides or coding conventions.",
+      "n_yes": 0,
+      "n_valid": 1,
+      "unanimous": true
+    },
+    {
+      "criterion_id": "C2",
+      "score": 1,
+      "evidence": "The introduction of `http.MaxBytesReader` for limiting request bodies is a consistent pattern for solving this type of problem.",
+      "n_yes": 1,
+      "n_valid": 1,
+      "unanimous": true
+    },
+    {
+      "criterion_id": "P1",
+      "score": 1,
+      "evidence": "The 'Impact' section mentions 'Denial of Service (DoS) vulnerability via large request bodies... consuming server memory and network bandwidth' and 'memory exhaustion, increased CPU usage'.",
+      "n_yes": 1,
+      "n_valid": 1,
+      "unanimous": true
+    },
+    {
+      "criterion_id": "P2",
+      "score": 0,
+      "evidence": "The review identifies performance impacts but does not ask about benchmarks or specific performance testing.",
+      "n_yes": 0,
+      "n_valid": 1,
+      "unanimous": true
+    },
+    {
+      "criterion_id": "S1",
+      "score": 1,
+      "evidence": "The first problem and its solution focus on 'Potential for RBAC bypass in SQL expressions' and 'explicitly traverse previously skipped AST fields', which is a form of input validation/sanitization.",
+      "n_yes": 1,
+      "n_valid": 1,
+      "unanimous": true
+    },
+    {
+      "criterion_id": "S2",
+      "score": 0,
+      "evidence": "The review does not flag hardcoded secrets, credentials, or sensitive data.",
+      "n_yes": 0,
+      "n_valid": 1,
+      "unanimous": true
+    },
+    {
+      "criterion_id": "S3",
+      "score": 1,
+      "evidence": "The 'Evidence' section mentions 'specific error handling for http.MaxBytesError', and the 'Recommendation' for problem 3 suggests 'Robust error handling for MaxBytesError'.",
+      "n_yes": 1,
+      "n_valid": 1,
+      "unanimous": true
+    },
+    {
+      "criterion_id": "Q1",
+      "score": 1,
+      "evidence": "The 'Scope' section provides an overall summary: 'This pull request applies several security patches and bug fixes, including hardening access control...'",
+      "n_yes": 1,
+      "n_valid": 1,
+      "unanimous": true
+    },
+    {
+      "criterion_id": "Q2",
+      "score": 1,
+      "evidence": "The 'Evidence' section anchors comments to specific code locations, e.g., 'pkg/services/accesscontrol/resourcepermissions/service.go:229', 'pkg/services/accesscontrol/resourcepermissions/service.go:339'.",
+      "n_yes": 1,
+      "n_valid": 1,
+      "unanimous": true
+    },
+    {
+      "criterion_id": "Q3",
+      "score": 0,
+      "evidence": "The review presents problems and recommendations as critical security fixes but does not explicitly label issues as blocking versus minor suggestions.",
+      "n_yes": 0,
+      "n_valid": 1,
+      "unanimous": true
+    },
+    {
+      "criterion_id": "Q4",
+      "score": 0,
+      "evidence": "The review is structured as an assessment, making direct recommendations ('Consider a fuzzing approach') rather than asking clarifying questions to the author.",
+      "n_yes": 0,
+      "n_valid": 1,
+      "unanimous": true
+    },
+    {
+      "criterion_id": "Q5",
+      "score": 1,
+      "evidence": "The 'Problem' and 'Impact' sections clearly explain the reasoning ('why') behind the suggested fixes and tests, e.g., 'Without the enhanced SQL parsing, an attacker could craft queries...'",
+      "n_yes": 1,
+      "n_valid": 1,
+      "unanimous": true
+    }
+  ],
+  "per_judge": [
+    {
+      "model": "gemini:gemini-2.5-flash",
+      "scores": {
+        "F1": 1,
+        "F2": 1,
+        "F3": 1,
+        "F4": 1,
+        "T1": 1,
+        "T2": 1,
+        "T3": 0,
+        "R1": 0,
+        "R2": 0,
+        "R3": 0,
+        "M1": 1,
+        "M2": 0,
+        "M3": 0,
+        "C1": 0,
+        "C2": 1,
+        "P1": 1,
+        "P2": 0,
+        "S1": 1,
+        "S2": 0,
+        "S3": 1,
+        "Q1": 1,
+        "Q2": 1,
+        "Q3": 0,
+        "Q4": 0,
+        "Q5": 1
+      },
+      "evidence": {
+        "F1": "The 'Evidence' section directly links code changes to the 'Problem' statements, e.g., 'Extensive changes to AllowQuery and allowedNode functions... Addition of s.clearUserPermissionCache calls... Introduction of maxResourceBodySize...'",
+        "F2": "Under 'Recommendation' for SQL Parser, it suggests 'specifically targeting edge cases with SetOp, Select (with Window, Lock), and ColName (with @@ prefixes)'.",
+        "F3": "The review discusses 'Addition of s.clearUserPermissionCache calls after SetUserPermission and SetPermissions methods' and 'Introduction of maxResourceBodySize, http.MaxBytesReader', showing integration with existing methods and components.",
+        "F4": "Under 'Recommendation' for SQL Parser, it states 'Risks: Overly restrictive rules could break legitimate queries; overly permissive rules could reintroduce vulnerabilities.'",
+        "T1": "The 'Recommendation' section has a dedicated 'Tests' sub-section for each problem, e.g., 'Add more comprehensive integration tests for the SQL parser'.",
+        "T2": "For SQL Parser tests, it mentions 'specifically targeting edge cases with SetOp, Select (with Window, Lock), and ColName (with @@ prefixes)'.",
+        "T3": "The review suggests 'integration tests for the SQL parser' but does not reference specific test files or suggest exact locations for new/updated tests.",
+        "R1": "The review does not comment on code clarity, naming conventions, or function organization.",
+        "R2": "The review does not identify unnecessary complexity or suggest simplification.",
+        "R3": "The review does not check if code comments explain the 'why' behind decisions.",
+        "M1": "The discussion of adding cache invalidation calls to existing service methods and using `http.MaxBytesReader` implies an assessment of fitting into the existing architecture.",
+        "M2": "The review does not flag the PR scope as too large or suggest splitting it.",
+        "M3": "The review does not check if public APIs or interfaces are properly documented.",
+        "C1": "The review does not check adherence to project style guides or coding conventions.",
+        "C2": "The introduction of `http.MaxBytesReader` for limiting request bodies is a consistent pattern for solving this type of problem.",
+        "P1": "The 'Impact' section mentions 'Denial of Service (DoS) vulnerability via large request bodies... consuming server memory and network bandwidth' and 'memory exhaustion, increased CPU usage'.",
+        "P2": "The review identifies performance impacts but does not ask about benchmarks or specific performance testing.",
+        "S1": "The first problem and its solution focus on 'Potential for RBAC bypass in SQL expressions' and 'explicitly traverse previously skipped AST fields', which is a form of input validation/sanitization.",
+        "S2": "The review does not flag hardcoded secrets, credentials, or sensitive data.",
+        "S3": "The 'Evidence' section mentions 'specific error handling for http.MaxBytesError', and the 'Recommendation' for problem 3 suggests 'Robust error handling for MaxBytesError'.",
+        "Q1": "The 'Scope' section provides an overall summary: 'This pull request applies several security patches and bug fixes, including hardening access control...'",
+        "Q2": "The 'Evidence' section anchors comments to specific code locations, e.g., 'pkg/services/accesscontrol/resourcepermissions/service.go:229', 'pkg/services/accesscontrol/resourcepermissions/service.go:339'.",
+        "Q3": "The review presents problems and recommendations as critical security fixes but does not explicitly label issues as blocking versus minor suggestions.",
+        "Q4": "The review is structured as an assessment, making direct recommendations ('Consider a fuzzing approach') rather than asking clarifying questions to the author.",
+        "Q5": "The 'Problem' and 'Impact' sections clearly explain the reasoning ('why') behind the suggested fixes and tests, e.g., 'Without the enhanced SQL parsing, an attacker could craft queries...'"
+      },
+      "error": ""
+    },
+    {
+      "model": "anthropic:claude-sonnet-4-20250514",
+      "scores": {},
+      "evidence": {},
+      "error": "api_error: Anthropic generation failed: Error code: 429 - {'errorMessage': 'The model anthropic--claude-4-sonnet is temporarily unavailable due to high demand across all users. This is a platform-wide rate limit from the underlying service provider. Please retry your request in a few moments.', 'errorCode': 'PROVIDER_RATE_LIMIT_EXCEEDED', 'date': '2026-05-14T17:57:32.836341334Z', 'statusCode': 429, 'errorArgs': {'model': 'anthropic--claude-4-sonnet'}}"
+    }
+  ],
+  "evaluation_timestamp": "2026-05-14T17:57:32.925105Z"
+}

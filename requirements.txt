@@ -1,0 +1,24 @@
+# Full project dependencies (generation-time + evaluation-time).
+# For thesis evaluation reproduction only, use requirements-eval.txt.
+#
+# Install: pip install -r requirements.txt
+# Python: >= 3.10
+
+# --- LLM client (used by scripts/evaluate_reviews.py, scripts/evaluate_
+# completeness.py, scripts/analyze_human_llm_agreement.py, prnote.llm) ---
+# The OpenAI client also serves the Gemini OpenAI-compat endpoint
+# (https://generativelanguage.googleapis.com/v1beta/openai/).
+openai>=1.0.0,<3.0.0
+
+# Optional LLM provider; not required for the thesis evaluation.
+anthropic>=0.7.0
+
+# --- Generation-time (review generation, KG construction, RAG) ---
+typer>=0.9.0
+pygit2>=1.13.0
+pydantic>=2.0.0
+sentence-transformers>=2.2.0
+chromadb>=0.4.0
+numpy>=1.24.0
+rich>=13.0.0
+pandas>=2.0.0

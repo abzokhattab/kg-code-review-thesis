@@ -1,0 +1,264 @@
+{
+  "pr": {
+    "number": 34007,
+    "title": "[Callbacks] Some last minute fixes",
+    "body": "- fixes some inconsistencies and typos w.r.t sample_weight.\r\n  I wouldn't bother too much in making sure that everything's tested for that. It's very limited support that we aim to replace with proper metadata-routing handling right after the release\r\n- make sure that set_callbacks doesn't error on empty list. Test added\r\n- make sure that `on_fit_task_end` is called for the `candidate-split-evaluation` task in grid search since fit failures are accepted there. -> move it in a finally block. Test added\r\n- make sure that all teardown run, even if some of them errors. While we don't care that other are always called when there's an exception during fit, the teardowns must run because they need to free allocated resources. Test added\r\n- use validate_params in progressbar as well. That's just for consistency with scoring monitor\r\n\r\nping @FrancoisPgm @StefanieSenger ",
+    "url": "https://github.com/scikit-learn/scikit-learn/pull/34007",
+    "repo": "scikit-learn/scikit-learn",
+    "base_branch": "callbacks",
+    "head_branch": "last-minute-fixes",
+    "merged_at": "2026-05-13T14:41:44Z",
+    "state": "MERGED"
+  },
+  "changed_files": [
+    {
+      "path": "sklearn/callback/_callback_context.py",
+      "language": "python",
+      "added": 1,
+      "deleted": 1
+    },
+    {
+      "path": "sklearn/callback/_callback_support.py",
+      "language": "python",
+      "added": 18,
+      "deleted": 9
+    },
+    {
+      "path": "sklearn/callback/_progressbar.py",
+      "language": "python",
+      "added": 6,
+      "deleted": 0
+    },
+    {
+      "path": "sklearn/callback/tests/test_callback_support.py",
+      "language": "python",
+      "added": 51,
+      "deleted": 0
+    },
+    {
+      "path": "sklearn/linear_model/_logistic.py",
+      "language": "python",
+      "added": 1,
+      "deleted": 1
+    },
+    {
+      "path": "sklearn/model_selection/_search.py",
+      "language": "python",
+      "added": 4,
+      "deleted": 1
+    },
+    {
+      "path": "sklearn/model_selection/_validation.py",
+      "language": "python",
+      "added": 11,
+      "deleted": 11
+    },
+    {
+      "path": "sklearn/model_selection/tests/test_search.py",
+      "language": "python",
+      "added": 41,
+      "deleted": 1
+    }
+  ],
+  "nearest_tests": [
+    {
+      "path": "sklearn/linear_model/tests/test_logistic.py",
+      "relationship": "tests",
+      "source_file": "sklearn/linear_model/_logistic.py"
+    },
+    {
+      "path": "sklearn/model_selection/tests/test_search.py",
+      "relationship": "tests",
+      "source_file": "sklearn/model_selection/_search.py"
+    },
+    {
+      "path": "sklearn/utils/tests/test_validation.py",
+      "relationship": "tests",
+      "source_file": "sklearn/model_selection/_validation.py"
+    },
+    {
+      "path": "sklearn/utils/tests/test_param_validation.py",
+      "relationship": "tests",
+      "source_file": "sklearn/model_selection/_validation.py"
+    },
+    {
+      "path": "sklearn/model_selection/tests/test_validation.py",
+      "relationship": "tests",
+      "source_file": "sklearn/model_selection/_validation.py"
+    }
+  ],
+  "dependent_files": [
+    {
+      "path": "sklearn/linear_model/tests/test_logistic.py",
+      "relationship": "imports",
+      "source_file": "sklearn/linear_model/_logistic.py"
+    },
+    {
+      "path": "sklearn/linear_model/tests/test_sag.py",
+      "relationship": "imports",
+      "source_file": "sklearn/linear_model/_logistic.py"
+    },
+    {
+      "path": "sklearn/linear_model/__init__.py",
+      "relationship": "imports",
+      "source_file": "sklearn/linear_model/_logistic.py"
+    },
+    {
+      "path": "sklearn/neural_network/_base.py",
+      "relationship": "imports",
+      "source_file": "sklearn/linear_model/_logistic.py"
+    },
+    {
+      "path": "sklearn/neural_network/_rbm.py",
+      "relationship": "imports",
+      "source_file": "sklearn/linear_model/_logistic.py"
+    },
+    {
+      "path": "sklearn/inspection/_plot/decision_boundary.py",
+      "relationship": "imports",
+      "source_file": "sklearn/linear_model/_logistic.py"
+    },
+    {
+      "path": "sklearn/svm/_bounds.py",
+      "relationship": "imports",
+      "source_file": "sklearn/linear_model/_logistic.py"
+    },
+    {
+      "path": "benchmarks/bench_isotonic.py",
+      "relationship": "imports",
+      "source_file": "sklearn/linear_model/_logistic.py"
+    },
+    {
+      "path": "doc/conf.py",
+      "relationship": "imports",
+      "source_file": "sklearn/linear_model/_logistic.py"
+    },
+    {
+      "path": "sklearn/tree/tests/test_fenwick.py",
+      "relationship": "imports",
+      "source_file": "sklearn/model_selection/_search.py"
+    },
+    {
+      "path": "sklearn/metrics/_scorer.py",
+      "relationship": "imports",
+      "source_file": "sklearn/model_selection/_search.py"
+    },
+    {
+      "path": "sklearn/metrics/tests/test_score_objects.py",
+      "relationship": "imports",
+      "source_file": "sklearn/model_selection/_search.py"
+    },
+    {
+      "path": "sklearn/metrics/tests/test_regression.py",
+      "relationship": "imports",
+      "source_file": "sklearn/model_selection/_search.py"
+    },
+    {
+      "path": "sklearn/experimental/tests/test_enable_successive_halving.py",
+      "relationship": "imports",
+      "source_file": "sklearn/model_selection/_search.py"
+    },
+    {
+      "path": "sklearn/experimental/enable_halving_search_cv.py",
+      "relationship": "imports",
+      "source_file": "sklearn/model_selection/_search.py"
+    },
+    {
+      "path": "sklearn/feature_extraction/tests/test_text.py",
+      "relationship": "imports",
+      "source_file": "sklearn/model_selection/_search.py"
+    },
+    {
+      "path": "sklearn/tests/test_common.py",
+      "relationship": "imports",
+      "source_file": "sklearn/model_selection/_search.py"
+    },
+    {
+      "path": "sklearn/tests/test_docstring_parameters.py",
+      "relationship": "imports",
+      "source_file": "sklearn/model_selection/_search.py"
+    },
+    {
+      "path": "sklearn/tests/test_docstrings.py",
+      "relationship": "imports",
+      "source_file": "sklearn/model_selection/_search.py"
+    },
+    {
+      "path": "sklearn/tree/_export.py",
+      "relationship": "imports",
+      "source_file": "sklearn/model_selection/_validation.py"
+    },
+    {
+      "path": "sklearn/tree/_classes.py",
+      "relationship": "imports",
+      "source_file": "sklearn/model_selection/_validation.py"
+    },
+    {
+      "path": "sklearn/metrics/_classification.py",
+      "relationship": "imports",
+      "source_file": "sklearn/model_selection/_validation.py"
+    },
+    {
+      "path": "sklearn/metrics/cluster/_bicluster.py",
+      "relationship": "imports",
+      "source_file": "sklearn/model_selection/_validation.py"
+    },
+    {
+      "path": "sklearn/metrics/cluster/_unsupervised.py",
+      "relationship": "imports",
+      "source_file": "sklearn/model_selection/_validation.py"
+    },
+    {
+      "path": "sklearn/metrics/cluster/_supervised.py",
+      "relationship": "imports",
+      "source_file": "sklearn/model_selection/_validation.py"
+    },
+    {
+      "path": "sklearn/metrics/_plot/tests/test_confusion_matrix_display.py",
+      "relationship": "imports",
+      "source_file": "sklearn/model_selection/_validation.py"
+    },
+    {
+      "path": "sklearn/metrics/_plot/tests/test_roc_curve_display.py",
+      "relationship": "imports",
+      "source_file": "sklearn/model_selection/_validation.py"
+    },
+    {
+      "path": "sklearn/metrics/_regression.py",
+      "relationship": "imports",
+      "source_file": "sklearn/model_selection/_validation.py"
+    },
+    {
+      "path": "sklearn/tests/test_pipeline.py",
+      "relationship": "imports",
+      "source_file": "sklearn/model_selection/tests/test_search.py"
+    },
+    {
+      "path": "sklearn/utils/_testing.py",
+      "relationship": "imports",
+      "source_file": "sklearn/model_selection/tests/test_search.py"
+    },
+    {
+      "path": "sklearn/model_selection/tests/test_validation.py",
+      "relationship": "imports",
+      "source_file": "sklearn/model_selection/tests/test_search.py"
+    },
+    {
+      "path": "sklearn/model_selection/tests/test_successive_halving.py",
+      "relationship": "imports",
+      "source_file": "sklearn/model_selection/tests/test_search.py"
+    }
+  ],
+  "callers": [],
+  "call_graph_edges": [],
+  "full_diff": "diff --git a/sklearn/callback/_callback_context.py b/sklearn/callback/_callback_context.py\nindex 47a62fc625f7f..734fd18d77b35 100644\n--- a/sklearn/callback/_callback_context.py\n+++ b/sklearn/callback/_callback_context.py\n@@ -529,7 +529,7 @@ def _from_reconstruction_attributes(estimator, reconstruction_attributes):\n     fitted_estimator : estimator instance\n         The fitted copy of this estimator.\n     \"\"\"\n-    new_estimator = copy.copy(estimator)  # TODO(callbacks) copy / deepcopy / clone ?\n+    new_estimator = copy.copy(estimator)\n     for key, val in reconstruction_attributes.items():\n         setattr(new_estimator, key, val)\n     return new_estimator\ndiff --git a/sklearn/callback/_callback_support.py b/sklearn/callback/_callback_support.py\nindex ea002bc9f44ff..740fb568780a8 100644\n--- a/sklearn/callback/_callback_support.py\n+++ b/sklearn/callback/_callback_support.py\n@@ -41,7 +41,7 @@ def set_callbacks(self, *callbacks):\n         if callbacks:\n             self._skl_callbacks = list(callbacks)\n         else:\n-            del self._skl_callbacks\n+            self.__dict__.pop(\"_skl_callbacks\", None)\n \n         return self\n \n@@ -85,7 +85,9 @@ def _init_callback_context(\n             sequential_subtasks=sequential_subtasks,\n         )\n \n-        # setup callbacks\n+        # Setup callbacks. We store callbacks for which setup has started in order to\n+        # only tear those down after fit.\n+        self._skl_callbacks_to_teardown = []\n         for callback in getattr(self, \"_skl_callbacks\", []):\n             # Only call the setup hook of callbacks that are not propagated from a\n             # meta-estimator.\n@@ -93,6 +95,7 @@ def _init_callback_context(\n                 isinstance(callback, AutoPropagatedCallback)\n                 and hasattr(self, \"_parent_callback_ctx\")\n             ):\n+                self._skl_callbacks_to_teardown.append(callback)\n                 callback.setup(estimator=self, context=self._callback_fit_ctx)\n \n         return self._callback_fit_ctx\n@@ -119,18 +122,24 @@ def callback_management_context(estimator):\n         yield\n     finally:\n         if hasattr(estimator, \"_callback_fit_ctx\"):\n-            for callback in getattr(estimator, \"_skl_callbacks\", []):\n-                # Only call the teardown hook of callbacks that are not propagated from\n-                # a meta-estimator.\n-                if not (\n-                    isinstance(callback, AutoPropagatedCallback)\n-                    and hasattr(estimator, \"_parent_callback_ctx\")\n-                ):\n+            teardown_errors = []\n+            for callback in estimator._skl_callbacks_to_teardown:\n+                try:\n                     callback.teardown(\n                         estimator=estimator, context=estimator._callback_fit_ctx\n                     )\n+                except Exception as exc:\n+                    teardown_errors.append(exc)\n \n+            del estimator._skl_callbacks_to_teardown\n             del estimator._callback_fit_ctx\n+            if len(teardown_errors) == 1:\n+                raise teardown_errors[0]\n+            if teardown_errors:\n+                raise ExceptionGroup(\n+                    \"The following callback teardown errors occurred\",\n+                    teardown_errors,\n+                )\n \n \n def with_callbacks(method):\ndiff --git a/sklearn/callback/_progressbar.py b/sklearn/callback/_progressbar.py\nindex 8bdd0baacddc7..e828010f76df2 100644\n--- a/sklearn/callback/_progressbar.py\n+++ b/sklearn/callback/_progressbar.py\n@@ -1,12 +1,14 @@\n # Authors: The scikit-learn developers\n # SPDX-License-Identifier: BSD-3-Clause\n \n+from numbers import Integral\n from queue import Queue\n from threading import Thread\n \n from sklearn.callback._callback_context import get_context_path\n from sklearn.callback._transport import close_listener, open_listener, send\n from sklearn.utils._optional_dependencies import check_rich_support\n+from sklearn.utils._param_validation import Interval, validate_params\n \n # Per-fit local queues and monitors, keyed by the run's `root_uuid`. Both are not\n # picklable so they live here rather than on the callback instance. Entries are added in\n@@ -26,6 +28,10 @@ class ProgressBar:\n         If set to None, all levels are displayed.\n     \"\"\"\n \n+    @validate_params(\n+        {\"max_propagation_depth\": [Interval(Integral, 0, None, closed=\"left\"), None]},\n+        prefer_skip_nested_validation=True,\n+    )\n     def __init__(self, max_propagation_depth=1):\n         check_rich_support(\"Progressbar\")\n \ndiff --git a/sklearn/callback/tests/test_callback_support.py b/sklearn/callback/tests/test_callback_support.py\nindex 82d320dca0512..ec8ca62152ccc 100644\n--- a/sklearn/callback/tests/test_callback_support.py\n+++ b/sklearn/callback/tests/test_callback_support.py\n@@ -59,6 +59,42 @@ def test_callback_error(fail_at):\n     assert callback.count_hooks(\"teardown\") == 1\n \n \n+def test_teardown_matches_setup_calls_on_partial_setup_failure():\n+    \"\"\"Check that teardown only runs for callbacks that entered setup.\"\"\"\n+    callback_1 = FailingCallback(fail_at=\"setup\")\n+    callback_2 = RecordingCallback()\n+\n+    estimator = MaxIterEstimator().set_callbacks(callback_1, callback_2)\n+    with pytest.raises(ValueError, match=\"Failing callback failed at setup\"):\n+        estimator.fit()\n+\n+    assert callback_1.count_hooks(\"setup\") == 1\n+    assert callback_1.count_hooks(\"teardown\") == 1\n+\n+    # setup was never entered for this callback, so teardown should not be called.\n+    assert callback_2.count_hooks(\"setup\") == 0\n+    assert callback_2.count_hooks(\"teardown\") == 0\n+\n+\n+def test_multiple_teardown_errors_are_grouped():\n+    \"\"\"Check that all teardown are called even if some fail.\n+\n+    All errors are raised together in one ExceptionGroup.\n+    \"\"\"\n+    callback_1 = FailingCallback(fail_at=\"teardown\")\n+    callback_2 = FailingCallback(fail_at=\"teardown\")\n+    estimator = MaxIterEstimator().set_callbacks(callback_1, callback_2)\n+\n+    with pytest.raises(\n+        ExceptionGroup, match=\"The following callback teardown errors occurred\"\n+    ) as exc_info:\n+        estimator.fit()\n+\n+    assert len(exc_info.value.exceptions) == 2\n+    assert callback_1.count_hooks(\"teardown\") == 1\n+    assert callback_2.count_hooks(\"teardown\") == 1\n+\n+\n @pytest.mark.parametrize(\"n_jobs\", [1, 2])\n @pytest.mark.parametrize(\"prefer\", [\"threads\", \"processes\"])\n @pytest.mark.parametrize(\n@@ -93,3 +129,18 @@ def func(estimator, n_fits, n_jobs, prefer):\n     assert callback.count_hooks(\"on_fit_task_begin\") == n_fits * (1 + max_iter)\n     assert callback.count_hooks(\"on_fit_task_end\") == n_fits * (1 + max_iter)\n     assert callback.count_hooks(\"teardown\") == n_fits\n+\n+\n+def test_set_callback_empty():\n+    \"\"\"Check that setting no callbacks removes the `_skl_callbacks` attribute.\"\"\"\n+    estimator = MaxIterEstimator()\n+\n+    estimator.set_callbacks(RecordingCallback())\n+    assert hasattr(estimator, \"_skl_callbacks\")\n+\n+    estimator.set_callbacks()\n+    assert not hasattr(estimator, \"_skl_callbacks\")\n+\n+    # calling again doesn't raise\n+    estimator.set_callbacks()\n+    assert not hasattr(estimator, \"_skl_callbacks\")\ndiff --git a/sklearn/linear_model/_logistic.py b/sklearn/linear_model/_logistic.py\nindex 57077992289cb..be213b79a25a3 100644\n--- a/sklearn/linear_model/_logistic.py\n+++ b/sklearn/linear_model/_logistic.py\n@@ -1459,7 +1459,7 @@ def fit(self, X, y, sample_weight=None):\n         max_subtasks = max(self.max_iter, 1) + 1\n         callback_ctx = self._init_callback_context(max_subtasks=max_subtasks)\n         callback_metadata = (\n-            {\"sample_weght\": sample_weight} if sample_weight is not None else None\n+            {\"sample_weight\": sample_weight} if sample_weight is not None else None\n         )\n         callback_ctx.call_on_fit_task_begin(\n             estimator=self, X=X, y=y, metadata=callback_metadata\ndiff --git a/sklearn/model_selection/_search.py b/sklearn/model_selection/_search.py\nindex 8412a8178ef9d..660b59f38b2bb 100644\n--- a/sklearn/model_selection/_search.py\n+++ b/sklearn/model_selection/_search.py\n@@ -998,7 +998,10 @@ def fit(self, X, y=None, **params):\n         params = _check_method_params(X, params=params)\n         routed_params = self._get_routed_params_for_fit(params)\n \n-        metadata_callbacks = {\"sample_weight\": params.get(\"sample_weight\", {})}\n+        if (sample_weight := params.get(\"sample_weight\")) is not None:\n+            metadata_callbacks = {\"sample_weight\": sample_weight}\n+        else:\n+            metadata_callbacks = None\n         root_callback_ctx = self._init_callback_context(\n             max_subtasks=1 + (self.refit is not False)  # refit can be str or callable\n         ).call_on_fit_task_begin(estimator=self, X=X, y=y, metadata=metadata_callbacks)\ndiff --git a/sklearn/model_selection/_validation.py b/sklearn/model_selection/_validation.py\nindex 057ecea2a25e0..a9ff4722d53d8 100644\n--- a/sklearn/model_selection/_validation.py\n+++ b/sklearn/model_selection/_validation.py\n@@ -813,11 +813,6 @@ def _fit_and_score(\n         start_msg = f\"[CV{progress_msg}] START {params_msg}\"\n         print(f\"{start_msg}{(80 - len(start_msg)) * '.'}\")\n \n-    if fit_params:\n-        metadata_callbacks = {\"sample_weight\": fit_params.get(\"sample_weight\", {})}\n-    else:\n-        metadata_callbacks = {}\n-\n     # Adjust length of sample weights\n     fit_params = fit_params if fit_params is not None else {}\n     fit_params = _check_method_params(X, params=fit_params, indices=train)\n@@ -837,6 +832,11 @@ def _fit_and_score(\n     X_train, y_train = _safe_split(estimator, X, y, train)\n     X_test, y_test = _safe_split(estimator, X, y, test, train)\n \n+    if (sample_weight := fit_params.get(\"sample_weight\")) is not None:\n+        metadata_callbacks = {\"sample_weight\": sample_weight}\n+    else:\n+        metadata_callbacks = None\n+\n     result = {}\n \n     try:\n@@ -849,7 +849,7 @@ def _fit_and_score(\n                     estimator.fit(X_train, **fit_params)\n                 else:\n                     estimator.fit(X_train, y_train, **fit_params)\n-        else:  # custom search class does not support callbacks\n+        else:  # custom search class that does not support callbacks\n             if y_train is None:\n                 estimator.fit(X_train, **fit_params)\n             else:\n@@ -883,6 +883,11 @@ def _fit_and_score(\n             train_scores = _score(\n                 estimator, X_train, y_train, scorer, score_params_train, error_score\n             )\n+    finally:\n+        if callback_ctx is not None:\n+            callback_ctx.call_on_fit_task_end(\n+                estimator=caller, X=X_train, y=y_train, metadata=metadata_callbacks\n+            )\n \n     if verbose > 1:\n         total_time = score_time + fit_time\n@@ -922,11 +927,6 @@ def _fit_and_score(\n     if return_estimator:\n         result[\"estimator\"] = estimator\n \n-    if callback_ctx is not None:\n-        callback_ctx.call_on_fit_task_end(\n-            estimator=caller, X=X_train, y=y_train, metadata=metadata_callbacks\n-        )\n-\n     return result\n \n \ndiff --git a/sklearn/model_selection/tests/test_search.py b/sklearn/model_selection/tests/test_search.py\nindex 84de18b6dd536..5671a04217ed0 100644\n--- a/sklearn/model_selection/tests/test_search.py\n+++ b/sklearn/model_selection/tests/test_search.py\n@@ -3112,7 +3112,10 @@ def test_search_callbacks_receive_sample_weight():\n     ]\n     assert refit_records\n \n-    for entry in evaluation_records + refit_records:\n+    for entry in evaluation_records:\n+        assert \"sample_weight\" in entry[\"kwargs\"][\"metadata\"]\n+\n+    for entry in refit_records:\n         assert \"sample_weight\" in entry[\"kwargs\"][\"metadata\"]\n         passed_weights = entry[\"kwargs\"][\"metadata\"][\"sample_weight\"]\n         assert_array_equal(passed_weights, sample_weight)\n@@ -3129,3 +3132,40 @@ def test_search_callbacks_receive_search_instance(search):\n \n     for entry in callback.record:\n         assert entry[\"estimator\"] is search\n+\n+\n+def test_search_callbacks_with_partial_fit_failures():\n+    \"\"\"Check callbacks hooks are called when some candidate fits fail.\n+\n+    When error_score != \"raise\" and not all fit fail, the whole search doesn't raise so\n+    all callback invocations are expected.\n+    \"\"\"\n+\n+    class MayFailClassifier(ClassifierMixin, BaseEstimator):\n+        def __init__(self, fail=False):\n+            self.fail = fail\n+\n+        def fit(self, X, y):\n+            self.classes_ = np.unique(y)\n+            if self.fail:\n+                raise RuntimeError(\"MayFailClassifier.fit failed\")\n+            return self\n+\n+        def predict(self, X):\n+            return np.zeros(len(X), dtype=int)\n+\n+    callback = RecordingCallback()\n+    search = GridSearchCV(\n+        MayFailClassifier(),\n+        {\"fail\": [False, True]},\n+        cv=2,\n+        refit=False,\n+        error_score=0.0,\n+    ).set_callbacks(callback)\n+\n+    with pytest.warns(FitFailedWarning, match=\"2 fits failed out of a total of 4.\"):\n+        search.fit(X, y)\n+\n+    expected_n_tasks = 1 + 1 + 4  # root + search + 4 candidate-split evaluations\n+    assert callback.count_hooks(\"on_fit_task_begin\") == expected_n_tasks\n+    assert callback.count_hooks(\"on_fit_task_end\") == expected_n_tasks\n",
+  "diff_summary": "8 files changed",
+  "similar_chunks": [],
+  "metadata": {
+    "experiment": "confirmatory_kg_2026-05-14",
+    "local_id": 7,
+    "v2_diff_truncated": false,
+    "v2_raw_diff_chars": 13198,
+    "v2_raw_body_chars": 873
+  }
+}

@@ -1,0 +1,31 @@
+{
+  "candidate_mentions": [
+    {
+      "basename_collision": false,
+      "end": 565,
+      "evidence_id": "M002",
+      "excerpt": " external users who might rely on `BaseEstimator`.\n\n## Evidence\n- **sklearn/base.py:153**: The class `BaseEstimator` is renamed to `BaseEstimatorInternal`.\n- **sklearn/cluster/_agglomerative.py** and other files: These files depend on `BaseEstimator` and may not function correctly without updates to reflect the new class name.\n\n## Impact\n- The renaming could lead to runtime errors in any module or external code that imports `BaseEstimator` directly,",
+      "match_kind": "full_path",
+      "match_text": "sklearn/cluster/_agglomerative.py",
+      "oracle_path": "sklearn/cluster/_agglomerative.py",
+      "start": 532
+    }
+  ],
+  "causal_quote": "The renaming could lead to runtime errors in any module or external code that imports `BaseEstimator` directly, resulting in `ImportError`.",
+  "decision_source": "llm_causal_adjudication",
+  "detected": true,
+  "evidence_id": "M002",
+  "executed_at_utc": "2026-09-19T15:03:01.148853+00:00",
+  "finding_quote": "sklearn/cluster/_agglomerative.py",
+  "judge": "openai:gpt-4o-mini",
+  "manifest_sha256": "5d4371a93d1b09f0491ecc12279f9f3ff5de23053b7a5e74650a749f58b472b0",
+  "model_alias": "openai:gpt-4o-mini",
+  "model_snapshot": "unavailable-from-original-wrapper",
+  "original_verdict": true,
+  "prompt_sha256": "fec38a177452aee30794f76c9535c2c8e5d57b425e32b388369267787f19bce7",
+  "reason_code": "specific_cross_file_link",
+  "review_sha256": "359b72db842047837d69a60e6bf40d3960dc840bcf438594d3a2618fe8b80323",
+  "schema_sha256": "6a22fcb256437ebed904ab2d879b36be1234fb2e06add1127ac8ea2ab46f60f0",
+  "schema_version": "exp2-adjudication-v2",
+  "system_sha256": "3634314a8fc4231391e4c51174e5c32d7346b0e2ceb5f8c4641e6ba866bd5939"
+}

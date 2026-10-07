@@ -1,0 +1,51 @@
+{
+  "pr_id": 20,
+  "mode": "joern_kg",
+  "mean_scores": {
+    "F3": 2.5,
+    "F4": 2.0,
+    "P1": 0.0,
+    "R2": 0.0,
+    "T3": 3.0
+  },
+  "mean_graded_total": 7.5,
+  "per_judge": [
+    {
+      "model": "gemini:gemini-2.5-flash",
+      "scores": {
+        "F3": 2,
+        "F4": 2,
+        "P1": 0,
+        "R2": 0,
+        "T3": 3
+      },
+      "evidence": {
+        "F3": "The review names `core/src/test/scala/unit/kafka/server/AbstractApiVersionsRequestTest.scala` as a specific dependent file and `validateApiVersionsResponse` as a specific function, explaining that 'Without a corresponding update to its signature... this call will not match the expected method signature.'",
+        "F4": "The review identifies a specific API contract violation: 'The call to `validateApiVersionsResponse` has been modified to include an `apiVersion` parameter... If the `validateApiVersionsResponse` method in `AbstractApiVersionsRequestTest` has not been updated to accept this new parameter, this change will result in a compilation error or runtime failure.'",
+        "P1": "The review does not mention performance, inefficiencies, or resource usage.",
+        "R2": "The review does not comment on the complexity of the changed code or suggest any simplifications to the code structure itself. It discusses the abstraction level of the new test framework but not the complexity of the PR's code.",
+        "T3": "The review names `SaslApiVersionsRequestTest.scala` and `core/src/test/scala/unit/kafka/server/AbstractApiVersionsRequestTest.scala` as specific test files. It references exact scenarios like 'Explicit SASL Mechanism Configuration' and 'Reintroduce Control Plane Listener Test' for `SaslApiVersionsRequestTest.scala`, and 'Verify `validateApiVersionsResponse` Signature' for `AbstractApiVersionsRequestTest.scala`, explaining that 'Critical edge cases related to specific SASL mechanism negotiation o"
+      },
+      "error": ""
+    },
+    {
+      "model": "gemini:gemini-2.5-pro",
+      "scores": {
+        "F3": 3,
+        "F4": 2,
+        "P1": 0,
+        "R2": 0,
+        "T3": 3
+      },
+      "evidence": {
+        "F3": "The review names the calling component (`SaslApiVersionsRequestTest.scala` via diff references) and a dependent component with its file path (`core/src/test/scala/unit/kafka/server/AbstractApiVersionsRequestTest.scala`). It explains the concrete integration risk: 'Without a corresponding update to its signature in AbstractApiVersionsRequestTest.scala (which is not part of this diff), this call will not match the expected method signature.'",
+        "F4": "The review identifies a specific API contract that could break: 'API Contract Violation in Test Utility: The call to `validateApiVersionsResponse` has been modified to include an `apiVersion` parameter... If the `validateApiVersionsResponse` method in `AbstractApiVersionsRequestTest` has not been updated to accept this new parameter, this change will result in a compilation error or runtime failure.'",
+        "P1": "The review does not mention performance, efficiency, or speed.",
+        "R2": "The review does not comment on complexity or suggest simplification. It points out a loss of configuration detail, which is the opposite of identifying unnecessary complexity.",
+        "T3": "The review names multiple specific test files (`SaslApiVersionsRequestTest.scala` and `core/src/test/scala/unit/kafka/server/AbstractApiVersionsRequestTest.scala`), references specific scenarios/functions (`controlPlaneListenerName`, `validateApiVersionsResponse`), and explains what edge cases are missing ('untested scenarios related to control plane listeners or detailed SASL property interactions')."
+      },
+      "error": ""
+    }
+  ],
+  "timestamp": "2026-06-01T18:57:55.919420+00:00"
+}

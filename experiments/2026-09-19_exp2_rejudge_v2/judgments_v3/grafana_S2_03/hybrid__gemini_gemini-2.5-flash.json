@@ -1,0 +1,66 @@
+{
+  "candidate_mentions": [
+    {
+      "basename_collision": false,
+      "end": 1961,
+      "evidence_id": "M001",
+      "excerpt": "amples if possible.\n2. Review and update all dependent modules to ensure they handle the new parameter correctly.\n3. Add or update test cases in files such as `StreamingDataFrame.test.ts` and `calculateField.test.ts` to cover scenarios involving the new parameter.\n4. Conduct a thorough integration test to ensure no regressions occur in the data transformation and display logic.\n\n## Traceability\nNot specified\n```",
+      "finding_passage_id": "P018",
+      "match_kind": "basename",
+      "match_text": "StreamingDataFrame.test.ts",
+      "oracle_path": "packages/grafana-data/src/dataframe/StreamingDataFrame.test.ts",
+      "start": 1935
+    },
+    {
+      "basename_collision": false,
+      "end": 890,
+      "evidence_id": "M002",
+      "excerpt": "## Evidence\n- `packages/grafana-data/src/field/fieldState.ts:107`: Introduction of `requiredCtx` parameter in `getFieldDisplayName`.\n- Dependent files such as `packages/grafana-data/src/dataframe/processDataFrame.ts`, `packages/grafana-data/src/transformations/transformers/filterByValue.ts`, and others are affected but not shown to have corresponding updates or tests.\n- Similar function `getSmartDisplayNameForRow` in `packages/grafana-data/src/field/fieldDisplay.ts:189-2",
+      "finding_passage_id": "P009",
+      "match_kind": "full_path",
+      "match_text": "packages/grafana-data/src/dataframe/processDataFrame.ts",
+      "oracle_path": "packages/grafana-data/src/dataframe/processDataFrame.ts",
+      "start": 835
+    },
+    {
+      "basename_collision": false,
+      "end": 1144,
+      "evidence_id": "M003",
+      "excerpt": "ransformers/filterByValue.ts`, and others are affected but not shown to have corresponding updates or tests.\n- Similar function `getSmartDisplayNameForRow` in `packages/grafana-data/src/field/fieldDisplay.ts:189-254` handles context and display logic, suggesting potential integration points or patterns.\n\n## Impact\n- The introduction of an undocumented parameter can lead to integration issues across multiple modules that depend on `getFieldDisplayName`.\n- Without ",
+      "finding_passage_id": "P010",
+      "match_kind": "full_path",
+      "match_text": "packages/grafana-data/src/field/fieldDisplay.ts",
+      "oracle_path": "packages/grafana-data/src/field/fieldDisplay.ts",
+      "start": 1097
+    },
+    {
+      "basename_collision": false,
+      "end": 965,
+      "evidence_id": "M008",
+      "excerpt": "s:107`: Introduction of `requiredCtx` parameter in `getFieldDisplayName`.\n- Dependent files such as `packages/grafana-data/src/dataframe/processDataFrame.ts`, `packages/grafana-data/src/transformations/transformers/filterByValue.ts`, and others are affected but not shown to have corresponding updates or tests.\n- Similar function `getSmartDisplayNameForRow` in `packages/grafana-data/src/field/fieldDisplay.ts:189-254` handles context and display logic, suggesting potential integration poi",
+      "finding_passage_id": "P009",
+      "match_kind": "full_path",
+      "match_text": "packages/grafana-data/src/transformations/transformers/filterByValue.ts",
+      "oracle_path": "packages/grafana-data/src/transformations/transformers/filterByValue.ts",
+      "start": 894
+    }
+  ],
+  "causal_passage_id": "P018",
+  "decision_source": "llm_causal_adjudication",
+  "detected": true,
+  "evidence_id": "M001",
+  "executed_at_utc": "2026-09-19T15:10:50.368826+00:00",
+  "finding_passage_id": "P018",
+  "judge": "gemini:gemini-2.5-flash",
+  "manifest_sha256": "5d4371a93d1b09f0491ecc12279f9f3ff5de23053b7a5e74650a749f58b472b0",
+  "model_alias": "gemini:gemini-2.5-flash",
+  "model_snapshot": "unavailable-from-original-wrapper",
+  "original_verdict": true,
+  "prompt_sha256": "4269cb2a310ba165489f4795d58ef385431c66cb44ee37daa38f84b5e791c3ad",
+  "reason_code": "specific_cross_file_link",
+  "response_wrapper": "single_json_fence",
+  "review_sha256": "a702c26b4ab851ad1678a43edb5b36de753ebb5551724d66d327005cdf91ce4e",
+  "schema_sha256": "f70f714868ecd3d25508bb3e00b32ecbe6761b0ebc05f454ee10fa4d28efd013",
+  "schema_version": "exp2-adjudication-v3",
+  "system_sha256": "030b5e701c798b32afdabbbeb22db38f664db8c8fd8b862d2fcb98df63b6fb6b"
+}

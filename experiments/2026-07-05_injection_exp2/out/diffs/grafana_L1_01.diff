@@ -1,0 +1,11 @@
+--- a/packages/grafana-data/src/utils/csv.ts
++++ b/packages/grafana-data/src/utils/csv.ts
+@@ -152,7 +152,7 @@
+       this.state = ParseState.ReadingRows;
+ 
+       // Make sure column structure is valid
+-      if (line.length > this.current.fields.length) {
++      if (line.length >= this.current.fields.length) {
+         const { fields } = this.current;
+         for (let f = fields.length; f < line.length; f++) {
+           this.current.addFieldFor(line[f]);

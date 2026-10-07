@@ -1,0 +1,51 @@
+{
+  "pr_id": 12,
+  "mode": "baseline",
+  "mean_scores": {
+    "F3": 1.0,
+    "F4": 1.0,
+    "P1": 0.0,
+    "R2": 0.0,
+    "T3": 0.0
+  },
+  "mean_graded_total": 2.0,
+  "per_judge": [
+    {
+      "model": "gemini:gemini-2.5-flash",
+      "scores": {
+        "F3": 1,
+        "F4": 0,
+        "P1": 0,
+        "R2": 0,
+        "T3": 0
+      },
+      "evidence": {
+        "F3": "Using `Math::rand()` could lead to predictable random values, especially if the random number generator is not properly seeded, which might not be suitable for all use cases. Without tests, there is a risk of introducing bugs or unexpected behavior in the `pick_random` method, which could affect any functionality relying on this method.",
+        "F4": "No mention of breaking changes or API contract violations. The PR adds a new method, and the review focuses on the quality of its implementation rather than changes to existing contracts.",
+        "P1": "No mention of performance. The discussion around `Math::rand()` is about randomness quality and thread safety, not efficiency or speed.",
+        "R2": "No comment on complexity or code structure. The review focuses on the choice of random number generator and lack of tests, not the structural complexity of the method itself.",
+        "T3": "The review states 'Add unit tests for the `pick_random` method to verify its behavior with different array sizes and contents, including edge cases like empty arrays.' While it specifies test scenarios, it does not name any specific test file path from the repository."
+      },
+      "error": ""
+    },
+    {
+      "model": "gemini:gemini-2.5-pro",
+      "scores": {
+        "F3": 1,
+        "F4": 2,
+        "P1": 0,
+        "R2": 0,
+        "T3": 0
+      },
+      "evidence": {
+        "F3": "The review vaguely notes that integration may be affected: \"...which could affect any functionality relying on this method.\"",
+        "F4": "The review identifies specific expectations that could be broken: that the random number generation is thread-safe and provides sufficient randomness. It states, \"The `pick_random` method uses `Math::rand()` which may not be thread-safe or provide sufficient randomness.\"",
+        "P1": "The review does not mention performance.",
+        "R2": "The review does not comment on complexity or suggest simplifications.",
+        "T3": "The review generically recommends to \"Add unit tests for the `pick_random` method\" but does not name any specific test files."
+      },
+      "error": ""
+    }
+  ],
+  "timestamp": "2026-06-01T18:57:22.837482+00:00"
+}

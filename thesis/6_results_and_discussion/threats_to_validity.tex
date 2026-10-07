@@ -1,0 +1,90 @@
+\section{Threats to Validity}
+\label{sec:threats}
+
+\paragraph{Construct validity.}
+The rubric asks whether a review addresses a topic, not whether what it says
+is true. A hallucinated review scored $9.2$ against a real review's $9.0$.
+All rubric numbers are therefore coverage measurements; correctness claims
+rest on Experiment~2's oracle. The human-study interface verifies only that a
+referenced file exists, not that the change genuinely affects it.
+Binary scoring and seven immovable criteria (at $0\,\%$ or $100\,\%$ in both
+arms) further dilute the aggregate, which is one reason the pre-specified
+subscale is reported alongside the total. The graph arm also writes the
+longest reviews ($+12\,\%$ in characters; Table~\ref{tab:review-length}).
+Retrieval adds far more input, writes reviews of baseline length, and still
+gains most on the total, so length alone does not explain the pattern; a
+length contribution to the graph-arm estimate cannot be ruled out.
+
+\paragraph{Internal validity.}
+Language models judge language-model output. The panel and the generator share
+training data, so a judge may reward its own family's output. Mitigations:
+the five-judge panel draws from five providers, per-judge verdicts are
+published for re-aggregation, and judging runs at $T = 0.0$. Tested alone,
+four of five judges reproduce the targeted effect at $p < 0.05$ and all five
+preserve its direction.
+
+The arms differ not only in the context block but also in the instruction
+paragraph that names it (Appendix~\ref{app:prompts}), so the contrast
+confounds content with instruction. Experiment~2's oracle mitigates this:
+detection requires naming a genuinely broken site, which the instruction
+alone cannot supply. The retrieval index covers only the first 200
+candidate source files per repository (Section~\ref{sec:approach-rag}), so
+in large repositories the retrieval arm is bounded by its index as well as
+by its method.
+
+Generation is not bit-reproducible: regenerating the graph arm from identical
+inputs moves the nine-criterion score by $0.88$~points on average, unbiased
+but of the same magnitude as the effect. The reviews and per-judge verdicts
+are retained, so every number recomputes from stored outputs. Both
+experiments generate at $T=0.0$, but they use different samples, outcomes,
+and diff-length caps. Their effect magnitudes are therefore not compared
+directly.
+
+Experiment~2's injections are drawn from mutation-testing operators; selection
+was direction-blind, but a seeded rename is not a defect a human introduced.
+Its two-stage adjudication was introduced after an audit exposed false
+negatives in the original judge prompt. The correction is post-hoc; the
+frozen reviews and original verdicts remain available, and the thesis reports
+the corrected measurement as such.
+
+The human study uses an assisted interface with summaries, file tooltips, and
+a diff shown by default. Its primary result therefore measures preference
+under that interface, not unaided review reading. Four pre-registered
+diagnostic checks of aid use, rationale content, file-count association, and
+task time were not implemented and support no thesis claim.
+
+\paragraph{External validity.}
+Three substitute generators preserve the direction but none reaches
+significance; both the generator and the held-out rows are from the earlier
+text-heuristic configuration at $n = 40$ under a three-judge panel, so they
+are directional evidence rather than tests of the current configuration. The
+rubric-measured benefit is conditional on the generator.
+
+Two graph constructions appear (the Joern code property graph in
+Experiments~1 and~2, and import-statement edges in the human study), and
+they are not interchangeable. The human study's edges are file-level; its
+effect is an effect of that construction. Claims about graph
+constructions are claims about these constructions.
+
+All 35 pull requests were merged (survivorship). The selection acts
+identically on all arms, which protects the within-sample comparison, but it
+can still limit how the treatment effect generalises beyond the selected
+sample. The human study covers six pull requests from three Python
+libraries, so its preference result does not establish cross-language
+generality.
+
+\paragraph{Conclusion validity.}
+With $n = 35$ the study is powered for $d_z \geq 0.47$ at 80\,\%. The graph arm
+reaches significance on the full rubric ($p = 0.017$,
+$d_z = +0.44$) but does not survive Bonferroni correction
+($p_{\text{corr}} = 0.066$). The conclusion is therefore framed in
+terms of the subscale, where the effect is larger
+($d_z = +0.56$, $p = 0.003$,
+$p_{\text{corr}} = 0.011$). The human study's 27
+raters are sufficient for the primary endpoint (rank-biserial $r = 0.80$)
+but explicitly underpowered for the overall-usefulness endpoint, which is
+designated estimation-only. On 12 further pull requests not used in the
+main analysis, evaluated under the earlier text-heuristic configuration, the
+KG-relevant estimate remains positive ($+0.42$) but does not confirm the
+effect ($p = 0.312$); the small replication was underpowered and is
+interpreted as directional consistency rather than confirmation.

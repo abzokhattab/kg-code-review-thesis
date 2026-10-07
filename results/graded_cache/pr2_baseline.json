@@ -1,0 +1,51 @@
+{
+  "pr_id": 2,
+  "mode": "baseline",
+  "mean_scores": {
+    "F3": 3.0,
+    "F4": 3.0,
+    "P1": 0.0,
+    "R2": 0.0,
+    "T3": 2.0
+  },
+  "mean_graded_total": 8.0,
+  "per_judge": [
+    {
+      "model": "gemini:gemini-2.5-flash",
+      "scores": {
+        "F3": 3,
+        "F4": 3,
+        "P1": 0,
+        "R2": 0,
+        "T3": 2
+      },
+      "evidence": {
+        "F3": "public/app/features/plugins/datasource_srv.ts:257-258: The code now checks for UIDs in addition to names, which could break existing dashboards that rely solely on names. public/app/features/variables/datasource/reducer.ts:45: The change to use UIDs in the `value` field may not be backward compatible with dashboards that expect names.",
+        "F4": "public/app/features/plugins/datasource_srv.ts:257-258: The code now checks for UIDs in addition to names, which could break existing dashboards that rely solely on names. public/app/features/variables/datasource/reducer.ts:45: The change to use UIDs in the `value` field may not be backward compatible with dashboards that expect names. Existing dashboards that rely on data source names for template variables may break or behave unexpectedly.",
+        "P1": "No mention of performance in the review.",
+        "R2": "No comment on complexity or code structure in the review.",
+        "T3": "`e2e/dashboards-suite/new-datasource-variable.spec.ts:41`: The test checks for UID usage but does not cover scenarios where dashboards might still use names."
+      },
+      "error": ""
+    },
+    {
+      "model": "gemini:gemini-2.5-pro",
+      "scores": {
+        "F3": 3,
+        "F4": 3,
+        "P1": 0,
+        "R2": 0,
+        "T3": 2
+      },
+      "evidence": {
+        "F3": "The review names multiple specific files and explains the integration risk for each: `public/app/features/plugins/datasource_srv.ts:257-258`: The code now checks for UIDs in addition to names, which could break existing dashboards that rely solely on names. `public/app/features/variables/datasource/reducer.ts:45`: The change to use UIDs in the `value` field may not be backward compatible with dashboards that expect names.",
+        "F4": "The review identifies multiple specific contract violations with file references and explains the downstream impact: `datasource_srv.ts:257-258`: ...could break existing dashboards that rely solely on names. `reducer.ts:45`: ...may not be backward compatible with dashboards that expect names. Impact: Existing dashboards that rely on data source names for template variables may break or behave unexpectedly.",
+        "P1": "The review makes no mention of performance.",
+        "R2": "The review makes no comment on complexity or code structure.",
+        "T3": "The review names one specific test file that should be updated: `e2e/dashboards-suite/new-datasource-variable.spec.ts:41`: The test checks for UID usage but does not cover scenarios where dashboards might still use names."
+      },
+      "error": ""
+    }
+  ],
+  "timestamp": "2026-06-01T18:57:24.534445+00:00"
+}

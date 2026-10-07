@@ -1,0 +1,57 @@
+{
+  "candidate_mentions": [
+    {
+      "basename_collision": false,
+      "end": 468,
+      "evidence_id": "M008",
+      "excerpt": "he original function name.\n2. The change may not be adequately covered by tests, potentially leading to undetected issues in dependent modules.\n\n## Evidence\n- `packages/grafana-data/src/themes/context.tsx` and `packages/grafana-data/src/themes/registry.ts` both import and call `createTheme` (lines not specified in the diff).\n- `packages/grafana-data/src/transformations/transformers/histogram.ts` calls `createTheme` in `buildHistogram` and `histogramFieldsToFra",
+      "finding_passage_id": "P007",
+      "match_kind": "full_path",
+      "match_text": "packages/grafana-data/src/themes/context.tsx",
+      "oracle_path": "packages/grafana-data/src/themes/context.tsx",
+      "start": 424
+    },
+    {
+      "basename_collision": false,
+      "end": 519,
+      "evidence_id": "M010",
+      "excerpt": " adequately covered by tests, potentially leading to undetected issues in dependent modules.\n\n## Evidence\n- `packages/grafana-data/src/themes/context.tsx` and `packages/grafana-data/src/themes/registry.ts` both import and call `createTheme` (lines not specified in the diff).\n- `packages/grafana-data/src/transformations/transformers/histogram.ts` calls `createTheme` in `buildHistogram` and `histogramFieldsToFrame` functions (lines not specified in the diff).\n\n#",
+      "finding_passage_id": "P007",
+      "match_kind": "full_path",
+      "match_text": "packages/grafana-data/src/themes/registry.ts",
+      "oracle_path": "packages/grafana-data/src/themes/registry.ts",
+      "start": 475
+    },
+    {
+      "basename_collision": false,
+      "end": 661,
+      "evidence_id": "M011",
+      "excerpt": "rafana-data/src/themes/context.tsx` and `packages/grafana-data/src/themes/registry.ts` both import and call `createTheme` (lines not specified in the diff).\n- `packages/grafana-data/src/transformations/transformers/histogram.ts` calls `createTheme` in `buildHistogram` and `histogramFieldsToFrame` functions (lines not specified in the diff).\n\n## Impact\n- Breaking changes in the function name can lead to runtime errors if any dependent module or test has not been updated to reflect th",
+      "finding_passage_id": "P008",
+      "match_kind": "full_path",
+      "match_text": "packages/grafana-data/src/transformations/transformers/histogram.ts",
+      "oracle_path": "packages/grafana-data/src/transformations/transformers/histogram.ts",
+      "start": 594
+    }
+  ],
+  "causal_passage_id": "P004",
+  "decision_source": "llm_causal_adjudication",
+  "detected": true,
+  "evidence_id": "M008",
+  "evidence_id_normalized": false,
+  "executed_at_utc": "2026-09-19T15:46:02.559016+00:00",
+  "finding_passage_id": "P007",
+  "judge": "anthropic:claude-sonnet-4-5",
+  "manifest_sha256": "5d4371a93d1b09f0491ecc12279f9f3ff5de23053b7a5e74650a749f58b472b0",
+  "model_alias": "anthropic:claude-sonnet-4-5",
+  "model_evidence_id": "M008",
+  "model_snapshot": "unavailable-from-original-wrapper",
+  "original_verdict": null,
+  "prompt_sha256": "0ce55f6cb06e3db2091a0430c465f99b978209522b3769870496064dd31893c9",
+  "reason_code": "specific_cross_file_link",
+  "response_wrapper": "bare",
+  "review_sha256": "2517610297b1a583055bcd38f251a511a663cccacc44d6298d55f17028baf7cd",
+  "schema_sha256": "f70f714868ecd3d25508bb3e00b32ecbe6761b0ebc05f454ee10fa4d28efd013",
+  "schema_version": "exp2-adjudication-v3",
+  "system_sha256": "030b5e701c798b32afdabbbeb22db38f664db8c8fd8b862d2fcb98df63b6fb6b"
+}

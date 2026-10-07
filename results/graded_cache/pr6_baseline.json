@@ -1,0 +1,51 @@
+{
+  "pr_id": 6,
+  "mode": "baseline",
+  "mean_scores": {
+    "F3": 2.0,
+    "F4": 0.0,
+    "P1": 1.0,
+    "R2": 0.0,
+    "T3": 2.0
+  },
+  "mean_graded_total": 5.0,
+  "per_judge": [
+    {
+      "model": "gemini:gemini-2.5-flash",
+      "scores": {
+        "F3": 2,
+        "F4": 0,
+        "P1": 1,
+        "R2": 0,
+        "T3": 2
+      },
+      "evidence": {
+        "F3": "Names at least one specific caller, module, or dependent file that is affected: `core/src/main/scala/kafka/server/ReplicaManager.scala:1479-1481` - The integration of the new configuration with existing fetch parameters might lead to unexpected behavior if defaults are not properly aligned.",
+        "F4": "The review does not mention breaking changes, API contract violations, or changes to caller expectations.",
+        "P1": "Generic comment that performance could be affected: \"Without validation, incorrect configuration values could lead to unexpected behavior or performance degradation.\"",
+        "R2": "The review does not comment on complexity or code structure.",
+        "T3": "Names at least one specific test file path from the repository: `core/src/test/scala/integration/kafka/server/DelayedRemoteFetchTest.scala:40-185` - Tests are added for typical use cases, but edge cases such as negative values or extremely high values for `remote.fetch.max.wait.ms` are not covered."
+      },
+      "error": ""
+    },
+    {
+      "model": "gemini:gemini-2.5-pro",
+      "scores": {
+        "F3": 2,
+        "F4": 0,
+        "P1": 1,
+        "R2": 0,
+        "T3": 2
+      },
+      "evidence": {
+        "F3": "Names one specific dependent file: \"Integration issues: `core/src/main/scala/kafka/server/ReplicaManager.scala:1479-1481` - The integration of the new configuration with existing fetch parameters might lead to unexpected behavior if defaults are not properly aligned.\"",
+        "F4": "The review does not mention breaking changes or API contract violations. It discusses potential internal bugs and unexpected behavior, but not in the context of a contract with a caller.",
+        "P1": "The review makes a generic comment that performance could be affected: \"Without validation, incorrect configuration values could lead to unexpected behavior or performance degradation.\"",
+        "R2": "The review does not contain any comments on code complexity or suggest simplifications.",
+        "T3": "The review names one specific test file that should be updated: \"Insufficient test coverage: `core/src/test/scala/integration/kafka/server/DelayedRemoteFetchTest.scala:40-185` - Tests are added for typical use cases, but edge cases such as negative values or extremely high values for `remote.fetch.max.wait.ms` are not covered.\""
+      },
+      "error": ""
+    }
+  ],
+  "timestamp": "2026-06-01T18:57:23.261081+00:00"
+}

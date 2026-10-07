@@ -1,0 +1,291 @@
+{
+  "pr": {
+    "number": 17594,
+    "title": "KAFKA-17857 Move AbstractResetIntegrationTest and subclasses to tools",
+    "body": "related to https://issues.apache.org/jira/browse/KAFKA-17857,\r\n\r\nas title, move AbstractResetIntegrationTest and subclasses to tools module\r\n\r\n### Committer Checklist (excluded from commit message)\r\n- [ ] Verify design and implementation \r\n- [ ] Verify test coverage and CI build status\r\n- [ ] Verify documentation (including upgrade notes)\r\n",
+    "url": "https://github.com/apache/kafka/pull/17594",
+    "repo": "apache/kafka",
+    "base_branch": "trunk",
+    "head_branch": "KAFKA-17857",
+    "merged_at": "2024-11-04T20:16:19Z",
+    "state": "MERGED"
+  },
+  "changed_files": [
+    {
+      "path": "build.gradle",
+      "language": "gradle",
+      "added": 4,
+      "deleted": 0
+    },
+    {
+      "path": "checkstyle/import-control.xml",
+      "language": "xml",
+      "added": 1,
+      "deleted": 0
+    },
+    {
+      "path": "tools/src/test/java/org/apache/kafka/tools/AbstractResetIntegrationTest.java",
+      "language": "java",
+      "added": 7,
+      "deleted": 9
+    },
+    {
+      "path": "tools/src/test/java/org/apache/kafka/tools/ResetIntegrationTest.java",
+      "language": "java",
+      "added": 7,
+      "deleted": 9
+    },
+    {
+      "path": "tools/src/test/java/org/apache/kafka/tools/ResetIntegrationWithSslTest.java",
+      "language": "java",
+      "added": 1,
+      "deleted": 1
+    }
+  ],
+  "nearest_tests": [
+    {
+      "path": "docker/docker_build_test.py",
+      "relationship": "tests",
+      "source_file": "build.gradle"
+    },
+    {
+      "path": "docker/docker_official_image_build_test.py",
+      "relationship": "tests",
+      "source_file": "build.gradle"
+    },
+    {
+      "path": ".github/workflows/docker_official_image_build_and_test.yml",
+      "relationship": "tests",
+      "source_file": "build.gradle"
+    },
+    {
+      "path": ".github/workflows/docker_build_and_test.yml",
+      "relationship": "tests",
+      "source_file": "build.gradle"
+    },
+    {
+      "path": "checkstyle/import-control-test-common-internal-api.xml",
+      "relationship": "tests",
+      "source_file": "checkstyle/import-control.xml"
+    },
+    {
+      "path": "checkstyle/import-control-clients-integration-tests.xml",
+      "relationship": "tests",
+      "source_file": "checkstyle/import-control.xml"
+    },
+    {
+      "path": "checkstyle/import-control-test-common-runtime.xml",
+      "relationship": "tests",
+      "source_file": "checkstyle/import-control.xml"
+    },
+    {
+      "path": "checkstyle/import-control-test-common-util.xml",
+      "relationship": "tests",
+      "source_file": "checkstyle/import-control.xml"
+    }
+  ],
+  "dependent_files": [
+    {
+      "path": "clients/clients-integration-tests/src/test/java/org/apache/kafka/clients/security/GroupAuthorizerIntegrationTest.java",
+      "relationship": "imports",
+      "source_file": "build.gradle"
+    },
+    {
+      "path": "clients/clients-integration-tests/src/test/java/org/apache/kafka/clients/admin/ListOffsetsIntegrationTest.java",
+      "relationship": "imports",
+      "source_file": "build.gradle"
+    },
+    {
+      "path": "clients/clients-integration-tests/src/test/java/org/apache/kafka/clients/admin/DescribeAuthorizedOperationsTest.java",
+      "relationship": "imports",
+      "source_file": "build.gradle"
+    },
+    {
+      "path": "clients/clients-integration-tests/src/test/java/org/apache/kafka/clients/consumer/ConsumerBounceTest.java",
+      "relationship": "imports",
+      "source_file": "build.gradle"
+    },
+    {
+      "path": "clients/clients-integration-tests/src/test/java/org/apache/kafka/clients/consumer/ConsumerTopicCreationTest.java",
+      "relationship": "imports",
+      "source_file": "build.gradle"
+    },
+    {
+      "path": "clients/clients-integration-tests/src/test/java/org/apache/kafka/clients/consumer/ConsumerWithLegacyMessageFormatIntegrationTest.java",
+      "relationship": "imports",
+      "source_file": "build.gradle"
+    },
+    {
+      "path": "clients/src/test/java/org/apache/kafka/clients/producer/MockProducerTest.java",
+      "relationship": "imports",
+      "source_file": "build.gradle"
+    },
+    {
+      "path": "clients/src/test/java/org/apache/kafka/clients/producer/internals/TransactionManagerTest.java",
+      "relationship": "imports",
+      "source_file": "build.gradle"
+    },
+    {
+      "path": "clients/src/test/java/org/apache/kafka/clients/producer/internals/RecordAccumulatorTest.java",
+      "relationship": "imports",
+      "source_file": "build.gradle"
+    },
+    {
+      "path": "clients/src/test/java/org/apache/kafka/clients/producer/internals/SenderTest.java",
+      "relationship": "imports",
+      "source_file": "build.gradle"
+    },
+    {
+      "path": "streams/integration-tests/src/test/java/org/apache/kafka/streams/integration/FineGrainedAutoResetIntegrationTest.java",
+      "relationship": "imports",
+      "source_file": "tools/src/test/java/org/apache/kafka/tools/ResetIntegrationTest.java"
+    }
+  ],
+  "diff_summary": "5 files changed",
+  "full_diff": "diff --git a/build.gradle b/build.gradle\nindex d062351938a77..db09bbc92c619 100644\n--- a/build.gradle\n+++ b/build.gradle\n@@ -2496,6 +2496,9 @@ project(':tools') {\n     testImplementation project(':connect:runtime').sourceSets.test.output\n     testImplementation project(':storage:storage-api').sourceSets.main.output\n     testImplementation project(':storage').sourceSets.test.output\n+    testImplementation project(':streams')\n+    testImplementation project(':streams').sourceSets.test.output\n+    testImplementation project(':streams:integration-tests').sourceSets.test.output\n     testImplementation project(':test-common')\n     testImplementation libs.junitJupiter\n     testImplementation libs.mockitoCore\n@@ -2513,6 +2516,7 @@ project(':tools') {\n     testImplementation libs.apachedsLdifPartition\n \n     testRuntimeOnly libs.junitPlatformLanucher\n+    testRuntimeOnly libs.hamcrest\n     testRuntimeOnly project(':test-common')\n   }\n \ndiff --git a/checkstyle/import-control.xml b/checkstyle/import-control.xml\nindex 77d668c699465..cb632c3daaa9f 100644\n--- a/checkstyle/import-control.xml\n+++ b/checkstyle/import-control.xml\n@@ -295,6 +295,7 @@\n     <allow pkg=\"org.apache.kafka.server.log.remote.metadata.storage\" />\n     <allow pkg=\"org.apache.kafka.server.log.remote.storage\" />\n     <allow pkg=\"org.apache.kafka.server.quota\" />\n+    <allow pkg=\"org.apache.kafka.streams\" />\n     <allow pkg=\"org.apache.kafka.clients\" />\n     <allow pkg=\"org.apache.kafka.clients.admin\" />\n     <allow pkg=\"org.apache.kafka.clients.producer\" />\ndiff --git a/streams/integration-tests/src/test/java/org/apache/kafka/streams/integration/AbstractResetIntegrationTest.java b/tools/src/test/java/org/apache/kafka/tools/AbstractResetIntegrationTest.java\nsimilarity index 97%\nrename from streams/integration-tests/src/test/java/org/apache/kafka/streams/integration/AbstractResetIntegrationTest.java\nrename to tools/src/test/java/org/apache/kafka/tools/AbstractResetIntegrationTest.java\nindex f4e33e36ce8d0..9d0f030b5b191 100644\n--- a/streams/integration-tests/src/test/java/org/apache/kafka/streams/integration/AbstractResetIntegrationTest.java\n+++ b/tools/src/test/java/org/apache/kafka/tools/AbstractResetIntegrationTest.java\n@@ -14,7 +14,7 @@\n  * See the License for the specific language governing permissions and\n  * limitations under the License.\n  */\n-package org.apache.kafka.streams.integration;\n+package org.apache.kafka.tools;\n \n import org.apache.kafka.clients.CommonClientConfigs;\n import org.apache.kafka.clients.admin.Admin;\n@@ -41,7 +41,6 @@\n import org.apache.kafka.streams.kstream.Produced;\n import org.apache.kafka.streams.kstream.TimeWindows;\n import org.apache.kafka.test.TestUtils;\n-import org.apache.kafka.tools.StreamsResetter;\n \n import org.junit.jupiter.api.Test;\n import org.junit.jupiter.api.TestInfo;\n@@ -61,8 +60,7 @@\n import static java.time.Duration.ofMillis;\n import static org.apache.kafka.streams.integration.utils.IntegrationTestUtils.waitForEmptyConsumerGroup;\n import static org.apache.kafka.streams.utils.TestUtils.safeUniqueTestName;\n-import static org.hamcrest.CoreMatchers.equalTo;\n-import static org.hamcrest.MatcherAssert.assertThat;\n+import static org.junit.jupiter.api.Assertions.assertEquals;\n import static org.junit.jupiter.api.Assertions.assertTrue;\n \n @Timeout(600)\n@@ -247,7 +245,7 @@ public void testReprocessingFromScratchAfterResetWithoutIntermediateUserTopic(fi\n         final List<KeyValue<Long, Long>> resultRerun = IntegrationTestUtils.waitUntilMinKeyValueRecordsReceived(resultConsumerConfig, OUTPUT_TOPIC, 10);\n         streams.close();\n \n-        assertThat(resultRerun, equalTo(result));\n+        assertEquals(result, resultRerun);\n \n         waitForEmptyConsumerGroup(adminClient, appID, TIMEOUT_MULTIPLIER * STREAMS_CONSUMER_TIMEOUT);\n         cleanGlobal(false, null, null, appID);\n@@ -307,17 +305,17 @@ private void testReprocessingFromScratchAfterResetWithIntermediateUserTopic(fina\n         final List<KeyValue<Long, Long>> resultRerun2 = IntegrationTestUtils.waitUntilMinKeyValueRecordsReceived(resultConsumerConfig, OUTPUT_TOPIC_2_RERUN, 40);\n         streams.close();\n \n-        assertThat(resultRerun, equalTo(result));\n-        assertThat(resultRerun2, equalTo(result2));\n+        assertEquals(result, resultRerun);\n+        assertEquals(result2, resultRerun2);\n \n         if (!useRepartitioned) {\n             final Properties props = TestUtils.consumerConfig(cluster.bootstrapServers(), appID + \"-result-consumer\", LongDeserializer.class, StringDeserializer.class, commonClientConfig);\n             final List<KeyValue<Long, String>> resultIntermediate = IntegrationTestUtils.waitUntilMinKeyValueRecordsReceived(props, INTERMEDIATE_USER_TOPIC, 21);\n \n             for (int i = 0; i < 10; i++) {\n-                assertThat(resultIntermediate.get(i), equalTo(resultIntermediate.get(i + 11)));\n+                assertEquals(resultIntermediate.get(i + 11), resultIntermediate.get(i));\n             }\n-            assertThat(resultIntermediate.get(10), equalTo(badMessage));\n+            assertEquals(badMessage, resultIntermediate.get(10));\n         }\n \n         waitForEmptyConsumerGroup(adminClient, appID, TIMEOUT_MULTIPLIER * STREAMS_CONSUMER_TIMEOUT);\ndiff --git a/streams/integration-tests/src/test/java/org/apache/kafka/streams/integration/ResetIntegrationTest.java b/tools/src/test/java/org/apache/kafka/tools/ResetIntegrationTest.java\nsimilarity index 96%\nrename from streams/integration-tests/src/test/java/org/apache/kafka/streams/integration/ResetIntegrationTest.java\nrename to tools/src/test/java/org/apache/kafka/tools/ResetIntegrationTest.java\nindex a197de03ec69b..fc2e8ffcfdf83 100644\n--- a/streams/integration-tests/src/test/java/org/apache/kafka/streams/integration/ResetIntegrationTest.java\n+++ b/tools/src/test/java/org/apache/kafka/tools/ResetIntegrationTest.java\n@@ -14,7 +14,7 @@\n  * See the License for the specific language governing permissions and\n  * limitations under the License.\n  */\n-package org.apache.kafka.streams.integration;\n+package org.apache.kafka.tools;\n \n import org.apache.kafka.clients.consumer.ConsumerConfig;\n import org.apache.kafka.network.SocketServerConfigs;\n@@ -24,7 +24,6 @@\n import org.apache.kafka.streams.integration.utils.EmbeddedKafkaCluster;\n import org.apache.kafka.streams.integration.utils.IntegrationTestUtils;\n import org.apache.kafka.test.TestUtils;\n-import org.apache.kafka.tools.StreamsResetter;\n \n import org.junit.jupiter.api.AfterAll;\n import org.junit.jupiter.api.AfterEach;\n@@ -48,10 +47,9 @@\n import static org.apache.kafka.streams.integration.utils.IntegrationTestUtils.isEmptyConsumerGroup;\n import static org.apache.kafka.streams.integration.utils.IntegrationTestUtils.waitForEmptyConsumerGroup;\n import static org.apache.kafka.streams.utils.TestUtils.safeUniqueTestName;\n-import static org.hamcrest.CoreMatchers.equalTo;\n-import static org.hamcrest.MatcherAssert.assertThat;\n import static org.junit.jupiter.api.Assertions.assertEquals;\n import static org.junit.jupiter.api.Assertions.assertFalse;\n+import static org.junit.jupiter.api.Assertions.assertTrue;\n \n /**\n  * Tests local state store and global application cleanup.\n@@ -210,7 +208,7 @@ public void testResetWhenLongSessionTimeoutConfiguredWithForceOption(final TestI\n \n         // Reset will success with --force, it will force delete active members on broker side\n         cleanGlobal(false, \"--force\", null, appID);\n-        assertThat(\"Group is not empty after cleanGlobal\", isEmptyConsumerGroup(adminClient, appID));\n+        assertTrue(isEmptyConsumerGroup(adminClient, appID), \"Group is not empty after cleanGlobal\");\n \n         assertInternalTopicsGotDeleted(null);\n \n@@ -219,7 +217,7 @@ public void testResetWhenLongSessionTimeoutConfiguredWithForceOption(final TestI\n         final List<KeyValue<Long, Long>> resultRerun = IntegrationTestUtils.waitUntilMinKeyValueRecordsReceived(resultConsumerConfig, OUTPUT_TOPIC, 10);\n         streams.close();\n \n-        assertThat(resultRerun, equalTo(result));\n+        assertEquals(result, resultRerun);\n         cleanGlobal(false, \"--force\", null, appID);\n     }\n \n@@ -259,7 +257,7 @@ public void testReprocessingFromFileAfterResetWithoutIntermediateUserTopic(final\n         streams.close();\n \n         result.remove(0);\n-        assertThat(resultRerun, equalTo(result));\n+        assertEquals(result, resultRerun);\n \n         waitForEmptyConsumerGroup(adminClient, appID, TIMEOUT_MULTIPLIER * STREAMS_CONSUMER_TIMEOUT);\n         cleanGlobal(false, null, null, appID);\n@@ -306,7 +304,7 @@ public void testReprocessingFromDateTimeAfterResetWithoutIntermediateUserTopic(f\n         final List<KeyValue<Long, Long>> resultRerun = IntegrationTestUtils.waitUntilMinKeyValueRecordsReceived(resultConsumerConfig, OUTPUT_TOPIC, 10);\n         streams.close();\n \n-        assertThat(resultRerun, equalTo(result));\n+        assertEquals(result, resultRerun);\n \n         waitForEmptyConsumerGroup(adminClient, appID, TIMEOUT_MULTIPLIER * STREAMS_CONSUMER_TIMEOUT);\n         cleanGlobal(false, null, null, appID);\n@@ -348,7 +346,7 @@ public void testReprocessingByDurationAfterResetWithoutIntermediateUserTopic(fin\n         final List<KeyValue<Long, Long>> resultRerun = IntegrationTestUtils.waitUntilMinKeyValueRecordsReceived(resultConsumerConfig, OUTPUT_TOPIC, 10);\n         streams.close();\n \n-        assertThat(resultRerun, equalTo(result));\n+        assertEquals(result, resultRerun);\n \n         waitForEmptyConsumerGroup(adminClient, appID, TIMEOUT_MULTIPLIER * STREAMS_CONSUMER_TIMEOUT);\n         cleanGlobal(false, null, null, appID);\ndiff --git a/streams/integration-tests/src/test/java/org/apache/kafka/streams/integration/ResetIntegrationWithSslTest.java b/tools/src/test/java/org/apache/kafka/tools/ResetIntegrationWithSslTest.java\nsimilarity index 98%\nrename from streams/integration-tests/src/test/java/org/apache/kafka/streams/integration/ResetIntegrationWithSslTest.java\nrename to tools/src/test/java/org/apache/kafka/tools/ResetIntegrationWithSslTest.java\nindex 7f47233361e86..9a072877eda41 100644\n--- a/streams/integration-tests/src/test/java/org/apache/kafka/streams/integration/ResetIntegrationWithSslTest.java\n+++ b/tools/src/test/java/org/apache/kafka/tools/ResetIntegrationWithSslTest.java\n@@ -14,7 +14,7 @@\n  * See the License for the specific language governing permissions and\n  * limitations under the License.\n  */\n-package org.apache.kafka.streams.integration;\n+package org.apache.kafka.tools;\n \n import org.apache.kafka.common.network.ConnectionMode;\n import org.apache.kafka.network.SocketServerConfigs;\n",
+  "metadata": {
+    "v2_fetcher_version": 1,
+    "v2_fetched_at_unix": 1777501352,
+    "v2_diff_cap_bytes": 50000,
+    "v2_body_cap_bytes": 8000,
+    "v2_diff_truncated": false,
+    "v2_raw_diff_chars": 10566,
+    "v2_raw_body_chars": 342,
+    "v2_rag_source": "merged_from_v1",
+    "v2_rag_chunks_copied": 8
+  },
+  "similar_chunks": [
+    {
+      "file": "tools/src/test/java/org/apache/kafka/tools/streams/ResetStreamsGroupOffsetTest.java",
+      "start_line": 36,
+      "end_line": 92,
+      "similarity": 0.8599,
+      "related_to": "tools/src/test/java/org/apache/kafka/tools/AbstractResetIntegrationTest.java",
+      "content_preview": ".utils.IntegrationTestUtils;\nimport org.apache.kafka.streams.kstream.Grouped;\nimport org.apache.kafka.streams.kstream.KStream;\nimport org.apache.kafka.streams.kstream.KTable;\nimport org.apache.kafka.streams.kstream.Materialized;\nimport org.apache.kafka.test.TestUtils;\n\nimport org.junit.jupiter.api.AfterAll;\nimport org.junit.jupiter.api.AfterEach;\nimport org.junit.jupiter.api.BeforeAll;\nimport org.junit.jupiter.api.Tag;\nimport org.junit.jupiter.api.Test;\nimport org.junit.jupiter.api.Timeout;\n\nimport java.io.BufferedWriter;\nimport java.io.File;\nimport java.io.FileWriter;\nimport java.io.IOException;\nimport java.time.LocalDateTime;\nimport java.time.format.DateTimeFormatter;\nimport java.util.ArrayList;\nimport java.util.Arrays;\nimport java.util.HashMap;\nimport java.util.List;\nimport java.util.Lo"
+    },
+    {
+      "file": "tools/src/test/java/org/apache/kafka/tools/streams/DeleteStreamsGroupOffsetTest.java",
+      "start_line": 37,
+      "end_line": 93,
+      "similarity": 0.8208,
+      "related_to": "tools/src/test/java/org/apache/kafka/tools/ResetIntegrationTest.java",
+      "content_preview": ".streams.integration.utils.IntegrationTestUtils;\nimport org.apache.kafka.streams.kstream.Consumed;\nimport org.apache.kafka.streams.kstream.KStream;\nimport org.apache.kafka.streams.kstream.KTable;\nimport org.apache.kafka.streams.kstream.Materialized;\nimport org.apache.kafka.streams.kstream.Produced;\nimport org.apache.kafka.test.TestUtils;\n\nimport org.junit.jupiter.api.AfterAll;\nimport org.junit.jupiter.api.AfterEach;\nimport org.junit.jupiter.api.BeforeAll;\nimport org.junit.jupiter.api.Tag;\nimport org.junit.jupiter.api.Test;\nimport org.junit.jupiter.api.Timeout;\n\nimport java.time.Duration;\nimport java.util.ArrayList;\nimport java.util.List;\nimport java.util.Locale;\nimport java.util.Map;\nimport java.util.Objects;\nimport java.util.Optional;\nimport java.util.Properties;\nimport java.util.Set;\nimp"
+    },
+    {
+      "file": "tools/src/test/java/org/apache/kafka/tools/StreamsResetterTest.java",
+      "start_line": 36,
+      "end_line": 80,
+      "similarity": 0.7984,
+      "related_to": "tools/src/test/java/org/apache/kafka/tools/AbstractResetIntegrationTest.java",
+      "content_preview": ".common.errors.GroupIdNotFoundException;\nimport org.apache.kafka.common.internals.KafkaFutureImpl;\nimport org.apache.kafka.common.message.LeaveGroupRequestData;\nimport org.apache.kafka.common.protocol.Errors;\n\nimport org.junit.jupiter.api.BeforeEach;\nimport org.junit.jupiter.api.Test;\nimport org.junit.jupiter.api.Timeout;\n\nimport java.lang.reflect.Constructor;\nimport java.time.Duration;\nimport java.time.Instant;\nimport java.util.HashMap;\nimport java.util.HashSet;\nimport java.util.List;\nimport java.util.Map;\nimport java.util.Set;\nimport java.util.concurrent.ExecutionException;\n\nimport static org.junit.jupiter.api.Assertions.assertEquals;\nimport static org.junit.jupiter.api.Assertions.assertThrows;\nimport static org.junit.jupiter.api.Assertions.assertTrue;\nimport static org.mockito.ArgumentM"
+    },
+    {
+      "file": "tools/src/test/java/org/apache/kafka/tools/streams/DescribeStreamsGroupTest.java",
+      "start_line": 16,
+      "end_line": 48,
+      "similarity": 0.7887,
+      "related_to": "tools/src/test/java/org/apache/kafka/tools/AbstractResetIntegrationTest.java",
+      "content_preview": " */\npackage org.apache.kafka.tools.streams;\n\nimport org.apache.kafka.clients.admin.AdminClientConfig;\nimport org.apache.kafka.clients.consumer.ConsumerConfig;\nimport org.apache.kafka.common.errors.TimeoutException;\nimport org.apache.kafka.common.serialization.Serdes;\nimport org.apache.kafka.common.utils.Exit;\nimport org.apache.kafka.coordinator.group.GroupCoordinatorConfig;\nimport org.apache.kafka.streams.GroupProtocol;\nimport org.apache.kafka.streams.KafkaStreams;\nimport org.apache.kafka.streams.StreamsBuilder;\nimport org.apache.kafka.streams.StreamsConfig;\nimport org.apache.kafka.streams.Topology;\nimport org.apache.kafka.streams.integration.utils.EmbeddedKafkaCluster;\nimport org.apache.kafka.st"
+    },
+    {
+      "file": "tools/src/test/java/org/apache/kafka/tools/streams/DescribeStreamsGroupTest.java",
+      "start_line": 39,
+      "end_line": 88,
+      "similarity": 0.7872,
+      "related_to": "tools/src/test/java/org/apache/kafka/tools/AbstractResetIntegrationTest.java",
+      "content_preview": "pi.Test;\nimport org.junit.jupiter.api.Timeout;\n\nimport java.util.ArrayList;\nimport java.util.Arrays;\nimport java.util.HashMap;\nimport java.util.List;\nimport java.util.Locale;\nimport java.util.Map;\nimport java.util.Properties;\nimport java.util.Set;\nimport java.util.concurrent.ExecutionException;\nimport java.util.concurrent.atomic.AtomicBoolean;\nimport java.util.concurrent.atomic.AtomicReference;\nimport java.util.stream.Collectors;\n\nimport joptsimple.OptionException;\n\nimport static org.apache.kafka.streams.integration.utils.IntegrationTestUtils.startApplicationAndWaitUntilRunning;\nimport static org.junit.jupiter.api.Assertions.assertEquals;\nimport static org.junit.jupiter.api.Assertions.assertNotEquals;\nimport static org.junit.jupiter.api.Assertions.assertThrows;\nimport static org.junit.jupi"
+    },
+    {
+      "file": "tools/src/test/java/org/apache/kafka/tools/streams/DeleteStreamsGroupTest.java",
+      "start_line": 37,
+      "end_line": 87,
+      "similarity": 0.7789,
+      "related_to": "tools/src/test/java/org/apache/kafka/tools/AbstractResetIntegrationTest.java",
+      "content_preview": "apache.kafka.streams.KeyValueTimestamp;\nimport org.apache.kafka.streams.StreamsBuilder;\nimport org.apache.kafka.streams.StreamsConfig;\nimport org.apache.kafka.streams.integration.utils.EmbeddedKafkaCluster;\nimport org.apache.kafka.streams.integration.utils.IntegrationTestUtils;\nimport org.apache.kafka.streams.kstream.Consumed;\nimport org.apache.kafka.streams.kstream.KStream;\nimport org.apache.kafka.streams.kstream.KTable;\nimport org.apache.kafka.streams.kstream.Materialized;\nimport org.apache.kafka.streams.kstream.Produced;\nimport org.apache.kafka.test.TestUtils;\nimport org.apache.kafka.tools.ToolsTestUtils;\n\nimport org.junit.jupiter.api.AfterAll;\nimport org.junit.jupiter.api.AfterEach;\nimport org.junit.jupiter.api.BeforeAll;\nimport org.junit.jupiter.api.Tag;\nimport org.junit.jupiter.api.T"
+    },
+    {
+      "file": "tools/src/test/java/org/apache/kafka/tools/streams/ListStreamsGroupTest.java",
+      "start_line": 16,
+      "end_line": 46,
+      "similarity": 0.7653,
+      "related_to": "tools/src/test/java/org/apache/kafka/tools/AbstractResetIntegrationTest.java",
+      "content_preview": " */\npackage org.apache.kafka.tools.streams;\n\nimport org.apache.kafka.clients.admin.AdminClientConfig;\nimport org.apache.kafka.clients.admin.GroupListing;\nimport org.apache.kafka.clients.consumer.ConsumerConfig;\nimport org.apache.kafka.common.GroupState;\nimport org.apache.kafka.common.GroupType;\nimport org.apache.kafka.common.serialization.Serdes;\nimport org.apache.kafka.coordinator.group.GroupCoordinatorConfig;\nimport org.apache.kafka.streams.GroupProtocol;\nimport org.apache.kafka.streams.KafkaStreams;\nimport org.apache.kafka.streams.StreamsBuilder;\nimport org.apache.kafka.streams.StreamsConfig;\nimport org.apache.kafka.streams.Topology;\nimport org.apache.kafka.streams.integration.utils.EmbeddedKa"
+    },
+    {
+      "file": "tools/src/test/java/org/apache/kafka/tools/streams/ListStreamsGroupTest.java",
+      "start_line": 39,
+      "end_line": 87,
+      "similarity": 0.7602,
+      "related_to": "tools/src/test/java/org/apache/kafka/tools/AbstractResetIntegrationTest.java",
+      "content_preview": "ter.api.BeforeAll;\nimport org.junit.jupiter.api.Tag;\nimport org.junit.jupiter.api.Test;\nimport org.junit.jupiter.api.Timeout;\n\nimport java.util.Arrays;\nimport java.util.HashSet;\nimport java.util.List;\nimport java.util.Locale;\nimport java.util.Map;\nimport java.util.Objects;\nimport java.util.Optional;\nimport java.util.Properties;\nimport java.util.Set;\nimport java.util.concurrent.atomic.AtomicReference;\nimport java.util.stream.Collectors;\n\nimport joptsimple.OptionException;\n\nimport static org.apache.kafka.streams.integration.utils.IntegrationTestUtils.startApplicationAndWaitUntilRunning;\nimport static org.junit.jupiter.api.Assertions.assertEquals;\n\n@Timeout(600)\n@Tag(\"integration\")\npublic class ListStreamsGroupTest {\n\n    public static EmbeddedKafkaCluster cluster = null;\n    static KafkaStre"
+    }
+  ],
+  "rag_evidence": {
+    "similar_code": [
+      {
+        "file": "tools/src/test/java/org/apache/kafka/tools/streams/ResetStreamsGroupOffsetTest.java",
+        "start_line": 36,
+        "end_line": 92,
+        "similarity": 0.8599,
+        "related_to": "tools/src/test/java/org/apache/kafka/tools/AbstractResetIntegrationTest.java",
+        "content_preview": ".utils.IntegrationTestUtils;\nimport org.apache.kafka.streams.kstream.Grouped;\nimport org.apache.kafka.streams.kstream.KStream;\nimport org.apache.kafka.streams.kstream.KTable;\nimport org.apache.kafka.streams.kstream.Materialized;\nimport org.apache.kafka.test.TestUtils;\n\nimport org.junit.jupiter.api.AfterAll;\nimport org.junit.jupiter.api.AfterEach;\nimport org.junit.jupiter.api.BeforeAll;\nimport org.junit.jupiter.api.Tag;\nimport org.junit.jupiter.api.Test;\nimport org.junit.jupiter.api.Timeout;\n\nimport java.io.BufferedWriter;\nimport java.io.File;\nimport java.io.FileWriter;\nimport java.io.IOException;\nimport java.time.LocalDateTime;\nimport java.time.format.DateTimeFormatter;\nimport java.util.ArrayList;\nimport java.util.Arrays;\nimport java.util.HashMap;\nimport java.util.List;\nimport java.util.Lo"
+      },
+      {
+        "file": "tools/src/test/java/org/apache/kafka/tools/streams/DeleteStreamsGroupOffsetTest.java",
+        "start_line": 37,
+        "end_line": 93,
+        "similarity": 0.8208,
+        "related_to": "tools/src/test/java/org/apache/kafka/tools/ResetIntegrationTest.java",
+        "content_preview": ".streams.integration.utils.IntegrationTestUtils;\nimport org.apache.kafka.streams.kstream.Consumed;\nimport org.apache.kafka.streams.kstream.KStream;\nimport org.apache.kafka.streams.kstream.KTable;\nimport org.apache.kafka.streams.kstream.Materialized;\nimport org.apache.kafka.streams.kstream.Produced;\nimport org.apache.kafka.test.TestUtils;\n\nimport org.junit.jupiter.api.AfterAll;\nimport org.junit.jupiter.api.AfterEach;\nimport org.junit.jupiter.api.BeforeAll;\nimport org.junit.jupiter.api.Tag;\nimport org.junit.jupiter.api.Test;\nimport org.junit.jupiter.api.Timeout;\n\nimport java.time.Duration;\nimport java.util.ArrayList;\nimport java.util.List;\nimport java.util.Locale;\nimport java.util.Map;\nimport java.util.Objects;\nimport java.util.Optional;\nimport java.util.Properties;\nimport java.util.Set;\nimp"
+      },
+      {
+        "file": "tools/src/test/java/org/apache/kafka/tools/StreamsResetterTest.java",
+        "start_line": 36,
+        "end_line": 80,
+        "similarity": 0.7984,
+        "related_to": "tools/src/test/java/org/apache/kafka/tools/AbstractResetIntegrationTest.java",
+        "content_preview": ".common.errors.GroupIdNotFoundException;\nimport org.apache.kafka.common.internals.KafkaFutureImpl;\nimport org.apache.kafka.common.message.LeaveGroupRequestData;\nimport org.apache.kafka.common.protocol.Errors;\n\nimport org.junit.jupiter.api.BeforeEach;\nimport org.junit.jupiter.api.Test;\nimport org.junit.jupiter.api.Timeout;\n\nimport java.lang.reflect.Constructor;\nimport java.time.Duration;\nimport java.time.Instant;\nimport java.util.HashMap;\nimport java.util.HashSet;\nimport java.util.List;\nimport java.util.Map;\nimport java.util.Set;\nimport java.util.concurrent.ExecutionException;\n\nimport static org.junit.jupiter.api.Assertions.assertEquals;\nimport static org.junit.jupiter.api.Assertions.assertThrows;\nimport static org.junit.jupiter.api.Assertions.assertTrue;\nimport static org.mockito.ArgumentM"
+      },
+      {
+        "file": "tools/src/test/java/org/apache/kafka/tools/streams/DescribeStreamsGroupTest.java",
+        "start_line": 16,
+        "end_line": 48,
+        "similarity": 0.7887,
+        "related_to": "tools/src/test/java/org/apache/kafka/tools/AbstractResetIntegrationTest.java",
+        "content_preview": " */\npackage org.apache.kafka.tools.streams;\n\nimport org.apache.kafka.clients.admin.AdminClientConfig;\nimport org.apache.kafka.clients.consumer.ConsumerConfig;\nimport org.apache.kafka.common.errors.TimeoutException;\nimport org.apache.kafka.common.serialization.Serdes;\nimport org.apache.kafka.common.utils.Exit;\nimport org.apache.kafka.coordinator.group.GroupCoordinatorConfig;\nimport org.apache.kafka.streams.GroupProtocol;\nimport org.apache.kafka.streams.KafkaStreams;\nimport org.apache.kafka.streams.StreamsBuilder;\nimport org.apache.kafka.streams.StreamsConfig;\nimport org.apache.kafka.streams.Topology;\nimport org.apache.kafka.streams.integration.utils.EmbeddedKafkaCluster;\nimport org.apache.kafka.st"
+      },
+      {
+        "file": "tools/src/test/java/org/apache/kafka/tools/streams/DescribeStreamsGroupTest.java",
+        "start_line": 39,
+        "end_line": 88,
+        "similarity": 0.7872,
+        "related_to": "tools/src/test/java/org/apache/kafka/tools/AbstractResetIntegrationTest.java",
+        "content_preview": "pi.Test;\nimport org.junit.jupiter.api.Timeout;\n\nimport java.util.ArrayList;\nimport java.util.Arrays;\nimport java.util.HashMap;\nimport java.util.List;\nimport java.util.Locale;\nimport java.util.Map;\nimport java.util.Properties;\nimport java.util.Set;\nimport java.util.concurrent.ExecutionException;\nimport java.util.concurrent.atomic.AtomicBoolean;\nimport java.util.concurrent.atomic.AtomicReference;\nimport java.util.stream.Collectors;\n\nimport joptsimple.OptionException;\n\nimport static org.apache.kafka.streams.integration.utils.IntegrationTestUtils.startApplicationAndWaitUntilRunning;\nimport static org.junit.jupiter.api.Assertions.assertEquals;\nimport static org.junit.jupiter.api.Assertions.assertNotEquals;\nimport static org.junit.jupiter.api.Assertions.assertThrows;\nimport static org.junit.jupi"
+      },
+      {
+        "file": "tools/src/test/java/org/apache/kafka/tools/streams/DeleteStreamsGroupTest.java",
+        "start_line": 37,
+        "end_line": 87,
+        "similarity": 0.7789,
+        "related_to": "tools/src/test/java/org/apache/kafka/tools/AbstractResetIntegrationTest.java",
+        "content_preview": "apache.kafka.streams.KeyValueTimestamp;\nimport org.apache.kafka.streams.StreamsBuilder;\nimport org.apache.kafka.streams.StreamsConfig;\nimport org.apache.kafka.streams.integration.utils.EmbeddedKafkaCluster;\nimport org.apache.kafka.streams.integration.utils.IntegrationTestUtils;\nimport org.apache.kafka.streams.kstream.Consumed;\nimport org.apache.kafka.streams.kstream.KStream;\nimport org.apache.kafka.streams.kstream.KTable;\nimport org.apache.kafka.streams.kstream.Materialized;\nimport org.apache.kafka.streams.kstream.Produced;\nimport org.apache.kafka.test.TestUtils;\nimport org.apache.kafka.tools.ToolsTestUtils;\n\nimport org.junit.jupiter.api.AfterAll;\nimport org.junit.jupiter.api.AfterEach;\nimport org.junit.jupiter.api.BeforeAll;\nimport org.junit.jupiter.api.Tag;\nimport org.junit.jupiter.api.T"
+      },
+      {
+        "file": "tools/src/test/java/org/apache/kafka/tools/streams/ListStreamsGroupTest.java",
+        "start_line": 16,
+        "end_line": 46,
+        "similarity": 0.7653,
+        "related_to": "tools/src/test/java/org/apache/kafka/tools/AbstractResetIntegrationTest.java",
+        "content_preview": " */\npackage org.apache.kafka.tools.streams;\n\nimport org.apache.kafka.clients.admin.AdminClientConfig;\nimport org.apache.kafka.clients.admin.GroupListing;\nimport org.apache.kafka.clients.consumer.ConsumerConfig;\nimport org.apache.kafka.common.GroupState;\nimport org.apache.kafka.common.GroupType;\nimport org.apache.kafka.common.serialization.Serdes;\nimport org.apache.kafka.coordinator.group.GroupCoordinatorConfig;\nimport org.apache.kafka.streams.GroupProtocol;\nimport org.apache.kafka.streams.KafkaStreams;\nimport org.apache.kafka.streams.StreamsBuilder;\nimport org.apache.kafka.streams.StreamsConfig;\nimport org.apache.kafka.streams.Topology;\nimport org.apache.kafka.streams.integration.utils.EmbeddedKa"
+      },
+      {
+        "file": "tools/src/test/java/org/apache/kafka/tools/streams/ListStreamsGroupTest.java",
+        "start_line": 39,
+        "end_line": 87,
+        "similarity": 0.7602,
+        "related_to": "tools/src/test/java/org/apache/kafka/tools/AbstractResetIntegrationTest.java",
+        "content_preview": "ter.api.BeforeAll;\nimport org.junit.jupiter.api.Tag;\nimport org.junit.jupiter.api.Test;\nimport org.junit.jupiter.api.Timeout;\n\nimport java.util.Arrays;\nimport java.util.HashSet;\nimport java.util.List;\nimport java.util.Locale;\nimport java.util.Map;\nimport java.util.Objects;\nimport java.util.Optional;\nimport java.util.Properties;\nimport java.util.Set;\nimport java.util.concurrent.atomic.AtomicReference;\nimport java.util.stream.Collectors;\n\nimport joptsimple.OptionException;\n\nimport static org.apache.kafka.streams.integration.utils.IntegrationTestUtils.startApplicationAndWaitUntilRunning;\nimport static org.junit.jupiter.api.Assertions.assertEquals;\n\n@Timeout(600)\n@Tag(\"integration\")\npublic class ListStreamsGroupTest {\n\n    public static EmbeddedKafkaCluster cluster = null;\n    static KafkaStre"
+      }
+    ]
+  }
+}

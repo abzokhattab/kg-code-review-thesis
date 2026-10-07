@@ -1,0 +1,46 @@
+{
+  "candidate_mentions": [
+    {
+      "basename_collision": false,
+      "end": 623,
+      "evidence_id": "M001",
+      "excerpt": "updates to these files.\n\n## Evidence\n- `sklearn/base.py:824`: The class `TransformerMixin` is renamed to `TransformerMixinInternal`.\n- Dependent files such as `sklearn/cluster/_birch.py`, `sklearn/cluster/_feature_agglomeration.py`, and others import `TransformerMixin` but are not updated to reflect the new class name.\n\n## Impact\n- The renaming could lead to `ImportError` in modules that rely on `TransformerMixin`, breaking functionality acr",
+      "finding_passage_id": "P008",
+      "match_kind": "full_path",
+      "match_text": "sklearn/cluster/_birch.py",
+      "oracle_path": "sklearn/cluster/_birch.py",
+      "start": 598
+    },
+    {
+      "basename_collision": false,
+      "end": 668,
+      "evidence_id": "M002",
+      "excerpt": "vidence\n- `sklearn/base.py:824`: The class `TransformerMixin` is renamed to `TransformerMixinInternal`.\n- Dependent files such as `sklearn/cluster/_birch.py`, `sklearn/cluster/_feature_agglomeration.py`, and others import `TransformerMixin` but are not updated to reflect the new class name.\n\n## Impact\n- The renaming could lead to `ImportError` in modules that rely on `TransformerMixin`, breaking functionality across multiple components in the library.\n- Thi",
+      "finding_passage_id": "P008",
+      "match_kind": "full_path",
+      "match_text": "sklearn/cluster/_feature_agglomeration.py",
+      "oracle_path": "sklearn/cluster/_feature_agglomeration.py",
+      "start": 627
+    }
+  ],
+  "causal_passage_id": "P010",
+  "decision_source": "llm_causal_adjudication",
+  "detected": true,
+  "evidence_id": "M001",
+  "evidence_id_normalized": false,
+  "executed_at_utc": "2026-09-19T15:37:50.645467+00:00",
+  "finding_passage_id": "P008",
+  "judge": "anthropic:claude-sonnet-4-5",
+  "manifest_sha256": "5d4371a93d1b09f0491ecc12279f9f3ff5de23053b7a5e74650a749f58b472b0",
+  "model_alias": "anthropic:claude-sonnet-4-5",
+  "model_evidence_id": "M001",
+  "model_snapshot": "unavailable-from-original-wrapper",
+  "original_verdict": null,
+  "prompt_sha256": "a3d678703afc15daff9de2a88c714108db7680b4b13bf49d5ab57f2bd097bf3d",
+  "reason_code": "specific_cross_file_link",
+  "response_wrapper": "bare",
+  "review_sha256": "d734c75b9e89a94e1a74187e2eea4d8277a5f288f12e9b5689af9b37fdc60f45",
+  "schema_sha256": "f70f714868ecd3d25508bb3e00b32ecbe6761b0ebc05f454ee10fa4d28efd013",
+  "schema_version": "exp2-adjudication-v3",
+  "system_sha256": "030b5e701c798b32afdabbbeb22db38f664db8c8fd8b862d2fcb98df63b6fb6b"
+}

@@ -1,0 +1,32 @@
+{
+  "candidate_mentions": [
+    {
+      "basename_collision": false,
+      "end": 582,
+      "evidence_id": "M001",
+      "excerpt": "with its usage or visibility.\n\n## Evidence\n- `sklearn/linear_model/_linear_loss.py:36`: The class `LinearModelLoss` is renamed to `LinearModelLossInternal`.\n- `sklearn/linear_model/_glm/_newton_solver.py:63`: The existing code references `LinearModelLoss`, suggesting a broader usage context.\n\n## Impact\n- The renaming could lead to confusion if `LinearModelLossInternal` is intended for external use or if it is referenced elsewhere in the codebase.\n- It may int",
+      "match_kind": "full_path",
+      "match_text": "sklearn/linear_model/_glm/_newton_solver.py",
+      "oracle_path": "sklearn/linear_model/_glm/_newton_solver.py",
+      "start": 539
+    }
+  ],
+  "causal_quote": "It may introduce integration issues if other parts of the codebase expect the original class name, potentially breaking functionality or causing runtime errors.",
+  "decision_source": "llm_causal_adjudication",
+  "detected": true,
+  "evidence_id": "M001",
+  "executed_at_utc": "2026-09-19T15:06:16.645880+00:00",
+  "finding_quote": "`sklearn/linear_model/_glm/_newton_solver.py:63`: The existing code references `LinearModelLoss`, suggesting a broader usage context.",
+  "judge": "gemini:gemini-2.5-flash",
+  "manifest_sha256": "5d4371a93d1b09f0491ecc12279f9f3ff5de23053b7a5e74650a749f58b472b0",
+  "model_alias": "gemini:gemini-2.5-flash",
+  "model_snapshot": "unavailable-from-original-wrapper",
+  "original_verdict": true,
+  "prompt_sha256": "4392981a4b1cfced97c4ee80326ad41365444361c7d0ef1a357105b67fd6ad79",
+  "reason_code": "specific_cross_file_link",
+  "response_wrapper": "single_json_fence",
+  "review_sha256": "95c9a4d586ce5e879b68fd435db10267caeddaf9ec443b3ef14c081dd8763999",
+  "schema_sha256": "6a22fcb256437ebed904ab2d879b36be1234fb2e06add1127ac8ea2ab46f60f0",
+  "schema_version": "exp2-adjudication-v2",
+  "system_sha256": "3634314a8fc4231391e4c51174e5c32d7346b0e2ceb5f8c4641e6ba866bd5939"
+}

@@ -1,0 +1,278 @@
+{
+  "pr": {
+    "number": 124593,
+    "title": "Unified Storage: validate group/resource in SQL ListModifiedSince",
+    "body": "**What is this feature?**\n\nReject empty \\`Group\\`/\\`Resource\\` at the top of the SQL backend's \\`ListModifiedSince\\`, mirroring the KV backend's existing check, and add a shared integration subtest so both backends are exercised.\n\n**Why do we need this feature?**\n\nFollow-up to #124572. In the SQL backend, \\`ListModifiedSince\\` calls \\`fetchLatestRV\\` first and returns early when \\`latestRv <= sinceRv\\`, so \\`sqlResourceListModifiedSinceRequest.Validate\\` is never reached. With \\`Group==\\\"\\\"\\` / \\`Resource==\\\"\\\"\\` and \\`sinceRv >= 1\\` the call silently returned success, while the KV backend rejected the same input \u2014 a backend-contract divergence flagged in review by @pstibrany.\n\n**Who is this feature for?**\n\nUnified Storage maintainers and any caller relying on consistent error behavior between the SQL and KV backends.\n\n**Which issue(s) does this PR fix?**:\n\nFixes review feedback on #124572.\n\n**Special notes for your reviewer:**\n\n- \\`go test ./pkg/storage/unified/sql/... ./pkg/storage/unified/resource/...\\` passes.\n- The new \\`rejects missing group or resource\\` subtest in \\`pkg/storage/unified/testing/storage_backend.go\\` runs against both SQL and KV backends and uses \\`sinceRv > 0\\` so the SQL short-circuit path is actually exercised.\n\nPlease check that:\n- [x] It works as expected from a user's perspective.\n- [ ] If this is a pre-GA feature, it is behind a feature toggle. (n/a)\n- [ ] The docs are updated, and if this is a [notable improvement](https://grafana.com/docs/writers-toolkit/contribute/release-notes/#how-to-determine-if-content-belongs-in-whats-new), it's added to our [What's New](https://grafana.com/docs/writers-toolkit/contribute/release-notes/) doc. (n/a)\n\n\ud83e\udd16 Generated with [Claude Code](https://claude.com/claude-code)",
+    "url": "https://github.com/grafana/grafana/pull/124593",
+    "repo": "grafana/grafana",
+    "base_branch": "main",
+    "head_branch": "RafaelPaulovic/listmod-validate-key",
+    "merged_at": "2026-05-12T07:40:13Z",
+    "state": "MERGED"
+  },
+  "changed_files": [
+    {
+      "path": "pkg/storage/unified/sql/backend.go",
+      "language": "go",
+      "added": 7,
+      "deleted": 0
+    },
+    {
+      "path": "pkg/storage/unified/testing/storage_backend.go",
+      "language": "go",
+      "added": 20,
+      "deleted": 0
+    }
+  ],
+  "nearest_tests": [
+    {
+      "path": "public/app/core/specs/backend_srv.test.ts",
+      "relationship": "tests",
+      "source_file": "pkg/storage/unified/sql/backend.go"
+    },
+    {
+      "path": "public/app/plugins/datasource/loki/backendResultTransformer.test.ts",
+      "relationship": "tests",
+      "source_file": "pkg/storage/unified/sql/backend.go"
+    },
+    {
+      "path": ".github/workflows/backend-unit-tests.yml",
+      "relationship": "tests",
+      "source_file": "pkg/storage/unified/sql/backend.go"
+    },
+    {
+      "path": "pkg/tests/api/plugins/backendplugin/backendplugin_test.go",
+      "relationship": "tests",
+      "source_file": "pkg/storage/unified/sql/backend.go"
+    },
+    {
+      "path": "pkg/storage/unified/testing/storage_backend_test.go",
+      "relationship": "tests",
+      "source_file": "pkg/storage/unified/sql/backend.go"
+    },
+    {
+      "path": "pkg/storage/unified/resource/storage_backend_test.go",
+      "relationship": "tests",
+      "source_file": "pkg/storage/unified/testing/storage_backend.go"
+    },
+    {
+      "path": "pkg/registry/apis/iam/resourcepermission/storage_backend_test.go",
+      "relationship": "tests",
+      "source_file": "pkg/storage/unified/testing/storage_backend.go"
+    }
+  ],
+  "dependent_files": [
+    {
+      "path": "e2e-playwright/various-suite/migrate-to-cloud.spec.ts",
+      "relationship": "imports",
+      "source_file": "pkg/storage/unified/sql/backend.go"
+    },
+    {
+      "path": "e2e-playwright/various-suite/grafana-datasource-random-walk.spec.ts",
+      "relationship": "imports",
+      "source_file": "pkg/storage/unified/sql/backend.go"
+    },
+    {
+      "path": "e2e-playwright/test-plugins/grafana-test-datasource/types.ts",
+      "relationship": "imports",
+      "source_file": "pkg/storage/unified/sql/backend.go"
+    },
+    {
+      "path": "e2e-playwright/test-plugins/grafana-test-datasource/components/ConfigEditor.tsx",
+      "relationship": "imports",
+      "source_file": "pkg/storage/unified/sql/backend.go"
+    },
+    {
+      "path": "e2e-playwright/utils/prometheus-helpers.ts",
+      "relationship": "imports",
+      "source_file": "pkg/storage/unified/sql/backend.go"
+    },
+    {
+      "path": "public/app/core/profiler.ts",
+      "relationship": "imports",
+      "source_file": "pkg/storage/unified/sql/backend.go"
+    },
+    {
+      "path": "public/app/core/internationalization/loadTranslations.ts",
+      "relationship": "imports",
+      "source_file": "pkg/storage/unified/sql/backend.go"
+    },
+    {
+      "path": "public/app/core/context/GrafanaContext.ts",
+      "relationship": "imports",
+      "source_file": "pkg/storage/unified/sql/backend.go"
+    },
+    {
+      "path": "public/app/core/specs/backend_srv.test.ts",
+      "relationship": "imports",
+      "source_file": "pkg/storage/unified/sql/backend.go"
+    },
+    {
+      "path": "public/app/core/utils/navBarItem-translations.ts",
+      "relationship": "imports",
+      "source_file": "pkg/storage/unified/sql/backend.go"
+    },
+    {
+      "path": "pkg/storage/unified/resource/sqlkv.go",
+      "relationship": "imports",
+      "source_file": "pkg/storage/unified/testing/storage_backend.go"
+    },
+    {
+      "path": "pkg/storage/unified/resource/datastore.go",
+      "relationship": "imports",
+      "source_file": "pkg/storage/unified/testing/storage_backend.go"
+    },
+    {
+      "path": "pkg/registry/apis/iam/resourcepermission/storage_backend.go",
+      "relationship": "imports",
+      "source_file": "pkg/storage/unified/testing/storage_backend.go"
+    }
+  ],
+  "diff_summary": "2 files changed",
+  "full_diff": "diff --git a/pkg/storage/unified/sql/backend.go b/pkg/storage/unified/sql/backend.go\nindex 52bcb499569ec..7eabaae8d33d8 100644\n--- a/pkg/storage/unified/sql/backend.go\n+++ b/pkg/storage/unified/sql/backend.go\n@@ -1090,6 +1090,13 @@ func (b *backend) listLatest(ctx context.Context, req *resourcepb.ListRequest, c\n func (b *backend) ListModifiedSince(ctx context.Context, key resource.NamespacedResource, sinceRv int64, _ *time.Time) (int64, iter.Seq2[*resource.ModifiedResource, error]) {\n \tsinceRv = toMicrosecondRV(sinceRv)\n \n+\t// Validate key before doing latest RV check\n+\tif key.Group == \"\" || key.Resource == \"\" {\n+\t\treturn 0, func(yield func(*resource.ModifiedResource, error) bool) {\n+\t\t\tyield(nil, fmt.Errorf(\"group and resource are required\"))\n+\t\t}\n+\t}\n+\n \t// We don't use an explicit transaction for fetching LatestRV and subsequent fetching of resources.\n \t// To guarantee that we don't include events with RV > LatestRV, we include the check in SQL query.\n \ndiff --git a/pkg/storage/unified/testing/storage_backend.go b/pkg/storage/unified/testing/storage_backend.go\nindex 72ae7868989ee..36d64a33987fc 100644\n--- a/pkg/storage/unified/testing/storage_backend.go\n+++ b/pkg/storage/unified/testing/storage_backend.go\n@@ -720,6 +720,26 @@ func runTestIntegrationBackendListModifiedSince(t *testing.T, backend resource.S\n \t\trequire.Equal(t, rvA, seen[nsA], \"namespace A should yield latest rv for shared\")\n \t\trequire.Equal(t, rvB, seen[nsB], \"namespace B should yield latest rv for shared\")\n \t})\n+\n+\tt.Run(\"rejects missing group or resource\", func(t *testing.T) {\n+\t\tfor _, tc := range []struct {\n+\t\t\tname string\n+\t\t\tkey  resource.NamespacedResource\n+\t\t}{\n+\t\t\t{name: \"missing group\", key: resource.NamespacedResource{Resource: \"resource\"}},\n+\t\t\t{name: \"missing resource\", key: resource.NamespacedResource{Group: \"group\"}},\n+\t\t} {\n+\t\t\tt.Run(tc.name, func(t *testing.T) {\n+\t\t\t\t_, seq := backend.ListModifiedSince(ctx, tc.key, rvCreated, nil)\n+\t\t\t\tvar gotErr error\n+\t\t\t\tfor _, err := range seq {\n+\t\t\t\t\tgotErr = err\n+\t\t\t\t\tbreak\n+\t\t\t\t}\n+\t\t\t\trequire.Error(t, gotErr)\n+\t\t\t})\n+\t\t}\n+\t})\n }\n \n func runTestIntegrationBackendListHistory(t *testing.T, backend resource.StorageBackend, nsPrefix string) {\n",
+  "metadata": {
+    "v2_fetcher_version": 1,
+    "v2_fetched_at_unix": 1778582511,
+    "v2_diff_cap_bytes": 50000,
+    "v2_body_cap_bytes": 8000,
+    "v2_diff_truncated": false,
+    "v2_raw_diff_chars": 2201,
+    "v2_raw_body_chars": 1760,
+    "v2_rag_source": "fresh_for_v2_40pr_expansion",
+    "v2_rag_chunks_copied": 8
+  },
+  "similar_chunks": [
+    {
+      "file": "pkg/storage/unified/testing/server.go",
+      "start_line": 1,
+      "end_line": 66,
+      "similarity": 0.8315,
+      "related_to": "pkg/storage/unified/testing/storage_backend.go",
+      "content_preview": "package test\n\nimport (\n\t\"context\"\n\t\"encoding/json\"\n\t\"fmt\"\n\t\"net/http\"\n\t\"testing\"\n\n\t\"github.com/grafana/authlib/types\"\n\n\t\"github.com/grafana/grafana/pkg/apimachinery/identity\"\n\t\"github.com/grafana/grafana/pkg/apimachinery/utils\"\n\t\"github.com/grafana/grafana/pkg/storage/unified/resource\"\n\t\"github.com/grafana/grafana/pkg/storage/unified/resourcepb\"\n\n\t\"github.com/stretchr/testify/require\"\n)\n\n// RunStorageServerTest runs the storage server test suite\nfunc RunStorageServerTest(t *testing.T, newBackend NewBackendFunc) {\n\trunTestResourcePermissionScenarios(t, newBackend(context.Background()), GenerateRandomNSPrefix())\n\trunTestListTrashAccessControl(t, newBackend(context.Background()), GenerateRandomNSPrefix())\n}\n\n// func runTestIntegrationBackendHappyPath(t *testing.T, backend resource.StorageBack"
+    },
+    {
+      "file": "pkg/storage/unified/testing/storage_backend_sql_compatibility.go",
+      "start_line": 1,
+      "end_line": 74,
+      "similarity": 0.8127,
+      "related_to": "pkg/storage/unified/testing/storage_backend.go",
+      "content_preview": "package test\n\nimport (\n\t\"context\"\n\t\"encoding/json\"\n\t\"fmt\"\n\t\"strings\"\n\t\"sync\"\n\t\"testing\"\n\t\"time\"\n\n\t\"github.com/stretchr/testify/require\"\n\n\tclaims \"github.com/grafana/authlib/types\"\n\t\"github.com/grafana/grafana/pkg/infra/db\"\n\t\"github.com/grafana/grafana/pkg/setting\"\n\t\"github.com/grafana/grafana/pkg/storage/unified/resource\"\n\t\"github.com/grafana/grafana/pkg/storage/unified/resourcepb\"\n\tsqldb \"github.com/grafana/grafana/pkg/storage/unified/sql/db\"\n\t\"github.com/grafana/grafana/pkg/storage/unified/sql/db/dbimpl\"\n\t\"github.com/grafana/grafana/pkg/storage/unified/sql/rvmanager\"\n\t\"github.com/grafana/grafana/pkg/storage/unified/sql/sqltemplate\"\n\t\"github.com/grafana/grafana/pkg/util/testutil\"\n)\n\nfunc NewTestSqlKvBackend(t *testing.T, ctx context.Context, withRvManager bool) (resource.KVBackend, sqldb."
+    },
+    {
+      "file": "pkg/storage/unified/testing/search_backend.go",
+      "start_line": 1,
+      "end_line": 71,
+      "similarity": 0.7954,
+      "related_to": "pkg/storage/unified/testing/storage_backend.go",
+      "content_preview": "package test\n\nimport (\n\t\"context\"\n\t\"testing\"\n\t\"time\"\n\n\t\"github.com/stretchr/testify/require\"\n\n\t\"github.com/grafana/grafana/pkg/storage/unified/resource\"\n\t\"github.com/grafana/grafana/pkg/storage/unified/resourcepb\"\n\t\"github.com/grafana/grafana/pkg/util/testutil\"\n)\n\n// Test names for the search backend test suite\nconst (\n\tTestBuildIndex    = \"build index\"\n\tTestTotalDocs     = \"total docs\"\n\tTestResourceIndex = \"resource index\"\n)\n\n// NewSearchBackendFunc is a function that creates a new SearchBackend instance\ntype NewSearchBackendFunc func(ctx context.Context) resource.SearchBackend\n\n// RunSearchBackendTest runs the search backend test suite\nfunc RunSearchBackendTest(t *testing.T, newBackend NewSearchBackendFunc, opts *TestOptions) {\n\tif opts == nil {\n\t\topts = &TestOptions{}\n\t}\n\n\tif opts.NSPre"
+    },
+    {
+      "file": "pkg/storage/unified/testing/storage_backend_sql_compatibility.go",
+      "start_line": 68,
+      "end_line": 122,
+      "similarity": 0.7922,
+      "related_to": "pkg/storage/unified/testing/storage_backend.go",
+      "content_preview": "gf(\"Running tests with namespace prefix: %s\", opts.NSPrefix)\n\n\tcases := []struct {\n\t\tname string\n\t\tfn   func(*testing.T, resource.StorageBackend, resource.StorageBackend, string, sqldb.DB)\n\t}{\n\t\t{\"key_path generation\", runTestIntegrationBackendKeyPathGeneration},\n\t\t{\"sql backend fields compatibility\", runTestSQLBackendFieldsCompatibility},\n\t\t{\"cross backend consistency\", runTestCrossBackendConsistency},\n\t\t{\"concurrent operations stress\", runTestConcurrentOperationsStress},\n\t}\n\n\tfor _, tc := range cases {\n\t\tt.Run(tc.name, func(t *testing.T) {\n\t\t\tif opts.SkipTests[tc.name] {\n\t\t\t\tt.Skip()\n\t\t\t}\n\n\t\t\tkvbackend, db := newKvBackend(t.Context())\n\t\t\tsqlbackend, _ := newSqlBackend(t.Context())\n\n\t\t\ttc.fn(t, sqlbackend, kvbackend, opts.NSPrefix, db)\n\t\t})\n\t}\n\n\t// Search operations compatibility test (ha"
+    },
+    {
+      "file": "pkg/storage/unified/sql/test/integration_test.go",
+      "start_line": 1,
+      "end_line": 50,
+      "similarity": 0.7887,
+      "related_to": "pkg/storage/unified/testing/storage_backend.go",
+      "content_preview": "package test\n\nimport (\n\t\"context\"\n\t\"sync\"\n\t\"testing\"\n\t\"time\"\n\n\tindex \"github.com/blevesearch/bleve_index_api\"\n\t\"github.com/go-jose/go-jose/v4/jwt\"\n\t\"github.com/prometheus/client_golang/prometheus\"\n\t\"github.com/stretchr/testify/require\"\n\n\t\"github.com/grafana/authlib/authn\"\n\t\"github.com/grafana/authlib/types\"\n\t\"github.com/grafana/dskit/kv\"\n\t\"github.com/grafana/dskit/services\"\n\n\t\"github.com/grafana/grafana/pkg/infra/db\"\n\t\"github.com/grafana/grafana/pkg/infra/tracing\"\n\t\"github.com/grafana/grafana/pkg/services/featuremgmt\"\n\t\"github.com/grafana/grafana/pkg/setting\"\n\t\"github.com/grafana/grafana/pkg/storage/unified\"\n\t\"github.com/grafana/grafana/pkg/storage/unified/resource\"\n\t\"github.com/grafana/grafana/pkg/storage/unified/resourcepb\"\n\t\"github.com/grafana/grafana/pkg/storage/unified/search\"\n\t\"githu"
+    },
+    {
+      "file": "pkg/storage/unified/sql/test/integration_test.go",
+      "start_line": 44,
+      "end_line": 111,
+      "similarity": 0.7655,
+      "related_to": "pkg/storage/unified/testing/storage_backend.go",
+      "content_preview": "block is atomic.\n\tinitMutex.Lock()\n\t// Unlock once the function returns the initialized backend.\n\tdefer initMutex.Unlock()\n\n\tdbstore := db.InitTestDB(t)\n\teDB, err := dbimpl.ProvideResourceDB(dbstore, setting.NewCfg(), nil)\n\trequire.NoError(t, err)\n\trequire.NotNil(t, eDB)\n\n\tbackend, err := sql.NewBackend(sql.BackendOptions{\n\t\tDBProvider:              eDB,\n\t\tIsHA:                    isHA,\n\t\tSimulatedNetworkLatency: simulatedNetworkLatency,\n\t\tLastImportTimeMaxAge:    24 * time.Hour,\n\t})\n\trequire.NoError(t, err)\n\trequire.NotNil(t, backend)\n\n\t// Use a context with a reasonable timeout for migrations.\n\terr = backend.Init(testutil.NewTestContext(t, time.Now().Add(1*time.Minute)))\n\trequire.NoError(t, err)\n\n\tsqlDB, err := eDB.Init(testutil.NewTestContext(t, time.Now().Add(1*time.Minute)))\n\trequire."
+    },
+    {
+      "file": "pkg/storage/unified/testing/storage_backend_test.go",
+      "start_line": 1,
+      "end_line": 67,
+      "similarity": 0.7649,
+      "related_to": "pkg/storage/unified/testing/storage_backend.go",
+      "content_preview": "package test\n\nimport (\n\t\"context\"\n\t\"testing\"\n\n\tbadger \"github.com/dgraph-io/badger/v4\"\n\t\"github.com/stretchr/testify/require\"\n\n\t\"github.com/grafana/grafana/pkg/storage/unified/resource\"\n\t\"github.com/grafana/grafana/pkg/util/testutil\"\n)\n\nfunc TestBadgerKVStorageBackend(t *testing.T) {\n\tRunStorageBackendTest(t, func(ctx context.Context) resource.StorageBackend {\n\t\topts := badger.DefaultOptions(\"\").WithInMemory(true).WithLogger(nil)\n\t\tdb, err := badger.Open(opts)\n\t\trequire.NoError(t, err)\n\t\tt.Cleanup(func() {\n\t\t\t_ = db.Close()\n\t\t})\n\t\tkvOpts := resource.KVBackendOptions{\n\t\t\tKvStore: resource.NewBadgerKV(db),\n\t\t}\n\t\tbackend, err := resource.NewKVStorageBackend(kvOpts)\n\t\trequire.NoError(t, err)\n\t\treturn backend\n\t}, &TestOptions{\n\t\tNSPrefix: \"badgerkvstorage-test\",\n\t\tSkipTests: map[string]bool{\n\t\t"
+    },
+    {
+      "file": "pkg/storage/unified/testing/benchmark.go",
+      "start_line": 1,
+      "end_line": 70,
+      "similarity": 0.7352,
+      "related_to": "pkg/storage/unified/testing/storage_backend.go",
+      "content_preview": "package test\n\nimport (\n\t\"context\"\n\t\"fmt\"\n\t\"sort\"\n\t\"strings\"\n\t\"sync\"\n\t\"testing\"\n\t\"time\"\n\n\t\"github.com/grafana/grafana/pkg/storage/unified/resource\"\n\t\"github.com/grafana/grafana/pkg/storage/unified/resourcepb\"\n\n\t\"github.com/stretchr/testify/require\"\n)\n\n// BenchmarkOptions configures the benchmark parameters\ntype BenchmarkOptions struct {\n\tNumResources     int // total number of resources to write\n\tConcurrency      int // number of concurrent writers\n\tNumNamespaces    int // number of different namespaces\n\tNumGroups        int // number of different groups\n\tNumResourceTypes int // number of different resource types\n}\n\n// DefaultBenchmarkOptions returns the default benchmark options\nfunc DefaultBenchmarkOptions() *BenchmarkOptions {\n\treturn &BenchmarkOptions{\n\t\tNumResources:     1000,\n\t\tConcur"
+    }
+  ],
+  "rag_evidence": {
+    "similar_code": [
+      {
+        "file": "pkg/storage/unified/testing/server.go",
+        "start_line": 1,
+        "end_line": 66,
+        "similarity": 0.8315,
+        "related_to": "pkg/storage/unified/testing/storage_backend.go",
+        "content_preview": "package test\n\nimport (\n\t\"context\"\n\t\"encoding/json\"\n\t\"fmt\"\n\t\"net/http\"\n\t\"testing\"\n\n\t\"github.com/grafana/authlib/types\"\n\n\t\"github.com/grafana/grafana/pkg/apimachinery/identity\"\n\t\"github.com/grafana/grafana/pkg/apimachinery/utils\"\n\t\"github.com/grafana/grafana/pkg/storage/unified/resource\"\n\t\"github.com/grafana/grafana/pkg/storage/unified/resourcepb\"\n\n\t\"github.com/stretchr/testify/require\"\n)\n\n// RunStorageServerTest runs the storage server test suite\nfunc RunStorageServerTest(t *testing.T, newBackend NewBackendFunc) {\n\trunTestResourcePermissionScenarios(t, newBackend(context.Background()), GenerateRandomNSPrefix())\n\trunTestListTrashAccessControl(t, newBackend(context.Background()), GenerateRandomNSPrefix())\n}\n\n// func runTestIntegrationBackendHappyPath(t *testing.T, backend resource.StorageBack"
+      },
+      {
+        "file": "pkg/storage/unified/testing/storage_backend_sql_compatibility.go",
+        "start_line": 1,
+        "end_line": 74,
+        "similarity": 0.8127,
+        "related_to": "pkg/storage/unified/testing/storage_backend.go",
+        "content_preview": "package test\n\nimport (\n\t\"context\"\n\t\"encoding/json\"\n\t\"fmt\"\n\t\"strings\"\n\t\"sync\"\n\t\"testing\"\n\t\"time\"\n\n\t\"github.com/stretchr/testify/require\"\n\n\tclaims \"github.com/grafana/authlib/types\"\n\t\"github.com/grafana/grafana/pkg/infra/db\"\n\t\"github.com/grafana/grafana/pkg/setting\"\n\t\"github.com/grafana/grafana/pkg/storage/unified/resource\"\n\t\"github.com/grafana/grafana/pkg/storage/unified/resourcepb\"\n\tsqldb \"github.com/grafana/grafana/pkg/storage/unified/sql/db\"\n\t\"github.com/grafana/grafana/pkg/storage/unified/sql/db/dbimpl\"\n\t\"github.com/grafana/grafana/pkg/storage/unified/sql/rvmanager\"\n\t\"github.com/grafana/grafana/pkg/storage/unified/sql/sqltemplate\"\n\t\"github.com/grafana/grafana/pkg/util/testutil\"\n)\n\nfunc NewTestSqlKvBackend(t *testing.T, ctx context.Context, withRvManager bool) (resource.KVBackend, sqldb."
+      },
+      {
+        "file": "pkg/storage/unified/testing/search_backend.go",
+        "start_line": 1,
+        "end_line": 71,
+        "similarity": 0.7954,
+        "related_to": "pkg/storage/unified/testing/storage_backend.go",
+        "content_preview": "package test\n\nimport (\n\t\"context\"\n\t\"testing\"\n\t\"time\"\n\n\t\"github.com/stretchr/testify/require\"\n\n\t\"github.com/grafana/grafana/pkg/storage/unified/resource\"\n\t\"github.com/grafana/grafana/pkg/storage/unified/resourcepb\"\n\t\"github.com/grafana/grafana/pkg/util/testutil\"\n)\n\n// Test names for the search backend test suite\nconst (\n\tTestBuildIndex    = \"build index\"\n\tTestTotalDocs     = \"total docs\"\n\tTestResourceIndex = \"resource index\"\n)\n\n// NewSearchBackendFunc is a function that creates a new SearchBackend instance\ntype NewSearchBackendFunc func(ctx context.Context) resource.SearchBackend\n\n// RunSearchBackendTest runs the search backend test suite\nfunc RunSearchBackendTest(t *testing.T, newBackend NewSearchBackendFunc, opts *TestOptions) {\n\tif opts == nil {\n\t\topts = &TestOptions{}\n\t}\n\n\tif opts.NSPre"
+      },
+      {
+        "file": "pkg/storage/unified/testing/storage_backend_sql_compatibility.go",
+        "start_line": 68,
+        "end_line": 122,
+        "similarity": 0.7922,
+        "related_to": "pkg/storage/unified/testing/storage_backend.go",
+        "content_preview": "gf(\"Running tests with namespace prefix: %s\", opts.NSPrefix)\n\n\tcases := []struct {\n\t\tname string\n\t\tfn   func(*testing.T, resource.StorageBackend, resource.StorageBackend, string, sqldb.DB)\n\t}{\n\t\t{\"key_path generation\", runTestIntegrationBackendKeyPathGeneration},\n\t\t{\"sql backend fields compatibility\", runTestSQLBackendFieldsCompatibility},\n\t\t{\"cross backend consistency\", runTestCrossBackendConsistency},\n\t\t{\"concurrent operations stress\", runTestConcurrentOperationsStress},\n\t}\n\n\tfor _, tc := range cases {\n\t\tt.Run(tc.name, func(t *testing.T) {\n\t\t\tif opts.SkipTests[tc.name] {\n\t\t\t\tt.Skip()\n\t\t\t}\n\n\t\t\tkvbackend, db := newKvBackend(t.Context())\n\t\t\tsqlbackend, _ := newSqlBackend(t.Context())\n\n\t\t\ttc.fn(t, sqlbackend, kvbackend, opts.NSPrefix, db)\n\t\t})\n\t}\n\n\t// Search operations compatibility test (ha"
+      },
+      {
+        "file": "pkg/storage/unified/sql/test/integration_test.go",
+        "start_line": 1,
+        "end_line": 50,
+        "similarity": 0.7887,
+        "related_to": "pkg/storage/unified/testing/storage_backend.go",
+        "content_preview": "package test\n\nimport (\n\t\"context\"\n\t\"sync\"\n\t\"testing\"\n\t\"time\"\n\n\tindex \"github.com/blevesearch/bleve_index_api\"\n\t\"github.com/go-jose/go-jose/v4/jwt\"\n\t\"github.com/prometheus/client_golang/prometheus\"\n\t\"github.com/stretchr/testify/require\"\n\n\t\"github.com/grafana/authlib/authn\"\n\t\"github.com/grafana/authlib/types\"\n\t\"github.com/grafana/dskit/kv\"\n\t\"github.com/grafana/dskit/services\"\n\n\t\"github.com/grafana/grafana/pkg/infra/db\"\n\t\"github.com/grafana/grafana/pkg/infra/tracing\"\n\t\"github.com/grafana/grafana/pkg/services/featuremgmt\"\n\t\"github.com/grafana/grafana/pkg/setting\"\n\t\"github.com/grafana/grafana/pkg/storage/unified\"\n\t\"github.com/grafana/grafana/pkg/storage/unified/resource\"\n\t\"github.com/grafana/grafana/pkg/storage/unified/resourcepb\"\n\t\"github.com/grafana/grafana/pkg/storage/unified/search\"\n\t\"githu"
+      },
+      {
+        "file": "pkg/storage/unified/sql/test/integration_test.go",
+        "start_line": 44,
+        "end_line": 111,
+        "similarity": 0.7655,
+        "related_to": "pkg/storage/unified/testing/storage_backend.go",
+        "content_preview": "block is atomic.\n\tinitMutex.Lock()\n\t// Unlock once the function returns the initialized backend.\n\tdefer initMutex.Unlock()\n\n\tdbstore := db.InitTestDB(t)\n\teDB, err := dbimpl.ProvideResourceDB(dbstore, setting.NewCfg(), nil)\n\trequire.NoError(t, err)\n\trequire.NotNil(t, eDB)\n\n\tbackend, err := sql.NewBackend(sql.BackendOptions{\n\t\tDBProvider:              eDB,\n\t\tIsHA:                    isHA,\n\t\tSimulatedNetworkLatency: simulatedNetworkLatency,\n\t\tLastImportTimeMaxAge:    24 * time.Hour,\n\t})\n\trequire.NoError(t, err)\n\trequire.NotNil(t, backend)\n\n\t// Use a context with a reasonable timeout for migrations.\n\terr = backend.Init(testutil.NewTestContext(t, time.Now().Add(1*time.Minute)))\n\trequire.NoError(t, err)\n\n\tsqlDB, err := eDB.Init(testutil.NewTestContext(t, time.Now().Add(1*time.Minute)))\n\trequire."
+      },
+      {
+        "file": "pkg/storage/unified/testing/storage_backend_test.go",
+        "start_line": 1,
+        "end_line": 67,
+        "similarity": 0.7649,
+        "related_to": "pkg/storage/unified/testing/storage_backend.go",
+        "content_preview": "package test\n\nimport (\n\t\"context\"\n\t\"testing\"\n\n\tbadger \"github.com/dgraph-io/badger/v4\"\n\t\"github.com/stretchr/testify/require\"\n\n\t\"github.com/grafana/grafana/pkg/storage/unified/resource\"\n\t\"github.com/grafana/grafana/pkg/util/testutil\"\n)\n\nfunc TestBadgerKVStorageBackend(t *testing.T) {\n\tRunStorageBackendTest(t, func(ctx context.Context) resource.StorageBackend {\n\t\topts := badger.DefaultOptions(\"\").WithInMemory(true).WithLogger(nil)\n\t\tdb, err := badger.Open(opts)\n\t\trequire.NoError(t, err)\n\t\tt.Cleanup(func() {\n\t\t\t_ = db.Close()\n\t\t})\n\t\tkvOpts := resource.KVBackendOptions{\n\t\t\tKvStore: resource.NewBadgerKV(db),\n\t\t}\n\t\tbackend, err := resource.NewKVStorageBackend(kvOpts)\n\t\trequire.NoError(t, err)\n\t\treturn backend\n\t}, &TestOptions{\n\t\tNSPrefix: \"badgerkvstorage-test\",\n\t\tSkipTests: map[string]bool{\n\t\t"
+      },
+      {
+        "file": "pkg/storage/unified/testing/benchmark.go",
+        "start_line": 1,
+        "end_line": 70,
+        "similarity": 0.7352,
+        "related_to": "pkg/storage/unified/testing/storage_backend.go",
+        "content_preview": "package test\n\nimport (\n\t\"context\"\n\t\"fmt\"\n\t\"sort\"\n\t\"strings\"\n\t\"sync\"\n\t\"testing\"\n\t\"time\"\n\n\t\"github.com/grafana/grafana/pkg/storage/unified/resource\"\n\t\"github.com/grafana/grafana/pkg/storage/unified/resourcepb\"\n\n\t\"github.com/stretchr/testify/require\"\n)\n\n// BenchmarkOptions configures the benchmark parameters\ntype BenchmarkOptions struct {\n\tNumResources     int // total number of resources to write\n\tConcurrency      int // number of concurrent writers\n\tNumNamespaces    int // number of different namespaces\n\tNumGroups        int // number of different groups\n\tNumResourceTypes int // number of different resource types\n}\n\n// DefaultBenchmarkOptions returns the default benchmark options\nfunc DefaultBenchmarkOptions() *BenchmarkOptions {\n\treturn &BenchmarkOptions{\n\t\tNumResources:     1000,\n\t\tConcur"
+      }
+    ]
+  }
+}

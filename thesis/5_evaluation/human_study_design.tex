@@ -1,0 +1,104 @@
+\section{Human Evaluation Study}
+\label{sec:human-study}
+
+Both experiments so far rely on language models to score the output of a
+language model. The third study asks people.
+
+This study cannot validate the 35-pull-request ranking: the stimuli are a
+different sample, the graph block's edges are resolved from import statements rather than
+from the Joern CPG, the prompt is stricter, and the criteria are reworded for non-expert readers. What it
+tests is whether human readers perceive the specific difference the graph
+block produces.
+
+\subsection{Stimuli and Design}
+
+Six pull requests were drawn from three Python libraries, with two from each:
+\texttt{psf/requests}, \texttt{pallets/flask}, and \texttt{pallets/click}.
+The restriction to one language and to well-known libraries reduces the prior
+repository knowledge required of raters.
+
+Each pull request is presented with two reviews: \baseline{} (strict prompt,
+no graph block) and \kg{} (a matched prompt that differs only in its
+references to the available context, plus the knowledge-graph block). The on-screen diff is shared reference material for both
+arms. Reviews are shown as A and B, and participants are not told which mode
+produced either review. The side on which each mode appears is randomised per
+rater.
+
+The design is fully crossed: every rater sees all six pull requests. Each
+task presents a plain-language summary, the two reviews side by side, and
+the diff, which is expanded by default. The assisted interface also provides
+arm-neutral context, review summaries, file-existence tooltips that do not
+certify affectedness, and optional difference highlighting that is off by
+default. The rater makes six per-criterion choices (A, B, both, or neither),
+states an overall preference (A, equal, or B), optionally explains the choice
+in free text, and rates the task's difficulty.
+Table~\ref{tab:study-criteria} lists the criteria.
+
+\begin{table}[htbp]
+    \centering
+    \caption{The six comparison criteria as worded in the instrument. H1 is
+             the primary endpoint. IDs are prefixed H to distinguish them
+             from the 25-criterion rubric used in Experiments~1 and~2; the
+             closest rubric counterparts are F3/F4 for H1, F2 for H2, T3 for
+             H3, and R1 for H5.}
+    \label{tab:study-criteria}
+    \small
+    \begin{tabular}{llp{7.4cm}}
+        \toprule
+        ID & Category & Question put to the rater \\
+        \midrule
+        H1 & Functionality  & Which review better names the specific functions, classes, or files that this change could affect? \\
+        H2 & Functionality  & Which review better describes specific situations where the changed code could fail or misbehave? \\
+        H3 & Tests          & Which review better points to specific test files, or says which tests should be added or updated? \\
+        H4 & Quality        & Which review better explains \emph{why} something is a problem, rather than just saying it is one? \\
+        H5 & Readability    & Which review better comments on how clear and well-organised the code is? \\
+        H6 & Completeness   & Which review better covers the important issues in this PR, without obvious gaps? \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+\subsection{Analysis Plan}
+
+Choices are scored directionally: a pick of the \kg{} side counts one, a pick
+of the \baseline{} side counts zero, and ``both'', ``neither'', or ``equal''
+count one half. ``Both'' and ``neither'' share the same directional score but
+remain separate in the raw-choice descriptives. A rater's score for a criterion
+is the mean over their six tasks; the unit of analysis is the rater and the
+null value is~$0.5$.
+
+The primary endpoint is H1 (naming affected components), tested against~$0.5$
+with a two-sided Wilcoxon signed-rank test at $\alpha = 0.05$, reported with
+a rank-biserial correlation and a bootstrap confidence interval. This
+criterion was chosen because the LLM-judged result localises its effect
+there, and it is where the two arms differ mechanically. Overall usefulness
+is secondary and explicitly estimation-only: power simulations show it
+underpowered at the intended sample size. The remaining criteria are
+exploratory and Holm-corrected.
+
+The analysis plan also pre-registered four diagnostic checks concerning
+file-count association, aid use, free-text rationales, and task time. They were
+not implemented in the final analyser and are not used to support any thesis
+claim; this omission is reported as a limitation.
+
+The recruitment target is 18--20 complete raters, with 15 as a lower-bound
+checkpoint. Only raters who complete all six tasks enter the confirmatory
+analysis. The final export exceeded that upper target.
+Section~\ref{sec:results-human} reports all 27 complete raters. The
+interpretation rules were fixed before data collection: a positive result
+licenses the claim that raters perceive the graph arm's better naming of
+affected code; a
+null result is reported as a boundary finding and the plan forbids re-running
+with new stimuli.
+
+\subsection{Ethics}
+
+Participation begins with informed consent. The instrument records a
+self-chosen identifier, optional free text, role and experience descriptors,
+criterion and overall choices, difficulty, task time, GitHub-link clicks, and
+whether highlighting was enabled; it collects neither email nor IP address.
+Processing rests on consent under Art.~6(1)(a) GDPR. Data are retained until
+examination is complete and deleted no later than 31~December~2027. Only
+aggregated or de-identified results appear in this thesis. No formal ethics
+board review was required under the university's guidelines for this category
+of research; the study collects no personally identifying information and
+presents no risk beyond standard professional activity.

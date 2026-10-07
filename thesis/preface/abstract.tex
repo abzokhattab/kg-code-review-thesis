@@ -1,0 +1,40 @@
+Code review is limited by the evidence visible to the reviewer. When an edit
+breaks code in another file, neither the diff nor the reviewer's memory
+guarantees that the consequence will be found. This thesis asks how repository
+context changes the coverage of LLM-generated reviews, whether structural
+context enables cross-file reasoning, and whether human raters perceive the
+resulting difference.
+
+A pipeline generates reviews under four modes: a diff-only baseline, a
+structural arm that supplies edges from a Joern code property graph, a
+retrieval arm that supplies embedding-similar code, and a hybrid containing
+both. The modes are evaluated on 35 pull requests from five repositories, on
+40 controlled defect injections, and in a human study.
+
+On the pull requests, a panel of five language-model judges scores each review
+on 25 criteria. The graph arm gains $+0.69$ on the nine criteria designated
+in advance as structurally relevant, and 96\,\% of its total advantage falls
+within them (both $p = 0.003$). Retrieval produces the largest
+full-rubric gain ($+1.03$, $p = 0.002$). After correction for multiple
+comparisons, the graph retains its targeted gain and retrieval its full-rubric
+gain; the hybrid retains neither.
+
+Among 28 injected defects whose consequences lie outside the edited file, the
+baseline detects none, retrieval detects 5, and the graph detects 18. Adding
+inheritance edges raises detection to 26 of 28. On 12 control defects
+visible in the edited file, every mode
+performs at or near ceiling. The eight additional detections from inheritance
+edges show that graph construction has substantial room to improve.
+
+In the human study, 27 raters compare graph and baseline reviews.
+They prefer the graph review for naming affected code (mean preference
+$0.710$, where $0.5$ denotes no preference; $p = 0.0005$), show no
+preference on overall usefulness, and prefer the baseline review's
+commentary on code clarity.
+
+The contribution is a bounded capability, not a general improvement in review
+quality. Structural context exposes cross-file consequences that a diff does
+not contain; similarity retrieval improves broader rubric coverage but does
+not replace structural evidence. The benefit is large when cross-file
+reasoning is required and smaller but targeted on the pull-request
+benchmark.

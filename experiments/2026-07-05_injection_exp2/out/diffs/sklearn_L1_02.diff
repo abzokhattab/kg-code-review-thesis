@@ -1,0 +1,11 @@
+--- a/sklearn/decomposition/_dict_learning.py
++++ b/sklearn/decomposition/_dict_learning.py
+@@ -2177,7 +2177,7 @@
+ 
+         # Early stopping based on change of dictionary
+         dict_diff = linalg.norm(new_dict - old_dict) / self._n_components
+-        if self.tol > 0 and dict_diff <= self.tol:
++        if self.tol > 0 and dict_diff < self.tol:
+             if self.verbose:
+                 print(f"Converged (small dictionary change) at step {step}/{n_steps}")
+             return True

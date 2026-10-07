@@ -1,0 +1,265 @@
+\label{app:prompts}
+
+This appendix reproduces the prompts, in discharge of guideline~3 of
+\textcite{baltes2026llmguidelines}. They are
+transcribed from \texttt{prnote/note.py} for generation and from
+\texttt{scripts/evaluate\_reviews.py} for scoring, the two files that produced
+the reviews and verdicts of Experiments~1 and~2 analysed in
+Chapter~\ref{chap:results}. The transcription is character-exact except that
+one em dash in the required output heading is set here as a hyphen and the
+code fence that wraps the output format in the source is omitted. The human
+study used stricter variants of the generator prompts
+(Section~\ref{sec:human-study}); these are archived with the study materials
+in the replication package rather than reproduced here.
+
+\section{Generator Prompts}
+\label{app:prompts-generator}
+
+Every arm shares the following system prompt.
+
+{\footnotesize
+\begin{verbatim}
+You are a senior software engineer conducting a thorough code review of a
+pull request.
+
+Your task is to generate a structured review note that helps the PR author
+understand:
+1. What potential issues exist
+2. Evidence from the code supporting your concerns
+3. The impact of these issues
+4. Concrete recommendations
+
+Output Format (follow exactly):
+
+# Review Note - Evidence-Anchored
+
+**Scope:** [One sentence describing what this PR does]
+
+## Problem
+[Numbered list of 2-3 specific concerns or issues you identified]
+
+## Evidence
+[Bullet points with specific file:line references supporting your concerns]
+
+## Impact
+[Explain the technical impact - what could go wrong, what risks exist]
+
+## Recommendation (Fix / Tests / Risks)
+[Numbered list of concrete, actionable recommendations]
+
+## Traceability
+[List relevant code owners or teams if known, otherwise state
+"Not specified"]
+
+Guidelines:
+- Be specific and cite actual file paths and line numbers from the diff
+- Focus on meaningful issues, not style nitpicks
+- Consider integration impacts and test coverage
+- Be constructive and professional
+\end{verbatim}
+}
+
+The imposed output structure bears on the measurement. Because all four arms are
+told to produce the same five headings, the rubric cannot reward an arm for
+organising its output; it can only reward what fills those headings. This narrows
+the space in which a difference between arms can appear, and it is one reason the
+effects reported in Chapter~\ref{chap:results} are small in absolute terms.
+
+Each arm then appends one paragraph naming the context it has been given. This is
+the instruction asymmetry disclosed in Section~\ref{sec:setup}.
+
+\paragraph{\baseline{}.}
+{\footnotesize
+\begin{verbatim}
+Context: You only have access to the PR diff. Make reasonable inferences
+about integration and testing needs based on the changes you can see.
+\end{verbatim}
+}
+
+\paragraph{\kg{}.}
+{\footnotesize
+\begin{verbatim}
+Context: You have access to Knowledge Graph context including:
+- Which files are changed and their dependencies
+- Which tests cover the changed files
+- Who owns the affected code areas
+- Which other files call or import the changed code
+
+Use this structural context to provide deeper insights about integration
+risks, missing test coverage, and code ownership concerns.
+\end{verbatim}
+}
+
+\paragraph{\rag{}.}
+{\footnotesize
+\begin{verbatim}
+Context: You have access to semantically similar code chunks from the
+repository. These show patterns used elsewhere that may be relevant to
+this change.
+
+Use this context to identify consistency issues, suggest similar patterns
+to follow, and flag potential conflicts with existing code.
+\end{verbatim}
+}
+
+\paragraph{\hybrid{}.}
+{\footnotesize
+\begin{verbatim}
+Context: You have access to both:
+1. Knowledge Graph context (tests, dependencies, ownership)
+2. Semantically similar code from the repository
+
+Combine structural insights (what depends on what, test coverage) with
+semantic insights (similar patterns elsewhere) to provide comprehensive
+review feedback.
+\end{verbatim}
+}
+
+The user message is assembled from the frozen evidence pack in a fixed order: the
+pull request title; its description, capped at 8\,000 characters and omitted
+entirely when empty; the unified diff, capped as given in
+Table~\ref{tab:config}; the context block if the arm has one; and the closing
+instruction. The diff therefore precedes the context, so in the two arms that
+carry a block the added material is the last thing the model reads before the
+instruction.
+% dataset_v2/scripts/regenerate_reviews_v2.py:110-117 (Experiment 1) and
+% prnote/note.py:661-669 (Experiment 2) both order title, body, diff, context.
+
+\section{Per-Criterion Satisfaction Rates}
+
+Table~\ref{tab:exp1-criteria} gives the satisfaction rate behind the
+criterion-level analysis. It is here rather than in
+Chapter~\ref{chap:results} because no
+individual criterion reaches significance once the 17 that move are corrected
+for multiplicity, so the chapter's claim is about the band and this table is
+reference material for checking it.
+
+\begin{table}[htbp]
+    \centering
+    \caption{Satisfaction rate per rubric criterion, \baseline{} versus \kg{},
+             $n = 35$ (majority of five judges), for all 25 criteria. $\Delta$ is
+             in percentage points. The seven criteria marked $\dagger$ sit at $0\,\%$ or
+             $100\,\%$ in both arms and cannot register a difference in either
+             direction.}
+    \label{tab:exp1-criteria}
+    \small
+    \begin{tabular}{llccc}
+        \toprule
+        ID & Criterion (abbreviated) & \baseline{} & \kg{} & $\Delta$ \\
+        \midrule
+        \multicolumn{5}{l}{\emph{KG-relevant band (9 criteria)}} \\
+        F3 & Integration with existing code       & 60.0\,\%  & 82.9\,\%  & $+22.9$ \\
+        F4 & Breaking changes or impact           & 60.0\,\%  & 74.3\,\%  & $+14.3$ \\
+        T1 & Need for tests discussed             & 97.1\,\%  & 100.0\,\% & $+2.9$ \\
+        T2 & Edge cases and error paths in tests  & 65.7\,\%  & 68.6\,\%  & $+2.9$ \\
+        T3 & Specific test files referenced       & 62.9\,\%  & 71.4\,\%  & $+8.6$ \\
+        M1 & Fit with existing architecture       & 8.6\,\%   & 14.3\,\%  & $+5.7$ \\
+        M3 & Public API or interface handling     & 8.6\,\%   & 17.1\,\%  & $+8.6$ \\
+        C2 & Consistency with similar solutions   & 2.9\,\%   & 5.7\,\%   & $+2.9$ \\
+        Q2$^{\dagger}$ & Comments anchored to code locations & 100.0\,\% & 100.0\,\% & $0.0$ \\
+        \midrule
+        \multicolumn{5}{l}{\emph{Negative-control band (16 criteria)}} \\
+        F1 & Change solves the stated problem     & 5.7\,\%   & 8.6\,\%   & $+2.9$ \\
+        F2 & Edge cases in the change identified  & 65.7\,\%  & 68.6\,\%  & $+2.9$ \\
+        R1 & Code clarity, naming, function size  & 8.6\,\%   & 0.0\,\%   & $-8.6$ \\
+        R2 & Unnecessary complexity flagged       & 2.9\,\%   & 2.9\,\%   & $0.0$ \\
+        R3 & Comments explain why, not what       & 5.7\,\%   & 2.9\,\%   & $-2.9$ \\
+        M2$^{\dagger}$ & Pull request too large to review & 0.0\,\% & 0.0\,\% & $0.0$ \\
+        C1 & Project style-guide compliance       & 2.9\,\%   & 0.0\,\%   & $-2.9$ \\
+        P1 & Obvious inefficiencies               & 8.6\,\%   & 11.4\,\%  & $+2.9$ \\
+        P2$^{\dagger}$ & Benchmarks for critical paths  & 0.0\,\%  & 0.0\,\%  & $0.0$ \\
+        S1 & Input validation                     & 14.3\,\%  & 8.6\,\%   & $-5.7$ \\
+        S2$^{\dagger}$ & Hardcoded secrets or credentials & 0.0\,\% & 0.0\,\% & $0.0$ \\
+        S3 & Error-handling quality               & 20.0\,\%  & 22.9\,\%  & $+2.9$ \\
+        Q1$^{\dagger}$ & Overall assessment summary       & 100.0\,\% & 100.0\,\% & $0.0$ \\
+        Q3 & Blocking versus non-blocking issues  & 2.9\,\%   & 14.3\,\%  & $+11.4$ \\
+        Q4$^{\dagger}$ & Clarifying questions asked       & 0.0\,\% & 0.0\,\% & $0.0$ \\
+        Q5$^{\dagger}$ & Rationale given for suggestions  & 100.0\,\% & 100.0\,\% & $0.0$ \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+\section{Judge Prompt}
+\label{app:prompts-judge}
+
+The panel scores one review against all 25 criteria in a single call. The system
+prompt is:
+
+{\footnotesize
+\begin{verbatim}
+You are an expert code review evaluator. Your task is to assess whether a
+PR review meets specific quality criteria.
+
+For each criterion, you must:
+1. Determine if the review addresses that criterion (score: 1) or not
+   (score: 0)
+2. Provide a brief quote or explanation as evidence
+
+Be strict but fair:
+- Score 1 only if the review CLEARLY addresses the criterion
+- Score 0 if the criterion is not addressed or only vaguely mentioned
+- Base your judgment on meaning and intent, not just keywords
+\end{verbatim}
+}
+
+The user message interpolates the pull request under review, the review text, and
+the numbered criteria of Section~\ref{sec:rubric}:
+
+{\footnotesize
+\begin{verbatim}
+## PR Being Reviewed
+Title: {title}
+Description: {body, first 400 characters}
+
+## Review to Evaluate
+{review, first 4000 characters}
+
+## Criteria to Check
+1. [F1] {description}
+...
+25. [Q5] {description}
+
+## Instructions
+Evaluate the review against each criterion. Respond with a JSON object in
+this exact format:
+
+{
+  "scores": [
+    {"id": "F1", "score": 0,
+     "evidence": "Review does not verify the change addresses the problem"},
+    {"id": "F2", "score": 1,
+     "evidence": "Review mentions: 'what about edge cases where X is null'"}
+  ]
+}
+
+Important:
+- Include ALL 25 criteria (F1-F4, T1-T3, R1-R3, M1-M3, C1-C2, P1-P2,
+  S1-S3, Q1-Q5)
+- Each score must be 0 or 1
+- Evidence should be a short quote or explanation
+\end{verbatim}
+}
+
+Three properties of this prompt bear on how its output should be read.
+
+The two character caps could in principle bias the comparison, since an arm whose
+reviews ran longer would have more of its text withheld from the judge. Neither
+cap binds in practice. The longest of the 140 canonical reviews is 2\,620
+characters and the longest of the 12 human study stimuli is 2\,053, both well
+inside the 4\,000-character limit, so no review was truncated before scoring. The
+400-character description cap does bind, but it applies identically to all four
+arms of a given pull request.
+
+The instruction requires evidence for every verdict, which makes the verdicts
+auditable rather than opaque. The stored evidence strings are what
+Section~\ref{sec:results-exp1-attribution} inspects when characterising what a
+criterion was awarded for.
+
+The judge is asked whether a criterion is \emph{addressed}, not whether the
+review is correct about it. This is the coverage-not-correctness limitation that
+governs the interpretation of every rubric number in this thesis, stated where
+the rubric is defined (Section~\ref{sec:rubric}) and revisited in
+Section~\ref{sec:threats}. Reading the prompt shows why the limitation is
+structural rather than incidental: a judge given only the review and 400
+characters of description has no access to the repository against which
+correctness would have to be established.

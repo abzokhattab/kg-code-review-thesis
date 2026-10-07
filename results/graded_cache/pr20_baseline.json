@@ -1,0 +1,51 @@
+{
+  "pr_id": 20,
+  "mode": "baseline",
+  "mean_scores": {
+    "F3": 0.0,
+    "F4": 0.0,
+    "P1": 0.0,
+    "R2": 0.0,
+    "T3": 2.0
+  },
+  "mean_graded_total": 2.0,
+  "per_judge": [
+    {
+      "model": "gemini:gemini-2.5-flash",
+      "scores": {
+        "F3": 0,
+        "F4": 0,
+        "P1": 0,
+        "R2": 0,
+        "T3": 2
+      },
+      "evidence": {
+        "F3": "The review focuses on the internal correctness and coverage of the test itself, not on how the change in the test framework might impact other callers or dependent components of the Kafka system.",
+        "F4": "The review discusses potential issues with the test's ability to correctly simulate configurations or cover different SASL mechanisms, implying the test itself might be incomplete or incorrect. It does not mention any breaking changes to production code APIs or contracts that the PR might introduce.",
+        "P1": "No mention of performance issues in the review.",
+        "R2": "No comment on complexity or code structure in the review.",
+        "T3": "The review names `SaslApiVersionsRequestTest.scala` multiple times and references specific line ranges (`24-26`, `70-82`, `16-48`) within it, discussing specific changes and missing coverage related to SASL setup, `@ClusterTest` annotations, and additional SASL mechanisms."
+      },
+      "error": ""
+    },
+    {
+      "model": "gemini:gemini-2.5-pro",
+      "scores": {
+        "F3": 0,
+        "F4": 0,
+        "P1": 0,
+        "R2": 0,
+        "T3": 2
+      },
+      "evidence": {
+        "F3": "The review focuses on the internal implementation of a single test file and does not mention its interaction with any other components, callers, or dependents.",
+        "F4": "The review does not mention any breaking changes or violations of API contracts.",
+        "P1": "The review does not mention performance.",
+        "R2": "The review does not comment on code complexity or suggest simplifications.",
+        "T3": "The review names one specific test file that needs to be updated: `SaslApiVersionsRequestTest.scala`. For example, under 'Evidence': '`SaslApiVersionsRequestTest.scala:24-26`: Removal of `SaslSetup` and related SASL configuration.'"
+      },
+      "error": ""
+    }
+  ],
+  "timestamp": "2026-06-01T18:57:43.565698+00:00"
+}

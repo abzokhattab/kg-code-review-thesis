@@ -1,0 +1,331 @@
+{
+  "pr_id": 11,
+  "mode": "baseline",
+  "total_score": 9,
+  "max_score": 25,
+  "percentage": 36.0,
+  "kg_relevant_score": 4,
+  "kg_relevant_max": 9,
+  "kg_relevant_percentage": 44.4,
+  "criteria_scores": [
+    {
+      "criterion_id": "F1",
+      "score": 0,
+      "evidence": "Review does not verify that the change addresses the stated problem of optimizing getEstimatedDurationCandidates",
+      "n_yes": 1,
+      "n_valid": 2,
+      "unanimous": false
+    },
+    {
+      "criterion_id": "F2",
+      "score": 1,
+      "evidence": "Problem 2: 'If `BuildReference::get()` returns a non-null value for an unloadable build (meaning it's currently loaded but eligible for GC), then `streamLoadedBuilds()` will include builds that the previous `getLoadedBuilds()` implementation would have excluded...'",
+      "n_yes": 2,
+      "n_valid": 2,
+      "unanimous": true
+    },
+    {
+      "criterion_id": "F3",
+      "score": 1,
+      "evidence": "Problem 1: 'The `streamLoadedBuilds()` method... does not guarantee any specific order... This directly breaks the logic of `getEstimatedDurationCandidates()`, which explicitly relies on builds being in reverse chronological order...'",
+      "n_yes": 2,
+      "n_valid": 2,
+      "unanimous": true
+    },
+    {
+      "criterion_id": "F4",
+      "score": 1,
+      "evidence": "Impact: 'Incorrect Duration Estimation: If `streamLoadedBuilds()` does not provide builds in reverse chronological order, `getEstimatedDurationCandidates()` will select arbitrary builds, leading to inaccurate or inconsistent duration estimations for queued jobs.' and 'Semantic Change in \"Loaded Builds\": Including unloadable builds in the stream could expose internal state... potentially leading to unexpected behavior in consumers...'",
+      "n_yes": 2,
+      "n_valid": 2,
+      "unanimous": true
+    },
+    {
+      "criterion_id": "T1",
+      "score": 0,
+      "evidence": "The review uses an existing test as evidence of a problem but does not ask about or discuss the need for new unit/integration tests.",
+      "n_yes": 0,
+      "n_valid": 2,
+      "unanimous": true
+    },
+    {
+      "criterion_id": "T2",
+      "score": 0,
+      "evidence": "The review identifies edge cases and failure scenarios but does not explicitly mention testing them.",
+      "n_yes": 0,
+      "n_valid": 2,
+      "unanimous": true
+    },
+    {
+      "criterion_id": "T3",
+      "score": 1,
+      "evidence": "Evidence: '`core/src/test/java/jenkins/model/lazy/AbstractLazyLoadRunMapTest.java:417` (Test `assertEquals(List.of(5, 3, 1), fromStream);` relies on non-guaranteed `HashMap` order)'",
+      "n_yes": 2,
+      "n_valid": 2,
+      "unanimous": true
+    },
+    {
+      "criterion_id": "R1",
+      "score": 0,
+      "evidence": "The review does not comment on code clarity, naming conventions, or function organization.",
+      "n_yes": 0,
+      "n_valid": 2,
+      "unanimous": true
+    },
+    {
+      "criterion_id": "R2",
+      "score": 0,
+      "evidence": "Review does not identify unnecessary complexity or suggest simplification",
+      "n_yes": 1,
+      "n_valid": 2,
+      "unanimous": false
+    },
+    {
+      "criterion_id": "R3",
+      "score": 0,
+      "evidence": "The review points out a discrepancy in Javadoc regarding sorting but does not check if comments explain the 'why' behind decisions.",
+      "n_yes": 1,
+      "n_valid": 2,
+      "unanimous": false
+    },
+    {
+      "criterion_id": "M1",
+      "score": 0,
+      "evidence": "Review does not assess if change fits existing architecture or design patterns",
+      "n_yes": 1,
+      "n_valid": 2,
+      "unanimous": false
+    },
+    {
+      "criterion_id": "M2",
+      "score": 0,
+      "evidence": "The review does not flag if the PR scope is too large or should be split.",
+      "n_yes": 0,
+      "n_valid": 2,
+      "unanimous": true
+    },
+    {
+      "criterion_id": "M3",
+      "score": 0,
+      "evidence": "Review does not check if public APIs are properly documented",
+      "n_yes": 1,
+      "n_valid": 2,
+      "unanimous": false
+    },
+    {
+      "criterion_id": "C1",
+      "score": 0,
+      "evidence": "The review does not check adherence to project style guides or coding conventions.",
+      "n_yes": 0,
+      "n_valid": 2,
+      "unanimous": true
+    },
+    {
+      "criterion_id": "C2",
+      "score": 0,
+      "evidence": "Review does not check if similar problems are solved consistently with existing patterns",
+      "n_yes": 1,
+      "n_valid": 2,
+      "unanimous": false
+    },
+    {
+      "criterion_id": "P1",
+      "score": 1,
+      "evidence": "Problem 3: 'This means `getLoadedBuilds()` still performs a full copy of all loaded builds and eagerly unwraps all `BuildReference` objects, negating the \"avoid full map copy\" benefit for any other callers of `getLoadedBuilds()`.' Also, 'Limited Performance Improvement' in Impact section.",
+      "n_yes": 2,
+      "n_valid": 2,
+      "unanimous": true
+    },
+    {
+      "criterion_id": "P2",
+      "score": 0,
+      "evidence": "The review identifies performance issues but does not explicitly ask about benchmarks or performance testing.",
+      "n_yes": 0,
+      "n_valid": 2,
+      "unanimous": true
+    },
+    {
+      "criterion_id": "S1",
+      "score": 0,
+      "evidence": "The review does not check for proper input validation or sanitization.",
+      "n_yes": 0,
+      "n_valid": 2,
+      "unanimous": true
+    },
+    {
+      "criterion_id": "S2",
+      "score": 0,
+      "evidence": "The review does not flag hardcoded secrets, credentials, or sensitive data.",
+      "n_yes": 0,
+      "n_valid": 2,
+      "unanimous": true
+    },
+    {
+      "criterion_id": "S3",
+      "score": 0,
+      "evidence": "The review does not assess error handling and failure recovery.",
+      "n_yes": 0,
+      "n_valid": 2,
+      "unanimous": true
+    },
+    {
+      "criterion_id": "Q1",
+      "score": 1,
+      "evidence": "Scope: 'This PR introduces a new method `streamLoadedBuilds` to lazily iterate over loaded builds, aiming to optimize `getEstimatedDurationCandidates` by avoiding a full map copy.'",
+      "n_yes": 2,
+      "n_valid": 2,
+      "unanimous": true
+    },
+    {
+      "criterion_id": "Q2",
+      "score": 1,
+      "evidence": "The 'Evidence' section provides specific file paths and line numbers for each identified problem, e.g., '`core/src/main/java/jenkins/model/lazy/AbstractLazyLoadRunMap.java:260`'.",
+      "n_yes": 2,
+      "n_valid": 2,
+      "unanimous": true
+    },
+    {
+      "criterion_id": "Q3",
+      "score": 1,
+      "evidence": "The review clearly outlines 'Problems' and their 'Impact', which are critical issues, implicitly distinguishing them from minor suggestions (of which there are none).",
+      "n_yes": 2,
+      "n_valid": 2,
+      "unanimous": true
+    },
+    {
+      "criterion_id": "Q4",
+      "score": 0,
+      "evidence": "The review makes direct statements about identified problems and their impacts rather than asking clarifying questions.",
+      "n_yes": 0,
+      "n_valid": 2,
+      "unanimous": true
+    },
+    {
+      "criterion_id": "Q5",
+      "score": 1,
+      "evidence": "Impact: 'If `streamLoadedBuilds()` does not provide builds in reverse chronological order, `getEstimatedDurationCandidates()` will select arbitrary builds, leading to inaccurate or inconsistent duration estimations for queued jobs.' This explains the 'why' behind the problem's significance.",
+      "n_yes": 2,
+      "n_valid": 2,
+      "unanimous": true
+    }
+  ],
+  "per_judge": [
+    {
+      "model": "gemini:gemini-2.5-flash",
+      "scores": {
+        "F1": 1,
+        "F2": 1,
+        "F3": 1,
+        "F4": 1,
+        "T1": 0,
+        "T2": 0,
+        "T3": 1,
+        "R1": 0,
+        "R2": 1,
+        "R3": 0,
+        "M1": 1,
+        "M2": 0,
+        "M3": 1,
+        "C1": 0,
+        "C2": 1,
+        "P1": 1,
+        "P2": 0,
+        "S1": 0,
+        "S2": 0,
+        "S3": 0,
+        "Q1": 1,
+        "Q2": 1,
+        "Q3": 1,
+        "Q4": 0,
+        "Q5": 1
+      },
+      "evidence": {
+        "F1": "Problem 3 states: 'This means `getLoadedBuilds()` still performs a full copy of all loaded builds and eagerly unwraps all `BuildReference` objects, negating the \"avoid full map copy\" benefit for any other callers of `getLoadedBuilds()`.' This directly assesses if the change addresses its stated goal.",
+        "F2": "Problem 2: 'If `BuildReference::get()` returns a non-null value for an unloadable build (meaning it's currently loaded but eligible for GC), then `streamLoadedBuilds()` will include builds that the previous `getLoadedBuilds()` implementation would have excluded...'",
+        "F3": "Problem 1: 'The `streamLoadedBuilds()` method... does not guarantee any specific order... This directly breaks the logic of `getEstimatedDurationCandidates()`, which explicitly relies on builds being in reverse chronological order...'",
+        "F4": "Impact: 'Incorrect Duration Estimation: If `streamLoadedBuilds()` does not provide builds in reverse chronological order, `getEstimatedDurationCandidates()` will select arbitrary builds, leading to inaccurate or inconsistent duration estimations for queued jobs.' and 'Semantic Change in \"Loaded Builds\": Including unloadable builds in the stream could expose internal state... potentially leading to unexpected behavior in consumers...'",
+        "T1": "The review uses an existing test as evidence of a problem but does not ask about or discuss the need for new unit/integration tests.",
+        "T2": "The review identifies edge cases and failure scenarios but does not explicitly mention testing them.",
+        "T3": "Evidence: '`core/src/test/java/jenkins/model/lazy/AbstractLazyLoadRunMapTest.java:417` (Test `assertEquals(List.of(5, 3, 1), fromStream);` relies on non-guaranteed `HashMap` order)'",
+        "R1": "The review does not comment on code clarity, naming conventions, or function organization.",
+        "R2": "Problem 3: 'This means `getLoadedBuilds()` still performs a full copy of all loaded builds and eagerly unwraps all `BuildReference` objects, negating the \"avoid full map copy\" benefit for any other callers of `getLoadedBuilds()`.' This implies the current approach is unnecessarily complex given the stated goal.",
+        "R3": "The review points out a discrepancy in Javadoc regarding sorting but does not check if comments explain the 'why' behind decisions.",
+        "M1": "Impact: 'Semantic Change in \"Loaded Builds\": Including unloadable builds in the stream could expose internal state that was previously hidden or filtered...' This assesses how the change impacts the existing definition and handling of 'loaded builds' within the architecture.",
+        "M2": "The review does not flag if the PR scope is too large or should be split.",
+        "M3": "Evidence: '`core/src/main/java/jenkins/model/lazy/AbstractLazyLoadRunMap.java:257` (`streamLoadedBuilds()` Javadoc: \"sorted by newest first\")' - checks documentation for a public method.",
+        "C1": "The review does not check adherence to project style guides or coding conventions.",
+        "C2": "Problem 2 compares the new filter (`Objects::nonNull`) with the original filter (`!buildRef.isUnloadable()`), highlighting an inconsistency in how 'loaded builds' are handled.",
+        "P1": "Problem 3: 'This means `getLoadedBuilds()` still performs a full copy of all loaded builds and eagerly unwraps all `BuildReference` objects, negating the \"avoid full map copy\" benefit for any other callers of `getLoadedBuilds()`.' Also, 'Limited Performance Improvement' in Impact section.",
+        "P2": "The review identifies performance issues but does not explicitly ask about benchmarks or performance testing.",
+        "S1": "The review does not check for proper input validation or sanitization.",
+        "S2": "The review does not flag hardcoded secrets, credentials, or sensitive data.",
+        "S3": "The review does not assess error handling and failure recovery.",
+        "Q1": "Scope: 'This PR introduces a new method `streamLoadedBuilds` to lazily iterate over loaded builds, aiming to optimize `getEstimatedDurationCandidates` by avoiding a full map copy.'",
+        "Q2": "The 'Evidence' section provides specific file paths and line numbers for each identified problem, e.g., '`core/src/main/java/jenkins/model/lazy/AbstractLazyLoadRunMap.java:260`'.",
+        "Q3": "The review clearly outlines 'Problems' and their 'Impact', which are critical issues, implicitly distinguishing them from minor suggestions (of which there are none).",
+        "Q4": "The review makes direct statements about identified problems and their impacts rather than asking clarifying questions.",
+        "Q5": "Impact: 'If `streamLoadedBuilds()` does not provide builds in reverse chronological order, `getEstimatedDurationCandidates()` will select arbitrary builds, leading to inaccurate or inconsistent duration estimations for queued jobs.' This explains the 'why' behind the problem's significance."
+      },
+      "error": ""
+    },
+    {
+      "model": "anthropic:claude-sonnet-4-20250514",
+      "scores": {
+        "F1": 0,
+        "F2": 1,
+        "F3": 1,
+        "F4": 1,
+        "T1": 0,
+        "T2": 0,
+        "T3": 1,
+        "R1": 0,
+        "R2": 0,
+        "R3": 1,
+        "M1": 0,
+        "M2": 0,
+        "M3": 0,
+        "C1": 0,
+        "C2": 0,
+        "P1": 1,
+        "P2": 0,
+        "S1": 0,
+        "S2": 0,
+        "S3": 0,
+        "Q1": 1,
+        "Q2": 1,
+        "Q3": 1,
+        "Q4": 0,
+        "Q5": 1
+      },
+      "evidence": {
+        "F1": "Review does not verify that the change addresses the stated problem of optimizing getEstimatedDurationCandidates",
+        "F2": "Review identifies edge cases: 'If BuildReference::get() returns a non-null value for an unloadable build'",
+        "F3": "Review checks integration: 'This directly breaks the logic of getEstimatedDurationCandidates(), which explicitly relies on builds being in reverse chronological order'",
+        "F4": "Review warns of breaking changes: 'Semantic Change in \"Loaded Builds\"' and 'potentially leading to unexpected behavior in consumers'",
+        "T1": "Review does not ask about or discuss need for unit/integration tests",
+        "T2": "Review does not mention testing edge cases or error paths",
+        "T3": "Review references specific test: 'core/src/test/java/jenkins/model/lazy/AbstractLazyLoadRunMapTest.java:417'",
+        "R1": "Review does not comment on code clarity, naming conventions, or function organization",
+        "R2": "Review does not identify unnecessary complexity or suggest simplification",
+        "R3": "Review checks comments: 'streamLoadedBuilds() Javadoc: \"sorted by newest first\"' versus actual implementation",
+        "M1": "Review does not assess if change fits existing architecture or design patterns",
+        "M2": "Review does not flag if PR scope is too large or should be split",
+        "M3": "Review does not check if public APIs are properly documented",
+        "C1": "Review does not check adherence to project style guides or coding conventions",
+        "C2": "Review does not check if similar problems are solved consistently with existing patterns",
+        "P1": "Review identifies performance issues: 'Limited Performance Improvement' and 'getLoadedBuilds() Still Performs Full Map Copy'",
+        "P2": "Review does not ask about benchmarks or performance testing",
+        "S1": "Review does not check for proper input validation or sanitization",
+        "S2": "Review does not flag hardcoded secrets, credentials, or sensitive data",
+        "S3": "Review does not assess error handling and failure recovery",
+        "Q1": "Review provides summary: 'This PR introduces a new method streamLoadedBuilds to lazily iterate over loaded builds'",
+        "Q2": "Review anchors comments to specific locations: 'core/src/main/java/jenkins/model/lazy/AbstractLazyLoadRunMap.java:260'",
+        "Q3": "Review distinguishes issues by impact: 'Incorrect Duration Estimation' vs 'Limited Performance Improvement'",
+        "Q4": "Review makes direct statements rather than asking clarifying questions",
+        "Q5": "Review explains reasoning: 'This directly breaks the logic...which explicitly relies on builds being in reverse chronological order'"
+      },
+      "error": ""
+    }
+  ],
+  "evaluation_timestamp": "2026-05-14T17:41:47.205326Z"
+}

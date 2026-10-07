@@ -1,0 +1,43 @@
+\section{Automated Code-Review Comment Generation}
+\label{sec:sota-generation}
+
+The dominant framing treats review-comment generation as transduction from a code
+change to a natural-language comment. CodeReviewer pre-trains a model on a large
+multilingual corpus of review data and fine-tunes it for comment generation,
+quality estimation and code refinement~\cite{li2022codereviewer}; Tufano et al.\
+establish that pre-trained models outperform earlier task-specific
+sequence-to-sequence systems on the same
+task~\cite{tufano2022codereview}. Instruction-following general-purpose models
+subsequently made fine-tuning optional for many of these tasks, a shift documented
+in two systematic reviews of language models in software
+engineering~\cite{hou2023llmse,fan2023llmse}.
+
+The unresolved question in this line is what the model is given. In each of the
+systems above, the input is the change, usually a diff and sometimes the
+enclosing function. The model's knowledge of everything else comes from
+pre-training. Recent benchmark work has begun to treat this as the limiting
+factor rather than a detail of formatting. Hu et al.'s ContextCRBench is built
+specifically to test fine-grained review with enriched context and argues that
+textual context alone constrains what models can
+achieve~\cite{hu2025contextcrbench}. CodeFuse-CR-Bench evaluates review at
+repository level across seventy projects, on the premise that comprehensiveness
+cannot be assessed from a diff in
+isolation~\cite{guo2025codefusecrbench}. SWR-Bench assembles a thousand manually
+verified pull requests for real-world review-comment
+generation~\cite{zeng2025swrbench}.
+
+These benchmarks establish that context matters and supply data on which to
+measure it. What they do not do is hold the model, the prompt and the evaluation
+fixed while varying \emph{how} the context is selected. Enriching context and
+comparing selection strategies are different experiments, and it is the second that
+this thesis runs.
+
+Adjacent work targets other pull-request artefacts. Mariotto et al.\ score pull
+requests against engineering competencies at scale and show that prompt design
+substantially improves generated pull-request \emph{descriptions} relative to naive
+baselines~\cite{mariotto2025esem,mariotto2025}; the dataset assembled for that work
+is the origin of the pull requests used here, as
+Section~\ref{sec:dataset} records. The distinction is that descriptions summarise a
+change the author already understands, whereas review comments must reason about
+consequences the author may have missed. Out-of-diff context should therefore
+matter more for the latter.

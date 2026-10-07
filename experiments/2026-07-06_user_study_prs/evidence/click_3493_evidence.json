@@ -1,0 +1,91 @@
+{
+ "pr": {
+  "number": 3493,
+  "title": "Handle empty bytes in echo",
+  "body": "Previously, an empty byte string could cause an exception if `nl=True`.\r\n\r\nThis PR narrows the type scope of `out`, to `bytes() | bytearray() | str` and handles all cases exhaustively.\r\n\r\nWe also change from `typing.Any`, which effectively disables typing for a variable, to `object`, which is more restrictive. See  https://mypy.readthedocs.io/en/latest/dynamic_typing.html#any-vs-object for more.\r\n\r\nfixes #3487\r\n\r\n<!--\r\nEnsure each step in CONTRIBUTING.rst is complete, especially the following:\r\n\r\n- Add tests that demonstrate the correct behavior of the change. Tests\r\n  should fail without the change.\r\n- Add or update relevant docs, in the docs folder and in code.\r\n- Add an entry in CHANGES.rst summarizing the change and linking to the issue.\r\n- Add `.. versionchanged::` entries in any relevant code docs.\r\n-->\r\n",
+  "repo": "pallets/click",
+  "head_sha": "4d3db84b251518e97299a38a5ca4bab3d01873a2",
+  "merged_at": "2026-05-21T22:46:00Z"
+ },
+ "changed_files": [
+  {
+   "path": "CHANGES.rst",
+   "language": "other",
+   "added": 2,
+   "deleted": 0
+  },
+  {
+   "path": "src/click/utils.py",
+   "language": "python",
+   "added": 8,
+   "deleted": 8
+  },
+  {
+   "path": "tests/test_utils.py",
+   "language": "python",
+   "added": 5,
+   "deleted": 0
+  }
+ ],
+ "nearest_tests": [
+  {
+   "path": "tests/test_utils.py",
+   "relationship": "tests",
+   "source_file": "click.utils"
+  },
+  {
+   "path": "src/click/testing.py",
+   "relationship": "tests",
+   "source_file": "utils"
+  }
+ ],
+ "dependent_files": [
+  {
+   "path": "src/click/__init__.py",
+   "relationship": "imports",
+   "source_file": "utils"
+  },
+  {
+   "path": "src/click/core.py",
+   "relationship": "imports",
+   "source_file": "utils"
+  },
+  {
+   "path": "src/click/types.py",
+   "relationship": "imports",
+   "source_file": "utils"
+  },
+  {
+   "path": "src/click/termui.py",
+   "relationship": "imports",
+   "source_file": "utils"
+  },
+  {
+   "path": "src/click/exceptions.py",
+   "relationship": "imports",
+   "source_file": "utils"
+  },
+  {
+   "path": "src/click/shell_completion.py",
+   "relationship": "imports",
+   "source_file": "utils"
+  },
+  {
+   "path": "src/click/_termui_impl.py",
+   "relationship": "imports",
+   "source_file": "utils"
+  },
+  {
+   "path": "src/click/decorators.py",
+   "relationship": "imports",
+   "source_file": "utils"
+  }
+ ],
+ "diff_summary": "3 files changed",
+ "full_diff": "diff --git a/CHANGES.rst b/CHANGES.rst\nindex eb32cd87d..c64074013 100644\n--- a/CHANGES.rst\n+++ b/CHANGES.rst\n@@ -10,6 +10,8 @@ Unreleased\n -   Zsh completion scripts parse correctly on Windows. :issue:`3277`\n -   Shell completion of `Choice` `Enum` values produces a valid completion\n     result. :issue:`3015`\n+-   Fix empty byte-string handling in echo. :issue:`3487`\n+\n \n Version 8.4.0\n -------------\ndiff --git a/src/click/utils.py b/src/click/utils.py\nindex 223d6b8d7..67922b894 100644\n--- a/src/click/utils.py\n+++ b/src/click/utils.py\n@@ -232,7 +232,7 @@ def __iter__(self) -> cabc.Iterator[t.AnyStr]:\n \n \n def echo(\n-    message: t.Any | None = None,\n+    message: object = None,\n     file: t.IO[t.Any] | None = None,\n     nl: bool = True,\n     err: bool = False,\n@@ -287,14 +287,15 @@ def echo(\n         if file is None:\n             return\n \n-    # Convert non bytes/text into the native string type.\n-    if message is not None and not isinstance(message, (str, bytes, bytearray)):\n-        out: str | bytes | bytearray | None = str(message)\n-    else:\n-        out = message\n+    match message:\n+        case str() | bytes() | bytearray():\n+            out = message\n+        case None:\n+            out = \"\"\n+        case _:\n+            out = str(message)\n \n     if nl:\n-        out = out or \"\"\n         if isinstance(out, str):\n             out += \"\\n\"\n         else:\n@@ -310,7 +311,6 @@ def echo(\n     # would expect. Eg: you can write to StringIO for other cases.\n     if isinstance(out, (bytes, bytearray)):\n         binary_file = _find_binary_writer(file)\n-\n         if binary_file is not None:\n             file.flush()\n             binary_file.write(out)\ndiff --git a/tests/test_utils.py b/tests/test_utils.py\nindex a16493b2d..6dd0ede11 100644\n--- a/tests/test_utils.py\n+++ b/tests/test_utils.py\n@@ -8,6 +8,7 @@\n from decimal import Decimal\n from fractions import Fraction\n from functools import partial\n+from io import BytesIO\n from io import StringIO\n from unittest.mock import patch\n \n@@ -97,6 +98,10 @@ def test_echo_custom_file():\n     click.echo(\"hello\", file=f)\n     assert f.getvalue() == \"hello\\n\"\n \n+    b = BytesIO()\n+    click.echo(b\"\", b)\n+    assert b.getvalue() == b\"\\n\"\n+\n \n def test_echo_no_streams(monkeypatch, runner):\n     \"\"\"echo should not fail when stdout and stderr are None with pythonw on Windows.\"\"\"\n",
+ "metadata": {
+  "kg_builder": "ast_import_resolver",
+  "built": "2026-07-06",
+  "note": "AST ImportFrom/Import resolution at PR head SHA; same relation class as deployed Joern+grep pipeline"
+ }
+}

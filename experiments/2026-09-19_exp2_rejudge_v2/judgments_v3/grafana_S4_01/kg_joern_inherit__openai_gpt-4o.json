@@ -1,0 +1,66 @@
+{
+  "candidate_mentions": [
+    {
+      "basename_collision": false,
+      "end": 669,
+      "evidence_id": "M001",
+      "excerpt": "r test failures.\n\n## Evidence\n- `packages/grafana-data/src/events/types.ts:41`: The class `BusEventWithPayload` is renamed to `BusEventWithPayloadInternal`.\n- `packages/grafana-data/src/events/EventBus.test.ts`: This test file depends on the `BusEventWithPayload` class.\n- `packages/grafana-data/src/events/common.ts`: This file imports `BusEventWithPayload`.\n- `packages/grafana-data/src/types/legacyEvents.ts`: This file imports `BusEventWithPayload`.\n- `packages/gra",
+      "finding_passage_id": "P008",
+      "match_kind": "full_path",
+      "match_text": "packages/grafana-data/src/events/EventBus.test.ts",
+      "oracle_path": "packages/grafana-data/src/events/EventBus.test.ts",
+      "start": 620
+    },
+    {
+      "basename_collision": false,
+      "end": 776,
+      "evidence_id": "M002",
+      "excerpt": " renamed to `BusEventWithPayloadInternal`.\n- `packages/grafana-data/src/events/EventBus.test.ts`: This test file depends on the `BusEventWithPayload` class.\n- `packages/grafana-data/src/events/common.ts`: This file imports `BusEventWithPayload`.\n- `packages/grafana-data/src/types/legacyEvents.ts`: This file imports `BusEventWithPayload`.\n- `packages/grafana-data/src/types/logs.ts`: This file imports `BusEventWithPayload`.\n\n## Impact\n- If the renamed class is",
+      "finding_passage_id": "P009",
+      "match_kind": "full_path",
+      "match_text": "packages/grafana-data/src/events/common.ts",
+      "oracle_path": "packages/grafana-data/src/events/common.ts",
+      "start": 734
+    },
+    {
+      "basename_collision": false,
+      "end": 870,
+      "evidence_id": "M003",
+      "excerpt": "est.ts`: This test file depends on the `BusEventWithPayload` class.\n- `packages/grafana-data/src/events/common.ts`: This file imports `BusEventWithPayload`.\n- `packages/grafana-data/src/types/legacyEvents.ts`: This file imports `BusEventWithPayload`.\n- `packages/grafana-data/src/types/logs.ts`: This file imports `BusEventWithPayload`.\n\n## Impact\n- If the renamed class is used outside the intended internal scope, it could lead to breaking changes in other parts of",
+      "finding_passage_id": "P010",
+      "match_kind": "full_path",
+      "match_text": "packages/grafana-data/src/types/legacyEvents.ts",
+      "oracle_path": "packages/grafana-data/src/types/legacyEvents.ts",
+      "start": 823
+    },
+    {
+      "basename_collision": false,
+      "end": 956,
+      "evidence_id": "M004",
+      "excerpt": "rc/events/common.ts`: This file imports `BusEventWithPayload`.\n- `packages/grafana-data/src/types/legacyEvents.ts`: This file imports `BusEventWithPayload`.\n- `packages/grafana-data/src/types/logs.ts`: This file imports `BusEventWithPayload`.\n\n## Impact\n- If the renamed class is used outside the intended internal scope, it could lead to breaking changes in other parts of the codebase or in external projects that rely on this class.\n- Tests and dependent f",
+      "finding_passage_id": "P011",
+      "match_kind": "full_path",
+      "match_text": "packages/grafana-data/src/types/logs.ts",
+      "oracle_path": "packages/grafana-data/src/types/logs.ts",
+      "start": 917
+    }
+  ],
+  "causal_passage_id": "P017",
+  "decision_source": "llm_causal_adjudication",
+  "detected": true,
+  "evidence_id": "M001",
+  "executed_at_utc": "2026-09-19T15:10:24.844916+00:00",
+  "finding_passage_id": "P008",
+  "judge": "openai:gpt-4o",
+  "manifest_sha256": "5d4371a93d1b09f0491ecc12279f9f3ff5de23053b7a5e74650a749f58b472b0",
+  "model_alias": "openai:gpt-4o",
+  "model_snapshot": "unavailable-from-original-wrapper",
+  "original_verdict": true,
+  "prompt_sha256": "fb706555f0c166d20089f2ae8aad39863f26c2bbdfd01f9334e275d6bb66f712",
+  "reason_code": "specific_cross_file_link",
+  "response_wrapper": "bare",
+  "review_sha256": "c1c04abd3eace41d2797e7917b2dac2e946fc47100e665be09b20aadc2a09437",
+  "schema_sha256": "f70f714868ecd3d25508bb3e00b32ecbe6761b0ebc05f454ee10fa4d28efd013",
+  "schema_version": "exp2-adjudication-v3",
+  "system_sha256": "030b5e701c798b32afdabbbeb22db38f664db8c8fd8b862d2fcb98df63b6fb6b"
+}

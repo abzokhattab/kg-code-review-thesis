@@ -1,0 +1,44 @@
+{
+  "candidate_mentions": [
+    {
+      "basename_collision": false,
+      "end": 596,
+      "evidence_id": "M002",
+      "excerpt": "ests to accommodate the name change.\n\n## Evidence\n- `sklearn/linear_model/_linear_loss.py:36`: Class `LinearModelLoss` renamed to `LinearModelLossInternal`.\n- `sklearn/linear_model/_glm/glm.py`: This file depends on `LinearModelLoss` but shows no changes in the PR.\n- `sklearn/linear_model/_logistic.py`: This file also depends on `LinearModelLoss` but shows no changes in the PR.\n\n## Impact\nThe renaming of a class that is used in other modules withou",
+      "finding_passage_id": "P008",
+      "match_kind": "full_path",
+      "match_text": "sklearn/linear_model/_glm/glm.py",
+      "oracle_path": "sklearn/linear_model/_glm/glm.py",
+      "start": 564
+    },
+    {
+      "basename_collision": false,
+      "end": 706,
+      "evidence_id": "M003",
+      "excerpt": "odelLoss` renamed to `LinearModelLossInternal`.\n- `sklearn/linear_model/_glm/glm.py`: This file depends on `LinearModelLoss` but shows no changes in the PR.\n- `sklearn/linear_model/_logistic.py`: This file also depends on `LinearModelLoss` but shows no changes in the PR.\n\n## Impact\nThe renaming of a class that is used in other modules without updating those modules can lead to runtime errors due to unresolved references. This can break functionality",
+      "finding_passage_id": "P009",
+      "match_kind": "full_path",
+      "match_text": "sklearn/linear_model/_logistic.py",
+      "oracle_path": "sklearn/linear_model/_logistic.py",
+      "start": 673
+    }
+  ],
+  "causal_passage_id": "P011",
+  "decision_source": "llm_causal_adjudication",
+  "detected": true,
+  "evidence_id": "M003",
+  "executed_at_utc": "2026-09-19T15:09:17.735756+00:00",
+  "finding_passage_id": "P009",
+  "judge": "openai:gpt-4o-mini",
+  "manifest_sha256": "5d4371a93d1b09f0491ecc12279f9f3ff5de23053b7a5e74650a749f58b472b0",
+  "model_alias": "openai:gpt-4o-mini",
+  "model_snapshot": "unavailable-from-original-wrapper",
+  "original_verdict": true,
+  "prompt_sha256": "6458dcf9f853aac580033a44927448cd7eeae8d1a819e7414c20104de12751c0",
+  "reason_code": "specific_cross_file_link",
+  "response_wrapper": "bare",
+  "review_sha256": "711a1614f2aabab575752ca881eb34b6cd9c9ac9c794a393bd6a2c930a98838e",
+  "schema_sha256": "f70f714868ecd3d25508bb3e00b32ecbe6761b0ebc05f454ee10fa4d28efd013",
+  "schema_version": "exp2-adjudication-v3",
+  "system_sha256": "030b5e701c798b32afdabbbeb22db38f664db8c8fd8b862d2fcb98df63b6fb6b"
+}

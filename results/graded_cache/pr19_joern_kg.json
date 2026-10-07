@@ -1,0 +1,51 @@
+{
+  "pr_id": 19,
+  "mode": "joern_kg",
+  "mean_scores": {
+    "F3": 3.0,
+    "F4": 3.0,
+    "P1": 0.0,
+    "R2": 0.0,
+    "T3": 3.0
+  },
+  "mean_graded_total": 9.0,
+  "per_judge": [
+    {
+      "model": "gemini:gemini-2.5-flash",
+      "scores": {
+        "F3": 3,
+        "F4": 3,
+        "P1": 0,
+        "R2": 0,
+        "T3": 3
+      },
+      "evidence": {
+        "F3": "Names multiple specific callers or dependent components with file paths or function names, and explains the concrete integration risk for each: `hudson/Functions.java::tryGetIcon` and `hudson/Functions.java::tryGetIconPath` are known callers of `IconSet` methods, and would fail to resolve these now-removed icons.",
+        "F4": "Identifies multiple specific contract violations with file/function references and explains exactly what downstream behavior would change: The removal of `icon-folder-error`, `icon-text-error`, and `icon-text` registrations from `IconSet.java`... `hudson/Functions.java::tryGetIcon` and `hudson/Functions.java::tryGetIconPath`... would fail to resolve these now-removed icons. Any UI component or plugin that directly or indirectly... requests the removed icon classes... will no longer display the i",
+        "P1": "No mention of performance issues in the review.",
+        "R2": "No comment on complexity or code structure in the review.",
+        "T3": "Names multiple specific test file paths, references the exact test scenarios or functions within those files that need coverage, and explains what edge cases are currently missing: `test/src/test/java/hudson/model/DirectoryBrowserSupportTest.java`... Add specific assertions... to verify the `getIconName()` and `getIconClassName()` methods return the expected SVG names and classes for both readable and unreadable files/folders (e.g., `folder-delete.svg`, `icon-folder-delete`). `core/src/test/java"
+      },
+      "error": ""
+    },
+    {
+      "model": "gemini:gemini-2.5-pro",
+      "scores": {
+        "F3": 3,
+        "F4": 3,
+        "P1": 0,
+        "R2": 0,
+        "T3": 3
+      },
+      "evidence": {
+        "F3": "The review names multiple specific callers (`hudson/Functions.java::tryGetIcon` and `hudson/Functions.java::tryGetIconPath`) and dependent components ('third-party plugins'), providing file paths and function names, and explains the concrete integration risk ('would fail to resolve these now-removed icons').",
+        "F4": "The review identifies multiple specific contract violations with file references. It points out the removal of icon registrations in `IconSet.java:L329-L344` and the change of icon class/size in `dir.jelly:L42`. It explains exactly what downstream behavior would change for each ('will no longer display the intended icon', 'could cause layout shifts, misalignments').",
+        "P1": "The review does not mention performance.",
+        "R2": "The review does not comment on complexity or suggest simplification.",
+        "T3": "The review names multiple specific test file paths (`DirectoryBrowserSupportTest.java`, `IconSetTest.java`, `IconSetJenkins68805Test.java`), references the exact test scenarios ('verify the getIconName() and getIconClassName() methods'), and explains what edge cases are missing ('may not fully cover the new \"error\" icon states')."
+      },
+      "error": ""
+    }
+  ],
+  "timestamp": "2026-06-01T18:57:52.356761+00:00"
+}

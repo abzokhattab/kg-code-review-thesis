@@ -1,0 +1,221 @@
+{
+  "pr": {
+    "number": 33878,
+    "title": "Update to/from to y_pred/other in array API metric test",
+    "body": "#### Reference Issues/PRs\r\n<!--\r\nExample: Fixes #1234. See also #3456.\r\nPlease use keywords (e.g., Fixes) to create link to the issues or pull requests\r\nyou resolved, so that they will automatically be closed when your pull request\r\nis merged. See https://github.com/blog/1506-closing-issues-via-pull-requests\r\n-->\r\n\r\n\r\n#### What does this implement/fix? Explain your changes.\r\nFollowing on from #33525, as discussed in thread https://github.com/scikit-learn/scikit-learn/pull/33525#discussion_r2924536898\r\nAmends:\r\n`to_ns_and_device` -> `y_pred_ns_and_device` (as everything follows y_pred)\r\n`from_ns_and_device` -> `other_ns_and_device`\r\n\r\nthis makes it consistent with what is used in the common estimator tests\r\n\r\n#### AI usage disclosure\r\n<!--\r\nIf AI tools were involved in creating this PR, please check all boxes that apply\r\nbelow and make sure that you adhere to our Automated Contributions Policy:\r\nhttps://scikit-learn.org/dev/developers/contributing.html#automated-contributions-policy\r\n-->\r\nI used AI assistance for:\r\n- [ ] Code generation (e.g., when writing an implementation or fixing a bug)\r\n- [ ] Test/benchmark generation\r\n- [ ] Documentation (including examples)\r\n- [ ] Research and understanding\r\n\r\n\r\n#### Any other comments?\r\ncc @OmarManzoor @betatim (and @ogrisel just FYI)\r\n\r\n<!--\r\nThank you for your patience. Changes to scikit-learn require careful\r\nattention, but with limited maintainer time, not every contribution can be reviewed\r\nquickly.\r\nFor more information and tips on improving your pull request, see:\r\nhttps://scikit-learn.org/dev/faq.html#why-is-my-pull-request-not-getting-any-attention.\r\n\r\nThanks for contributing!\r\n-->\r\n",
+    "url": "https://github.com/scikit-learn/scikit-learn/pull/33878",
+    "repo": "scikit-learn/scikit-learn",
+    "base_branch": "main",
+    "head_branch": "tst_metric_name",
+    "merged_at": "2026-04-28T07:40:54Z",
+    "state": "MERGED"
+  },
+  "changed_files": [
+    {
+      "path": "sklearn/metrics/tests/test_common.py",
+      "language": "python",
+      "added": 17,
+      "deleted": 15
+    }
+  ],
+  "nearest_tests": [],
+  "dependent_files": [
+    {
+      "path": "sklearn/metrics/cluster/tests/test_common.py",
+      "relationship": "imports",
+      "source_file": "sklearn/metrics/tests/test_common.py"
+    },
+    {
+      "path": "sklearn/metrics/tests/test_ranking.py",
+      "relationship": "imports",
+      "source_file": "sklearn/metrics/tests/test_common.py"
+    },
+    {
+      "path": "sklearn/datasets/tests/test_california_housing.py",
+      "relationship": "imports",
+      "source_file": "sklearn/metrics/tests/test_common.py"
+    },
+    {
+      "path": "sklearn/datasets/tests/test_common.py",
+      "relationship": "imports",
+      "source_file": "sklearn/metrics/tests/test_common.py"
+    },
+    {
+      "path": "sklearn/datasets/tests/test_lfw.py",
+      "relationship": "imports",
+      "source_file": "sklearn/metrics/tests/test_common.py"
+    },
+    {
+      "path": "sklearn/datasets/tests/test_rcv1.py",
+      "relationship": "imports",
+      "source_file": "sklearn/metrics/tests/test_common.py"
+    },
+    {
+      "path": "sklearn/datasets/tests/test_kddcup99.py",
+      "relationship": "imports",
+      "source_file": "sklearn/metrics/tests/test_common.py"
+    },
+    {
+      "path": "sklearn/datasets/tests/test_covtype.py",
+      "relationship": "imports",
+      "source_file": "sklearn/metrics/tests/test_common.py"
+    },
+    {
+      "path": "sklearn/datasets/tests/test_20news.py",
+      "relationship": "imports",
+      "source_file": "sklearn/metrics/tests/test_common.py"
+    },
+    {
+      "path": "sklearn/datasets/tests/test_base.py",
+      "relationship": "imports",
+      "source_file": "sklearn/metrics/tests/test_common.py"
+    }
+  ],
+  "diff_summary": "1 files changed",
+  "full_diff": "diff --git a/sklearn/metrics/tests/test_common.py b/sklearn/metrics/tests/test_common.py\nindex 3caf897099b0e..4b37dea49cf32 100644\n--- a/sklearn/metrics/tests/test_common.py\n+++ b/sklearn/metrics/tests/test_common.py\n@@ -2535,7 +2535,7 @@ def _check_output(out_np, out_xp, xp_to, y2_xp):\n \n \n @pytest.mark.parametrize(\n-    \"from_ns_and_device, to_ns_and_device\",\n+    \"other_ns_and_device, y_pred_ns_and_device\",\n     [\n         pytest.param(*args[:2], id=args[2])\n         for args in yield_mixed_namespace_input_permutations()\n@@ -2543,7 +2543,7 @@ def _check_output(out_np, out_xp, xp_to, y2_xp):\n )\n @pytest.mark.parametrize(\"metric_name\", sorted(METRICS_SUPPORTING_MIXED_NAMESPACE))\n def test_mixed_array_api_namespace_input_compliance(\n-    metric_name, from_ns_and_device, to_ns_and_device\n+    metric_name, other_ns_and_device, y_pred_ns_and_device\n ):\n     \"\"\"Check `y_true` and `sample_weight` follows `y_pred` for mixed namespace inputs.\n \n@@ -2551,15 +2551,15 @@ def test_mixed_array_api_namespace_input_compliance(\n     If the output is a float, checks that both all-numpy and mixed-type inputs return\n     a float.\n     If output is an array, checks it is of the same namespace and device as `y_pred`\n-    (`to_ns_and_device`).\n+    (`y_pred_ns_and_device`).\n     If the output is a tuple, checks that each element, whether float or array,\n     is correct, as detailed above.\n     \"\"\"\n-    xp_to, device_to = _array_api_for_tests(\n-        to_ns_and_device.xp, device_name=to_ns_and_device.device\n+    xp_y_pred, device_y_pred = _array_api_for_tests(\n+        y_pred_ns_and_device.xp, device_name=y_pred_ns_and_device.device\n     )\n-    xp_from, device_from = _array_api_for_tests(\n-        from_ns_and_device.xp, device_name=from_ns_and_device.device\n+    xp_other, device_other = _array_api_for_tests(\n+        other_ns_and_device.xp, device_name=other_ns_and_device.device\n     )\n \n     metric = ALL_METRICS[metric_name]\n@@ -2599,28 +2599,30 @@ def _get_dtype(data, xp, device):\n         for data_case in data_cases:\n             y1, y2 = data_all[data_case]\n \n-            dtype = _get_dtype(y1, xp_from, device_from)\n-            y1_xp = xp_from.asarray(y1, device=device_from, dtype=dtype)\n+            dtype = _get_dtype(y1, xp_other, device_other)\n+            y1_xp = xp_other.asarray(y1, device=device_other, dtype=dtype)\n \n             metric_kwargs_xp = metric_kwargs_np = {}\n             if metric_name not in METRICS_WITHOUT_SAMPLE_WEIGHT:\n-                # use `from_ns_and_device` for `sample_weight` as well\n+                # use `other_ns_and_device` for `sample_weight` as well\n                 sample_weight_np = np.array(sample_weight)\n                 metric_kwargs_np = {\"sample_weight\": sample_weight_np}\n-                sample_weight_xp = xp_from.asarray(sample_weight_np, device=device_from)\n+                sample_weight_xp = xp_other.asarray(\n+                    sample_weight_np, device=device_other\n+                )\n                 metric_kwargs_xp = {\"sample_weight\": sample_weight_xp}\n \n-            dtype = _get_dtype(y2, xp_to, device_to)\n-            y2_xp = xp_to.asarray(y2, device=device_to, dtype=dtype)\n+            dtype = _get_dtype(y2, xp_y_pred, device_y_pred)\n+            y2_xp = xp_y_pred.asarray(y2, device=device_y_pred, dtype=dtype)\n \n             metric_xp = metric(y1_xp, y2_xp, **metric_kwargs_xp)\n             metric_np = metric(y1, y2, **metric_kwargs_np)\n \n             if isinstance(metric_np, Tuple):\n                 for out_np, out_xp in zip(metric_np, metric_xp):\n-                    _check_output(out_np, out_xp, xp_to, y2_xp)\n+                    _check_output(out_np, out_xp, xp_y_pred, y2_xp)\n             else:\n-                _check_output(metric_np, metric_xp, xp_to, y2_xp)\n+                _check_output(metric_np, metric_xp, xp_y_pred, y2_xp)\n \n \n # Check thresholded classification metrics, minus multilabel ranking metrics\n",
+  "metadata": {
+    "v2_fetcher_version": 1,
+    "v2_fetched_at_unix": 1777987720,
+    "v2_diff_cap_bytes": 50000,
+    "v2_body_cap_bytes": 8000,
+    "v2_diff_truncated": false,
+    "v2_raw_diff_chars": 3921,
+    "v2_raw_body_chars": 1660,
+    "v2_rag_source": "fresh_for_v2_25pr_expansion",
+    "v2_rag_chunks_copied": 8
+  },
+  "similar_chunks": [
+    {
+      "file": "sklearn/metrics/cluster/tests/test_common.py",
+      "start_line": 1,
+      "end_line": 61,
+      "similarity": 0.7618,
+      "related_to": "sklearn/metrics/tests/test_common.py",
+      "content_preview": "from functools import partial\nfrom itertools import chain\n\nimport numpy as np\nimport pytest\n\nfrom sklearn.metrics.cluster import (\n    adjusted_mutual_info_score,\n    adjusted_rand_score,\n    calinski_harabasz_score,\n    completeness_score,\n    davies_bouldin_score,\n    fowlkes_mallows_score,\n    homogeneity_score,\n    mutual_info_score,\n    normalized_mutual_info_score,\n    rand_score,\n    silhouette_score,\n    v_measure_score,\n)\nfrom sklearn.metrics.tests.test_common import check_array_api_metric\nfrom sklearn.utils._array_api import (\n    _get_namespace_device_dtype_ids,\n    yield_namespace_device_dtype_combinations,\n)\nfrom sklearn.utils._testing import assert_allclose\n\n# Dictionaries of metrics\n# ------------------------\n# The goal of having those dictionaries is to have an easy way to "
+    },
+    {
+      "file": "sklearn/metrics/tests/test_classification.py",
+      "start_line": 1,
+      "end_line": 72,
+      "similarity": 0.709,
+      "related_to": "sklearn/metrics/tests/test_common.py",
+      "content_preview": "import re\nimport warnings\nfrom functools import partial\nfrom itertools import chain, permutations, product\n\nimport numpy as np\nimport pytest\nfrom scipy import linalg, sparse\nfrom scipy.spatial.distance import hamming as sp_hamming\nfrom scipy.stats import bernoulli\n\nfrom sklearn import datasets, svm\nfrom sklearn.base import config_context\nfrom sklearn.datasets import make_multilabel_classification\nfrom sklearn.exceptions import UndefinedMetricWarning\nfrom sklearn.metrics import (\n    accuracy_score,\n    average_precision_score,\n    balanced_accuracy_score,\n    brier_score_loss,\n    class_likelihood_ratios,\n    classification_report,\n    cohen_kappa_score,\n    confusion_matrix,\n    f1_score,\n    fbeta_score,\n    hamming_loss,\n    hinge_loss,\n    jaccard_score,\n    log_loss,\n    make_scorer,\n"
+    },
+    {
+      "file": "sklearn/metrics/_classification.py",
+      "start_line": 1,
+      "end_line": 76,
+      "similarity": 0.6645,
+      "related_to": "sklearn/metrics/tests/test_common.py",
+      "content_preview": "\"\"\"Metrics to assess performance on classification task given class prediction.\n\nFunctions named as ``*_score`` return a scalar value to maximize: the higher\nthe better.\n\nFunction named as ``*_error`` or ``*_loss`` return a scalar value to minimize:\nthe lower the better.\n\"\"\"\n\n# Authors: The scikit-learn developers\n# SPDX-License-Identifier: BSD-3-Clause\n\nimport warnings\nfrom contextlib import nullcontext\nfrom math import sqrt\nfrom numbers import Integral, Real\n\nimport numpy as np\nfrom scipy.sparse import coo_matrix, csr_matrix, issparse\n\nfrom sklearn.exceptions import UndefinedMetricWarning\nfrom sklearn.preprocessing import LabelBinarizer, LabelEncoder\nfrom sklearn.utils import (\n    assert_all_finite,\n    check_array,\n    check_consistent_length,\n    check_scalar,\n    column_or_1d,\n)\nfrom"
+    },
+    {
+      "file": "sklearn/metrics/tests/test_pairwise_distances_reduction.py",
+      "start_line": 1,
+      "end_line": 77,
+      "similarity": 0.6439,
+      "related_to": "sklearn/metrics/tests/test_common.py",
+      "content_preview": "import itertools\nimport re\nimport warnings\nfrom functools import partial\n\nimport numpy as np\nimport pytest\nfrom scipy.spatial.distance import cdist\n\nfrom sklearn.metrics import euclidean_distances, pairwise_distances\nfrom sklearn.metrics._pairwise_distances_reduction import (\n    ArgKmin,\n    ArgKminClassMode,\n    BaseDistancesReductionDispatcher,\n    RadiusNeighbors,\n    RadiusNeighborsClassMode,\n    sqeuclidean_row_norms,\n)\nfrom sklearn.utils._testing import (\n    assert_allclose,\n    assert_array_equal,\n    create_memmap_backed_data,\n)\nfrom sklearn.utils.fixes import CSR_CONTAINERS\nfrom sklearn.utils.parallel import _get_threadpool_controller\n\n# Common supported metric between scipy.spatial.distance.cdist\n# and BaseDistanceReductionDispatcher.\n# This allows constructing tests to check c"
+    },
+    {
+      "file": "sklearn/metrics/cluster/tests/test_supervised.py",
+      "start_line": 1,
+      "end_line": 68,
+      "similarity": 0.6433,
+      "related_to": "sklearn/metrics/tests/test_common.py",
+      "content_preview": "import warnings\n\nimport numpy as np\nimport pytest\nfrom numpy.testing import assert_allclose, assert_array_almost_equal, assert_array_equal\n\nfrom sklearn.base import config_context\nfrom sklearn.metrics.cluster import (\n    adjusted_mutual_info_score,\n    adjusted_rand_score,\n    completeness_score,\n    contingency_matrix,\n    expected_mutual_information,\n    fowlkes_mallows_score,\n    homogeneity_completeness_v_measure,\n    homogeneity_score,\n    mutual_info_score,\n    normalized_mutual_info_score,\n    pair_confusion_matrix,\n    rand_score,\n    v_measure_score,\n)\nfrom sklearn.metrics.cluster._supervised import (\n    _entropy,\n    _generalized_average,\n    check_clusterings,\n    entropy,\n)\nfrom sklearn.utils import assert_all_finite\nfrom sklearn.utils._array_api import (\n    _get_namespace_d"
+    },
+    {
+      "file": "sklearn/metrics/tests/test_dist_metrics.py",
+      "start_line": 305,
+      "end_line": 374,
+      "similarity": 0.6297,
+      "related_to": "sklearn/metrics/tests/test_common.py",
+      "content_preview": "\n    D_sklearn = haversine.pairwise(X_csr, Y_csr)\n    assert D_sklearn.flags.c_contiguous\n    assert_allclose(D_sklearn, D_reference)\n\n    D_sklearn = haversine.pairwise(X_csr, Y)\n    assert D_sklearn.flags.c_contiguous\n    assert_allclose(D_sklearn, D_reference)\n\n    D_sklearn = haversine.pairwise(X, Y_csr)\n    assert D_sklearn.flags.c_contiguous\n    assert_allclose(D_sklearn, D_reference)\n\n\ndef test_pyfunc_metric():\n    X = np.random.random((10, 3))\n\n    euclidean = DistanceMetric.get_metric(\"euclidean\")\n    pyfunc = DistanceMetric.get_metric(\"pyfunc\", func=dist_func, p=2)\n\n    # Check if both callable metric and predefined metric initialized\n    # DistanceMetric object is picklable\n    euclidean_pkl = pickle.loads(pickle.dumps(euclidean))\n    pyfunc_pkl = pickle.loads(pickle.dumps(pyfun"
+    },
+    {
+      "file": "sklearn/metrics/cluster/tests/test_common.py",
+      "start_line": 206,
+      "end_line": 274,
+      "similarity": 0.627,
+      "related_to": "sklearn/metrics/tests/test_common.py",
+      "content_preview": "        invalids = [\n            ([0, 1], [np.inf, np.inf]),\n            ([0, 1], [np.nan, np.nan]),\n            ([0, 1], [np.nan, np.inf]),\n        ]\n    else:\n        X = np.random.randint(10, size=(2, 10))\n        invalids = [(X, [np.inf, np.inf]), (X, [np.nan, np.nan]), (X, [np.nan, np.inf])]\n    with pytest.raises(ValueError, match=r\"contains (NaN|infinity)\"):\n        for args in invalids:\n            metric_func(*args)\n\n\n@pytest.mark.parametrize(\"name\", chain(SUPERVISED_METRICS, UNSUPERVISED_METRICS))\ndef test_returned_value_consistency(name):\n    \"\"\"Ensure that the returned values of all metrics are consistent.\n\n    It can only be a float. It should not be a numpy float64 or float32.\n    \"\"\"\n\n    rng = np.random.RandomState(0)\n    X = rng.randint(10, size=(20, 10))\n    labels_true ="
+    },
+    {
+      "file": "sklearn/metrics/tests/test_pairwise.py",
+      "start_line": 444,
+      "end_line": 501,
+      "similarity": 0.6249,
+      "related_to": "sklearn/metrics/tests/test_common.py",
+      "content_preview": "x, y: 5)[0, 0] == 5\n\n\n# Test with all metrics that should be in PAIRWISE_KERNEL_FUNCTIONS.\n@pytest.mark.parametrize(\n    \"metric\",\n    [\"rbf\", \"laplacian\", \"sigmoid\", \"polynomial\", \"linear\", \"chi2\", \"additive_chi2\"],\n)\n@pytest.mark.parametrize(\"csr_container\", CSR_CONTAINERS)\ndef test_pairwise_kernels(metric, csr_container):\n    # Test the pairwise_kernels helper function.\n\n    rng = np.random.RandomState(0)\n    X = rng.random_sample((5, 4))\n    Y = rng.random_sample((2, 4))\n    function = PAIRWISE_KERNEL_FUNCTIONS[metric]\n    # Test with Y=None\n    K1 = pairwise_kernels(X, metric=metric)\n    K2 = function(X)\n    assert_allclose(K1, K2)\n    # Test with Y=Y\n    K1 = pairwise_kernels(X, Y=Y, metric=metric)\n    K2 = function(X, Y=Y)\n    assert_allclose(K1, K2)\n    # Test with tuples as X and "
+    }
+  ],
+  "rag_evidence": {
+    "similar_code": [
+      {
+        "file": "sklearn/metrics/cluster/tests/test_common.py",
+        "start_line": 1,
+        "end_line": 61,
+        "similarity": 0.7618,
+        "related_to": "sklearn/metrics/tests/test_common.py",
+        "content_preview": "from functools import partial\nfrom itertools import chain\n\nimport numpy as np\nimport pytest\n\nfrom sklearn.metrics.cluster import (\n    adjusted_mutual_info_score,\n    adjusted_rand_score,\n    calinski_harabasz_score,\n    completeness_score,\n    davies_bouldin_score,\n    fowlkes_mallows_score,\n    homogeneity_score,\n    mutual_info_score,\n    normalized_mutual_info_score,\n    rand_score,\n    silhouette_score,\n    v_measure_score,\n)\nfrom sklearn.metrics.tests.test_common import check_array_api_metric\nfrom sklearn.utils._array_api import (\n    _get_namespace_device_dtype_ids,\n    yield_namespace_device_dtype_combinations,\n)\nfrom sklearn.utils._testing import assert_allclose\n\n# Dictionaries of metrics\n# ------------------------\n# The goal of having those dictionaries is to have an easy way to "
+      },
+      {
+        "file": "sklearn/metrics/tests/test_classification.py",
+        "start_line": 1,
+        "end_line": 72,
+        "similarity": 0.709,
+        "related_to": "sklearn/metrics/tests/test_common.py",
+        "content_preview": "import re\nimport warnings\nfrom functools import partial\nfrom itertools import chain, permutations, product\n\nimport numpy as np\nimport pytest\nfrom scipy import linalg, sparse\nfrom scipy.spatial.distance import hamming as sp_hamming\nfrom scipy.stats import bernoulli\n\nfrom sklearn import datasets, svm\nfrom sklearn.base import config_context\nfrom sklearn.datasets import make_multilabel_classification\nfrom sklearn.exceptions import UndefinedMetricWarning\nfrom sklearn.metrics import (\n    accuracy_score,\n    average_precision_score,\n    balanced_accuracy_score,\n    brier_score_loss,\n    class_likelihood_ratios,\n    classification_report,\n    cohen_kappa_score,\n    confusion_matrix,\n    f1_score,\n    fbeta_score,\n    hamming_loss,\n    hinge_loss,\n    jaccard_score,\n    log_loss,\n    make_scorer,\n"
+      },
+      {
+        "file": "sklearn/metrics/_classification.py",
+        "start_line": 1,
+        "end_line": 76,
+        "similarity": 0.6645,
+        "related_to": "sklearn/metrics/tests/test_common.py",
+        "content_preview": "\"\"\"Metrics to assess performance on classification task given class prediction.\n\nFunctions named as ``*_score`` return a scalar value to maximize: the higher\nthe better.\n\nFunction named as ``*_error`` or ``*_loss`` return a scalar value to minimize:\nthe lower the better.\n\"\"\"\n\n# Authors: The scikit-learn developers\n# SPDX-License-Identifier: BSD-3-Clause\n\nimport warnings\nfrom contextlib import nullcontext\nfrom math import sqrt\nfrom numbers import Integral, Real\n\nimport numpy as np\nfrom scipy.sparse import coo_matrix, csr_matrix, issparse\n\nfrom sklearn.exceptions import UndefinedMetricWarning\nfrom sklearn.preprocessing import LabelBinarizer, LabelEncoder\nfrom sklearn.utils import (\n    assert_all_finite,\n    check_array,\n    check_consistent_length,\n    check_scalar,\n    column_or_1d,\n)\nfrom"
+      },
+      {
+        "file": "sklearn/metrics/tests/test_pairwise_distances_reduction.py",
+        "start_line": 1,
+        "end_line": 77,
+        "similarity": 0.6439,
+        "related_to": "sklearn/metrics/tests/test_common.py",
+        "content_preview": "import itertools\nimport re\nimport warnings\nfrom functools import partial\n\nimport numpy as np\nimport pytest\nfrom scipy.spatial.distance import cdist\n\nfrom sklearn.metrics import euclidean_distances, pairwise_distances\nfrom sklearn.metrics._pairwise_distances_reduction import (\n    ArgKmin,\n    ArgKminClassMode,\n    BaseDistancesReductionDispatcher,\n    RadiusNeighbors,\n    RadiusNeighborsClassMode,\n    sqeuclidean_row_norms,\n)\nfrom sklearn.utils._testing import (\n    assert_allclose,\n    assert_array_equal,\n    create_memmap_backed_data,\n)\nfrom sklearn.utils.fixes import CSR_CONTAINERS\nfrom sklearn.utils.parallel import _get_threadpool_controller\n\n# Common supported metric between scipy.spatial.distance.cdist\n# and BaseDistanceReductionDispatcher.\n# This allows constructing tests to check c"
+      },
+      {
+        "file": "sklearn/metrics/cluster/tests/test_supervised.py",
+        "start_line": 1,
+        "end_line": 68,
+        "similarity": 0.6433,
+        "related_to": "sklearn/metrics/tests/test_common.py",
+        "content_preview": "import warnings\n\nimport numpy as np\nimport pytest\nfrom numpy.testing import assert_allclose, assert_array_almost_equal, assert_array_equal\n\nfrom sklearn.base import config_context\nfrom sklearn.metrics.cluster import (\n    adjusted_mutual_info_score,\n    adjusted_rand_score,\n    completeness_score,\n    contingency_matrix,\n    expected_mutual_information,\n    fowlkes_mallows_score,\n    homogeneity_completeness_v_measure,\n    homogeneity_score,\n    mutual_info_score,\n    normalized_mutual_info_score,\n    pair_confusion_matrix,\n    rand_score,\n    v_measure_score,\n)\nfrom sklearn.metrics.cluster._supervised import (\n    _entropy,\n    _generalized_average,\n    check_clusterings,\n    entropy,\n)\nfrom sklearn.utils import assert_all_finite\nfrom sklearn.utils._array_api import (\n    _get_namespace_d"
+      },
+      {
+        "file": "sklearn/metrics/tests/test_dist_metrics.py",
+        "start_line": 305,
+        "end_line": 374,
+        "similarity": 0.6297,
+        "related_to": "sklearn/metrics/tests/test_common.py",
+        "content_preview": "\n    D_sklearn = haversine.pairwise(X_csr, Y_csr)\n    assert D_sklearn.flags.c_contiguous\n    assert_allclose(D_sklearn, D_reference)\n\n    D_sklearn = haversine.pairwise(X_csr, Y)\n    assert D_sklearn.flags.c_contiguous\n    assert_allclose(D_sklearn, D_reference)\n\n    D_sklearn = haversine.pairwise(X, Y_csr)\n    assert D_sklearn.flags.c_contiguous\n    assert_allclose(D_sklearn, D_reference)\n\n\ndef test_pyfunc_metric():\n    X = np.random.random((10, 3))\n\n    euclidean = DistanceMetric.get_metric(\"euclidean\")\n    pyfunc = DistanceMetric.get_metric(\"pyfunc\", func=dist_func, p=2)\n\n    # Check if both callable metric and predefined metric initialized\n    # DistanceMetric object is picklable\n    euclidean_pkl = pickle.loads(pickle.dumps(euclidean))\n    pyfunc_pkl = pickle.loads(pickle.dumps(pyfun"
+      },
+      {
+        "file": "sklearn/metrics/cluster/tests/test_common.py",
+        "start_line": 206,
+        "end_line": 274,
+        "similarity": 0.627,
+        "related_to": "sklearn/metrics/tests/test_common.py",
+        "content_preview": "        invalids = [\n            ([0, 1], [np.inf, np.inf]),\n            ([0, 1], [np.nan, np.nan]),\n            ([0, 1], [np.nan, np.inf]),\n        ]\n    else:\n        X = np.random.randint(10, size=(2, 10))\n        invalids = [(X, [np.inf, np.inf]), (X, [np.nan, np.nan]), (X, [np.nan, np.inf])]\n    with pytest.raises(ValueError, match=r\"contains (NaN|infinity)\"):\n        for args in invalids:\n            metric_func(*args)\n\n\n@pytest.mark.parametrize(\"name\", chain(SUPERVISED_METRICS, UNSUPERVISED_METRICS))\ndef test_returned_value_consistency(name):\n    \"\"\"Ensure that the returned values of all metrics are consistent.\n\n    It can only be a float. It should not be a numpy float64 or float32.\n    \"\"\"\n\n    rng = np.random.RandomState(0)\n    X = rng.randint(10, size=(20, 10))\n    labels_true ="
+      },
+      {
+        "file": "sklearn/metrics/tests/test_pairwise.py",
+        "start_line": 444,
+        "end_line": 501,
+        "similarity": 0.6249,
+        "related_to": "sklearn/metrics/tests/test_common.py",
+        "content_preview": "x, y: 5)[0, 0] == 5\n\n\n# Test with all metrics that should be in PAIRWISE_KERNEL_FUNCTIONS.\n@pytest.mark.parametrize(\n    \"metric\",\n    [\"rbf\", \"laplacian\", \"sigmoid\", \"polynomial\", \"linear\", \"chi2\", \"additive_chi2\"],\n)\n@pytest.mark.parametrize(\"csr_container\", CSR_CONTAINERS)\ndef test_pairwise_kernels(metric, csr_container):\n    # Test the pairwise_kernels helper function.\n\n    rng = np.random.RandomState(0)\n    X = rng.random_sample((5, 4))\n    Y = rng.random_sample((2, 4))\n    function = PAIRWISE_KERNEL_FUNCTIONS[metric]\n    # Test with Y=None\n    K1 = pairwise_kernels(X, metric=metric)\n    K2 = function(X)\n    assert_allclose(K1, K2)\n    # Test with Y=Y\n    K1 = pairwise_kernels(X, Y=Y, metric=metric)\n    K2 = function(X, Y=Y)\n    assert_allclose(K1, K2)\n    # Test with tuples as X and "
+      }
+    ]
+  }
+}

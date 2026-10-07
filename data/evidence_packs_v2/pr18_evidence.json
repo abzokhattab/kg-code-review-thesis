@@ -1,0 +1,323 @@
+{
+  "pr": {
+    "number": 9002,
+    "title": "Further reduce usages of `StringUtils`",
+    "body": "Like https://github.com/jenkinsci/jenkins/pull/6270 but for `StringUtils#capitalize` and `StringUtils#uncapitalize`. Reduce usages of Commons Lang 2 in hopes that we may eventually be able to remove this outdated library from core.\r\n\r\n- In `core/src/main/` I rewrote this to use standard Java Platform functionality. Note the use of `toTitleCase` rather than `toUpperCase` to preserve existing behavior with e.g. [U+01C8](https://www.fileformat.info/info/unicode/char/01c8/index.htm). I chose to be as defensive as possible with the input to maintain existing behavior.\r\n- In `core/src/test/` we could depend on Commons Lang 3 but it seemed overkill to pull in a new dependency just for this one case, so I treated this the same as `core/src/main/`. Here the code could be simpler because in a test we don't have to be as defensive about the input.\r\n- In `test/src/test/` we already pull in Commons Lang 3 so I just switched to that.\r\n\r\n### Testing done\r\n\r\n`mvn clean verify -Dtest=hudson.PluginWrapperTest,hudson.cli.DisablePluginCommandTest,hudson.security.HudsonPrivateSecurityRealmTest,jenkins.security.apitoken.LegacyApiTokenAdministrativeMonitorTest,org.kohsuke.stapler.BindTest,hudson.util.FormValidationTest,hudson.model.DescriptorTest,jenkins.diagnostics.RootUrlNotSetMonitorTest`\r\n\r\n### Proposed changelog entries\r\n\r\nN/A\r\n\r\n### Proposed upgrade guidelines\r\n\r\nN/A\r\n\r\n```[tasklist]\r\n### Submitter checklist\r\n- [ ] The Jira issue, if it exists, is well-described.\r\n- [ ] The changelog entries and upgrade guidelines are appropriate for the audience affected by the change (users or developers, depending on the change) and are in the imperative mood (see [examples](https://github.com/jenkins-infra/jenkins.io/blob/master/content/_data/changelogs/weekly.yml)). Fill in the **Proposed upgrade guidelines** section only if there are breaking changes or changes that may require extra steps from users during upgrade.\r\n- [ ] There is automated testing or an explanation as to why this change has no tests.\r\n- [ ] New public classes, fields, and methods are annotated with `@Restricted` or have `@since TODO` Javadocs, as appropriate.\r\n- [ ] New deprecations are annotated with `@Deprecated(since = \"TODO\")` or `@Deprecated(forRemoval = true, since = \"TODO\")`, if applicable.\r\n- [ ] New or substantially changed JavaScript is not defined inline and does not call `eval` to ease future introduction of Content Security Policy (CSP) directives (see [documentation](https://www.jenkins.io/doc/developer/security/csp/)).\r\n- [ ] For dependency updates, there are links to external changelogs and, if possible, full differentials.\r\n- [ ] For new APIs and extension points, there is a link to at least one consumer.\r\n```\r\n\r\n### Desired reviewers\r\n\r\n@mention\r\n\r\n<!-- Comment:\r\nIf you need an accelerated review process by the community (e.g., for critical bugs), mention @jenkinsci/core-pr-reviewers.\r\n-->\r\n\r\nBefore the changes are marked as `ready-for-merge`:\r\n\r\n```[tasklist]\r\n### Maintainer checklist\r\n- [ ] There are at least two (2) approvals for the pull request and no outstanding requests for change.\r\n- [ ] Conversations in the pull request are over, or it is explicit that a reviewer is not blocking the change.\r\n- [ ] Changelog entries in the pull request title and/or **Proposed changelog entries** are accurate, human-readable, and in the imperative mood.\r\n- [ ] Proper changelog labels are set so that the changelog can be generated automatically.\r\n- [ ] If the change needs additional upgrade steps from users, the `upgrade-guide-needed` label is set and there is a **Proposed upgrade guidelines** section in the pull request title (see [example](https://github.com/jenkinsci/jenkins/pull/4387)).\r\n- [ ] If it would make sense to backport the change to LTS, a Jira issue must exist, be a _Bug_ or _Improvement_, and be labeled as `lts-candidate` to be considered (see [query](https://issues.jenkins.io/issues/?filter=12146)).\r\n```\r\n",
+    "url": "https://github.com/jenkinsci/jenkins/pull/9002",
+    "repo": "jenkinsci/jenkins",
+    "base_branch": "master",
+    "head_branch": "capitalize",
+    "merged_at": "2024-03-02T10:36:43Z",
+    "state": "MERGED"
+  },
+  "changed_files": [
+    {
+      "path": "core/src/main/java/hudson/model/Descriptor.java",
+      "language": "java",
+      "added": 2,
+      "deleted": 3
+    },
+    {
+      "path": "core/src/main/java/hudson/util/FormValidation.java",
+      "language": "java",
+      "added": 1,
+      "deleted": 2
+    },
+    {
+      "path": "core/src/test/java/hudson/PluginWrapperTest.java",
+      "language": "java",
+      "added": 3,
+      "deleted": 3
+    },
+    {
+      "path": "test/src/test/java/hudson/cli/DisablePluginCommandTest.java",
+      "language": "java",
+      "added": 1,
+      "deleted": 1
+    },
+    {
+      "path": "test/src/test/java/hudson/security/HudsonPrivateSecurityRealmTest.java",
+      "language": "java",
+      "added": 1,
+      "deleted": 1
+    },
+    {
+      "path": "test/src/test/java/jenkins/security/apitoken/LegacyApiTokenAdministrativeMonitorTest.java",
+      "language": "java",
+      "added": 1,
+      "deleted": 1
+    },
+    {
+      "path": "test/src/test/java/org/kohsuke/stapler/BindTest.java",
+      "language": "java",
+      "added": 1,
+      "deleted": 1
+    }
+  ],
+  "nearest_tests": [
+    {
+      "path": "test/src/test/java/hudson/node_monitors/DiskSpaceMonitorDescriptorTest.java",
+      "relationship": "tests",
+      "source_file": "core/src/main/java/hudson/model/Descriptor.java"
+    },
+    {
+      "path": "test/src/test/java/hudson/node_monitors/ClockMonitorDescriptorTest.java",
+      "relationship": "tests",
+      "source_file": "core/src/main/java/hudson/model/Descriptor.java"
+    },
+    {
+      "path": "test/src/test/java/hudson/model/DescriptorVisibilityFilterTest.java",
+      "relationship": "tests",
+      "source_file": "core/src/main/java/hudson/model/Descriptor.java"
+    },
+    {
+      "path": "test/src/test/java/hudson/model/ViewDescriptorTest.java",
+      "relationship": "tests",
+      "source_file": "core/src/main/java/hudson/model/Descriptor.java"
+    },
+    {
+      "path": "test/src/test/java/hudson/model/DescriptorTest.java",
+      "relationship": "tests",
+      "source_file": "core/src/main/java/hudson/model/Descriptor.java"
+    },
+    {
+      "path": "core/src/test/java/hudson/util/FormValidationTest.java",
+      "relationship": "tests",
+      "source_file": "core/src/main/java/hudson/util/FormValidation.java"
+    },
+    {
+      "path": "test/src/test/java/hudson/util/FormValidationSecurity1893Test.java",
+      "relationship": "tests",
+      "source_file": "core/src/main/java/hudson/util/FormValidation.java"
+    },
+    {
+      "path": "test/src/test/java/hudson/util/FormValidationTest.java",
+      "relationship": "tests",
+      "source_file": "core/src/main/java/hudson/util/FormValidation.java"
+    }
+  ],
+  "dependent_files": [
+    {
+      "path": "core/src/test/java/hudson/util/DescribableListTest.java",
+      "relationship": "imports",
+      "source_file": "core/src/main/java/hudson/model/Descriptor.java"
+    },
+    {
+      "path": "core/src/test/java/hudson/model/ChoiceParameterDefinitionTest.java",
+      "relationship": "imports",
+      "source_file": "core/src/main/java/hudson/model/Descriptor.java"
+    },
+    {
+      "path": "core/src/test/java/hudson/slaves/DelegatingComputerLauncherTest.java",
+      "relationship": "imports",
+      "source_file": "core/src/main/java/hudson/model/Descriptor.java"
+    },
+    {
+      "path": "core/src/test/java/hudson/GetLocaleStaticHelpUrlTest.java",
+      "relationship": "imports",
+      "source_file": "core/src/main/java/hudson/model/Descriptor.java"
+    },
+    {
+      "path": "core/src/main/java/hudson/DescriptorExtensionList.java",
+      "relationship": "imports",
+      "source_file": "core/src/main/java/hudson/model/Descriptor.java"
+    },
+    {
+      "path": "core/src/main/java/hudson/tasks/Fingerprinter.java",
+      "relationship": "imports",
+      "source_file": "core/src/main/java/hudson/model/Descriptor.java"
+    },
+    {
+      "path": "core/src/main/java/hudson/tasks/BatchFile.java",
+      "relationship": "imports",
+      "source_file": "core/src/main/java/hudson/model/Descriptor.java"
+    },
+    {
+      "path": "core/src/main/java/hudson/tasks/_maven/MavenWarningNote.java",
+      "relationship": "imports",
+      "source_file": "core/src/main/java/hudson/model/Descriptor.java"
+    },
+    {
+      "path": "core/src/main/java/hudson/tasks/_maven/Maven3MojoNote.java",
+      "relationship": "imports",
+      "source_file": "core/src/main/java/hudson/model/Descriptor.java"
+    },
+    {
+      "path": "core/src/main/java/hudson/tasks/_maven/MavenMojoNote.java",
+      "relationship": "imports",
+      "source_file": "core/src/main/java/hudson/model/Descriptor.java"
+    },
+    {
+      "path": "core/src/test/java/hudson/util/FormValidationTest.java",
+      "relationship": "imports",
+      "source_file": "core/src/main/java/hudson/util/FormValidation.java"
+    },
+    {
+      "path": "core/src/test/java/hudson/PluginManagerTest.java",
+      "relationship": "imports",
+      "source_file": "core/src/main/java/hudson/util/FormValidation.java"
+    },
+    {
+      "path": "core/src/main/java/hudson/tasks/Shell.java",
+      "relationship": "imports",
+      "source_file": "core/src/main/java/hudson/util/FormValidation.java"
+    },
+    {
+      "path": "core/src/main/java/hudson/tasks/ArtifactArchiver.java",
+      "relationship": "imports",
+      "source_file": "core/src/main/java/hudson/util/FormValidation.java"
+    },
+    {
+      "path": "core/src/main/java/hudson/tasks/BuildTrigger.java",
+      "relationship": "imports",
+      "source_file": "core/src/main/java/hudson/util/FormValidation.java"
+    }
+  ],
+  "diff_summary": "7 files changed",
+  "full_diff": "diff --git a/core/src/main/java/hudson/model/Descriptor.java b/core/src/main/java/hudson/model/Descriptor.java\nindex 37fa0a21c093..817115c3ad17 100644\n--- a/core/src/main/java/hudson/model/Descriptor.java\n+++ b/core/src/main/java/hudson/model/Descriptor.java\n@@ -82,7 +82,6 @@\n import net.sf.json.JSONArray;\n import net.sf.json.JSONObject;\n import org.apache.commons.io.IOUtils;\n-import org.apache.commons.lang.StringUtils;\n import org.jvnet.tiger_types.Types;\n import org.kohsuke.accmod.Restricted;\n import org.kohsuke.accmod.restrictions.NoExternalUse;\n@@ -425,7 +424,7 @@ public CheckMethod getCheckMethod(String fieldName) {\n      * sets that as the 'fillUrl' attribute.\n      */\n     public void calcFillSettings(String field, Map<String, Object> attributes) {\n-        String capitalizedFieldName = StringUtils.capitalize(field);\n+        String capitalizedFieldName = field == null || field.isEmpty() ? field : Character.toTitleCase(field.charAt(0)) + field.substring(1);\n         String methodName = \"doFill\" + capitalizedFieldName + \"Items\";\n         Method method = ReflectionUtils.getPublicMethodNamed(getClass(), methodName);\n         if (method == null)\n@@ -467,7 +466,7 @@ private List<String> buildFillDependencies(Method method, List<String> depends)\n      * Computes the auto-completion setting\n      */\n     public void calcAutoCompleteSettings(String field, Map<String, Object> attributes) {\n-        String capitalizedFieldName = StringUtils.capitalize(field);\n+        String capitalizedFieldName = field == null || field.isEmpty() ? field : Character.toTitleCase(field.charAt(0)) + field.substring(1);\n         String methodName = \"doAutoComplete\" + capitalizedFieldName;\n         Method method = ReflectionUtils.getPublicMethodNamed(getClass(), methodName);\n         if (method == null)\ndiff --git a/core/src/main/java/hudson/util/FormValidation.java b/core/src/main/java/hudson/util/FormValidation.java\nindex 7133689d1d3e..c1cfda5ef6a9 100644\n--- a/core/src/main/java/hudson/util/FormValidation.java\n+++ b/core/src/main/java/hudson/util/FormValidation.java\n@@ -61,7 +61,6 @@\n import javax.servlet.ServletException;\n import jenkins.model.Jenkins;\n import jenkins.util.SystemProperties;\n-import org.apache.commons.lang.StringUtils;\n import org.kohsuke.stapler.HttpResponse;\n import org.kohsuke.stapler.QueryParameter;\n import org.kohsuke.stapler.Stapler;\n@@ -638,7 +637,7 @@ public static class CheckMethod {\n \n         public CheckMethod(Descriptor descriptor, String fieldName) {\n             this.descriptor = descriptor;\n-            this.capitalizedFieldName = StringUtils.capitalize(fieldName);\n+            this.capitalizedFieldName = fieldName == null || fieldName.isEmpty() ? fieldName : Character.toTitleCase(fieldName.charAt(0)) + fieldName.substring(1);\n \n             method = ReflectionUtils.getPublicMethodNamed(descriptor.getClass(), \"doCheck\" + capitalizedFieldName);\n             if (method != null) {\ndiff --git a/core/src/test/java/hudson/PluginWrapperTest.java b/core/src/test/java/hudson/PluginWrapperTest.java\nindex f12a8af7bdc3..32c24d8abf36 100644\n--- a/core/src/test/java/hudson/PluginWrapperTest.java\n+++ b/core/src/test/java/hudson/PluginWrapperTest.java\n@@ -21,11 +21,11 @@\n import java.util.HashMap;\n import java.util.List;\n import java.util.Locale;\n+import java.util.Objects;\n import java.util.jar.Attributes;\n import java.util.jar.Manifest;\n import jenkins.model.Jenkins;\n import jenkins.util.URLClassLoader2;\n-import org.apache.commons.lang.StringUtils;\n import org.junit.jupiter.api.AfterAll;\n import org.junit.jupiter.api.BeforeAll;\n import org.junit.jupiter.api.Test;\n@@ -151,7 +151,7 @@ private final class PluginWrapperBuilder {\n         private ClassLoader cl = null;\n \n         private PluginWrapperBuilder(String name) {\n-            this.name = name;\n+            this.name = Objects.requireNonNull(name);\n         }\n \n         public PluginWrapperBuilder version(String version) {\n@@ -192,7 +192,7 @@ private PluginWrapper build() {\n             Manifest manifest = new Manifest();\n             Attributes attributes = manifest.getMainAttributes();\n             attributes.putValue(\"Short-Name\", name);\n-            attributes.putValue(\"Long-Name\", StringUtils.capitalize(name));\n+            attributes.putValue(\"Long-Name\", Character.toTitleCase(name.charAt(0)) + name.substring(1));\n             attributes.putValue(\"Jenkins-Version\", requiredCoreVersion);\n             attributes.putValue(\"Plugin-Version\", version);\n             return new PluginWrapper(\ndiff --git a/test/src/test/java/hudson/cli/DisablePluginCommandTest.java b/test/src/test/java/hudson/cli/DisablePluginCommandTest.java\nindex 83c2d9440524..220998236ba8 100644\n--- a/test/src/test/java/hudson/cli/DisablePluginCommandTest.java\n+++ b/test/src/test/java/hudson/cli/DisablePluginCommandTest.java\n@@ -41,7 +41,7 @@\n import hudson.PluginWrapper;\n import java.io.IOException;\n import java.util.function.BiPredicate;\n-import org.apache.commons.lang.StringUtils;\n+import org.apache.commons.lang3.StringUtils;\n import org.junit.Assume;\n import org.junit.Ignore;\n import org.junit.Rule;\ndiff --git a/test/src/test/java/hudson/security/HudsonPrivateSecurityRealmTest.java b/test/src/test/java/hudson/security/HudsonPrivateSecurityRealmTest.java\nindex b172e0e72e3b..d0f58f92d5ec 100644\n--- a/test/src/test/java/hudson/security/HudsonPrivateSecurityRealmTest.java\n+++ b/test/src/test/java/hudson/security/HudsonPrivateSecurityRealmTest.java\n@@ -56,7 +56,7 @@\n import jenkins.security.SecurityListener;\n import jenkins.security.apitoken.ApiTokenPropertyConfiguration;\n import jenkins.security.seed.UserSeedProperty;\n-import org.apache.commons.lang.StringUtils;\n+import org.apache.commons.lang3.StringUtils;\n import org.hamcrest.Matcher;\n import org.htmlunit.FailingHttpStatusCodeException;\n import org.htmlunit.HttpMethod;\ndiff --git a/test/src/test/java/jenkins/security/apitoken/LegacyApiTokenAdministrativeMonitorTest.java b/test/src/test/java/jenkins/security/apitoken/LegacyApiTokenAdministrativeMonitorTest.java\nindex 4f8b4c6e3874..8afef45167f1 100644\n--- a/test/src/test/java/jenkins/security/apitoken/LegacyApiTokenAdministrativeMonitorTest.java\n+++ b/test/src/test/java/jenkins/security/apitoken/LegacyApiTokenAdministrativeMonitorTest.java\n@@ -34,7 +34,7 @@\n import hudson.model.User;\n import java.io.IOException;\n import jenkins.security.ApiTokenProperty;\n-import org.apache.commons.lang.StringUtils;\n+import org.apache.commons.lang3.StringUtils;\n import org.hamcrest.Matchers;\n import org.htmlunit.Page;\n import org.htmlunit.html.DomNodeList;\ndiff --git a/test/src/test/java/org/kohsuke/stapler/BindTest.java b/test/src/test/java/org/kohsuke/stapler/BindTest.java\nindex 5c32adf15a58..f6fc7ebeb093 100644\n--- a/test/src/test/java/org/kohsuke/stapler/BindTest.java\n+++ b/test/src/test/java/org/kohsuke/stapler/BindTest.java\n@@ -12,7 +12,7 @@\n import hudson.model.RootAction;\n import java.util.Arrays;\n import java.util.List;\n-import org.apache.commons.lang.StringUtils;\n+import org.apache.commons.lang3.StringUtils;\n import org.htmlunit.Page;\n import org.htmlunit.ScriptException;\n import org.htmlunit.html.HtmlPage;\n",
+  "metadata": {
+    "v2_fetcher_version": 1,
+    "v2_fetched_at_unix": 1777501312,
+    "v2_diff_cap_bytes": 50000,
+    "v2_body_cap_bytes": 8000,
+    "v2_diff_truncated": false,
+    "v2_raw_diff_chars": 7152,
+    "v2_raw_body_chars": 3942,
+    "v2_rag_source": "merged_from_v1",
+    "v2_rag_chunks_copied": 8
+  },
+  "similar_chunks": [
+    {
+      "file": "core/src/main/java/hudson/model/Job.java",
+      "start_line": 24,
+      "end_line": 44,
+      "similarity": 0.8297,
+      "related_to": "core/src/main/java/hudson/model/Descriptor.java",
+      "content_preview": "\npackage hudson.model;\n\nimport static jakarta.servlet.http.HttpServletResponse.SC_BAD_REQUEST;\nimport static jakarta.servlet.http.HttpServletResponse.SC_NO_CONTENT;\n\nimport com.infradna.tool.bridge_method_injector.WithBrid"
+    },
+    {
+      "file": "core/src/main/java/hudson/model/BuildAuthorizationToken.java",
+      "start_line": 24,
+      "end_line": 47,
+      "similarity": 0.8289,
+      "related_to": "core/src/main/java/hudson/model/Descriptor.java",
+      "content_preview": "\npackage hudson.model;\n\nimport com.thoughtworks.xstream.converters.basic.AbstractSingleValueConverter;\nimport hudson.Extension;\nimport hudson.Util;\nimport hudson.diagnosis.OldDataMonitor;\nimport hudson.model.listeners.ItemListener;\nimport hudson.security.ACL;\nimport hudson.util.Secret;\nimport jakarta.servlet.http.HttpServlet"
+    },
+    {
+      "file": "core/src/main/java/hudson/model/TopLevelItemDescriptor.java",
+      "start_line": 24,
+      "end_line": 47,
+      "similarity": 0.8249,
+      "related_to": "core/src/main/java/hudson/model/Descriptor.java",
+      "content_preview": "\npackage hudson.model;\n\nimport edu.umd.cs.findbugs.annotations.CheckForNull;\nimport edu.umd.cs.findbugs.annotations.NonNull;\nimport hudson.ExtensionList;\nimport hudson.util.FormValidation;\nimport java.io.StringWriter;\nimport java.util.logging.Level;\nimport java.util.logging.Logger;\nimport jenkins.model.Jenkins;\nimport jenkin"
+    },
+    {
+      "file": "core/src/main/java/hudson/model/Hudson.java",
+      "start_line": 26,
+      "end_line": 48,
+      "similarity": 0.8222,
+      "related_to": "core/src/main/java/hudson/model/Descriptor.java",
+      "content_preview": "\npackage hudson.model;\n\nimport static hudson.Util.fixEmpty;\n\nimport edu.umd.cs.findbugs.annotations.Nullable;\nimport hudson.ExtensionListView;\nimport hudson.Functions;\nimport hudson.P"
+    },
+    {
+      "file": "core/src/main/java/hudson/model/Actionable.java",
+      "start_line": 24,
+      "end_line": 48,
+      "similarity": 0.8217,
+      "related_to": "core/src/main/java/hudson/model/Descriptor.java",
+      "content_preview": "\npackage hudson.model;\n\nimport edu.umd.cs.findbugs.annotations.NonNull;\nimport edu.umd.cs.findbugs.annotations.Nullable;\nimport hudson.Util;\nimport java.util.ArrayList;\nimport java.util.Collection;\nimport java.util.Collections;\nimport java.util.List;\nimport java.util.Set;\nimport java.util.concurrent.CopyOnW"
+    },
+    {
+      "file": "core/src/main/java/hudson/model/ListView.java",
+      "start_line": 25,
+      "end_line": 48,
+      "similarity": 0.8149,
+      "related_to": "core/src/main/java/hudson/model/Descriptor.java",
+      "content_preview": "\npackage hudson.model;\n\nimport edu.umd.cs.findbugs.annotations.CheckForNull;\nimport edu.umd.cs.findbugs.annotations.NonNull;\nimport hudson.Extension;\nimport hudson.Util;\nimport hudson.diagnosis.OldDataMonitor;\nimport hudson.model.Descriptor.FormException;\nimport "
+    },
+    {
+      "file": "core/src/main/java/hudson/model/Api.java",
+      "start_line": 24,
+      "end_line": 48,
+      "similarity": 0.8123,
+      "related_to": "core/src/main/java/hudson/model/Descriptor.java",
+      "content_preview": "\npackage hudson.model;\n\nimport hudson.ExtensionList;\nimport hudson.Util;\nimport io.jenkins.servlet.ServletExceptionWrapper;\nimport jakarta.servlet.ServletException;\nimport jakarta.servlet.http.HttpServletResponse;\nimport java.io.IOException;\nimport java.io.OutputStream;\nimport java.io.StringReader;\nimport java."
+    },
+    {
+      "file": "core/src/main/java/hudson/model/ParameterValue.java",
+      "start_line": 25,
+      "end_line": 51,
+      "similarity": 0.8107,
+      "related_to": "core/src/main/java/hudson/model/Descriptor.java",
+      "content_preview": "\npackage hudson.model;\n\nimport edu.umd.cs.findbugs.annotations.CheckForNull;\nimport hudson.EnvVars;\nimport hudson.Util;\nimport hudson.model.queue.SubTask;\nimport hudson.scm.SCM;\nimport hudson.tasks.BuildWrapper;\nimport hudson.tasks.Builder;\nimport hudson.util.VariableResolver;\nimport java"
+    }
+  ],
+  "rag_evidence": {
+    "similar_code": [
+      {
+        "file": "core/src/main/java/hudson/model/Job.java",
+        "start_line": 24,
+        "end_line": 44,
+        "similarity": 0.8297,
+        "related_to": "core/src/main/java/hudson/model/Descriptor.java",
+        "content_preview": "\npackage hudson.model;\n\nimport static jakarta.servlet.http.HttpServletResponse.SC_BAD_REQUEST;\nimport static jakarta.servlet.http.HttpServletResponse.SC_NO_CONTENT;\n\nimport com.infradna.tool.bridge_method_injector.WithBrid"
+      },
+      {
+        "file": "core/src/main/java/hudson/model/BuildAuthorizationToken.java",
+        "start_line": 24,
+        "end_line": 47,
+        "similarity": 0.8289,
+        "related_to": "core/src/main/java/hudson/model/Descriptor.java",
+        "content_preview": "\npackage hudson.model;\n\nimport com.thoughtworks.xstream.converters.basic.AbstractSingleValueConverter;\nimport hudson.Extension;\nimport hudson.Util;\nimport hudson.diagnosis.OldDataMonitor;\nimport hudson.model.listeners.ItemListener;\nimport hudson.security.ACL;\nimport hudson.util.Secret;\nimport jakarta.servlet.http.HttpServlet"
+      },
+      {
+        "file": "core/src/main/java/hudson/model/TopLevelItemDescriptor.java",
+        "start_line": 24,
+        "end_line": 47,
+        "similarity": 0.8249,
+        "related_to": "core/src/main/java/hudson/model/Descriptor.java",
+        "content_preview": "\npackage hudson.model;\n\nimport edu.umd.cs.findbugs.annotations.CheckForNull;\nimport edu.umd.cs.findbugs.annotations.NonNull;\nimport hudson.ExtensionList;\nimport hudson.util.FormValidation;\nimport java.io.StringWriter;\nimport java.util.logging.Level;\nimport java.util.logging.Logger;\nimport jenkins.model.Jenkins;\nimport jenkin"
+      },
+      {
+        "file": "core/src/main/java/hudson/model/Hudson.java",
+        "start_line": 26,
+        "end_line": 48,
+        "similarity": 0.8222,
+        "related_to": "core/src/main/java/hudson/model/Descriptor.java",
+        "content_preview": "\npackage hudson.model;\n\nimport static hudson.Util.fixEmpty;\n\nimport edu.umd.cs.findbugs.annotations.Nullable;\nimport hudson.ExtensionListView;\nimport hudson.Functions;\nimport hudson.P"
+      },
+      {
+        "file": "core/src/main/java/hudson/model/Actionable.java",
+        "start_line": 24,
+        "end_line": 48,
+        "similarity": 0.8217,
+        "related_to": "core/src/main/java/hudson/model/Descriptor.java",
+        "content_preview": "\npackage hudson.model;\n\nimport edu.umd.cs.findbugs.annotations.NonNull;\nimport edu.umd.cs.findbugs.annotations.Nullable;\nimport hudson.Util;\nimport java.util.ArrayList;\nimport java.util.Collection;\nimport java.util.Collections;\nimport java.util.List;\nimport java.util.Set;\nimport java.util.concurrent.CopyOnW"
+      },
+      {
+        "file": "core/src/main/java/hudson/model/ListView.java",
+        "start_line": 25,
+        "end_line": 48,
+        "similarity": 0.8149,
+        "related_to": "core/src/main/java/hudson/model/Descriptor.java",
+        "content_preview": "\npackage hudson.model;\n\nimport edu.umd.cs.findbugs.annotations.CheckForNull;\nimport edu.umd.cs.findbugs.annotations.NonNull;\nimport hudson.Extension;\nimport hudson.Util;\nimport hudson.diagnosis.OldDataMonitor;\nimport hudson.model.Descriptor.FormException;\nimport "
+      },
+      {
+        "file": "core/src/main/java/hudson/model/Api.java",
+        "start_line": 24,
+        "end_line": 48,
+        "similarity": 0.8123,
+        "related_to": "core/src/main/java/hudson/model/Descriptor.java",
+        "content_preview": "\npackage hudson.model;\n\nimport hudson.ExtensionList;\nimport hudson.Util;\nimport io.jenkins.servlet.ServletExceptionWrapper;\nimport jakarta.servlet.ServletException;\nimport jakarta.servlet.http.HttpServletResponse;\nimport java.io.IOException;\nimport java.io.OutputStream;\nimport java.io.StringReader;\nimport java."
+      },
+      {
+        "file": "core/src/main/java/hudson/model/ParameterValue.java",
+        "start_line": 25,
+        "end_line": 51,
+        "similarity": 0.8107,
+        "related_to": "core/src/main/java/hudson/model/Descriptor.java",
+        "content_preview": "\npackage hudson.model;\n\nimport edu.umd.cs.findbugs.annotations.CheckForNull;\nimport hudson.EnvVars;\nimport hudson.Util;\nimport hudson.model.queue.SubTask;\nimport hudson.scm.SCM;\nimport hudson.tasks.BuildWrapper;\nimport hudson.tasks.Builder;\nimport hudson.util.VariableResolver;\nimport java"
+      }
+    ]
+  }
+}

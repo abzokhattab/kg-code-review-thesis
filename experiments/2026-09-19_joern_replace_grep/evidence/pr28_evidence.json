@@ -1,0 +1,337 @@
+{
+  "pr": {
+    "number": 124090,
+    "title": "BrowseDashboards: Fix cleared sort reset when switching to folder view",
+    "body": "**What is this feature?**\r\n\r\nFixes a bug in the Browse Dashboards page where clearing the Sort picker and then clicking \"View by folders\" would silently restore the previously cleared sort, forcing the user back into list view with the Folders radio disabled.\r\n\r\n**Why do we need this feature?**\r\n\r\nWhen a user explicitly clears a sort and switches to folder view, the cleared sort was resurrected via `prevSort` in `onLayoutChange`. This happened because the Folders branch only fired when `this.state.sort` was truthy \u2014 when sort was already cleared (`undefined`), the else branch ran instead and unconditionally restored `prevSort`. After reload, `prevSort` was populated from localStorage by `initStateFromUrl`, making this a one-click reproduction: pick a sort \u2192 reload \u2192 clear sort \u2192 click Folders \u2192 stuck in list view.\r\n\r\nThe fix makes `onLayoutChange` branch on `layout === SearchLayout.Folders` unconditionally (not `this.state.sort && layout === SearchLayout.Folders`), so switching to Folders always stashes `state.sort` into `prevSort` and clears sort \u2014 even when `state.sort` is already `undefined`. The List branch now uses `this.state.sort ?? this.state.prevSort` to preserve an active sort while still falling back to `prevSort` when no sort is set.\r\n",
+    "url": "https://github.com/grafana/grafana/pull/124090",
+    "repo": "grafana/grafana",
+    "base_branch": "main",
+    "head_branch": "alexk/browse-db-sort",
+    "merged_at": "2026-05-05T09:46:22Z",
+    "state": "MERGED"
+  },
+  "changed_files": [
+    {
+      "path": "public/app/features/search/state/SearchStateManager.test.ts",
+      "language": "typescript",
+      "added": 54,
+      "deleted": 0
+    },
+    {
+      "path": "public/app/features/search/state/SearchStateManager.ts",
+      "language": "typescript",
+      "added": 4,
+      "deleted": 2
+    }
+  ],
+  "nearest_tests": [
+    {
+      "path": "public/app/features/search/state/SearchStateManager.test.ts",
+      "relationship": "tests",
+      "source_file": "public/app/features/search/state/SearchStateManager.ts"
+    }
+  ],
+  "dependent_files": [
+    "features/search/state/SearchStateManager.ts"
+  ],
+  "diff_summary": "2 files changed",
+  "full_diff": "diff --git a/public/app/features/search/state/SearchStateManager.test.ts b/public/app/features/search/state/SearchStateManager.test.ts\nindex c821245fd8ff9..9a91905d3543d 100644\n--- a/public/app/features/search/state/SearchStateManager.test.ts\n+++ b/public/app/features/search/state/SearchStateManager.test.ts\n@@ -213,4 +213,58 @@ describe('SearchStateManager', () => {\n       await waitFor(() => expect(stm.state.result?.totalRows).toEqual(10));\n     });\n   });\n+\n+  describe('onLayoutChange', () => {\n+    beforeEach(() => {\n+      localStorage.clear();\n+    });\n+\n+    it('does not resurrect a cleared sort when switching to Folders', () => {\n+      store.set(SEARCH_SELECTED_LAYOUT, SearchLayout.List);\n+      store.set(SEARCH_SELECTED_SORT, 'name_sort');\n+      const stm = createSearchStateManager();\n+      stm.initStateFromUrl(undefined, false);\n+      expect(stm.state.sort).toBe('name_sort');\n+      expect(stm.state.prevSort).toBe('name_sort');\n+\n+      // User clears the sort picker\n+      stm.onSortChange(undefined);\n+      expect(stm.state.sort).toBeUndefined();\n+\n+      // User switches to Folders \u2014 sort must stay cleared\n+      stm.onLayoutChange(SearchLayout.Folders);\n+      expect(stm.state.layout).toBe(SearchLayout.Folders);\n+      expect(stm.state.sort).toBeUndefined();\n+      expect(stm.state.prevSort).toBeUndefined();\n+    });\n+\n+    it('round-trips sort through List \u2192 Folders \u2192 List via prevSort', () => {\n+      const stm = createSearchStateManager();\n+      stm.setState({ layout: SearchLayout.List, sort: 'name_sort' });\n+\n+      stm.onLayoutChange(SearchLayout.Folders);\n+      expect(stm.state.sort).toBeUndefined();\n+      expect(stm.state.prevSort).toBe('name_sort');\n+\n+      stm.onLayoutChange(SearchLayout.List);\n+      expect(stm.state.sort).toBe('name_sort');\n+    });\n+\n+    it('restores prevSort when switching to List with no current sort', () => {\n+      const stm = createSearchStateManager();\n+      stm.setState({ layout: SearchLayout.Folders, sort: undefined, prevSort: 'name_sort' });\n+\n+      stm.onLayoutChange(SearchLayout.List);\n+      expect(stm.state.sort).toBe('name_sort');\n+      expect(stm.state.layout).toBe(SearchLayout.List);\n+    });\n+\n+    it('keeps current sort when switching to List if sort is already set', () => {\n+      const stm = createSearchStateManager();\n+      stm.setState({ layout: SearchLayout.Folders, sort: '-name_sort', prevSort: 'name_sort' });\n+\n+      stm.onLayoutChange(SearchLayout.List);\n+      expect(stm.state.sort).toBe('-name_sort');\n+    });\n+  });\n });\ndiff --git a/public/app/features/search/state/SearchStateManager.ts b/public/app/features/search/state/SearchStateManager.ts\nindex 0302b8277e2fa..25ab6743844c9 100644\n--- a/public/app/features/search/state/SearchStateManager.ts\n+++ b/public/app/features/search/state/SearchStateManager.ts\n@@ -231,10 +231,12 @@ export class SearchStateManager extends StateManagerBase<SearchState> {\n   onLayoutChange = (layout: SearchLayout) => {\n     store.set(this.layoutStorageKey, layout);\n \n-    if (this.state.sort && layout === SearchLayout.Folders) {\n+    if (layout === SearchLayout.Folders) {\n+      // Folders never has sort. Stash current sort so List can restore it later.\n       this.setStateAndDoSearch({ layout, prevSort: this.state.sort, sort: undefined });\n     } else {\n-      this.setStateAndDoSearch({ layout, sort: this.state.prevSort });\n+      // List: keep current sort if set, otherwise restore prevSort.\n+      this.setStateAndDoSearch({ layout, sort: this.state.sort ?? this.state.prevSort });\n     }\n   };\n \n",
+  "metadata": {
+    "v2_fetcher_version": 1,
+    "v2_fetched_at_unix": 1777987697,
+    "v2_diff_cap_bytes": 50000,
+    "v2_body_cap_bytes": 8000,
+    "v2_diff_truncated": false,
+    "v2_raw_diff_chars": 3571,
+    "v2_raw_body_chars": 1267,
+    "v2_rag_source": "fresh_for_v2_25pr_expansion",
+    "v2_rag_chunks_copied": 8,
+    "joern_enriched": true,
+    "joern_callers_count": 6,
+    "joern_functions_count": 9
+  },
+  "similar_chunks": [
+    {
+      "file": "public/app/features/search/page/components/SearchResultsTable.test.tsx",
+      "start_line": 1,
+      "end_line": 47,
+      "similarity": 0.7715,
+      "related_to": "public/app/features/search/state/SearchStateManager.test.ts",
+      "content_preview": "import { render, screen } from '@testing-library/react';\nimport { Subject } from 'rxjs';\n\nimport { applyFieldOverrides, createTheme, DataFrame, DataFrameView, FieldType, toDataFrame } from '@grafana/data';\n\nimport { getGrafanaSearcher } from '../../service/searcher';\nimport { DashboardQueryResult, QueryResponse } from '../../service/types';\nimport { DashboardSearchItemType } from '../../types';\n\nimport { SearchResultsTable } from './SearchResultsTable';\n\ndescribe('SearchResultsTable', () => {\n  const mockOnTagSelected = jest.fn();\n  const mockClearSelection = jest.fn();\n  const mockSelectionToggle = jest.fn();\n  const mockSelection = jest.fn();\n  const mockKeyboardEvents = new Subject<React.KeyboardEvent>();\n\n  describe('when there is data', () => {\n    const searchData = toDataFrame({\n   "
+    },
+    {
+      "file": "public/app/features/search/service/unified.test.ts",
+      "start_line": 1,
+      "end_line": 82,
+      "similarity": 0.7713,
+      "related_to": "public/app/features/search/state/SearchStateManager.test.ts",
+      "content_preview": "import { BackendSrv } from '@grafana/runtime';\n\nimport { GrafanaSearcher, SearchQuery } from './types';\nimport { toDashboardResults, SearchHit, SearchAPIResponse, UnifiedSearcher } from './unified';\n\nbeforeEach(() => {\n  jest.clearAllMocks();\n});\n\nconst mockResults: SearchAPIResponse = {\n  hits: [],\n  totalHits: 0,\n};\n\nconst mockFolders: SearchAPIResponse = {\n  hits: [],\n  totalHits: 0,\n};\n\nconst mockFallbackSearcher = {\n  search: jest.fn(),\n} as unknown as GrafanaSearcher;\n\nconst getResponse = (uri: string) => {\n  if (uri.includes('?type=folders')) {\n    return Promise.resolve(mockFolders);\n  }\n  return Promise.resolve(mockResults);\n};\n\nconst mockSearcher = {\n  search: (uri: string) => getResponse(uri),\n};\n\njest.mock('@grafana/runtime', () => {\n  const originalRuntime = jest.requireActual"
+    },
+    {
+      "file": "public/app/features/search/page/components/SearchResultsTable.test.tsx",
+      "start_line": 92,
+      "end_line": 148,
+      "similarity": 0.7168,
+      "related_to": "public/app/features/search/state/SearchStateManager.test.ts",
+      "content_preview": "e table', async () => {\n      render(\n        <SearchResultsTable\n          keyboardEvents={mockKeyboardEvents}\n          response={mockSearchResult}\n          onTagSelected={mockOnTagSelected}\n          selection={mockSelection}\n          selectionToggle={mockSelectionToggle}\n          clearSelection={mockClearSelection}\n          height={1000}\n          width={1000}\n        />\n      );\n      await screen.findByRole('table');\n\n      const rows = screen.getAllByRole('row');\n\n      expect(rows).toHaveLength(2);\n      expect(screen.getByText('My dashboard 1')).toBeInTheDocument();\n      expect(screen.getByText('foo')).toBeInTheDocument();\n      expect(screen.getByText('bar')).toBeInTheDocument();\n    });\n  });\n\n  describe('when there is no data', () => {\n    const emptySearchData: DataFrame "
+    },
+    {
+      "file": "public/app/features/search/page/components/SearchResultsTable.test.tsx",
+      "start_line": 40,
+      "end_line": 98,
+      "similarity": 0.7032,
+      "related_to": "public/app/features/search/state/SearchStateManager.test.ts",
+      "content_preview": "e.text}' ? vars['__value']!.value.text : value;\n      },\n      theme: createTheme(),\n    });\n\n    const mockSearchResult: QueryResponse = {\n      isItemLoaded: jest.fn().mockReturnValue(true),\n      loadMoreItems: jest.fn(),\n      totalRows: searchData.length,\n      view: new DataFrameView<DashboardQueryResult>(dataFrames[0]),\n    };\n\n    beforeAll(() => {\n      jest.spyOn(getGrafanaSearcher(), 'search').mockResolvedValue(mockSearchResult);\n    });\n\n    it('shows the table with the correct accessible label', async () => {\n      render(\n        <SearchResultsTable\n          keyboardEvents={mockKeyboardEvents}\n          response={mockSearchResult}\n          onTagSelected={mockOnTagSelected}\n          selection={mockSelection}\n          selectionToggle={mockSelectionToggle}\n          clearSel"
+    },
+    {
+      "file": "public/app/features/search/page/components/ActionRow.tsx",
+      "start_line": 1,
+      "end_line": 67,
+      "similarity": 0.6997,
+      "related_to": "public/app/features/search/state/SearchStateManager.ts",
+      "content_preview": "import { css } from '@emotion/css';\nimport { FormEvent } from 'react';\n\nimport { GrafanaTheme2, SelectableValue } from '@grafana/data';\nimport { Trans, t } from '@grafana/i18n';\nimport { config } from '@grafana/runtime';\nimport { Button, Checkbox, Stack, RadioButtonGroup, useStyles2 } from '@grafana/ui';\nimport { SortPicker } from 'app/core/components/Select/SortPicker';\nimport { TagFilter, TermCount } from 'app/core/components/TagFilter/TagFilter';\n\nimport { SearchLayout, SearchState } from '../../types';\n\nfunction getLayoutOptions() {\n  return [\n    {\n      value: SearchLayout.Folders,\n      icon: 'folder',\n      description: t('search.actions.view-as-folders', 'View by folders'),\n    },\n    { value: SearchLayout.List, icon: 'list-ul', description: t('search.actions.view-as-list', 'View "
+    },
+    {
+      "file": "public/app/features/search/types.ts",
+      "start_line": 75,
+      "end_line": 130,
+      "similarity": 0.6964,
+      "related_to": "public/app/features/search/state/SearchStateManager.ts",
+      "content_preview": "used in new Browse UI */\n  parentKind?: string;\n\n  // Used only for psuedo-folders, such as Starred or Recent\n  /** @deprecated Not used in new Browse UI */\n  itemsUIDs?: string[];\n\n  // For enterprise sort options\n  sortMeta?: number | string; // value sorted by\n  sortMetaName?: string; // name of the value being sorted e.g. 'Views'\n  managedBy?: ManagerKind;\n}\n\nexport interface SearchAction extends Action {\n  payload?: any;\n}\n\nexport type EventTrackingNamespace = 'manage_dashboards' | 'dashboard_search';\n\nexport interface SearchState {\n  query: string;\n  tag: string[];\n  starred: boolean;\n  explain?: boolean; // adds debug info\n  datasource?: string;\n  panel_type?: string;\n  sort?: string;\n  prevSort?: string; // Save sorting data between layouts\n  layout: SearchLayout;\n  result?: QueryR"
+    },
+    {
+      "file": "public/app/features/search/service/sql.test.ts",
+      "start_line": 1,
+      "end_line": 78,
+      "similarity": 0.696,
+      "related_to": "public/app/features/search/state/SearchStateManager.test.ts",
+      "content_preview": "import { backendSrv } from 'app/core/services/backend_srv';\n\nimport { DashboardSearchItemType } from '../types';\n\nimport { SQLSearcher } from './sql';\n\nconst searchMock = jest.spyOn(backendSrv, 'get');\njest.spyOn(backendSrv, 'fetch');\n\ndescribe('SQLSearcher', () => {\n  beforeEach(() => {\n    searchMock.mockReset();\n    searchMock.mockResolvedValue([]);\n  });\n\n  it('should call search api with correct query for general folder', async () => {\n    const sqlSearcher = new SQLSearcher();\n    const query = {\n      query: '*',\n      kind: ['dashboard'],\n      location: 'General',\n      sort: 'name_sort',\n    };\n    await sqlSearcher.search(query);\n\n    expect(searchMock).toHaveBeenLastCalledWith('/api/search', {\n      limit: 1000,\n      sort: query.sort,\n      tag: undefined,\n      type: Dashboar"
+    },
+    {
+      "file": "public/app/features/search/service/sql.ts",
+      "start_line": 1,
+      "end_line": 60,
+      "similarity": 0.6956,
+      "related_to": "public/app/features/search/state/SearchStateManager.ts",
+      "content_preview": "import { DataFrame, DataFrameView, FieldType, getDisplayProcessor, SelectableValue } from '@grafana/data';\nimport { config } from '@grafana/runtime';\nimport { TermCount } from 'app/core/components/TagFilter/TagFilter';\nimport { backendSrv } from 'app/core/services/backend_srv';\nimport { PermissionLevel } from 'app/types/acl';\n\nimport { DEFAULT_MAX_VALUES, GENERAL_FOLDER_UID, TYPE_KIND_MAP } from '../constants';\nimport { DashboardSearchHit, DashboardSearchItemType } from '../types';\n\nimport { deletedDashboardsCache } from './deletedDashboardsCache';\nimport { DashboardQueryResult, GrafanaSearcher, LocationInfo, QueryResponse, SearchQuery, SortOptions } from './types';\nimport { filterSearchResults, replaceCurrentFolderQuery, searchHitsToDashboardSearchHits } from './utils';\n\ninterface APIQuer"
+    }
+  ],
+  "rag_evidence": {
+    "similar_code": [
+      {
+        "file": "public/app/features/search/page/components/SearchResultsTable.test.tsx",
+        "start_line": 1,
+        "end_line": 47,
+        "similarity": 0.7715,
+        "related_to": "public/app/features/search/state/SearchStateManager.test.ts",
+        "content_preview": "import { render, screen } from '@testing-library/react';\nimport { Subject } from 'rxjs';\n\nimport { applyFieldOverrides, createTheme, DataFrame, DataFrameView, FieldType, toDataFrame } from '@grafana/data';\n\nimport { getGrafanaSearcher } from '../../service/searcher';\nimport { DashboardQueryResult, QueryResponse } from '../../service/types';\nimport { DashboardSearchItemType } from '../../types';\n\nimport { SearchResultsTable } from './SearchResultsTable';\n\ndescribe('SearchResultsTable', () => {\n  const mockOnTagSelected = jest.fn();\n  const mockClearSelection = jest.fn();\n  const mockSelectionToggle = jest.fn();\n  const mockSelection = jest.fn();\n  const mockKeyboardEvents = new Subject<React.KeyboardEvent>();\n\n  describe('when there is data', () => {\n    const searchData = toDataFrame({\n   "
+      },
+      {
+        "file": "public/app/features/search/service/unified.test.ts",
+        "start_line": 1,
+        "end_line": 82,
+        "similarity": 0.7713,
+        "related_to": "public/app/features/search/state/SearchStateManager.test.ts",
+        "content_preview": "import { BackendSrv } from '@grafana/runtime';\n\nimport { GrafanaSearcher, SearchQuery } from './types';\nimport { toDashboardResults, SearchHit, SearchAPIResponse, UnifiedSearcher } from './unified';\n\nbeforeEach(() => {\n  jest.clearAllMocks();\n});\n\nconst mockResults: SearchAPIResponse = {\n  hits: [],\n  totalHits: 0,\n};\n\nconst mockFolders: SearchAPIResponse = {\n  hits: [],\n  totalHits: 0,\n};\n\nconst mockFallbackSearcher = {\n  search: jest.fn(),\n} as unknown as GrafanaSearcher;\n\nconst getResponse = (uri: string) => {\n  if (uri.includes('?type=folders')) {\n    return Promise.resolve(mockFolders);\n  }\n  return Promise.resolve(mockResults);\n};\n\nconst mockSearcher = {\n  search: (uri: string) => getResponse(uri),\n};\n\njest.mock('@grafana/runtime', () => {\n  const originalRuntime = jest.requireActual"
+      },
+      {
+        "file": "public/app/features/search/page/components/SearchResultsTable.test.tsx",
+        "start_line": 92,
+        "end_line": 148,
+        "similarity": 0.7168,
+        "related_to": "public/app/features/search/state/SearchStateManager.test.ts",
+        "content_preview": "e table', async () => {\n      render(\n        <SearchResultsTable\n          keyboardEvents={mockKeyboardEvents}\n          response={mockSearchResult}\n          onTagSelected={mockOnTagSelected}\n          selection={mockSelection}\n          selectionToggle={mockSelectionToggle}\n          clearSelection={mockClearSelection}\n          height={1000}\n          width={1000}\n        />\n      );\n      await screen.findByRole('table');\n\n      const rows = screen.getAllByRole('row');\n\n      expect(rows).toHaveLength(2);\n      expect(screen.getByText('My dashboard 1')).toBeInTheDocument();\n      expect(screen.getByText('foo')).toBeInTheDocument();\n      expect(screen.getByText('bar')).toBeInTheDocument();\n    });\n  });\n\n  describe('when there is no data', () => {\n    const emptySearchData: DataFrame "
+      },
+      {
+        "file": "public/app/features/search/page/components/SearchResultsTable.test.tsx",
+        "start_line": 40,
+        "end_line": 98,
+        "similarity": 0.7032,
+        "related_to": "public/app/features/search/state/SearchStateManager.test.ts",
+        "content_preview": "e.text}' ? vars['__value']!.value.text : value;\n      },\n      theme: createTheme(),\n    });\n\n    const mockSearchResult: QueryResponse = {\n      isItemLoaded: jest.fn().mockReturnValue(true),\n      loadMoreItems: jest.fn(),\n      totalRows: searchData.length,\n      view: new DataFrameView<DashboardQueryResult>(dataFrames[0]),\n    };\n\n    beforeAll(() => {\n      jest.spyOn(getGrafanaSearcher(), 'search').mockResolvedValue(mockSearchResult);\n    });\n\n    it('shows the table with the correct accessible label', async () => {\n      render(\n        <SearchResultsTable\n          keyboardEvents={mockKeyboardEvents}\n          response={mockSearchResult}\n          onTagSelected={mockOnTagSelected}\n          selection={mockSelection}\n          selectionToggle={mockSelectionToggle}\n          clearSel"
+      },
+      {
+        "file": "public/app/features/search/page/components/ActionRow.tsx",
+        "start_line": 1,
+        "end_line": 67,
+        "similarity": 0.6997,
+        "related_to": "public/app/features/search/state/SearchStateManager.ts",
+        "content_preview": "import { css } from '@emotion/css';\nimport { FormEvent } from 'react';\n\nimport { GrafanaTheme2, SelectableValue } from '@grafana/data';\nimport { Trans, t } from '@grafana/i18n';\nimport { config } from '@grafana/runtime';\nimport { Button, Checkbox, Stack, RadioButtonGroup, useStyles2 } from '@grafana/ui';\nimport { SortPicker } from 'app/core/components/Select/SortPicker';\nimport { TagFilter, TermCount } from 'app/core/components/TagFilter/TagFilter';\n\nimport { SearchLayout, SearchState } from '../../types';\n\nfunction getLayoutOptions() {\n  return [\n    {\n      value: SearchLayout.Folders,\n      icon: 'folder',\n      description: t('search.actions.view-as-folders', 'View by folders'),\n    },\n    { value: SearchLayout.List, icon: 'list-ul', description: t('search.actions.view-as-list', 'View "
+      },
+      {
+        "file": "public/app/features/search/types.ts",
+        "start_line": 75,
+        "end_line": 130,
+        "similarity": 0.6964,
+        "related_to": "public/app/features/search/state/SearchStateManager.ts",
+        "content_preview": "used in new Browse UI */\n  parentKind?: string;\n\n  // Used only for psuedo-folders, such as Starred or Recent\n  /** @deprecated Not used in new Browse UI */\n  itemsUIDs?: string[];\n\n  // For enterprise sort options\n  sortMeta?: number | string; // value sorted by\n  sortMetaName?: string; // name of the value being sorted e.g. 'Views'\n  managedBy?: ManagerKind;\n}\n\nexport interface SearchAction extends Action {\n  payload?: any;\n}\n\nexport type EventTrackingNamespace = 'manage_dashboards' | 'dashboard_search';\n\nexport interface SearchState {\n  query: string;\n  tag: string[];\n  starred: boolean;\n  explain?: boolean; // adds debug info\n  datasource?: string;\n  panel_type?: string;\n  sort?: string;\n  prevSort?: string; // Save sorting data between layouts\n  layout: SearchLayout;\n  result?: QueryR"
+      },
+      {
+        "file": "public/app/features/search/service/sql.test.ts",
+        "start_line": 1,
+        "end_line": 78,
+        "similarity": 0.696,
+        "related_to": "public/app/features/search/state/SearchStateManager.test.ts",
+        "content_preview": "import { backendSrv } from 'app/core/services/backend_srv';\n\nimport { DashboardSearchItemType } from '../types';\n\nimport { SQLSearcher } from './sql';\n\nconst searchMock = jest.spyOn(backendSrv, 'get');\njest.spyOn(backendSrv, 'fetch');\n\ndescribe('SQLSearcher', () => {\n  beforeEach(() => {\n    searchMock.mockReset();\n    searchMock.mockResolvedValue([]);\n  });\n\n  it('should call search api with correct query for general folder', async () => {\n    const sqlSearcher = new SQLSearcher();\n    const query = {\n      query: '*',\n      kind: ['dashboard'],\n      location: 'General',\n      sort: 'name_sort',\n    };\n    await sqlSearcher.search(query);\n\n    expect(searchMock).toHaveBeenLastCalledWith('/api/search', {\n      limit: 1000,\n      sort: query.sort,\n      tag: undefined,\n      type: Dashboar"
+      },
+      {
+        "file": "public/app/features/search/service/sql.ts",
+        "start_line": 1,
+        "end_line": 60,
+        "similarity": 0.6956,
+        "related_to": "public/app/features/search/state/SearchStateManager.ts",
+        "content_preview": "import { DataFrame, DataFrameView, FieldType, getDisplayProcessor, SelectableValue } from '@grafana/data';\nimport { config } from '@grafana/runtime';\nimport { TermCount } from 'app/core/components/TagFilter/TagFilter';\nimport { backendSrv } from 'app/core/services/backend_srv';\nimport { PermissionLevel } from 'app/types/acl';\n\nimport { DEFAULT_MAX_VALUES, GENERAL_FOLDER_UID, TYPE_KIND_MAP } from '../constants';\nimport { DashboardSearchHit, DashboardSearchItemType } from '../types';\n\nimport { deletedDashboardsCache } from './deletedDashboardsCache';\nimport { DashboardQueryResult, GrafanaSearcher, LocationInfo, QueryResponse, SearchQuery, SortOptions } from './types';\nimport { filterSearchResults, replaceCurrentFolderQuery, searchHitsToDashboardSearchHits } from './utils';\n\ninterface APIQuer"
+      }
+    ]
+  },
+  "callers": [
+    {
+      "path": "features/search/state/SearchStateManager.ts",
+      "from_function": "initStateFromUrl",
+      "calls_function": "getLocalStorageLayout",
+      "caller_line": 55,
+      "callee_file": "features/search/state/SearchStateManager.ts",
+      "callee_line": 40
+    },
+    {
+      "path": "features/search/state/SearchStateManager.ts",
+      "from_function": "initStateFromUrl",
+      "calls_function": "hasSearchFilters",
+      "caller_line": 55,
+      "callee_file": "features/search/state/SearchStateManager.ts",
+      "callee_line": 202
+    },
+    {
+      "path": "features/search/state/SearchStateManager.ts",
+      "from_function": "initStateFromUrl",
+      "calls_function": "doSearch",
+      "caller_line": 55,
+      "callee_file": "features/search/state/SearchStateManager.ts",
+      "callee_line": 251
+    },
+    {
+      "path": "features/search/state/SearchStateManager.ts",
+      "from_function": "setStateAndDoSearch",
+      "calls_function": "hasSearchFilters",
+      "caller_line": 86,
+      "callee_file": "features/search/state/SearchStateManager.ts",
+      "callee_line": 202
+    },
+    {
+      "path": "features/search/state/SearchStateManager.ts",
+      "from_function": "doSearch",
+      "calls_function": "getSearchQuery",
+      "caller_line": 251,
+      "callee_file": "features/search/state/SearchStateManager.ts",
+      "callee_line": 214
+    },
+    {
+      "path": "features/search/state/SearchStateManager.ts",
+      "from_function": "useSearchStateManager",
+      "calls_function": "getSearchStateManager",
+      "caller_line": 349,
+      "callee_file": "features/search/state/SearchStateManager.ts",
+      "callee_line": 333
+    }
+  ],
+  "call_graph_edges": [
+    {
+      "from": "features/search/state/SearchStateManager.ts::initStateFromUrl",
+      "to": "features/search/state/SearchStateManager.ts::getLocalStorageLayout"
+    },
+    {
+      "from": "features/search/state/SearchStateManager.ts::initStateFromUrl",
+      "to": "features/search/state/SearchStateManager.ts::hasSearchFilters"
+    },
+    {
+      "from": "features/search/state/SearchStateManager.ts::initStateFromUrl",
+      "to": "features/search/state/SearchStateManager.ts::doSearch"
+    },
+    {
+      "from": "features/search/state/SearchStateManager.ts::setStateAndDoSearch",
+      "to": "features/search/state/SearchStateManager.ts::hasSearchFilters"
+    },
+    {
+      "from": "features/search/state/SearchStateManager.ts::doSearch",
+      "to": "features/search/state/SearchStateManager.ts::getSearchQuery"
+    },
+    {
+      "from": "features/search/state/SearchStateManager.ts::useSearchStateManager",
+      "to": "features/search/state/SearchStateManager.ts::getSearchStateManager"
+    }
+  ],
+  "functions_in_changed_files": [
+    {
+      "name": ":program",
+      "full_name": "features/search/state/SearchStateManager.ts::program",
+      "file": "features/search/state/SearchStateManager.ts",
+      "start_line": 1,
+      "end_line": 355,
+      "signature": ""
+    },
+    {
+      "name": "getLocalStorageLayout",
+      "full_name": "features/search/state/SearchStateManager.ts::program:getLocalStorageLayout",
+      "file": "features/search/state/SearchStateManager.ts",
+      "start_line": 40,
+      "end_line": 47,
+      "signature": ""
+    },
+    {
+      "name": "initStateFromUrl",
+      "full_name": "features/search/state/SearchStateManager.ts::program:SearchStateManager:initStateFromUrl",
+      "file": "features/search/state/SearchStateManager.ts",
+      "start_line": 55,
+      "end_line": 81,
+      "signature": ""
+    },
+    {
+      "name": "setStateAndDoSearch",
+      "full_name": "features/search/state/SearchStateManager.ts::program:SearchStateManager:setStateAndDoSearch",
+      "file": "features/search/state/SearchStateManager.ts",
+      "start_line": 86,
+      "end_line": 107,
+      "signature": ""
+    },
+    {
+      "name": "hasSearchFilters",
+      "full_name": "features/search/state/SearchStateManager.ts::program:SearchStateManager:hasSearchFilters",
+      "file": "features/search/state/SearchStateManager.ts",
+      "start_line": 202,
+      "end_line": 212,
+      "signature": ""
+    },
+    {
+      "name": "getSearchQuery",
+      "full_name": "features/search/state/SearchStateManager.ts::program:SearchStateManager:getSearchQuery",
+      "file": "features/search/state/SearchStateManager.ts",
+      "start_line": 214,
+      "end_line": 249,
+      "signature": ""
+    },
+    {
+      "name": "doSearch",
+      "full_name": "features/search/state/SearchStateManager.ts::program:SearchStateManager:doSearch",
+      "file": "features/search/state/SearchStateManager.ts",
+      "start_line": 251,
+      "end_line": 289,
+      "signature": ""
+    },
+    {
+      "name": "getSearchStateManager",
+      "full_name": "features/search/state/SearchStateManager.ts::program:getSearchStateManager",
+      "file": "features/search/state/SearchStateManager.ts",
+      "start_line": 333,
+      "end_line": 347,
+      "signature": ""
+    },
+    {
+      "name": "useSearchStateManager",
+      "full_name": "features/search/state/SearchStateManager.ts::program:useSearchStateManager",
+      "file": "features/search/state/SearchStateManager.ts",
+      "start_line": 349,
+      "end_line": 354,
+      "signature": ""
+    }
+  ]
+}

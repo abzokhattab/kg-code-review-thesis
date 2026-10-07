@@ -1,0 +1,57 @@
+{
+  "candidate_mentions": [
+    {
+      "basename_collision": false,
+      "end": 588,
+      "evidence_id": "M008",
+      "excerpt": "lect the new function name.\n3. The change lacks corresponding updates in documentation or comments that might reference the old function name.\n\n## Evidence\n- **packages/grafana-data/src/themes/context.tsx**: Calls `createTheme` (line not updated to `createThemeInternal`).\n- **packages/grafana-data/src/themes/registry.ts**: Calls `createTheme` (line not updated to `createThemeInternal`).\n- **packages/grafana-data/src/transformations/transformers/histogram.ts**:",
+      "finding_passage_id": "P008",
+      "match_kind": "full_path",
+      "match_text": "packages/grafana-data/src/themes/context.tsx",
+      "oracle_path": "packages/grafana-data/src/themes/context.tsx",
+      "start": 544
+    },
+    {
+      "basename_collision": false,
+      "end": 705,
+      "evidence_id": "M010",
+      "excerpt": "ce the old function name.\n\n## Evidence\n- **packages/grafana-data/src/themes/context.tsx**: Calls `createTheme` (line not updated to `createThemeInternal`).\n- **packages/grafana-data/src/themes/registry.ts**: Calls `createTheme` (line not updated to `createThemeInternal`).\n- **packages/grafana-data/src/transformations/transformers/histogram.ts**: Calls `createTheme` in `buildHistogram` and `histogramFieldsToFrame` (lines not updated to `createThemeInternal`).\n\n",
+      "finding_passage_id": "P009",
+      "match_kind": "full_path",
+      "match_text": "packages/grafana-data/src/themes/registry.ts",
+      "oracle_path": "packages/grafana-data/src/themes/registry.ts",
+      "start": 661
+    },
+    {
+      "basename_collision": false,
+      "end": 845,
+      "evidence_id": "M011",
+      "excerpt": "not updated to `createThemeInternal`).\n- **packages/grafana-data/src/themes/registry.ts**: Calls `createTheme` (line not updated to `createThemeInternal`).\n- **packages/grafana-data/src/transformations/transformers/histogram.ts**: Calls `createTheme` in `buildHistogram` and `histogramFieldsToFrame` (lines not updated to `createThemeInternal`).\n\n## Impact\n- This change could lead to runtime errors if the function is called with the old name, resulting in undefined function errors.\n- ",
+      "finding_passage_id": "P010",
+      "match_kind": "full_path",
+      "match_text": "packages/grafana-data/src/transformations/transformers/histogram.ts",
+      "oracle_path": "packages/grafana-data/src/transformations/transformers/histogram.ts",
+      "start": 778
+    }
+  ],
+  "causal_passage_id": "P008",
+  "decision_source": "llm_causal_adjudication",
+  "detected": true,
+  "evidence_id": "M008",
+  "evidence_id_normalized": false,
+  "executed_at_utc": "2026-09-19T15:46:11.536836+00:00",
+  "finding_passage_id": "P008",
+  "judge": "anthropic:claude-sonnet-4-5",
+  "manifest_sha256": "5d4371a93d1b09f0491ecc12279f9f3ff5de23053b7a5e74650a749f58b472b0",
+  "model_alias": "anthropic:claude-sonnet-4-5",
+  "model_evidence_id": "M008",
+  "model_snapshot": "unavailable-from-original-wrapper",
+  "original_verdict": null,
+  "prompt_sha256": "4ba0a3bcbeaeda9e6af0de822db341af683f52c2bc785195f670d7e9b12c3c5a",
+  "reason_code": "specific_cross_file_link",
+  "response_wrapper": "bare",
+  "review_sha256": "9d467a69473f18d08f8e76dbb4a2939f52bb68b0c35f78646a8ccf8ef4991b5e",
+  "schema_sha256": "f70f714868ecd3d25508bb3e00b32ecbe6761b0ebc05f454ee10fa4d28efd013",
+  "schema_version": "exp2-adjudication-v3",
+  "system_sha256": "030b5e701c798b32afdabbbeb22db38f664db8c8fd8b862d2fcb98df63b6fb6b"
+}

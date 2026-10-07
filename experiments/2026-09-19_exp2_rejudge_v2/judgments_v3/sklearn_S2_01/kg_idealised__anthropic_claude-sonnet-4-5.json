@@ -1,0 +1,68 @@
+{
+  "candidate_mentions": [
+    {
+      "basename_collision": false,
+      "end": 584,
+      "evidence_id": "M001",
+      "excerpt": "ntroduce regressions.\n\n## Evidence\n- **sklearn/linear_model/_base.py:109**: The `_preprocess_data` function signature is changed to include `required_ctx`.\n- **sklearn/linear_model/_bayes.py, _coordinate_descent.py, _least_angle.py, _ridge.py**: These files call `_preprocess_data` but are not updated to pass the new `required_ctx` parameter.\n\n## Impact\n- The introduction of a new required parameter without updating all dependent calls could lead ",
+      "finding_passage_id": "P008",
+      "match_kind": "full_path",
+      "match_text": "sklearn/linear_model/_bayes.py",
+      "oracle_path": "sklearn/linear_model/_bayes.py",
+      "start": 554
+    },
+    {
+      "basename_collision": false,
+      "end": 608,
+      "evidence_id": "M002",
+      "excerpt": "ce\n- **sklearn/linear_model/_base.py:109**: The `_preprocess_data` function signature is changed to include `required_ctx`.\n- **sklearn/linear_model/_bayes.py, _coordinate_descent.py, _least_angle.py, _ridge.py**: These files call `_preprocess_data` but are not updated to pass the new `required_ctx` parameter.\n\n## Impact\n- The introduction of a new required parameter without updating all dependent calls could lead to runtime errors due to",
+      "finding_passage_id": "P008",
+      "match_kind": "basename",
+      "match_text": "_coordinate_descent.py",
+      "oracle_path": "sklearn/linear_model/_coordinate_descent.py",
+      "start": 586
+    },
+    {
+      "basename_collision": false,
+      "end": 625,
+      "evidence_id": "M003",
+      "excerpt": "del/_base.py:109**: The `_preprocess_data` function signature is changed to include `required_ctx`.\n- **sklearn/linear_model/_bayes.py, _coordinate_descent.py, _least_angle.py, _ridge.py**: These files call `_preprocess_data` but are not updated to pass the new `required_ctx` parameter.\n\n## Impact\n- The introduction of a new required parameter without updating all dependent calls could lead to runtime errors due to missing argument",
+      "finding_passage_id": "P008",
+      "match_kind": "basename",
+      "match_text": "_least_angle.py",
+      "oracle_path": "sklearn/linear_model/_least_angle.py",
+      "start": 610
+    },
+    {
+      "basename_collision": false,
+      "end": 636,
+      "evidence_id": "M004",
+      "excerpt": "*: The `_preprocess_data` function signature is changed to include `required_ctx`.\n- **sklearn/linear_model/_bayes.py, _coordinate_descent.py, _least_angle.py, _ridge.py**: These files call `_preprocess_data` but are not updated to pass the new `required_ctx` parameter.\n\n## Impact\n- The introduction of a new required parameter without updating all dependent calls could lead to runtime errors due to missing arguments.\n- Lack o",
+      "finding_passage_id": "P008",
+      "match_kind": "basename",
+      "match_text": "_ridge.py",
+      "oracle_path": "sklearn/linear_model/_ridge.py",
+      "start": 627
+    }
+  ],
+  "causal_passage_id": "P010",
+  "decision_source": "llm_causal_adjudication",
+  "detected": true,
+  "evidence_id": "M001",
+  "evidence_id_normalized": false,
+  "executed_at_utc": "2026-09-19T15:37:23.202706+00:00",
+  "finding_passage_id": "P008",
+  "judge": "anthropic:claude-sonnet-4-5",
+  "manifest_sha256": "5d4371a93d1b09f0491ecc12279f9f3ff5de23053b7a5e74650a749f58b472b0",
+  "model_alias": "anthropic:claude-sonnet-4-5",
+  "model_evidence_id": "M001",
+  "model_snapshot": "unavailable-from-original-wrapper",
+  "original_verdict": null,
+  "prompt_sha256": "5c5dd31d3ead799d8187f55653a59ea40d9cdae837867adc8f4ab3165c26ba3e",
+  "reason_code": "specific_cross_file_link",
+  "response_wrapper": "bare",
+  "review_sha256": "06604d75fdcd8fbf622b8070423fac8cd9b3f503682e40221dfc0f02989720b0",
+  "schema_sha256": "f70f714868ecd3d25508bb3e00b32ecbe6761b0ebc05f454ee10fa4d28efd013",
+  "schema_version": "exp2-adjudication-v3",
+  "system_sha256": "030b5e701c798b32afdabbbeb22db38f664db8c8fd8b862d2fcb98df63b6fb6b"
+}

@@ -1,0 +1,51 @@
+{
+  "pr_id": 3,
+  "mode": "joern_kg",
+  "mean_scores": {
+    "F3": 3.0,
+    "F4": 2.0,
+    "P1": 0.0,
+    "R2": 0.0,
+    "T3": 3.0
+  },
+  "mean_graded_total": 8.0,
+  "per_judge": [
+    {
+      "model": "gemini:gemini-2.5-flash",
+      "scores": {
+        "F3": 3,
+        "F4": 2,
+        "P1": 0,
+        "R2": 0,
+        "T3": 3
+      },
+      "evidence": {
+        "F3": "Names multiple specific callers or dependent components with file paths or function names, and explains the concrete integration risk for each. The review states: \"Callers: e2e-playwright/panels-suite/panelEdit_transforms.spec.ts, e2e-playwright/panels-suite/table-footer.spec.ts (these E2E tests interact with the UI where Reduce is rendered).\" and explains the impact: \"Existing E2E tests might fail due to unexpected UI shifts, requiring manual updates to selectors or visual assertions, increasin",
+        "F4": "Identifies at least one specific API contract or caller expectation that could break. The review identifies an \"Implicit Behavioral Change for Strict Mode\" in `onModeChanged` within `Reduce.tsx` (lines 33-36, 48-50), explaining that the `ExpressionQuerySettings` structure for `ReducerMode.Strict` would change from `{ mode: value.value }` to `{ mode: ReducerMode.Strict }`, potentially altering how the backend processes queries.",
+        "P1": "No mention of performance issues in the review.",
+        "R2": "No comment on complexity or code structure in the review.",
+        "T3": "Names multiple specific test file paths, references the exact test scenarios or functions within those files that need coverage, and explains what edge cases are currently missing. The review recommends: \"Create a new test file (e.g., public/app/features/expressions/components/Reduce.test.tsx) to cover: Rendering of the strictModeNotification... Non-rendering... Verification that onModeChanged correctly calls onChange... Verification of the documentation link's href... Verification of the locali"
+      },
+      "error": ""
+    },
+    {
+      "model": "gemini:gemini-2.5-pro",
+      "scores": {
+        "F3": 3,
+        "F4": 2,
+        "P1": 0,
+        "R2": 0,
+        "T3": 3
+      },
+      "evidence": {
+        "F3": "Names multiple specific E2E test files that are affected by the UI change: `e2e-playwright/panels-suite/panelEdit_transforms.spec.ts`, `e2e-playwright/panels-suite/table-footer.spec.ts`. It also explains the concrete integration risk: \"The introduction of a new `Alert` component can alter the visual layout of the `Reduce` component, potentially causing existing E2E tests that rely on element positioning or screenshot comparisons to become flaky or fail.\"",
+        "F4": "Identifies a specific behavioral change that could break an expectation: \"The addition of an explicit `case ReducerMode.Strict` in `onModeChanged` changes how this mode's settings are handled. If `ReducerMode.Strict` was previously implicitly caught by the `default` case, its behavior for `ExpressionQuerySettings` would have been `{ mode: value.value }`. Now it's explicitly `{ mode: ReducerMode.Strict }`.\"",
+        "P1": "The review does not mention performance.",
+        "R2": "The review does not comment on complexity or suggest simplifications.",
+        "T3": "Names multiple specific test files to add or update (`public/app/features/expressions/components/Reduce.test.tsx`, `e2e-playwright/panels-suite/panelEdit_transforms.spec.ts`, `e2e-playwright/panels-suite/table-footer.spec.ts`) and lists multiple exact test scenarios to cover, such as \"Rendering of the `strictModeNotification` when `mode` is `ReducerMode.Strict`\" and \"Non-rendering of the `strictModeNotification` when `mode` is not `ReducerMode.Strict`.\""
+      },
+      "error": ""
+    }
+  ],
+  "timestamp": "2026-06-01T18:57:29.362309+00:00"
+}

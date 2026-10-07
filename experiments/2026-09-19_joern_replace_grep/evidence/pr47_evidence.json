@@ -1,0 +1,4253 @@
+{
+  "pr": {
+    "number": 26749,
+    "title": "Ensure applying configuration as code retains the offline cause of agents",
+    "body": "When configuring agents with configuration as code the offline cause is not maintained in the yaml. So the offline cause is lost when reapplying casc or restarting Jenkins.\r\n\r\nThis change retains the offline cause in those cases.\r\n\r\nFixes https://github.com/jenkinsci/jenkins/issues/26750\r\n\r\n<!-- Comment:\r\n!!! \u26a0\ufe0f IMPORTANT \u26a0\ufe0f !!!\r\nDo not remove any of the sections below, even if they are not applicable to your change. The sections are used by the\r\nchangelog generator and other tools to extract information about the change. If a section is not applicable,\r\nleave as is. Carefully read the instructions in each section and provide the necessary information.\r\n\r\nPull requests that do not follow the template might be closed without further review.\r\n-->\r\n\r\n<!-- Comment:\r\nA great PR typically begins with the line below.\r\nReplace <issue-number> with the issue number.\r\n-->\r\n\r\n\r\n\r\n<!-- Comment:\r\nIf the issue is not fully described in the issue tracker, add more information here (justification, pull request links, etc.).\r\n\r\n * We do not require an issue for minor improvements.\r\n * Major new features should have an issue created.\r\n-->\r\n\r\n### Testing done\r\n- Install configuration as code plugin\r\n- create one agent and connect it\r\n- export the casc and only keep the jenkins -> nodes in the yaml\r\n- apply casc\r\n- take agent offline\r\n- apply casc -> agent is still offline\r\n\r\nAdded a unit test that fails without and succeeds with this change\r\n\r\n<!-- Comment:\r\nProvide a clear description of how this change was tested.\r\nAt minimum this should include proof that a computer has executed the changed lines.\r\nIdeally this should include an automated test or an explanation as to why this change has no tests.\r\nNote that automated test coverage is less than complete, so a successful PR build does not necessarily imply that a computer has executed the changed lines.\r\nIf automated test coverage does not exist for the lines you are changing, you must describe the scenario(s) in which you manually tested the change.\r\nFor frontend changes, include screenshots of the relevant page(s) before and after the change.\r\nFor refactoring and code cleanup changes, exercise the code before and after the change and verify the behavior remains the same.\r\n-->\r\n\r\n### Screenshots (UI changes only)\r\n\r\n<!--\r\nIf your change involves a UI change, please include screenshots showing the before and after states.\r\n-->\r\n\r\n#### Before\r\n\r\n#### After\r\n\r\n### Proposed changelog entries\r\n\r\n- Ensure applying configuration as code retains the offline cause of agent (regression in 2.482).\r\n\r\n<!-- Comment:\r\nThe changelog entry should be in the imperative mood; e.g., write \"do this\"/\"return that\" rather than \"does this\"/\"returns that\".\r\nFor examples, see: https://www.jenkins.io/changelog/\r\n\r\nDo not include the issue in the changelog entry.\r\nInclude the issue in the description of the pull request so that the changelog generator can find it and include it in the generated changelog.\r\n\r\nYou may add multiple changelog entries if applicable by adding a new entry to the list, e.g.\r\n- First changelog entry\r\n- Second changelog entry\r\n-->\r\n\r\n### Proposed changelog category\r\n\r\n/label bug,regression-fix\r\n\r\n<!--\r\nThe changelog entry needs to have a category which is selected based on the label.\r\nIf there's no changelog then the label should be `skip-changelog`.\r\n\r\nThe available categories are:\r\n* bug - Minor bug. Will be listed after features\r\n* developer - Changes which impact plugin developers\r\n* dependencies - Pull requests that update a dependency\r\n* internal - Internal only change, not user facing\r\n* into-lts - Changes that are backported to the LTS baseline\r\n* localization - Updates localization files\r\n* major-bug - Major bug. Will be highlighted on the top of the changelog\r\n* major-rfe - Major enhancement. Will be highlighted on the top\r\n* rfe - Minor enhancement\r\n* regression-fix - Fixes a regression in one of the previous Jenkins releases\r\n* removed - Removes a feature or a public API\r\n* skip-changelog - Should not be shown in the changelog\r\n\r\nNon-changelog categories:\r\n* web-ui - Changes in the web UI\r\n\r\nNon-changelog categories require a changelog category but should be used if applicable,\r\ncomma separate to provide multiple categories in the label command.\r\n-->\r\n\r\n### Proposed upgrade guidelines\r\n\r\nN/A\r\n\r\n<!-- Comment:\r\nLeave the proposed upgrade guidelines in the pull request with the \"N/A\" value if no upgrade guidelines are needed.\r\nThe changelog generator relies on the presence of the upgrade guidelines section as part of its data extraction process.\r\n-->\r\n\r\n### Submitter checklist\r\n\r\n- [x] The issue, if it exists, is well-described.\r\n- [x] The changelog entries and upgrade guidelines are appropriate for the audience affected by the change (users or developers, depending on the change) and are in the imperative mood (see [examples](https://github.com/jenkins-infra/jenkins.io/blob/master/content/_data/changelogs/weekly.yml)). Fill in the **Proposed upgrade guidelines** section only if there are breaking changes or changes that may require extra steps from users during upgrade.\r\n- [ ] There is automated testing or an explanation as to why this change has no tests.\r\n- [ ] New public classes, fields, and methods are annotated with `@Restricted` or have `@since TODO` Javadocs, as appropriate.\r\n- [ ] New deprecations are annotated with `@Deprecated(since = \"TODO\")` or `@Deprecated(forRemoval = true, since = \"TODO\")`, if applicable.\r\n- [ ] UI changes do not introduce regressions when enforcing the current default rules of [Content Security Policy Plugin](https://plugins.jenkins.io/csp/). In particular, new or substantially changed JavaScript is not defined inline and does not call `eval` to ease future introduction of Content Security Policy (CSP) directives (see [documentation](https://www.jenkins.io/doc/developer/security/csp/)).\r\n- [ ] For dependency updates, there are links to external changelogs and, if possible, full differentials.\r\n- [ ] For new APIs and extension points, there is a link to at least one consumer.\r\n\r\n### Desired reviewers\r\n\r\n@mention\r\n\r\n<!-- Comment:\r\nIf you need an accelerated review process by the community (e.g., for critical bugs), mention @jenkinsci/core-pr-reviewers.\r\n-->\r\n\r\nBefore the changes are marked as `ready-for-merge`:\r\n\r\n### Maintainer checklist\r\n\r\n- [ ] There are at least two (2) approvals for the pull request and no outstanding requests for change.\r\n- [ ] Conversations in the pull request are over, or it is explicit that a reviewer is not blocking the change.\r\n- [ ] Changelog entries in the pull request title and/or **Proposed changelog entries** are accurate, human-readable, and in the imperative mood.\r\n- [ ] Proper changelog labels are set so that the changelog can be generated automatically.\r\n- [ ] If the change needs additional upgrade steps from users, the `upgrade-guide-needed` label is set and there is a **Proposed upgrade guidelines** section in the pull request title (see [example](https://github.com/jenkinsci/jenkins/pull/4387)).\r\n- [ ] If it would make sense to backport the change to LTS, be a _Bug_ or _Improvement_, and either the issue or pull request must be labeled as `lts-candidate` to be considered.\r\n",
+    "url": "https://github.com/jenkinsci/jenkins/pull/26749",
+    "repo": "jenkinsci/jenkins",
+    "base_branch": "master",
+    "head_branch": "offline-cause-casc",
+    "merged_at": "2026-05-07T21:14:22Z",
+    "state": "MERGED"
+  },
+  "changed_files": [
+    {
+      "path": "core/src/main/java/hudson/model/Node.java",
+      "language": "java",
+      "added": 2,
+      "deleted": 1
+    },
+    {
+      "path": "core/src/main/java/jenkins/model/Nodes.java",
+      "language": "java",
+      "added": 1,
+      "deleted": 0
+    },
+    {
+      "path": "test/src/test/java/jenkins/model/NodesTest.java",
+      "language": "java",
+      "added": 18,
+      "deleted": 0
+    }
+  ],
+  "nearest_tests": [
+    {
+      "path": "test/src/test/java/hudson/tools/ToolLocationNodePropertyTest.java",
+      "relationship": "tests",
+      "source_file": "core/src/main/java/hudson/model/Node.java"
+    },
+    {
+      "path": "test/src/test/java/hudson/cli/OnlineNodeCommandTest.java",
+      "relationship": "tests",
+      "source_file": "core/src/main/java/hudson/model/Node.java"
+    },
+    {
+      "path": "test/src/test/java/hudson/cli/WaitNodeOfflineCommandTest.java",
+      "relationship": "tests",
+      "source_file": "core/src/main/java/hudson/model/Node.java"
+    },
+    {
+      "path": "test/src/test/java/hudson/cli/OfflineNodeCommandTest.java",
+      "relationship": "tests",
+      "source_file": "core/src/main/java/hudson/model/Node.java"
+    },
+    {
+      "path": "test/src/test/java/hudson/cli/ConnectNodeCommandTest.java",
+      "relationship": "tests",
+      "source_file": "core/src/main/java/hudson/model/Node.java"
+    },
+    {
+      "path": "test/src/test/java/jenkins/model/NodesRestartTest.java",
+      "relationship": "tests",
+      "source_file": "core/src/main/java/jenkins/model/Nodes.java"
+    },
+    {
+      "path": "test/src/test/java/jenkins/model/NodesTest.java",
+      "relationship": "tests",
+      "source_file": "core/src/main/java/jenkins/model/Nodes.java"
+    }
+  ],
+  "dependent_files": [
+    "hudson/BulkChange.java",
+    "hudson/cli/CreateNodeCommand.java",
+    "hudson/cli/DeleteNodeCommand.java",
+    "hudson/cli/UpdateNodeCommand.java",
+    "hudson/cli/WaitNodeOfflineCommand.java",
+    "hudson/cli/WaitNodeOnlineCommand.java",
+    "hudson/console/ModelHyperlinkNote.java",
+    "hudson/diagnosis/OldDataMonitor.java",
+    "hudson/init/impl/GroovyInitScript.java",
+    "hudson/init/impl/InitialUserContent.java",
+    "hudson/model/AbstractBuild.java",
+    "hudson/model/AbstractCIBase.java",
+    "hudson/model/AbstractProject.java",
+    "hudson/model/AdministrativeMonitor.java",
+    "hudson/model/Computer.java",
+    "hudson/model/ComputerSet.java",
+    "hudson/model/ItemGroupMixIn.java",
+    "hudson/model/Items.java",
+    "hudson/model/JDK.java",
+    "hudson/model/Job.java",
+    "hudson/model/Label.java",
+    "hudson/model/LoadStatistics.java",
+    "hudson/model/Node.java",
+    "hudson/model/Queue.java",
+    "hudson/model/Slave.java",
+    "hudson/model/View.java",
+    "hudson/model/WorkspaceCleanupThread.java",
+    "hudson/model/queue/CauseOfBlockage.java",
+    "hudson/model/queue/MappingWorksheet.java",
+    "hudson/node_monitors/ClockMonitor.java",
+    "hudson/node_monitors/DiskSpaceMonitor.java",
+    "hudson/node_monitors/TemporarySpaceMonitor.java",
+    "hudson/search/Search.java",
+    "hudson/search/SuggestedItem.java",
+    "hudson/security/AccessControlled.java",
+    "hudson/slaves/AbstractCloudSlave.java",
+    "hudson/slaves/Cloud.java",
+    "hudson/slaves/ComputerRetentionWork.java",
+    "hudson/slaves/NodeProvisioner.java",
+    "hudson/slaves/RetentionStrategy.java",
+    "hudson/tasks/CommandInterpreter.java",
+    "hudson/tools/AbstractCommandInstaller.java",
+    "hudson/tools/DownloadFromUrlInstaller.java",
+    "hudson/tools/InstallerTranslator.java",
+    "hudson/tools/ToolInstaller.java",
+    "hudson/tools/ToolLocationNodeProperty.java",
+    "hudson/tools/ZipExtractionInstaller.java",
+    "hudson/util/ClockDifference.java",
+    "hudson/util/ListBoxModel.java",
+    "hudson/util/PersistedList.java",
+    "jenkins/appearance/AppearanceGlobalConfiguration.java",
+    "jenkins/install/SetupWizard.java",
+    "jenkins/model/CoreEnvironmentContributor.java",
+    "jenkins/model/Jenkins.java",
+    "jenkins/model/ModelObjectWithContextMenu.java",
+    "jenkins/model/Nodes.java",
+    "jenkins/model/UnlabeledLoadStatistics.java",
+    "jenkins/tools/GlobalToolConfiguration.java",
+    "jenkins/widgets/BuildTimeTrend.java"
+  ],
+  "diff_summary": "3 files changed",
+  "full_diff": "diff --git a/core/src/main/java/hudson/model/Node.java b/core/src/main/java/hudson/model/Node.java\nindex 10f433ce8046..220dfadd782d 100644\n--- a/core/src/main/java/hudson/model/Node.java\n+++ b/core/src/main/java/hudson/model/Node.java\n@@ -279,7 +279,8 @@ boolean isTemporarilyOffline() {\n      * Enable a {@link Computer} to inform its node when it is taken\n      * temporarily offline.\n      */\n-    void setTemporaryOfflineCause(OfflineCause cause) {\n+    @Restricted(NoExternalUse.class)\n+    public void setTemporaryOfflineCause(OfflineCause cause) {\n         try {\n             if (temporaryOfflineCause != cause) {\n                 temporaryOfflineCause = cause;\ndiff --git a/core/src/main/java/jenkins/model/Nodes.java b/core/src/main/java/jenkins/model/Nodes.java\nindex 150455e3f323..52a86c3c26b8 100644\n--- a/core/src/main/java/jenkins/model/Nodes.java\n+++ b/core/src/main/java/jenkins/model/Nodes.java\n@@ -121,6 +121,7 @@ public void setNodes(final @NonNull Collection<? extends Node> nodes) throws IOE\n                 node.onLoad(Nodes.this, name);\n                 var oldNode = toRemove.get(name);\n                 if (oldNode != null) {\n+                    node.setTemporaryOfflineCause(oldNode.getTemporaryOfflineCause());\n                     NodeListener.fireOnUpdated(oldNode, node);\n                     toRemove.remove(name);\n                 } else {\ndiff --git a/test/src/test/java/jenkins/model/NodesTest.java b/test/src/test/java/jenkins/model/NodesTest.java\nindex 037cbcd0db5b..c6d5c0284d77 100644\n--- a/test/src/test/java/jenkins/model/NodesTest.java\n+++ b/test/src/test/java/jenkins/model/NodesTest.java\n@@ -31,6 +31,7 @@\n import static org.hamcrest.Matchers.empty;\n import static org.hamcrest.Matchers.equalTo;\n import static org.hamcrest.Matchers.hasSize;\n+import static org.hamcrest.Matchers.notNullValue;\n import static org.hamcrest.Matchers.nullValue;\n import static org.hamcrest.Matchers.sameInstance;\n import static org.junit.jupiter.api.Assertions.assertEquals;\n@@ -50,10 +51,12 @@\n import hudson.model.Node;\n import hudson.model.Saveable;\n import hudson.model.Slave;\n+import hudson.model.User;\n import hudson.model.listeners.SaveableListener;\n import hudson.slaves.ComputerLauncher;\n import hudson.slaves.ComputerRetentionWork;\n import hudson.slaves.DumbSlave;\n+import hudson.slaves.OfflineCause;\n import hudson.slaves.RetentionStrategy;\n import hudson.slaves.SlaveComputer;\n import java.io.IOException;\n@@ -356,6 +359,21 @@ protected boolean allowLoad(@NonNull Node node) {\n         }\n     }\n \n+    @Test\n+    void setNodesRetainsOfflineCause() throws URISyntaxException, IOException, Descriptor.FormException {\n+        var agentA = new DumbSlave(\"nodeA\", \"temp\", r.createComputerLauncher(null));\n+        var agentB = new DumbSlave(\"nodeB\", \"temp\", r.createComputerLauncher(null));\n+        Jenkins.get().setNodes(List.of(agentA, agentB));\n+        User user = User.getOrCreateByIdOrFullName(\"user\");\n+        agentA.setTemporaryOfflineCause(new OfflineCause.UserCause(user, \"unitTest\"));\n+        agentA = new DumbSlave(\"nodeA\", \"temp\", r.createComputerLauncher(null));\n+        Jenkins.get().setNodes(List.of(agentA, agentB));\n+        var nodeA = Jenkins.get().getNode(\"nodeA\");\n+        assertThat(nodeA, notNullValue());\n+        assertThat(nodeA.getTemporaryOfflineCause(), notNullValue());\n+        assertThat(nodeA.getTemporaryOfflineCause().getReason(), equalTo(\"unitTest\"));\n+    }\n+\n     @Test\n     void listenersCalledOnSetNodes() throws URISyntaxException, IOException, Descriptor.FormException {\n         var agentA = new DumbSlave(\"nodeA\", \"temp\", r.createComputerLauncher(null));\n",
+  "metadata": {
+    "v2_fetcher_version": 1,
+    "v2_fetched_at_unix": 1778582690,
+    "v2_diff_cap_bytes": 50000,
+    "v2_body_cap_bytes": 8000,
+    "v2_diff_truncated": false,
+    "v2_raw_diff_chars": 3637,
+    "v2_raw_body_chars": 7218,
+    "v2_rag_source": "fresh_for_v2_40pr_expansion",
+    "v2_rag_chunks_copied": 8,
+    "joern_enriched": true
+  },
+  "similar_chunks": [
+    {
+      "file": "core/src/main/java/hudson/model/Slave.java",
+      "start_line": 43,
+      "end_line": 101,
+      "similarity": 0.8574,
+      "related_to": "core/src/main/java/hudson/model/Node.java",
+      "content_preview": "import hudson.remoting.Which;\nimport hudson.slaves.ComputerLauncher;\nimport hudson.slaves.DumbSlave;\nimport hudson.slaves.JNLPLauncher;\nimport hudson.slaves.NodeDescriptor;\nimport hudson.slaves.NodeProperty;\nimport hudson.slaves.NodePropertyDescriptor;\nimport hudson.slaves.RetentionStrategy;\nimport hudson.slaves.SlaveComputer;\nimport hudson.util.ClockDifference;\nimport hudson.util.DescribableList;\nimport hudson.util.FormValidation;\nimport jakarta.servlet.ServletException;\nimport java.io.File;\nimport java.io.FileNotFoundException;\nimport java.io.IOException;\nimport java.io.InputStream;\nimport java.io.Serializable;\nimport java.net.MalformedURLException;\nimport java.net.URL;\nimport java.net.URLConnection;\nimport java.util.ArrayList;\nimport java.util.Collection;\nimport java.util.Collections;\ni"
+    },
+    {
+      "file": "core/src/main/java/hudson/model/Slave.java",
+      "start_line": 105,
+      "end_line": 163,
+      "similarity": 0.7276,
+      "related_to": "core/src/main/java/hudson/model/Node.java",
+      "content_preview": " */\n@SuppressFBWarnings(value = \"DESERIALIZATION_GADGET\", justification = \"unhappy about existence of readResolve?\")\npublic abstract class Slave extends Node implements Serializable {\n\n    private static final Logger LOGGER = Logger.getLogger(Slave.class.getName());\n\n    /**\n     * Name of this agent node.\n     */\n    protected String name;\n\n    /**\n     * Description of this node.\n     */\n    private String description;\n\n    /**\n     * Path to the root of the workspace from the view point of this node, such as \"/hudson\", this need not\n     * be absolute provided that the launcher establishes a consistent working directory, such as \"./.jenkins-agent\"\n     * when used with an SSH launcher.\n     *\n     * NOTE: if the administrator is using a relative path they are responsible for ensuring th"
+    },
+    {
+      "file": "core/src/main/java/hudson/model/ReconfigurableDescribable.java",
+      "start_line": 24,
+      "end_line": 44,
+      "similarity": 0.7061,
+      "related_to": "core/src/main/java/hudson/model/Node.java",
+      "content_preview": "\npackage hudson.model;\n\nimport edu.umd.cs.findbugs.annotations.CheckForNull;\nimport edu.umd.cs.findbugs.annotations.NonNull;\nimport hudson.Util;\nimport hudson.model.Descriptor.FormException;\nimport hudson.slaves.NodeProperty;\nimport jenkins.security.stapler.StaplerNotDispatchable;\nimport net.sf.json.JSONObject;\nimport org.kohsuke.stapler.StaplerRequest;\ni"
+    },
+    {
+      "file": "core/src/main/java/hudson/model/Slave.java",
+      "start_line": 25,
+      "end_line": 48,
+      "similarity": 0.6993,
+      "related_to": "core/src/main/java/hudson/model/Node.java",
+      "content_preview": "\npackage hudson.model;\n\nimport edu.umd.cs.findbugs.annotations.CheckForNull;\nimport edu.umd.cs.findbugs.annotations.NonNull;\nimport edu.umd.cs.findbugs.annotations.SuppressFBWarnings;\nimport hudson.DescriptorExtensionList;\nimport hudson.EnvVars;\nimport hud"
+    },
+    {
+      "file": "core/src/main/java/hudson/model/Actionable.java",
+      "start_line": 24,
+      "end_line": 48,
+      "similarity": 0.6952,
+      "related_to": "core/src/main/java/hudson/model/Node.java",
+      "content_preview": "\npackage hudson.model;\n\nimport edu.umd.cs.findbugs.annotations.NonNull;\nimport edu.umd.cs.findbugs.annotations.Nullable;\nimport hudson.Util;\nimport java.util.ArrayList;\nimport java.util.Collection;\nimport java.util.Collections;\nimport java.util.List;\nimport java.util.Set;\nimport java.util.concurrent.CopyOnW"
+    },
+    {
+      "file": "core/src/main/java/hudson/model/Cause.java",
+      "start_line": 24,
+      "end_line": 50,
+      "similarity": 0.6938,
+      "related_to": "core/src/main/java/hudson/model/Node.java",
+      "content_preview": "\npackage hudson.model;\n\nimport static hudson.Functions.getAvatar;\n\nimport com.thoughtworks.xstream.converters.UnmarshallingContext;\nimport edu.umd.cs.findbugs.annotations.CheckForNull;\nimport edu.umd.cs.findbugs.annotations.NonNull;\nimport edu.umd.cs.findbugs.annotations.SuppressFBWarnings;\nimport hudson.Util;"
+    },
+    {
+      "file": "core/src/main/java/hudson/model/AbstractCIBase.java",
+      "start_line": 26,
+      "end_line": 48,
+      "similarity": 0.6912,
+      "related_to": "core/src/main/java/hudson/model/Node.java",
+      "content_preview": "\npackage hudson.model;\n\n\nimport edu.umd.cs.findbugs.annotations.CheckForNull;\nimport edu.umd.cs.findbugs.annotations.NonNull;\nimport edu.umd.cs.findbugs.annotations.SuppressFBWarnings"
+    },
+    {
+      "file": "core/src/main/java/hudson/model/JDK.java",
+      "start_line": 24,
+      "end_line": 52,
+      "similarity": 0.6832,
+      "related_to": "core/src/main/java/hudson/model/Node.java",
+      "content_preview": "\npackage hudson.model;\n\nimport edu.umd.cs.findbugs.annotations.NonNull;\nimport hudson.EnvVars;\nimport hudson.Extension;\nimport hudson.Launcher;\nimport hudson.slaves.NodeSpecific;\nimport hudson.tools.ToolDescriptor;\nimport hudson.tools.ToolInstallation;\nimport hudson.tools.ToolInstaller;\nimport hudson.tools.ToolProperty;\nimpo"
+    }
+  ],
+  "rag_evidence": {
+    "similar_code": [
+      {
+        "file": "core/src/main/java/hudson/model/Slave.java",
+        "start_line": 43,
+        "end_line": 101,
+        "similarity": 0.8574,
+        "related_to": "core/src/main/java/hudson/model/Node.java",
+        "content_preview": "import hudson.remoting.Which;\nimport hudson.slaves.ComputerLauncher;\nimport hudson.slaves.DumbSlave;\nimport hudson.slaves.JNLPLauncher;\nimport hudson.slaves.NodeDescriptor;\nimport hudson.slaves.NodeProperty;\nimport hudson.slaves.NodePropertyDescriptor;\nimport hudson.slaves.RetentionStrategy;\nimport hudson.slaves.SlaveComputer;\nimport hudson.util.ClockDifference;\nimport hudson.util.DescribableList;\nimport hudson.util.FormValidation;\nimport jakarta.servlet.ServletException;\nimport java.io.File;\nimport java.io.FileNotFoundException;\nimport java.io.IOException;\nimport java.io.InputStream;\nimport java.io.Serializable;\nimport java.net.MalformedURLException;\nimport java.net.URL;\nimport java.net.URLConnection;\nimport java.util.ArrayList;\nimport java.util.Collection;\nimport java.util.Collections;\ni"
+      },
+      {
+        "file": "core/src/main/java/hudson/model/Slave.java",
+        "start_line": 105,
+        "end_line": 163,
+        "similarity": 0.7276,
+        "related_to": "core/src/main/java/hudson/model/Node.java",
+        "content_preview": " */\n@SuppressFBWarnings(value = \"DESERIALIZATION_GADGET\", justification = \"unhappy about existence of readResolve?\")\npublic abstract class Slave extends Node implements Serializable {\n\n    private static final Logger LOGGER = Logger.getLogger(Slave.class.getName());\n\n    /**\n     * Name of this agent node.\n     */\n    protected String name;\n\n    /**\n     * Description of this node.\n     */\n    private String description;\n\n    /**\n     * Path to the root of the workspace from the view point of this node, such as \"/hudson\", this need not\n     * be absolute provided that the launcher establishes a consistent working directory, such as \"./.jenkins-agent\"\n     * when used with an SSH launcher.\n     *\n     * NOTE: if the administrator is using a relative path they are responsible for ensuring th"
+      },
+      {
+        "file": "core/src/main/java/hudson/model/ReconfigurableDescribable.java",
+        "start_line": 24,
+        "end_line": 44,
+        "similarity": 0.7061,
+        "related_to": "core/src/main/java/hudson/model/Node.java",
+        "content_preview": "\npackage hudson.model;\n\nimport edu.umd.cs.findbugs.annotations.CheckForNull;\nimport edu.umd.cs.findbugs.annotations.NonNull;\nimport hudson.Util;\nimport hudson.model.Descriptor.FormException;\nimport hudson.slaves.NodeProperty;\nimport jenkins.security.stapler.StaplerNotDispatchable;\nimport net.sf.json.JSONObject;\nimport org.kohsuke.stapler.StaplerRequest;\ni"
+      },
+      {
+        "file": "core/src/main/java/hudson/model/Slave.java",
+        "start_line": 25,
+        "end_line": 48,
+        "similarity": 0.6993,
+        "related_to": "core/src/main/java/hudson/model/Node.java",
+        "content_preview": "\npackage hudson.model;\n\nimport edu.umd.cs.findbugs.annotations.CheckForNull;\nimport edu.umd.cs.findbugs.annotations.NonNull;\nimport edu.umd.cs.findbugs.annotations.SuppressFBWarnings;\nimport hudson.DescriptorExtensionList;\nimport hudson.EnvVars;\nimport hud"
+      },
+      {
+        "file": "core/src/main/java/hudson/model/Actionable.java",
+        "start_line": 24,
+        "end_line": 48,
+        "similarity": 0.6952,
+        "related_to": "core/src/main/java/hudson/model/Node.java",
+        "content_preview": "\npackage hudson.model;\n\nimport edu.umd.cs.findbugs.annotations.NonNull;\nimport edu.umd.cs.findbugs.annotations.Nullable;\nimport hudson.Util;\nimport java.util.ArrayList;\nimport java.util.Collection;\nimport java.util.Collections;\nimport java.util.List;\nimport java.util.Set;\nimport java.util.concurrent.CopyOnW"
+      },
+      {
+        "file": "core/src/main/java/hudson/model/Cause.java",
+        "start_line": 24,
+        "end_line": 50,
+        "similarity": 0.6938,
+        "related_to": "core/src/main/java/hudson/model/Node.java",
+        "content_preview": "\npackage hudson.model;\n\nimport static hudson.Functions.getAvatar;\n\nimport com.thoughtworks.xstream.converters.UnmarshallingContext;\nimport edu.umd.cs.findbugs.annotations.CheckForNull;\nimport edu.umd.cs.findbugs.annotations.NonNull;\nimport edu.umd.cs.findbugs.annotations.SuppressFBWarnings;\nimport hudson.Util;"
+      },
+      {
+        "file": "core/src/main/java/hudson/model/AbstractCIBase.java",
+        "start_line": 26,
+        "end_line": 48,
+        "similarity": 0.6912,
+        "related_to": "core/src/main/java/hudson/model/Node.java",
+        "content_preview": "\npackage hudson.model;\n\n\nimport edu.umd.cs.findbugs.annotations.CheckForNull;\nimport edu.umd.cs.findbugs.annotations.NonNull;\nimport edu.umd.cs.findbugs.annotations.SuppressFBWarnings"
+      },
+      {
+        "file": "core/src/main/java/hudson/model/JDK.java",
+        "start_line": 24,
+        "end_line": 52,
+        "similarity": 0.6832,
+        "related_to": "core/src/main/java/hudson/model/Node.java",
+        "content_preview": "\npackage hudson.model;\n\nimport edu.umd.cs.findbugs.annotations.NonNull;\nimport hudson.EnvVars;\nimport hudson.Extension;\nimport hudson.Launcher;\nimport hudson.slaves.NodeSpecific;\nimport hudson.tools.ToolDescriptor;\nimport hudson.tools.ToolInstallation;\nimport hudson.tools.ToolInstaller;\nimport hudson.tools.ToolProperty;\nimpo"
+      }
+    ]
+  },
+  "callers": [
+    {
+      "path": "hudson/BulkChange.java",
+      "from_function": "commit",
+      "calls_function": "save",
+      "caller_line": 92,
+      "callee_file": "jenkins/model/Nodes.java",
+      "callee_line": 336
+    },
+    {
+      "path": "hudson/cli/CreateNodeCommand.java",
+      "from_function": "run",
+      "calls_function": "setNodeName",
+      "caller_line": 49,
+      "callee_file": "hudson/model/Node.java",
+      "callee_line": 181
+    },
+    {
+      "path": "hudson/cli/CreateNodeCommand.java",
+      "from_function": "run",
+      "calls_function": "getNodeName",
+      "caller_line": 49,
+      "callee_file": "hudson/model/Node.java",
+      "callee_line": 167
+    },
+    {
+      "path": "hudson/cli/DeleteNodeCommand.java",
+      "from_function": "run",
+      "calls_function": "toComputer",
+      "caller_line": 53,
+      "callee_file": "hudson/model/Node.java",
+      "callee_line": 222
+    },
+    {
+      "path": "hudson/cli/UpdateNodeCommand.java",
+      "from_function": "run",
+      "calls_function": "toComputer",
+      "caller_line": 49,
+      "callee_file": "hudson/model/Node.java",
+      "callee_line": 222
+    },
+    {
+      "path": "hudson/cli/WaitNodeOfflineCommand.java",
+      "from_function": "run",
+      "calls_function": "toComputer",
+      "caller_line": 47,
+      "callee_file": "hudson/model/Node.java",
+      "callee_line": 222
+    },
+    {
+      "path": "hudson/cli/WaitNodeOnlineCommand.java",
+      "from_function": "run",
+      "calls_function": "toComputer",
+      "caller_line": 47,
+      "callee_file": "hudson/model/Node.java",
+      "callee_line": 222
+    },
+    {
+      "path": "hudson/console/ModelHyperlinkNote.java",
+      "from_function": "encodeTo",
+      "calls_function": "toComputer",
+      "caller_line": 54,
+      "callee_file": "hudson/model/Node.java",
+      "callee_line": 222
+    },
+    {
+      "path": "hudson/console/ModelHyperlinkNote.java",
+      "from_function": "encodeTo",
+      "calls_function": "getDisplayName",
+      "caller_line": 54,
+      "callee_file": "hudson/model/Node.java",
+      "callee_line": 123
+    },
+    {
+      "path": "hudson/console/ModelHyperlinkNote.java",
+      "from_function": "encodeTo",
+      "calls_function": "getNodeName",
+      "caller_line": 54,
+      "callee_file": "hudson/model/Node.java",
+      "callee_line": 167
+    },
+    {
+      "path": "hudson/diagnosis/OldDataMonitor.java",
+      "from_function": "saveAndRemoveEntries",
+      "calls_function": "save",
+      "caller_line": 357,
+      "callee_file": "jenkins/model/Nodes.java",
+      "callee_line": 336
+    },
+    {
+      "path": "hudson/init/impl/GroovyInitScript.java",
+      "from_function": "init",
+      "calls_function": "getRootDir",
+      "caller_line": 40,
+      "callee_file": "hudson/model/Node.java",
+      "callee_line": 670
+    },
+    {
+      "path": "hudson/init/impl/InitialUserContent.java",
+      "from_function": "init",
+      "calls_function": "getRootDir",
+      "caller_line": 43,
+      "callee_file": "hudson/model/Node.java",
+      "callee_line": 670
+    },
+    {
+      "path": "hudson/model/AbstractBuild.java",
+      "from_function": "getWorkspace",
+      "calls_function": "createPath",
+      "caller_line": 295,
+      "callee_file": "hudson/model/Node.java",
+      "callee_line": 501
+    },
+    {
+      "path": "hudson/model/AbstractBuild.java",
+      "from_function": "decideWorkspace",
+      "calls_function": "getRootPath",
+      "caller_line": 449,
+      "callee_file": "hudson/model/Node.java",
+      "callee_line": 496
+    },
+    {
+      "path": "hudson/model/AbstractBuild.java",
+      "from_function": "decideWorkspace",
+      "calls_function": "getDisplayName",
+      "caller_line": 449,
+      "callee_file": "hudson/model/Node.java",
+      "callee_line": 123
+    },
+    {
+      "path": "hudson/model/AbstractBuild.java",
+      "from_function": "decideWorkspace",
+      "calls_function": "getWorkspaceFor",
+      "caller_line": 449,
+      "callee_file": "hudson/model/Node.java",
+      "callee_line": 483
+    },
+    {
+      "path": "hudson/model/AbstractBuild.java",
+      "from_function": "run",
+      "calls_function": "getNodeName",
+      "caller_line": 467,
+      "callee_file": "hudson/model/Node.java",
+      "callee_line": 167
+    },
+    {
+      "path": "hudson/model/AbstractBuild.java",
+      "from_function": "run",
+      "calls_function": "getDisplayName",
+      "caller_line": 467,
+      "callee_file": "hudson/model/Node.java",
+      "callee_line": 123
+    },
+    {
+      "path": "hudson/model/AbstractBuild.java",
+      "from_function": "run",
+      "calls_function": "getAssignedLabels",
+      "caller_line": 467,
+      "callee_file": "hudson/model/Node.java",
+      "callee_line": 336
+    },
+    {
+      "path": "hudson/model/AbstractBuild.java",
+      "from_function": "run",
+      "calls_function": "getSelfLabel",
+      "caller_line": 467,
+      "callee_file": "hudson/model/Node.java",
+      "callee_line": 394
+    },
+    {
+      "path": "hudson/model/AbstractBuild.java",
+      "from_function": "run",
+      "calls_function": "getChannel",
+      "caller_line": 467,
+      "callee_file": "hudson/model/Node.java",
+      "callee_line": 233
+    },
+    {
+      "path": "hudson/model/AbstractBuild.java",
+      "from_function": "createLauncher",
+      "calls_function": "getNodeProperties",
+      "caller_line": 606,
+      "callee_file": "hudson/model/Node.java",
+      "callee_line": 515
+    },
+    {
+      "path": "hudson/model/AbstractBuild.java",
+      "from_function": "reportBrokenChannel",
+      "calls_function": "toComputer",
+      "caller_line": 841,
+      "callee_file": "hudson/model/Node.java",
+      "callee_line": 222
+    },
+    {
+      "path": "hudson/model/AbstractCIBase.java",
+      "from_function": "updateComputer",
+      "calls_function": "getNodeName",
+      "caller_line": 140,
+      "callee_file": "hudson/model/Node.java",
+      "callee_line": 167
+    },
+    {
+      "path": "hudson/model/AbstractCIBase.java",
+      "from_function": "createNewComputerForNode",
+      "calls_function": "getNumExecutors",
+      "caller_line": 157,
+      "callee_file": "hudson/model/Node.java",
+      "callee_line": 204
+    },
+    {
+      "path": "hudson/model/AbstractCIBase.java",
+      "from_function": "createNewComputerForNode",
+      "calls_function": "getNodeName",
+      "caller_line": 157,
+      "callee_file": "hudson/model/Node.java",
+      "callee_line": 167
+    },
+    {
+      "path": "hudson/model/AbstractCIBase.java",
+      "from_function": "createNewComputerForNode",
+      "calls_function": "isHoldOffLaunchUntilSave",
+      "caller_line": 157,
+      "callee_file": "hudson/model/Node.java",
+      "callee_line": 137
+    },
+    {
+      "path": "hudson/model/AbstractCIBase.java",
+      "from_function": "<lambda>2",
+      "calls_function": "getNodeName",
+      "caller_line": 237,
+      "callee_file": "hudson/model/Node.java",
+      "callee_line": 167
+    },
+    {
+      "path": "hudson/model/AbstractProject.java",
+      "from_function": "setAssignedNode",
+      "calls_function": "getSelfLabel",
+      "caller_line": 445,
+      "callee_file": "hudson/model/Node.java",
+      "callee_line": 394
+    },
+    {
+      "path": "hudson/model/AbstractProject.java",
+      "from_function": "pollWithWorkspace",
+      "calls_function": "getSelfLabel",
+      "caller_line": 1435,
+      "callee_file": "hudson/model/Node.java",
+      "callee_line": 394
+    },
+    {
+      "path": "hudson/model/AbstractProject.java",
+      "from_function": "isAllSuitableNodesOffline",
+      "calls_function": "toComputer",
+      "caller_line": 1471,
+      "callee_file": "hudson/model/Node.java",
+      "callee_line": 222
+    },
+    {
+      "path": "hudson/model/AbstractProject.java",
+      "from_function": "isAllSuitableNodesOffline",
+      "calls_function": "getMode",
+      "caller_line": 1471,
+      "callee_file": "hudson/model/Node.java",
+      "callee_line": 212
+    },
+    {
+      "path": "hudson/model/AbstractProject.java",
+      "from_function": "workspaceOffline",
+      "calls_function": "toComputer",
+      "caller_line": 1497,
+      "callee_file": "hudson/model/Node.java",
+      "callee_line": 222
+    },
+    {
+      "path": "hudson/model/AdministrativeMonitor.java",
+      "from_function": "disable",
+      "calls_function": "save",
+      "caller_line": 128,
+      "callee_file": "hudson/model/Node.java",
+      "callee_line": 145
+    },
+    {
+      "path": "hudson/model/Computer.java",
+      "from_function": "getOfflineCause",
+      "calls_function": "getTemporaryOfflineCause",
+      "caller_line": 362,
+      "callee_file": "hudson/model/Node.java",
+      "callee_line": 304
+    },
+    {
+      "path": "hudson/model/Computer.java",
+      "from_function": "isTemporarilyOffline",
+      "calls_function": "isTemporarilyOffline",
+      "caller_line": 680,
+      "callee_file": "hudson/model/Node.java",
+      "callee_line": 272
+    },
+    {
+      "path": "hudson/model/Computer.java",
+      "from_function": "setTemporaryOfflineCause",
+      "calls_function": "setTemporaryOfflineCause",
+      "caller_line": 725,
+      "callee_file": "hudson/model/Node.java",
+      "callee_line": 282
+    },
+    {
+      "path": "hudson/model/Computer.java",
+      "from_function": "getTemporaryOfflineCauseReason",
+      "calls_function": "getTemporaryOfflineCause",
+      "caller_line": 737,
+      "callee_file": "hudson/model/Node.java",
+      "callee_line": 304
+    },
+    {
+      "path": "hudson/model/Computer.java",
+      "from_function": "getAssignedLabels",
+      "calls_function": "getAssignedLabels",
+      "caller_line": 783,
+      "callee_file": "hudson/model/Node.java",
+      "callee_line": 336
+    },
+    {
+      "path": "hudson/model/Computer.java",
+      "from_function": "getTiedJobs",
+      "calls_function": "getSelfLabel",
+      "caller_line": 792,
+      "callee_file": "hudson/model/Node.java",
+      "callee_line": 394
+    },
+    {
+      "path": "hudson/model/Computer.java",
+      "from_function": "setNode",
+      "calls_function": "getNodeName",
+      "caller_line": 805,
+      "callee_file": "hudson/model/Node.java",
+      "callee_line": 167
+    },
+    {
+      "path": "hudson/model/Computer.java",
+      "from_function": "setNode",
+      "calls_function": "getNumExecutors",
+      "caller_line": 805,
+      "callee_file": "hudson/model/Node.java",
+      "callee_line": 204
+    },
+    {
+      "path": "hudson/model/Computer.java",
+      "from_function": "getDescription",
+      "calls_function": "getNodeDescription",
+      "caller_line": 1052,
+      "callee_file": "hudson/model/Node.java",
+      "callee_line": 187
+    },
+    {
+      "path": "hudson/model/Computer.java",
+      "from_function": "buildEnvironment",
+      "calls_function": "getNodeProperties",
+      "caller_line": 1190,
+      "callee_file": "hudson/model/Node.java",
+      "callee_line": 515
+    },
+    {
+      "path": "hudson/model/Computer.java",
+      "from_function": "doToggleOffline",
+      "calls_function": "isTemporarilyOffline",
+      "caller_line": 1401,
+      "callee_file": "hudson/model/Node.java",
+      "callee_line": 272
+    },
+    {
+      "path": "hudson/model/Computer.java",
+      "from_function": "doConfigSubmit",
+      "calls_function": "reconfigure",
+      "caller_line": 1484,
+      "callee_file": "hudson/model/Node.java",
+      "callee_line": 569
+    },
+    {
+      "path": "hudson/model/Computer.java",
+      "from_function": "doConfigSubmit",
+      "calls_function": "getNodeProperty",
+      "caller_line": 1484,
+      "callee_file": "hudson/model/Node.java",
+      "callee_line": 526
+    },
+    {
+      "path": "hudson/model/Computer.java",
+      "from_function": "doConfigSubmit",
+      "calls_function": "getNodeName",
+      "caller_line": 1484,
+      "callee_file": "hudson/model/Node.java",
+      "callee_line": 167
+    },
+    {
+      "path": "hudson/model/Computer.java",
+      "from_function": "isAcceptingTasks",
+      "calls_function": "isAcceptingTasks",
+      "caller_line": 1644,
+      "callee_file": "hudson/model/Node.java",
+      "callee_line": 260
+    },
+    {
+      "path": "hudson/model/ComputerSet.java",
+      "from_function": "doCreateItem",
+      "calls_function": "getNodeName",
+      "caller_line": 278,
+      "callee_file": "hudson/model/Node.java",
+      "callee_line": 167
+    },
+    {
+      "path": "hudson/model/ComputerSet.java",
+      "from_function": "doCreateItem",
+      "calls_function": "setNodeName",
+      "caller_line": 278,
+      "callee_file": "hudson/model/Node.java",
+      "callee_line": 181
+    },
+    {
+      "path": "hudson/model/ComputerSet.java",
+      "from_function": "doAutoCompleteCopyNewItemFrom",
+      "calls_function": "getNodeName",
+      "caller_line": 484,
+      "callee_file": "hudson/model/Node.java",
+      "callee_line": 167
+    },
+    {
+      "path": "hudson/model/ComputerSet.java",
+      "from_function": "get",
+      "calls_function": "getNodeName",
+      "caller_line": 185,
+      "callee_file": "hudson/model/Node.java",
+      "callee_line": 167
+    },
+    {
+      "path": "hudson/model/ItemGroupMixIn.java",
+      "from_function": "createTopLevelItem",
+      "calls_function": "getACL",
+      "caller_line": 147,
+      "callee_file": "hudson/model/Node.java",
+      "callee_line": 563
+    },
+    {
+      "path": "hudson/model/ItemGroupMixIn.java",
+      "from_function": "copy",
+      "calls_function": "getACL",
+      "caller_line": 234,
+      "callee_file": "hudson/model/Node.java",
+      "callee_line": 563
+    },
+    {
+      "path": "hudson/model/ItemGroupMixIn.java",
+      "from_function": "createProjectFromXML",
+      "calls_function": "getACL",
+      "caller_line": 276,
+      "callee_file": "hudson/model/Node.java",
+      "callee_line": 563
+    },
+    {
+      "path": "hudson/model/ItemGroupMixIn.java",
+      "from_function": "createProject",
+      "calls_function": "getACL",
+      "caller_line": 327,
+      "callee_file": "hudson/model/Node.java",
+      "callee_line": 563
+    },
+    {
+      "path": "hudson/model/Items.java",
+      "from_function": "all2",
+      "calls_function": "getACL",
+      "caller_line": 204,
+      "callee_file": "hudson/model/Node.java",
+      "callee_line": 563
+    },
+    {
+      "path": "hudson/model/JDK.java",
+      "from_function": "isDefaultJDKValid",
+      "calls_function": "createLauncher",
+      "caller_line": 165,
+      "callee_file": "hudson/model/Node.java",
+      "callee_line": 196
+    },
+    {
+      "path": "hudson/model/Job.java",
+      "from_function": "getEnvironment",
+      "calls_function": "toComputer",
+      "caller_line": 418,
+      "callee_file": "hudson/model/Node.java",
+      "callee_line": 222
+    },
+    {
+      "path": "hudson/model/Label.java",
+      "from_function": "matches",
+      "calls_function": "getAssignedLabels",
+      "caller_line": 190,
+      "callee_file": "hudson/model/Node.java",
+      "callee_line": 336
+    },
+    {
+      "path": "hudson/model/Label.java",
+      "from_function": "isSelfLabel",
+      "calls_function": "getSelfLabel",
+      "caller_line": 198,
+      "callee_file": "hudson/model/Node.java",
+      "callee_line": 394
+    },
+    {
+      "path": "hudson/model/Label.java",
+      "from_function": "isAssignable",
+      "calls_function": "getNumExecutors",
+      "caller_line": 273,
+      "callee_file": "hudson/model/Node.java",
+      "callee_line": 204
+    },
+    {
+      "path": "hudson/model/Label.java",
+      "from_function": "getTotalConfiguredExecutors",
+      "calls_function": "getNumExecutors",
+      "caller_line": 290,
+      "callee_file": "hudson/model/Node.java",
+      "callee_line": 204
+    },
+    {
+      "path": "hudson/model/Label.java",
+      "from_function": "getTotalExecutors",
+      "calls_function": "toComputer",
+      "caller_line": 302,
+      "callee_file": "hudson/model/Node.java",
+      "callee_line": 222
+    },
+    {
+      "path": "hudson/model/Label.java",
+      "from_function": "getBusyExecutors",
+      "calls_function": "toComputer",
+      "caller_line": 316,
+      "callee_file": "hudson/model/Node.java",
+      "callee_line": 222
+    },
+    {
+      "path": "hudson/model/Label.java",
+      "from_function": "getIdleExecutors",
+      "calls_function": "toComputer",
+      "caller_line": 330,
+      "callee_file": "hudson/model/Node.java",
+      "callee_line": 222
+    },
+    {
+      "path": "hudson/model/Label.java",
+      "from_function": "isOffline",
+      "calls_function": "toComputer",
+      "caller_line": 344,
+      "callee_file": "hudson/model/Node.java",
+      "callee_line": 222
+    },
+    {
+      "path": "hudson/model/Label.java",
+      "from_function": "getDescription",
+      "calls_function": "getNodeDescription",
+      "caller_line": 357,
+      "callee_file": "hudson/model/Node.java",
+      "callee_line": 187
+    },
+    {
+      "path": "hudson/model/Label.java",
+      "from_function": "toString",
+      "calls_function": "getDisplayName",
+      "caller_line": 374,
+      "callee_file": "hudson/model/Node.java",
+      "callee_line": 123
+    },
+    {
+      "path": "hudson/model/LoadStatistics.java",
+      "from_function": "with",
+      "calls_function": "toComputer",
+      "caller_line": 586,
+      "callee_file": "hudson/model/Node.java",
+      "callee_line": 222
+    },
+    {
+      "path": "hudson/model/Node.java",
+      "from_function": "getDisplayName",
+      "calls_function": "getNodeName",
+      "caller_line": 123,
+      "callee_file": "hudson/model/Node.java",
+      "callee_line": 167
+    },
+    {
+      "path": "hudson/model/Node.java",
+      "from_function": "getSearchUrl",
+      "calls_function": "toComputer",
+      "caller_line": 128,
+      "callee_file": "hudson/model/Node.java",
+      "callee_line": 222
+    },
+    {
+      "path": "hudson/model/Node.java",
+      "from_function": "getSearchUrl",
+      "calls_function": "getNodeName",
+      "caller_line": 128,
+      "callee_file": "hudson/model/Node.java",
+      "callee_line": 167
+    },
+    {
+      "path": "hudson/model/Node.java",
+      "from_function": "save",
+      "calls_function": "getRootDir",
+      "caller_line": 145,
+      "callee_file": "hudson/model/Node.java",
+      "callee_line": 670
+    },
+    {
+      "path": "hudson/model/Node.java",
+      "from_function": "save",
+      "calls_function": "getConfigFile",
+      "caller_line": 145,
+      "callee_file": "hudson/model/Node.java",
+      "callee_line": 157
+    },
+    {
+      "path": "hudson/model/Node.java",
+      "from_function": "getConfigFile",
+      "calls_function": "getConfigFile",
+      "caller_line": 157,
+      "callee_file": "jenkins/model/Nodes.java",
+      "callee_line": 217
+    },
+    {
+      "path": "hudson/model/Node.java",
+      "from_function": "getChannel",
+      "calls_function": "toComputer",
+      "caller_line": 233,
+      "callee_file": "hudson/model/Node.java",
+      "callee_line": 222
+    },
+    {
+      "path": "hudson/model/Node.java",
+      "from_function": "onLoad",
+      "calls_function": "setNodeName",
+      "caller_line": 264,
+      "callee_file": "hudson/model/Node.java",
+      "callee_line": 181
+    },
+    {
+      "path": "hudson/model/Node.java",
+      "from_function": "getLabelCloud",
+      "calls_function": "getAssignedLabels",
+      "caller_line": 311,
+      "callee_file": "hudson/model/Node.java",
+      "callee_line": 336
+    },
+    {
+      "path": "hudson/model/Node.java",
+      "from_function": "getLabelAtomSet",
+      "calls_function": "getLabelString",
+      "caller_line": 318,
+      "callee_file": "hudson/model/Node.java",
+      "callee_line": 378
+    },
+    {
+      "path": "hudson/model/Node.java",
+      "from_function": "getAssignedLabels",
+      "calls_function": "getLabelAtomSet",
+      "caller_line": 336,
+      "callee_file": "hudson/model/Node.java",
+      "callee_line": 318
+    },
+    {
+      "path": "hudson/model/Node.java",
+      "from_function": "getAssignedLabels",
+      "calls_function": "getSelfLabel",
+      "caller_line": 336,
+      "callee_file": "hudson/model/Node.java",
+      "callee_line": 394
+    },
+    {
+      "path": "hudson/model/Node.java",
+      "from_function": "getAssignedLabels",
+      "calls_function": "getDynamicLabels",
+      "caller_line": 336,
+      "callee_file": "hudson/model/Node.java",
+      "callee_line": 358
+    },
+    {
+      "path": "hudson/model/Node.java",
+      "from_function": "drainLabelsToTrim",
+      "calls_function": "getAssignedLabels",
+      "caller_line": 347,
+      "callee_file": "hudson/model/Node.java",
+      "callee_line": 336
+    },
+    {
+      "path": "hudson/model/Node.java",
+      "from_function": "getSelfLabel",
+      "calls_function": "getNodeName",
+      "caller_line": 394,
+      "callee_file": "hudson/model/Node.java",
+      "callee_line": 167
+    },
+    {
+      "path": "hudson/model/Node.java",
+      "from_function": "canTake",
+      "calls_function": "getDisplayName",
+      "caller_line": 427,
+      "callee_file": "hudson/model/Node.java",
+      "callee_line": 123
+    },
+    {
+      "path": "hudson/model/Node.java",
+      "from_function": "canTake",
+      "calls_function": "getMode",
+      "caller_line": 427,
+      "callee_file": "hudson/model/Node.java",
+      "callee_line": 212
+    },
+    {
+      "path": "hudson/model/Node.java",
+      "from_function": "canTake",
+      "calls_function": "getNodeProperties",
+      "caller_line": 427,
+      "callee_file": "hudson/model/Node.java",
+      "callee_line": 515
+    },
+    {
+      "path": "hudson/model/Node.java",
+      "from_function": "canTake",
+      "calls_function": "isAcceptingTasks",
+      "caller_line": 427,
+      "callee_file": "hudson/model/Node.java",
+      "callee_line": 260
+    },
+    {
+      "path": "hudson/model/Node.java",
+      "from_function": "createPath",
+      "calls_function": "getChannel",
+      "caller_line": 501,
+      "callee_file": "hudson/model/Node.java",
+      "callee_line": 233
+    },
+    {
+      "path": "hudson/model/Node.java",
+      "from_function": "getNodeProperty",
+      "calls_function": "getNodeProperties",
+      "caller_line": 526,
+      "callee_file": "hudson/model/Node.java",
+      "callee_line": 515
+    },
+    {
+      "path": "hudson/model/Node.java",
+      "from_function": "getNodeProperty",
+      "calls_function": "getNodeProperties",
+      "caller_line": 547,
+      "callee_file": "hudson/model/Node.java",
+      "callee_line": 515
+    },
+    {
+      "path": "hudson/model/Node.java",
+      "from_function": "reconfigure",
+      "calls_function": "reconfigureImpl",
+      "caller_line": 569,
+      "callee_file": "hudson/model/Node.java",
+      "callee_line": 587
+    },
+    {
+      "path": "hudson/model/Node.java",
+      "from_function": "reconfigure",
+      "calls_function": "reconfigureImpl",
+      "caller_line": 581,
+      "callee_file": "hudson/model/Node.java",
+      "callee_line": 587
+    },
+    {
+      "path": "hudson/model/Node.java",
+      "from_function": "reconfigureImpl",
+      "calls_function": "getDescriptor",
+      "caller_line": 587,
+      "callee_file": "hudson/model/Node.java",
+      "callee_line": 616
+    },
+    {
+      "path": "hudson/model/Node.java",
+      "from_function": "getClockDifference",
+      "calls_function": "getChannel",
+      "caller_line": 627,
+      "callee_file": "hudson/model/Node.java",
+      "callee_line": 233
+    },
+    {
+      "path": "hudson/model/Node.java",
+      "from_function": "getClockDifference",
+      "calls_function": "getNodeName",
+      "caller_line": 627,
+      "callee_file": "hudson/model/Node.java",
+      "callee_line": 167
+    },
+    {
+      "path": "hudson/model/Node.java",
+      "from_function": "getClockDifference",
+      "calls_function": "getClockDifferenceCallable",
+      "caller_line": 627,
+      "callee_file": "hudson/model/Node.java",
+      "callee_line": 642
+    },
+    {
+      "path": "hudson/model/Node.java",
+      "from_function": "getRootDir",
+      "calls_function": "getRootDirFor",
+      "caller_line": 670,
+      "callee_file": "jenkins/model/Nodes.java",
+      "callee_line": 464
+    },
+    {
+      "path": "hudson/model/Node.java",
+      "from_function": "getRootDir",
+      "calls_function": "getParent",
+      "caller_line": 670,
+      "callee_file": "hudson/model/Node.java",
+      "callee_line": 675
+    },
+    {
+      "path": "hudson/model/Node.java",
+      "from_function": "getParent",
+      "calls_function": "getNodeName",
+      "caller_line": 675,
+      "callee_file": "hudson/model/Node.java",
+      "callee_line": 167
+    },
+    {
+      "path": "hudson/model/Node.java",
+      "from_function": "onConvert",
+      "calls_function": "getNodeProperties",
+      "caller_line": 593,
+      "callee_file": "hudson/model/Node.java",
+      "callee_line": 515
+    },
+    {
+      "path": "hudson/model/Node.java",
+      "from_function": "<lambda>0",
+      "calls_function": "toComputer",
+      "caller_line": 289,
+      "callee_file": "hudson/model/Node.java",
+      "callee_line": 222
+    },
+    {
+      "path": "hudson/model/Node.java",
+      "from_function": "<lambda>1",
+      "calls_function": "toComputer",
+      "caller_line": 291,
+      "callee_file": "hudson/model/Node.java",
+      "callee_line": 222
+    },
+    {
+      "path": "hudson/model/Node.java",
+      "from_function": "<lambda>2",
+      "calls_function": "getNodeName",
+      "caller_line": 458,
+      "callee_file": "hudson/model/Node.java",
+      "callee_line": 167
+    },
+    {
+      "path": "hudson/model/Queue.java",
+      "from_function": "getCauseOfBlockage",
+      "calls_function": "canTake",
+      "caller_line": 274,
+      "callee_file": "hudson/model/Node.java",
+      "callee_line": 427
+    },
+    {
+      "path": "hudson/model/Queue.java",
+      "from_function": "isNotExclusive",
+      "calls_function": "getMode",
+      "caller_line": 322,
+      "callee_file": "hudson/model/Node.java",
+      "callee_line": 212
+    },
+    {
+      "path": "hudson/model/Queue.java",
+      "from_function": "<lambda>0",
+      "calls_function": "getNodeName",
+      "caller_line": 288,
+      "callee_file": "hudson/model/Node.java",
+      "callee_line": 167
+    },
+    {
+      "path": "hudson/model/Queue.java",
+      "from_function": "_getBuildableItems",
+      "calls_function": "canTake",
+      "caller_line": 938,
+      "callee_file": "hudson/model/Node.java",
+      "callee_line": 427
+    },
+    {
+      "path": "hudson/model/Queue.java",
+      "from_function": "makeFlyWeightTaskBuildable",
+      "calls_function": "getSelfLabel",
+      "caller_line": 1874,
+      "callee_file": "hudson/model/Node.java",
+      "callee_line": 394
+    },
+    {
+      "path": "hudson/model/Queue.java",
+      "from_function": "makeFlyWeightTaskBuildable",
+      "calls_function": "getNumExecutors",
+      "caller_line": 1874,
+      "callee_file": "hudson/model/Node.java",
+      "callee_line": 204
+    },
+    {
+      "path": "hudson/model/Queue.java",
+      "from_function": "makeFlyWeightTaskBuildable",
+      "calls_function": "toComputer",
+      "caller_line": 1874,
+      "callee_file": "hudson/model/Node.java",
+      "callee_line": 222
+    },
+    {
+      "path": "hudson/model/Queue.java",
+      "from_function": "makeFlyWeightTaskBuildable",
+      "calls_function": "canTake",
+      "caller_line": 1874,
+      "callee_file": "hudson/model/Node.java",
+      "callee_line": 427
+    },
+    {
+      "path": "hudson/model/Slave.java",
+      "from_function": "getLauncher",
+      "calls_function": "save",
+      "caller_line": 242,
+      "callee_file": "hudson/model/Node.java",
+      "callee_line": 145
+    },
+    {
+      "path": "hudson/model/Slave.java",
+      "from_function": "save",
+      "calls_function": "save",
+      "caller_line": 258,
+      "callee_file": "hudson/model/Node.java",
+      "callee_line": 145
+    },
+    {
+      "path": "hudson/model/Slave.java",
+      "from_function": "drainLabelsToTrim",
+      "calls_function": "drainLabelsToTrim",
+      "caller_line": 352,
+      "callee_file": "hudson/model/Node.java",
+      "callee_line": 347
+    },
+    {
+      "path": "hudson/model/Slave.java",
+      "from_function": "setLabelString",
+      "calls_function": "getAssignedLabels",
+      "caller_line": 364,
+      "callee_file": "hudson/model/Node.java",
+      "callee_line": 336
+    },
+    {
+      "path": "hudson/model/Slave.java",
+      "from_function": "_setLabelString",
+      "calls_function": "getAssignedLabels",
+      "caller_line": 372,
+      "callee_file": "hudson/model/Node.java",
+      "callee_line": 336
+    },
+    {
+      "path": "hudson/model/Slave.java",
+      "from_function": "getWorkspaceRoot",
+      "calls_function": "getRootPath",
+      "caller_line": 440,
+      "callee_file": "hudson/model/Node.java",
+      "callee_line": 496
+    },
+    {
+      "path": "hudson/model/Slave.java",
+      "from_function": "getComputer",
+      "calls_function": "toComputer",
+      "caller_line": 614,
+      "callee_file": "hudson/model/Node.java",
+      "callee_line": 222
+    },
+    {
+      "path": "hudson/model/View.java",
+      "from_function": "isRelevant",
+      "calls_function": "getMode",
+      "caller_line": 487,
+      "callee_file": "hudson/model/Node.java",
+      "callee_line": 212
+    },
+    {
+      "path": "hudson/model/WorkspaceCleanupThread.java",
+      "from_function": "execute",
+      "calls_function": "getWorkspaceFor",
+      "caller_line": 73,
+      "callee_file": "hudson/model/Node.java",
+      "callee_line": 483
+    },
+    {
+      "path": "hudson/model/WorkspaceCleanupThread.java",
+      "from_function": "execute",
+      "calls_function": "getDisplayName",
+      "caller_line": 73,
+      "callee_file": "hudson/model/Node.java",
+      "callee_line": 123
+    },
+    {
+      "path": "hudson/model/queue/CauseOfBlockage.java",
+      "from_function": "getShortDescription",
+      "calls_function": "toComputer",
+      "caller_line": 108,
+      "callee_file": "hudson/model/Node.java",
+      "callee_line": 222
+    },
+    {
+      "path": "hudson/model/queue/CauseOfBlockage.java",
+      "from_function": "getShortDescription",
+      "calls_function": "getDisplayName",
+      "caller_line": 108,
+      "callee_file": "hudson/model/Node.java",
+      "callee_line": 123
+    },
+    {
+      "path": "hudson/model/queue/CauseOfBlockage.java",
+      "from_function": "getShortDescription",
+      "calls_function": "toComputer",
+      "caller_line": 133,
+      "callee_file": "hudson/model/Node.java",
+      "callee_line": 222
+    },
+    {
+      "path": "hudson/model/queue/CauseOfBlockage.java",
+      "from_function": "getShortDescription",
+      "calls_function": "getDisplayName",
+      "caller_line": 133,
+      "callee_file": "hudson/model/Node.java",
+      "callee_line": 123
+    },
+    {
+      "path": "hudson/model/queue/CauseOfBlockage.java",
+      "from_function": "getShortDescription",
+      "calls_function": "toComputer",
+      "caller_line": 188,
+      "callee_file": "hudson/model/Node.java",
+      "callee_line": 222
+    },
+    {
+      "path": "hudson/model/queue/CauseOfBlockage.java",
+      "from_function": "getShortDescription",
+      "calls_function": "getDisplayName",
+      "caller_line": 188,
+      "callee_file": "hudson/model/Node.java",
+      "callee_line": 123
+    },
+    {
+      "path": "hudson/model/queue/MappingWorksheet.java",
+      "from_function": "getName",
+      "calls_function": "getNodeName",
+      "caller_line": 157,
+      "callee_file": "hudson/model/Node.java",
+      "callee_line": 167
+    },
+    {
+      "path": "hudson/model/queue/MappingWorksheet.java",
+      "from_function": "<lambda>0",
+      "calls_function": "getNodeName",
+      "caller_line": 147,
+      "callee_file": "hudson/model/Node.java",
+      "callee_line": 167
+    },
+    {
+      "path": "hudson/node_monitors/ClockMonitor.java",
+      "from_function": "createCallable",
+      "calls_function": "getClockDifferenceCallable",
+      "caller_line": 78,
+      "callee_file": "hudson/model/Node.java",
+      "callee_line": 642
+    },
+    {
+      "path": "hudson/node_monitors/DiskSpaceMonitor.java",
+      "from_function": "getThresholdBytes",
+      "calls_function": "getNodeProperty",
+      "caller_line": 55,
+      "callee_file": "hudson/model/Node.java",
+      "callee_line": 526
+    },
+    {
+      "path": "hudson/node_monitors/DiskSpaceMonitor.java",
+      "from_function": "getWarningThresholdBytes",
+      "calls_function": "getNodeProperty",
+      "caller_line": 71,
+      "callee_file": "hudson/model/Node.java",
+      "callee_line": 526
+    },
+    {
+      "path": "hudson/node_monitors/DiskSpaceMonitor.java",
+      "from_function": "createCallable",
+      "calls_function": "getRootPath",
+      "caller_line": 114,
+      "callee_file": "hudson/model/Node.java",
+      "callee_line": 496
+    },
+    {
+      "path": "hudson/node_monitors/TemporarySpaceMonitor.java",
+      "from_function": "getThresholdBytes",
+      "calls_function": "getNodeProperty",
+      "caller_line": 59,
+      "callee_file": "hudson/model/Node.java",
+      "callee_line": 526
+    },
+    {
+      "path": "hudson/node_monitors/TemporarySpaceMonitor.java",
+      "from_function": "getWarningThresholdBytes",
+      "calls_function": "getNodeProperty",
+      "caller_line": 75,
+      "callee_file": "hudson/model/Node.java",
+      "callee_line": 526
+    },
+    {
+      "path": "hudson/node_monitors/TemporarySpaceMonitor.java",
+      "from_function": "createCallable",
+      "calls_function": "getRootPath",
+      "caller_line": 124,
+      "callee_file": "hudson/model/Node.java",
+      "callee_line": 496
+    },
+    {
+      "path": "hudson/search/Search.java",
+      "from_function": "findClosestSuggestedItem",
+      "calls_function": "getSearchUrl",
+      "caller_line": 368,
+      "callee_file": "hudson/model/Node.java",
+      "callee_line": 128
+    },
+    {
+      "path": "hudson/search/SuggestedItem.java",
+      "from_function": "getUrl",
+      "calls_function": "getSearchUrl",
+      "caller_line": 105,
+      "callee_file": "hudson/model/Node.java",
+      "callee_line": 128
+    },
+    {
+      "path": "hudson/security/AccessControlled.java",
+      "from_function": "checkPermission",
+      "calls_function": "getACL",
+      "caller_line": 48,
+      "callee_file": "hudson/model/Node.java",
+      "callee_line": 563
+    },
+    {
+      "path": "hudson/security/AccessControlled.java",
+      "from_function": "checkAnyPermission",
+      "calls_function": "getACL",
+      "caller_line": 61,
+      "callee_file": "hudson/model/Node.java",
+      "callee_line": 563
+    },
+    {
+      "path": "hudson/security/AccessControlled.java",
+      "from_function": "hasPermission",
+      "calls_function": "getACL",
+      "caller_line": 68,
+      "callee_file": "hudson/model/Node.java",
+      "callee_line": 563
+    },
+    {
+      "path": "hudson/security/AccessControlled.java",
+      "from_function": "hasAnyPermission",
+      "calls_function": "getACL",
+      "caller_line": 81,
+      "callee_file": "hudson/model/Node.java",
+      "callee_line": 563
+    },
+    {
+      "path": "hudson/security/AccessControlled.java",
+      "from_function": "hasPermission2",
+      "calls_function": "getACL",
+      "caller_line": 89,
+      "callee_file": "hudson/model/Node.java",
+      "callee_line": 563
+    },
+    {
+      "path": "hudson/slaves/AbstractCloudSlave.java",
+      "from_function": "terminate",
+      "calls_function": "toComputer",
+      "caller_line": 82,
+      "callee_file": "hudson/model/Node.java",
+      "callee_line": 222
+    },
+    {
+      "path": "hudson/slaves/Cloud.java",
+      "from_function": "doConfigSubmit",
+      "calls_function": "save",
+      "caller_line": 322,
+      "callee_file": "hudson/model/Node.java",
+      "callee_line": 145
+    },
+    {
+      "path": "hudson/slaves/ComputerRetentionWork.java",
+      "from_function": "<lambda>0",
+      "calls_function": "isHoldOffLaunchUntilSave",
+      "caller_line": 70,
+      "callee_file": "hudson/model/Node.java",
+      "callee_line": 137
+    },
+    {
+      "path": "hudson/slaves/NodeProvisioner.java",
+      "from_function": "recordPendingLaunches",
+      "calls_function": "getNumExecutors",
+      "caller_line": 575,
+      "callee_file": "hudson/model/Node.java",
+      "callee_line": 204
+    },
+    {
+      "path": "hudson/slaves/NodeProvisioner.java",
+      "from_function": "fireOnRollback",
+      "calls_function": "getDisplayName",
+      "caller_line": 862,
+      "callee_file": "hudson/model/Node.java",
+      "callee_line": 123
+    },
+    {
+      "path": "hudson/slaves/NodeProvisioner.java",
+      "from_function": "fireOnCommit",
+      "calls_function": "getDisplayName",
+      "caller_line": 891,
+      "callee_file": "hudson/model/Node.java",
+      "callee_line": 123
+    },
+    {
+      "path": "hudson/slaves/RetentionStrategy.java",
+      "from_function": "check",
+      "calls_function": "canTake",
+      "caller_line": 228,
+      "callee_file": "hudson/model/Node.java",
+      "callee_line": 427
+    },
+    {
+      "path": "hudson/tasks/CommandInterpreter.java",
+      "from_function": "perform",
+      "calls_function": "toComputer",
+      "caller_line": 107,
+      "callee_file": "hudson/model/Node.java",
+      "callee_line": 222
+    },
+    {
+      "path": "hudson/tasks/CommandInterpreter.java",
+      "from_function": "perform",
+      "calls_function": "getChannel",
+      "caller_line": 107,
+      "callee_file": "hudson/model/Node.java",
+      "callee_line": 233
+    },
+    {
+      "path": "hudson/tools/AbstractCommandInstaller.java",
+      "from_function": "performInstallation",
+      "calls_function": "createLauncher",
+      "caller_line": 72,
+      "callee_file": "hudson/model/Node.java",
+      "callee_line": 196
+    },
+    {
+      "path": "hudson/tools/DownloadFromUrlInstaller.java",
+      "from_function": "performInstallation",
+      "calls_function": "getDisplayName",
+      "caller_line": 60,
+      "callee_file": "hudson/model/Node.java",
+      "callee_line": 123
+    },
+    {
+      "path": "hudson/tools/InstallerTranslator.java",
+      "from_function": "getToolHome",
+      "calls_function": "getRootPath",
+      "caller_line": 45,
+      "callee_file": "hudson/model/Node.java",
+      "callee_line": 496
+    },
+    {
+      "path": "hudson/tools/InstallerTranslator.java",
+      "from_function": "getToolHome",
+      "calls_function": "getDisplayName",
+      "caller_line": 45,
+      "callee_file": "hudson/model/Node.java",
+      "callee_line": 123
+    },
+    {
+      "path": "hudson/tools/ToolInstaller.java",
+      "from_function": "preferredLocation",
+      "calls_function": "getRootPath",
+      "caller_line": 112,
+      "callee_file": "hudson/model/Node.java",
+      "callee_line": 496
+    },
+    {
+      "path": "hudson/tools/ToolInstaller.java",
+      "from_function": "preferredLocation",
+      "calls_function": "getDisplayName",
+      "caller_line": 112,
+      "callee_file": "hudson/model/Node.java",
+      "callee_line": 123
+    },
+    {
+      "path": "hudson/tools/ToolLocationNodeProperty.java",
+      "from_function": "getToolHome",
+      "calls_function": "getNodeProperties",
+      "caller_line": 94,
+      "callee_file": "hudson/model/Node.java",
+      "callee_line": 515
+    },
+    {
+      "path": "hudson/tools/ZipExtractionInstaller.java",
+      "from_function": "performInstallation",
+      "calls_function": "getDisplayName",
+      "caller_line": 85,
+      "callee_file": "hudson/model/Node.java",
+      "callee_line": 123
+    },
+    {
+      "path": "hudson/util/ClockDifference.java",
+      "from_function": "toHtml",
+      "calls_function": "getClockDifference",
+      "caller_line": 93,
+      "callee_file": "hudson/model/Node.java",
+      "callee_line": 627
+    },
+    {
+      "path": "hudson/util/ListBoxModel.java",
+      "from_function": "add",
+      "calls_function": "getDisplayName",
+      "caller_line": 161,
+      "callee_file": "hudson/model/Node.java",
+      "callee_line": 123
+    },
+    {
+      "path": "hudson/util/PersistedList.java",
+      "from_function": "onModified",
+      "calls_function": "save",
+      "caller_line": 188,
+      "callee_file": "jenkins/model/Nodes.java",
+      "callee_line": 336
+    },
+    {
+      "path": "jenkins/appearance/AppearanceGlobalConfiguration.java",
+      "from_function": "configure",
+      "calls_function": "save",
+      "caller_line": 107,
+      "callee_file": "hudson/model/Node.java",
+      "callee_line": 145
+    },
+    {
+      "path": "jenkins/install/SetupWizard.java",
+      "from_function": "init",
+      "calls_function": "save",
+      "caller_line": 142,
+      "callee_file": "hudson/model/Node.java",
+      "callee_line": 145
+    },
+    {
+      "path": "jenkins/model/CoreEnvironmentContributor.java",
+      "from_function": "buildEnvironmentFor",
+      "calls_function": "getRootDir",
+      "caller_line": 41,
+      "callee_file": "hudson/model/Node.java",
+      "callee_line": 670
+    },
+    {
+      "path": "jenkins/model/CoreEnvironmentContributor.java",
+      "from_function": "buildEnvironmentFor",
+      "calls_function": "getAssignedLabels",
+      "caller_line": 41,
+      "callee_file": "hudson/model/Node.java",
+      "callee_line": 336
+    },
+    {
+      "path": "jenkins/model/Jenkins.java",
+      "from_function": "setNoUsageStatistics",
+      "calls_function": "save",
+      "caller_line": 1364,
+      "callee_file": "hudson/model/Node.java",
+      "callee_line": 145
+    },
+    {
+      "path": "jenkins/model/Jenkins.java",
+      "from_function": "setSystemMessage",
+      "calls_function": "save",
+      "caller_line": 1710,
+      "callee_file": "hudson/model/Node.java",
+      "callee_line": 145
+    },
+    {
+      "path": "jenkins/model/Jenkins.java",
+      "from_function": "getNode",
+      "calls_function": "getNode",
+      "caller_line": 2138,
+      "callee_file": "jenkins/model/Nodes.java",
+      "callee_line": 358
+    },
+    {
+      "path": "jenkins/model/Jenkins.java",
+      "from_function": "getNodes",
+      "calls_function": "getNodes",
+      "caller_line": 2172,
+      "callee_file": "jenkins/model/Nodes.java",
+      "callee_line": 103
+    },
+    {
+      "path": "jenkins/model/Jenkins.java",
+      "from_function": "addNode",
+      "calls_function": "addNode",
+      "caller_line": 2192,
+      "callee_file": "jenkins/model/Nodes.java",
+      "callee_line": 178
+    },
+    {
+      "path": "jenkins/model/Jenkins.java",
+      "from_function": "removeNode",
+      "calls_function": "removeNode",
+      "caller_line": 2199,
+      "callee_file": "jenkins/model/Nodes.java",
+      "callee_line": 312
+    },
+    {
+      "path": "jenkins/model/Jenkins.java",
+      "from_function": "unloadNode",
+      "calls_function": "unload",
+      "caller_line": 2206,
+      "callee_file": "jenkins/model/Nodes.java",
+      "callee_line": 439
+    },
+    {
+      "path": "jenkins/model/Jenkins.java",
+      "from_function": "updateNode",
+      "calls_function": "updateNode",
+      "caller_line": 2221,
+      "callee_file": "jenkins/model/Nodes.java",
+      "callee_line": 238
+    },
+    {
+      "path": "jenkins/model/Jenkins.java",
+      "from_function": "setNodes",
+      "calls_function": "setNodes",
+      "caller_line": 2225,
+      "callee_file": "jenkins/model/Nodes.java",
+      "callee_line": 114
+    },
+    {
+      "path": "jenkins/model/Jenkins.java",
+      "from_function": "setQuietPeriod",
+      "calls_function": "save",
+      "caller_line": 2351,
+      "callee_file": "hudson/model/Node.java",
+      "callee_line": 145
+    },
+    {
+      "path": "jenkins/model/Jenkins.java",
+      "from_function": "setScmCheckoutRetryCount",
+      "calls_function": "save",
+      "caller_line": 2363,
+      "callee_file": "hudson/model/Node.java",
+      "callee_line": 145
+    },
+    {
+      "path": "jenkins/model/Jenkins.java",
+      "from_function": "getRootPath",
+      "calls_function": "getRootDir",
+      "caller_line": 2635,
+      "callee_file": "hudson/model/Node.java",
+      "callee_line": 670
+    },
+    {
+      "path": "jenkins/model/Jenkins.java",
+      "from_function": "setNumExecutors",
+      "calls_function": "save",
+      "caller_line": 3004,
+      "callee_file": "hudson/model/Node.java",
+      "callee_line": 145
+    },
+    {
+      "path": "jenkins/model/Jenkins.java",
+      "from_function": "getRootDirFor",
+      "calls_function": "getRootDir",
+      "caller_line": 3115,
+      "callee_file": "hudson/model/Node.java",
+      "callee_line": 670
+    },
+    {
+      "path": "jenkins/model/Jenkins.java",
+      "from_function": "setMode",
+      "calls_function": "save",
+      "caller_line": 3293,
+      "callee_file": "hudson/model/Node.java",
+      "callee_line": 145
+    },
+    {
+      "path": "jenkins/model/Jenkins.java",
+      "from_function": "setLabelString",
+      "calls_function": "save",
+      "caller_line": 3303,
+      "callee_file": "hudson/model/Node.java",
+      "callee_line": 145
+    },
+    {
+      "path": "jenkins/model/Jenkins.java",
+      "from_function": "performRenameMigration",
+      "calls_function": "save",
+      "caller_line": 3336,
+      "callee_file": "hudson/model/Node.java",
+      "callee_line": 145
+    },
+    {
+      "path": "jenkins/model/Jenkins.java",
+      "from_function": "load",
+      "calls_function": "getConfigFile",
+      "caller_line": 3348,
+      "callee_file": "hudson/model/Node.java",
+      "callee_line": 157
+    },
+    {
+      "path": "jenkins/model/Jenkins.java",
+      "from_function": "setBuildsAndWorkspacesDir",
+      "calls_function": "save",
+      "caller_line": 3389,
+      "callee_file": "hudson/model/Node.java",
+      "callee_line": 145
+    },
+    {
+      "path": "jenkins/model/Jenkins.java",
+      "from_function": "save",
+      "calls_function": "getConfigFile",
+      "caller_line": 3573,
+      "callee_file": "hudson/model/Node.java",
+      "callee_line": 157
+    },
+    {
+      "path": "jenkins/model/Jenkins.java",
+      "from_function": "saveQuietly",
+      "calls_function": "save",
+      "caller_line": 3614,
+      "callee_file": "hudson/model/Node.java",
+      "callee_line": 145
+    },
+    {
+      "path": "jenkins/model/Jenkins.java",
+      "from_function": "_cleanUpPersistQueue",
+      "calls_function": "getRootDir",
+      "caller_line": 3904,
+      "callee_file": "hudson/model/Node.java",
+      "callee_line": 670
+    },
+    {
+      "path": "jenkins/model/Jenkins.java",
+      "from_function": "doConfigSubmit",
+      "calls_function": "save",
+      "caller_line": 4045,
+      "callee_file": "hudson/model/Node.java",
+      "callee_line": 145
+    },
+    {
+      "path": "jenkins/model/Jenkins.java",
+      "from_function": "doUserContent",
+      "calls_function": "getRootPath",
+      "caller_line": 4536,
+      "callee_file": "hudson/model/Node.java",
+      "callee_line": 496
+    },
+    {
+      "path": "jenkins/model/Jenkins.java",
+      "from_function": "doScript",
+      "calls_function": "getACL",
+      "caller_line": 4842,
+      "callee_file": "hudson/model/Node.java",
+      "callee_line": 563
+    },
+    {
+      "path": "jenkins/model/Jenkins.java",
+      "from_function": "doScript",
+      "calls_function": "getACL",
+      "caller_line": 4849,
+      "callee_file": "hudson/model/Node.java",
+      "callee_line": 563
+    },
+    {
+      "path": "jenkins/model/Jenkins.java",
+      "from_function": "doScriptText",
+      "calls_function": "getACL",
+      "caller_line": 4862,
+      "callee_file": "hudson/model/Node.java",
+      "callee_line": 563
+    },
+    {
+      "path": "jenkins/model/Jenkins.java",
+      "from_function": "doScriptText",
+      "calls_function": "getACL",
+      "caller_line": 4869,
+      "callee_file": "hudson/model/Node.java",
+      "callee_line": 563
+    },
+    {
+      "path": "jenkins/model/Jenkins.java",
+      "from_function": "doConfigSubmit",
+      "calls_function": "setLabelString",
+      "caller_line": 5478,
+      "callee_file": "hudson/model/Node.java",
+      "callee_line": 387
+    },
+    {
+      "path": "jenkins/model/Jenkins.java",
+      "from_function": "doConfigSubmit",
+      "calls_function": "getNodeProperties",
+      "caller_line": 5478,
+      "callee_file": "hudson/model/Node.java",
+      "callee_line": 515
+    },
+    {
+      "path": "jenkins/model/Jenkins.java",
+      "from_function": "run",
+      "calls_function": "isLegacy",
+      "caller_line": 3477,
+      "callee_file": "jenkins/model/Nodes.java",
+      "callee_line": 455
+    },
+    {
+      "path": "jenkins/model/Jenkins.java",
+      "from_function": "run",
+      "calls_function": "load",
+      "caller_line": 3477,
+      "callee_file": "jenkins/model/Nodes.java",
+      "callee_line": 368
+    },
+    {
+      "path": "jenkins/model/Jenkins.java",
+      "from_function": "run",
+      "calls_function": "getNodes",
+      "caller_line": 3523,
+      "callee_file": "jenkins/model/Nodes.java",
+      "callee_line": 103
+    },
+    {
+      "path": "jenkins/model/Jenkins.java",
+      "from_function": "<lambda>1",
+      "calls_function": "drainLabelsToTrim",
+      "caller_line": 2254,
+      "callee_file": "hudson/model/Node.java",
+      "callee_line": 347
+    },
+    {
+      "path": "jenkins/model/ModelObjectWithContextMenu.java",
+      "from_function": "add",
+      "calls_function": "toComputer",
+      "caller_line": 245,
+      "callee_file": "hudson/model/Node.java",
+      "callee_line": 222
+    },
+    {
+      "path": "jenkins/model/ModelObjectWithContextMenu.java",
+      "from_function": "add",
+      "calls_function": "getDisplayName",
+      "caller_line": 245,
+      "callee_file": "hudson/model/Node.java",
+      "callee_line": 123
+    },
+    {
+      "path": "jenkins/model/ModelObjectWithContextMenu.java",
+      "from_function": "add",
+      "calls_function": "getSearchUrl",
+      "caller_line": 245,
+      "callee_file": "hudson/model/Node.java",
+      "callee_line": 128
+    },
+    {
+      "path": "jenkins/model/ModelObjectWithContextMenu.java",
+      "from_function": "withDisplayName",
+      "calls_function": "getDisplayName",
+      "caller_line": 502,
+      "callee_file": "hudson/model/Node.java",
+      "callee_line": 123
+    },
+    {
+      "path": "jenkins/model/Nodes.java",
+      "from_function": "setNodes",
+      "calls_function": "save",
+      "caller_line": 114,
+      "callee_file": "jenkins/model/Nodes.java",
+      "callee_line": 336
+    },
+    {
+      "path": "jenkins/model/Nodes.java",
+      "from_function": "setNodes",
+      "calls_function": "getNodeName",
+      "caller_line": 114,
+      "callee_file": "hudson/model/Node.java",
+      "callee_line": 167
+    },
+    {
+      "path": "jenkins/model/Nodes.java",
+      "from_function": "setNodes",
+      "calls_function": "getRootDir",
+      "caller_line": 114,
+      "callee_file": "jenkins/model/Nodes.java",
+      "callee_line": 459
+    },
+    {
+      "path": "jenkins/model/Nodes.java",
+      "from_function": "addNodeIfAbsent",
+      "calls_function": "getNodeName",
+      "caller_line": 159,
+      "callee_file": "hudson/model/Node.java",
+      "callee_line": 167
+    },
+    {
+      "path": "jenkins/model/Nodes.java",
+      "from_function": "addNodeIfAbsent",
+      "calls_function": "handleAddedNode",
+      "caller_line": 159,
+      "callee_file": "jenkins/model/Nodes.java",
+      "callee_line": 189
+    },
+    {
+      "path": "jenkins/model/Nodes.java",
+      "from_function": "addNode",
+      "calls_function": "getNodeName",
+      "caller_line": 178,
+      "callee_file": "hudson/model/Node.java",
+      "callee_line": 167
+    },
+    {
+      "path": "jenkins/model/Nodes.java",
+      "from_function": "addNode",
+      "calls_function": "handleAddedNode",
+      "caller_line": 178,
+      "callee_file": "jenkins/model/Nodes.java",
+      "callee_line": 189
+    },
+    {
+      "path": "jenkins/model/Nodes.java",
+      "from_function": "handleAddedNode",
+      "calls_function": "onLoad",
+      "caller_line": 189,
+      "callee_file": "hudson/model/Node.java",
+      "callee_line": 264
+    },
+    {
+      "path": "jenkins/model/Nodes.java",
+      "from_function": "handleAddedNode",
+      "calls_function": "getNodeName",
+      "caller_line": 189,
+      "callee_file": "hudson/model/Node.java",
+      "callee_line": 167
+    },
+    {
+      "path": "jenkins/model/Nodes.java",
+      "from_function": "handleAddedNode",
+      "calls_function": "save",
+      "caller_line": 189,
+      "callee_file": "hudson/model/Node.java",
+      "callee_line": 145
+    },
+    {
+      "path": "jenkins/model/Nodes.java",
+      "from_function": "getConfigFile",
+      "calls_function": "getConfigFile",
+      "caller_line": 217,
+      "callee_file": "jenkins/model/Nodes.java",
+      "callee_line": 221
+    },
+    {
+      "path": "jenkins/model/Nodes.java",
+      "from_function": "getConfigFile",
+      "calls_function": "getRootDir",
+      "caller_line": 217,
+      "callee_file": "hudson/model/Node.java",
+      "callee_line": 670
+    },
+    {
+      "path": "jenkins/model/Nodes.java",
+      "from_function": "getConfigFile",
+      "calls_function": "getRootDir",
+      "caller_line": 225,
+      "callee_file": "jenkins/model/Nodes.java",
+      "callee_line": 459
+    },
+    {
+      "path": "jenkins/model/Nodes.java",
+      "from_function": "updateNode",
+      "calls_function": "updateNode",
+      "caller_line": 238,
+      "callee_file": "jenkins/model/Nodes.java",
+      "callee_line": 242
+    },
+    {
+      "path": "jenkins/model/Nodes.java",
+      "from_function": "updateNode",
+      "calls_function": "save",
+      "caller_line": 242,
+      "callee_file": "hudson/model/Node.java",
+      "callee_line": 145
+    },
+    {
+      "path": "jenkins/model/Nodes.java",
+      "from_function": "replaceNode",
+      "calls_function": "getNodeName",
+      "caller_line": 276,
+      "callee_file": "hudson/model/Node.java",
+      "callee_line": 167
+    },
+    {
+      "path": "jenkins/model/Nodes.java",
+      "from_function": "replaceNode",
+      "calls_function": "updateNode",
+      "caller_line": 276,
+      "callee_file": "jenkins/model/Nodes.java",
+      "callee_line": 242
+    },
+    {
+      "path": "jenkins/model/Nodes.java",
+      "from_function": "replaceNode",
+      "calls_function": "getRootDir",
+      "caller_line": 276,
+      "callee_file": "jenkins/model/Nodes.java",
+      "callee_line": 459
+    },
+    {
+      "path": "jenkins/model/Nodes.java",
+      "from_function": "removeNode",
+      "calls_function": "getNodeName",
+      "caller_line": 312,
+      "callee_file": "hudson/model/Node.java",
+      "callee_line": 167
+    },
+    {
+      "path": "jenkins/model/Nodes.java",
+      "from_function": "removeNode",
+      "calls_function": "getRootDir",
+      "caller_line": 312,
+      "callee_file": "jenkins/model/Nodes.java",
+      "callee_line": 459
+    },
+    {
+      "path": "jenkins/model/Nodes.java",
+      "from_function": "removeNode",
+      "calls_function": "getConfigFile",
+      "caller_line": 312,
+      "callee_file": "jenkins/model/Nodes.java",
+      "callee_line": 217
+    },
+    {
+      "path": "jenkins/model/Nodes.java",
+      "from_function": "save",
+      "calls_function": "getConfigFile",
+      "caller_line": 336,
+      "callee_file": "jenkins/model/Nodes.java",
+      "callee_line": 217
+    },
+    {
+      "path": "jenkins/model/Nodes.java",
+      "from_function": "load",
+      "calls_function": "getRootDir",
+      "caller_line": 368,
+      "callee_file": "jenkins/model/Nodes.java",
+      "callee_line": 459
+    },
+    {
+      "path": "jenkins/model/Nodes.java",
+      "from_function": "load",
+      "calls_function": "load",
+      "caller_line": 368,
+      "callee_file": "jenkins/model/Nodes.java",
+      "callee_line": 424
+    },
+    {
+      "path": "jenkins/model/Nodes.java",
+      "from_function": "getOrLoad",
+      "calls_function": "getNode",
+      "caller_line": 396,
+      "callee_file": "jenkins/model/Nodes.java",
+      "callee_line": 358
+    },
+    {
+      "path": "jenkins/model/Nodes.java",
+      "from_function": "getOrLoad",
+      "calls_function": "load",
+      "caller_line": 396,
+      "callee_file": "jenkins/model/Nodes.java",
+      "callee_line": 403
+    },
+    {
+      "path": "jenkins/model/Nodes.java",
+      "from_function": "load",
+      "calls_function": "getConfigFile",
+      "caller_line": 403,
+      "callee_file": "jenkins/model/Nodes.java",
+      "callee_line": 225
+    },
+    {
+      "path": "jenkins/model/Nodes.java",
+      "from_function": "load",
+      "calls_function": "getNodeName",
+      "caller_line": 403,
+      "callee_file": "hudson/model/Node.java",
+      "callee_line": 167
+    },
+    {
+      "path": "jenkins/model/Nodes.java",
+      "from_function": "load",
+      "calls_function": "onLoad",
+      "caller_line": 403,
+      "callee_file": "hudson/model/Node.java",
+      "callee_line": 264
+    },
+    {
+      "path": "jenkins/model/Nodes.java",
+      "from_function": "load",
+      "calls_function": "getConfigFile",
+      "caller_line": 424,
+      "callee_file": "jenkins/model/Nodes.java",
+      "callee_line": 221
+    },
+    {
+      "path": "jenkins/model/Nodes.java",
+      "from_function": "load",
+      "calls_function": "getNodeName",
+      "caller_line": 424,
+      "callee_file": "hudson/model/Node.java",
+      "callee_line": 167
+    },
+    {
+      "path": "jenkins/model/Nodes.java",
+      "from_function": "load",
+      "calls_function": "onLoad",
+      "caller_line": 424,
+      "callee_file": "hudson/model/Node.java",
+      "callee_line": 264
+    },
+    {
+      "path": "jenkins/model/Nodes.java",
+      "from_function": "load",
+      "calls_function": "load",
+      "caller_line": 433,
+      "callee_file": "jenkins/model/Nodes.java",
+      "callee_line": 424
+    },
+    {
+      "path": "jenkins/model/Nodes.java",
+      "from_function": "unload",
+      "calls_function": "getNodeName",
+      "caller_line": 439,
+      "callee_file": "hudson/model/Node.java",
+      "callee_line": 167
+    },
+    {
+      "path": "jenkins/model/Nodes.java",
+      "from_function": "isLegacy",
+      "calls_function": "getRootDir",
+      "caller_line": 455,
+      "callee_file": "jenkins/model/Nodes.java",
+      "callee_line": 459
+    },
+    {
+      "path": "jenkins/model/Nodes.java",
+      "from_function": "getRootDir",
+      "calls_function": "getRootDir",
+      "caller_line": 459,
+      "callee_file": "hudson/model/Node.java",
+      "callee_line": 670
+    },
+    {
+      "path": "jenkins/model/Nodes.java",
+      "from_function": "getRootDirFor",
+      "calls_function": "getRootDirFor",
+      "caller_line": 464,
+      "callee_file": "jenkins/model/Nodes.java",
+      "callee_line": 468
+    },
+    {
+      "path": "jenkins/model/Nodes.java",
+      "from_function": "getRootDirFor",
+      "calls_function": "getNodeName",
+      "caller_line": 464,
+      "callee_file": "hudson/model/Node.java",
+      "callee_line": 167
+    },
+    {
+      "path": "jenkins/model/Nodes.java",
+      "from_function": "getRootDirFor",
+      "calls_function": "getRootDir",
+      "caller_line": 468,
+      "callee_file": "jenkins/model/Nodes.java",
+      "callee_line": 459
+    },
+    {
+      "path": "jenkins/model/Nodes.java",
+      "from_function": "<lambda>0",
+      "calls_function": "getNodeName",
+      "caller_line": 116,
+      "callee_file": "hudson/model/Node.java",
+      "callee_line": 167
+    },
+    {
+      "path": "jenkins/model/Nodes.java",
+      "from_function": "<lambda>0",
+      "calls_function": "onLoad",
+      "caller_line": 116,
+      "callee_file": "hudson/model/Node.java",
+      "callee_line": 264
+    },
+    {
+      "path": "jenkins/model/Nodes.java",
+      "from_function": "<lambda>1",
+      "calls_function": "getRootDir",
+      "caller_line": 138,
+      "callee_file": "jenkins/model/Nodes.java",
+      "callee_line": 459
+    },
+    {
+      "path": "jenkins/model/Nodes.java",
+      "from_function": "<lambda>2",
+      "calls_function": "getNodeName",
+      "caller_line": 199,
+      "callee_file": "hudson/model/Node.java",
+      "callee_line": 167
+    },
+    {
+      "path": "jenkins/model/Nodes.java",
+      "from_function": "<lambda>4",
+      "calls_function": "getNodeName",
+      "caller_line": 245,
+      "callee_file": "hudson/model/Node.java",
+      "callee_line": 167
+    },
+    {
+      "path": "jenkins/model/Nodes.java",
+      "from_function": "<lambda>5",
+      "calls_function": "getNodeName",
+      "caller_line": 283,
+      "callee_file": "hudson/model/Node.java",
+      "callee_line": 167
+    },
+    {
+      "path": "jenkins/model/Nodes.java",
+      "from_function": "<lambda>5",
+      "calls_function": "onLoad",
+      "caller_line": 283,
+      "callee_file": "hudson/model/Node.java",
+      "callee_line": 264
+    },
+    {
+      "path": "jenkins/model/Nodes.java",
+      "from_function": "<lambda>6",
+      "calls_function": "getRootDir",
+      "caller_line": 290,
+      "callee_file": "jenkins/model/Nodes.java",
+      "callee_line": 459
+    },
+    {
+      "path": "jenkins/model/Nodes.java",
+      "from_function": "<lambda>6",
+      "calls_function": "getNodeName",
+      "caller_line": 290,
+      "callee_file": "hudson/model/Node.java",
+      "callee_line": 167
+    },
+    {
+      "path": "jenkins/model/Nodes.java",
+      "from_function": "<lambda>8",
+      "calls_function": "toComputer",
+      "caller_line": 315,
+      "callee_file": "hudson/model/Node.java",
+      "callee_line": 222
+    },
+    {
+      "path": "jenkins/model/Nodes.java",
+      "from_function": "<lambda>8",
+      "calls_function": "getNodeName",
+      "caller_line": 315,
+      "callee_file": "hudson/model/Node.java",
+      "callee_line": 167
+    },
+    {
+      "path": "jenkins/model/Nodes.java",
+      "from_function": "<lambda>9",
+      "calls_function": "getRootDir",
+      "caller_line": 324,
+      "callee_file": "jenkins/model/Nodes.java",
+      "callee_line": 459
+    },
+    {
+      "path": "jenkins/model/Nodes.java",
+      "from_function": "<lambda>9",
+      "calls_function": "getNodeName",
+      "caller_line": 324,
+      "callee_file": "hudson/model/Node.java",
+      "callee_line": 167
+    },
+    {
+      "path": "jenkins/model/Nodes.java",
+      "from_function": "<lambda>19",
+      "calls_function": "getNodeName",
+      "caller_line": 442,
+      "callee_file": "hudson/model/Node.java",
+      "callee_line": 167
+    },
+    {
+      "path": "jenkins/model/UnlabeledLoadStatistics.java",
+      "from_function": "filter",
+      "calls_function": "getMode",
+      "caller_line": 78,
+      "callee_file": "hudson/model/Node.java",
+      "callee_line": 212
+    },
+    {
+      "path": "jenkins/tools/GlobalToolConfiguration.java",
+      "from_function": "configure",
+      "calls_function": "save",
+      "caller_line": 90,
+      "callee_file": "hudson/model/Node.java",
+      "callee_line": 145
+    },
+    {
+      "path": "jenkins/widgets/BuildTimeTrend.java",
+      "from_function": "calculate",
+      "calls_function": "getNodeName",
+      "caller_line": 46,
+      "callee_file": "hudson/model/Node.java",
+      "callee_line": 167
+    },
+    {
+      "path": "jenkins/widgets/BuildTimeTrend.java",
+      "from_function": "calculate",
+      "calls_function": "getDisplayName",
+      "caller_line": 46,
+      "callee_file": "hudson/model/Node.java",
+      "callee_line": 123
+    }
+  ],
+  "call_graph_edges": [
+    {
+      "from": "hudson/BulkChange.java::commit",
+      "to": "jenkins/model/Nodes.java::save"
+    },
+    {
+      "from": "hudson/cli/CreateNodeCommand.java::run",
+      "to": "hudson/model/Node.java::setNodeName"
+    },
+    {
+      "from": "hudson/cli/CreateNodeCommand.java::run",
+      "to": "hudson/model/Node.java::getNodeName"
+    },
+    {
+      "from": "hudson/cli/DeleteNodeCommand.java::run",
+      "to": "hudson/model/Node.java::toComputer"
+    },
+    {
+      "from": "hudson/cli/UpdateNodeCommand.java::run",
+      "to": "hudson/model/Node.java::toComputer"
+    },
+    {
+      "from": "hudson/cli/WaitNodeOfflineCommand.java::run",
+      "to": "hudson/model/Node.java::toComputer"
+    },
+    {
+      "from": "hudson/cli/WaitNodeOnlineCommand.java::run",
+      "to": "hudson/model/Node.java::toComputer"
+    },
+    {
+      "from": "hudson/console/ModelHyperlinkNote.java::encodeTo",
+      "to": "hudson/model/Node.java::toComputer"
+    },
+    {
+      "from": "hudson/console/ModelHyperlinkNote.java::encodeTo",
+      "to": "hudson/model/Node.java::getDisplayName"
+    },
+    {
+      "from": "hudson/console/ModelHyperlinkNote.java::encodeTo",
+      "to": "hudson/model/Node.java::getNodeName"
+    },
+    {
+      "from": "hudson/diagnosis/OldDataMonitor.java::saveAndRemoveEntries",
+      "to": "jenkins/model/Nodes.java::save"
+    },
+    {
+      "from": "hudson/init/impl/GroovyInitScript.java::init",
+      "to": "hudson/model/Node.java::getRootDir"
+    },
+    {
+      "from": "hudson/init/impl/InitialUserContent.java::init",
+      "to": "hudson/model/Node.java::getRootDir"
+    },
+    {
+      "from": "hudson/model/AbstractBuild.java::getWorkspace",
+      "to": "hudson/model/Node.java::createPath"
+    },
+    {
+      "from": "hudson/model/AbstractBuild.java::decideWorkspace",
+      "to": "hudson/model/Node.java::getRootPath"
+    },
+    {
+      "from": "hudson/model/AbstractBuild.java::decideWorkspace",
+      "to": "hudson/model/Node.java::getDisplayName"
+    },
+    {
+      "from": "hudson/model/AbstractBuild.java::decideWorkspace",
+      "to": "hudson/model/Node.java::getWorkspaceFor"
+    },
+    {
+      "from": "hudson/model/AbstractBuild.java::run",
+      "to": "hudson/model/Node.java::getNodeName"
+    },
+    {
+      "from": "hudson/model/AbstractBuild.java::run",
+      "to": "hudson/model/Node.java::getDisplayName"
+    },
+    {
+      "from": "hudson/model/AbstractBuild.java::run",
+      "to": "hudson/model/Node.java::getAssignedLabels"
+    },
+    {
+      "from": "hudson/model/AbstractBuild.java::run",
+      "to": "hudson/model/Node.java::getSelfLabel"
+    },
+    {
+      "from": "hudson/model/AbstractBuild.java::run",
+      "to": "hudson/model/Node.java::getChannel"
+    },
+    {
+      "from": "hudson/model/AbstractBuild.java::createLauncher",
+      "to": "hudson/model/Node.java::getNodeProperties"
+    },
+    {
+      "from": "hudson/model/AbstractBuild.java::reportBrokenChannel",
+      "to": "hudson/model/Node.java::toComputer"
+    },
+    {
+      "from": "hudson/model/AbstractCIBase.java::updateComputer",
+      "to": "hudson/model/Node.java::getNodeName"
+    },
+    {
+      "from": "hudson/model/AbstractCIBase.java::createNewComputerForNode",
+      "to": "hudson/model/Node.java::getNumExecutors"
+    },
+    {
+      "from": "hudson/model/AbstractCIBase.java::createNewComputerForNode",
+      "to": "hudson/model/Node.java::getNodeName"
+    },
+    {
+      "from": "hudson/model/AbstractCIBase.java::createNewComputerForNode",
+      "to": "hudson/model/Node.java::isHoldOffLaunchUntilSave"
+    },
+    {
+      "from": "hudson/model/AbstractCIBase.java::<lambda>2",
+      "to": "hudson/model/Node.java::getNodeName"
+    },
+    {
+      "from": "hudson/model/AbstractProject.java::setAssignedNode",
+      "to": "hudson/model/Node.java::getSelfLabel"
+    },
+    {
+      "from": "hudson/model/AbstractProject.java::pollWithWorkspace",
+      "to": "hudson/model/Node.java::getSelfLabel"
+    },
+    {
+      "from": "hudson/model/AbstractProject.java::isAllSuitableNodesOffline",
+      "to": "hudson/model/Node.java::toComputer"
+    },
+    {
+      "from": "hudson/model/AbstractProject.java::isAllSuitableNodesOffline",
+      "to": "hudson/model/Node.java::getMode"
+    },
+    {
+      "from": "hudson/model/AbstractProject.java::workspaceOffline",
+      "to": "hudson/model/Node.java::toComputer"
+    },
+    {
+      "from": "hudson/model/AdministrativeMonitor.java::disable",
+      "to": "hudson/model/Node.java::save"
+    },
+    {
+      "from": "hudson/model/Computer.java::getOfflineCause",
+      "to": "hudson/model/Node.java::getTemporaryOfflineCause"
+    },
+    {
+      "from": "hudson/model/Computer.java::isTemporarilyOffline",
+      "to": "hudson/model/Node.java::isTemporarilyOffline"
+    },
+    {
+      "from": "hudson/model/Computer.java::setTemporaryOfflineCause",
+      "to": "hudson/model/Node.java::setTemporaryOfflineCause"
+    },
+    {
+      "from": "hudson/model/Computer.java::getTemporaryOfflineCauseReason",
+      "to": "hudson/model/Node.java::getTemporaryOfflineCause"
+    },
+    {
+      "from": "hudson/model/Computer.java::getAssignedLabels",
+      "to": "hudson/model/Node.java::getAssignedLabels"
+    },
+    {
+      "from": "hudson/model/Computer.java::getTiedJobs",
+      "to": "hudson/model/Node.java::getSelfLabel"
+    },
+    {
+      "from": "hudson/model/Computer.java::setNode",
+      "to": "hudson/model/Node.java::getNodeName"
+    },
+    {
+      "from": "hudson/model/Computer.java::setNode",
+      "to": "hudson/model/Node.java::getNumExecutors"
+    },
+    {
+      "from": "hudson/model/Computer.java::getDescription",
+      "to": "hudson/model/Node.java::getNodeDescription"
+    },
+    {
+      "from": "hudson/model/Computer.java::buildEnvironment",
+      "to": "hudson/model/Node.java::getNodeProperties"
+    },
+    {
+      "from": "hudson/model/Computer.java::doToggleOffline",
+      "to": "hudson/model/Node.java::isTemporarilyOffline"
+    },
+    {
+      "from": "hudson/model/Computer.java::doConfigSubmit",
+      "to": "hudson/model/Node.java::reconfigure"
+    },
+    {
+      "from": "hudson/model/Computer.java::doConfigSubmit",
+      "to": "hudson/model/Node.java::getNodeProperty"
+    },
+    {
+      "from": "hudson/model/Computer.java::doConfigSubmit",
+      "to": "hudson/model/Node.java::getNodeName"
+    },
+    {
+      "from": "hudson/model/Computer.java::isAcceptingTasks",
+      "to": "hudson/model/Node.java::isAcceptingTasks"
+    },
+    {
+      "from": "hudson/model/ComputerSet.java::doCreateItem",
+      "to": "hudson/model/Node.java::getNodeName"
+    },
+    {
+      "from": "hudson/model/ComputerSet.java::doCreateItem",
+      "to": "hudson/model/Node.java::setNodeName"
+    },
+    {
+      "from": "hudson/model/ComputerSet.java::doAutoCompleteCopyNewItemFrom",
+      "to": "hudson/model/Node.java::getNodeName"
+    },
+    {
+      "from": "hudson/model/ComputerSet.java::get",
+      "to": "hudson/model/Node.java::getNodeName"
+    },
+    {
+      "from": "hudson/model/ItemGroupMixIn.java::createTopLevelItem",
+      "to": "hudson/model/Node.java::getACL"
+    },
+    {
+      "from": "hudson/model/ItemGroupMixIn.java::copy",
+      "to": "hudson/model/Node.java::getACL"
+    },
+    {
+      "from": "hudson/model/ItemGroupMixIn.java::createProjectFromXML",
+      "to": "hudson/model/Node.java::getACL"
+    },
+    {
+      "from": "hudson/model/ItemGroupMixIn.java::createProject",
+      "to": "hudson/model/Node.java::getACL"
+    },
+    {
+      "from": "hudson/model/Items.java::all2",
+      "to": "hudson/model/Node.java::getACL"
+    },
+    {
+      "from": "hudson/model/JDK.java::isDefaultJDKValid",
+      "to": "hudson/model/Node.java::createLauncher"
+    },
+    {
+      "from": "hudson/model/Job.java::getEnvironment",
+      "to": "hudson/model/Node.java::toComputer"
+    },
+    {
+      "from": "hudson/model/Label.java::matches",
+      "to": "hudson/model/Node.java::getAssignedLabels"
+    },
+    {
+      "from": "hudson/model/Label.java::isSelfLabel",
+      "to": "hudson/model/Node.java::getSelfLabel"
+    },
+    {
+      "from": "hudson/model/Label.java::isAssignable",
+      "to": "hudson/model/Node.java::getNumExecutors"
+    },
+    {
+      "from": "hudson/model/Label.java::getTotalConfiguredExecutors",
+      "to": "hudson/model/Node.java::getNumExecutors"
+    },
+    {
+      "from": "hudson/model/Label.java::getTotalExecutors",
+      "to": "hudson/model/Node.java::toComputer"
+    },
+    {
+      "from": "hudson/model/Label.java::getBusyExecutors",
+      "to": "hudson/model/Node.java::toComputer"
+    },
+    {
+      "from": "hudson/model/Label.java::getIdleExecutors",
+      "to": "hudson/model/Node.java::toComputer"
+    },
+    {
+      "from": "hudson/model/Label.java::isOffline",
+      "to": "hudson/model/Node.java::toComputer"
+    },
+    {
+      "from": "hudson/model/Label.java::getDescription",
+      "to": "hudson/model/Node.java::getNodeDescription"
+    },
+    {
+      "from": "hudson/model/Label.java::toString",
+      "to": "hudson/model/Node.java::getDisplayName"
+    },
+    {
+      "from": "hudson/model/LoadStatistics.java::with",
+      "to": "hudson/model/Node.java::toComputer"
+    },
+    {
+      "from": "hudson/model/Node.java::getDisplayName",
+      "to": "hudson/model/Node.java::getNodeName"
+    },
+    {
+      "from": "hudson/model/Node.java::getSearchUrl",
+      "to": "hudson/model/Node.java::toComputer"
+    },
+    {
+      "from": "hudson/model/Node.java::getSearchUrl",
+      "to": "hudson/model/Node.java::getNodeName"
+    },
+    {
+      "from": "hudson/model/Node.java::save",
+      "to": "hudson/model/Node.java::getRootDir"
+    },
+    {
+      "from": "hudson/model/Node.java::save",
+      "to": "hudson/model/Node.java::getConfigFile"
+    },
+    {
+      "from": "hudson/model/Node.java::getConfigFile",
+      "to": "jenkins/model/Nodes.java::getConfigFile"
+    },
+    {
+      "from": "hudson/model/Node.java::getChannel",
+      "to": "hudson/model/Node.java::toComputer"
+    },
+    {
+      "from": "hudson/model/Node.java::onLoad",
+      "to": "hudson/model/Node.java::setNodeName"
+    },
+    {
+      "from": "hudson/model/Node.java::getLabelCloud",
+      "to": "hudson/model/Node.java::getAssignedLabels"
+    },
+    {
+      "from": "hudson/model/Node.java::getLabelAtomSet",
+      "to": "hudson/model/Node.java::getLabelString"
+    },
+    {
+      "from": "hudson/model/Node.java::getAssignedLabels",
+      "to": "hudson/model/Node.java::getLabelAtomSet"
+    },
+    {
+      "from": "hudson/model/Node.java::getAssignedLabels",
+      "to": "hudson/model/Node.java::getSelfLabel"
+    },
+    {
+      "from": "hudson/model/Node.java::getAssignedLabels",
+      "to": "hudson/model/Node.java::getDynamicLabels"
+    },
+    {
+      "from": "hudson/model/Node.java::drainLabelsToTrim",
+      "to": "hudson/model/Node.java::getAssignedLabels"
+    },
+    {
+      "from": "hudson/model/Node.java::getSelfLabel",
+      "to": "hudson/model/Node.java::getNodeName"
+    },
+    {
+      "from": "hudson/model/Node.java::canTake",
+      "to": "hudson/model/Node.java::getDisplayName"
+    },
+    {
+      "from": "hudson/model/Node.java::canTake",
+      "to": "hudson/model/Node.java::getMode"
+    },
+    {
+      "from": "hudson/model/Node.java::canTake",
+      "to": "hudson/model/Node.java::getNodeProperties"
+    },
+    {
+      "from": "hudson/model/Node.java::canTake",
+      "to": "hudson/model/Node.java::isAcceptingTasks"
+    },
+    {
+      "from": "hudson/model/Node.java::createPath",
+      "to": "hudson/model/Node.java::getChannel"
+    },
+    {
+      "from": "hudson/model/Node.java::getNodeProperty",
+      "to": "hudson/model/Node.java::getNodeProperties"
+    },
+    {
+      "from": "hudson/model/Node.java::getNodeProperty",
+      "to": "hudson/model/Node.java::getNodeProperties"
+    },
+    {
+      "from": "hudson/model/Node.java::reconfigure",
+      "to": "hudson/model/Node.java::reconfigureImpl"
+    },
+    {
+      "from": "hudson/model/Node.java::reconfigure",
+      "to": "hudson/model/Node.java::reconfigureImpl"
+    },
+    {
+      "from": "hudson/model/Node.java::reconfigureImpl",
+      "to": "hudson/model/Node.java::getDescriptor"
+    },
+    {
+      "from": "hudson/model/Node.java::getClockDifference",
+      "to": "hudson/model/Node.java::getChannel"
+    },
+    {
+      "from": "hudson/model/Node.java::getClockDifference",
+      "to": "hudson/model/Node.java::getNodeName"
+    },
+    {
+      "from": "hudson/model/Node.java::getClockDifference",
+      "to": "hudson/model/Node.java::getClockDifferenceCallable"
+    },
+    {
+      "from": "hudson/model/Node.java::getRootDir",
+      "to": "jenkins/model/Nodes.java::getRootDirFor"
+    },
+    {
+      "from": "hudson/model/Node.java::getRootDir",
+      "to": "hudson/model/Node.java::getParent"
+    },
+    {
+      "from": "hudson/model/Node.java::getParent",
+      "to": "hudson/model/Node.java::getNodeName"
+    },
+    {
+      "from": "hudson/model/Node.java::onConvert",
+      "to": "hudson/model/Node.java::getNodeProperties"
+    },
+    {
+      "from": "hudson/model/Node.java::<lambda>0",
+      "to": "hudson/model/Node.java::toComputer"
+    },
+    {
+      "from": "hudson/model/Node.java::<lambda>1",
+      "to": "hudson/model/Node.java::toComputer"
+    },
+    {
+      "from": "hudson/model/Node.java::<lambda>2",
+      "to": "hudson/model/Node.java::getNodeName"
+    },
+    {
+      "from": "hudson/model/Queue.java::getCauseOfBlockage",
+      "to": "hudson/model/Node.java::canTake"
+    },
+    {
+      "from": "hudson/model/Queue.java::isNotExclusive",
+      "to": "hudson/model/Node.java::getMode"
+    },
+    {
+      "from": "hudson/model/Queue.java::<lambda>0",
+      "to": "hudson/model/Node.java::getNodeName"
+    },
+    {
+      "from": "hudson/model/Queue.java::_getBuildableItems",
+      "to": "hudson/model/Node.java::canTake"
+    },
+    {
+      "from": "hudson/model/Queue.java::makeFlyWeightTaskBuildable",
+      "to": "hudson/model/Node.java::getSelfLabel"
+    },
+    {
+      "from": "hudson/model/Queue.java::makeFlyWeightTaskBuildable",
+      "to": "hudson/model/Node.java::getNumExecutors"
+    },
+    {
+      "from": "hudson/model/Queue.java::makeFlyWeightTaskBuildable",
+      "to": "hudson/model/Node.java::toComputer"
+    },
+    {
+      "from": "hudson/model/Queue.java::makeFlyWeightTaskBuildable",
+      "to": "hudson/model/Node.java::canTake"
+    },
+    {
+      "from": "hudson/model/Slave.java::getLauncher",
+      "to": "hudson/model/Node.java::save"
+    },
+    {
+      "from": "hudson/model/Slave.java::save",
+      "to": "hudson/model/Node.java::save"
+    },
+    {
+      "from": "hudson/model/Slave.java::drainLabelsToTrim",
+      "to": "hudson/model/Node.java::drainLabelsToTrim"
+    },
+    {
+      "from": "hudson/model/Slave.java::setLabelString",
+      "to": "hudson/model/Node.java::getAssignedLabels"
+    },
+    {
+      "from": "hudson/model/Slave.java::_setLabelString",
+      "to": "hudson/model/Node.java::getAssignedLabels"
+    },
+    {
+      "from": "hudson/model/Slave.java::getWorkspaceRoot",
+      "to": "hudson/model/Node.java::getRootPath"
+    },
+    {
+      "from": "hudson/model/Slave.java::getComputer",
+      "to": "hudson/model/Node.java::toComputer"
+    },
+    {
+      "from": "hudson/model/View.java::isRelevant",
+      "to": "hudson/model/Node.java::getMode"
+    },
+    {
+      "from": "hudson/model/WorkspaceCleanupThread.java::execute",
+      "to": "hudson/model/Node.java::getWorkspaceFor"
+    },
+    {
+      "from": "hudson/model/WorkspaceCleanupThread.java::execute",
+      "to": "hudson/model/Node.java::getDisplayName"
+    },
+    {
+      "from": "hudson/model/queue/CauseOfBlockage.java::getShortDescription",
+      "to": "hudson/model/Node.java::toComputer"
+    },
+    {
+      "from": "hudson/model/queue/CauseOfBlockage.java::getShortDescription",
+      "to": "hudson/model/Node.java::getDisplayName"
+    },
+    {
+      "from": "hudson/model/queue/CauseOfBlockage.java::getShortDescription",
+      "to": "hudson/model/Node.java::toComputer"
+    },
+    {
+      "from": "hudson/model/queue/CauseOfBlockage.java::getShortDescription",
+      "to": "hudson/model/Node.java::getDisplayName"
+    },
+    {
+      "from": "hudson/model/queue/CauseOfBlockage.java::getShortDescription",
+      "to": "hudson/model/Node.java::toComputer"
+    },
+    {
+      "from": "hudson/model/queue/CauseOfBlockage.java::getShortDescription",
+      "to": "hudson/model/Node.java::getDisplayName"
+    },
+    {
+      "from": "hudson/model/queue/MappingWorksheet.java::getName",
+      "to": "hudson/model/Node.java::getNodeName"
+    },
+    {
+      "from": "hudson/model/queue/MappingWorksheet.java::<lambda>0",
+      "to": "hudson/model/Node.java::getNodeName"
+    },
+    {
+      "from": "hudson/node_monitors/ClockMonitor.java::createCallable",
+      "to": "hudson/model/Node.java::getClockDifferenceCallable"
+    },
+    {
+      "from": "hudson/node_monitors/DiskSpaceMonitor.java::getThresholdBytes",
+      "to": "hudson/model/Node.java::getNodeProperty"
+    },
+    {
+      "from": "hudson/node_monitors/DiskSpaceMonitor.java::getWarningThresholdBytes",
+      "to": "hudson/model/Node.java::getNodeProperty"
+    },
+    {
+      "from": "hudson/node_monitors/DiskSpaceMonitor.java::createCallable",
+      "to": "hudson/model/Node.java::getRootPath"
+    },
+    {
+      "from": "hudson/node_monitors/TemporarySpaceMonitor.java::getThresholdBytes",
+      "to": "hudson/model/Node.java::getNodeProperty"
+    },
+    {
+      "from": "hudson/node_monitors/TemporarySpaceMonitor.java::getWarningThresholdBytes",
+      "to": "hudson/model/Node.java::getNodeProperty"
+    },
+    {
+      "from": "hudson/node_monitors/TemporarySpaceMonitor.java::createCallable",
+      "to": "hudson/model/Node.java::getRootPath"
+    },
+    {
+      "from": "hudson/search/Search.java::findClosestSuggestedItem",
+      "to": "hudson/model/Node.java::getSearchUrl"
+    },
+    {
+      "from": "hudson/search/SuggestedItem.java::getUrl",
+      "to": "hudson/model/Node.java::getSearchUrl"
+    },
+    {
+      "from": "hudson/security/AccessControlled.java::checkPermission",
+      "to": "hudson/model/Node.java::getACL"
+    },
+    {
+      "from": "hudson/security/AccessControlled.java::checkAnyPermission",
+      "to": "hudson/model/Node.java::getACL"
+    },
+    {
+      "from": "hudson/security/AccessControlled.java::hasPermission",
+      "to": "hudson/model/Node.java::getACL"
+    },
+    {
+      "from": "hudson/security/AccessControlled.java::hasAnyPermission",
+      "to": "hudson/model/Node.java::getACL"
+    },
+    {
+      "from": "hudson/security/AccessControlled.java::hasPermission2",
+      "to": "hudson/model/Node.java::getACL"
+    },
+    {
+      "from": "hudson/slaves/AbstractCloudSlave.java::terminate",
+      "to": "hudson/model/Node.java::toComputer"
+    },
+    {
+      "from": "hudson/slaves/Cloud.java::doConfigSubmit",
+      "to": "hudson/model/Node.java::save"
+    },
+    {
+      "from": "hudson/slaves/ComputerRetentionWork.java::<lambda>0",
+      "to": "hudson/model/Node.java::isHoldOffLaunchUntilSave"
+    },
+    {
+      "from": "hudson/slaves/NodeProvisioner.java::recordPendingLaunches",
+      "to": "hudson/model/Node.java::getNumExecutors"
+    },
+    {
+      "from": "hudson/slaves/NodeProvisioner.java::fireOnRollback",
+      "to": "hudson/model/Node.java::getDisplayName"
+    },
+    {
+      "from": "hudson/slaves/NodeProvisioner.java::fireOnCommit",
+      "to": "hudson/model/Node.java::getDisplayName"
+    },
+    {
+      "from": "hudson/slaves/RetentionStrategy.java::check",
+      "to": "hudson/model/Node.java::canTake"
+    },
+    {
+      "from": "hudson/tasks/CommandInterpreter.java::perform",
+      "to": "hudson/model/Node.java::toComputer"
+    },
+    {
+      "from": "hudson/tasks/CommandInterpreter.java::perform",
+      "to": "hudson/model/Node.java::getChannel"
+    },
+    {
+      "from": "hudson/tools/AbstractCommandInstaller.java::performInstallation",
+      "to": "hudson/model/Node.java::createLauncher"
+    },
+    {
+      "from": "hudson/tools/DownloadFromUrlInstaller.java::performInstallation",
+      "to": "hudson/model/Node.java::getDisplayName"
+    },
+    {
+      "from": "hudson/tools/InstallerTranslator.java::getToolHome",
+      "to": "hudson/model/Node.java::getRootPath"
+    },
+    {
+      "from": "hudson/tools/InstallerTranslator.java::getToolHome",
+      "to": "hudson/model/Node.java::getDisplayName"
+    },
+    {
+      "from": "hudson/tools/ToolInstaller.java::preferredLocation",
+      "to": "hudson/model/Node.java::getRootPath"
+    },
+    {
+      "from": "hudson/tools/ToolInstaller.java::preferredLocation",
+      "to": "hudson/model/Node.java::getDisplayName"
+    },
+    {
+      "from": "hudson/tools/ToolLocationNodeProperty.java::getToolHome",
+      "to": "hudson/model/Node.java::getNodeProperties"
+    },
+    {
+      "from": "hudson/tools/ZipExtractionInstaller.java::performInstallation",
+      "to": "hudson/model/Node.java::getDisplayName"
+    },
+    {
+      "from": "hudson/util/ClockDifference.java::toHtml",
+      "to": "hudson/model/Node.java::getClockDifference"
+    },
+    {
+      "from": "hudson/util/ListBoxModel.java::add",
+      "to": "hudson/model/Node.java::getDisplayName"
+    },
+    {
+      "from": "hudson/util/PersistedList.java::onModified",
+      "to": "jenkins/model/Nodes.java::save"
+    },
+    {
+      "from": "jenkins/appearance/AppearanceGlobalConfiguration.java::configure",
+      "to": "hudson/model/Node.java::save"
+    },
+    {
+      "from": "jenkins/install/SetupWizard.java::init",
+      "to": "hudson/model/Node.java::save"
+    },
+    {
+      "from": "jenkins/model/CoreEnvironmentContributor.java::buildEnvironmentFor",
+      "to": "hudson/model/Node.java::getRootDir"
+    },
+    {
+      "from": "jenkins/model/CoreEnvironmentContributor.java::buildEnvironmentFor",
+      "to": "hudson/model/Node.java::getAssignedLabels"
+    },
+    {
+      "from": "jenkins/model/Jenkins.java::setNoUsageStatistics",
+      "to": "hudson/model/Node.java::save"
+    },
+    {
+      "from": "jenkins/model/Jenkins.java::setSystemMessage",
+      "to": "hudson/model/Node.java::save"
+    },
+    {
+      "from": "jenkins/model/Jenkins.java::getNode",
+      "to": "jenkins/model/Nodes.java::getNode"
+    },
+    {
+      "from": "jenkins/model/Jenkins.java::getNodes",
+      "to": "jenkins/model/Nodes.java::getNodes"
+    },
+    {
+      "from": "jenkins/model/Jenkins.java::addNode",
+      "to": "jenkins/model/Nodes.java::addNode"
+    },
+    {
+      "from": "jenkins/model/Jenkins.java::removeNode",
+      "to": "jenkins/model/Nodes.java::removeNode"
+    },
+    {
+      "from": "jenkins/model/Jenkins.java::unloadNode",
+      "to": "jenkins/model/Nodes.java::unload"
+    },
+    {
+      "from": "jenkins/model/Jenkins.java::updateNode",
+      "to": "jenkins/model/Nodes.java::updateNode"
+    },
+    {
+      "from": "jenkins/model/Jenkins.java::setNodes",
+      "to": "jenkins/model/Nodes.java::setNodes"
+    },
+    {
+      "from": "jenkins/model/Jenkins.java::setQuietPeriod",
+      "to": "hudson/model/Node.java::save"
+    },
+    {
+      "from": "jenkins/model/Jenkins.java::setScmCheckoutRetryCount",
+      "to": "hudson/model/Node.java::save"
+    },
+    {
+      "from": "jenkins/model/Jenkins.java::getRootPath",
+      "to": "hudson/model/Node.java::getRootDir"
+    },
+    {
+      "from": "jenkins/model/Jenkins.java::setNumExecutors",
+      "to": "hudson/model/Node.java::save"
+    },
+    {
+      "from": "jenkins/model/Jenkins.java::getRootDirFor",
+      "to": "hudson/model/Node.java::getRootDir"
+    },
+    {
+      "from": "jenkins/model/Jenkins.java::setMode",
+      "to": "hudson/model/Node.java::save"
+    },
+    {
+      "from": "jenkins/model/Jenkins.java::setLabelString",
+      "to": "hudson/model/Node.java::save"
+    },
+    {
+      "from": "jenkins/model/Jenkins.java::performRenameMigration",
+      "to": "hudson/model/Node.java::save"
+    },
+    {
+      "from": "jenkins/model/Jenkins.java::load",
+      "to": "hudson/model/Node.java::getConfigFile"
+    },
+    {
+      "from": "jenkins/model/Jenkins.java::setBuildsAndWorkspacesDir",
+      "to": "hudson/model/Node.java::save"
+    },
+    {
+      "from": "jenkins/model/Jenkins.java::save",
+      "to": "hudson/model/Node.java::getConfigFile"
+    },
+    {
+      "from": "jenkins/model/Jenkins.java::saveQuietly",
+      "to": "hudson/model/Node.java::save"
+    },
+    {
+      "from": "jenkins/model/Jenkins.java::_cleanUpPersistQueue",
+      "to": "hudson/model/Node.java::getRootDir"
+    },
+    {
+      "from": "jenkins/model/Jenkins.java::doConfigSubmit",
+      "to": "hudson/model/Node.java::save"
+    },
+    {
+      "from": "jenkins/model/Jenkins.java::doUserContent",
+      "to": "hudson/model/Node.java::getRootPath"
+    },
+    {
+      "from": "jenkins/model/Jenkins.java::doScript",
+      "to": "hudson/model/Node.java::getACL"
+    },
+    {
+      "from": "jenkins/model/Jenkins.java::doScript",
+      "to": "hudson/model/Node.java::getACL"
+    },
+    {
+      "from": "jenkins/model/Jenkins.java::doScriptText",
+      "to": "hudson/model/Node.java::getACL"
+    },
+    {
+      "from": "jenkins/model/Jenkins.java::doScriptText",
+      "to": "hudson/model/Node.java::getACL"
+    },
+    {
+      "from": "jenkins/model/Jenkins.java::doConfigSubmit",
+      "to": "hudson/model/Node.java::setLabelString"
+    },
+    {
+      "from": "jenkins/model/Jenkins.java::doConfigSubmit",
+      "to": "hudson/model/Node.java::getNodeProperties"
+    },
+    {
+      "from": "jenkins/model/Jenkins.java::run",
+      "to": "jenkins/model/Nodes.java::isLegacy"
+    },
+    {
+      "from": "jenkins/model/Jenkins.java::run",
+      "to": "jenkins/model/Nodes.java::load"
+    },
+    {
+      "from": "jenkins/model/Jenkins.java::run",
+      "to": "jenkins/model/Nodes.java::getNodes"
+    },
+    {
+      "from": "jenkins/model/Jenkins.java::<lambda>1",
+      "to": "hudson/model/Node.java::drainLabelsToTrim"
+    },
+    {
+      "from": "jenkins/model/ModelObjectWithContextMenu.java::add",
+      "to": "hudson/model/Node.java::toComputer"
+    },
+    {
+      "from": "jenkins/model/ModelObjectWithContextMenu.java::add",
+      "to": "hudson/model/Node.java::getDisplayName"
+    },
+    {
+      "from": "jenkins/model/ModelObjectWithContextMenu.java::add",
+      "to": "hudson/model/Node.java::getSearchUrl"
+    },
+    {
+      "from": "jenkins/model/ModelObjectWithContextMenu.java::withDisplayName",
+      "to": "hudson/model/Node.java::getDisplayName"
+    },
+    {
+      "from": "jenkins/model/Nodes.java::setNodes",
+      "to": "jenkins/model/Nodes.java::save"
+    },
+    {
+      "from": "jenkins/model/Nodes.java::setNodes",
+      "to": "hudson/model/Node.java::getNodeName"
+    },
+    {
+      "from": "jenkins/model/Nodes.java::setNodes",
+      "to": "jenkins/model/Nodes.java::getRootDir"
+    },
+    {
+      "from": "jenkins/model/Nodes.java::addNodeIfAbsent",
+      "to": "hudson/model/Node.java::getNodeName"
+    },
+    {
+      "from": "jenkins/model/Nodes.java::addNodeIfAbsent",
+      "to": "jenkins/model/Nodes.java::handleAddedNode"
+    },
+    {
+      "from": "jenkins/model/Nodes.java::addNode",
+      "to": "hudson/model/Node.java::getNodeName"
+    },
+    {
+      "from": "jenkins/model/Nodes.java::addNode",
+      "to": "jenkins/model/Nodes.java::handleAddedNode"
+    },
+    {
+      "from": "jenkins/model/Nodes.java::handleAddedNode",
+      "to": "hudson/model/Node.java::onLoad"
+    },
+    {
+      "from": "jenkins/model/Nodes.java::handleAddedNode",
+      "to": "hudson/model/Node.java::getNodeName"
+    },
+    {
+      "from": "jenkins/model/Nodes.java::handleAddedNode",
+      "to": "hudson/model/Node.java::save"
+    },
+    {
+      "from": "jenkins/model/Nodes.java::getConfigFile",
+      "to": "jenkins/model/Nodes.java::getConfigFile"
+    },
+    {
+      "from": "jenkins/model/Nodes.java::getConfigFile",
+      "to": "hudson/model/Node.java::getRootDir"
+    },
+    {
+      "from": "jenkins/model/Nodes.java::getConfigFile",
+      "to": "jenkins/model/Nodes.java::getRootDir"
+    },
+    {
+      "from": "jenkins/model/Nodes.java::updateNode",
+      "to": "jenkins/model/Nodes.java::updateNode"
+    },
+    {
+      "from": "jenkins/model/Nodes.java::updateNode",
+      "to": "hudson/model/Node.java::save"
+    },
+    {
+      "from": "jenkins/model/Nodes.java::replaceNode",
+      "to": "hudson/model/Node.java::getNodeName"
+    },
+    {
+      "from": "jenkins/model/Nodes.java::replaceNode",
+      "to": "jenkins/model/Nodes.java::updateNode"
+    },
+    {
+      "from": "jenkins/model/Nodes.java::replaceNode",
+      "to": "jenkins/model/Nodes.java::getRootDir"
+    },
+    {
+      "from": "jenkins/model/Nodes.java::removeNode",
+      "to": "hudson/model/Node.java::getNodeName"
+    },
+    {
+      "from": "jenkins/model/Nodes.java::removeNode",
+      "to": "jenkins/model/Nodes.java::getRootDir"
+    },
+    {
+      "from": "jenkins/model/Nodes.java::removeNode",
+      "to": "jenkins/model/Nodes.java::getConfigFile"
+    },
+    {
+      "from": "jenkins/model/Nodes.java::save",
+      "to": "jenkins/model/Nodes.java::getConfigFile"
+    },
+    {
+      "from": "jenkins/model/Nodes.java::load",
+      "to": "jenkins/model/Nodes.java::getRootDir"
+    },
+    {
+      "from": "jenkins/model/Nodes.java::load",
+      "to": "jenkins/model/Nodes.java::load"
+    },
+    {
+      "from": "jenkins/model/Nodes.java::getOrLoad",
+      "to": "jenkins/model/Nodes.java::getNode"
+    },
+    {
+      "from": "jenkins/model/Nodes.java::getOrLoad",
+      "to": "jenkins/model/Nodes.java::load"
+    },
+    {
+      "from": "jenkins/model/Nodes.java::load",
+      "to": "jenkins/model/Nodes.java::getConfigFile"
+    },
+    {
+      "from": "jenkins/model/Nodes.java::load",
+      "to": "hudson/model/Node.java::getNodeName"
+    },
+    {
+      "from": "jenkins/model/Nodes.java::load",
+      "to": "hudson/model/Node.java::onLoad"
+    },
+    {
+      "from": "jenkins/model/Nodes.java::load",
+      "to": "jenkins/model/Nodes.java::getConfigFile"
+    },
+    {
+      "from": "jenkins/model/Nodes.java::load",
+      "to": "hudson/model/Node.java::getNodeName"
+    },
+    {
+      "from": "jenkins/model/Nodes.java::load",
+      "to": "hudson/model/Node.java::onLoad"
+    },
+    {
+      "from": "jenkins/model/Nodes.java::load",
+      "to": "jenkins/model/Nodes.java::load"
+    },
+    {
+      "from": "jenkins/model/Nodes.java::unload",
+      "to": "hudson/model/Node.java::getNodeName"
+    },
+    {
+      "from": "jenkins/model/Nodes.java::isLegacy",
+      "to": "jenkins/model/Nodes.java::getRootDir"
+    },
+    {
+      "from": "jenkins/model/Nodes.java::getRootDir",
+      "to": "hudson/model/Node.java::getRootDir"
+    },
+    {
+      "from": "jenkins/model/Nodes.java::getRootDirFor",
+      "to": "jenkins/model/Nodes.java::getRootDirFor"
+    },
+    {
+      "from": "jenkins/model/Nodes.java::getRootDirFor",
+      "to": "hudson/model/Node.java::getNodeName"
+    },
+    {
+      "from": "jenkins/model/Nodes.java::getRootDirFor",
+      "to": "jenkins/model/Nodes.java::getRootDir"
+    },
+    {
+      "from": "jenkins/model/Nodes.java::<lambda>0",
+      "to": "hudson/model/Node.java::getNodeName"
+    },
+    {
+      "from": "jenkins/model/Nodes.java::<lambda>0",
+      "to": "hudson/model/Node.java::onLoad"
+    },
+    {
+      "from": "jenkins/model/Nodes.java::<lambda>1",
+      "to": "jenkins/model/Nodes.java::getRootDir"
+    },
+    {
+      "from": "jenkins/model/Nodes.java::<lambda>2",
+      "to": "hudson/model/Node.java::getNodeName"
+    },
+    {
+      "from": "jenkins/model/Nodes.java::<lambda>4",
+      "to": "hudson/model/Node.java::getNodeName"
+    },
+    {
+      "from": "jenkins/model/Nodes.java::<lambda>5",
+      "to": "hudson/model/Node.java::getNodeName"
+    },
+    {
+      "from": "jenkins/model/Nodes.java::<lambda>5",
+      "to": "hudson/model/Node.java::onLoad"
+    },
+    {
+      "from": "jenkins/model/Nodes.java::<lambda>6",
+      "to": "jenkins/model/Nodes.java::getRootDir"
+    },
+    {
+      "from": "jenkins/model/Nodes.java::<lambda>6",
+      "to": "hudson/model/Node.java::getNodeName"
+    },
+    {
+      "from": "jenkins/model/Nodes.java::<lambda>8",
+      "to": "hudson/model/Node.java::toComputer"
+    },
+    {
+      "from": "jenkins/model/Nodes.java::<lambda>8",
+      "to": "hudson/model/Node.java::getNodeName"
+    },
+    {
+      "from": "jenkins/model/Nodes.java::<lambda>9",
+      "to": "jenkins/model/Nodes.java::getRootDir"
+    },
+    {
+      "from": "jenkins/model/Nodes.java::<lambda>9",
+      "to": "hudson/model/Node.java::getNodeName"
+    },
+    {
+      "from": "jenkins/model/Nodes.java::<lambda>19",
+      "to": "hudson/model/Node.java::getNodeName"
+    },
+    {
+      "from": "jenkins/model/UnlabeledLoadStatistics.java::filter",
+      "to": "hudson/model/Node.java::getMode"
+    },
+    {
+      "from": "jenkins/tools/GlobalToolConfiguration.java::configure",
+      "to": "hudson/model/Node.java::save"
+    },
+    {
+      "from": "jenkins/widgets/BuildTimeTrend.java::calculate",
+      "to": "hudson/model/Node.java::getNodeName"
+    },
+    {
+      "from": "jenkins/widgets/BuildTimeTrend.java::calculate",
+      "to": "hudson/model/Node.java::getDisplayName"
+    }
+  ],
+  "functions_in_changed_files": [
+    {
+      "name": "getDisplayName",
+      "full_name": "hudson.model.Node.getDisplayName:java.lang.String()",
+      "file": "hudson/model/Node.java",
+      "start_line": 123,
+      "end_line": 126,
+      "signature": "java.lang.String()"
+    },
+    {
+      "name": "getSearchUrl",
+      "full_name": "hudson.model.Node.getSearchUrl:java.lang.String()",
+      "file": "hudson/model/Node.java",
+      "start_line": 128,
+      "end_line": 135,
+      "signature": "java.lang.String()"
+    },
+    {
+      "name": "isHoldOffLaunchUntilSave",
+      "full_name": "hudson.model.Node.isHoldOffLaunchUntilSave:boolean()",
+      "file": "hudson/model/Node.java",
+      "start_line": 137,
+      "end_line": 139,
+      "signature": "boolean()"
+    },
+    {
+      "name": "save",
+      "full_name": "hudson.model.Node.save:void()",
+      "file": "hudson/model/Node.java",
+      "start_line": 145,
+      "end_line": 155,
+      "signature": "void()"
+    },
+    {
+      "name": "getConfigFile",
+      "full_name": "hudson.model.Node.getConfigFile:hudson.XmlFile()",
+      "file": "hudson/model/Node.java",
+      "start_line": 157,
+      "end_line": 159,
+      "signature": "hudson.XmlFile()"
+    },
+    {
+      "name": "getNodeName",
+      "full_name": "hudson.model.Node.getNodeName:java.lang.String()",
+      "file": "hudson/model/Node.java",
+      "start_line": 167,
+      "end_line": 169,
+      "signature": "java.lang.String()"
+    },
+    {
+      "name": "setNodeName",
+      "full_name": "hudson.model.Node.setNodeName:void(java.lang.String)",
+      "file": "hudson/model/Node.java",
+      "start_line": 181,
+      "end_line": 182,
+      "signature": "void(java.lang.String)"
+    },
+    {
+      "name": "getNodeDescription",
+      "full_name": "hudson.model.Node.getNodeDescription:java.lang.String()",
+      "file": "hudson/model/Node.java",
+      "start_line": 187,
+      "end_line": 188,
+      "signature": "java.lang.String()"
+    },
+    {
+      "name": "createLauncher",
+      "full_name": "hudson.model.Node.createLauncher:hudson.Launcher(hudson.model.TaskListener)",
+      "file": "hudson/model/Node.java",
+      "start_line": 196,
+      "end_line": 196,
+      "signature": "hudson.Launcher(hudson.model.TaskListener)"
+    },
+    {
+      "name": "getNumExecutors",
+      "full_name": "hudson.model.Node.getNumExecutors:int()",
+      "file": "hudson/model/Node.java",
+      "start_line": 204,
+      "end_line": 205,
+      "signature": "int()"
+    },
+    {
+      "name": "getMode",
+      "full_name": "hudson.model.Node.getMode:hudson.model.Node$Mode()",
+      "file": "hudson/model/Node.java",
+      "start_line": 212,
+      "end_line": 213,
+      "signature": "hudson.model.Node$Mode()"
+    },
+    {
+      "name": "toComputer",
+      "full_name": "hudson.model.Node.toComputer:hudson.model.Computer()",
+      "file": "hudson/model/Node.java",
+      "start_line": 222,
+      "end_line": 226,
+      "signature": "hudson.model.Computer()"
+    },
+    {
+      "name": "getChannel",
+      "full_name": "hudson.model.Node.getChannel:hudson.remoting.VirtualChannel()",
+      "file": "hudson/model/Node.java",
+      "start_line": 233,
+      "end_line": 237,
+      "signature": "hudson.remoting.VirtualChannel()"
+    },
+    {
+      "name": "createComputer",
+      "full_name": "hudson.model.Node.createComputer:hudson.model.Computer()",
+      "file": "hudson/model/Node.java",
+      "start_line": 246,
+      "end_line": 248,
+      "signature": "hudson.model.Computer()"
+    },
+    {
+      "name": "isAcceptingTasks",
+      "full_name": "hudson.model.Node.isAcceptingTasks:boolean()",
+      "file": "hudson/model/Node.java",
+      "start_line": 260,
+      "end_line": 262,
+      "signature": "boolean()"
+    },
+    {
+      "name": "onLoad",
+      "full_name": "hudson.model.Node.onLoad:void(jenkins.model.Nodes,java.lang.String)",
+      "file": "hudson/model/Node.java",
+      "start_line": 264,
+      "end_line": 267,
+      "signature": "void(jenkins.model.Nodes,java.lang.String)"
+    },
+    {
+      "name": "isTemporarilyOffline",
+      "full_name": "hudson.model.Node.isTemporarilyOffline:boolean()",
+      "file": "hudson/model/Node.java",
+      "start_line": 272,
+      "end_line": 274,
+      "signature": "boolean()"
+    },
+    {
+      "name": "setTemporaryOfflineCause",
+      "full_name": "hudson.model.Node.setTemporaryOfflineCause:void(hudson.slaves.OfflineCause)",
+      "file": "hudson/model/Node.java",
+      "start_line": 282,
+      "end_line": 296,
+      "signature": "void(hudson.slaves.OfflineCause)"
+    },
+    {
+      "name": "getTemporaryOfflineCause",
+      "full_name": "hudson.model.Node.getTemporaryOfflineCause:hudson.slaves.OfflineCause()",
+      "file": "hudson/model/Node.java",
+      "start_line": 304,
+      "end_line": 306,
+      "signature": "hudson.slaves.OfflineCause()"
+    },
+    {
+      "name": "getLabelCloud",
+      "full_name": "hudson.model.Node.getLabelCloud:hudson.util.TagCloud()",
+      "file": "hudson/model/Node.java",
+      "start_line": 311,
+      "end_line": 313,
+      "signature": "hudson.util.TagCloud()"
+    },
+    {
+      "name": "getLabelAtomSet",
+      "full_name": "hudson.model.Node.getLabelAtomSet:java.util.Set()",
+      "file": "hudson/model/Node.java",
+      "start_line": 318,
+      "end_line": 323,
+      "signature": "java.util.Set()"
+    },
+    {
+      "name": "getAssignedLabels",
+      "full_name": "hudson.model.Node.getAssignedLabels:java.util.Set()",
+      "file": "hudson/model/Node.java",
+      "start_line": 336,
+      "end_line": 342,
+      "signature": "java.util.Set()"
+    },
+    {
+      "name": "drainLabelsToTrim",
+      "full_name": "hudson.model.Node.drainLabelsToTrim:java.util.Set()",
+      "file": "hudson/model/Node.java",
+      "start_line": 347,
+      "end_line": 351,
+      "signature": "java.util.Set()"
+    },
+    {
+      "name": "getDynamicLabels",
+      "full_name": "hudson.model.Node.getDynamicLabels:java.util.HashSet()",
+      "file": "hudson/model/Node.java",
+      "start_line": 358,
+      "end_line": 367,
+      "signature": "java.util.HashSet()"
+    },
+    {
+      "name": "getLabelString",
+      "full_name": "hudson.model.Node.getLabelString:java.lang.String()",
+      "file": "hudson/model/Node.java",
+      "start_line": 378,
+      "end_line": 378,
+      "signature": "java.lang.String()"
+    },
+    {
+      "name": "setLabelString",
+      "full_name": "hudson.model.Node.setLabelString:void(java.lang.String)",
+      "file": "hudson/model/Node.java",
+      "start_line": 387,
+      "end_line": 389,
+      "signature": "void(java.lang.String)"
+    },
+    {
+      "name": "getSelfLabel",
+      "full_name": "hudson.model.Node.getSelfLabel:hudson.model.labels.LabelAtom()",
+      "file": "hudson/model/Node.java",
+      "start_line": 394,
+      "end_line": 398,
+      "signature": "hudson.model.labels.LabelAtom()"
+    },
+    {
+      "name": "canTake",
+      "full_name": "hudson.model.Node.canTake:hudson.model.queue.CauseOfBlockage(hudson.model.Queue$Task)",
+      "file": "hudson/model/Node.java",
+      "start_line": 412,
+      "end_line": 415,
+      "signature": "hudson.model.queue.CauseOfBlockage(hudson.model.Queue$Task)"
+    },
+    {
+      "name": "canTake",
+      "full_name": "hudson.model.Node.canTake:hudson.model.queue.CauseOfBlockage(hudson.model.Queue$BuildableItem)",
+      "file": "hudson/model/Node.java",
+      "start_line": 427,
+      "end_line": 470,
+      "signature": "hudson.model.queue.CauseOfBlockage(hudson.model.Queue$BuildableItem)"
+    },
+    {
+      "name": "getWorkspaceFor",
+      "full_name": "hudson.model.Node.getWorkspaceFor:hudson.FilePath(hudson.model.TopLevelItem)",
+      "file": "hudson/model/Node.java",
+      "start_line": 483,
+      "end_line": 483,
+      "signature": "hudson.FilePath(hudson.model.TopLevelItem)"
+    },
+    {
+      "name": "getRootPath",
+      "full_name": "hudson.model.Node.getRootPath:hudson.FilePath()",
+      "file": "hudson/model/Node.java",
+      "start_line": 496,
+      "end_line": 496,
+      "signature": "hudson.FilePath()"
+    },
+    {
+      "name": "createPath",
+      "full_name": "hudson.model.Node.createPath:hudson.FilePath(java.lang.String)",
+      "file": "hudson/model/Node.java",
+      "start_line": 501,
+      "end_line": 505,
+      "signature": "hudson.FilePath(java.lang.String)"
+    },
+    {
+      "name": "getFileSystemProvisioner",
+      "full_name": "hudson.model.Node.getFileSystemProvisioner:hudson.FileSystemProvisioner()",
+      "file": "hudson/model/Node.java",
+      "start_line": 507,
+      "end_line": 510,
+      "signature": "hudson.FileSystemProvisioner()"
+    },
+    {
+      "name": "getNodeProperties",
+      "full_name": "hudson.model.Node.getNodeProperties:hudson.util.DescribableList()",
+      "file": "hudson/model/Node.java",
+      "start_line": 515,
+      "end_line": 515,
+      "signature": "hudson.util.DescribableList()"
+    },
+    {
+      "name": "getNodeProperty",
+      "full_name": "hudson.model.Node.getNodeProperty:hudson.slaves.NodeProperty(java.lang.Class)",
+      "file": "hudson/model/Node.java",
+      "start_line": 526,
+      "end_line": 535,
+      "signature": "hudson.slaves.NodeProperty(java.lang.Class)"
+    },
+    {
+      "name": "getNodeProperty",
+      "full_name": "hudson.model.Node.getNodeProperty:hudson.slaves.NodeProperty(java.lang.String)",
+      "file": "hudson/model/Node.java",
+      "start_line": 547,
+      "end_line": 556,
+      "signature": "hudson.slaves.NodeProperty(java.lang.String)"
+    },
+    {
+      "name": "getNodePropertyDescriptors",
+      "full_name": "hudson.model.Node.getNodePropertyDescriptors:java.util.List()",
+      "file": "hudson/model/Node.java",
+      "start_line": 559,
+      "end_line": 561,
+      "signature": "java.util.List()"
+    },
+    {
+      "name": "getACL",
+      "full_name": "hudson.model.Node.getACL:hudson.security.ACL()",
+      "file": "hudson/model/Node.java",
+      "start_line": 563,
+      "end_line": 567,
+      "signature": "hudson.security.ACL()"
+    },
+    {
+      "name": "reconfigure",
+      "full_name": "hudson.model.Node.reconfigure:hudson.model.Node(org.kohsuke.stapler.StaplerRequest2,net.sf.json.JSONObject)",
+      "file": "hudson/model/Node.java",
+      "start_line": 569,
+      "end_line": 576,
+      "signature": "hudson.model.Node(org.kohsuke.stapler.StaplerRequest2,net.sf.json.JSONObject)"
+    },
+    {
+      "name": "reconfigure",
+      "full_name": "hudson.model.Node.reconfigure:hudson.model.Node(org.kohsuke.stapler.StaplerRequest,net.sf.json.JSONObject)",
+      "file": "hudson/model/Node.java",
+      "start_line": 581,
+      "end_line": 585,
+      "signature": "hudson.model.Node(org.kohsuke.stapler.StaplerRequest,net.sf.json.JSONObject)"
+    },
+    {
+      "name": "reconfigureImpl",
+      "full_name": "hudson.model.Node.reconfigureImpl:hudson.model.Node(org.kohsuke.stapler.StaplerRequest2,net.sf.json.JSONObject)",
+      "file": "hudson/model/Node.java",
+      "start_line": 587,
+      "end_line": 614,
+      "signature": "hudson.model.Node(org.kohsuke.stapler.StaplerRequest2,net.sf.json.JSONObject)"
+    },
+    {
+      "name": "getDescriptor",
+      "full_name": "hudson.model.Node.getDescriptor:hudson.slaves.NodeDescriptor()",
+      "file": "hudson/model/Node.java",
+      "start_line": 616,
+      "end_line": 617,
+      "signature": "hudson.slaves.NodeDescriptor()"
+    },
+    {
+      "name": "getClockDifference",
+      "full_name": "hudson.model.Node.getClockDifference:hudson.util.ClockDifference()",
+      "file": "hudson/model/Node.java",
+      "start_line": 627,
+      "end_line": 633,
+      "signature": "hudson.util.ClockDifference()"
+    },
+    {
+      "name": "getClockDifferenceCallable",
+      "full_name": "hudson.model.Node.getClockDifferenceCallable:hudson.remoting.Callable()",
+      "file": "hudson/model/Node.java",
+      "start_line": 642,
+      "end_line": 642,
+      "signature": "hudson.remoting.Callable()"
+    },
+    {
+      "name": "getDescription",
+      "full_name": "hudson.model.Node$Mode.getDescription:java.lang.String()",
+      "file": "hudson/model/Node.java",
+      "start_line": 653,
+      "end_line": 655,
+      "signature": "java.lang.String()"
+    },
+    {
+      "name": "getName",
+      "full_name": "hudson.model.Node$Mode.getName:java.lang.String()",
+      "file": "hudson/model/Node.java",
+      "start_line": 657,
+      "end_line": 659,
+      "signature": "java.lang.String()"
+    },
+    {
+      "name": "getRootDir",
+      "full_name": "hudson.model.Node.getRootDir:java.io.File()",
+      "file": "hudson/model/Node.java",
+      "start_line": 670,
+      "end_line": 673,
+      "signature": "java.io.File()"
+    },
+    {
+      "name": "getParent",
+      "full_name": "hudson.model.Node.getParent:jenkins.model.Nodes()",
+      "file": "hudson/model/Node.java",
+      "start_line": 675,
+      "end_line": 681,
+      "signature": "jenkins.model.Nodes()"
+    },
+    {
+      "name": "onConvert",
+      "full_name": "hudson.model.Node.reconfigureImpl.BindInterceptor$0.onConvert:<unresolvedSignature>(3)",
+      "file": "hudson/model/Node.java",
+      "start_line": 593,
+      "end_line": 606,
+      "signature": "<unresolvedSignature>(3)"
+    },
+    {
+      "name": "<lambda>0",
+      "full_name": "hudson.model.Node.<lambda>0:void(java.lang.Object)",
+      "file": "hudson/model/Node.java",
+      "start_line": 289,
+      "end_line": 289,
+      "signature": "void(java.lang.Object)"
+    },
+    {
+      "name": "<lambda>1",
+      "full_name": "hudson.model.Node.<lambda>1:void(java.lang.Object)",
+      "file": "hudson/model/Node.java",
+      "start_line": 291,
+      "end_line": 291,
+      "signature": "void(java.lang.Object)"
+    },
+    {
+      "name": "<lambda>2",
+      "full_name": "hudson.model.Node.<lambda>2:java.lang.String()",
+      "file": "hudson/model/Node.java",
+      "start_line": 458,
+      "end_line": 458,
+      "signature": "java.lang.String()"
+    },
+    {
+      "name": "getNodes",
+      "full_name": "jenkins.model.Nodes.getNodes:java.util.List()",
+      "file": "jenkins/model/Nodes.java",
+      "start_line": 103,
+      "end_line": 106,
+      "signature": "java.util.List()"
+    },
+    {
+      "name": "setNodes",
+      "full_name": "jenkins.model.Nodes.setNodes:void(java.util.Collection)",
+      "file": "jenkins/model/Nodes.java",
+      "start_line": 114,
+      "end_line": 141,
+      "signature": "void(java.util.Collection)"
+    },
+    {
+      "name": "addNodeIfAbsent",
+      "full_name": "jenkins.model.Nodes.addNodeIfAbsent:boolean(hudson.model.Node)",
+      "file": "jenkins/model/Nodes.java",
+      "start_line": 159,
+      "end_line": 170,
+      "signature": "boolean(hudson.model.Node)"
+    },
+    {
+      "name": "addNode",
+      "full_name": "jenkins.model.Nodes.addNode:void(hudson.model.Node)",
+      "file": "jenkins/model/Nodes.java",
+      "start_line": 178,
+      "end_line": 187,
+      "signature": "void(hudson.model.Node)"
+    },
+    {
+      "name": "handleAddedNode",
+      "full_name": "jenkins.model.Nodes.handleAddedNode:void(hudson.model.Node,hudson.model.Node)",
+      "file": "jenkins/model/Nodes.java",
+      "start_line": 189,
+      "end_line": 215,
+      "signature": "void(hudson.model.Node,hudson.model.Node)"
+    },
+    {
+      "name": "getConfigFile",
+      "full_name": "jenkins.model.Nodes.getConfigFile:hudson.XmlFile(hudson.model.Node)",
+      "file": "jenkins/model/Nodes.java",
+      "start_line": 217,
+      "end_line": 219,
+      "signature": "hudson.XmlFile(hudson.model.Node)"
+    },
+    {
+      "name": "getConfigFile",
+      "full_name": "jenkins.model.Nodes.getConfigFile:hudson.XmlFile(java.io.File)",
+      "file": "jenkins/model/Nodes.java",
+      "start_line": 221,
+      "end_line": 223,
+      "signature": "hudson.XmlFile(java.io.File)"
+    },
+    {
+      "name": "getConfigFile",
+      "full_name": "jenkins.model.Nodes.getConfigFile:hudson.XmlFile(java.lang.String)",
+      "file": "jenkins/model/Nodes.java",
+      "start_line": 225,
+      "end_line": 227,
+      "signature": "hudson.XmlFile(java.lang.String)"
+    },
+    {
+      "name": "updateNode",
+      "full_name": "jenkins.model.Nodes.updateNode:boolean(hudson.model.Node)",
+      "file": "jenkins/model/Nodes.java",
+      "start_line": 238,
+      "end_line": 240,
+      "signature": "boolean(hudson.model.Node)"
+    },
+    {
+      "name": "updateNode",
+      "full_name": "jenkins.model.Nodes.updateNode:boolean(hudson.model.Node,boolean)",
+      "file": "jenkins/model/Nodes.java",
+      "start_line": 242,
+      "end_line": 268,
+      "signature": "boolean(hudson.model.Node,boolean)"
+    },
+    {
+      "name": "replaceNode",
+      "full_name": "jenkins.model.Nodes.replaceNode:boolean(hudson.model.Node,hudson.model.Node)",
+      "file": "jenkins/model/Nodes.java",
+      "start_line": 276,
+      "end_line": 303,
+      "signature": "boolean(hudson.model.Node,hudson.model.Node)"
+    },
+    {
+      "name": "removeNode",
+      "full_name": "jenkins.model.Nodes.removeNode:void(hudson.model.Node)",
+      "file": "jenkins/model/Nodes.java",
+      "start_line": 312,
+      "end_line": 334,
+      "signature": "void(hudson.model.Node)"
+    },
+    {
+      "name": "save",
+      "full_name": "jenkins.model.Nodes.save:void()",
+      "file": "jenkins/model/Nodes.java",
+      "start_line": 336,
+      "end_line": 350,
+      "signature": "void()"
+    },
+    {
+      "name": "getNode",
+      "full_name": "jenkins.model.Nodes.getNode:hudson.model.Node(java.lang.String)",
+      "file": "jenkins/model/Nodes.java",
+      "start_line": 358,
+      "end_line": 361,
+      "signature": "hudson.model.Node(java.lang.String)"
+    },
+    {
+      "name": "load",
+      "full_name": "jenkins.model.Nodes.load:void()",
+      "file": "jenkins/model/Nodes.java",
+      "start_line": 368,
+      "end_line": 394,
+      "signature": "void()"
+    },
+    {
+      "name": "getOrLoad",
+      "full_name": "jenkins.model.Nodes.getOrLoad:hudson.model.Node(java.lang.String)",
+      "file": "jenkins/model/Nodes.java",
+      "start_line": 396,
+      "end_line": 401,
+      "signature": "hudson.model.Node(java.lang.String)"
+    },
+    {
+      "name": "load",
+      "full_name": "jenkins.model.Nodes.load:hudson.model.Node(java.lang.String)",
+      "file": "jenkins/model/Nodes.java",
+      "start_line": 403,
+      "end_line": 422,
+      "signature": "hudson.model.Node(java.lang.String)"
+    },
+    {
+      "name": "load",
+      "full_name": "jenkins.model.Nodes.load:hudson.model.Node(java.io.File,java.util.Map)",
+      "file": "jenkins/model/Nodes.java",
+      "start_line": 424,
+      "end_line": 431,
+      "signature": "hudson.model.Node(java.io.File,java.util.Map)"
+    },
+    {
+      "name": "load",
+      "full_name": "jenkins.model.Nodes.load:void(java.io.File)",
+      "file": "jenkins/model/Nodes.java",
+      "start_line": 433,
+      "end_line": 437,
+      "signature": "void(java.io.File)"
+    },
+    {
+      "name": "unload",
+      "full_name": "jenkins.model.Nodes.unload:void(hudson.model.Node)",
+      "file": "jenkins/model/Nodes.java",
+      "start_line": 439,
+      "end_line": 448,
+      "signature": "void(hudson.model.Node)"
+    },
+    {
+      "name": "isLegacy",
+      "full_name": "jenkins.model.Nodes.isLegacy:boolean()",
+      "file": "jenkins/model/Nodes.java",
+      "start_line": 455,
+      "end_line": 457,
+      "signature": "boolean()"
+    },
+    {
+      "name": "getRootDir",
+      "full_name": "jenkins.model.Nodes.getRootDir:java.io.File()",
+      "file": "jenkins/model/Nodes.java",
+      "start_line": 459,
+      "end_line": 462,
+      "signature": "java.io.File()"
+    },
+    {
+      "name": "getRootDirFor",
+      "full_name": "jenkins.model.Nodes.getRootDirFor:java.io.File(hudson.model.Node)",
+      "file": "jenkins/model/Nodes.java",
+      "start_line": 464,
+      "end_line": 466,
+      "signature": "java.io.File(hudson.model.Node)"
+    },
+    {
+      "name": "getRootDirFor",
+      "full_name": "jenkins.model.Nodes.getRootDirFor:java.io.File(java.lang.String)",
+      "file": "jenkins/model/Nodes.java",
+      "start_line": 468,
+      "end_line": 470,
+      "signature": "java.io.File(java.lang.String)"
+    },
+    {
+      "name": "onChange",
+      "full_name": "jenkins.model.Nodes$ScheduleMaintenanceAfterSavingNode.onChange:void(hudson.model.Saveable,hudson.XmlFile)",
+      "file": "jenkins/model/Nodes.java",
+      "start_line": 474,
+      "end_line": 479,
+      "signature": "void(hudson.model.Saveable,hudson.XmlFile)"
+    },
+    {
+      "name": "<lambda>0",
+      "full_name": "jenkins.model.Nodes.<lambda>0:<unresolvedSignature>(0)",
+      "file": "jenkins/model/Nodes.java",
+      "start_line": 116,
+      "end_line": 133,
+      "signature": "<unresolvedSignature>(0)"
+    },
+    {
+      "name": "<lambda>1",
+      "full_name": "jenkins.model.Nodes.<lambda>1:java.lang.String()",
+      "file": "jenkins/model/Nodes.java",
+      "start_line": 138,
+      "end_line": 138,
+      "signature": "java.lang.String()"
+    },
+    {
+      "name": "<lambda>3",
+      "full_name": "jenkins.model.Nodes.<lambda>3:java.lang.Object(java.lang.Object,java.lang.Object)",
+      "file": "jenkins/model/Nodes.java",
+      "start_line": 200,
+      "end_line": 200,
+      "signature": "java.lang.Object(java.lang.Object,java.lang.Object)"
+    },
+    {
+      "name": "<lambda>2",
+      "full_name": "jenkins.model.Nodes.<lambda>2:void()",
+      "file": "jenkins/model/Nodes.java",
+      "start_line": 199,
+      "end_line": 207,
+      "signature": "void()"
+    },
+    {
+      "name": "<lambda>4",
+      "full_name": "jenkins.model.Nodes.<lambda>4:<unresolvedSignature>(0)",
+      "file": "jenkins/model/Nodes.java",
+      "start_line": 245,
+      "end_line": 251,
+      "signature": "<unresolvedSignature>(0)"
+    },
+    {
+      "name": "<lambda>5",
+      "full_name": "jenkins.model.Nodes.<lambda>5:void()",
+      "file": "jenkins/model/Nodes.java",
+      "start_line": 283,
+      "end_line": 287,
+      "signature": "void()"
+    },
+    {
+      "name": "<lambda>6",
+      "full_name": "jenkins.model.Nodes.<lambda>6:java.lang.String()",
+      "file": "jenkins/model/Nodes.java",
+      "start_line": 290,
+      "end_line": 290,
+      "signature": "java.lang.String()"
+    },
+    {
+      "name": "<lambda>7",
+      "full_name": "jenkins.model.Nodes.<lambda>7:<unresolvedSignature>(0)",
+      "file": "jenkins/model/Nodes.java",
+      "start_line": 293,
+      "end_line": 296,
+      "signature": "<unresolvedSignature>(0)"
+    },
+    {
+      "name": "<lambda>8",
+      "full_name": "jenkins.model.Nodes.<lambda>8:void()",
+      "file": "jenkins/model/Nodes.java",
+      "start_line": 315,
+      "end_line": 322,
+      "signature": "void()"
+    },
+    {
+      "name": "<lambda>9",
+      "full_name": "jenkins.model.Nodes.<lambda>9:java.lang.String()",
+      "file": "jenkins/model/Nodes.java",
+      "start_line": 324,
+      "end_line": 324,
+      "signature": "java.lang.String()"
+    },
+    {
+      "name": "<lambda>10",
+      "full_name": "jenkins.model.Nodes.<lambda>10:java.lang.String()",
+      "file": "jenkins/model/Nodes.java",
+      "start_line": 346,
+      "end_line": 346,
+      "signature": "java.lang.String()"
+    },
+    {
+      "name": "<lambda>14",
+      "full_name": "jenkins.model.Nodes.<lambda>14:java.lang.String()",
+      "file": "jenkins/model/Nodes.java",
+      "start_line": 384,
+      "end_line": 384,
+      "signature": "java.lang.String()"
+    },
+    {
+      "name": "<lambda>13",
+      "full_name": "jenkins.model.Nodes.<lambda>13:boolean(java.lang.Object)",
+      "file": "jenkins/model/Nodes.java",
+      "start_line": 382,
+      "end_line": 388,
+      "signature": "boolean(java.lang.Object)"
+    },
+    {
+      "name": "<lambda>12",
+      "full_name": "jenkins.model.Nodes.<lambda>12:boolean(java.lang.Object)",
+      "file": "jenkins/model/Nodes.java",
+      "start_line": 382,
+      "end_line": 388,
+      "signature": "boolean(java.lang.Object)"
+    },
+    {
+      "name": "<lambda>15",
+      "full_name": "jenkins.model.Nodes.<lambda>15:boolean(java.lang.Object)",
+      "file": "jenkins/model/Nodes.java",
+      "start_line": 389,
+      "end_line": 389,
+      "signature": "boolean(java.lang.Object)"
+    },
+    {
+      "name": "<lambda>11",
+      "full_name": "jenkins.model.Nodes.<lambda>11:<unresolvedSignature>(0)",
+      "file": "jenkins/model/Nodes.java",
+      "start_line": 381,
+      "end_line": 393,
+      "signature": "<unresolvedSignature>(0)"
+    },
+    {
+      "name": "<lambda>16",
+      "full_name": "jenkins.model.Nodes.<lambda>16:java.lang.String()",
+      "file": "jenkins/model/Nodes.java",
+      "start_line": 399,
+      "end_line": 399,
+      "signature": "java.lang.String()"
+    },
+    {
+      "name": "<lambda>17",
+      "full_name": "jenkins.model.Nodes.<lambda>17:java.lang.String()",
+      "file": "jenkins/model/Nodes.java",
+      "start_line": 413,
+      "end_line": 413,
+      "signature": "java.lang.String()"
+    },
+    {
+      "name": "<lambda>18",
+      "full_name": "jenkins.model.Nodes.<lambda>18:java.lang.String()",
+      "file": "jenkins/model/Nodes.java",
+      "start_line": 416,
+      "end_line": 416,
+      "signature": "java.lang.String()"
+    },
+    {
+      "name": "<lambda>19",
+      "full_name": "jenkins.model.Nodes.<lambda>19:<unresolvedSignature>(0)",
+      "file": "jenkins/model/Nodes.java",
+      "start_line": 442,
+      "end_line": 442,
+      "signature": "<unresolvedSignature>(0)"
+    }
+  ]
+}

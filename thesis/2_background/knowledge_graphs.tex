@@ -1,0 +1,51 @@
+\section{Knowledge Graphs for Software Repositories}
+\label{sec:bg-kg}
+
+A knowledge graph represents entities as nodes and relations between them as
+typed edges. Applied to a repository, the entities are files, classes,
+functions, tests, and the edges are relations such as imports, calls, and
+tests. These are the relations a reviewer consults when deciding whether a
+change is safe, and unlike similarity they are facts about the program rather
+than resemblances. In this thesis, the structural context supplied to the
+review model is a per-pull-request subgraph extracted from a code property
+graph (CPG) for the files touched by the change; the review mode that
+receives it is labelled \kg{} throughout.
+
+\subsection{Program Representations}
+
+The edges come from classical program representations. Parsing source into an
+abstract syntax tree recovers grammatical structure~\cite{aho2006compilers}; a
+control-flow graph adds execution order; a program-dependence graph adds
+data-flow. Yamaguchi et al.\ combined all three into the code property graph
+(CPG), a single structure over which queries can express vulnerability patterns
+as graph traversals~\cite{yamaguchi2014cpg}. The CPG is the representation
+behind the static-analysis platform used in Chapter~\ref{chap:approach}.
+Allamanis et al.\ showed that learning over program graphs rather than token
+sequences improves tasks requiring reasoning about variable
+use~\cite{allamanis2018programgraphs}. This motivates an analogous hypothesis
+for prompting: a relationship distant in the token stream can instead be
+stated directly.
+
+\subsection{Repository-Scale Graphs for Language Models}
+
+Three recent systems build graphs specifically to serve language models, each
+targeting a different task. GraphCoder retrieves context for code completion by
+traversing a code-context graph rather than by embedding
+similarity~\cite{liu2024graphcoder}. KGCompass links repository artefacts to
+code entities for fault localisation, reporting that most bugs it finds are
+reachable only by traversing more than one
+edge~\cite{yang2025kgcompass}. Prometheus maintains a repository graph as
+persistent agent memory~\cite{pan2025prometheus}. All target tasks with
+checkable outcomes (completion, repair, navigation). Review-comment
+generation has no such outcome, which is both why the graph literature has not
+addressed it and why it is worth addressing.
+
+All three build graphs by static analysis, so their edges are resolved rather
+than guessed. This thesis adopts the same principle: the code property graph
+constructed by Joern~\cite{yamaguchi2014cpg} supplies the structural context
+used in Chapters~\ref{chap:approach}--\ref{chap:results}. Because the CPG
+resolves calls and data-flow edges across files, the context it provides to the
+language model is grounded in program semantics rather than in surface-level
+co-occurrence. The human study uses the same knowledge-graph block, with dependent
+edges resolved from import statements; Chapter~\ref{chap:approach} gives
+the details.

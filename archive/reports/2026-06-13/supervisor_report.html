@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Thesis Progress Report — June 2026</title>
+<style>
+  :root {
+    --bg:#0d1117;--bg1:#161b22;--bg2:#21262d;--brd:#30363d;
+    --t1:#e6edf3;--t2:#adbac7;--t3:#848d97;
+    --blue:#58a6ff;--green:#3fb950;--red:#f85149;--orange:#d29922;--purple:#a371f7;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;
+       background:var(--bg);color:var(--t1);line-height:1.7;font-size:15px}
+  .wrap{max-width:960px;margin:0 auto;padding:40px 24px 80px}
+
+  .hdr{border-bottom:1px solid var(--brd);padding-bottom:20px;margin-bottom:32px}
+  .hdr h1{font-size:1.55rem;font-weight:700;color:var(--blue);margin-bottom:4px}
+  .hdr .sub{color:var(--t3);font-size:.87rem}
+
+  h2{font-size:1.05rem;font-weight:700;color:var(--blue);margin:36px 0 6px;
+     padding-bottom:6px;border-bottom:1px solid var(--brd)}
+  .h2-sub{color:var(--t3);font-size:.83rem;margin-bottom:14px}
+  h3{font-size:.92rem;font-weight:600;color:var(--purple);margin:22px 0 6px}
+
+  p{color:var(--t2);margin-bottom:10px}
+  .explain{color:var(--t3);font-size:.83rem;margin-top:3px;margin-bottom:12px;line-height:1.55}
+  strong{color:var(--t1)}
+
+  /* callout boxes */
+  .callout{border-radius:8px;padding:14px 18px;margin:14px 0;font-size:.88rem;line-height:1.6}
+  .callout.green{background:rgba(63,185,80,.07);border:1px solid rgba(63,185,80,.3);color:var(--t2)}
+  .callout.orange{background:rgba(210,153,34,.07);border:1px solid rgba(210,153,34,.3);color:var(--t2)}
+  .callout.blue{background:rgba(88,166,255,.07);border:1px solid rgba(88,166,255,.3);color:var(--t2)}
+  .callout.red{background:rgba(248,81,73,.07);border:1px solid rgba(248,81,73,.3);color:var(--t2)}
+
+  /* stat cards */
+  .sgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:10px;margin:14px 0}
+  .sc{background:var(--bg1);border:1px solid var(--brd);border-radius:10px;padding:16px 14px;text-align:center}
+  .sc .n{font-size:1.85rem;font-weight:700;line-height:1.1}
+  .sc .label{font-size:.8rem;font-weight:600;color:var(--t1);margin-top:4px}
+  .sc .meaning{font-size:.73rem;color:var(--t3);margin-top:3px;line-height:1.4}
+  .g{color:var(--green)}.o{color:var(--orange)}.b{color:var(--blue)}
+
+  /* tables */
+  table{width:100%;border-collapse:collapse;margin:10px 0;font-size:.86rem}
+  th{background:var(--bg2);color:var(--t2);padding:8px 12px;text-align:left;
+     border:1px solid var(--brd);font-weight:600}
+  td{padding:8px 12px;border:1px solid var(--brd);color:var(--t2);vertical-align:top}
+  tr:nth-child(even) td{background:rgba(255,255,255,.02)}
+  .tg{color:var(--green);font-weight:600}
+  .to{color:var(--orange);font-weight:600}
+  .tr{color:var(--red);font-weight:600}
+
+  /* pipeline */
+  .pipe-row{display:flex;gap:8px;justify-content:center;margin-bottom:4px;flex-wrap:wrap}
+  .pipe-box{border-radius:8px;padding:10px 14px;text-align:center;min-width:100px}
+  .pipe-arrow{text-align:center;color:var(--t3);font-size:1.1rem;margin:2px 0}
+  .pipe-label{font-size:.68rem;text-transform:uppercase;letter-spacing:.04em;margin-bottom:3px}
+  .pipe-title{font-weight:600;font-size:.88rem;color:var(--t1)}
+  .pipe-sub{font-size:.72rem;color:var(--t3);margin-top:2px;line-height:1.35}
+
+  /* todo list */
+  .tl-item{display:flex;gap:12px;margin-bottom:12px;align-items:flex-start}
+  .tld{width:26px;height:26px;border-radius:50%;flex-shrink:0;margin-top:1px;
+       display:flex;align-items:center;justify-content:center;font-size:.72rem;font-weight:700}
+  .tld.now{background:rgba(88,166,255,.15);color:var(--blue);border:2px solid var(--blue)}
+  .tld.todo{background:var(--bg2);color:var(--t3);border:2px solid var(--brd)}
+  .tlb h4{font-size:.9rem;font-weight:600;color:var(--t1);margin-bottom:2px}
+  .tlb p{font-size:.82rem;color:var(--t3);margin:0}
+
+  .footer{margin-top:48px;padding-top:14px;border-top:1px solid var(--brd);
+          color:var(--t3);font-size:.78rem;text-align:center}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<!-- ── HEADER ── -->
+<div class="hdr">
+  <h1>Evaluating Context Retrieval for LLM-Based PR Reviews</h1>
+  <div class="sub">Abdelrahman Khattab &nbsp;·&nbsp; HPI, University of Potsdam &nbsp;·&nbsp; Supervisor meeting, 13 June 2026</div>
+</div>
+
+<!-- ── THESIS IN ONE LINE ── -->
+<div class="callout green">
+  <strong>What this thesis is about:</strong> When an LLM writes a code review, what extra context should you give it? The thesis compares four strategies — giving the model nothing extra (Baseline), semantically similar code chunks (RAG), structured repository facts like tests and call graphs (KG), or both (Hybrid) — and measures which produces better reviews on 40 real pull requests.
+</div>
+
+<!-- ── RESEARCH QUESTIONS ── -->
+<h2>Research Questions &amp; Status</h2>
+<table>
+  <tr><th style="width:8%">RQ</th><th>Question</th><th style="width:32%">Status</th></tr>
+  <tr>
+    <td><strong>RQ1</strong></td>
+    <td>Do any of the three context strategies produce better reviews than a plain diff-only baseline? And which one is best?</td>
+    <td class="tg">Done ✓ — all three beat baseline; KG leads on repo-specific criteria</td>
+  </tr>
+  <tr>
+    <td><strong>RQ2</strong></td>
+    <td>Does using a richer call-graph tool (Joern) or a different LLM generator change the conclusion?</td>
+    <td class="to">Mostly done — Joern and cross-generator experiments both run</td>
+  </tr>
+  <tr>
+    <td><strong>RQ3</strong></td>
+    <td>Do human reviewers actually prefer the KG-augmented reviews over baseline — or is the LLM judge just measuring something humans don't care about?</td>
+    <td class="to">Study built and ready — raters not yet recruited</td>
+  </tr>
+</table>
+
+<!-- ── EXPERIMENT SCALE ── -->
+<h2>Experiment Scale</h2>
+<p class="h2-sub">How much data underlies the results.</p>
+<div class="sgrid">
+  <div class="sc">
+    <div class="n g">40</div>
+    <div class="label">Pull Requests</div>
+    <div class="meaning">From 5 real open-source repos across 4 languages. Each PR is one data point.</div>
+  </div>
+  <div class="sc">
+    <div class="n g">160</div>
+    <div class="label">Generated Reviews</div>
+    <div class="meaning">Every PR reviewed in all 4 modes (Baseline, RAG, KG, Hybrid) = 40 × 4.</div>
+  </div>
+  <div class="sc">
+    <div class="n b">12,000</div>
+    <div class="label">Individual Scores</div>
+    <div class="meaning">3 judges × 25 criteria × 160 reviews. All results are majority votes over this.</div>
+  </div>
+  <div class="sc">
+    <div class="n o">+0.64</div>
+    <div class="label">Best Effect Size (d_z)</div>
+    <div class="meaning">Cohen's d_z for RAG on the 11 active criteria. Above 0.5 = medium-to-large.</div>
+  </div>
+</div>
+
+<!-- ── PIPELINE ── -->
+<h2>How the Pipeline Works</h2>
+<p class="h2-sub">The four strategies are compared under a controlled setup: same model, same 40 PRs, only the context injected into the prompt changes.</p>
+
+<div style="background:var(--bg1);border:1px solid var(--brd);border-radius:10px;padding:24px;margin:12px 0">
+  <div style="display:flex;flex-direction:column;align-items:center;font-size:.84rem">
+
+    <div class="pipe-row">
+      <div class="pipe-box" style="background:var(--bg2);border:1px solid var(--brd)">
+        <div class="pipe-label" style="color:var(--t3)">Input</div>
+        <div class="pipe-title">PR Diff</div>
+        <div class="pipe-sub">changed lines + description</div>
+      </div>
+      <div class="pipe-box" style="background:var(--bg2);border:1px solid var(--brd)">
+        <div class="pipe-label" style="color:var(--t3)">Input</div>
+        <div class="pipe-title">Repository</div>
+        <div class="pipe-sub">source files, tests, history</div>
+      </div>
+    </div>
+
+    <div class="pipe-arrow">↓</div>
+    <div style="color:var(--t3);font-size:.78rem;margin-bottom:6px">Each PR is processed through all four context strategies in parallel</div>
+
+    <div class="pipe-row">
+      <div class="pipe-box" style="background:var(--bg2);border:1px solid var(--brd);opacity:.5">
+        <div class="pipe-label" style="color:var(--t3)">Mode 1</div>
+        <div class="pipe-title">Baseline</div>
+        <div class="pipe-sub">diff only — no extra context</div>
+      </div>
+      <div class="pipe-box" style="background:rgba(88,166,255,.07);border:1px solid var(--blue)">
+        <div class="pipe-label" style="color:var(--blue)">Mode 2</div>
+        <div class="pipe-title">RAG</div>
+        <div class="pipe-sub">top-k similar code chunks retrieved via CodeBERT embeddings</div>
+      </div>
+      <div class="pipe-box" style="background:rgba(63,185,80,.07);border:1px solid var(--green)">
+        <div class="pipe-label" style="color:var(--green)">Mode 3</div>
+        <div class="pipe-title">KG</div>
+        <div class="pipe-sub">structured facts: nearest tests, callers, dependent files, code owners</div>
+      </div>
+      <div class="pipe-box" style="background:rgba(163,113,247,.07);border:1px solid var(--purple)">
+        <div class="pipe-label" style="color:var(--purple)">Mode 4</div>
+        <div class="pipe-title">Hybrid</div>
+        <div class="pipe-sub">KG facts + RAG chunks combined</div>
+      </div>
+    </div>
+
+    <div class="pipe-arrow">↓</div>
+
+    <div class="pipe-box" style="background:rgba(210,153,34,.07);border:1px solid var(--orange);width:340px;margin-bottom:4px">
+      <div class="pipe-label" style="color:var(--orange)">Generator (fixed across all modes)</div>
+      <div class="pipe-title">GPT-4o, temperature = 0</div>
+      <div class="pipe-sub">Same model for all 160 reviews. Only the context in the prompt changes.</div>
+    </div>
+
+    <div class="pipe-arrow">↓</div>
+
+    <div class="pipe-box" style="background:var(--bg2);border:1px solid var(--brd);width:340px;margin-bottom:4px">
+      <div class="pipe-label" style="color:var(--t3)">Output</div>
+      <div class="pipe-title">Generated PR Review</div>
+      <div class="pipe-sub">160 reviews total (40 PRs × 4 modes)</div>
+    </div>
+
+    <div class="pipe-arrow">↓</div>
+    <div style="color:var(--t3);font-size:.78rem;margin-bottom:6px">Each review is scored independently by three LLM judges on 25 binary criteria. Majority vote (≥ 2/3) decides each criterion.</div>
+
+    <div class="pipe-row">
+      <div class="pipe-box" style="background:var(--bg2);border:1px solid var(--brd)">
+        <div class="pipe-label" style="color:var(--t3)">Automated Evaluation</div>
+        <div class="pipe-title" style="font-size:.82rem">GPT-4o-mini · GPT-4o · Gemini 2.5 Flash</div>
+        <div class="pipe-sub">25-criterion rubric · binary majority vote · 12,000 scores total</div>
+      </div>
+      <div class="pipe-box" style="background:rgba(88,166,255,.07);border:1px solid var(--blue)">
+        <div class="pipe-label" style="color:var(--blue)">Human Validation (RQ3)</div>
+        <div class="pipe-title">Human Raters</div>
+        <div class="pipe-sub">6 PRs · side-by-side preference · <span style="color:var(--orange)">ready to launch</span></div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ── HOW SCORING WORKS ── -->
+<h2>How Scoring Works</h2>
+<p class="h2-sub">Before looking at results, it helps to understand what the numbers represent.</p>
+
+<div class="callout blue">
+  <strong>The rubric has 25 binary criteria</strong> — each scored 0 or 1 by each of 3 judges; majority vote (≥ 2/3) gives the final score. All 25 are scored, but <strong>13 are uninformative</strong> (ceiling, floor, or no movement across any strategy) and are excluded from the primary analysis. The <strong>11 active criteria</strong> are the ones that actually respond to context injection.<br><br>
+  <strong>All statistics are paired per-PR deltas:</strong> for each PR we compute (mode score − baseline score), then test whether those 40 differences are consistently positive. This controls for PR difficulty — a hard PR naturally scores low in all modes.
+</div>
+
+<div class="callout blue" style="margin-top:8px">
+  <strong>Cohen's d_z</strong> is the standardised effect size for paired data: mean(Δ) / sd(Δ). Rough benchmarks: 0.2 = small, 0.5 = medium, 0.8 = large. <strong>Wilcoxon p</strong> is the significance test (non-parametric, appropriate for ordinal scores). A result is considered significant at p &lt; 0.05.
+</div>
+
+<!-- ── MAIN RESULTS ── -->
+<h2>Results — Which Strategy Wins?</h2>
+
+<div class="callout blue">
+  <strong>Which of the 25 criteria actually matter?</strong> 13 of the 25 criteria are uninformative — 3 are always 1 regardless of mode (ceiling: Q1, Q2, T1), 5 are always 0 (floor: C1, M2, P2, Q4, S2), and 5 never move by more than 0.05 across any strategy (F2, M3, Q3, R3, S1, T2). Keeping them adds noise without signal. The <strong>11 active criteria</strong> below are the ones where context strategies actually make a difference. The 13 dropped ones are noted at the bottom.
+</div>
+
+<h3>Active criteria (11 of 25) — primary outcome</h3>
+<p class="explain"><strong>F1, F3, F4, C2, M1, P1, Q5, R1, R2, S3, T3</strong> — the only criteria where at least one strategy moves the score meaningfully. Max = 11.</p>
+<table>
+  <tr>
+    <th>Strategy</th>
+    <th>Mean score <span style="font-weight:400;color:var(--t3)">(avg / PR, max 11)</span></th>
+    <th>Mean Δ <span style="font-weight:400;color:var(--t3)">(vs baseline)</span></th>
+    <th>d_z <span style="font-weight:400;color:var(--t3)">(effect size)</span></th>
+    <th>p-value</th>
+    <th>PRs: ↑ / = / ↓</th>
+  </tr>
+  <tr>
+    <td><strong>Baseline</strong> — diff only</td>
+    <td>4.12</td>
+    <td style="color:var(--t3)">— reference —</td>
+    <td style="color:var(--t3)">—</td><td style="color:var(--t3)">—</td><td style="color:var(--t3)">—</td>
+  </tr>
+  <tr>
+    <td><strong>RAG</strong> — similar code chunks</td>
+    <td>5.00</td>
+    <td class="tg">+0.88</td><td class="tg"><strong>+0.642</strong></td><td class="tg"><strong>0.001</strong></td>
+    <td>22 improved · 13 tied · 5 worse</td>
+  </tr>
+  <tr>
+    <td><strong>Hybrid</strong> — KG + RAG</td>
+    <td>4.92</td>
+    <td class="tg">+0.80</td><td class="tg"><strong>+0.544</strong></td><td class="tg"><strong>0.002</strong></td>
+    <td>22 improved · 9 tied · 9 worse</td>
+  </tr>
+  <tr>
+    <td><strong>KG</strong> — structured repo facts</td>
+    <td>4.88</td>
+    <td class="tg">+0.75</td><td class="tg"><strong>+0.507</strong></td><td class="tg"><strong>0.002</strong></td>
+    <td>22 improved · 7 tied · 11 worse</td>
+  </tr>
+</table>
+<div class="callout green" style="margin-top:6px">
+  All three strategies significantly beat baseline (all p &lt; 0.01). RAG leads overall (+0.88, d_z=0.64) because it retrieves similar code that helps with general commentary. On the 6 KG-specific criteria within this set (F3, F4, T3, M1, C2, P1 — the ones that directly benefit from knowing tests, callers, and dependencies) KG leads.
+</div>
+
+<h3>Dropped criteria — noted for completeness</h3>
+<table>
+  <tr><th>Reason</th><th>Criteria</th><th>What this means</th></tr>
+  <tr><td><strong>Ceiling</strong> — always 1</td><td>Q1, Q2, T1</td><td>Every review scores these regardless of mode. No discrimination possible.</td></tr>
+  <tr><td><strong>Floor</strong> — always 0</td><td>C1, M2, P2, Q4, S2</td><td>No review ever scores these. No discrimination possible.</td></tr>
+  <tr><td><strong>No movement</strong></td><td>F2, M3, Q3, R3, S1, T2</td><td>Delta &lt; 0.05 across all four strategies. Context injection does not affect these.</td></tr>
+</table>
+
+<h3>By programming language (KG vs Baseline, active criteria)</h3>
+<p class="explain">Breaking down the KG effect by language reveals where the gains are concentrated. Mean Δ is the average per-PR score gain.</p>
+<table>
+  <tr><th>Language</th><th>n PRs</th><th>Mean Δ</th><th>Per-PR breakdown</th></tr>
+  <tr>
+    <td>Java</td><td>10</td><td class="tg"><strong>+1.00</strong></td>
+    <td>10 improved · 5 tied · 0 worse — strongest effect, zero regressions</td>
+  </tr>
+  <tr>
+    <td>TypeScript</td><td>7</td><td class="tg"><strong>+0.86</strong></td>
+    <td>5 improved · 1 tied · 1 worse — robust across all 3 judges</td>
+  </tr>
+  <tr>
+    <td>Python</td><td>6</td><td>+0.33</td>
+    <td>2 improved · 3 tied · 1 worse — inconclusive at n=6</td>
+  </tr>
+  <tr>
+    <td>C++</td><td>6</td><td>+0.17</td>
+    <td>2 improved · 2 tied · 2 worse — judges disagree, mixed signal</td>
+  </tr>
+</table>
+<p class="explain">Java and TypeScript PRs tend to have rich dependency graphs (large call surfaces, many test files), which is exactly what KG captures. Python and C++ results are inconclusive — small n and the judges disagree per-PR. Not interpreted as "KG fails on Python/C++."</p>
+
+<!-- ── ADDITIONAL EXPERIMENTS ── -->
+<h2>Follow-up Experiments</h2>
+<p class="h2-sub">Two questions were asked after the main experiment: does a richer KG do better? And does the result hold with a different LLM generator?</p>
+
+<h3>Experiment A — Richer KG using Joern (function-level call graph)</h3>
+<p class="explain">The main experiment's KG uses grep-based file-level evidence (which tests exist, which files depend on the changed file). Joern is an industrial call-graph tool that gives <em>function-level</em> precision: exact caller names, line numbers, call edges. Does more precise KG data produce a bigger effect?</p>
+<table>
+  <tr><th>Run</th><th>n</th><th>d_z (active criteria)</th><th>p</th><th>What this means</th></tr>
+  <tr>
+    <td>Joern, matched prompt</td><td>35</td><td>+0.30</td><td>0.057</td>
+    <td>Same direction as main result but <strong>doesn't cross p=0.05</strong>. The bootstrap confidence interval [−0.03, +0.65] just touches zero. Not conclusive on its own. (5 Go PRs excluded — Joern has no Go parser.)</td>
+  </tr>
+  <tr>
+    <td>Joern, strict prompt<br><span style="font-size:.78rem;color:var(--t3)">(prompt explicitly tells the model to address each of the 9 criteria)</span></td>
+    <td>35</td>
+    <td class="tg">+1.07 (panel-controlled)</td>
+    <td class="tg">&lt;0.0001</td>
+    <td>Large effect, but the prompt is nudging the model toward the rubric — so this is an <strong>upper bound</strong>, not a clean measure of KG benefit alone. Exploratory.</td>
+  </tr>
+</table>
+<div class="callout orange" style="margin-top:6px">
+  <strong>Takeaway:</strong> A richer KG confirms the direction of the main result but doesn't amplify it — the model uses only ~1% of the available caller symbols. Depth of evidence alone doesn't drive the effect; it depends heavily on how the prompt is framed.
+</div>
+
+<h3>Experiment B — Different LLM generators (5 PRs, same judge panel)</h3>
+<p class="explain">The main 40-PR experiment used GPT-4o as the review generator. Does the KG benefit hold if you swap the generator? Tested on 5 representative PRs with three generators.</p>
+<table>
+  <tr>
+    <th>Generator</th>
+    <th>Baseline score <span style="font-weight:400;color:var(--t3)">(/ 9 criteria)</span></th>
+    <th>KG score <span style="font-weight:400;color:var(--t3)">(/ 9 criteria)</span></th>
+    <th>Change</th>
+    <th>Why</th>
+  </tr>
+  <tr>
+    <td>GPT-4o-mini <span style="color:var(--t3);font-size:.8rem">(weaker)</span></td>
+    <td>6.00 / 11</td><td>5.00 / 11</td>
+    <td class="tr">−1.00</td>
+    <td>KG context <strong>hurts</strong>. The model is overwhelmed by the extra structured data and produces a worse review than without it.</td>
+  </tr>
+  <tr>
+    <td><strong>GPT-4o</strong> <span style="color:var(--t3);font-size:.8rem">(main experiment)</span></td>
+    <td>4.40 / 11</td><td>5.00 / 11</td>
+    <td class="tg">+0.60</td>
+    <td>KG context <strong>helps</strong>. Strong enough to use the structured data, but its baseline leaves room to improve.</td>
+  </tr>
+  <tr>
+    <td>Claude Sonnet 4.5 <span style="color:var(--t3);font-size:.8rem">(stronger)</span></td>
+    <td>7.80 / 11</td><td>7.20 / 11</td>
+    <td class="tr">−0.60</td>
+    <td>KG context <strong>doesn't help</strong>. Claude's baseline already scores 87% — there is almost no room left to improve, and the extra context slightly distracts.</td>
+  </tr>
+</table>
+<div class="callout orange" style="margin-top:6px">
+  <strong>Capability sweet spot finding:</strong> KG augmentation only benefits mid-tier generators. Weaker models get distracted. Stronger models already do so well without it that there's nothing left for KG to add. This is a key nuance for the thesis: <em>"KG helps — but only for certain generators."</em>
+</div>
+
+<!-- ── DATASET ── -->
+<h2>Dataset</h2>
+<p class="h2-sub">40 real merged pull requests from active open-source projects (Mariotto et al. LUCA dataset). All paired comparisons validated — 40/40 pass the divergence filter (both baseline and KG reviews address the same PR concerns).</p>
+<table>
+  <tr><th>Repository</th><th>Language</th><th>PRs</th></tr>
+  <tr><td>scikit-learn / scikit-learn</td><td>Python</td><td>14</td></tr>
+  <tr><td>apache / kafka</td><td>Java</td><td>11</td></tr>
+  <tr><td>godotengine / godot</td><td>C++</td><td>8</td></tr>
+  <tr><td>grafana / grafana</td><td>TypeScript</td><td>5</td></tr>
+  <tr><td>jenkinsci / jenkins</td><td>Java / Groovy</td><td>2</td></tr>
+</table>
+<p class="explain">Inter-judge agreement (pairwise κ): 0.59–0.72 — classified as "substantial" agreement. The three judges are not just repeating each other, but they do broadly agree on which reviews are better.</p>
+
+<!-- ── HUMAN STUDY ── -->
+<h2>Human Study (RQ3) — Ready to Launch</h2>
+<p>The LLM judge is measuring quality according to a rubric — but do <em>human</em> reviewers actually prefer the KG-augmented reviews? That's what RQ3 answers.</p>
+<div class="callout blue">
+  <strong>Design:</strong> 6 PRs shown side-by-side to each rater — best baseline review vs best KG-augmented review. Raters don't know which is which (blind). They rate preference and explain why.<br><br>
+  <strong>Primary metric: Kendall's τ</strong> — measures whether the human preference ranking correlates with the LLM judge's ranking across the 6 PRs. τ = 1 means perfect agreement, τ = 0 means no correlation.<br><br>
+  <strong>Power note:</strong> at n=6 PRs, the study can reliably detect strong agreement (τ ≥ 0.70). It's designed to validate the Joern strict result (d_z ≈ +1.07), which should be perceptible to humans if real. Smoke test: <strong style="color:var(--green)">13/13 checks pass.</strong>
+</div>
+
+<!-- ── WHAT'S LEFT ── -->
+<h2>What's Left</h2>
+<div class="tl-item">
+  <div class="tld now">→</div>
+  <div class="tlb">
+    <h4>Deploy human study UI</h4>
+    <p>Static site, ~15 min to deploy. Then recruit raters (peers or Prolific, ~20–30 min per session).</p>
+  </div>
+</div>
+<div class="tl-item">
+  <div class="tld todo">2</div>
+  <div class="tlb">
+    <h4>Collect human ratings and compute Kendall's τ</h4>
+    <p>Validates whether the LLM judge's KG preference is also visible to humans.</p>
+  </div>
+</div>
+<div class="tl-item">
+  <div class="tld todo">3</div>
+  <div class="tlb">
+    <h4>Write thesis chapters</h4>
+    <p>All experimental results are in. Scaffold exists. Writing not started by design — waiting for human study to complete.</p>
+  </div>
+</div>
+
+<!-- ── SCHEDULE ── -->
+<h2>Schedule vs. Exposé</h2>
+<table>
+  <tr><th>Milestone</th><th>Planned</th><th>Actual</th></tr>
+  <tr><td>Literature review + implementation</td><td>Nov 2025 – Jan 2026</td><td class="tg">Done ✓</td></tr>
+  <tr><td>Experiments (4 modes, scaled to 40 PRs)</td><td>Jan – Feb 2026</td><td class="tg">Done ✓</td></tr>
+  <tr><td>Ablations + follow-on experiments</td><td>Feb 2026</td><td class="tg">Done ✓</td></tr>
+  <tr><td>Analysis</td><td>Mar 2026</td><td class="tg">Done ✓</td></tr>
+  <tr><td>Writing</td><td>Mar 2026</td><td class="tr">Not started</td></tr>
+  <tr><td>Defense</td><td>May 2026</td><td class="to">TBD — pending human study results</td></tr>
+</table>
+
+<div class="footer">13 June 2026 &nbsp;·&nbsp; Abdelrahman Khattab &nbsp;·&nbsp; HPI Potsdam</div>
+</div>
+</body>
+</html>

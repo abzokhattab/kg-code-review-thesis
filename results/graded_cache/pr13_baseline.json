@@ -1,0 +1,51 @@
+{
+  "pr_id": 13,
+  "mode": "baseline",
+  "mean_scores": {
+    "F3": 2.0,
+    "F4": 2.0,
+    "P1": 0.0,
+    "R2": 0.0,
+    "T3": 0.0
+  },
+  "mean_graded_total": 4.0,
+  "per_judge": [
+    {
+      "model": "gemini:gemini-2.5-flash",
+      "scores": {
+        "F3": 2,
+        "F4": 2,
+        "P1": 0,
+        "R2": 0,
+        "T3": 0
+      },
+      "evidence": {
+        "F3": "The review states: \"Manually verify that the behavior of the refactored code matches the original, especially in critical areas like rendering and physics calculations.\" This names specific components ('rendering' and 'physics calculations') that are affected.",
+        "F4": "The review identifies: \"Potential for incorrect behavior if the new `min`, `max`, and `clamp` methods do not handle edge cases as expected.\" and \"The refactoring could introduce subtle bugs if the new methods do not perfectly replicate the behavior of the original `MIN`, `MAX`, and `CLAMP` macros.\" This identifies a specific caller expectation (identical behavior, especially for edge cases) that could break.",
+        "P1": "The review makes no mention of performance issues.",
+        "R2": "The review does not comment on complexity or code structure, nor does it suggest any simplification for the changed code.",
+        "T3": "The review generically recommends to \"Implement unit tests for the `min`, `max`, and `clamp` methods\" but does not name any specific test file paths."
+      },
+      "error": ""
+    },
+    {
+      "model": "gemini:gemini-2.5-pro",
+      "scores": {
+        "F3": 2,
+        "F4": 2,
+        "P1": 0,
+        "R2": 0,
+        "T3": 0
+      },
+      "evidence": {
+        "F3": "The review names multiple specific files that are affected (`core/math/aabb.h:104`, `core/math/delaunay_3d.h:285`, `scene/3d/decal.cpp:34`) and also mentions specific modules ('rendering and physics calculations').",
+        "F4": "The review identifies a specific API contract that could break: that the new methods might not 'perfectly replicate the behavior of the original MIN, MAX, and CLAMP macros', especially 'in edge cases where the original macros might have had specific handling'.",
+        "P1": "The review does not mention performance.",
+        "R2": "The review does not comment on complexity or suggest simplifications in the changed code.",
+        "T3": "The review generically recommends to 'Implement unit tests for the `min`, `max`, and `clamp` methods' without naming any specific test files."
+      },
+      "error": ""
+    }
+  ],
+  "timestamp": "2026-06-01T18:57:26.493139+00:00"
+}

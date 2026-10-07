@@ -1,0 +1,55 @@
+{
+  "candidate_mentions": [
+    {
+      "basename_collision": false,
+      "end": 567,
+      "evidence_id": "M001",
+      "excerpt": "earClassifierMixin`.\n\n## Evidence\n- `sklearn/linear_model/_base.py:333`: Class name changed from `LinearClassifierMixin` to `LinearClassifierMixinInternal`.\n- `sklearn/linear_model/_logistic.py`: Imports `LinearClassifierMixin` from `_base.py`.\n- `sklearn/linear_model/_ridge.py`: Imports `LinearClassifierMixin` from `_base.py`.\n- `sklearn/linear_model/_stochastic_gradient.py`: Imports `LinearClassifierMixin` from `_base.py`.\n\n## Impact\n- The renamin",
+      "finding_passage_id": "P008",
+      "match_kind": "full_path",
+      "match_text": "sklearn/linear_model/_logistic.py",
+      "oracle_path": "sklearn/linear_model/_logistic.py",
+      "start": 534
+    },
+    {
+      "basename_collision": false,
+      "end": 652,
+      "evidence_id": "M002",
+      "excerpt": "ged from `LinearClassifierMixin` to `LinearClassifierMixinInternal`.\n- `sklearn/linear_model/_logistic.py`: Imports `LinearClassifierMixin` from `_base.py`.\n- `sklearn/linear_model/_ridge.py`: Imports `LinearClassifierMixin` from `_base.py`.\n- `sklearn/linear_model/_stochastic_gradient.py`: Imports `LinearClassifierMixin` from `_base.py`.\n\n## Impact\n- The renaming could lead to `ImportError` in modules that depend on the original class name if th",
+      "finding_passage_id": "P009",
+      "match_kind": "full_path",
+      "match_text": "sklearn/linear_model/_ridge.py",
+      "oracle_path": "sklearn/linear_model/_ridge.py",
+      "start": 622
+    },
+    {
+      "basename_collision": false,
+      "end": 751,
+      "evidence_id": "M003",
+      "excerpt": "r_model/_logistic.py`: Imports `LinearClassifierMixin` from `_base.py`.\n- `sklearn/linear_model/_ridge.py`: Imports `LinearClassifierMixin` from `_base.py`.\n- `sklearn/linear_model/_stochastic_gradient.py`: Imports `LinearClassifierMixin` from `_base.py`.\n\n## Impact\n- The renaming could lead to `ImportError` in modules that depend on the original class name if they are not updated accordingly.\n- This could cause runtime errors in any downstream applications or",
+      "finding_passage_id": "P010",
+      "match_kind": "full_path",
+      "match_text": "sklearn/linear_model/_stochastic_gradient.py",
+      "oracle_path": "sklearn/linear_model/_stochastic_gradient.py",
+      "start": 707
+    }
+  ],
+  "causal_passage_id": "P012",
+  "decision_source": "llm_causal_adjudication",
+  "detected": true,
+  "evidence_id": "M001",
+  "executed_at_utc": "2026-09-19T15:09:14.124658+00:00",
+  "finding_passage_id": "P008",
+  "judge": "openai:gpt-4o",
+  "manifest_sha256": "5d4371a93d1b09f0491ecc12279f9f3ff5de23053b7a5e74650a749f58b472b0",
+  "model_alias": "openai:gpt-4o",
+  "model_snapshot": "unavailable-from-original-wrapper",
+  "original_verdict": true,
+  "prompt_sha256": "a6bd2bb233d8829d8e3a7a343a0de47126f5318869fc83a08bc0b7ca4aa4e9a9",
+  "reason_code": "specific_cross_file_link",
+  "response_wrapper": "bare",
+  "review_sha256": "d42da708ef81f1af9f4c4f061f6bea08d019962a4483fb9ccd26cb2d7fc6b126",
+  "schema_sha256": "f70f714868ecd3d25508bb3e00b32ecbe6761b0ebc05f454ee10fa4d28efd013",
+  "schema_version": "exp2-adjudication-v3",
+  "system_sha256": "030b5e701c798b32afdabbbeb22db38f664db8c8fd8b862d2fcb98df63b6fb6b"
+}

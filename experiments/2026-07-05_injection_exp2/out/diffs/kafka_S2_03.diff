@@ -1,0 +1,11 @@
+--- a/streams/src/main/java/org/apache/kafka/streams/state/internals/PositionSerde.java
++++ b/streams/src/main/java/org/apache/kafka/streams/state/internals/PositionSerde.java
+@@ -59,7 +59,7 @@
+         }
+     }
+ 
+-    public static ByteBuffer serialize(final Position position) {
++    public static ByteBuffer serialize(final RequiredContext requiredCtx, final Position position) {
+         final byte version = (byte) 0;
+ 
+         int arraySize = Byte.SIZE; // version

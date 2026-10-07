@@ -1,0 +1,41 @@
+{
+  "candidate_mentions": [
+    {
+      "basename_collision": true,
+      "end": 728,
+      "evidence_id": "M011",
+      "excerpt": "amed to `BaseEstimatorInternal`.\n- Call-graph edges indicate dependencies: \n  - `sklearn/cluster/_feature_agglomeration.py` calls `BaseEstimator.__init__`\n  - `sklearn/decomposition/_base.py` calls `BaseEstimator.__init__`\n\n## Impact\n- This change could break backward compatibility for any external code or third-party libraries that depend on `BaseEstimator` by its original name.\n- Without updating dependent modules and tests, there is a risk of ",
+      "match_kind": "full_path",
+      "match_text": "sklearn/decomposition/_base.py",
+      "oracle_path": "sklearn/decomposition/_base.py",
+      "start": 698
+    },
+    {
+      "basename_collision": true,
+      "end": 728,
+      "evidence_id": "M020",
+      "excerpt": "Internal`.\n- Call-graph edges indicate dependencies: \n  - `sklearn/cluster/_feature_agglomeration.py` calls `BaseEstimator.__init__`\n  - `sklearn/decomposition/_base.py` calls `BaseEstimator.__init__`\n\n## Impact\n- This change could break backward compatibility for any external code or third-party libraries that depend on `BaseEstimator` by its original name.\n- Without updating dependent modules and tests, there is a risk of ",
+      "match_kind": "basename",
+      "match_text": "_base.py",
+      "oracle_path": "sklearn/linear_model/_base.py",
+      "start": 720
+    }
+  ],
+  "causal_quote": "Without updating dependent modules and tests, there is a risk of runtime errors or test failures due to unresolved references to the old class name.",
+  "decision_source": "llm_causal_adjudication",
+  "detected": true,
+  "evidence_id": "M011",
+  "executed_at_utc": "2026-09-19T15:03:12.755827+00:00",
+  "finding_quote": "`sklearn/decomposition/_base.py` calls `BaseEstimator.__init__`",
+  "judge": "gemini:gemini-2.5-flash",
+  "manifest_sha256": "5d4371a93d1b09f0491ecc12279f9f3ff5de23053b7a5e74650a749f58b472b0",
+  "model_alias": "gemini:gemini-2.5-flash",
+  "model_snapshot": "unavailable-from-original-wrapper",
+  "original_verdict": true,
+  "prompt_sha256": "c269425bac089db24fab9038aa734175aeddbf47993e7a7b1af7c90211649632",
+  "reason_code": "specific_cross_file_link",
+  "review_sha256": "dfdab938d86853ead6349e48c9a8b241c956d6b0174ea07d85064f1cc7138fb1",
+  "schema_sha256": "6a22fcb256437ebed904ab2d879b36be1234fb2e06add1127ac8ea2ab46f60f0",
+  "schema_version": "exp2-adjudication-v2",
+  "system_sha256": "3634314a8fc4231391e4c51174e5c32d7346b0e2ceb5f8c4641e6ba866bd5939"
+}

@@ -1,0 +1,24 @@
+\section{Large Language Models for Code}
+\label{sec:bg-llms}
+
+Every generator and judge in this thesis is a transformer~\cite{vaswani2017attention}.
+Two properties of the architecture matter here: salience is learned, so a fact
+placed in a long prompt competes with everything else, and attention costs grow
+with sequence length, making the question of \emph{what} to put in the context
+window unavoidable.
+
+Applying transformers to code began with code-specific pre-training.
+CodeBERT learns joint representations of natural language and programming
+language~\cite{feng2020codebert}; GraphCodeBERT adds a data-flow objective,
+and reports gains on downstream code tasks from incorporating that
+structure~\cite{guo2020graphcodebert}. General-purpose
+instruction-following models such as GPT-4~\cite{openai2023gpt4} subsequently
+displaced fine-tuning for many software-engineering
+tasks~\cite{hou2023llmse,fan2023llmse}.
+
+Two operational properties bear on the experiments. Decoding is stochastic:
+setting temperature to zero requests greedy decoding, which is nearly but not
+exactly reproducible. And a model's input is bounded, so selecting a subset of a
+repository is a requirement, not an optimisation. The two established ways of
+making that selection, similarity-based retrieval and structural traversal,
+are the subjects of the next two sections.

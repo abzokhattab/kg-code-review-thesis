@@ -1,0 +1,51 @@
+{
+  "pr_id": 39,
+  "mode": "joern_kg",
+  "mean_scores": {
+    "F3": 2.5,
+    "F4": 3.0,
+    "P1": 0.0,
+    "R2": 0.0,
+    "T3": 3.0
+  },
+  "mean_graded_total": 8.5,
+  "per_judge": [
+    {
+      "model": "gemini:gemini-2.5-flash",
+      "scores": {
+        "F3": 3,
+        "F4": 3,
+        "P1": 0,
+        "R2": 0,
+        "T3": 3
+      },
+      "evidence": {
+        "F3": "Clients (e.g., consumer groups, tools) that upgrade to a v6+ protocol and rely on the `topic` field in `TxnOffsetCommitResponse` to be populated will encounter unexpected empty strings, potentially leading to `NullPointerException`s, incorrect logging, or failures in their offset management logic. This could be a silent regression or a breaking change for existing clients. ... Untested mixed-version scenarios could lead to subtle interoperability bugs between older and newer clients, especially ",
+        "F4": "Potential API Contract Violation for `TxnOffsetCommitResponse` v6+: The `commitTxnOffset` helper now sets the topic name to an empty string for `TxnOffsetCommitResponseData` when the API version is 6 or higher. This is a significant change from previous versions where the topic name was always present, and it could break clients that expect the topic name to be populated even when a topic ID is present. ... API Documentation Gap for Response Structure Change: If the change to set the topic name ",
+        "P1": "No mention of performance in the review.",
+        "R2": "No comment on complexity or code structure in the review.",
+        "T3": "Missing Test Coverage for `TxnOffsetCommitResponseData` Topic Name Behavior: There is no explicit test case that asserts the `topic` field is empty for v6+ responses and populated for v0-5 responses in `TxnOffsetCommitRequestTest.scala`. ... Limited Edge Case Testing for Mixed Version Interactions: The current tests primarily verify commit and fetch within the same API version. There's no explicit coverage for scenarios where a client using an older API version commits offsets, and then a client"
+      },
+      "error": ""
+    },
+    {
+      "model": "gemini:gemini-2.5-pro",
+      "scores": {
+        "F3": 2,
+        "F4": 3,
+        "P1": 0,
+        "R2": 0,
+        "T3": 3
+      },
+      "evidence": {
+        "F3": "The review names specific types of dependent components that would be affected, stating: 'Clients (e.g., consumer groups, tools) that upgrade to a v6+ protocol and rely on the `topic` field...'. It also discusses the impact on 'older and newer clients' during 'rolling upgrades'.",
+        "F4": "The review identifies multiple potential contract violations. It explicitly calls out a 'Potential API Contract Violation for `TxnOffsetCommitResponse` v6+' and a second potential issue with 'Mixed Version Interactions'. It provides a file reference for the breaking change (`GroupCoordinatorBaseRequestTest.scala:287`) and explains the exact downstream impact ('potentially leading to `NullPointerException`s, incorrect logging, or failures in their offset management logic').",
+        "P1": "The review does not contain any mention of performance, efficiency, or potential bottlenecks.",
+        "R2": "The review does not comment on code complexity, simplification, or suggest any refactoring for clarity.",
+        "T3": "The review names multiple specific test files (`core/src/test/scala/unit/kafka/server/TxnOffsetCommitRequestTest.scala`, `core/src/test/scala/unit/kafka/server/WriteTxnMarkersRequestTest.scala`), references a specific helper function (`verifyTxnCommitAndFetch`), and explains multiple missing edge cases (asserting the topic field is empty for v6+, and testing mixed-version interactions)."
+      },
+      "error": ""
+    }
+  ],
+  "timestamp": "2026-06-01T18:58:38.581276+00:00"
+}

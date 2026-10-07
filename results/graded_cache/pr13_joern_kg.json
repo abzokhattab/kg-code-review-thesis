@@ -1,0 +1,51 @@
+{
+  "pr_id": 13,
+  "mode": "joern_kg",
+  "mean_scores": {
+    "F3": 3.0,
+    "F4": 3.0,
+    "P1": 0.0,
+    "R2": 1.5,
+    "T3": 2.5
+  },
+  "mean_graded_total": 10.0,
+  "per_judge": [
+    {
+      "model": "gemini:gemini-2.5-flash",
+      "scores": {
+        "F3": 3,
+        "F4": 3,
+        "P1": 0,
+        "R2": 2,
+        "T3": 3
+      },
+      "evidence": {
+        "F3": "For example, `Delaunay3D`'s grid calculations (`core/math/delaunay_3d.h:284`, `core/math/delaunay_3d.h:343`) are critical for spatial partitioning; any deviation could affect performance or correctness of triangulation. Similarly, window positioning in `DisplayServerX11` (`platform/linuxbsd/x11/display_server_x11.cpp:1995`, `platform/linuxbsd/x11/display_server_x11.cpp:5451`) could be slightly off.",
+        "F4": "subtle differences in floating-point precision handling or implicit type conversions (e.g., `(real_t)0` vs `Vector3()`) could theoretically lead to different results in highly sensitive calculations, especially in physics or rendering. ... The `CLAMP` macro typically evaluates its arguments multiple times, while the method call evaluates them once. ... subtle precision issues could lead to minor visual glitches, incorrect collision detection, or off-by-one errors in grid calculations.",
+        "P1": "No specific performance issues are identified in the changed code. The mention of 'performance' is conditional on correctness issues: 'any deviation could affect performance or correctness of triangulation.'",
+        "R2": "Inconsistent use of macros vs. member functions for identical operations makes the codebase harder to read and contributes to technical debt, requiring future developers to remember which style is used in which context. ... Perform a comprehensive search (e.g., `grep -r \"MIN(\" .`, `grep -r \"MAX(\" .`, `grep -r \"CLAMP(\" .`) across the entire codebase to identify any remaining instances of these macros applied to `Vector*` or `Rect*` components and refactor them consistently.",
+        "T3": "The provided 'Knowledge Graph Context' ... does not list any test files (e.g., `tests/test_aabb.cpp`, `tests/test_vector3.cpp`). ... Create or extend unit tests for `Vector2`, `Vector3`, `Vector2i`, `Vector3i`, `Rect2`, `Rect2i`, and `AABB` to specifically cover the `min`, `max`, and `clamp` methods, including edge cases like zero, negative, and boundary values. These tests should ideally be placed in `tests/core/test_math.h` or similar dedicated math test files."
+      },
+      "error": ""
+    },
+    {
+      "model": "gemini:gemini-2.5-pro",
+      "scores": {
+        "F3": 3,
+        "F4": 3,
+        "P1": 0,
+        "R2": 1,
+        "T3": 2
+      },
+      "evidence": {
+        "F3": "Names multiple specific callers or dependent components with file paths or function names, and explains the concrete integration risk for each. Evidence: \"For example, `Delaunay3D`'s grid calculations (`core/math/delaunay_3d.h:284`, `core/math/delaunay_3d.h:343`) are critical for spatial partitioning; any deviation could affect performance or correctness of triangulation. Similarly, window positioning in `DisplayServerX11` (`platform/linuxbsd/x11/display_server_x11.cpp:1995`, `platform/linuxbsd/",
+        "F4": "Identifies multiple specific contract violations with file/function references and explains exactly what downstream behavior would change. Evidence: It identifies potential behavioral changes due to argument evaluation (`The CLAMP macro typically evaluates its arguments multiple times, while the method call evaluates them once.`) and type conversion (`The (real_t)0 explicit cast is removed.`). It explains the downstream impact: \"subtle precision issues could lead to minor visual glitches, incorr",
+        "P1": "The review makes no mention of performance inefficiencies in the changed code. It mentions that a correctness issue could affect performance downstream, but does not identify a performance issue with the change itself.",
+        "R2": "The review makes a generic remark that the code could be simplified by applying the refactoring more broadly. Evidence: \"Incomplete refactoring of similar patterns... leading to inconsistent coding style... Perform a comprehensive search ... to identify any remaining instances ... and refactor them consistently.\" This is a high-level suggestion about the codebase, not a pointer to a specific complex block in the PR's code.",
+        "T3": "The review names at least one specific test file path. Evidence: \"These tests should ideally be placed in `tests/core/test_math.h` or similar dedicated math test files.\" This satisfies the anchor for score 2, but not 3, as it does not name multiple specific files."
+      },
+      "error": ""
+    }
+  ],
+  "timestamp": "2026-06-01T18:57:49.730821+00:00"
+}

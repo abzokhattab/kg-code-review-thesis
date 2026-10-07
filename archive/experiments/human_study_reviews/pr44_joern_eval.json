@@ -1,0 +1,331 @@
+{
+  "pr_id": 44,
+  "mode": "joern",
+  "total_score": 7,
+  "max_score": 25,
+  "percentage": 28.0,
+  "kg_relevant_score": 4,
+  "kg_relevant_max": 9,
+  "kg_relevant_percentage": 44.4,
+  "criteria_scores": [
+    {
+      "criterion_id": "F1",
+      "score": 0,
+      "evidence": "The review states the scope of the PR but does not verify if the proposed change effectively addresses the stated problem of reusability.",
+      "n_yes": 0,
+      "n_valid": 2,
+      "unanimous": true
+    },
+    {
+      "criterion_id": "F2",
+      "score": 0,
+      "evidence": "The review mentions 'Missing Edge Case Tests' but does not identify any specific edge cases or boundary conditions that need handling.",
+      "n_yes": 0,
+      "n_valid": 2,
+      "unanimous": true
+    },
+    {
+      "criterion_id": "F3",
+      "score": 1,
+      "evidence": "Integration Risk: The integration risk is high with components like `sklearn.ensemble._hist_gradient_boosting.grower` and `sklearn.ensemble._hist_gradient_boosting.predictor` which directly use bitset functions.",
+      "n_yes": 2,
+      "n_valid": 2,
+      "unanimous": true
+    },
+    {
+      "criterion_id": "F4",
+      "score": 1,
+      "evidence": "Functionality Breakage: The relocation of the bitset code might break existing functionality if any dependencies or imports are not correctly updated.",
+      "n_yes": 2,
+      "n_valid": 2,
+      "unanimous": true
+    },
+    {
+      "criterion_id": "T1",
+      "score": 1,
+      "evidence": "Add Integration Tests: Create tests that verify the integration of the bitset code with other modules, especially `sklearn.tree`.",
+      "n_yes": 2,
+      "n_valid": 2,
+      "unanimous": true
+    },
+    {
+      "criterion_id": "T2",
+      "score": 0,
+      "evidence": "The review mentions 'Missing Edge Case Tests' but does not elaborate on specific edge cases, error paths, or failure scenarios.",
+      "n_yes": 0,
+      "n_valid": 2,
+      "unanimous": true
+    },
+    {
+      "criterion_id": "T3",
+      "score": 1,
+      "evidence": "Test files: `sklearn/ensemble/_hist_gradient_boosting/tests/test_predictor.py`, `sklearn/utils/tests/test_bitset.py`\" and \"Add Integration Tests: Create tests that verify the integration of the bitset code with other modules, especially `sklearn.tree`.",
+      "n_yes": 2,
+      "n_valid": 2,
+      "unanimous": true
+    },
+    {
+      "criterion_id": "R1",
+      "score": 0,
+      "evidence": "The review does not comment on code clarity, naming conventions, or function organization.",
+      "n_yes": 0,
+      "n_valid": 2,
+      "unanimous": true
+    },
+    {
+      "criterion_id": "R2",
+      "score": 0,
+      "evidence": "The review does not identify unnecessary complexity or suggest simplification.",
+      "n_yes": 0,
+      "n_valid": 2,
+      "unanimous": true
+    },
+    {
+      "criterion_id": "R3",
+      "score": 0,
+      "evidence": "The review does not check if code comments explain the 'why' behind decisions.",
+      "n_yes": 0,
+      "n_valid": 2,
+      "unanimous": true
+    },
+    {
+      "criterion_id": "M1",
+      "score": 0,
+      "evidence": "The review focuses on the risks of the move but does not explicitly assess whether the change fits the existing architecture or design patterns.",
+      "n_yes": 1,
+      "n_valid": 2,
+      "unanimous": false
+    },
+    {
+      "criterion_id": "M2",
+      "score": 0,
+      "evidence": "The review does not flag if the PR scope is too large or should be split.",
+      "n_yes": 0,
+      "n_valid": 2,
+      "unanimous": true
+    },
+    {
+      "criterion_id": "M3",
+      "score": 0,
+      "evidence": "The recommendation 'Documentation Update' refers to updating references to the old location, not checking the quality or completeness of public API documentation.",
+      "n_yes": 1,
+      "n_valid": 2,
+      "unanimous": false
+    },
+    {
+      "criterion_id": "C1",
+      "score": 0,
+      "evidence": "The review does not check adherence to project style guides or coding conventions.",
+      "n_yes": 0,
+      "n_valid": 2,
+      "unanimous": true
+    },
+    {
+      "criterion_id": "C2",
+      "score": 0,
+      "evidence": "The review does not check if similar problems are solved consistently with existing patterns.",
+      "n_yes": 0,
+      "n_valid": 2,
+      "unanimous": true
+    },
+    {
+      "criterion_id": "P1",
+      "score": 0,
+      "evidence": "The review does not identify potential performance issues or inefficiencies.",
+      "n_yes": 0,
+      "n_valid": 2,
+      "unanimous": true
+    },
+    {
+      "criterion_id": "P2",
+      "score": 0,
+      "evidence": "The review does not ask about benchmarks or performance testing for critical paths.",
+      "n_yes": 0,
+      "n_valid": 2,
+      "unanimous": true
+    },
+    {
+      "criterion_id": "S1",
+      "score": 0,
+      "evidence": "The review does not check for proper input validation or sanitization.",
+      "n_yes": 0,
+      "n_valid": 2,
+      "unanimous": true
+    },
+    {
+      "criterion_id": "S2",
+      "score": 0,
+      "evidence": "The review does not flag hardcoded secrets, credentials, or sensitive data.",
+      "n_yes": 0,
+      "n_valid": 2,
+      "unanimous": true
+    },
+    {
+      "criterion_id": "S3",
+      "score": 0,
+      "evidence": "The review does not assess error handling and failure recovery.",
+      "n_yes": 0,
+      "n_valid": 2,
+      "unanimous": true
+    },
+    {
+      "criterion_id": "Q1",
+      "score": 1,
+      "evidence": "Scope: This PR moves the bitset Cython code from `sklearn.ensemble._hist_gradient_boosting` to `sklearn.utils` to make it accessible and reusable across other submodules.",
+      "n_yes": 2,
+      "n_valid": 2,
+      "unanimous": true
+    },
+    {
+      "criterion_id": "Q2",
+      "score": 0,
+      "evidence": "The review lists file paths in the 'Evidence' section but does not anchor specific comments or suggestions to line numbers within those files.",
+      "n_yes": 1,
+      "n_valid": 2,
+      "unanimous": false
+    },
+    {
+      "criterion_id": "Q3",
+      "score": 1,
+      "evidence": "The 'Problem' and 'Impact' sections clearly highlight critical issues (e.g., 'Functionality Breakage', 'API Contract Violation') that would need to be addressed, implicitly distinguishing them from minor suggestions.",
+      "n_yes": 2,
+      "n_valid": 2,
+      "unanimous": true
+    },
+    {
+      "criterion_id": "Q4",
+      "score": 0,
+      "evidence": "The review makes statements about potential problems and recommendations, rather than asking clarifying questions.",
+      "n_yes": 0,
+      "n_valid": 2,
+      "unanimous": true
+    },
+    {
+      "criterion_id": "Q5",
+      "score": 1,
+      "evidence": "The 'Problem' and 'Impact' sections provide the reasoning behind the 'Recommendation' section. For example, 'Fix Imports' is recommended due to 'Functionality Breakage' if 'dependencies or imports are not correctly updated'.",
+      "n_yes": 2,
+      "n_valid": 2,
+      "unanimous": true
+    }
+  ],
+  "per_judge": [
+    {
+      "model": "gemini:gemini-2.5-flash",
+      "scores": {
+        "F1": 0,
+        "F2": 0,
+        "F3": 1,
+        "F4": 1,
+        "T1": 1,
+        "T2": 0,
+        "T3": 1,
+        "R1": 0,
+        "R2": 0,
+        "R3": 0,
+        "M1": 0,
+        "M2": 0,
+        "M3": 0,
+        "C1": 0,
+        "C2": 0,
+        "P1": 0,
+        "P2": 0,
+        "S1": 0,
+        "S2": 0,
+        "S3": 0,
+        "Q1": 1,
+        "Q2": 0,
+        "Q3": 1,
+        "Q4": 0,
+        "Q5": 1
+      },
+      "evidence": {
+        "F1": "The review states the scope of the PR but does not verify if the proposed change effectively addresses the stated problem of reusability.",
+        "F2": "The review mentions 'Missing Edge Case Tests' but does not identify any specific edge cases or boundary conditions that need handling.",
+        "F3": "Integration Risk: The integration risk is high with components like `sklearn.ensemble._hist_gradient_boosting.grower` and `sklearn.ensemble._hist_gradient_boosting.predictor` which directly use bitset functions.",
+        "F4": "Functionality Breakage: The relocation of the bitset code might break existing functionality if any dependencies or imports are not correctly updated.",
+        "T1": "Add Integration Tests: Create tests that verify the integration of the bitset code with other modules, especially `sklearn.tree`.",
+        "T2": "The review mentions 'Missing Edge Case Tests' but does not elaborate on specific edge cases, error paths, or failure scenarios.",
+        "T3": "Test files: `sklearn/ensemble/_hist_gradient_boosting/tests/test_predictor.py`, `sklearn/utils/tests/test_bitset.py`\" and \"Add Integration Tests: Create tests that verify the integration of the bitset code with other modules, especially `sklearn.tree`.",
+        "R1": "The review does not comment on code clarity, naming conventions, or function organization.",
+        "R2": "The review does not identify unnecessary complexity or suggest simplification.",
+        "R3": "The review does not check if code comments explain the 'why' behind decisions.",
+        "M1": "The review focuses on the risks of the move but does not explicitly assess whether the change fits the existing architecture or design patterns.",
+        "M2": "The review does not flag if the PR scope is too large or should be split.",
+        "M3": "The recommendation 'Documentation Update' refers to updating references to the old location, not checking the quality or completeness of public API documentation.",
+        "C1": "The review does not check adherence to project style guides or coding conventions.",
+        "C2": "The review does not check if similar problems are solved consistently with existing patterns.",
+        "P1": "The review does not identify potential performance issues or inefficiencies.",
+        "P2": "The review does not ask about benchmarks or performance testing for critical paths.",
+        "S1": "The review does not check for proper input validation or sanitization.",
+        "S2": "The review does not flag hardcoded secrets, credentials, or sensitive data.",
+        "S3": "The review does not assess error handling and failure recovery.",
+        "Q1": "Scope: This PR moves the bitset Cython code from `sklearn.ensemble._hist_gradient_boosting` to `sklearn.utils` to make it accessible and reusable across other submodules.",
+        "Q2": "The review lists file paths in the 'Evidence' section but does not anchor specific comments or suggestions to line numbers within those files.",
+        "Q3": "The 'Problem' and 'Impact' sections clearly highlight critical issues (e.g., 'Functionality Breakage', 'API Contract Violation') that would need to be addressed, implicitly distinguishing them from minor suggestions.",
+        "Q4": "The review makes statements about potential problems and recommendations, rather than asking clarifying questions.",
+        "Q5": "The 'Problem' and 'Impact' sections provide the reasoning behind the 'Recommendation' section. For example, 'Fix Imports' is recommended due to 'Functionality Breakage' if 'dependencies or imports are not correctly updated'."
+      },
+      "error": ""
+    },
+    {
+      "model": "gemini:gemini-2.5-pro",
+      "scores": {
+        "F1": 0,
+        "F2": 0,
+        "F3": 1,
+        "F4": 1,
+        "T1": 1,
+        "T2": 0,
+        "T3": 1,
+        "R1": 0,
+        "R2": 0,
+        "R3": 0,
+        "M1": 1,
+        "M2": 0,
+        "M3": 1,
+        "C1": 0,
+        "C2": 0,
+        "P1": 0,
+        "P2": 0,
+        "S1": 0,
+        "S2": 0,
+        "S3": 0,
+        "Q1": 1,
+        "Q2": 1,
+        "Q3": 1,
+        "Q4": 0,
+        "Q5": 1
+      },
+      "evidence": {
+        "F1": "The review restates the PR's goal in the 'Scope' section but focuses on the risks of the move, rather than verifying that the goal (making the code reusable for other modules) was successfully achieved.",
+        "F2": "The review mentions 'Missing Edge Case Tests', but the example given is about integration with `sklearn.tree`, which is a missing scenario, not a specific boundary condition.",
+        "F3": "The review states: 'The integration risk is high with components like `sklearn.ensemble._hist_gradient_boosting.grower` and `sklearn.ensemble._hist_gradient_boosting.predictor` which directly use bitset functions.'",
+        "F4": "The review warns about 'Functionality Breakage', 'API Contract Violation', and a 'High risk of regression in modules that rely on bitset functionality.'",
+        "T1": "The review recommends: 'Add Integration Tests: Create tests that verify the integration of the bitset code with other modules, especially `sklearn.tree`.'",
+        "T2": "Although the review uses the phrase 'Missing Edge Case Tests', it does not describe any specific edge cases, error paths, or failure scenarios to be tested.",
+        "T3": "The review references specific test files under 'Evidence', such as `sklearn/ensemble/_hist_gradient_boosting/tests/test_predictor.py`.",
+        "R1": "The review does not comment on code clarity, naming, or organization.",
+        "R2": "The review does not identify any unnecessary complexity or suggest simplifications in the code.",
+        "R3": "The review does not mention code comments or whether they explain the 'why'.",
+        "M1": "The review assesses the architectural change (moving a utility) by analyzing its integration risks and impact on dependent components, which is a core part of evaluating architectural fit.",
+        "M2": "The review does not comment on the PR's scope.",
+        "M3": "The review includes the recommendation: 'Documentation Update: Update any documentation that references the old location of the bitset code.'",
+        "C1": "The review does not mention project style guides or coding conventions.",
+        "C2": "The review does not check for consistency with how similar problems have been solved elsewhere in the codebase.",
+        "P1": "The review does not identify any potential performance issues.",
+        "P2": "The review does not ask for benchmarks or performance tests.",
+        "S1": "The review does not check for input validation or sanitization.",
+        "S2": "The review does not check for hardcoded secrets or sensitive data.",
+        "S3": "The review mentions 'Functionality Breakage' at a high level but does not assess specific error handling mechanisms in the code.",
+        "Q1": "The review provides a clear summary and assessment through its 'Scope', 'Problem', and 'Impact' sections.",
+        "Q2": "The 'Evidence' section anchors the review to specific file paths, such as '`sklearn/ensemble/_hist_gradient_boosting/_bitset.pyx`: Deleted' and '`sklearn/utils/_bitset.pyx`: New file'.",
+        "Q3": "The issues raised (e.g., 'Functionality Breakage', 'High risk of regression') are inherently blocking, clearly distinguishing them from minor suggestions.",
+        "Q4": "The review makes assertions and recommendations (e.g., 'The integration risk is high...') rather than asking clarifying questions.",
+        "Q5": "The review's structure connects problems to recommendations. For example, the recommendation to 'Add Integration Tests' is justified by the identified problem of 'Missing Edge Case Tests' and the 'Untested Scenarios' impact."
+      },
+      "error": ""
+    }
+  ],
+  "evaluation_timestamp": "2026-06-01T22:14:19.428597Z"
+}

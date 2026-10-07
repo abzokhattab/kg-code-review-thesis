@@ -1,0 +1,51 @@
+{
+  "pr_id": 22,
+  "mode": "baseline",
+  "mean_scores": {
+    "F3": 2.5,
+    "F4": 2.0,
+    "P1": 0.0,
+    "R2": 0.0,
+    "T3": 1.5
+  },
+  "mean_graded_total": 6.0,
+  "per_judge": [
+    {
+      "model": "gemini:gemini-2.5-flash",
+      "scores": {
+        "F3": 2,
+        "F4": 2,
+        "P1": 0,
+        "R2": 0,
+        "T3": 2
+      },
+      "evidence": {
+        "F3": "The review names the `tools` module as a specific component where integration issues may arise: 'If dependencies are not correctly managed, tests may fail to run, leading to potential undetected issues in the `tools` module.'",
+        "F4": "The review identifies a specific caller expectation that could break: 'The change in package names could potentially break existing references or usages if not all dependencies are updated accordingly.' This refers to the package structure as a contract.",
+        "P1": "The review makes no mention of performance issues.",
+        "R2": "The review makes no comment on complexity or code structure.",
+        "T3": "The review names multiple specific test file paths from the repository that are being moved/updated: `AbstractResetIntegrationTest.java`, `ResetIntegrationTest.java`, and `ResetIntegrationWithSslTest.java`. However, it does not reference specific test scenarios or edge cases."
+      },
+      "error": ""
+    },
+    {
+      "model": "gemini:gemini-2.5-pro",
+      "scores": {
+        "F3": 3,
+        "F4": 2,
+        "P1": 0,
+        "R2": 0,
+        "T3": 1
+      },
+      "evidence": {
+        "F3": "The review names multiple specific dependent components (the `streams` and `tools` modules, `build.gradle`, `checkstyle/import-control.xml`) and explains the concrete integration risk for each (e.g., 'If dependencies are not correctly managed, tests may fail to run, leading to potential undetected issues in the `tools` module.').",
+        "F4": "The review identifies a specific API contract that could break: the package name. It states, 'The change in package names could potentially break existing references' and provides evidence of the package changing from `org.apache.kafka.streams.integration` to `org.apache.kafka.tools` in `AbstractResetIntegrationTest.java`.",
+        "P1": "The review makes no mention of performance.",
+        "R2": "The review does not comment on complexity or code structure.",
+        "T3": "The review mentions that a 'full suite of integration tests' should be run, but does not name a specific test file."
+      },
+      "error": ""
+    }
+  ],
+  "timestamp": "2026-06-01T18:57:57.434527+00:00"
+}

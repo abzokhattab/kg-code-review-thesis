@@ -1,0 +1,41 @@
+{
+  "pr": {
+    "number": 33998,
+    "title": "[Callbacks] Repr for CallbackContext",
+    "body": "Extracted from #33591. Only implements the oneliner ``repr`` here. It will already help debugging when implementing callback support in estimators: having the task name and task id from the traceback allows to directly identify the context that causes an issue in the code.\r\n\r\nIt would have been helpful for the implementation of callback support in pipeline, gridsearch, ... Let's have it before starting to implement callback support in more estimators\r\n\r\nNote: These 3 attributes are enough imo. They allow to uniquely identify the problematic context in the code. Then the other attributes can be read from the construction if needed.\r\n\r\nping @FrancoisPgm @StefanieSenger ",
+    "url": "https://github.com/scikit-learn/scikit-learn/pull/33998",
+    "repo": "scikit-learn/scikit-learn",
+    "base_branch": "callbacks",
+    "head_branch": "short-repr-callback-ctx",
+    "merged_at": "2026-05-13T14:43:18Z",
+    "state": "MERGED"
+  },
+  "changed_files": [
+    {
+      "path": "sklearn/callback/_callback_context.py",
+      "language": "python",
+      "added": 8,
+      "deleted": 0
+    },
+    {
+      "path": "sklearn/callback/tests/test_callback_context.py",
+      "language": "python",
+      "added": 11,
+      "deleted": 0
+    }
+  ],
+  "nearest_tests": [],
+  "dependent_files": [],
+  "callers": [],
+  "call_graph_edges": [],
+  "full_diff": "diff --git a/sklearn/callback/_callback_context.py b/sklearn/callback/_callback_context.py\nindex 47a62fc625f7f..e91d05f85cc25 100644\n--- a/sklearn/callback/_callback_context.py\n+++ b/sklearn/callback/_callback_context.py\n@@ -178,6 +178,14 @@ def __iter__(self):\n         for context in self._children_map.values():\n             yield from context\n \n+    def __repr__(self):\n+        return (\n+            f\"{self.__class__.__name__}(\"\n+            f\"estimator_name={self.estimator_name!r}, \"\n+            f\"task_name={self.task_name!r}, \"\n+            f\"task_id={self.task_id})\"\n+        )\n+\n     def _add_child(self, child_context):\n         \"\"\"Add `child_context` as a child of this context.\"\"\"\n         if child_context.task_id in self._children_map:\ndiff --git a/sklearn/callback/tests/test_callback_context.py b/sklearn/callback/tests/test_callback_context.py\nindex 91024cbed4cca..386ea888a2703 100644\n--- a/sklearn/callback/tests/test_callback_context.py\n+++ b/sklearn/callback/tests/test_callback_context.py\n@@ -522,3 +522,14 @@ def fit(self, X=None, y=None):\n     assert callback.count_hooks(\"on_fit_task_begin\") == 1\n     assert callback.count_hooks(\"on_fit_task_end\") == 1\n     assert callback.count_hooks(\"teardown\") == 1\n+\n+\n+def test_callback_context_repr():\n+    \"\"\"Smoke test for the repr of the callback context.\"\"\"\n+    estimator = MaxIterEstimator()\n+    context = _make_callback_ctx(estimator, task_name=\"mytask\", task_id=42)\n+    expected_repr = (\n+        \"CallbackContext(estimator_name='MaxIterEstimator', task_name='mytask', \"\n+        \"task_id=42)\"\n+    )\n+    assert repr(context) == expected_repr\n",
+  "diff_summary": "2 files changed",
+  "similar_chunks": [],
+  "metadata": {
+    "experiment": "confirmatory_kg_2026-05-14",
+    "local_id": 8,
+    "v2_diff_truncated": false,
+    "v2_raw_diff_chars": 1624,
+    "v2_raw_body_chars": 676
+  }
+}

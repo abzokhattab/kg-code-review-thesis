@@ -1,0 +1,42 @@
+{
+  "candidate_mentions": [
+    {
+      "basename_collision": false,
+      "end": 680,
+      "evidence_id": "M001",
+      "excerpt": "t optional.\n- `sklearn/cluster/_agglomerative.py`, `sklearn/cluster/_optics.py`, etc.: These files depend on `clone` and may break due to the new parameter.\n- `sklearn/linear_model/_ransac.py:fit` and `sklearn/linear_model/_stochastic_gradient.py::__init__`: These functions call `clone` and need updates to handle the new parameter.\n\n## Impact\n- The change introduces a breaking change that can lead to runtime errors in any module or function that c",
+      "match_kind": "full_path",
+      "match_text": "sklearn/linear_model/_ransac.py",
+      "oracle_path": "sklearn/linear_model/_ransac.py",
+      "start": 649
+    },
+    {
+      "basename_collision": false,
+      "end": 735,
+      "evidence_id": "M002",
+      "excerpt": "ive.py`, `sklearn/cluster/_optics.py`, etc.: These files depend on `clone` and may break due to the new parameter.\n- `sklearn/linear_model/_ransac.py:fit` and `sklearn/linear_model/_stochastic_gradient.py::__init__`: These functions call `clone` and need updates to handle the new parameter.\n\n## Impact\n- The change introduces a breaking change that can lead to runtime errors in any module or function that calls `clone` without the `required_ctx` parameter.\n- La",
+      "match_kind": "full_path",
+      "match_text": "sklearn/linear_model/_stochastic_gradient.py",
+      "oracle_path": "sklearn/linear_model/_stochastic_gradient.py",
+      "start": 691
+    }
+  ],
+  "causal_quote": "`sklearn/linear_model/_ransac.py:fit` and `sklearn/linear_model/_stochastic_gradient.py::__init__`: These functions call `clone` and need updates to handle the new parameter.",
+  "decision_source": "llm_causal_adjudication",
+  "detected": true,
+  "evidence_id": "M001",
+  "executed_at_utc": "2026-09-19T15:05:43.750684+00:00",
+  "finding_quote": "`sklearn/linear_model/_ransac.py:fit` and `sklearn/linear_model/_stochastic_gradient.py::__init__`: These functions call `clone` and need updates to handle the new parameter.",
+  "judge": "gemini:gemini-2.5-flash",
+  "manifest_sha256": "5d4371a93d1b09f0491ecc12279f9f3ff5de23053b7a5e74650a749f58b472b0",
+  "model_alias": "gemini:gemini-2.5-flash",
+  "model_snapshot": "unavailable-from-original-wrapper",
+  "original_verdict": true,
+  "prompt_sha256": "c8e4987ddd47bad700cea12a967eff90f91f95d5a8c8c9e0d503726897613d66",
+  "reason_code": "specific_cross_file_link",
+  "response_wrapper": "single_json_fence",
+  "review_sha256": "510cdba5f1f1acbed5cb76b5f3057f3a4a0966e6c07e017a97691d8db6117bcf",
+  "schema_sha256": "6a22fcb256437ebed904ab2d879b36be1234fb2e06add1127ac8ea2ab46f60f0",
+  "schema_version": "exp2-adjudication-v2",
+  "system_sha256": "3634314a8fc4231391e4c51174e5c32d7346b0e2ceb5f8c4641e6ba866bd5939"
+}

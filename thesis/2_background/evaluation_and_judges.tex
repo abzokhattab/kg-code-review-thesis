@@ -1,0 +1,44 @@
+\section{Evaluating Generated Reviews}
+\label{sec:bg-evaluation}
+
+How to score a generated review is contested. Text-overlap metrics against a
+single human reference have been shown to misrank review comments, because a
+change admits many valid reviews~\cite{hong2024deepcrceval}. Criterion-based
+rubrics scored by a language model replaced them: Liu et al.'s G-Eval
+established the pattern, reporting correlation with human ratings markedly
+better than $n$-gram metrics~\cite{liu2023geval}. Zheng et al.\ generalised it
+with MT-Bench, finding agreement between a strong judge and human preferences
+comparable to agreement between two humans~\cite{zheng2023judging}. He et al.\
+survey adoption of the paradigm in software
+engineering~\cite{he2025llmasjudgese}.
+
+The same literature catalogues failure modes. Zheng et al.\ document position
+bias, verbosity bias, and self-enhancement bias~\cite{zheng2023judging};
+Panickssery et al.\ show that models recognise and favour their own
+generations~\cite{panickssery2024selfpreference}. Verbosity bias is
+particularly relevant here: adding context to a prompt tends to make the output
+longer, so a judge that rewards length would reward context augmentation for the
+wrong reason.
+
+The mitigations this thesis adopts follow directly. Using several judges from
+different providers limits any one family's idiosyncrasies. Recomputing the
+effect under individual judges makes evaluator sensitivity visible. Blinding
+and pairwise presentation control position and identity
+effects~\cite{chiang2024chatbotarena}. Where objective ground truth can be
+constructed, adjudication is checked against it rather than trusted.
+
+One conceptual limitation applies to every rubric of this kind. Asking whether
+a review addresses a criterion measures \emph{coverage}: whether the review
+says something about the subject. It does not measure whether what it says is
+\emph{correct}. This thesis uses a coverage rubric for its main comparison and
+supplements it with both an oracle-scored experiment and a human study,
+precisely because coverage alone cannot answer whether added context was used
+correctly.
+
+The evaluation methods specific to code review share this gap. DeepCRCEval
+replaces overlap metrics with a criterion-based rubric scored by a single
+judge~\cite{hong2024deepcrceval}; CRScore constructs pseudo-references from
+static analysers~\cite{naik2025crscore}. Neither reports agreement between
+independent scorers, because neither has two. This matters more for a
+context-augmentation study than for a model ranking, because verbosity bias
+from the treatment cannot be separated from a real improvement without a panel.

@@ -1,0 +1,4039 @@
+{
+  "metadata": {
+    "run": "ablation_14criteria",
+    "model": "openai:gpt-4.1-mini",
+    "timestamp": "2026-03-05T19:58:51.177675",
+    "criteria_count": 14
+  },
+  "evaluations": [
+    {
+      "pr_id": 10,
+      "config": "kg_minimal",
+      "total_score": 7,
+      "max_score": 14,
+      "percentage": 50.0,
+      "criteria_scores": [
+        {
+          "criterion_id": "F2*",
+          "score": 0,
+          "evidence": "Review does not explicitly identify edge cases, boundary conditions, or error-path testing needs."
+        },
+        {
+          "criterion_id": "F3*",
+          "score": 1,
+          "evidence": "Mentions integration tests and ensuring existing tests cover updated parallel processing logic."
+        },
+        {
+          "criterion_id": "F4",
+          "score": 1,
+          "evidence": "Warns about backward compatibility issues and potential breaking changes for users with older Joblib versions."
+        },
+        {
+          "criterion_id": "T1",
+          "score": 1,
+          "evidence": "Recommends adding tests to ensure no performance degradation or behavioral changes."
+        },
+        {
+          "criterion_id": "T3",
+          "score": 1,
+          "evidence": "Specifically references integration tests and suggests adding tests if necessary."
+        },
+        {
+          "criterion_id": "R1",
+          "score": 0,
+          "evidence": "No comments on code clarity, naming conventions, or function organization."
+        },
+        {
+          "criterion_id": "R2",
+          "score": 0,
+          "evidence": "No identification of unnecessary complexity or suggestions for simplification."
+        },
+        {
+          "criterion_id": "P1",
+          "score": 1,
+          "evidence": "Raises concern about potential performance regressions due to changes in parallel processing configurations."
+        },
+        {
+          "criterion_id": "S1",
+          "score": 0,
+          "evidence": "No mention of input validation or sanitization."
+        },
+        {
+          "criterion_id": "S3",
+          "score": 0,
+          "evidence": "No assessment of error handling or failure recovery."
+        },
+        {
+          "criterion_id": "Q3",
+          "score": 0,
+          "evidence": "Does not distinguish between blocking issues and minor suggestions."
+        },
+        {
+          "criterion_id": "Q5",
+          "score": 1,
+          "evidence": "Explains why documentation, tests, and deprecation warnings are recommended to mitigate risks."
+        },
+        {
+          "criterion_id": "C2",
+          "score": 0,
+          "evidence": "No check if similar problems are solved consistently with existing patterns."
+        },
+        {
+          "criterion_id": "F1",
+          "score": 1,
+          "evidence": "Review clearly addresses the problem of compatibility and parallel processing changes."
+        }
+      ]
+    },
+    {
+      "pr_id": 10,
+      "config": "kg_no_deps",
+      "total_score": 7,
+      "max_score": 14,
+      "percentage": 50.0,
+      "criteria_scores": [
+        {
+          "criterion_id": "F2*",
+          "score": 0,
+          "evidence": "No mention of edge cases, boundary conditions, or error-path testing needs."
+        },
+        {
+          "criterion_id": "F3*",
+          "score": 0,
+          "evidence": "No explicit check of integration with existing components, APIs, or design patterns."
+        },
+        {
+          "criterion_id": "F4",
+          "score": 1,
+          "evidence": "Mentions 'Potential backward compatibility issues' and 'Removing _joblib_parallel_args without thorough testing could lead to unintended changes...'"
+        },
+        {
+          "criterion_id": "T1",
+          "score": 1,
+          "evidence": "Recommendation includes 'Verify that all tests... pass' and 'Consider adding tests to specifically cover parallel execution scenarios.'"
+        },
+        {
+          "criterion_id": "T3",
+          "score": 1,
+          "evidence": "References specific files like 'README.rst' and mentions tests related to parallel processing."
+        },
+        {
+          "criterion_id": "R1",
+          "score": 0,
+          "evidence": "No comments on code clarity, naming conventions, or function organization."
+        },
+        {
+          "criterion_id": "R2",
+          "score": 0,
+          "evidence": "No identification of unnecessary complexity or suggestions for simplification."
+        },
+        {
+          "criterion_id": "P1",
+          "score": 1,
+          "evidence": "Notes that removing _joblib_parallel_args could affect parallel execution behavior and performance."
+        },
+        {
+          "criterion_id": "S1",
+          "score": 0,
+          "evidence": "No mention of input validation or sanitization."
+        },
+        {
+          "criterion_id": "S3",
+          "score": 0,
+          "evidence": "No assessment of error handling or failure recovery."
+        },
+        {
+          "criterion_id": "Q3",
+          "score": 1,
+          "evidence": "Clearly distinguishes blocking issues (compatibility, testing) and minor suggestions (documentation updates)."
+        },
+        {
+          "criterion_id": "Q5",
+          "score": 1,
+          "evidence": "Explains why changes are needed, e.g., 'could lead to unintended changes in parallel execution behavior' and 'to alert users who may need to upgrade their environments.'"
+        },
+        {
+          "criterion_id": "C2",
+          "score": 0,
+          "evidence": "No check if similar problems are solved consistently with existing patterns."
+        },
+        {
+          "criterion_id": "F1",
+          "score": 1,
+          "evidence": "Review addresses the stated problem of updating Joblib version and removing compatibility code."
+        }
+      ]
+    },
+    {
+      "pr_id": 10,
+      "config": "kg_no_tests",
+      "total_score": 8,
+      "max_score": 14,
+      "percentage": 57.1,
+      "criteria_scores": [
+        {
+          "criterion_id": "F2*",
+          "score": 0,
+          "evidence": "Review does not explicitly identify edge cases, boundary conditions, or error-path testing needs."
+        },
+        {
+          "criterion_id": "F3*",
+          "score": 1,
+          "evidence": "Mentions integration risks in parallel processing logic in modules like ensemble and linear_model."
+        },
+        {
+          "criterion_id": "F4",
+          "score": 1,
+          "evidence": "Warns about breaking changes for users with Joblib versions older than 1.0.0."
+        },
+        {
+          "criterion_id": "T1",
+          "score": 1,
+          "evidence": "Highlights lack of specific tests and recommends developing tests for Joblib 1.0.0."
+        },
+        {
+          "criterion_id": "T3",
+          "score": 1,
+          "evidence": "References specific test files and lines where version checks were removed without adding new tests."
+        },
+        {
+          "criterion_id": "R1",
+          "score": 0,
+          "evidence": "No comments on code clarity, naming conventions, or function organization."
+        },
+        {
+          "criterion_id": "R2",
+          "score": 0,
+          "evidence": "No identification of unnecessary complexity or suggestions for simplification."
+        },
+        {
+          "criterion_id": "P1",
+          "score": 1,
+          "evidence": "Notes potential performance and stability impact due to changes in parallel processing."
+        },
+        {
+          "criterion_id": "S1",
+          "score": 0,
+          "evidence": "No mention of input validation or sanitization."
+        },
+        {
+          "criterion_id": "S3",
+          "score": 0,
+          "evidence": "No assessment of error handling or failure recovery."
+        },
+        {
+          "criterion_id": "Q3",
+          "score": 1,
+          "evidence": "Distinguishes blocking issues (compatibility, testing) and risks from minor suggestions."
+        },
+        {
+          "criterion_id": "Q5",
+          "score": 1,
+          "evidence": "Explains why tests and documentation are needed to avoid regressions and user issues."
+        },
+        {
+          "criterion_id": "C2",
+          "score": 0,
+          "evidence": "No check if similar problems are solved consistently with existing patterns."
+        },
+        {
+          "criterion_id": "F1",
+          "score": 1,
+          "evidence": "Review verifies the change addresses the problem of updating Joblib version and removing compatibility code."
+        }
+      ]
+    },
+    {
+      "pr_id": 11,
+      "config": "kg_no_deps",
+      "total_score": 3,
+      "max_score": 14,
+      "percentage": 21.4,
+      "criteria_scores": [
+        {
+          "criterion_id": "F2*",
+          "score": 0,
+          "evidence": "Review does not mention edge cases, boundary conditions, or error-path testing."
+        },
+        {
+          "criterion_id": "F3*",
+          "score": 0,
+          "evidence": "No discussion of integration with existing components, APIs, or design patterns."
+        },
+        {
+          "criterion_id": "F4",
+          "score": 1,
+          "evidence": "Mentions potential confusion leading to unnecessary delays or insufficient review, implying impact on contribution process."
+        },
+        {
+          "criterion_id": "T1",
+          "score": 0,
+          "evidence": "No mention of unit or integration tests or their necessity."
+        },
+        {
+          "criterion_id": "T3",
+          "score": 0,
+          "evidence": "No references to specific test files or suggestions for test additions/updates."
+        },
+        {
+          "criterion_id": "R1",
+          "score": 0,
+          "evidence": "No comments on code clarity, naming, or function organization."
+        },
+        {
+          "criterion_id": "R2",
+          "score": 0,
+          "evidence": "No identification of unnecessary complexity or suggestions for simplification."
+        },
+        {
+          "criterion_id": "P1",
+          "score": 0,
+          "evidence": "No mention of performance issues or inefficiencies."
+        },
+        {
+          "criterion_id": "S1",
+          "score": 0,
+          "evidence": "No checks for input validation or sanitization."
+        },
+        {
+          "criterion_id": "S3",
+          "score": 0,
+          "evidence": "No assessment of error handling or failure recovery."
+        },
+        {
+          "criterion_id": "Q3",
+          "score": 0,
+          "evidence": "No distinction made between blocking issues and minor suggestions."
+        },
+        {
+          "criterion_id": "Q5",
+          "score": 1,
+          "evidence": "Provides reasoning for suggestions, e.g., 'contributors may face confusion...' and 'could lead to misunderstandings or misuse...'"
+        },
+        {
+          "criterion_id": "C2",
+          "score": 0,
+          "evidence": "No check if similar problems are solved consistently with existing patterns."
+        },
+        {
+          "criterion_id": "F1",
+          "score": 1,
+          "evidence": "Review clearly addresses the problem of unclear guidelines and unexplained spelling wordlist addition."
+        }
+      ]
+    },
+    {
+      "pr_id": 14,
+      "config": "kg_minimal",
+      "total_score": 7,
+      "max_score": 14,
+      "percentage": 50.0,
+      "criteria_scores": [
+        {
+          "criterion_id": "F2*",
+          "score": 0,
+          "evidence": "Review does not mention edge cases, boundary conditions, or error-path testing needs."
+        },
+        {
+          "criterion_id": "F3*",
+          "score": 1,
+          "evidence": "Mentions integration consistency: 'The change from width to size in the Drawer component might not be consistently applied across all usages...'"
+        },
+        {
+          "criterion_id": "F4",
+          "score": 1,
+          "evidence": "Warns about breaking changes: 'Without a clear deprecation strategy, existing codebases using the width property might face unexpected behavior...'"
+        },
+        {
+          "criterion_id": "T1",
+          "score": 1,
+          "evidence": "Notes lack of tests and need for coverage: 'There is no evidence of updated or additional tests to verify the new size property functionality...'"
+        },
+        {
+          "criterion_id": "T3",
+          "score": 1,
+          "evidence": "References specific test file: 'There are no changes in packages/grafana-ui/src/components/Drawer/Drawer.story.tsx that suggest new tests...'"
+        },
+        {
+          "criterion_id": "R1",
+          "score": 0,
+          "evidence": "No comments on code clarity, naming conventions, or function organization."
+        },
+        {
+          "criterion_id": "R2",
+          "score": 0,
+          "evidence": "No identification of unnecessary complexity or suggestions for simplification."
+        },
+        {
+          "criterion_id": "P1",
+          "score": 0,
+          "evidence": "No mention of performance issues or inefficiencies."
+        },
+        {
+          "criterion_id": "S1",
+          "score": 0,
+          "evidence": "No assessment of input validation or sanitization."
+        },
+        {
+          "criterion_id": "S3",
+          "score": 0,
+          "evidence": "No assessment of error handling or failure recovery."
+        },
+        {
+          "criterion_id": "Q3",
+          "score": 0,
+          "evidence": "Does not distinguish between blocking issues and minor suggestions."
+        },
+        {
+          "criterion_id": "Q5",
+          "score": 1,
+          "evidence": "Explains reasoning behind suggestions: 'Without a clear deprecation strategy... might face unexpected behavior...' and 'lack of test coverage increases risk of undetected bugs...'"
+        },
+        {
+          "criterion_id": "C2",
+          "score": 1,
+          "evidence": "Checks consistency with existing patterns: 'The change from width to size... might not be consistently applied across all usages...'"
+        },
+        {
+          "criterion_id": "F1",
+          "score": 1,
+          "evidence": "Verifies change addresses problem: 'This PR introduces a size property... allowing it to set width percentage and minimum width based on predefined size options...'"
+        }
+      ]
+    },
+    {
+      "pr_id": 14,
+      "config": "kg_no_deps",
+      "total_score": 5,
+      "max_score": 14,
+      "percentage": 35.7,
+      "criteria_scores": [
+        {
+          "criterion_id": "F2*",
+          "score": 0,
+          "evidence": "Review does not mention edge cases, boundary conditions, or error-path testing needs."
+        },
+        {
+          "criterion_id": "F3*",
+          "score": 0,
+          "evidence": "No discussion of integration with existing components, APIs, or design patterns."
+        },
+        {
+          "criterion_id": "F4",
+          "score": 1,
+          "evidence": "Mentions 'continued use of a deprecated property can lead to maintenance challenges' and 'conflicting styles could lead to unexpected UI behavior.'"
+        },
+        {
+          "criterion_id": "T1",
+          "score": 1,
+          "evidence": "States 'Lack of Test Coverage for New Feature' and recommends 'Add or update tests...'"
+        },
+        {
+          "criterion_id": "T3",
+          "score": 1,
+          "evidence": "Specifically references 'public/app/features/dashboard/components/SaveDashboard/SaveDashboardDrawer.test.tsx' for test updates."
+        },
+        {
+          "criterion_id": "R1",
+          "score": 0,
+          "evidence": "No comments on code clarity, naming conventions, or function organization."
+        },
+        {
+          "criterion_id": "R2",
+          "score": 0,
+          "evidence": "No identification of unnecessary complexity or suggestions for simplification."
+        },
+        {
+          "criterion_id": "P1",
+          "score": 0,
+          "evidence": "No mention of performance issues or inefficiencies."
+        },
+        {
+          "criterion_id": "S1",
+          "score": 0,
+          "evidence": "No assessment of input validation or sanitization."
+        },
+        {
+          "criterion_id": "S3",
+          "score": 0,
+          "evidence": "No assessment of error handling or failure recovery."
+        },
+        {
+          "criterion_id": "Q3",
+          "score": 0,
+          "evidence": "No distinction made between blocking issues and minor suggestions."
+        },
+        {
+          "criterion_id": "Q5",
+          "score": 1,
+          "evidence": "Provides reasoning such as 'continued use of deprecated property can lead to maintenance challenges' and 'lack of test coverage increases risk of undetected bugs.'"
+        },
+        {
+          "criterion_id": "C2",
+          "score": 0,
+          "evidence": "No check if similar problems are solved consistently with existing patterns."
+        },
+        {
+          "criterion_id": "F1",
+          "score": 1,
+          "evidence": "Review addresses the problem of deprecated properties and missing tests for new features."
+        }
+      ]
+    },
+    {
+      "pr_id": 14,
+      "config": "kg_no_tests",
+      "total_score": 6,
+      "max_score": 14,
+      "percentage": 42.9,
+      "criteria_scores": [
+        {
+          "criterion_id": "F2*",
+          "score": 0,
+          "evidence": "Review does not mention edge cases, boundary conditions, or error-path testing needs."
+        },
+        {
+          "criterion_id": "F3*",
+          "score": 1,
+          "evidence": "Mentions impact on components using the deprecated width property and need to review all components using Drawer."
+        },
+        {
+          "criterion_id": "F4",
+          "score": 1,
+          "evidence": "Warns about breaking changes due to deprecation of width property and removal of InLine story impacting dependent code."
+        },
+        {
+          "criterion_id": "T1",
+          "score": 1,
+          "evidence": "Recommends reintroducing the InLine story or similar test case to ensure coverage."
+        },
+        {
+          "criterion_id": "T3",
+          "score": 1,
+          "evidence": "References specific test file Drawer.story.tsx and suggests adding back the InLine story."
+        },
+        {
+          "criterion_id": "R1",
+          "score": 0,
+          "evidence": "No comments on code clarity, naming conventions, or function organization."
+        },
+        {
+          "criterion_id": "R2",
+          "score": 0,
+          "evidence": "No identification of unnecessary complexity or suggestions for simplification."
+        },
+        {
+          "criterion_id": "P1",
+          "score": 0,
+          "evidence": "No mention of performance issues or inefficiencies."
+        },
+        {
+          "criterion_id": "S1",
+          "score": 0,
+          "evidence": "No discussion of input validation or sanitization."
+        },
+        {
+          "criterion_id": "S3",
+          "score": 0,
+          "evidence": "No assessment of error handling or failure recovery."
+        },
+        {
+          "criterion_id": "Q3",
+          "score": 0,
+          "evidence": "Does not distinguish between blocking issues and minor suggestions."
+        },
+        {
+          "criterion_id": "Q5",
+          "score": 1,
+          "evidence": "Explains why migration strategy and test coverage are important to avoid layout issues and regressions."
+        },
+        {
+          "criterion_id": "C2",
+          "score": 0,
+          "evidence": "No check if similar problems are solved consistently with existing patterns."
+        },
+        {
+          "criterion_id": "F1",
+          "score": 1,
+          "evidence": "Review focuses on the problem of deprecating width and replacing it with size, addressing the stated problem."
+        }
+      ]
+    },
+    {
+      "pr_id": 15,
+      "config": "kg_minimal",
+      "total_score": 5,
+      "max_score": 14,
+      "percentage": 35.7,
+      "criteria_scores": [
+        {
+          "criterion_id": "F2*",
+          "score": 0,
+          "evidence": "Review does not mention edge cases, boundary conditions, or error-path testing needs."
+        },
+        {
+          "criterion_id": "F3*",
+          "score": 0,
+          "evidence": "No mention of integration with existing components, APIs, or architecture/design-pattern fit."
+        },
+        {
+          "criterion_id": "F4",
+          "score": 1,
+          "evidence": "Mentions risks of broken E2E tests, UI layout issues, and potential bugs from prop logic changes."
+        },
+        {
+          "criterion_id": "T1",
+          "score": 1,
+          "evidence": "Recommends updating tests and adding tests to cover modal and non-modal scenarios."
+        },
+        {
+          "criterion_id": "T3",
+          "score": 1,
+          "evidence": "References specific test file 'TimePickerContent.test.tsx' and suggests updating tests."
+        },
+        {
+          "criterion_id": "R1",
+          "score": 0,
+          "evidence": "No comments on code clarity, naming conventions, or function organization."
+        },
+        {
+          "criterion_id": "R2",
+          "score": 0,
+          "evidence": "No identification of unnecessary complexity or suggestions for simplification."
+        },
+        {
+          "criterion_id": "P1",
+          "score": 0,
+          "evidence": "No mention of performance issues or inefficiencies."
+        },
+        {
+          "criterion_id": "S1",
+          "score": 0,
+          "evidence": "No assessment of input validation or sanitization."
+        },
+        {
+          "criterion_id": "S3",
+          "score": 0,
+          "evidence": "No assessment of error handling or failure recovery."
+        },
+        {
+          "criterion_id": "Q3",
+          "score": 0,
+          "evidence": "Does not distinguish between blocking issues and minor suggestions."
+        },
+        {
+          "criterion_id": "Q5",
+          "score": 1,
+          "evidence": "Explains why tests need updating and why style removal could cause UI inconsistencies."
+        },
+        {
+          "criterion_id": "C2",
+          "score": 0,
+          "evidence": "No check if similar problems are solved consistently with existing patterns."
+        },
+        {
+          "criterion_id": "F1",
+          "score": 1,
+          "evidence": "Review verifies that the change addresses the problem of selector refactor and highlights related risks."
+        }
+      ]
+    },
+    {
+      "pr_id": 15,
+      "config": "kg_no_deps",
+      "total_score": 6,
+      "max_score": 14,
+      "percentage": 42.9,
+      "criteria_scores": [
+        {
+          "criterion_id": "F2*",
+          "score": 0,
+          "evidence": "Review does not mention edge cases, boundary conditions, or error-path testing."
+        },
+        {
+          "criterion_id": "F3*",
+          "score": 0,
+          "evidence": "No mention of integration with existing components, APIs, or design patterns."
+        },
+        {
+          "criterion_id": "F4",
+          "score": 1,
+          "evidence": "Mentions 'Potential UI Regression' and impact on layout and appearance, indicating breaking changes."
+        },
+        {
+          "criterion_id": "T1",
+          "score": 1,
+          "evidence": "Recommendation includes 'Enhance Test Coverage' and 'Fix Selector Usage' to update tests."
+        },
+        {
+          "criterion_id": "T3",
+          "score": 1,
+          "evidence": "References specific test file and lines: 'TimePickerContent.test.tsx:96-114' and 'TimePickerContent.test.tsx:99-101'."
+        },
+        {
+          "criterion_id": "R1",
+          "score": 0,
+          "evidence": "No comments on code clarity, naming conventions, or function organization."
+        },
+        {
+          "criterion_id": "R2",
+          "score": 0,
+          "evidence": "No identification of unnecessary complexity or suggestions for simplification."
+        },
+        {
+          "criterion_id": "P1",
+          "score": 0,
+          "evidence": "No mention of performance issues or inefficiencies."
+        },
+        {
+          "criterion_id": "S1",
+          "score": 0,
+          "evidence": "No discussion of input validation or sanitization."
+        },
+        {
+          "criterion_id": "S3",
+          "score": 0,
+          "evidence": "No assessment of error handling or failure recovery."
+        },
+        {
+          "criterion_id": "Q3",
+          "score": 0,
+          "evidence": "Does not distinguish between blocking issues and minor suggestions."
+        },
+        {
+          "criterion_id": "Q5",
+          "score": 1,
+          "evidence": "Explains why fixes are needed: 'Inconsistent use of selectors might lead to flaky tests...' and UI regressions could affect user experience."
+        },
+        {
+          "criterion_id": "C2",
+          "score": 1,
+          "evidence": "Identifies inconsistent selector usage and recommends consistent use of data-testid, implying checking for consistency with existing patterns."
+        },
+        {
+          "criterion_id": "F1",
+          "score": 1,
+          "evidence": "Review verifies that the change addresses the problem of selector usage and UI style removal."
+        }
+      ]
+    },
+    {
+      "pr_id": 15,
+      "config": "kg_no_tests",
+      "total_score": 6,
+      "max_score": 14,
+      "percentage": 42.9,
+      "criteria_scores": [
+        {
+          "criterion_id": "F2*",
+          "score": 0,
+          "evidence": "Review does not mention edge cases, boundary conditions, or error-path testing needs."
+        },
+        {
+          "criterion_id": "F3*",
+          "score": 0,
+          "evidence": "No discussion of integration with existing components, APIs, or architecture/design patterns."
+        },
+        {
+          "criterion_id": "F4",
+          "score": 1,
+          "evidence": "Mentions 'Removal of CSS styles without replacement could impact the UI layout and design consistency' and 'The inconsistency in selector usage can lead to flaky tests...'"
+        },
+        {
+          "criterion_id": "T1",
+          "score": 1,
+          "evidence": "Recommends to 'Add or update test cases to explicitly cover the new `data-testid` selectors...'"
+        },
+        {
+          "criterion_id": "T3",
+          "score": 1,
+          "evidence": "References specific test file: 'packages/grafana-ui/src/components/DateTimePickers/TimeRangePicker/TimePickerContent.test.tsx:101-105' and suggests updating tests."
+        },
+        {
+          "criterion_id": "R1",
+          "score": 0,
+          "evidence": "No comments on code clarity, naming conventions, or function organization."
+        },
+        {
+          "criterion_id": "R2",
+          "score": 0,
+          "evidence": "No identification of unnecessary complexity or suggestions for simplification."
+        },
+        {
+          "criterion_id": "P1",
+          "score": 0,
+          "evidence": "No mention of potential performance issues or inefficiencies."
+        },
+        {
+          "criterion_id": "S1",
+          "score": 0,
+          "evidence": "No checks for input validation or sanitization."
+        },
+        {
+          "criterion_id": "S3",
+          "score": 0,
+          "evidence": "No assessment of error handling or failure recovery."
+        },
+        {
+          "criterion_id": "Q3",
+          "score": 0,
+          "evidence": "Does not distinguish between blocking issues and minor suggestions."
+        },
+        {
+          "criterion_id": "Q5",
+          "score": 1,
+          "evidence": "Explains why changes are needed: 'inconsistent selector usage can lead to flaky tests' and 'removal of CSS styles... may cause UI regressions.'"
+        },
+        {
+          "criterion_id": "C2",
+          "score": 1,
+          "evidence": "Notes inconsistency in `data-testid` usage and recommends aligning tests with refactored component code."
+        },
+        {
+          "criterion_id": "F1",
+          "score": 1,
+          "evidence": "Review verifies that the change addresses the stated problem by focusing on selector consistency and test coverage."
+        }
+      ]
+    },
+    {
+      "pr_id": 17,
+      "config": "kg_no_deps",
+      "total_score": 4,
+      "max_score": 14,
+      "percentage": 28.6,
+      "criteria_scores": [
+        {
+          "criterion_id": "F2*",
+          "score": 0,
+          "evidence": "Review does not explicitly identify edge cases or boundary conditions."
+        },
+        {
+          "criterion_id": "F3*",
+          "score": 0,
+          "evidence": "No mention of integration with existing components, APIs, or design patterns."
+        },
+        {
+          "criterion_id": "F4",
+          "score": 1,
+          "evidence": "Warns about potential UI inconsistencies and impact on dependent code: 'some lists may unintentionally lose their headers...'"
+        },
+        {
+          "criterion_id": "T1",
+          "score": 1,
+          "evidence": "Explicitly calls out the need to add tests: 'Add Tests: Implement unit or integration tests...'"
+        },
+        {
+          "criterion_id": "T3",
+          "score": 0,
+          "evidence": "No specific test files or test locations are referenced."
+        },
+        {
+          "criterion_id": "R1",
+          "score": 0,
+          "evidence": "No comments on code clarity, naming, or function organization."
+        },
+        {
+          "criterion_id": "R2",
+          "score": 0,
+          "evidence": "No identification of unnecessary complexity or suggestions for simplification."
+        },
+        {
+          "criterion_id": "P1",
+          "score": 0,
+          "evidence": "No mention of performance issues or inefficiencies."
+        },
+        {
+          "criterion_id": "S1",
+          "score": 0,
+          "evidence": "No discussion of input validation or sanitization."
+        },
+        {
+          "criterion_id": "S3",
+          "score": 0,
+          "evidence": "No assessment of error handling or failure recovery."
+        },
+        {
+          "criterion_id": "Q3",
+          "score": 0,
+          "evidence": "Does not distinguish between blocking issues and minor suggestions."
+        },
+        {
+          "criterion_id": "Q5",
+          "score": 1,
+          "evidence": "Explains reasoning behind suggestions: 'Without proper updates... leading to degraded user experience' and 'Lack of test coverage increases risk...'"
+        },
+        {
+          "criterion_id": "C2",
+          "score": 0,
+          "evidence": "No check if similar problems are solved consistently with existing patterns."
+        },
+        {
+          "criterion_id": "F1",
+          "score": 1,
+          "evidence": "Verifies the change addresses the problem: 'The header and associated elements are wrapped in a conditional block...'"
+        }
+      ]
+    },
+    {
+      "pr_id": 18,
+      "config": "kg_minimal",
+      "total_score": 9,
+      "max_score": 14,
+      "percentage": 64.3,
+      "criteria_scores": [
+        {
+          "criterion_id": "F2*",
+          "score": 1,
+          "evidence": "The review explicitly identifies edge cases such as 'strings with non-letter first characters' and mentions insufficient test coverage risking undetected errors in edge cases."
+        },
+        {
+          "criterion_id": "F3*",
+          "score": 0,
+          "evidence": "The review does not discuss integration with existing components, APIs, or architecture/design-pattern fit."
+        },
+        {
+          "criterion_id": "F4",
+          "score": 1,
+          "evidence": "The review warns about potential runtime errors or incorrect behavior affecting functionality relying on method name generation."
+        },
+        {
+          "criterion_id": "T1",
+          "score": 1,
+          "evidence": "The review recommends adding unit tests specifically targeting the capitalization logic and suggests reviewing existing tests."
+        },
+        {
+          "criterion_id": "T3",
+          "score": 1,
+          "evidence": "The review references specific test files such as 'core/src/test/java/hudson/PluginWrapperTest.java:192' and others, noting changes in imports and lack of new tests."
+        },
+        {
+          "criterion_id": "R1",
+          "score": 1,
+          "evidence": "The review comments on repeated manual capitalization logic and suggests abstraction to avoid duplication, implying function organization improvements."
+        },
+        {
+          "criterion_id": "R2",
+          "score": 1,
+          "evidence": "The review identifies repeated manual capitalization logic and recommends introducing a utility method to reduce duplication and maintenance issues."
+        },
+        {
+          "criterion_id": "P1",
+          "score": 0,
+          "evidence": "No mention or identification of potential performance issues or inefficiencies."
+        },
+        {
+          "criterion_id": "S1",
+          "score": 0,
+          "evidence": "The review does not address input validation or sanitization explicitly."
+        },
+        {
+          "criterion_id": "S3",
+          "score": 0,
+          "evidence": "The review does not assess error handling or failure recovery."
+        },
+        {
+          "criterion_id": "Q3",
+          "score": 0,
+          "evidence": "The review does not explicitly distinguish between blocking issues and minor suggestions."
+        },
+        {
+          "criterion_id": "Q5",
+          "score": 1,
+          "evidence": "The review explains why a utility method is needed (handle all edge cases, avoid duplication) and why tests are necessary (to catch edge cases and prevent bugs)."
+        },
+        {
+          "criterion_id": "C2",
+          "score": 1,
+          "evidence": "The review notes similar manual capitalization logic in multiple places and suggests centralizing it, indicating a check for consistent problem solving."
+        },
+        {
+          "criterion_id": "F1",
+          "score": 1,
+          "evidence": "The review verifies that the change addresses the problem of replacing StringUtils.capitalize correctly and highlights shortcomings in the current approach."
+        }
+      ]
+    },
+    {
+      "pr_id": 18,
+      "config": "kg_no_deps",
+      "total_score": 9,
+      "max_score": 14,
+      "percentage": 64.3,
+      "criteria_scores": [
+        {
+          "criterion_id": "F2*",
+          "score": 1,
+          "evidence": "Mentions null and empty strings as edge cases needing test coverage and null checks."
+        },
+        {
+          "criterion_id": "F3*",
+          "score": 0,
+          "evidence": "No explicit mention of integration with existing components, APIs, or architectural fit."
+        },
+        {
+          "criterion_id": "F4",
+          "score": 1,
+          "evidence": "Warns about potential NullPointerException and unexpected behavior affecting dependent code."
+        },
+        {
+          "criterion_id": "T1",
+          "score": 1,
+          "evidence": "Recommends adding or updating unit tests to cover edge cases."
+        },
+        {
+          "criterion_id": "T3",
+          "score": 1,
+          "evidence": "References specific test file: 'core/src/test/java/hudson/PluginWrapperTest.java:192'."
+        },
+        {
+          "criterion_id": "R1",
+          "score": 1,
+          "evidence": "Suggests creating a utility method to centralize capitalization logic, improving maintainability."
+        },
+        {
+          "criterion_id": "R2",
+          "score": 0,
+          "evidence": "No mention of unnecessary complexity or suggestions for simplification beyond utility method."
+        },
+        {
+          "criterion_id": "P1",
+          "score": 0,
+          "evidence": "No discussion of performance issues or inefficiencies."
+        },
+        {
+          "criterion_id": "S1",
+          "score": 1,
+          "evidence": "Recommends implementing null checks to prevent NullPointerException."
+        },
+        {
+          "criterion_id": "S3",
+          "score": 1,
+          "evidence": "Highlights lack of robust null handling as a risk for exceptions."
+        },
+        {
+          "criterion_id": "Q3",
+          "score": 0,
+          "evidence": "Does not explicitly distinguish blocking issues from minor suggestions."
+        },
+        {
+          "criterion_id": "Q5",
+          "score": 1,
+          "evidence": "Explains why null checks and test coverage are needed to prevent errors and regressions."
+        },
+        {
+          "criterion_id": "C2",
+          "score": 0,
+          "evidence": "No check for consistency with existing patterns or similar problem solutions."
+        },
+        {
+          "criterion_id": "F1",
+          "score": 1,
+          "evidence": "Review focuses on the problem of replacing StringUtils and addresses risks in the change."
+        }
+      ]
+    },
+    {
+      "pr_id": 18,
+      "config": "kg_no_tests",
+      "total_score": 8,
+      "max_score": 14,
+      "percentage": 57.1,
+      "criteria_scores": [
+        {
+          "criterion_id": "F2*",
+          "score": 1,
+          "evidence": "Mentions edge cases such as null or empty strings and untested edge cases in tests."
+        },
+        {
+          "criterion_id": "F3*",
+          "score": 0,
+          "evidence": "No mention of integration with existing components, APIs, or architecture/design patterns."
+        },
+        {
+          "criterion_id": "F4",
+          "score": 1,
+          "evidence": "Warns about potential NullPointerException and inconsistent string handling affecting downstream processes."
+        },
+        {
+          "criterion_id": "T1",
+          "score": 1,
+          "evidence": "Recommends adding unit tests specifically targeting the new capitalization logic."
+        },
+        {
+          "criterion_id": "T3",
+          "score": 1,
+          "evidence": "References specific test file: core/src/test/java/hudson/PluginWrapperTest.java:192."
+        },
+        {
+          "criterion_id": "R1",
+          "score": 0,
+          "evidence": "No comments on code clarity, naming conventions, or function organization."
+        },
+        {
+          "criterion_id": "R2",
+          "score": 0,
+          "evidence": "No identification of unnecessary complexity or suggestions for simplification."
+        },
+        {
+          "criterion_id": "P1",
+          "score": 0,
+          "evidence": "No mention of performance issues or inefficiencies."
+        },
+        {
+          "criterion_id": "S1",
+          "score": 1,
+          "evidence": "Highlights inconsistent null input handling and potential NullPointerException."
+        },
+        {
+          "criterion_id": "S3",
+          "score": 1,
+          "evidence": "Discusses error handling concerns related to null inputs and potential exceptions."
+        },
+        {
+          "criterion_id": "Q3",
+          "score": 0,
+          "evidence": "Does not explicitly distinguish between blocking issues and minor suggestions."
+        },
+        {
+          "criterion_id": "Q5",
+          "score": 1,
+          "evidence": "Explains why changes may cause issues: inconsistent behavior and risk of NullPointerException."
+        },
+        {
+          "criterion_id": "C2",
+          "score": 0,
+          "evidence": "No check if similar problems are solved consistently with existing patterns."
+        },
+        {
+          "criterion_id": "F1",
+          "score": 1,
+          "evidence": "Verifies that the change does not preserve the original behavior of StringUtils.capitalize."
+        }
+      ]
+    },
+    {
+      "pr_id": 19,
+      "config": "kg_minimal",
+      "total_score": 5,
+      "max_score": 14,
+      "percentage": 35.7,
+      "criteria_scores": [
+        {
+          "criterion_id": "F2*",
+          "score": 0,
+          "evidence": "Review does not mention edge cases, boundary conditions, or error-path testing needs."
+        },
+        {
+          "criterion_id": "F3*",
+          "score": 1,
+          "evidence": "Mentions integration testing to ensure icons render correctly across all supported browsers and environments."
+        },
+        {
+          "criterion_id": "F4",
+          "score": 1,
+          "evidence": "Warns about backward compatibility issues and risks of broken UI elements due to deleted icons."
+        },
+        {
+          "criterion_id": "T1",
+          "score": 1,
+          "evidence": "Explicitly calls for adding integration tests to verify icon rendering."
+        },
+        {
+          "criterion_id": "T3",
+          "score": 0,
+          "evidence": "No specific test files referenced or suggestions on which tests to add or update."
+        },
+        {
+          "criterion_id": "R1",
+          "score": 0,
+          "evidence": "No comments on code clarity, naming conventions, or function organization."
+        },
+        {
+          "criterion_id": "R2",
+          "score": 0,
+          "evidence": "No identification of unnecessary complexity or suggestions for simplification."
+        },
+        {
+          "criterion_id": "P1",
+          "score": 0,
+          "evidence": "No mention of performance issues or inefficiencies."
+        },
+        {
+          "criterion_id": "S1",
+          "score": 0,
+          "evidence": "No discussion of input validation or sanitization."
+        },
+        {
+          "criterion_id": "S3",
+          "score": 0,
+          "evidence": "No assessment of error handling or failure recovery."
+        },
+        {
+          "criterion_id": "Q3",
+          "score": 0,
+          "evidence": "Does not distinguish between blocking issues and minor suggestions."
+        },
+        {
+          "criterion_id": "Q5",
+          "score": 1,
+          "evidence": "Explains why backward compatibility and icon completeness matter for user experience and support."
+        },
+        {
+          "criterion_id": "C2",
+          "score": 0,
+          "evidence": "No check if similar problems are solved consistently with existing patterns."
+        },
+        {
+          "criterion_id": "F1",
+          "score": 1,
+          "evidence": "Review focuses on whether the change properly replaces old icons with SVG and the impact of missing icons."
+        }
+      ]
+    },
+    {
+      "pr_id": 19,
+      "config": "kg_no_deps",
+      "total_score": 6,
+      "max_score": 14,
+      "percentage": 42.9,
+      "criteria_scores": [
+        {
+          "criterion_id": "F2*",
+          "score": 0,
+          "evidence": "Review does not identify edge cases, boundary conditions, or error-path testing needs explicitly."
+        },
+        {
+          "criterion_id": "F3*",
+          "score": 0,
+          "evidence": "No mention of integration with existing components, APIs, or architecture/design-pattern fit."
+        },
+        {
+          "criterion_id": "F4",
+          "score": 1,
+          "evidence": "Mentions 'Users may experience broken image links if their environments or custom scripts rely on the deleted PNG/GIF files.'"
+        },
+        {
+          "criterion_id": "T1",
+          "score": 1,
+          "evidence": "States 'Test Coverage Gaps' and recommends 'Update existing tests or add new tests to verify that the new SVG icons are correctly displayed.'"
+        },
+        {
+          "criterion_id": "T3",
+          "score": 1,
+          "evidence": "References specific test files: 'No updates in test/src/test/java/hudson/model/DirectoryBrowserSupportTest.java or core/src/test/java/org/jenkins/ui/icon/IconSetTest.java'."
+        },
+        {
+          "criterion_id": "R1",
+          "score": 0,
+          "evidence": "No comments on code clarity, naming conventions, or function organization."
+        },
+        {
+          "criterion_id": "R2",
+          "score": 0,
+          "evidence": "No identification of unnecessary complexity or suggestions for simplification."
+        },
+        {
+          "criterion_id": "P1",
+          "score": 0,
+          "evidence": "No mention of potential performance issues or inefficiencies."
+        },
+        {
+          "criterion_id": "S1",
+          "score": 0,
+          "evidence": "No checks for input validation or sanitization."
+        },
+        {
+          "criterion_id": "S3",
+          "score": 0,
+          "evidence": "No assessment of error handling or failure recovery."
+        },
+        {
+          "criterion_id": "Q3",
+          "score": 0,
+          "evidence": "Does not distinguish between blocking issues and minor suggestions."
+        },
+        {
+          "criterion_id": "Q5",
+          "score": 1,
+          "evidence": "Explains reasoning behind suggestions, e.g., 'Users may experience broken image links...' and 'risk of inconsistent user interfaces...'"
+        },
+        {
+          "criterion_id": "C2",
+          "score": 1,
+          "evidence": "Notes incomplete icon replacement and inconsistent UI experiences, implying a check for consistent pattern application."
+        },
+        {
+          "criterion_id": "F1",
+          "score": 1,
+          "evidence": "Review clearly addresses the problem of icon replacement and backward compatibility."
+        }
+      ]
+    },
+    {
+      "pr_id": 19,
+      "config": "kg_no_tests",
+      "total_score": 6,
+      "max_score": 14,
+      "percentage": 42.9,
+      "criteria_scores": [
+        {
+          "criterion_id": "F2*",
+          "score": 0,
+          "evidence": "Review does not mention edge cases, boundary conditions, or error-path testing needs."
+        },
+        {
+          "criterion_id": "F3*",
+          "score": 1,
+          "evidence": "Mentions 'Integration Impact: The changes in icon class names may affect other parts of the system or plugins that use these classes.'"
+        },
+        {
+          "criterion_id": "F4",
+          "score": 1,
+          "evidence": "Warns about 'Removing old icon files may break themes or plugins that still reference these files, leading to broken UI elements.'"
+        },
+        {
+          "criterion_id": "T1",
+          "score": 1,
+          "evidence": "States 'There is a lack of specific tests to ensure the new icons are correctly rendered and accessible in the UI.' and recommends adding tests."
+        },
+        {
+          "criterion_id": "T3",
+          "score": 1,
+          "evidence": "References 'DirectoryBrowserSupportTest.java' and suggests adding tests there."
+        },
+        {
+          "criterion_id": "R1",
+          "score": 0,
+          "evidence": "No comments on code clarity, naming conventions, or function organization."
+        },
+        {
+          "criterion_id": "R2",
+          "score": 0,
+          "evidence": "No identification of unnecessary complexity or suggestions for simplification."
+        },
+        {
+          "criterion_id": "P1",
+          "score": 0,
+          "evidence": "No mention of performance issues or inefficiencies."
+        },
+        {
+          "criterion_id": "S1",
+          "score": 0,
+          "evidence": "No discussion of input validation or sanitization."
+        },
+        {
+          "criterion_id": "S3",
+          "score": 0,
+          "evidence": "No assessment of error handling or failure recovery."
+        },
+        {
+          "criterion_id": "Q3",
+          "score": 0,
+          "evidence": "Does not distinguish between blocking issues and minor suggestions."
+        },
+        {
+          "criterion_id": "Q5",
+          "score": 1,
+          "evidence": "Explains reasoning behind suggestions, e.g., 'Removing old icon files may break themes or plugins...' and 'Without specific tests, there's a risk...'"
+        },
+        {
+          "criterion_id": "C2",
+          "score": 0,
+          "evidence": "No check if similar problems are solved consistently with existing patterns."
+        },
+        {
+          "criterion_id": "F1",
+          "score": 1,
+          "evidence": "Review addresses the problem of icon updates and related impacts clearly."
+        }
+      ]
+    },
+    {
+      "pr_id": 21,
+      "config": "kg_minimal",
+      "total_score": 8,
+      "max_score": 14,
+      "percentage": 57.1,
+      "criteria_scores": [
+        {
+          "criterion_id": "F2*",
+          "score": 1,
+          "evidence": "Mentions potential unhandled exceptions and test coverage gaps for edge cases in SSL and CRC32C."
+        },
+        {
+          "criterion_id": "F3*",
+          "score": 1,
+          "evidence": "Discusses assumptions about internal APIs like sun.misc.Unsafe and Java version compatibility affecting integration."
+        },
+        {
+          "criterion_id": "F4",
+          "score": 1,
+          "evidence": "Warns about compatibility risks and runtime exceptions due to removed Java version checks and reliance on internal APIs."
+        },
+        {
+          "criterion_id": "T1",
+          "score": 1,
+          "evidence": "Recommends extending test cases to cover new default SSL protocols and CRC32C changes."
+        },
+        {
+          "criterion_id": "T3",
+          "score": 1,
+          "evidence": "Specifically references SslTransportLayerTest.java and SslVersionsTransportLayerTest.java for test enhancements."
+        },
+        {
+          "criterion_id": "R1",
+          "score": 0,
+          "evidence": "No comments on code clarity, naming, or function organization."
+        },
+        {
+          "criterion_id": "R2",
+          "score": 0,
+          "evidence": "No identification of unnecessary complexity or suggestions for simplification."
+        },
+        {
+          "criterion_id": "P1",
+          "score": 0,
+          "evidence": "No mention of performance issues or inefficiencies."
+        },
+        {
+          "criterion_id": "S1",
+          "score": 0,
+          "evidence": "No discussion of input validation or sanitization."
+        },
+        {
+          "criterion_id": "S3",
+          "score": 1,
+          "evidence": "Recommends adding fallback mechanisms or exception handling for unavailable methods/classes."
+        },
+        {
+          "criterion_id": "Q3",
+          "score": 0,
+          "evidence": "Does not distinguish between blocking issues and minor suggestions."
+        },
+        {
+          "criterion_id": "Q5",
+          "score": 1,
+          "evidence": "Explains why compatibility verification, exception handling, and test enhancements are needed."
+        },
+        {
+          "criterion_id": "C2",
+          "score": 0,
+          "evidence": "No check if similar problems are solved consistently with existing patterns."
+        },
+        {
+          "criterion_id": "F1",
+          "score": 1,
+          "evidence": "Verifies that the change impacts Java version checks and related compatibility, addressing the stated problem."
+        }
+      ]
+    },
+    {
+      "pr_id": 21,
+      "config": "kg_no_deps",
+      "total_score": 6,
+      "max_score": 14,
+      "percentage": 42.9,
+      "criteria_scores": [
+        {
+          "criterion_id": "F2*",
+          "score": 0,
+          "evidence": "Review does not explicitly identify edge cases or boundary conditions."
+        },
+        {
+          "criterion_id": "F3*",
+          "score": 0,
+          "evidence": "No mention of integration with existing components, APIs, or design patterns."
+        },
+        {
+          "criterion_id": "F4",
+          "score": 1,
+          "evidence": "Mentions 'removal of Java version checks might break backward compatibility' and 'risk of deploying code that fails in production environments.'"
+        },
+        {
+          "criterion_id": "T1",
+          "score": 1,
+          "evidence": "Recommends 'Update existing tests or add new ones to cover the changes.'"
+        },
+        {
+          "criterion_id": "T3",
+          "score": 1,
+          "evidence": "References specific files: 'SslConfigs.java' and 'Crc32C.java' needing test updates."
+        },
+        {
+          "criterion_id": "R1",
+          "score": 0,
+          "evidence": "No comments on code clarity, naming, or function organization."
+        },
+        {
+          "criterion_id": "R2",
+          "score": 0,
+          "evidence": "No identification of unnecessary complexity or suggestions for simplification."
+        },
+        {
+          "criterion_id": "P1",
+          "score": 0,
+          "evidence": "No mention of performance issues or inefficiencies."
+        },
+        {
+          "criterion_id": "S1",
+          "score": 0,
+          "evidence": "No checks for input validation or sanitization."
+        },
+        {
+          "criterion_id": "S3",
+          "score": 1,
+          "evidence": "Raises concern about 'Potential Runtime Errors' due to removal of version checks and lack of fallback."
+        },
+        {
+          "criterion_id": "Q3",
+          "score": 0,
+          "evidence": "Does not distinguish between blocking issues and minor suggestions."
+        },
+        {
+          "criterion_id": "Q5",
+          "score": 1,
+          "evidence": "Explains why: 'risk of runtime failures if environment not JDK 11 compliant' and 'to avoid unexpected runtime issues.'"
+        },
+        {
+          "criterion_id": "C2",
+          "score": 0,
+          "evidence": "No discussion on consistency with existing patterns or similar problem solutions."
+        },
+        {
+          "criterion_id": "F1",
+          "score": 1,
+          "evidence": "Review addresses the problem of removing Java version checks and related compatibility code."
+        }
+      ]
+    },
+    {
+      "pr_id": 21,
+      "config": "kg_no_tests",
+      "total_score": 4,
+      "max_score": 14,
+      "percentage": 28.6,
+      "criteria_scores": [
+        {
+          "criterion_id": "F2*",
+          "score": 0,
+          "evidence": "Review does not explicitly identify edge cases, boundary conditions, or error-path testing needs."
+        },
+        {
+          "criterion_id": "F3*",
+          "score": 0,
+          "evidence": "Review does not discuss integration with existing components, APIs, or architecture/design-pattern fit."
+        },
+        {
+          "criterion_id": "F4",
+          "score": 1,
+          "evidence": "Review warns about breaking changes: 'Systems still running on Java 8 may encounter compatibility issues' and 'removal of Java version checks could lead to unexpected behavior.'"
+        },
+        {
+          "criterion_id": "T1",
+          "score": 1,
+          "evidence": "Review explicitly asks for tests: 'Add tests to verify behavior on Java 8 and Java 11 to ensure backward compatibility and functionality.'"
+        },
+        {
+          "criterion_id": "T3",
+          "score": 0,
+          "evidence": "Review does not reference specific test files or suggest which tests should be added or updated."
+        },
+        {
+          "criterion_id": "R1",
+          "score": 0,
+          "evidence": "Review does not comment on code clarity, naming conventions, or function organization."
+        },
+        {
+          "criterion_id": "R2",
+          "score": 0,
+          "evidence": "Review does not identify unnecessary complexity or suggest simplification."
+        },
+        {
+          "criterion_id": "P1",
+          "score": 0,
+          "evidence": "Review does not identify potential performance issues or inefficiencies."
+        },
+        {
+          "criterion_id": "S1",
+          "score": 0,
+          "evidence": "Review does not check for proper input validation or sanitization."
+        },
+        {
+          "criterion_id": "S3",
+          "score": 0,
+          "evidence": "Review does not assess error handling or failure recovery."
+        },
+        {
+          "criterion_id": "Q3",
+          "score": 0,
+          "evidence": "Review does not distinguish between blocking issues and minor suggestions."
+        },
+        {
+          "criterion_id": "Q5",
+          "score": 1,
+          "evidence": "Review explains reasoning behind suggestions: 'reliance on reflection for internal Java APIs increases risk of future breakage' and 'removal of Java version checks could lead to unexpected behavior.'"
+        },
+        {
+          "criterion_id": "C2",
+          "score": 0,
+          "evidence": "Review does not check if similar problems are solved consistently with existing patterns."
+        },
+        {
+          "criterion_id": "F1",
+          "score": 1,
+          "evidence": "Review verifies that the change addresses the stated problem by discussing removal of Java 8 compatibility and related risks."
+        }
+      ]
+    },
+    {
+      "pr_id": 22,
+      "config": "kg_minimal",
+      "total_score": 7,
+      "max_score": 14,
+      "percentage": 50.0,
+      "criteria_scores": [
+        {
+          "criterion_id": "F2*",
+          "score": 0,
+          "evidence": "Review does not mention edge cases, boundary conditions, or error-path testing needs."
+        },
+        {
+          "criterion_id": "F3*",
+          "score": 1,
+          "evidence": "Mentions 'Package Consistency' and 'Impact Analysis' to ensure no other parts of the codebase are adversely affected by the package changes."
+        },
+        {
+          "criterion_id": "F4",
+          "score": 1,
+          "evidence": "Warns about 'potential conflicts if the tools module is not intended to depend on streams' and 'Other components or tests that expect these classes in their original package may fail or require updates.'"
+        },
+        {
+          "criterion_id": "T1",
+          "score": 1,
+          "evidence": "Recommends to 'Ensure that the relocated tests are fully integrated into the tools module's test suite and that their execution is verified in the CI pipeline.'"
+        },
+        {
+          "criterion_id": "T3",
+          "score": 1,
+          "evidence": "References specific test files with package changes: AbstractResetIntegrationTest, ResetIntegrationTest, ResetIntegrationWithSslTest."
+        },
+        {
+          "criterion_id": "R1",
+          "score": 0,
+          "evidence": "No comments on code clarity, naming conventions, or function organization."
+        },
+        {
+          "criterion_id": "R2",
+          "score": 0,
+          "evidence": "No identification of unnecessary complexity or suggestions for simplification."
+        },
+        {
+          "criterion_id": "P1",
+          "score": 1,
+          "evidence": "Mentions 'The addition of dependencies in build.gradle could lead to increased build times and potential conflicts.'"
+        },
+        {
+          "criterion_id": "S1",
+          "score": 0,
+          "evidence": "No mention of input validation or sanitization."
+        },
+        {
+          "criterion_id": "S3",
+          "score": 0,
+          "evidence": "No assessment of error handling or failure recovery."
+        },
+        {
+          "criterion_id": "Q3",
+          "score": 0,
+          "evidence": "Does not distinguish between blocking issues and minor suggestions."
+        },
+        {
+          "criterion_id": "Q5",
+          "score": 1,
+          "evidence": "Provides reasoning behind suggestions, e.g., 'to avoid bloating the tools module' and 'to ensure no other parts of the codebase are adversely affected.'"
+        },
+        {
+          "criterion_id": "C2",
+          "score": 0,
+          "evidence": "No check if similar problems are solved consistently with existing patterns."
+        },
+        {
+          "criterion_id": "F1",
+          "score": 1,
+          "evidence": "Review addresses the problem of relocating tests and dependency changes, and their impact on build and test coverage."
+        }
+      ]
+    },
+    {
+      "pr_id": 22,
+      "config": "kg_no_deps",
+      "total_score": 6,
+      "max_score": 14,
+      "percentage": 42.9,
+      "criteria_scores": [
+        {
+          "criterion_id": "F2*",
+          "score": 0,
+          "evidence": "Review does not identify edge cases, boundary conditions, or error-path testing needs."
+        },
+        {
+          "criterion_id": "F3*",
+          "score": 1,
+          "evidence": "Mentions dependency management and module coupling: 'The addition of streams and its test outputs as dependencies in the tools project could lead to unnecessary coupling between modules.'"
+        },
+        {
+          "criterion_id": "F4",
+          "score": 1,
+          "evidence": "Warns about breaking changes: 'The package change might break existing configurations or dependencies that rely on the original package structure.'"
+        },
+        {
+          "criterion_id": "T1",
+          "score": 1,
+          "evidence": "Recommends verifying test integration: 'Verify that the moved tests are correctly integrated and executed within the tools module's test suite to maintain coverage.'"
+        },
+        {
+          "criterion_id": "T3",
+          "score": 1,
+          "evidence": "References specific test files and changes: 'AbstractResetIntegrationTest.java and ResetIntegrationTest.java files have their package names changed...' and mentions assertion changes in these files."
+        },
+        {
+          "criterion_id": "R1",
+          "score": 0,
+          "evidence": "No comments on code clarity, naming conventions, or function organization."
+        },
+        {
+          "criterion_id": "R2",
+          "score": 0,
+          "evidence": "No identification of unnecessary complexity or suggestions for simplification."
+        },
+        {
+          "criterion_id": "P1",
+          "score": 0,
+          "evidence": "No mention of potential performance issues or inefficiencies."
+        },
+        {
+          "criterion_id": "S1",
+          "score": 0,
+          "evidence": "No checks for input validation or sanitization."
+        },
+        {
+          "criterion_id": "S3",
+          "score": 0,
+          "evidence": "No assessment of error handling or failure recovery."
+        },
+        {
+          "criterion_id": "Q3",
+          "score": 0,
+          "evidence": "Does not distinguish between blocking issues and minor suggestions."
+        },
+        {
+          "criterion_id": "Q5",
+          "score": 1,
+          "evidence": "Explains reasoning behind suggestions, e.g., risk of tight coupling and test coverage risk."
+        },
+        {
+          "criterion_id": "C2",
+          "score": 0,
+          "evidence": "No check if similar problems are solved consistently with existing patterns."
+        },
+        {
+          "criterion_id": "F1",
+          "score": 1,
+          "evidence": "Review addresses the problem of moving tests and dependency changes: 'This PR moves the AbstractResetIntegrationTest and its subclasses...' and discusses related impacts."
+        }
+      ]
+    },
+    {
+      "pr_id": 22,
+      "config": "kg_no_tests",
+      "total_score": 6,
+      "max_score": 14,
+      "percentage": 42.9,
+      "criteria_scores": [
+        {
+          "criterion_id": "F2*",
+          "score": 0,
+          "evidence": "Review does not mention edge cases, boundary conditions, or error-path testing needs."
+        },
+        {
+          "criterion_id": "F3*",
+          "score": 1,
+          "evidence": "Mentions potential impact on other parts of the codebase relying on these tests and dependency management issues."
+        },
+        {
+          "criterion_id": "F4",
+          "score": 1,
+          "evidence": "Warns about package change possibly breaking references and added dependencies causing conflicts."
+        },
+        {
+          "criterion_id": "T1",
+          "score": 1,
+          "evidence": "Recommends verifying test coverage and running moved tests to confirm correct execution."
+        },
+        {
+          "criterion_id": "T3",
+          "score": 1,
+          "evidence": "References specific test files with package changes: AbstractResetIntegrationTest.java and ResetIntegrationTest.java."
+        },
+        {
+          "criterion_id": "R1",
+          "score": 0,
+          "evidence": "No comments on code clarity, naming conventions, or function organization."
+        },
+        {
+          "criterion_id": "R2",
+          "score": 0,
+          "evidence": "No identification of unnecessary complexity or suggestions for simplification."
+        },
+        {
+          "criterion_id": "P1",
+          "score": 0,
+          "evidence": "No mention of performance issues or inefficiencies."
+        },
+        {
+          "criterion_id": "S1",
+          "score": 0,
+          "evidence": "No checks for input validation or sanitization."
+        },
+        {
+          "criterion_id": "S3",
+          "score": 0,
+          "evidence": "No assessment of error handling or failure recovery."
+        },
+        {
+          "criterion_id": "Q3",
+          "score": 0,
+          "evidence": "Does not distinguish between blocking issues and minor suggestions."
+        },
+        {
+          "criterion_id": "Q5",
+          "score": 1,
+          "evidence": "Explains why dependencies and package changes could cause issues and why tests should be verified."
+        },
+        {
+          "criterion_id": "C2",
+          "score": 0,
+          "evidence": "No check if similar problems are solved consistently with existing patterns."
+        },
+        {
+          "criterion_id": "F1",
+          "score": 1,
+          "evidence": "Review addresses the problem of moving tests and dependency changes, recommending verification steps."
+        }
+      ]
+    },
+    {
+      "pr_id": 23,
+      "config": "kg_minimal",
+      "total_score": 7,
+      "max_score": 14,
+      "percentage": 50.0,
+      "criteria_scores": [
+        {
+          "criterion_id": "F2*",
+          "score": 0,
+          "evidence": "Review does not mention edge cases, boundary conditions, or error-path testing needs explicitly."
+        },
+        {
+          "criterion_id": "F3*",
+          "score": 0,
+          "evidence": "No explicit check of integration with existing components, APIs, or design patterns is discussed."
+        },
+        {
+          "criterion_id": "F4",
+          "score": 1,
+          "evidence": "Mentions 'The removal of the requires_y tag could cause issues with estimators that depend on this tag' indicating potential breaking changes."
+        },
+        {
+          "criterion_id": "T1",
+          "score": 1,
+          "evidence": "Recommendation includes 'Implement alternative validation checks or assertions' implying need for tests."
+        },
+        {
+          "criterion_id": "T3",
+          "score": 0,
+          "evidence": "No specific test files or test locations are referenced or suggested."
+        },
+        {
+          "criterion_id": "R1",
+          "score": 0,
+          "evidence": "No comments on code clarity, naming conventions, or function organization."
+        },
+        {
+          "criterion_id": "R2",
+          "score": 1,
+          "evidence": "Identifies '_deprecate_positional_args' as unused code increasing complexity and suggests removal or documentation."
+        },
+        {
+          "criterion_id": "P1",
+          "score": 0,
+          "evidence": "No mention of performance issues or inefficiencies."
+        },
+        {
+          "criterion_id": "S1",
+          "score": 0,
+          "evidence": "No checks or comments on input validation or sanitization."
+        },
+        {
+          "criterion_id": "S3",
+          "score": 1,
+          "evidence": "Raises concern that 'removal of warnings... could lead to silent failures' indicating error handling issues."
+        },
+        {
+          "criterion_id": "Q3",
+          "score": 1,
+          "evidence": "Clearly distinguishes blocking issues (e.g., removal of requires_y tag) and minor suggestions (e.g., documenting unused function)."
+        },
+        {
+          "criterion_id": "Q5",
+          "score": 1,
+          "evidence": "Explains why changes are problematic, e.g., 'could cause issues', 'increases complexity', 'could result in undetected issues'."
+        },
+        {
+          "criterion_id": "C2",
+          "score": 0,
+          "evidence": "No discussion on consistency with existing patterns or similar problem solutions."
+        },
+        {
+          "criterion_id": "F1",
+          "score": 1,
+          "evidence": "Review addresses the problem of deprecated features removal and validation updates as stated in the PR scope."
+        }
+      ]
+    },
+    {
+      "pr_id": 23,
+      "config": "kg_no_deps",
+      "total_score": 6,
+      "max_score": 14,
+      "percentage": 42.9,
+      "criteria_scores": [
+        {
+          "criterion_id": "F2*",
+          "score": 1,
+          "evidence": "Recommendation to add tests covering scenarios where `y` is not provided addresses edge cases and error-path testing needs."
+        },
+        {
+          "criterion_id": "F3*",
+          "score": 0,
+          "evidence": "No explicit mention of integration with existing components, APIs, or architecture/design-pattern fit."
+        },
+        {
+          "criterion_id": "F4",
+          "score": 1,
+          "evidence": "Warns about potential breaking changes: 'removal of the `_deprecate_positional_args` decorator could lead to future maintenance challenges' and 'removal of the \"requires_y\" tag might cause some estimators to behave unexpectedly.'"
+        },
+        {
+          "criterion_id": "T1",
+          "score": 1,
+          "evidence": "Explicitly recommends adding tests: 'Add Tests: Ensure that there are tests covering scenarios where `y` is not provided...'"
+        },
+        {
+          "criterion_id": "T3",
+          "score": 0,
+          "evidence": "No specific test files or test locations are referenced or suggested."
+        },
+        {
+          "criterion_id": "R1",
+          "score": 0,
+          "evidence": "No comments on code clarity, naming conventions, or function organization."
+        },
+        {
+          "criterion_id": "R2",
+          "score": 0,
+          "evidence": "No identification of unnecessary complexity or suggestions for simplification."
+        },
+        {
+          "criterion_id": "P1",
+          "score": 0,
+          "evidence": "No mention of potential performance issues or inefficiencies."
+        },
+        {
+          "criterion_id": "S1",
+          "score": 0,
+          "evidence": "No checks for input validation or sanitization."
+        },
+        {
+          "criterion_id": "S3",
+          "score": 1,
+          "evidence": "Discusses error handling impact: 'removal of the \"requires_y\" tag might cause runtime errors or unexpected behavior when `y` is not provided.'"
+        },
+        {
+          "criterion_id": "Q3",
+          "score": 0,
+          "evidence": "No distinction made between blocking issues and minor suggestions."
+        },
+        {
+          "criterion_id": "Q5",
+          "score": 1,
+          "evidence": "Explains reasoning behind suggestions, e.g., why to reintroduce the decorator and review tag usage to avoid future issues."
+        },
+        {
+          "criterion_id": "C2",
+          "score": 0,
+          "evidence": "No check if similar problems are solved consistently with existing patterns."
+        },
+        {
+          "criterion_id": "F1",
+          "score": 1,
+          "evidence": "Review clearly addresses the problem of removing deprecated code and tag, and the potential impacts."
+        }
+      ]
+    },
+    {
+      "pr_id": 23,
+      "config": "kg_no_tests",
+      "total_score": 4,
+      "max_score": 14,
+      "percentage": 28.6,
+      "criteria_scores": [
+        {
+          "criterion_id": "F2*",
+          "score": 0,
+          "evidence": "Review does not mention edge cases, boundary conditions, or error-path testing needs."
+        },
+        {
+          "criterion_id": "F3*",
+          "score": 0,
+          "evidence": "No explicit discussion of integration with existing components, APIs, or design patterns."
+        },
+        {
+          "criterion_id": "F4",
+          "score": 1,
+          "evidence": "Mentions potential breaking changes: 'The removal of the _deprecate_positional_args decorator might break backward compatibility...'"
+        },
+        {
+          "criterion_id": "T1",
+          "score": 0,
+          "evidence": "No mention or request for unit or integration tests."
+        },
+        {
+          "criterion_id": "T3",
+          "score": 0,
+          "evidence": "No references to specific test files or suggestions for test updates."
+        },
+        {
+          "criterion_id": "R1",
+          "score": 0,
+          "evidence": "No comments on code clarity, naming, or function organization."
+        },
+        {
+          "criterion_id": "R2",
+          "score": 0,
+          "evidence": "No identification of unnecessary complexity or suggestions for simplification."
+        },
+        {
+          "criterion_id": "P1",
+          "score": 0,
+          "evidence": "No mention of performance issues or inefficiencies."
+        },
+        {
+          "criterion_id": "S1",
+          "score": 0,
+          "evidence": "No checks or comments on input validation or sanitization."
+        },
+        {
+          "criterion_id": "S3",
+          "score": 0,
+          "evidence": "No assessment of error handling or failure recovery."
+        },
+        {
+          "criterion_id": "Q3",
+          "score": 1,
+          "evidence": "Recommendations distinguish blocking issues: 'Reintroduce or Document Replacement' and 'Consider reintroducing the decorator...'"
+        },
+        {
+          "criterion_id": "Q5",
+          "score": 1,
+          "evidence": "Explains why changes are problematic: 'could lead to incorrect assumptions...', 'might break backward compatibility...'"
+        },
+        {
+          "criterion_id": "C2",
+          "score": 0,
+          "evidence": "No check if similar problems are solved consistently with existing patterns."
+        },
+        {
+          "criterion_id": "F1",
+          "score": 1,
+          "evidence": "Review clearly addresses the problem of removing requires_y and decorator and their impacts."
+        }
+      ]
+    },
+    {
+      "pr_id": 24,
+      "config": "kg_minimal",
+      "total_score": 11,
+      "max_score": 14,
+      "percentage": 78.6,
+      "criteria_scores": [
+        {
+          "criterion_id": "F2*",
+          "score": 1,
+          "evidence": "Review explicitly mentions concern about edge cases: 'it is not clear if it handles all previous edge cases covered by the inline checks.'"
+        },
+        {
+          "criterion_id": "F3*",
+          "score": 1,
+          "evidence": "Review recommends to 'Review Integration Points' and verify coverage where _raise_for_params is used."
+        },
+        {
+          "criterion_id": "F4",
+          "score": 1,
+          "evidence": "Review warns about risk of regression and unexpected behavior if _raise_for_params does not fully replicate previous logic."
+        },
+        {
+          "criterion_id": "T1",
+          "score": 1,
+          "evidence": "Review calls for expanding test coverage and adding specific tests for _raise_for_params."
+        },
+        {
+          "criterion_id": "T3",
+          "score": 1,
+          "evidence": "Review references specific test files and lines, e.g. 'sklearn/linear_model/tests/test_logistic.py:2167' and 'sklearn/metrics/tests/test_score_objects.py:1197'."
+        },
+        {
+          "criterion_id": "R1",
+          "score": 0,
+          "evidence": "No comments on code clarity, naming conventions, or function organization."
+        },
+        {
+          "criterion_id": "R2",
+          "score": 0,
+          "evidence": "No identification of unnecessary complexity or suggestions for simplification."
+        },
+        {
+          "criterion_id": "P1",
+          "score": 0,
+          "evidence": "No mention of performance issues or inefficiencies."
+        },
+        {
+          "criterion_id": "S1",
+          "score": 1,
+          "evidence": "Review focuses on parameter validation logic and ensuring _raise_for_params replicates previous inline checks."
+        },
+        {
+          "criterion_id": "S3",
+          "score": 1,
+          "evidence": "Review discusses error handling risks if _raise_for_params does not fully replicate previous behavior."
+        },
+        {
+          "criterion_id": "Q3",
+          "score": 1,
+          "evidence": "Review distinguishes blocking issues (missing edge case handling) from minor suggestions (test message adjustment)."
+        },
+        {
+          "criterion_id": "Q5",
+          "score": 1,
+          "evidence": "Review explains why improvements are needed: risk of regression and unexpected behavior if edge cases are missed."
+        },
+        {
+          "criterion_id": "C2",
+          "score": 1,
+          "evidence": "Review implicitly checks consistency by noting multiple inline checks replaced by _raise_for_params across modules."
+        },
+        {
+          "criterion_id": "F1",
+          "score": 1,
+          "evidence": "Review verifies that the change addresses parameter validation centralization but questions completeness and test coverage."
+        }
+      ]
+    },
+    {
+      "pr_id": 24,
+      "config": "kg_no_deps",
+      "total_score": 9,
+      "max_score": 14,
+      "percentage": 64.3,
+      "criteria_scores": [
+        {
+          "criterion_id": "F2*",
+          "score": 1,
+          "evidence": "Review notes 'Test Coverage Gaps' and specifically mentions 'not comprehensively covered by existing tests, particularly for new edge cases introduced by the refactoring.'"
+        },
+        {
+          "criterion_id": "F3*",
+          "score": 1,
+          "evidence": "Review highlights 'Potential Integration Issues' affecting multiple modules and recommends 'Conduct Thorough Integration Testing' across dependent components."
+        },
+        {
+          "criterion_id": "F4",
+          "score": 1,
+          "evidence": "Review warns about 'Risk of Regression' and 'Potential Integration Issues' that could cause failures in dependent modules."
+        },
+        {
+          "criterion_id": "T1",
+          "score": 1,
+          "evidence": "Review explicitly recommends to 'Add comprehensive tests' and 'Perform extensive integration testing.'"
+        },
+        {
+          "criterion_id": "T3",
+          "score": 1,
+          "evidence": "Review references specific test files such as 'sklearn/linear_model/tests/test_logistic.py:2167' and points out missing tests for all parameter configurations."
+        },
+        {
+          "criterion_id": "R1",
+          "score": 0,
+          "evidence": "No comments on code clarity, naming conventions, or function organization are present."
+        },
+        {
+          "criterion_id": "R2",
+          "score": 0,
+          "evidence": "No identification of unnecessary complexity or suggestions for simplification."
+        },
+        {
+          "criterion_id": "P1",
+          "score": 0,
+          "evidence": "No mention of performance issues or inefficiencies."
+        },
+        {
+          "criterion_id": "S1",
+          "score": 0,
+          "evidence": "No discussion of input validation or sanitization."
+        },
+        {
+          "criterion_id": "S3",
+          "score": 1,
+          "evidence": "Review assesses error handling by noting 'Inconsistent Error Messages' and the impact on debugging and failure recovery."
+        },
+        {
+          "criterion_id": "Q3",
+          "score": 0,
+          "evidence": "Review does not distinguish between blocking issues and minor suggestions."
+        },
+        {
+          "criterion_id": "Q5",
+          "score": 1,
+          "evidence": "Review explains reasoning behind suggestions, e.g., inconsistent error messages 'can confuse users and developers' and insufficient tests 'increase the risk of undetected bugs.'"
+        },
+        {
+          "criterion_id": "C2",
+          "score": 1,
+          "evidence": "Review points out 'Inconsistent Error Messages' indicating a need for standardization across modules."
+        },
+        {
+          "criterion_id": "F1",
+          "score": 1,
+          "evidence": "Review verifies that the change addresses the problem by discussing the refactoring of repeated error handling code and its implications."
+        }
+      ]
+    },
+    {
+      "pr_id": 24,
+      "config": "kg_no_tests",
+      "total_score": 7,
+      "max_score": 14,
+      "percentage": 50.0,
+      "criteria_scores": [
+        {
+          "criterion_id": "F2*",
+          "score": 1,
+          "evidence": "Recommendation to 'Introduce dedicated tests for _raise_for_params to ensure it handles all edge cases'"
+        },
+        {
+          "criterion_id": "F3*",
+          "score": 1,
+          "evidence": "Mentions 'Integration Risk' and recommends 'Perform integration tests across different sklearn components...'"
+        },
+        {
+          "criterion_id": "F4",
+          "score": 1,
+          "evidence": "Warns about 'Risk of Regression' and 'If _raise_for_params is incorrectly implemented... it could lead to runtime errors'"
+        },
+        {
+          "criterion_id": "T1",
+          "score": 1,
+          "evidence": "Explicitly states 'Expand Test Coverage' and 'Introduce dedicated tests for _raise_for_params'"
+        },
+        {
+          "criterion_id": "T3",
+          "score": 0,
+          "evidence": "No specific test files or test locations are referenced or suggested"
+        },
+        {
+          "criterion_id": "R1",
+          "score": 0,
+          "evidence": "No comments on code clarity, naming conventions, or function organization"
+        },
+        {
+          "criterion_id": "R2",
+          "score": 0,
+          "evidence": "No identification of unnecessary complexity or suggestions for simplification"
+        },
+        {
+          "criterion_id": "P1",
+          "score": 0,
+          "evidence": "No mention of potential performance issues or inefficiencies"
+        },
+        {
+          "criterion_id": "S1",
+          "score": 0,
+          "evidence": "No checks or comments on input validation or sanitization"
+        },
+        {
+          "criterion_id": "S3",
+          "score": 1,
+          "evidence": "Discusses error handling centralization and risk of runtime errors if _raise_for_params is faulty"
+        },
+        {
+          "criterion_id": "Q3",
+          "score": 0,
+          "evidence": "Does not distinguish between blocking issues and minor suggestions"
+        },
+        {
+          "criterion_id": "Q5",
+          "score": 1,
+          "evidence": "Explains reasoning behind suggestions, e.g., 'If _raise_for_params is incorrectly implemented... it could lead to runtime errors'"
+        },
+        {
+          "criterion_id": "C2",
+          "score": 0,
+          "evidence": "No check if similar problems are solved consistently with existing patterns"
+        },
+        {
+          "criterion_id": "F1",
+          "score": 1,
+          "evidence": "Review clearly addresses the problem of repeated code and centralizing error handling via _raise_for_params"
+        }
+      ]
+    },
+    {
+      "pr_id": 25,
+      "config": "kg_minimal",
+      "total_score": 4,
+      "max_score": 14,
+      "percentage": 28.6,
+      "criteria_scores": [
+        {
+          "criterion_id": "F2*",
+          "score": 0,
+          "evidence": "Review does not mention edge cases, boundary conditions, or error-path testing needs."
+        },
+        {
+          "criterion_id": "F3*",
+          "score": 0,
+          "evidence": "No discussion of integration with existing components, APIs, or design patterns."
+        },
+        {
+          "criterion_id": "F4",
+          "score": 1,
+          "evidence": "Mentions risk of runtime errors or unexpected behavior due to lack of specific guidance on mixins."
+        },
+        {
+          "criterion_id": "T1",
+          "score": 1,
+          "evidence": "Recommends adding or updating tests to verify correct subclassing with response mixins."
+        },
+        {
+          "criterion_id": "T3",
+          "score": 0,
+          "evidence": "No specific test files referenced or detailed suggestions on which tests to add/update."
+        },
+        {
+          "criterion_id": "R1",
+          "score": 0,
+          "evidence": "No comments on code clarity, naming conventions, or function organization."
+        },
+        {
+          "criterion_id": "R2",
+          "score": 0,
+          "evidence": "No identification of unnecessary complexity or suggestions for simplification."
+        },
+        {
+          "criterion_id": "P1",
+          "score": 0,
+          "evidence": "No mention of performance issues or inefficiencies."
+        },
+        {
+          "criterion_id": "S1",
+          "score": 0,
+          "evidence": "No checks for input validation or sanitization."
+        },
+        {
+          "criterion_id": "S3",
+          "score": 0,
+          "evidence": "No assessment of error handling or failure recovery."
+        },
+        {
+          "criterion_id": "Q3",
+          "score": 0,
+          "evidence": "Does not distinguish between blocking issues and minor suggestions."
+        },
+        {
+          "criterion_id": "Q5",
+          "score": 1,
+          "evidence": "Explains why specifying mixins and adding tests is important to avoid confusion and documentation drift."
+        },
+        {
+          "criterion_id": "C2",
+          "score": 0,
+          "evidence": "No check if similar problems are solved consistently with existing patterns."
+        },
+        {
+          "criterion_id": "F1",
+          "score": 1,
+          "evidence": "Review focuses on the problem of unclear docstrings and lack of tests, directly addressing the PR changes."
+        }
+      ]
+    },
+    {
+      "pr_id": 25,
+      "config": "kg_no_deps",
+      "total_score": 6,
+      "max_score": 14,
+      "percentage": 42.9,
+      "criteria_scores": [
+        {
+          "criterion_id": "F2*",
+          "score": 0,
+          "evidence": "Review does not mention edge cases, boundary conditions, or error-path testing needs."
+        },
+        {
+          "criterion_id": "F3*",
+          "score": 0,
+          "evidence": "Review does not discuss integration with existing components, APIs, or design patterns."
+        },
+        {
+          "criterion_id": "F4",
+          "score": 1,
+          "evidence": "Mentions potential confusion leading to improper subclassing and runtime errors impacting dependent code."
+        },
+        {
+          "criterion_id": "T1",
+          "score": 1,
+          "evidence": "Recommendation includes ensuring tests cover subclassing with and without response mixins."
+        },
+        {
+          "criterion_id": "T3",
+          "score": 1,
+          "evidence": "Specifically references 'tests/generic_views' for test coverage review."
+        },
+        {
+          "criterion_id": "R1",
+          "score": 1,
+          "evidence": "Focuses on docstring clarity and specificity regarding response mixins."
+        },
+        {
+          "criterion_id": "R2",
+          "score": 0,
+          "evidence": "No mention of unnecessary complexity or suggestions for simplification."
+        },
+        {
+          "criterion_id": "P1",
+          "score": 0,
+          "evidence": "No discussion of performance issues or inefficiencies."
+        },
+        {
+          "criterion_id": "S1",
+          "score": 0,
+          "evidence": "No mention of input validation or sanitization."
+        },
+        {
+          "criterion_id": "S3",
+          "score": 0,
+          "evidence": "No assessment of error handling or failure recovery."
+        },
+        {
+          "criterion_id": "Q3",
+          "score": 0,
+          "evidence": "Does not distinguish between blocking issues and minor suggestions."
+        },
+        {
+          "criterion_id": "Q5",
+          "score": 1,
+          "evidence": "Explains why clarifying docstrings is important to avoid developer confusion and runtime errors."
+        },
+        {
+          "criterion_id": "C2",
+          "score": 0,
+          "evidence": "No check if similar problems are solved consistently with existing patterns."
+        },
+        {
+          "criterion_id": "F1",
+          "score": 1,
+          "evidence": "Review directly addresses the problem of unclear docstrings about response mixins."
+        }
+      ]
+    },
+    {
+      "pr_id": 25,
+      "config": "kg_no_tests",
+      "total_score": 5,
+      "max_score": 14,
+      "percentage": 35.7,
+      "criteria_scores": [
+        {
+          "criterion_id": "F2*",
+          "score": 0,
+          "evidence": "Review does not mention edge cases, boundary conditions, or error-path testing needs."
+        },
+        {
+          "criterion_id": "F3*",
+          "score": 0,
+          "evidence": "No discussion of integration with existing components, APIs, or design patterns."
+        },
+        {
+          "criterion_id": "F4",
+          "score": 1,
+          "evidence": "\"Users may be unclear on how to properly subclass... This could lead to improper subclassing and runtime errors.\""
+        },
+        {
+          "criterion_id": "T1",
+          "score": 1,
+          "evidence": "\"Ensure that test cases in dependent files... cover scenarios where these base classes are subclassed with response mixins.\""
+        },
+        {
+          "criterion_id": "T3",
+          "score": 1,
+          "evidence": "\"...test cases in dependent files (e.g., `tests/generic_views/test_dates.py`) cover scenarios...\""
+        },
+        {
+          "criterion_id": "R1",
+          "score": 0,
+          "evidence": "No comments on code clarity, naming conventions, or function organization."
+        },
+        {
+          "criterion_id": "R2",
+          "score": 0,
+          "evidence": "No identification of unnecessary complexity or suggestions for simplification."
+        },
+        {
+          "criterion_id": "P1",
+          "score": 0,
+          "evidence": "No mention of potential performance issues or inefficiencies."
+        },
+        {
+          "criterion_id": "S1",
+          "score": 0,
+          "evidence": "No check for input validation or sanitization."
+        },
+        {
+          "criterion_id": "S3",
+          "score": 0,
+          "evidence": "No assessment of error handling or failure recovery."
+        },
+        {
+          "criterion_id": "Q3",
+          "score": 0,
+          "evidence": "No distinction made between blocking issues and minor suggestions."
+        },
+        {
+          "criterion_id": "Q5",
+          "score": 1,
+          "evidence": "\"Users may be unclear... This could lead to improper subclassing and runtime errors.\" Explains why documentation and examples are needed."
+        },
+        {
+          "criterion_id": "C2",
+          "score": 0,
+          "evidence": "No check if similar problems are solved consistently with existing patterns."
+        },
+        {
+          "criterion_id": "F1",
+          "score": 1,
+          "evidence": "Review identifies that the change does not fully address the problem of clarifying response mixin requirements."
+        }
+      ]
+    },
+    {
+      "pr_id": 26,
+      "config": "kg_minimal",
+      "total_score": 7,
+      "max_score": 14,
+      "percentage": 50.0,
+      "criteria_scores": [
+        {
+          "criterion_id": "F2*",
+          "score": 0,
+          "evidence": "Review does not explicitly identify edge cases or boundary conditions."
+        },
+        {
+          "criterion_id": "F3*",
+          "score": 0,
+          "evidence": "No mention of integration with existing components, APIs, or design patterns."
+        },
+        {
+          "criterion_id": "F4",
+          "score": 1,
+          "evidence": "Mentions risk of missing exception handling and impact on readability and maintainability."
+        },
+        {
+          "criterion_id": "T1",
+          "score": 1,
+          "evidence": "Recommendation includes ensuring comprehensive test coverage for exception paths."
+        },
+        {
+          "criterion_id": "T3",
+          "score": 0,
+          "evidence": "No specific test files or tests are referenced or suggested."
+        },
+        {
+          "criterion_id": "R1",
+          "score": 1,
+          "evidence": "Comments on increased verbosity reducing readability and maintainability."
+        },
+        {
+          "criterion_id": "R2",
+          "score": 1,
+          "evidence": "Suggests reverting to contextlib.suppress for cleaner and more concise exception handling."
+        },
+        {
+          "criterion_id": "P1",
+          "score": 0,
+          "evidence": "No mention of performance or inefficiencies."
+        },
+        {
+          "criterion_id": "S1",
+          "score": 0,
+          "evidence": "No discussion of input validation or sanitization."
+        },
+        {
+          "criterion_id": "S3",
+          "score": 1,
+          "evidence": "Discusses potential for missing exception handling and risks in error handling."
+        },
+        {
+          "criterion_id": "Q3",
+          "score": 0,
+          "evidence": "Does not distinguish between blocking issues and minor suggestions."
+        },
+        {
+          "criterion_id": "Q5",
+          "score": 1,
+          "evidence": "Explains why reverting to contextlib.suppress is recommended (cleaner, concise, less risk)."
+        },
+        {
+          "criterion_id": "C2",
+          "score": 0,
+          "evidence": "No check if similar problems are solved consistently with existing patterns."
+        },
+        {
+          "criterion_id": "F1",
+          "score": 1,
+          "evidence": "Review addresses the problem of increased verbosity and potential bugs introduced by the change."
+        }
+      ]
+    },
+    {
+      "pr_id": 26,
+      "config": "kg_no_deps",
+      "total_score": 8,
+      "max_score": 14,
+      "percentage": 57.1,
+      "criteria_scores": [
+        {
+          "criterion_id": "F2*",
+          "score": 1,
+          "evidence": "Recommendation includes: 'Ensure comprehensive test coverage for all exception paths to verify that all potential exceptions are handled correctly.'"
+        },
+        {
+          "criterion_id": "F3*",
+          "score": 0,
+          "evidence": "Review does not discuss integration with existing components, APIs, or architectural/design-pattern fit."
+        },
+        {
+          "criterion_id": "F4",
+          "score": 1,
+          "evidence": "Impact section warns: 'If new exceptions are introduced or the logic changes, the current try-except blocks may not handle all cases, leading to potential runtime errors.'"
+        },
+        {
+          "criterion_id": "T1",
+          "score": 1,
+          "evidence": "Recommendation explicitly states: 'Ensure comprehensive test coverage for all exception paths...'"
+        },
+        {
+          "criterion_id": "T3",
+          "score": 0,
+          "evidence": "No specific test files or test locations are referenced or suggested."
+        },
+        {
+          "criterion_id": "R1",
+          "score": 1,
+          "evidence": "Review comments on code clarity: 'The removal of contextlib.suppress ... increases code verbosity without clear benefits.'"
+        },
+        {
+          "criterion_id": "R2",
+          "score": 1,
+          "evidence": "Review identifies unnecessary complexity: 'increases code verbosity without clear benefits' and recommends reverting to more concise contextlib.suppress."
+        },
+        {
+          "criterion_id": "P1",
+          "score": 0,
+          "evidence": "No mention or assessment of performance issues or inefficiencies."
+        },
+        {
+          "criterion_id": "S1",
+          "score": 0,
+          "evidence": "No discussion of input validation or sanitization."
+        },
+        {
+          "criterion_id": "S3",
+          "score": 1,
+          "evidence": "Review assesses error handling: 'explicit try-except blocks may not handle future changes in exception handling as gracefully as contextlib.suppress.'"
+        },
+        {
+          "criterion_id": "Q3",
+          "score": 0,
+          "evidence": "Review does not explicitly distinguish blocking issues from minor suggestions."
+        },
+        {
+          "criterion_id": "Q5",
+          "score": 1,
+          "evidence": "Review explains reasoning: 'increases code verbosity without clear benefits' and 'try-except blocks may not handle future changes... potentially leading to unhandled exceptions.'"
+        },
+        {
+          "criterion_id": "C2",
+          "score": 0,
+          "evidence": "No check if similar problems are solved consistently with existing patterns."
+        },
+        {
+          "criterion_id": "F1",
+          "score": 1,
+          "evidence": "Review verifies the change addresses the problem by discussing the replacement of contextlib.suppress with try-except and its implications."
+        }
+      ]
+    },
+    {
+      "pr_id": 26,
+      "config": "kg_no_tests",
+      "total_score": 9,
+      "max_score": 14,
+      "percentage": 64.3,
+      "criteria_scores": [
+        {
+          "criterion_id": "F2*",
+          "score": 0,
+          "evidence": "Review does not explicitly identify edge cases or boundary conditions."
+        },
+        {
+          "criterion_id": "F3*",
+          "score": 0,
+          "evidence": "No mention of integration with existing components, APIs, or design patterns."
+        },
+        {
+          "criterion_id": "F4",
+          "score": 1,
+          "evidence": "Mentions risk of unhandled exceptions and potential runtime errors affecting dependent code."
+        },
+        {
+          "criterion_id": "T1",
+          "score": 1,
+          "evidence": "Recommends ensuring comprehensive test coverage to verify subclass identification."
+        },
+        {
+          "criterion_id": "T3",
+          "score": 0,
+          "evidence": "No specific test files referenced or suggestions on which tests to add or update."
+        },
+        {
+          "criterion_id": "R1",
+          "score": 1,
+          "evidence": "Comments on reduced code readability and maintainability due to removal of contextlib.suppress."
+        },
+        {
+          "criterion_id": "R2",
+          "score": 1,
+          "evidence": "Identifies increased verbosity and potential oversight in exception handling as unnecessary complexity."
+        },
+        {
+          "criterion_id": "P1",
+          "score": 1,
+          "evidence": "Notes potential performance impact of multiple try-except blocks, especially in loops."
+        },
+        {
+          "criterion_id": "S1",
+          "score": 0,
+          "evidence": "No mention of input validation or sanitization."
+        },
+        {
+          "criterion_id": "S3",
+          "score": 1,
+          "evidence": "Discusses exception handling consistency and risk of unhandled exceptions."
+        },
+        {
+          "criterion_id": "Q3",
+          "score": 0,
+          "evidence": "Does not distinguish between blocking issues and minor suggestions."
+        },
+        {
+          "criterion_id": "Q5",
+          "score": 1,
+          "evidence": "Explains why reverting contextlib.suppress may reduce readability and maintainability."
+        },
+        {
+          "criterion_id": "C2",
+          "score": 1,
+          "evidence": "Notes that exception handling consistency across the codebase is important."
+        },
+        {
+          "criterion_id": "F1",
+          "score": 1,
+          "evidence": "Review clearly addresses the problem of reverting contextlib.suppress and its impact."
+        }
+      ]
+    },
+    {
+      "pr_id": 2,
+      "config": "kg_minimal",
+      "total_score": 5,
+      "max_score": 14,
+      "percentage": 35.7,
+      "criteria_scores": [
+        {
+          "criterion_id": "F2*",
+          "score": 1,
+          "evidence": "Recommendation includes expanding test cases to cover scenarios where UIDs and text values might diverge, addressing edge cases."
+        },
+        {
+          "criterion_id": "F3*",
+          "score": 0,
+          "evidence": "Review does not explicitly discuss integration with existing components, APIs, or architecture/design-pattern fit."
+        },
+        {
+          "criterion_id": "F4",
+          "score": 1,
+          "evidence": "Review warns about potential unexpected behavior and risk of regression impacting dashboards relying on these variables."
+        },
+        {
+          "criterion_id": "T1",
+          "score": 1,
+          "evidence": "Recommendation explicitly calls to expand test cases to ensure robust validation of variable selection logic."
+        },
+        {
+          "criterion_id": "T3",
+          "score": 0,
+          "evidence": "No specific test files or locations are referenced or suggested for adding/updating tests."
+        },
+        {
+          "criterion_id": "R1",
+          "score": 0,
+          "evidence": "Review does not comment on code clarity, naming conventions, or function organization."
+        },
+        {
+          "criterion_id": "R2",
+          "score": 0,
+          "evidence": "No identification of unnecessary complexity or suggestions for simplification."
+        },
+        {
+          "criterion_id": "P1",
+          "score": 0,
+          "evidence": "No mention of potential performance issues or inefficiencies."
+        },
+        {
+          "criterion_id": "S1",
+          "score": 0,
+          "evidence": "No assessment of input validation or sanitization."
+        },
+        {
+          "criterion_id": "S3",
+          "score": 0,
+          "evidence": "No discussion of error handling or failure recovery."
+        },
+        {
+          "criterion_id": "Q3",
+          "score": 0,
+          "evidence": "Review does not distinguish between blocking issues and minor suggestions."
+        },
+        {
+          "criterion_id": "Q5",
+          "score": 1,
+          "evidence": "Review explains why fixes and tests are needed, e.g., to prevent mismatches causing incorrect data source selections."
+        },
+        {
+          "criterion_id": "C2",
+          "score": 0,
+          "evidence": "No check if similar problems are solved consistently with existing patterns."
+        },
+        {
+          "criterion_id": "F1",
+          "score": 1,
+          "evidence": "Review clearly verifies that the change addresses the problem of UID usage inconsistencies and potential data source selection errors."
+        }
+      ]
+    },
+    {
+      "pr_id": 2,
+      "config": "kg_no_deps",
+      "total_score": 6,
+      "max_score": 14,
+      "percentage": 42.9,
+      "criteria_scores": [
+        {
+          "criterion_id": "F2*",
+          "score": 0,
+          "evidence": "Review does not mention edge cases, boundary conditions, or error-path testing needs."
+        },
+        {
+          "criterion_id": "F3*",
+          "score": 1,
+          "evidence": "Mentions potential integration issues with existing workflows and configurations due to changes in data source handling."
+        },
+        {
+          "criterion_id": "F4",
+          "score": 1,
+          "evidence": "Warns about potential runtime errors or incorrect data source selections and deployment issues affecting reliability."
+        },
+        {
+          "criterion_id": "T1",
+          "score": 1,
+          "evidence": "Explicitly recommends adding unit tests and ensuring end-to-end tests cover the new UID functionality."
+        },
+        {
+          "criterion_id": "T3",
+          "score": 1,
+          "evidence": "References specific test files: 'public/app/features/variables/state/actions.test.ts' and 'e2e/dashboards-suite/new-datasource-variable.spec.ts'."
+        },
+        {
+          "criterion_id": "R1",
+          "score": 0,
+          "evidence": "No comments on code clarity, naming conventions, or function organization."
+        },
+        {
+          "criterion_id": "R2",
+          "score": 0,
+          "evidence": "No identification of unnecessary complexity or suggestions for simplification."
+        },
+        {
+          "criterion_id": "P1",
+          "score": 0,
+          "evidence": "No mention of potential performance issues or inefficiencies."
+        },
+        {
+          "criterion_id": "S1",
+          "score": 0,
+          "evidence": "No assessment of input validation or sanitization."
+        },
+        {
+          "criterion_id": "S3",
+          "score": 0,
+          "evidence": "No assessment of error handling or failure recovery."
+        },
+        {
+          "criterion_id": "Q3",
+          "score": 0,
+          "evidence": "Does not distinguish between blocking issues and minor suggestions."
+        },
+        {
+          "criterion_id": "Q5",
+          "score": 1,
+          "evidence": "Explains why tests are needed: to prevent bugs, runtime errors, and deployment issues."
+        },
+        {
+          "criterion_id": "C2",
+          "score": 0,
+          "evidence": "No check if similar problems are solved consistently with existing patterns."
+        },
+        {
+          "criterion_id": "F1",
+          "score": 1,
+          "evidence": "Review focuses on verifying that the change addresses the stated problem by specifying current value using UID."
+        }
+      ]
+    },
+    {
+      "pr_id": 2,
+      "config": "kg_no_tests",
+      "total_score": 6,
+      "max_score": 14,
+      "percentage": 42.9,
+      "criteria_scores": [
+        {
+          "criterion_id": "F2*",
+          "score": 0,
+          "evidence": "Review does not mention edge cases, boundary conditions, or error-path testing needs."
+        },
+        {
+          "criterion_id": "F3*",
+          "score": 1,
+          "evidence": "Mentions potential integration issues with dependent files and recommends integration testing."
+        },
+        {
+          "criterion_id": "F4",
+          "score": 1,
+          "evidence": "Warns about impact on CI/CD processes and potential deployment issues due to changes in .drone.yml and milestone.yml."
+        },
+        {
+          "criterion_id": "T1",
+          "score": 1,
+          "evidence": "Explicitly recommends adding unit and integration tests for the new UID functionality."
+        },
+        {
+          "criterion_id": "T3",
+          "score": 1,
+          "evidence": "References specific test file e2e/dashboards-suite/new-datasource-variable.spec.ts for adding tests."
+        },
+        {
+          "criterion_id": "R1",
+          "score": 0,
+          "evidence": "No comments on code clarity, naming conventions, or function organization."
+        },
+        {
+          "criterion_id": "R2",
+          "score": 0,
+          "evidence": "No identification of unnecessary complexity or suggestions for simplification."
+        },
+        {
+          "criterion_id": "P1",
+          "score": 0,
+          "evidence": "No mention of potential performance issues or inefficiencies."
+        },
+        {
+          "criterion_id": "S1",
+          "score": 0,
+          "evidence": "No checks for input validation or sanitization discussed."
+        },
+        {
+          "criterion_id": "S3",
+          "score": 0,
+          "evidence": "No assessment of error handling or failure recovery."
+        },
+        {
+          "criterion_id": "Q3",
+          "score": 0,
+          "evidence": "Does not distinguish between blocking issues and minor suggestions."
+        },
+        {
+          "criterion_id": "Q5",
+          "score": 1,
+          "evidence": "Explains why tests and integration checks are needed to avoid runtime errors and deployment issues."
+        },
+        {
+          "criterion_id": "C2",
+          "score": 0,
+          "evidence": "No mention of consistency with existing patterns or similar problem solutions."
+        },
+        {
+          "criterion_id": "F1",
+          "score": 1,
+          "evidence": "Review confirms the change addresses the stated problem of specifying current value using UID."
+        }
+      ]
+    },
+    {
+      "pr_id": 3,
+      "config": "kg_minimal",
+      "total_score": 5,
+      "max_score": 14,
+      "percentage": 35.7,
+      "criteria_scores": [
+        {
+          "criterion_id": "F2*",
+          "score": 0,
+          "evidence": "Review does not mention edge cases, boundary conditions, or error-path testing needs."
+        },
+        {
+          "criterion_id": "F3*",
+          "score": 1,
+          "evidence": "Mentions integration of the strictModeNotification function into component rendering logic."
+        },
+        {
+          "criterion_id": "F4",
+          "score": 1,
+          "evidence": "Warns about potential user confusion and unexpected behavior impacting users."
+        },
+        {
+          "criterion_id": "T1",
+          "score": 1,
+          "evidence": "Explicitly calls out lack of unit tests and recommends adding them."
+        },
+        {
+          "criterion_id": "T3",
+          "score": 0,
+          "evidence": "Does not reference specific test files or suggest which tests should be added or updated."
+        },
+        {
+          "criterion_id": "R1",
+          "score": 0,
+          "evidence": "No comments on code clarity, naming conventions, or function organization."
+        },
+        {
+          "criterion_id": "R2",
+          "score": 0,
+          "evidence": "No identification of unnecessary complexity or suggestions for simplification."
+        },
+        {
+          "criterion_id": "P1",
+          "score": 0,
+          "evidence": "No mention of potential performance issues or inefficiencies."
+        },
+        {
+          "criterion_id": "S1",
+          "score": 0,
+          "evidence": "No checks for input validation or sanitization."
+        },
+        {
+          "criterion_id": "S3",
+          "score": 0,
+          "evidence": "No assessment of error handling or failure recovery."
+        },
+        {
+          "criterion_id": "Q3",
+          "score": 0,
+          "evidence": "Does not distinguish between blocking issues and minor suggestions."
+        },
+        {
+          "criterion_id": "Q5",
+          "score": 1,
+          "evidence": "Explains why tests and documentation are needed to prevent regressions and user confusion."
+        },
+        {
+          "criterion_id": "C2",
+          "score": 0,
+          "evidence": "No check if similar problems are solved consistently with existing patterns."
+        },
+        {
+          "criterion_id": "F1",
+          "score": 1,
+          "evidence": "Confirms the change addresses the problem by adding notification for Strict Mode behavior."
+        }
+      ]
+    },
+    {
+      "pr_id": 3,
+      "config": "kg_no_deps",
+      "total_score": 7,
+      "max_score": 14,
+      "percentage": 50.0,
+      "criteria_scores": [
+        {
+          "criterion_id": "F2*",
+          "score": 0,
+          "evidence": "Review does not mention edge cases, boundary conditions, or error-path testing needs."
+        },
+        {
+          "criterion_id": "F3*",
+          "score": 1,
+          "evidence": "Mentions risk of disrupting existing functionality and suggests integration testing to verify no impact on existing functionalities."
+        },
+        {
+          "criterion_id": "F4",
+          "score": 1,
+          "evidence": "Warns about potential disruption to existing functionality and rendering issues due to integration of notification logic."
+        },
+        {
+          "criterion_id": "T1",
+          "score": 1,
+          "evidence": "Explicitly recommends adding unit tests and running integration tests."
+        },
+        {
+          "criterion_id": "T3",
+          "score": 0,
+          "evidence": "Does not reference specific test files or specify which tests to update."
+        },
+        {
+          "criterion_id": "R1",
+          "score": 1,
+          "evidence": "Suggests refactoring notification logic to avoid interference with main rendering, implying concerns about function organization and clarity."
+        },
+        {
+          "criterion_id": "R2",
+          "score": 1,
+          "evidence": "Recommends refactoring notification logic, suggesting simplification by using a separate component or hook."
+        },
+        {
+          "criterion_id": "P1",
+          "score": 0,
+          "evidence": "No mention of performance issues or inefficiencies."
+        },
+        {
+          "criterion_id": "S1",
+          "score": 0,
+          "evidence": "No discussion of input validation or sanitization."
+        },
+        {
+          "criterion_id": "S3",
+          "score": 0,
+          "evidence": "No assessment of error handling or failure recovery."
+        },
+        {
+          "criterion_id": "Q3",
+          "score": 0,
+          "evidence": "Does not distinguish between blocking issues and minor suggestions."
+        },
+        {
+          "criterion_id": "Q5",
+          "score": 1,
+          "evidence": "Explains why tests are needed (to avoid undetected breakage) and why refactoring is recommended (to avoid rendering issues)."
+        },
+        {
+          "criterion_id": "C2",
+          "score": 0,
+          "evidence": "No check for consistency with existing patterns or similar problems."
+        },
+        {
+          "criterion_id": "F1",
+          "score": 1,
+          "evidence": "Review focuses on the notification addition and its correctness, addressing the stated problem."
+        }
+      ]
+    },
+    {
+      "pr_id": 3,
+      "config": "kg_no_tests",
+      "total_score": 5,
+      "max_score": 14,
+      "percentage": 35.7,
+      "criteria_scores": [
+        {
+          "criterion_id": "F2*",
+          "score": 0,
+          "evidence": "Review does not mention edge cases, boundary conditions, or error-path testing needs."
+        },
+        {
+          "criterion_id": "F3*",
+          "score": 0,
+          "evidence": "Review does not discuss integration with existing components, APIs, or architectural/design-pattern fit."
+        },
+        {
+          "criterion_id": "F4",
+          "score": 1,
+          "evidence": "Mentions 'Performance Risks' and 'Maintenance Risks' indicating potential impact on dependent code."
+        },
+        {
+          "criterion_id": "T1",
+          "score": 1,
+          "evidence": "Recommendation: 'Add unit tests for the `strictModeNotification` function to ensure it behaves correctly.'"
+        },
+        {
+          "criterion_id": "T3",
+          "score": 0,
+          "evidence": "No specific test files or existing tests referenced; only general suggestion to add tests."
+        },
+        {
+          "criterion_id": "R1",
+          "score": 0,
+          "evidence": "No comments on code clarity, naming conventions, or function organization."
+        },
+        {
+          "criterion_id": "R2",
+          "score": 0,
+          "evidence": "No identification of unnecessary complexity or suggestions for simplification."
+        },
+        {
+          "criterion_id": "P1",
+          "score": 1,
+          "evidence": "Raises concern about UI rendering performance and suggests using React's `useMemo` for optimization."
+        },
+        {
+          "criterion_id": "S1",
+          "score": 0,
+          "evidence": "No mention of input validation or sanitization."
+        },
+        {
+          "criterion_id": "S3",
+          "score": 0,
+          "evidence": "No assessment of error handling or failure recovery."
+        },
+        {
+          "criterion_id": "Q3",
+          "score": 0,
+          "evidence": "No distinction made between blocking issues and minor suggestions."
+        },
+        {
+          "criterion_id": "Q5",
+          "score": 1,
+          "evidence": "Explains why hardcoded URLs are problematic and why performance optimization is needed."
+        },
+        {
+          "criterion_id": "C2",
+          "score": 0,
+          "evidence": "No check for consistency with existing patterns or similar problems."
+        },
+        {
+          "criterion_id": "F1",
+          "score": 1,
+          "evidence": "Review clearly addresses the problem by focusing on notification logic and related risks."
+        }
+      ]
+    },
+    {
+      "pr_id": 6,
+      "config": "kg_minimal",
+      "total_score": 8,
+      "max_score": 14,
+      "percentage": 57.1,
+      "criteria_scores": [
+        {
+          "criterion_id": "F2*",
+          "score": 1,
+          "evidence": "Mentions insufficient test coverage for edge cases such as zero or negative values for remoteFetchMaxWaitMs."
+        },
+        {
+          "criterion_id": "F3*",
+          "score": 0,
+          "evidence": "No mention of integration with existing components, APIs, or architectural/design pattern fit."
+        },
+        {
+          "criterion_id": "F4",
+          "score": 1,
+          "evidence": "Warns about risk of misconfiguration and potential operational issues due to unclear documentation."
+        },
+        {
+          "criterion_id": "T1",
+          "score": 1,
+          "evidence": "Recommends adding test cases to cover edge cases for the new configuration."
+        },
+        {
+          "criterion_id": "T3",
+          "score": 1,
+          "evidence": "References specific test file DelayedRemoteFetchTest.scala and suggests adding tests for edge cases."
+        },
+        {
+          "criterion_id": "R1",
+          "score": 0,
+          "evidence": "No comments on code clarity, naming conventions, or function organization."
+        },
+        {
+          "criterion_id": "R2",
+          "score": 0,
+          "evidence": "No identification of unnecessary complexity or suggestions for simplification."
+        },
+        {
+          "criterion_id": "P1",
+          "score": 1,
+          "evidence": "Mentions potential performance issues if inappropriate timeout values are set without validation."
+        },
+        {
+          "criterion_id": "S1",
+          "score": 1,
+          "evidence": "Identifies lack of validation logic for the new configuration and recommends implementing validation."
+        },
+        {
+          "criterion_id": "S3",
+          "score": 0,
+          "evidence": "No assessment of error handling or failure recovery."
+        },
+        {
+          "criterion_id": "Q3",
+          "score": 0,
+          "evidence": "Does not distinguish between blocking issues and minor suggestions."
+        },
+        {
+          "criterion_id": "Q5",
+          "score": 1,
+          "evidence": "Explains why validation and better documentation are needed to avoid misconfiguration and operational issues."
+        },
+        {
+          "criterion_id": "C2",
+          "score": 0,
+          "evidence": "No check for consistency with existing patterns or similar problems."
+        },
+        {
+          "criterion_id": "F1",
+          "score": 1,
+          "evidence": "Confirms the change addresses the stated problem by introducing a new config but points out missing validation and tests."
+        }
+      ]
+    },
+    {
+      "pr_id": 6,
+      "config": "kg_no_deps",
+      "total_score": 6,
+      "max_score": 14,
+      "percentage": 42.9,
+      "criteria_scores": [
+        {
+          "criterion_id": "F2*",
+          "score": 0,
+          "evidence": "Review does not explicitly identify edge cases, boundary conditions, or error-path testing needs."
+        },
+        {
+          "criterion_id": "F3*",
+          "score": 1,
+          "evidence": "Mentions potential integration issues with existing configurations in ConsumerConfig."
+        },
+        {
+          "criterion_id": "F4",
+          "score": 1,
+          "evidence": "Warns about potential runtime errors or misconfigurations due to integration issues."
+        },
+        {
+          "criterion_id": "T1",
+          "score": 1,
+          "evidence": "Recommends adding unit tests and ensuring integration tests cover new configuration."
+        },
+        {
+          "criterion_id": "T3",
+          "score": 1,
+          "evidence": "Specifically references RemoteLogManagerConfigTest.java, DelayedRemoteFetchTest.scala, and ConsumerConfigTest.java."
+        },
+        {
+          "criterion_id": "R1",
+          "score": 0,
+          "evidence": "No comments on code clarity, naming conventions, or function organization."
+        },
+        {
+          "criterion_id": "R2",
+          "score": 0,
+          "evidence": "No identification of unnecessary complexity or suggestions for simplification."
+        },
+        {
+          "criterion_id": "P1",
+          "score": 0,
+          "evidence": "No mention of potential performance issues or inefficiencies."
+        },
+        {
+          "criterion_id": "S1",
+          "score": 0,
+          "evidence": "No discussion of input validation or sanitization."
+        },
+        {
+          "criterion_id": "S3",
+          "score": 0,
+          "evidence": "No assessment of error handling or failure recovery."
+        },
+        {
+          "criterion_id": "Q3",
+          "score": 0,
+          "evidence": "Does not distinguish between blocking issues and minor suggestions."
+        },
+        {
+          "criterion_id": "Q5",
+          "score": 1,
+          "evidence": "Explains why tests are needed: to avoid unexpected delays or runtime errors."
+        },
+        {
+          "criterion_id": "C2",
+          "score": 0,
+          "evidence": "No check if similar problems are solved consistently with existing patterns."
+        },
+        {
+          "criterion_id": "F1",
+          "score": 1,
+          "evidence": "Review focuses on verifying the new configuration addresses the timeout requirement."
+        }
+      ]
+    },
+    {
+      "pr_id": 6,
+      "config": "kg_no_tests",
+      "total_score": 6,
+      "max_score": 14,
+      "percentage": 42.9,
+      "criteria_scores": [
+        {
+          "criterion_id": "F2*",
+          "score": 0,
+          "evidence": "Review does not mention edge cases, boundary conditions, or error-path testing needs."
+        },
+        {
+          "criterion_id": "F3*",
+          "score": 1,
+          "evidence": "Mentions potential integration issues with dependent components that rely on ConsumerConfig and recommends integration testing."
+        },
+        {
+          "criterion_id": "F4",
+          "score": 1,
+          "evidence": "Warns about changes to ConsumerConfig potentially affecting other components and causing runtime errors or misconfigurations."
+        },
+        {
+          "criterion_id": "T1",
+          "score": 1,
+          "evidence": "Explicitly calls out lack of comprehensive test coverage and recommends adding tests."
+        },
+        {
+          "criterion_id": "T3",
+          "score": 1,
+          "evidence": "References specific test files DelayedRemoteFetchTest.scala and RemoteLogManagerConfigTest.java for adding tests."
+        },
+        {
+          "criterion_id": "R1",
+          "score": 0,
+          "evidence": "No comments on code clarity, naming conventions, or function organization."
+        },
+        {
+          "criterion_id": "R2",
+          "score": 0,
+          "evidence": "No identification of unnecessary complexity or suggestions for simplification."
+        },
+        {
+          "criterion_id": "P1",
+          "score": 0,
+          "evidence": "No mention of potential performance issues or inefficiencies."
+        },
+        {
+          "criterion_id": "S1",
+          "score": 0,
+          "evidence": "No discussion of input validation or sanitization."
+        },
+        {
+          "criterion_id": "S3",
+          "score": 0,
+          "evidence": "No assessment of error handling or failure recovery."
+        },
+        {
+          "criterion_id": "Q3",
+          "score": 0,
+          "evidence": "Does not distinguish between blocking issues and minor suggestions."
+        },
+        {
+          "criterion_id": "Q5",
+          "score": 1,
+          "evidence": "Explains why tests and integration checks are needed to avoid unexpected behavior and runtime errors."
+        },
+        {
+          "criterion_id": "C2",
+          "score": 0,
+          "evidence": "No check if similar problems are solved consistently with existing patterns."
+        },
+        {
+          "criterion_id": "F1",
+          "score": 1,
+          "evidence": "Review focuses on verifying that the new configuration parameter is properly tested and integrated, addressing the stated problem."
+        }
+      ]
+    },
+    {
+      "pr_id": 7,
+      "config": "kg_no_deps",
+      "total_score": 9,
+      "max_score": 14,
+      "percentage": 64.3,
+      "criteria_scores": [
+        {
+          "criterion_id": "F2*",
+          "score": 1,
+          "evidence": "Identifies lack of error handling in execFileSync calls as a problem, implying error-path testing needs."
+        },
+        {
+          "criterion_id": "F3*",
+          "score": 0,
+          "evidence": "No mention of integration with existing components, APIs, or architectural/design-pattern fit."
+        },
+        {
+          "criterion_id": "F4",
+          "score": 1,
+          "evidence": "Warns that unhandled exceptions could cause server termination and downtime, impacting dependent code."
+        },
+        {
+          "criterion_id": "T1",
+          "score": 1,
+          "evidence": "Explicitly calls out insufficient test coverage and recommends enhancing test coverage."
+        },
+        {
+          "criterion_id": "T3",
+          "score": 1,
+          "evidence": "References specific code lines and test suite areas lacking tests: 'lines 389-454: createLogger function... lack corresponding unit tests.'"
+        },
+        {
+          "criterion_id": "R1",
+          "score": 1,
+          "evidence": "Mentions refactoring to improve code quality and readability."
+        },
+        {
+          "criterion_id": "R2",
+          "score": 0,
+          "evidence": "No identification of unnecessary complexity or suggestions for simplification."
+        },
+        {
+          "criterion_id": "P1",
+          "score": 1,
+          "evidence": "Identifies synchronous file operations as potential performance issues."
+        },
+        {
+          "criterion_id": "S1",
+          "score": 0,
+          "evidence": "No mention of input validation or sanitization."
+        },
+        {
+          "criterion_id": "S3",
+          "score": 1,
+          "evidence": "Highlights lack of error handling in execFileSync and recommends adding try-catch blocks."
+        },
+        {
+          "criterion_id": "Q3",
+          "score": 0,
+          "evidence": "Does not explicitly distinguish between blocking issues and minor suggestions."
+        },
+        {
+          "criterion_id": "Q5",
+          "score": 1,
+          "evidence": "Explains why error handling and async operations matter: to prevent crashes and improve performance."
+        },
+        {
+          "criterion_id": "C2",
+          "score": 0,
+          "evidence": "No discussion of consistency with existing patterns or similar problem solutions."
+        },
+        {
+          "criterion_id": "F1",
+          "score": 1,
+          "evidence": "Review directly addresses problems stated: error handling, performance, and test coverage."
+        }
+      ]
+    },
+    {
+      "pr_id": 8,
+      "config": "kg_minimal",
+      "total_score": 6,
+      "max_score": 14,
+      "percentage": 42.9,
+      "criteria_scores": [
+        {
+          "criterion_id": "F2*",
+          "score": 0,
+          "evidence": "Review does not mention edge cases, boundary conditions, or error-path testing needs."
+        },
+        {
+          "criterion_id": "F3*",
+          "score": 1,
+          "evidence": "Mentions potential integration issues due to default value 'true' affecting existing dashboards and recommends integration testing."
+        },
+        {
+          "criterion_id": "F4",
+          "score": 1,
+          "evidence": "Warns that default setting of 'true' might cause unexpected behavior in existing dashboards."
+        },
+        {
+          "criterion_id": "T1",
+          "score": 1,
+          "evidence": "Recommends expanding test coverage and conducting integration testing."
+        },
+        {
+          "criterion_id": "T3",
+          "score": 1,
+          "evidence": "References specific test file 'sceneVariablesSetToVariables.test.ts' and notes missing tests for some variable types."
+        },
+        {
+          "criterion_id": "R1",
+          "score": 0,
+          "evidence": "No comments on code clarity, naming conventions, or function organization."
+        },
+        {
+          "criterion_id": "R2",
+          "score": 0,
+          "evidence": "No identification of unnecessary complexity or suggestions for simplification."
+        },
+        {
+          "criterion_id": "P1",
+          "score": 0,
+          "evidence": "No mention of performance issues or inefficiencies."
+        },
+        {
+          "criterion_id": "S1",
+          "score": 0,
+          "evidence": "No checks for input validation or sanitization."
+        },
+        {
+          "criterion_id": "S3",
+          "score": 0,
+          "evidence": "No assessment of error handling or failure recovery."
+        },
+        {
+          "criterion_id": "Q3",
+          "score": 0,
+          "evidence": "Does not distinguish between blocking issues and minor suggestions."
+        },
+        {
+          "criterion_id": "Q5",
+          "score": 1,
+          "evidence": "Explains why test coverage and default value changes are important to avoid regressions and unexpected behavior."
+        },
+        {
+          "criterion_id": "C2",
+          "score": 0,
+          "evidence": "No check if similar problems are solved consistently with existing patterns."
+        },
+        {
+          "criterion_id": "F1",
+          "score": 1,
+          "evidence": "Review verifies that the change addresses the stated problem by focusing on test coverage and default behavior."
+        }
+      ]
+    },
+    {
+      "pr_id": 8,
+      "config": "kg_no_deps",
+      "total_score": 7,
+      "max_score": 14,
+      "percentage": 50.0,
+      "criteria_scores": [
+        {
+          "criterion_id": "F2*",
+          "score": 1,
+          "evidence": "Review notes 'not thoroughly tested across all variable types and scenarios, potentially leading to untested edge cases' and recommends extending test cases to cover all variable types and edge cases."
+        },
+        {
+          "criterion_id": "F3*",
+          "score": 1,
+          "evidence": "Review highlights 'Potential Integration Issues' and mentions that integration of allowCustomValue may impact other parts of the system relying on these models."
+        },
+        {
+          "criterion_id": "F4",
+          "score": 1,
+          "evidence": "Review warns about risks: 'Unanticipated interactions... could lead to bugs or system instability' and mentions impact on data integrity and user experience."
+        },
+        {
+          "criterion_id": "T1",
+          "score": 1,
+          "evidence": "Review explicitly recommends enhancing test coverage and conducting integration testing."
+        },
+        {
+          "criterion_id": "T3",
+          "score": 1,
+          "evidence": "Review references specific test file: 'sceneVariablesSetToVariables.test.ts:98-112' and suggests adding tests for all variable types and edge cases."
+        },
+        {
+          "criterion_id": "R1",
+          "score": 0,
+          "evidence": "No comments on code clarity, naming conventions, or function organization are present."
+        },
+        {
+          "criterion_id": "R2",
+          "score": 0,
+          "evidence": "No identification of unnecessary complexity or suggestions for simplification."
+        },
+        {
+          "criterion_id": "P1",
+          "score": 0,
+          "evidence": "No mention of potential performance issues or inefficiencies."
+        },
+        {
+          "criterion_id": "S1",
+          "score": 0,
+          "evidence": "No checks or comments on input validation or sanitization."
+        },
+        {
+          "criterion_id": "S3",
+          "score": 0,
+          "evidence": "No assessment of error handling or failure recovery."
+        },
+        {
+          "criterion_id": "Q3",
+          "score": 0,
+          "evidence": "No distinction made between blocking issues and minor suggestions."
+        },
+        {
+          "criterion_id": "Q5",
+          "score": 1,
+          "evidence": "Review explains why tests and integration checks are needed: to avoid runtime errors, incorrect behavior, and system instability."
+        },
+        {
+          "criterion_id": "C2",
+          "score": 0,
+          "evidence": "No mention of consistency with existing patterns or similar problem solutions."
+        },
+        {
+          "criterion_id": "F1",
+          "score": 1,
+          "evidence": "Review verifies that the change addresses the problem by discussing the new feature and its testing and integration implications."
+        }
+      ]
+    },
+    {
+      "pr_id": 8,
+      "config": "kg_no_tests",
+      "total_score": 6,
+      "max_score": 14,
+      "percentage": 42.9,
+      "criteria_scores": [
+        {
+          "criterion_id": "F2*",
+          "score": 0,
+          "evidence": "Review does not mention edge cases, boundary conditions, or error-path testing needs."
+        },
+        {
+          "criterion_id": "F3*",
+          "score": 1,
+          "evidence": "Mentions integration tests in e2e-playwright and impact across different components."
+        },
+        {
+          "criterion_id": "F4",
+          "score": 1,
+          "evidence": "Warns about potential backward compatibility issue due to default value set to true."
+        },
+        {
+          "criterion_id": "T1",
+          "score": 1,
+          "evidence": "Recommends expanding test coverage including integration tests."
+        },
+        {
+          "criterion_id": "T3",
+          "score": 1,
+          "evidence": "References specific test files like sceneVariablesSetToVariables.test.ts and e2e-playwright tests."
+        },
+        {
+          "criterion_id": "R1",
+          "score": 0,
+          "evidence": "No comments on code clarity, naming conventions, or function organization."
+        },
+        {
+          "criterion_id": "R2",
+          "score": 0,
+          "evidence": "No identification of unnecessary complexity or suggestions for simplification."
+        },
+        {
+          "criterion_id": "P1",
+          "score": 0,
+          "evidence": "No mention of performance issues or inefficiencies."
+        },
+        {
+          "criterion_id": "S1",
+          "score": 0,
+          "evidence": "No discussion of input validation or sanitization."
+        },
+        {
+          "criterion_id": "S3",
+          "score": 0,
+          "evidence": "No assessment of error handling or failure recovery."
+        },
+        {
+          "criterion_id": "Q3",
+          "score": 0,
+          "evidence": "Does not distinguish between blocking issues and minor suggestions."
+        },
+        {
+          "criterion_id": "Q5",
+          "score": 1,
+          "evidence": "Explains why test coverage and default value review are important to avoid bugs and backward compatibility issues."
+        },
+        {
+          "criterion_id": "C2",
+          "score": 0,
+          "evidence": "No check if similar problems are solved consistently with existing patterns."
+        },
+        {
+          "criterion_id": "F1",
+          "score": 1,
+          "evidence": "Review focuses on the introduced allowCustomValue property and its testing and compatibility."
+        }
+      ]
+    },
+    {
+      "pr_id": 9,
+      "config": "kg_minimal",
+      "total_score": 7,
+      "max_score": 14,
+      "percentage": 50.0,
+      "criteria_scores": [
+        {
+          "criterion_id": "F2*",
+          "score": 1,
+          "evidence": "Recommendation to expand test cases to cover edge cases and potential failure modes."
+        },
+        {
+          "criterion_id": "F3*",
+          "score": 0,
+          "evidence": "No mention of integration with existing components, APIs, or design patterns."
+        },
+        {
+          "criterion_id": "F4",
+          "score": 1,
+          "evidence": "Warns that disabling IP-based protection by default increases risk and could mislead administrators."
+        },
+        {
+          "criterion_id": "T1",
+          "score": 1,
+          "evidence": "Notes lack of comprehensive test coverage and recommends adding tests."
+        },
+        {
+          "criterion_id": "T3",
+          "score": 1,
+          "evidence": "References specific test file 'pkg/services/loginattempt/loginattemptimpl/login_attempt_test.go' for test improvements."
+        },
+        {
+          "criterion_id": "R1",
+          "score": 0,
+          "evidence": "No comments on code clarity, naming, or function organization."
+        },
+        {
+          "criterion_id": "R2",
+          "score": 0,
+          "evidence": "No identification of unnecessary complexity or suggestions for simplification."
+        },
+        {
+          "criterion_id": "P1",
+          "score": 0,
+          "evidence": "No mention of performance issues or inefficiencies."
+        },
+        {
+          "criterion_id": "S1",
+          "score": 0,
+          "evidence": "No discussion of input validation or sanitization."
+        },
+        {
+          "criterion_id": "S3",
+          "score": 1,
+          "evidence": "Recommends expanding tests to cover failure modes, implying concern for error handling."
+        },
+        {
+          "criterion_id": "Q3",
+          "score": 0,
+          "evidence": "Does not distinguish between blocking issues and minor suggestions."
+        },
+        {
+          "criterion_id": "Q5",
+          "score": 1,
+          "evidence": "Explains why changes are needed: security risks, misleading docs, and insufficient tests."
+        },
+        {
+          "criterion_id": "C2",
+          "score": 0,
+          "evidence": "No check for consistency with existing patterns or solutions."
+        },
+        {
+          "criterion_id": "F1",
+          "score": 1,
+          "evidence": "Verifies that the change addresses the problem of insecure default and documentation inaccuracies."
+        }
+      ]
+    },
+    {
+      "pr_id": 9,
+      "config": "kg_no_deps",
+      "total_score": 6,
+      "max_score": 14,
+      "percentage": 42.9,
+      "criteria_scores": [
+        {
+          "criterion_id": "F2*",
+          "score": 0,
+          "evidence": "Review does not mention edge cases, boundary conditions, or error-path testing needs."
+        },
+        {
+          "criterion_id": "F3*",
+          "score": 0,
+          "evidence": "No discussion of integration with existing components, APIs, or architecture/design-pattern fit."
+        },
+        {
+          "criterion_id": "F4",
+          "score": 1,
+          "evidence": "Mentions risk of merging PR without changes: 'potentially leaving bugs unresolved or features incomplete.'"
+        },
+        {
+          "criterion_id": "T1",
+          "score": 1,
+          "evidence": "Raises concern about test coverage: 'Potential missing test coverage' and 'Review Test Coverage.'"
+        },
+        {
+          "criterion_id": "T3",
+          "score": 1,
+          "evidence": "Specifically references test files: 'especially in pkg/services/authn/clients/password.go and related files.'"
+        },
+        {
+          "criterion_id": "R1",
+          "score": 0,
+          "evidence": "No comments on code clarity, naming conventions, or function organization."
+        },
+        {
+          "criterion_id": "R2",
+          "score": 0,
+          "evidence": "No identification of unnecessary complexity or suggestions for simplification."
+        },
+        {
+          "criterion_id": "P1",
+          "score": 0,
+          "evidence": "No mention of performance issues or inefficiencies."
+        },
+        {
+          "criterion_id": "S1",
+          "score": 0,
+          "evidence": "No check for input validation or sanitization."
+        },
+        {
+          "criterion_id": "S3",
+          "score": 0,
+          "evidence": "No assessment of error handling or failure recovery."
+        },
+        {
+          "criterion_id": "Q3",
+          "score": 1,
+          "evidence": "Distinguishes blocking issue: 'lack of visible modifications means these are not implemented' and recommendations to fix."
+        },
+        {
+          "criterion_id": "Q5",
+          "score": 1,
+          "evidence": "Explains why: 'potentially leaving bugs unresolved or features incomplete' and 'risk of miscommunication.'"
+        },
+        {
+          "criterion_id": "C2",
+          "score": 0,
+          "evidence": "No check for consistency with existing patterns."
+        },
+        {
+          "criterion_id": "F1",
+          "score": 1,
+          "evidence": "Verifies that the change addresses the problem: 'lack of visible modifications means these are not implemented.'"
+        }
+      ]
+    },
+    {
+      "pr_id": 9,
+      "config": "kg_no_tests",
+      "total_score": 6,
+      "max_score": 14,
+      "percentage": 42.9,
+      "criteria_scores": [
+        {
+          "criterion_id": "F2*",
+          "score": 0,
+          "evidence": "Review does not mention edge cases, boundary conditions, or error-path testing needs."
+        },
+        {
+          "criterion_id": "F3*",
+          "score": 1,
+          "evidence": "Recommendation includes 'Conduct thorough integration testing for modules that import conf/defaults.ini and conf/sample.ini to ensure compatibility and correct behavior.'"
+        },
+        {
+          "criterion_id": "F4",
+          "score": 1,
+          "evidence": "Review warns about risks: 'risk of breaking existing functionality that relies on the configuration files, leading to potential downtime or incorrect behavior in production environments.'"
+        },
+        {
+          "criterion_id": "T1",
+          "score": 1,
+          "evidence": "Recommendation: 'Add or update unit tests in password_test.go to ensure that all new and modified functionalities are adequately tested.'"
+        },
+        {
+          "criterion_id": "T3",
+          "score": 1,
+          "evidence": "Specific test file referenced: 'password_test.go' for adding or updating tests."
+        },
+        {
+          "criterion_id": "R1",
+          "score": 0,
+          "evidence": "No comments on code clarity, naming conventions, or function organization."
+        },
+        {
+          "criterion_id": "R2",
+          "score": 0,
+          "evidence": "No identification of unnecessary complexity or suggestions for simplification."
+        },
+        {
+          "criterion_id": "P1",
+          "score": 0,
+          "evidence": "No mention of potential performance issues or inefficiencies."
+        },
+        {
+          "criterion_id": "S1",
+          "score": 0,
+          "evidence": "No checks for input validation or sanitization."
+        },
+        {
+          "criterion_id": "S3",
+          "score": 0,
+          "evidence": "No assessment of error handling or failure recovery."
+        },
+        {
+          "criterion_id": "Q3",
+          "score": 0,
+          "evidence": "No distinction made between blocking issues and minor suggestions."
+        },
+        {
+          "criterion_id": "Q5",
+          "score": 1,
+          "evidence": "Review explains reasoning: 'absence of updated tests... could lead to undetected bugs and security vulnerabilities' and 'risk of breaking existing functionality... leading to potential downtime or incorrect behavior.'"
+        },
+        {
+          "criterion_id": "C2",
+          "score": 0,
+          "evidence": "No mention of consistency with existing patterns or similar problem solutions."
+        },
+        {
+          "criterion_id": "F1",
+          "score": 1,
+          "evidence": "Review addresses problem of missing tests and integration risks related to configuration changes."
+        }
+      ]
+    }
+  ]
+}

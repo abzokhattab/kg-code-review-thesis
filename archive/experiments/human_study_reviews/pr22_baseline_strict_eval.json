@@ -1,0 +1,331 @@
+{
+  "pr_id": 22,
+  "mode": "baseline_strict",
+  "total_score": 8,
+  "max_score": 25,
+  "percentage": 32.0,
+  "kg_relevant_score": 6,
+  "kg_relevant_max": 9,
+  "kg_relevant_percentage": 66.7,
+  "criteria_scores": [
+    {
+      "criterion_id": "F1",
+      "score": 0,
+      "evidence": "The review focuses on potential problems and impacts of the change, rather than verifying if the change itself (moving the tests) addresses a stated problem or requirement.",
+      "n_yes": 0,
+      "n_valid": 2,
+      "unanimous": true
+    },
+    {
+      "criterion_id": "F2",
+      "score": 0,
+      "evidence": "The review mentions 'edge cases that might arise from the relocation' but does not identify any specific edge cases.",
+      "n_yes": 1,
+      "n_valid": 2,
+      "unanimous": false
+    },
+    {
+      "criterion_id": "F3",
+      "score": 1,
+      "evidence": "Integration Risk: The relocation of test classes may affect test execution if dependencies are not correctly updated. ... API Contract: The change in package names could potentially affect any external references to these test classes.",
+      "n_yes": 2,
+      "n_valid": 2,
+      "unanimous": true
+    },
+    {
+      "criterion_id": "F4",
+      "score": 1,
+      "evidence": "API Contract: The change in package names could potentially affect any external references to these test classes. ... Regression Risk: Existing tests might fail if they rely on the previous package structure.",
+      "n_yes": 2,
+      "n_valid": 2,
+      "unanimous": true
+    },
+    {
+      "criterion_id": "T1",
+      "score": 1,
+      "evidence": "Recommendation... Tests: Add tests to verify that the relocated tests execute correctly in the new module context.",
+      "n_yes": 2,
+      "n_valid": 2,
+      "unanimous": true
+    },
+    {
+      "criterion_id": "T2",
+      "score": 1,
+      "evidence": "Test Coverage: The PR does not introduce new tests for edge cases that might arise from the relocation.",
+      "n_yes": 2,
+      "n_valid": 2,
+      "unanimous": true
+    },
+    {
+      "criterion_id": "T3",
+      "score": 0,
+      "evidence": "The review suggests adding tests generally but does not reference specific test files to be added/updated beyond listing the moved files as evidence.",
+      "n_yes": 1,
+      "n_valid": 2,
+      "unanimous": false
+    },
+    {
+      "criterion_id": "R1",
+      "score": 0,
+      "evidence": "The review does not comment on code clarity, naming conventions, or function organization, as the PR is primarily a file relocation.",
+      "n_yes": 0,
+      "n_valid": 2,
+      "unanimous": true
+    },
+    {
+      "criterion_id": "R2",
+      "score": 0,
+      "evidence": "The review does not identify unnecessary complexity or suggest simplification.",
+      "n_yes": 0,
+      "n_valid": 2,
+      "unanimous": true
+    },
+    {
+      "criterion_id": "R3",
+      "score": 0,
+      "evidence": "The review does not mention code comments or the 'why' behind decisions within the code.",
+      "n_yes": 0,
+      "n_valid": 2,
+      "unanimous": true
+    },
+    {
+      "criterion_id": "M1",
+      "score": 1,
+      "evidence": "Maintainability: The change in package structure might not align with the existing architecture if the `tools` module is not intended for such tests.",
+      "n_yes": 2,
+      "n_valid": 2,
+      "unanimous": true
+    },
+    {
+      "criterion_id": "M2",
+      "score": 0,
+      "evidence": "The review does not flag the PR scope as too large or suggest splitting it.",
+      "n_yes": 0,
+      "n_valid": 2,
+      "unanimous": true
+    },
+    {
+      "criterion_id": "M3",
+      "score": 0,
+      "evidence": "The PR involves moving test classes, and the review does not discuss documentation for public APIs or interfaces.",
+      "n_yes": 0,
+      "n_valid": 2,
+      "unanimous": true
+    },
+    {
+      "criterion_id": "C1",
+      "score": 0,
+      "evidence": "The review does not check adherence to project style guides or coding conventions.",
+      "n_yes": 0,
+      "n_valid": 2,
+      "unanimous": true
+    },
+    {
+      "criterion_id": "C2",
+      "score": 0,
+      "evidence": "The review does not check if similar problems are solved consistently with existing patterns.",
+      "n_yes": 1,
+      "n_valid": 2,
+      "unanimous": false
+    },
+    {
+      "criterion_id": "P1",
+      "score": 0,
+      "evidence": "The review does not identify potential performance issues or inefficiencies.",
+      "n_yes": 0,
+      "n_valid": 2,
+      "unanimous": true
+    },
+    {
+      "criterion_id": "P2",
+      "score": 0,
+      "evidence": "The review does not ask about benchmarks or performance testing.",
+      "n_yes": 0,
+      "n_valid": 2,
+      "unanimous": true
+    },
+    {
+      "criterion_id": "S1",
+      "score": 0,
+      "evidence": "The review does not check for proper input validation or sanitization.",
+      "n_yes": 0,
+      "n_valid": 2,
+      "unanimous": true
+    },
+    {
+      "criterion_id": "S2",
+      "score": 0,
+      "evidence": "The review does not flag hardcoded secrets, credentials, or sensitive data.",
+      "n_yes": 0,
+      "n_valid": 2,
+      "unanimous": true
+    },
+    {
+      "criterion_id": "S3",
+      "score": 0,
+      "evidence": "While it mentions 'potential breakage in test execution', it does not assess error handling and failure recovery within the moved code or the system under test.",
+      "n_yes": 0,
+      "n_valid": 2,
+      "unanimous": true
+    },
+    {
+      "criterion_id": "Q1",
+      "score": 1,
+      "evidence": "Scope: This PR moves AbstractResetIntegrationTest and its subclasses from the streams module to the tools module.",
+      "n_yes": 2,
+      "n_valid": 2,
+      "unanimous": true
+    },
+    {
+      "criterion_id": "Q2",
+      "score": 1,
+      "evidence": "The 'Evidence' section provides specific file paths and line ranges: `build.gradle:2496-2516`, `checkstyle/import-control.xml:295-297`, and specific file relocations.",
+      "n_yes": 2,
+      "n_valid": 2,
+      "unanimous": true
+    },
+    {
+      "criterion_id": "Q3",
+      "score": 0,
+      "evidence": "The review lists problems and recommendations but does not explicitly distinguish between blocking issues and minor suggestions.",
+      "n_yes": 0,
+      "n_valid": 2,
+      "unanimous": true
+    },
+    {
+      "criterion_id": "Q4",
+      "score": 0,
+      "evidence": "The review primarily states problems and impacts rather than asking clarifying questions, though 'if the `tools` module is not intended for such tests' is an implicit question.",
+      "n_yes": 0,
+      "n_valid": 2,
+      "unanimous": true
+    },
+    {
+      "criterion_id": "Q5",
+      "score": 1,
+      "evidence": "The 'Problem' and 'Impact' sections clearly explain the reasoning behind the 'Recommendation' (e.g., 'Integration Risk' explains why to 'Ensure all dependencies are correctly updated').",
+      "n_yes": 2,
+      "n_valid": 2,
+      "unanimous": true
+    }
+  ],
+  "per_judge": [
+    {
+      "model": "gemini:gemini-2.5-flash",
+      "scores": {
+        "F1": 0,
+        "F2": 1,
+        "F3": 1,
+        "F4": 1,
+        "T1": 1,
+        "T2": 1,
+        "T3": 0,
+        "R1": 0,
+        "R2": 0,
+        "R3": 0,
+        "M1": 1,
+        "M2": 0,
+        "M3": 0,
+        "C1": 0,
+        "C2": 0,
+        "P1": 0,
+        "P2": 0,
+        "S1": 0,
+        "S2": 0,
+        "S3": 0,
+        "Q1": 1,
+        "Q2": 1,
+        "Q3": 0,
+        "Q4": 0,
+        "Q5": 1
+      },
+      "evidence": {
+        "F1": "The review focuses on potential problems and impacts of the change, rather than verifying if the change itself (moving the tests) addresses a stated problem or requirement.",
+        "F2": "Test Coverage: The PR does not introduce new tests for edge cases that might arise from the relocation.",
+        "F3": "Integration Risk: The relocation of test classes may affect test execution if dependencies are not correctly updated. ... API Contract: The change in package names could potentially affect any external references to these test classes.",
+        "F4": "API Contract: The change in package names could potentially affect any external references to these test classes. ... Regression Risk: Existing tests might fail if they rely on the previous package structure.",
+        "T1": "Recommendation... Tests: Add tests to verify that the relocated tests execute correctly in the new module context.",
+        "T2": "Test Coverage: The PR does not introduce new tests for edge cases that might arise from the relocation.",
+        "T3": "The review suggests adding tests generally but does not reference specific test files to be added/updated beyond listing the moved files as evidence.",
+        "R1": "The review does not comment on code clarity, naming conventions, or function organization, as the PR is primarily a file relocation.",
+        "R2": "The review does not identify unnecessary complexity or suggest simplification.",
+        "R3": "The review does not mention code comments or the 'why' behind decisions within the code.",
+        "M1": "Maintainability: The change in package structure might not align with the existing architecture if the `tools` module is not intended for such tests.",
+        "M2": "The review does not flag the PR scope as too large or suggest splitting it.",
+        "M3": "The PR involves moving test classes, and the review does not discuss documentation for public APIs or interfaces.",
+        "C1": "The review does not check adherence to project style guides or coding conventions.",
+        "C2": "The review does not check if similar problems are solved consistently with existing patterns.",
+        "P1": "The review does not identify potential performance issues or inefficiencies.",
+        "P2": "The review does not ask about benchmarks or performance testing.",
+        "S1": "The review does not check for proper input validation or sanitization.",
+        "S2": "The review does not flag hardcoded secrets, credentials, or sensitive data.",
+        "S3": "While it mentions 'potential breakage in test execution', it does not assess error handling and failure recovery within the moved code or the system under test.",
+        "Q1": "Scope: This PR moves AbstractResetIntegrationTest and its subclasses from the streams module to the tools module.",
+        "Q2": "The 'Evidence' section provides specific file paths and line ranges: `build.gradle:2496-2516`, `checkstyle/import-control.xml:295-297`, and specific file relocations.",
+        "Q3": "The review lists problems and recommendations but does not explicitly distinguish between blocking issues and minor suggestions.",
+        "Q4": "The review primarily states problems and impacts rather than asking clarifying questions, though 'if the `tools` module is not intended for such tests' is an implicit question.",
+        "Q5": "The 'Problem' and 'Impact' sections clearly explain the reasoning behind the 'Recommendation' (e.g., 'Integration Risk' explains why to 'Ensure all dependencies are correctly updated')."
+      },
+      "error": ""
+    },
+    {
+      "model": "gemini:gemini-2.5-pro",
+      "scores": {
+        "F1": 0,
+        "F2": 0,
+        "F3": 1,
+        "F4": 1,
+        "T1": 1,
+        "T2": 1,
+        "T3": 1,
+        "R1": 0,
+        "R2": 0,
+        "R3": 0,
+        "M1": 1,
+        "M2": 0,
+        "M3": 0,
+        "C1": 0,
+        "C2": 1,
+        "P1": 0,
+        "P2": 0,
+        "S1": 0,
+        "S2": 0,
+        "S3": 0,
+        "Q1": 1,
+        "Q2": 1,
+        "Q3": 0,
+        "Q4": 0,
+        "Q5": 1
+      },
+      "evidence": {
+        "F1": "The review describes the scope of the change but does not explicitly verify if the change successfully achieves the goal stated in the PR title.",
+        "F2": "The review mentions 'edge cases that might arise from the relocation' but does not identify any specific edge cases.",
+        "F3": "The review checks integration by pointing out risks of dependency issues and referencing changes in `build.gradle` and `import-control.xml`.",
+        "F4": "The review warns about breaking changes: 'The change in package names could potentially affect any external references to these test classes.'",
+        "T1": "The review explicitly discusses the need for more tests: 'Add tests to verify that the relocated tests execute correctly in the new module context.'",
+        "T2": "The review mentions testing edge cases: 'The PR does not introduce new tests for edge cases that might arise from the relocation.'",
+        "T3": "The review references the specific test files being moved and recommends adding new tests to verify their execution in the new module.",
+        "R1": "The review does not comment on code clarity, naming, or organization.",
+        "R2": "The review does not mention code complexity or suggest simplifications.",
+        "R3": "The review does not check for or mention code comments.",
+        "M1": "The review assesses architectural fit: 'The change in package structure might not align with the existing architecture if the `tools` module is not intended for such tests.'",
+        "M2": "The review does not comment on the PR's scope.",
+        "M3": "The review mentions 'API Contract' in the context of package names, not documentation for public APIs.",
+        "C1": "The review does not check for adherence to style guides or coding conventions.",
+        "C2": "The review questions if the change aligns with the existing architecture, which is a check for consistency with established structural patterns.",
+        "P1": "The review does not identify any potential performance issues.",
+        "P2": "The review does not ask about performance testing or benchmarks.",
+        "S1": "The review does not check for input validation.",
+        "S2": "The review does not check for hardcoded secrets or credentials.",
+        "S3": "The review does not assess error handling in the code.",
+        "Q1": "The review provides a summary in the 'Scope' section and an overall assessment in the 'Problem' and 'Impact' sections.",
+        "Q2": "The review anchors its findings to specific file paths and line numbers in the 'Evidence' section, e.g., 'build.gradle:2496-2516'.",
+        "Q3": "The review lists recommendations without distinguishing between blocking issues and minor suggestions.",
+        "Q4": "The review makes statements about potential problems rather than asking clarifying questions to the author.",
+        "Q5": "The review's structure (Problem -> Impact -> Recommendation) inherently explains the reasoning behind its suggestions."
+      },
+      "error": ""
+    }
+  ],
+  "evaluation_timestamp": "2026-06-01T22:15:01.563353Z"
+}

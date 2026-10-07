@@ -1,0 +1,44 @@
+{
+  "candidate_mentions": [
+    {
+      "basename_collision": false,
+      "end": 1043,
+      "evidence_id": "M001",
+      "excerpt": "ontext`.\n- Multiple dependencies on `serialize` method:\n  - `streams/src/main/java/org/apache/kafka/streams/processor/internals/ProcessorContextImpl.java`\n  - `streams/src/main/java/org/apache/kafka/streams/state/internals/BufferValue.java`\n  - `streams/src/main/java/org/apache/kafka/streams/state/internals/RocksDBVersionedStore.java`\n- No corresponding test updates in the PR diff.\n\n## Impact\n- **Technical Impact:** Existing code that calls `serialize` without the new parameter will fail to com",
+      "finding_passage_id": "P011",
+      "match_kind": "full_path",
+      "match_text": "streams/src/main/java/org/apache/kafka/streams/state/internals/BufferValue.java",
+      "oracle_path": "streams/src/main/java/org/apache/kafka/streams/state/internals/BufferValue.java",
+      "start": 964
+    },
+    {
+      "basename_collision": false,
+      "end": 1139,
+      "evidence_id": "M012",
+      "excerpt": "/apache/kafka/streams/processor/internals/ProcessorContextImpl.java`\n  - `streams/src/main/java/org/apache/kafka/streams/state/internals/BufferValue.java`\n  - `streams/src/main/java/org/apache/kafka/streams/state/internals/RocksDBVersionedStore.java`\n- No corresponding test updates in the PR diff.\n\n## Impact\n- **Technical Impact:** Existing code that calls `serialize` without the new parameter will fail to compile, potentially causing widespread breakages across the codebase.\n- **Risk of Misuse:** The un",
+      "finding_passage_id": "P012",
+      "match_kind": "full_path",
+      "match_text": "streams/src/main/java/org/apache/kafka/streams/state/internals/RocksDBVersionedStore.java",
+      "oracle_path": "streams/src/main/java/org/apache/kafka/streams/state/internals/RocksDBVersionedStore.java",
+      "start": 1050
+    }
+  ],
+  "causal_passage_id": "P015",
+  "decision_source": "llm_causal_adjudication",
+  "detected": true,
+  "evidence_id": "M001",
+  "executed_at_utc": "2026-09-19T15:09:52.701648+00:00",
+  "finding_passage_id": "P011",
+  "judge": "openai:gpt-4o",
+  "manifest_sha256": "5d4371a93d1b09f0491ecc12279f9f3ff5de23053b7a5e74650a749f58b472b0",
+  "model_alias": "openai:gpt-4o",
+  "model_snapshot": "unavailable-from-original-wrapper",
+  "original_verdict": false,
+  "prompt_sha256": "c9ad1d0396aec60a9c8b5d7592fd36fed91839a34f54affa4a590e0672000c86",
+  "reason_code": "specific_cross_file_link",
+  "response_wrapper": "bare",
+  "review_sha256": "c3799445f62f76cd1a5d204bef9cc9e34cfc6bee6ea62ada0bb9fb33dcaf8528",
+  "schema_sha256": "f70f714868ecd3d25508bb3e00b32ecbe6761b0ebc05f454ee10fa4d28efd013",
+  "schema_version": "exp2-adjudication-v3",
+  "system_sha256": "030b5e701c798b32afdabbbeb22db38f664db8c8fd8b862d2fcb98df63b6fb6b"
+}

@@ -1,0 +1,309 @@
+{
+  "pr": {
+    "number": 97224,
+    "title": "Expressions: Add notification for Strict Mode behavior in Reduce component",
+    "body": "<!--\r\n\r\nThank you for sending a pull request! Here are some tips:\r\n\r\n1. If this is your first time, please read our contribution guide at https://github.com/grafana/grafana/blob/main/CONTRIBUTING.md\r\n\r\n2. Ensure you include and run the appropriate tests as part of your Pull Request.\r\n\r\n3. In a new feature or configuration option, an update to the documentation is necessary. Everything related to the documentation is under the docs folder in the root of the repository.\r\n\r\n4. If the Pull Request is a work in progress, make use of GitHub's \"Draft PR\" feature and mark it as such.\r\n\r\n5. If you can not merge your Pull Request due to a merge conflict, Rebase it. This gets it in sync with the main branch.\r\n\r\n6. Name your PR as \"<FeatureArea>: Describe your change\", e.g. Alerting: Prevent race condition. If it's a fix or feature relevant for the changelog describe the user impact in the title. The PR title is used to auto-generate the changelog for issues marked with the \"add to changelog\" label.\r\n\r\n7. If your PR content should be added to the What's New document for the next major or minor release, add the **add to what's new** label to your PR. Note that you should add this label to the main PR that introduces the feature; do not add this label to smaller PRs for the feature.\r\n\r\n-->\r\n\r\n**What is this feature?**\r\n\r\nThis feature adds a notification to the Reduce component in Grafana when \"Strict Mode\" is selected. It informs users about the behavior of the fill(null) function in InfluxQL, which results in NaN.\r\n\r\n**Why do we need this feature?**\r\n\r\nUsers unfamiliar with the behavior of \"Strict Mode\" may find the NaN result confusing when using fill(null). This notification provides clarity and directs users to the relevant documentation, improving the user experience.\r\n\r\n**Who is this feature for?**\r\n\r\nThis feature is for Grafana users who use the Reduce component with \"Strict Mode\" enabled, especially those working with InfluxQL queries.\r\n\r\n**Which issue(s) does this PR fix?**:\r\nFixes \r\n<!--\r\n\r\n- Automatically closes linked issue when the Pull Request is merged.\r\n\r\nUsage: \"Fixes #<issue number>\", or \"Fixes (paste link of issue)\"\r\n\r\n-->\r\n\r\nFixes #79315 \r\n\r\n**Special notes for your reviewer:**\r\n\r\nPlease check that:\r\n- [ ] It works as expected from a user's perspective.\r\n- [ ] If this is a pre-GA feature, it is behind a feaxture toggle.\r\n- [ ] The docs are updated, and if this is a [notable improvement](https://grafana.com/docs/writers-toolkit/contribute/release-notes/#how-to-determine-if-content-belongs-in-whats-new), it's added to our [What's New](https://grafana.com/docs/writers-toolkit/contribute/release-notes/) doc.\r\n\r\n<img width=\"1244\" alt=\"GraphanaFix\" src=\"https://github.com/user-attachments/assets/3b1cbc4f-2370-4eaa-b24c-4768cc8602d3\">\r\n\r\n",
+    "url": "https://github.com/grafana/grafana/pull/97224",
+    "repo": "grafana/grafana",
+    "base_branch": "main",
+    "head_branch": "issue-79315-reduce-strict-mode-notification",
+    "merged_at": "2024-12-29T11:58:21Z",
+    "state": "MERGED"
+  },
+  "changed_files": [
+    {
+      "path": "public/app/features/expressions/components/Reduce.tsx",
+      "language": "typescript",
+      "added": 29,
+      "deleted": 1
+    },
+    {
+      "path": "public/locales/en-US/grafana.json",
+      "language": "json",
+      "added": 6,
+      "deleted": 0
+    },
+    {
+      "path": "public/locales/pseudo-LOCALE/grafana.json",
+      "language": "json",
+      "added": 6,
+      "deleted": 0
+    }
+  ],
+  "nearest_tests": [
+    {
+      "path": "public/app/plugins/datasource/elasticsearch/hooks/useStatelessReducer.test.tsx",
+      "relationship": "tests",
+      "source_file": "public/app/features/expressions/components/Reduce.tsx"
+    },
+    {
+      "path": "public/app/features/variables/state/transactionReducer.test.ts",
+      "relationship": "tests",
+      "source_file": "public/app/features/expressions/components/Reduce.tsx"
+    },
+    {
+      "path": "public/app/features/variables/state/sharedReducer.test.ts",
+      "relationship": "tests",
+      "source_file": "public/app/features/expressions/components/Reduce.tsx"
+    },
+    {
+      "path": "public/app/features/variables/state/keyedVariablesReducer.test.ts",
+      "relationship": "tests",
+      "source_file": "public/app/features/expressions/components/Reduce.tsx"
+    },
+    {
+      "path": "packages/grafana-data/src/transformations/fieldReducer.test.ts",
+      "relationship": "tests",
+      "source_file": "public/app/features/expressions/components/Reduce.tsx"
+    },
+    {
+      "path": "tools/setup_grafana_alertmanager_integration_test_images.go",
+      "relationship": "tests",
+      "source_file": "public/locales/en-US/grafana.json"
+    },
+    {
+      "path": "e2e-playwright/test-plugins/grafana-test-datasource/locales/es-ES/grafana-e2etest-datasource.json",
+      "relationship": "tests",
+      "source_file": "public/locales/en-US/grafana.json"
+    },
+    {
+      "path": "e2e-playwright/test-plugins/grafana-test-datasource/locales/sv-SE/grafana-e2etest-datasource.json",
+      "relationship": "tests",
+      "source_file": "public/locales/en-US/grafana.json"
+    },
+    {
+      "path": "e2e-playwright/test-plugins/grafana-test-datasource/locales/en-US/grafana-e2etest-datasource.json",
+      "relationship": "tests",
+      "source_file": "public/locales/en-US/grafana.json"
+    },
+    {
+      "path": "e2e-playwright/test-plugins/grafana-test-panel/locales/es-ES/grafana-e2etest-panel.json",
+      "relationship": "tests",
+      "source_file": "public/locales/en-US/grafana.json"
+    }
+  ],
+  "dependent_files": [
+    {
+      "path": "e2e-playwright/panels-suite/panelEdit_transforms.spec.ts",
+      "relationship": "imports",
+      "source_file": "public/app/features/expressions/components/Reduce.tsx"
+    },
+    {
+      "path": "e2e-playwright/panels-suite/table-footer.spec.ts",
+      "relationship": "imports",
+      "source_file": "public/app/features/expressions/components/Reduce.tsx"
+    },
+    {
+      "path": "public/app/types/store.ts",
+      "relationship": "imports",
+      "source_file": "public/app/features/expressions/components/Reduce.tsx"
+    },
+    {
+      "path": "public/app/core/components/Select/MetricSelect.test.tsx",
+      "relationship": "imports",
+      "source_file": "public/app/features/expressions/components/Reduce.tsx"
+    },
+    {
+      "path": "public/app/core/reducers/navModel.ts",
+      "relationship": "imports",
+      "source_file": "public/app/features/expressions/components/Reduce.tsx"
+    },
+    {
+      "path": "public/app/core/reducers/root.ts",
+      "relationship": "imports",
+      "source_file": "public/app/features/expressions/components/Reduce.tsx"
+    },
+    {
+      "path": "public/app/core/reducers/navBarTree.ts",
+      "relationship": "imports",
+      "source_file": "public/app/features/expressions/components/Reduce.tsx"
+    },
+    {
+      "path": "public/app/core/reducers/navModel.test.ts",
+      "relationship": "imports",
+      "source_file": "public/app/features/expressions/components/Reduce.tsx"
+    },
+    {
+      "path": "public/app/core/reducers/appNotification.ts",
+      "relationship": "imports",
+      "source_file": "public/app/features/expressions/components/Reduce.tsx"
+    },
+    {
+      "path": "public/app/core/reducers/index.ts",
+      "relationship": "imports",
+      "source_file": "public/app/features/expressions/components/Reduce.tsx"
+    },
+    {
+      "path": "embed.go",
+      "relationship": "imports",
+      "source_file": "public/locales/en-US/grafana.json"
+    },
+    {
+      "path": "playwright.storybook.config.ts",
+      "relationship": "imports",
+      "source_file": "public/locales/en-US/grafana.json"
+    },
+    {
+      "path": "tools/setup_grafana_alertmanager_integration_test_images.go",
+      "relationship": "imports",
+      "source_file": "public/locales/en-US/grafana.json"
+    },
+    {
+      "path": "devenv/jsonnet/dev-dashboards.go",
+      "relationship": "imports",
+      "source_file": "public/locales/en-US/grafana.json"
+    },
+    {
+      "path": "devenv/scopes/scopes.go",
+      "relationship": "imports",
+      "source_file": "public/locales/en-US/grafana.json"
+    }
+  ],
+  "diff_summary": "3 files changed",
+  "full_diff": "diff --git a/public/app/features/expressions/components/Reduce.tsx b/public/app/features/expressions/components/Reduce.tsx\nindex dfedab25f86e9..6793b32af5074 100644\n--- a/public/app/features/expressions/components/Reduce.tsx\n+++ b/public/app/features/expressions/components/Reduce.tsx\n@@ -1,7 +1,8 @@\n import * as React from 'react';\n \n import { SelectableValue } from '@grafana/data';\n-import { InlineField, InlineFieldRow, Input, Select } from '@grafana/ui';\n+import { InlineField, InlineFieldRow, Input, Select, Alert } from '@grafana/ui';\n+import { Trans, t } from 'app/core/internationalization';\n \n import { ExpressionQuery, ExpressionQuerySettings, ReducerMode, reducerModes, reducerTypes } from '../types';\n \n@@ -30,6 +31,10 @@ export const Reduce = ({ labelWidth = 'auto', onChange, refIds, query }: Props)\n   const onModeChanged = (value: SelectableValue<ReducerMode>) => {\n     let newSettings: ExpressionQuerySettings;\n     switch (value.value) {\n+      case ReducerMode.Strict:\n+        newSettings = { mode: ReducerMode.Strict };\n+        break;\n+\n       case ReducerMode.ReplaceNonNumbers:\n         let replaceWithNumber = 0;\n         if (query.settings?.mode === ReducerMode.ReplaceNonNumbers) {\n@@ -40,6 +45,7 @@ export const Reduce = ({ labelWidth = 'auto', onChange, refIds, query }: Props)\n           replaceWithValue: replaceWithNumber,\n         };\n         break;\n+\n       default:\n         newSettings = {\n           mode: value.value,\n@@ -66,8 +72,30 @@ export const Reduce = ({ labelWidth = 'auto', onChange, refIds, query }: Props)\n     );\n   };\n \n+  const strictModeNotification = () => {\n+    if (mode !== ReducerMode.Strict) {\n+      return null;\n+    }\n+    return (\n+      <Alert title={t('reduce.strictMode.title', 'Strict Mode Behaviour')} severity=\"info\">\n+        <Trans i18nKey=\"reduce.strictMode.description\">\n+          When <code>Reduce Strict mode</code> is used, the <code>fill(null)</code> function (InfluxQL) will result in{' '}\n+          <code>NaN</code>.{' '}\n+          <a\n+            href=\"https://grafana.com/docs/grafana/latest/panels-visualizations/query-transform-data/expression-queries/#sum\"\n+            target=\"_blank\"\n+            rel=\"noopener noreferrer\"\n+          >\n+            See the documentation for more details.\n+          </a>\n+        </Trans>\n+      </Alert>\n+    );\n+  };\n+\n   return (\n     <>\n+      {strictModeNotification()}\n       <InlineFieldRow>\n         <InlineField label=\"Input\" labelWidth={labelWidth}>\n           <Select onChange={onRefIdChange} options={refIds} value={query.expression} width={'auto'} />\ndiff --git a/public/locales/en-US/grafana.json b/public/locales/en-US/grafana.json\nindex 95355002715d7..4ab0a0f5d4ded 100644\n--- a/public/locales/en-US/grafana.json\n+++ b/public/locales/en-US/grafana.json\n@@ -2781,6 +2781,12 @@\n       \"placeholder\": \"Search for dashboards\"\n     }\n   },\n+  \"reduce\": {\n+    \"strictMode\": {\n+      \"description\": \"When <1>Reduce Strict mode</1> is used, the <3>fill(null)</3> function (InfluxQL) will result in <6>NaN</6>. <9>See the documentation for more details.</9>\",\n+      \"title\": \"Strict Mode Behaviour\"\n+    }\n+  },\n   \"refresh-picker\": {\n     \"aria-label\": {\n       \"choose-interval\": \"Auto refresh turned off. Choose refresh time interval\",\ndiff --git a/public/locales/pseudo-LOCALE/grafana.json b/public/locales/pseudo-LOCALE/grafana.json\nindex bfa13c24af152..6478df1fae96d 100644\n--- a/public/locales/pseudo-LOCALE/grafana.json\n+++ b/public/locales/pseudo-LOCALE/grafana.json\n@@ -2781,6 +2781,12 @@\n       \"placeholder\": \"\u015c\u0119\u00e4\u0159\u010d\u0125 \u0192\u0151\u0159 \u0111\u00e4\u015f\u0125\u00fe\u0151\u00e4\u0159\u0111\u015f\"\n     }\n   },\n+  \"reduce\": {\n+    \"strictMode\": {\n+      \"description\": \"\u0174\u0125\u0119\u0149 <1>\u0156\u0119\u0111\u016b\u010d\u0119 \u015c\u0167\u0159\u012f\u010d\u0167 m\u0151\u0111\u0119</1> \u012f\u015f \u016b\u015f\u0119\u0111, \u0167\u0125\u0119 <3>\u0192\u012f\u013e\u013e(\u0149\u016b\u013e\u013e)</3> \u0192\u016b\u0149\u010d\u0167\u012f\u0151\u0149 (\u0128\u0149\u0192\u013e\u016b\u03c7Q\u013f) \u0175\u012f\u013e\u013e \u0159\u0119\u015f\u016b\u013e\u0167 \u012f\u0149 <6>\u0143\u00e4\u0143</6>. <9>\u015c\u0119\u0119 \u0167\u0125\u0119 \u0111\u0151\u010d\u016bm\u0119\u0149\u0167\u00e4\u0167\u012f\u0151\u0149 \u0192\u0151\u0159 m\u0151\u0159\u0119 \u0111\u0119\u0167\u00e4\u012f\u013e\u015f.</9>\",\n+      \"title\": \"\u015c\u0167\u0159\u012f\u010d\u0167 M\u0151\u0111\u0119 \u00df\u0119\u0125\u00e4v\u012f\u0151\u016b\u0159\"\n+    }\n+  },\n   \"refresh-picker\": {\n     \"aria-label\": {\n       \"choose-interval\": \"\u00c5\u016b\u0167\u0151 \u0159\u0119\u0192\u0159\u0119\u015f\u0125 \u0167\u016b\u0159\u0149\u0119\u0111 \u0151\u0192\u0192. C\u0125\u0151\u0151\u015f\u0119 \u0159\u0119\u0192\u0159\u0119\u015f\u0125 \u0167\u012fm\u0119 \u012f\u0149\u0167\u0119\u0159v\u00e4\u013e\",\n",
+  "metadata": {
+    "v2_fetcher_version": 1,
+    "v2_fetched_at_unix": 1777501077,
+    "v2_diff_cap_bytes": 50000,
+    "v2_body_cap_bytes": 8000,
+    "v2_diff_truncated": false,
+    "v2_raw_diff_chars": 3990,
+    "v2_raw_body_chars": 2787,
+    "v2_rag_source": "merged_from_v1",
+    "v2_rag_chunks_copied": 8
+  },
+  "similar_chunks": [
+    {
+      "file": "public/app/features/expressions/components/Resample.tsx",
+      "start_line": 1,
+      "end_line": 52,
+      "similarity": 0.7922,
+      "related_to": "public/app/features/expressions/components/Reduce.tsx",
+      "content_preview": "import { ChangeEvent } from 'react';\n\nimport { SelectableValue } from '@grafana/data';\nimport { t } from '@grafana/i18n';\nimport { InlineField, InlineFieldRow, Input, Select } from '@grafana/ui';\n\nimport { downsamplingTypes, ExpressionQuery, upsamplingTypes } from '../types';\n\ninterface Props {\n  refIds: Array<SelectableValue<string>>;\n  query: ExpressionQuery;\n  labelWidth?: number | 'auto';\n  onChange: (query: ExpressionQuery) => void;\n}\n\nexport const Resample = ({ labelWidth = 'auto', onChange, refIds, query }: Props) => {\n  const downsampler = downsamplingTypes.find((o) => o.value === query.downsampler);\n  const upsampler = upsamplingTypes.find((o) => o.value === query.upsampler);\n\n  const onWindowChange = (event: ChangeEvent<HTMLInputElement>) => {\n    onChange({ ...query, window: eve"
+    },
+    {
+      "file": "public/app/features/expressions/components/Math.tsx",
+      "start_line": 1,
+      "end_line": 61,
+      "similarity": 0.7591,
+      "related_to": "public/app/features/expressions/components/Reduce.tsx",
+      "content_preview": "import { css } from '@emotion/css';\nimport { ChangeEvent } from 'react';\nimport * as React from 'react';\n\nimport { GrafanaTheme2 } from '@grafana/data';\nimport { Trans, t } from '@grafana/i18n';\nimport { Icon, InlineField, InlineLabel, TextArea, Toggletip, useStyles2, Stack, TextLink } from '@grafana/ui';\n\nimport { ExpressionQuery } from '../types';\n\ninterface Props {\n  labelWidth: number | 'auto';\n  query: ExpressionQuery;\n  onChange: (query: ExpressionQuery) => void;\n  onRunQuery: () => void;\n}\n\nconst mathPlaceholder =\n  'Math operations on one or more queries. You reference the query by ${refId} ie. $A, $B, $C etc\\n' +\n  'The sum of two scalar values: $A + $B > 10';\n\nexport const Math = ({ labelWidth, onChange, query, onRunQuery }: Props) => {\n  const onExpressionChange = (event: Change"
+    },
+    {
+      "file": "public/app/features/expressions/components/Condition.tsx",
+      "start_line": 1,
+      "end_line": 59,
+      "similarity": 0.749,
+      "related_to": "public/app/features/expressions/components/Reduce.tsx",
+      "content_preview": "import { css, cx } from '@emotion/css';\nimport { FormEvent } from 'react';\n\nimport { GrafanaTheme2, SelectableValue } from '@grafana/data';\nimport { Trans } from '@grafana/i18n';\nimport { Button, ButtonSelect, Icon, InlineFieldRow, Input, Select, useStyles2, Stack } from '@grafana/ui';\n\nimport alertDef, { EvalFunction } from '../../alerting/state/alertDef';\nimport { ClassicCondition, ReducerType } from '../types';\n\ninterface Props {\n  condition: ClassicCondition;\n  onChange: (condition: ClassicCondition) => void;\n  onRemoveCondition: (id: number) => void;\n  index: number;\n  refIds: Array<SelectableValue<string>>;\n}\n\nconst reducerFunctions = alertDef.reducerTypes.map<{\n  label: string;\n  value: ReducerType;\n}>((rt) => ({ label: rt.text, value: rt.value }));\nconst evalOperators = alertDef.ev"
+    },
+    {
+      "file": "public/app/features/expressions/components/Threshold.tsx",
+      "start_line": 1,
+      "end_line": 62,
+      "similarity": 0.7374,
+      "related_to": "public/app/features/expressions/components/Reduce.tsx",
+      "content_preview": "import { css } from '@emotion/css';\nimport { AnyAction } from '@reduxjs/toolkit';\nimport { uniqueId } from 'lodash';\nimport * as React from 'react';\nimport { FormEvent, useEffect, useReducer } from 'react';\n\nimport { GrafanaTheme2, SelectableValue } from '@grafana/data';\nimport { t } from '@grafana/i18n';\nimport { InlineField, InlineFieldRow, InlineSwitch, Input, Select, Stack, useStyles2 } from '@grafana/ui';\nimport { EvalFunction } from 'app/features/alerting/state/alertDef';\n\nimport { ClassicCondition, ExpressionQuery, thresholdFunctions } from '../types';\n\nimport { ThresholdSelect } from './ThresholdSelect';\nimport { ToLabel } from './ToLabel';\nimport {\n  isInvalid,\n  thresholdReducer,\n  updateHysteresisChecked,\n  updateRefId,\n  updateThresholdParams,\n  updateThresholdType,\n  updateUnl"
+    },
+    {
+      "file": "public/app/features/expressions/components/ClassicConditions.tsx",
+      "start_line": 1,
+      "end_line": 68,
+      "similarity": 0.7297,
+      "related_to": "public/app/features/expressions/components/Reduce.tsx",
+      "content_preview": "import { SelectableValue } from '@grafana/data';\nimport { t } from '@grafana/i18n';\nimport { Button, Icon, InlineField, InlineFieldRow } from '@grafana/ui';\n\nimport { ClassicCondition, ExpressionQuery } from '../types';\nimport { defaultCondition } from '../utils/expressionTypes';\n\nimport { Condition } from './Condition';\n\ninterface Props {\n  query: ExpressionQuery;\n  refIds: Array<SelectableValue<string>>;\n  onChange: (query: ExpressionQuery) => void;\n}\n\nexport const ClassicConditions = ({ onChange, query, refIds }: Props) => {\n  const onConditionChange = (condition: ClassicCondition, index: number) => {\n    if (query.conditions) {\n      onChange({\n        ...query,\n        conditions: [...query.conditions.slice(0, index), condition, ...query.conditions.slice(index + 1)],\n      });\n    }\n "
+    },
+    {
+      "file": "public/app/features/expressions/utils/expressionTypes.ts",
+      "start_line": 1,
+      "end_line": 87,
+      "similarity": 0.7066,
+      "related_to": "public/app/features/expressions/components/Reduce.tsx",
+      "content_preview": "import { ReducerID } from '@grafana/data';\n\nimport { EvalFunction } from '../../alerting/state/alertDef';\nimport { isReducerType } from '../guards';\nimport { ClassicCondition, ExpressionQuery, ExpressionQueryType, ReducerMode, ReducerType } from '../types';\n\nexport const getDefaults = (query: ExpressionQuery) => {\n  switch (query.type) {\n    case ExpressionQueryType.reduce:\n      if (!query.reducer) {\n        query.reducer = ReducerID.mean;\n      }\n\n      break;\n\n    case ExpressionQueryType.resample:\n      if (!query.downsampler) {\n        query.downsampler = ReducerID.mean;\n      }\n\n      if (!query.upsampler) {\n        query.upsampler = 'fillna';\n      }\n\n      query.reducer = undefined;\n      break;\n\n    case ExpressionQueryType.math:\n      query.expression = undefined;\n      break;\n\n "
+    },
+    {
+      "file": "public/app/features/expressions/components/Threshold.tsx",
+      "start_line": 58,
+      "end_line": 108,
+      "similarity": 0.7024,
+      "related_to": "public/app/features/expressions/components/Reduce.tsx",
+      "content_preview": "holdReducer.\n  const [queryState, dispatch] = useReducer(thresholdReducer, initialExpression);\n  const conditionInState = queryState.conditions[0];\n\n  const thresholdFunction = thresholdFunctions.find((fn) => fn.value === queryState.conditions[0].evaluator?.type);\n\n  const onRefIdChange = (value: SelectableValue<string>) => {\n    dispatch(updateRefId(value.value));\n  };\n\n  // any change in the queryState will trigger the onChange function.\n  useEffect(() => {\n    queryState && onChange(queryState);\n    // eslint-disable-next-line react-hooks/exhaustive-deps\n  }, [queryState]);\n\n  const onEvalFunctionChange = (value: SelectableValue<EvalFunction>) => {\n    dispatch(updateThresholdType({ evalFunction: value.value ?? defaultThresholdFunction, onError }));\n  };\n\n  const onEvaluateValueChange ="
+    },
+    {
+      "file": "public/app/features/expressions/ExpressionQueryEditor.tsx",
+      "start_line": 93,
+      "end_line": 150,
+      "similarity": 0.6633,
+      "related_to": "public/app/features/expressions/components/Reduce.tsx",
+      "content_preview": "s) {\n  const { query, queries, onRunQuery, onChange, app } = props;\n  const { getCachedExpression, setCachedExpression } = useExpressionsCache();\n\n  const styles = useStyles2(getStyles);\n\n  useEffect(() => {\n    setCachedExpression(query.type, query.expression);\n  }, [query.expression, query.type, setCachedExpression]);\n\n  const onSelectExpressionType = useCallback(\n    (value: ExpressionQueryType) => {\n      const cachedExpression = getCachedExpression(value!);\n      const defaults = getDefaults({ ...query, type: value! });\n\n      onChange({ ...defaults, expression: cachedExpression ?? defaults.expression });\n    },\n    [query, onChange, getCachedExpression]\n  );\n\n  const renderExpressionType = () => {\n    const refIds = queries!.filter((q) => query.refId !== q.refId).map((q) => ({ value:"
+    }
+  ],
+  "rag_evidence": {
+    "similar_code": [
+      {
+        "file": "public/app/features/expressions/components/Resample.tsx",
+        "start_line": 1,
+        "end_line": 52,
+        "similarity": 0.7922,
+        "related_to": "public/app/features/expressions/components/Reduce.tsx",
+        "content_preview": "import { ChangeEvent } from 'react';\n\nimport { SelectableValue } from '@grafana/data';\nimport { t } from '@grafana/i18n';\nimport { InlineField, InlineFieldRow, Input, Select } from '@grafana/ui';\n\nimport { downsamplingTypes, ExpressionQuery, upsamplingTypes } from '../types';\n\ninterface Props {\n  refIds: Array<SelectableValue<string>>;\n  query: ExpressionQuery;\n  labelWidth?: number | 'auto';\n  onChange: (query: ExpressionQuery) => void;\n}\n\nexport const Resample = ({ labelWidth = 'auto', onChange, refIds, query }: Props) => {\n  const downsampler = downsamplingTypes.find((o) => o.value === query.downsampler);\n  const upsampler = upsamplingTypes.find((o) => o.value === query.upsampler);\n\n  const onWindowChange = (event: ChangeEvent<HTMLInputElement>) => {\n    onChange({ ...query, window: eve"
+      },
+      {
+        "file": "public/app/features/expressions/components/Math.tsx",
+        "start_line": 1,
+        "end_line": 61,
+        "similarity": 0.7591,
+        "related_to": "public/app/features/expressions/components/Reduce.tsx",
+        "content_preview": "import { css } from '@emotion/css';\nimport { ChangeEvent } from 'react';\nimport * as React from 'react';\n\nimport { GrafanaTheme2 } from '@grafana/data';\nimport { Trans, t } from '@grafana/i18n';\nimport { Icon, InlineField, InlineLabel, TextArea, Toggletip, useStyles2, Stack, TextLink } from '@grafana/ui';\n\nimport { ExpressionQuery } from '../types';\n\ninterface Props {\n  labelWidth: number | 'auto';\n  query: ExpressionQuery;\n  onChange: (query: ExpressionQuery) => void;\n  onRunQuery: () => void;\n}\n\nconst mathPlaceholder =\n  'Math operations on one or more queries. You reference the query by ${refId} ie. $A, $B, $C etc\\n' +\n  'The sum of two scalar values: $A + $B > 10';\n\nexport const Math = ({ labelWidth, onChange, query, onRunQuery }: Props) => {\n  const onExpressionChange = (event: Change"
+      },
+      {
+        "file": "public/app/features/expressions/components/Condition.tsx",
+        "start_line": 1,
+        "end_line": 59,
+        "similarity": 0.749,
+        "related_to": "public/app/features/expressions/components/Reduce.tsx",
+        "content_preview": "import { css, cx } from '@emotion/css';\nimport { FormEvent } from 'react';\n\nimport { GrafanaTheme2, SelectableValue } from '@grafana/data';\nimport { Trans } from '@grafana/i18n';\nimport { Button, ButtonSelect, Icon, InlineFieldRow, Input, Select, useStyles2, Stack } from '@grafana/ui';\n\nimport alertDef, { EvalFunction } from '../../alerting/state/alertDef';\nimport { ClassicCondition, ReducerType } from '../types';\n\ninterface Props {\n  condition: ClassicCondition;\n  onChange: (condition: ClassicCondition) => void;\n  onRemoveCondition: (id: number) => void;\n  index: number;\n  refIds: Array<SelectableValue<string>>;\n}\n\nconst reducerFunctions = alertDef.reducerTypes.map<{\n  label: string;\n  value: ReducerType;\n}>((rt) => ({ label: rt.text, value: rt.value }));\nconst evalOperators = alertDef.ev"
+      },
+      {
+        "file": "public/app/features/expressions/components/Threshold.tsx",
+        "start_line": 1,
+        "end_line": 62,
+        "similarity": 0.7374,
+        "related_to": "public/app/features/expressions/components/Reduce.tsx",
+        "content_preview": "import { css } from '@emotion/css';\nimport { AnyAction } from '@reduxjs/toolkit';\nimport { uniqueId } from 'lodash';\nimport * as React from 'react';\nimport { FormEvent, useEffect, useReducer } from 'react';\n\nimport { GrafanaTheme2, SelectableValue } from '@grafana/data';\nimport { t } from '@grafana/i18n';\nimport { InlineField, InlineFieldRow, InlineSwitch, Input, Select, Stack, useStyles2 } from '@grafana/ui';\nimport { EvalFunction } from 'app/features/alerting/state/alertDef';\n\nimport { ClassicCondition, ExpressionQuery, thresholdFunctions } from '../types';\n\nimport { ThresholdSelect } from './ThresholdSelect';\nimport { ToLabel } from './ToLabel';\nimport {\n  isInvalid,\n  thresholdReducer,\n  updateHysteresisChecked,\n  updateRefId,\n  updateThresholdParams,\n  updateThresholdType,\n  updateUnl"
+      },
+      {
+        "file": "public/app/features/expressions/components/ClassicConditions.tsx",
+        "start_line": 1,
+        "end_line": 68,
+        "similarity": 0.7297,
+        "related_to": "public/app/features/expressions/components/Reduce.tsx",
+        "content_preview": "import { SelectableValue } from '@grafana/data';\nimport { t } from '@grafana/i18n';\nimport { Button, Icon, InlineField, InlineFieldRow } from '@grafana/ui';\n\nimport { ClassicCondition, ExpressionQuery } from '../types';\nimport { defaultCondition } from '../utils/expressionTypes';\n\nimport { Condition } from './Condition';\n\ninterface Props {\n  query: ExpressionQuery;\n  refIds: Array<SelectableValue<string>>;\n  onChange: (query: ExpressionQuery) => void;\n}\n\nexport const ClassicConditions = ({ onChange, query, refIds }: Props) => {\n  const onConditionChange = (condition: ClassicCondition, index: number) => {\n    if (query.conditions) {\n      onChange({\n        ...query,\n        conditions: [...query.conditions.slice(0, index), condition, ...query.conditions.slice(index + 1)],\n      });\n    }\n "
+      },
+      {
+        "file": "public/app/features/expressions/utils/expressionTypes.ts",
+        "start_line": 1,
+        "end_line": 87,
+        "similarity": 0.7066,
+        "related_to": "public/app/features/expressions/components/Reduce.tsx",
+        "content_preview": "import { ReducerID } from '@grafana/data';\n\nimport { EvalFunction } from '../../alerting/state/alertDef';\nimport { isReducerType } from '../guards';\nimport { ClassicCondition, ExpressionQuery, ExpressionQueryType, ReducerMode, ReducerType } from '../types';\n\nexport const getDefaults = (query: ExpressionQuery) => {\n  switch (query.type) {\n    case ExpressionQueryType.reduce:\n      if (!query.reducer) {\n        query.reducer = ReducerID.mean;\n      }\n\n      break;\n\n    case ExpressionQueryType.resample:\n      if (!query.downsampler) {\n        query.downsampler = ReducerID.mean;\n      }\n\n      if (!query.upsampler) {\n        query.upsampler = 'fillna';\n      }\n\n      query.reducer = undefined;\n      break;\n\n    case ExpressionQueryType.math:\n      query.expression = undefined;\n      break;\n\n "
+      },
+      {
+        "file": "public/app/features/expressions/components/Threshold.tsx",
+        "start_line": 58,
+        "end_line": 108,
+        "similarity": 0.7024,
+        "related_to": "public/app/features/expressions/components/Reduce.tsx",
+        "content_preview": "holdReducer.\n  const [queryState, dispatch] = useReducer(thresholdReducer, initialExpression);\n  const conditionInState = queryState.conditions[0];\n\n  const thresholdFunction = thresholdFunctions.find((fn) => fn.value === queryState.conditions[0].evaluator?.type);\n\n  const onRefIdChange = (value: SelectableValue<string>) => {\n    dispatch(updateRefId(value.value));\n  };\n\n  // any change in the queryState will trigger the onChange function.\n  useEffect(() => {\n    queryState && onChange(queryState);\n    // eslint-disable-next-line react-hooks/exhaustive-deps\n  }, [queryState]);\n\n  const onEvalFunctionChange = (value: SelectableValue<EvalFunction>) => {\n    dispatch(updateThresholdType({ evalFunction: value.value ?? defaultThresholdFunction, onError }));\n  };\n\n  const onEvaluateValueChange ="
+      },
+      {
+        "file": "public/app/features/expressions/ExpressionQueryEditor.tsx",
+        "start_line": 93,
+        "end_line": 150,
+        "similarity": 0.6633,
+        "related_to": "public/app/features/expressions/components/Reduce.tsx",
+        "content_preview": "s) {\n  const { query, queries, onRunQuery, onChange, app } = props;\n  const { getCachedExpression, setCachedExpression } = useExpressionsCache();\n\n  const styles = useStyles2(getStyles);\n\n  useEffect(() => {\n    setCachedExpression(query.type, query.expression);\n  }, [query.expression, query.type, setCachedExpression]);\n\n  const onSelectExpressionType = useCallback(\n    (value: ExpressionQueryType) => {\n      const cachedExpression = getCachedExpression(value!);\n      const defaults = getDefaults({ ...query, type: value! });\n\n      onChange({ ...defaults, expression: cachedExpression ?? defaults.expression });\n    },\n    [query, onChange, getCachedExpression]\n  );\n\n  const renderExpressionType = () => {\n    const refIds = queries!.filter((q) => query.refId !== q.refId).map((q) => ({ value:"
+      }
+    ]
+  }
+}

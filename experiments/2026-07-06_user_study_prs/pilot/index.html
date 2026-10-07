@@ -1,0 +1,1956 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PR Review — Human Evaluation Study (v4)</title>
+<style>
+:root {
+  --bg0:#0d1117;--bg1:#161b22;--bg2:#21262d;--bg3:#292e36;
+  --brd:#30363d;--t1:#e6edf3;--t2:#adbac7;--t3:#848d97;
+  --blue:#58a6ff;--green:#3fb950;--red:#f85149;
+  --orange:#d29922;--purple:#a371f7;--pink:#db61a2;
+  --diff-add-bg:rgba(63,185,80,.13);--diff-add-txt:#aff5b4;
+  --diff-del-bg:rgba(248,81,73,.13);--diff-del-txt:#ffd7d5;
+}
+[data-theme="light"] {
+  --bg0:#ffffff;--bg1:#f6f8fa;--bg2:#e8ecf0;--bg3:#d0d7de;
+  --brd:#d0d7de;--t1:#1f2328;--t2:#656d76;--t3:#8b949e;
+  --blue:#0969da;--green:#1a7f37;--red:#cf222e;
+  --orange:#9a6700;--purple:#8250df;--pink:#bf3989;
+  --diff-add-bg:rgba(26,127,55,.12);--diff-add-txt:#1a7f37;
+  --diff-del-bg:rgba(207,34,46,.12);--diff-del-txt:#cf222e;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif;background:var(--bg0);color:var(--t1);min-height:100vh;line-height:1.6}
+.container{max-width:1600px;margin:0 auto;padding:20px}
+.screen{display:none}.screen.active{display:block}
+
+/* ── Welcome ── */
+#welcome.active{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:90vh;text-align:center}
+#welcome h1{font-size:2rem;font-weight:700;margin-bottom:6px;color:var(--blue)}
+#welcome .sub{color:var(--t2);margin-bottom:28px}
+.wcard{background:var(--bg1);border:1px solid var(--brd);border-radius:12px;padding:28px;max-width:640px;width:100%;text-align:left}
+.wcard p,.wcard li{color:var(--t2);font-size:.92rem;margin-bottom:6px}
+.wcard ol,.wcard ul{margin-left:18px;margin-bottom:12px}
+.igroup{margin-top:20px;display:flex;gap:10px}
+.igroup input{flex:1;background:var(--bg2);border:1px solid var(--brd);border-radius:8px;padding:10px 14px;color:var(--t1);font-size:.95rem;outline:none}
+.igroup input:focus{border-color:var(--blue)}
+#resumeNote{margin-top:10px;font-size:.82rem;color:var(--green);display:none}
+#tabWarn{margin-top:8px;font-size:.82rem;color:var(--orange);display:none;line-height:1.5}
+
+/* ── Consent ── */
+#consent.active{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:90vh;text-align:center}
+.consent-card{background:var(--bg1);border:1px solid var(--brd);border-radius:12px;padding:28px 32px;max-width:720px;width:100%;text-align:left}
+.consent-card h2{font-size:1.2rem;color:var(--blue);margin-bottom:16px;text-align:center}
+.consent-card p{color:var(--t2);font-size:.9rem;margin-bottom:10px;line-height:1.65}
+.consent-card ul{margin-left:18px;margin-bottom:14px}
+.consent-card li{color:var(--t2);font-size:.9rem;margin-bottom:4px}
+.consent-check{display:flex;align-items:flex-start;gap:10px;margin:20px 0 16px;padding:14px;background:var(--bg2);border-radius:8px;border:1px solid var(--brd)}
+.consent-check input[type=checkbox]{margin-top:3px;width:18px;height:18px;accent-color:var(--blue);flex-shrink:0}
+.consent-check label{color:var(--t1);font-size:.9rem;font-weight:600;cursor:pointer}
+
+/* ── Demographics ── */
+#demographics.active{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:90vh}
+.demo-card{background:var(--bg1);border:1px solid var(--brd);border-radius:12px;padding:28px 32px;max-width:720px;width:100%;text-align:left}
+.demo-card h2{font-size:1.2rem;color:var(--blue);margin-bottom:6px;text-align:center}
+.demo-card p.demo-sub{color:var(--t2);font-size:.88rem;margin-bottom:18px;text-align:center}
+.demo-group{margin-bottom:16px}
+.demo-group .demo-q{display:block;font-size:.88rem;font-weight:600;color:var(--t1);margin-bottom:6px}
+.demo-opts{display:flex;gap:0;flex-wrap:wrap}
+.demo-opts label{flex:1;min-width:0;text-align:center;cursor:pointer;padding:8px 6px;border:1px solid var(--brd);background:var(--bg2);color:var(--t3);font-size:.78rem;font-weight:600;transition:all .15s;white-space:nowrap}
+.demo-opts label:first-child{border-radius:6px 0 0 6px}
+.demo-opts label:last-child{border-radius:0 6px 6px 0}
+.demo-opts label:hover{background:var(--bg3);color:var(--t2)}
+.demo-opts input{display:none}
+.demo-opts label.selected{background:var(--blue);border-color:var(--blue);color:#fff}
+/* Occupation labels name the role explicitly ("Junior Developer", not
+   "Junior"), which needs two lines per cell to keep all six on one row. */
+.demo-opts.wrap2 label{white-space:normal;line-height:1.2;display:flex;align-items:center;justify-content:center;min-height:40px;padding:6px 4px}
+.demo-other{margin-top:8px;width:100%;background:var(--bg2);border:1px solid var(--brd);border-radius:6px;padding:8px 10px;color:var(--t1);font-size:.8rem;display:none}
+.demo-other.show{display:block}
+
+/* ── Briefing ── */
+#briefing .brief-card{background:var(--bg1);border:1px solid var(--brd);border-radius:12px;padding:28px;margin-bottom:20px;max-width:900px;margin-left:auto;margin-right:auto}
+#briefing .brief-card h2{font-size:1.15rem;color:var(--blue);margin-bottom:12px}
+#briefing .brief-card h3{font-size:1rem;color:var(--purple);margin:16px 0 8px}
+#briefing .brief-card p,#briefing .brief-card li{color:var(--t2);font-size:.9rem;margin-bottom:6px;line-height:1.6}
+#briefing .brief-card ol,#briefing .brief-card ul{margin-left:18px;margin-bottom:12px}
+.brief-nav{display:flex;justify-content:center;gap:12px;margin:24px auto 0;max-width:900px}
+
+/* ── Buttons ── */
+.btn{display:inline-flex;align-items:center;gap:6px;padding:10px 20px;border-radius:8px;border:none;font-size:.9rem;font-weight:600;cursor:pointer;transition:all .15s}
+.btn:disabled{opacity:.4;cursor:not-allowed}
+.btn-p{background:var(--blue);color:#fff}.btn-p:hover:not(:disabled){filter:brightness(1.15)}
+.btn-s{background:var(--bg2);color:var(--t1);border:1px solid var(--brd)}.btn-s:hover{background:var(--bg3)}
+.btn-g{background:var(--green);color:#fff}.btn-g:hover{filter:brightness(1.15)}
+
+/* ── Topbar ── */
+.topbar{display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--brd);margin-bottom:16px;flex-wrap:wrap;gap:10px}
+.topbar .logo{font-weight:700;color:var(--blue);font-size:.95rem}
+.pbar{width:180px;height:5px;background:var(--bg2);border-radius:3px;overflow:hidden;display:inline-block;vertical-align:middle;margin:0 8px}
+/* display:block is load-bearing — as an inline span the fill ignored the width
+   set on it in updProg(), so the bar rendered as an empty track at every step. */
+.pfill{display:block;width:0;height:100%;background:linear-gradient(90deg,var(--blue),var(--purple));border-radius:3px;transition:width .3s}
+.ptxt{font-size:.82rem;color:var(--t2)}
+.timer{font-family:monospace;font-size:.82rem;color:var(--t3)}
+
+/* ── PR Header ── */
+.prh{background:var(--bg1);border:1px solid var(--brd);border-radius:10px;padding:16px;margin-bottom:12px}
+.prh .title{font-size:1.05rem;font-weight:600;margin-bottom:4px}
+.prh .meta{font-size:.82rem;color:var(--t2);display:flex;gap:14px;flex-wrap:wrap;align-items:center}
+.prh .meta a{color:var(--blue);text-decoration:none}
+/* The GitHub link is the only route to code the diff does not contain, so it is
+   a button rather than a run of link text in the metadata row. */
+.prh .meta a#prLink{margin-left:auto;display:inline-flex;align-items:center;gap:6px;font-weight:600;font-size:.8rem;padding:5px 13px;border:1px solid var(--blue);border-radius:16px;background:var(--bg2);transition:background .15s,color .15s}
+.prh .meta a#prLink:hover{background:var(--blue);color:#fff}
+.prh .meta a#prLink .ext{font-size:.9em;line-height:1}
+
+/* ── Diff ── */
+.diff-section{background:var(--bg1);border:1px solid var(--brd);border-radius:8px;margin-bottom:12px;overflow:hidden}
+.diff-header{padding:8px 14px;font-weight:600;font-size:.85rem;color:var(--t2);background:var(--bg2);border-bottom:1px solid var(--brd);cursor:pointer;display:flex;align-items:center;justify-content:space-between;user-select:none}
+.diff-header:hover{background:var(--bg3)}
+.diff-toggle{font-size:.7rem;color:var(--t3);font-weight:400}
+.diff-view{font-family:'SF Mono',SFMono-Regular,Consolas,'Liberation Mono',Menlo,monospace;font-size:.8rem;line-height:1.6;overflow-x:auto;max-height:420px;overflow-y:auto}
+.diff-section.collapsed .diff-view{display:none}
+.diff-section.collapsed .diff-header{border-bottom:none}
+.diff-file{margin-bottom:2px}
+.diff-fname{padding:7px 12px;font-weight:600;font-size:.8rem;color:var(--t2);background:var(--bg2);border-bottom:1px solid var(--bg3)}
+.diff-tbl{width:100%;border-collapse:collapse}
+.diff-tbl td{padding:0;vertical-align:top;white-space:pre-wrap;word-break:break-all}
+.diff-tbl .dg{width:24px;min-width:24px;text-align:center;color:var(--t3);user-select:none;font-weight:600;padding:1px 4px;border-right:1px solid var(--bg3)}
+.diff-tbl .dc{padding:1px 12px}
+.diff-tbl tr.add{background:var(--diff-add-bg)}.diff-tbl tr.add .dg{color:var(--green)}.diff-tbl tr.add .dc{color:var(--diff-add-txt)}
+.diff-tbl tr.del{background:var(--diff-del-bg)}.diff-tbl tr.del .dg{color:var(--red)}.diff-tbl tr.del .dc{color:var(--diff-del-txt)}
+.diff-tbl tr.hunk .dc{color:var(--blue);font-style:italic;padding:3px 12px}.diff-tbl tr.hunk .dg{color:var(--blue)}
+.diff-tbl tr.ctx .dc{color:var(--t2)}
+
+/* ── Review Side-by-Side ── */
+.comparison-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:16px}
+/* 899, not 900, so this breakpoint and MIN_WIDTH below agree exactly: at
+   MIN_WIDTH the pair is still two columns. */
+@media(max-width:899px){.comparison-grid{grid-template-columns:1fr}}
+/* Below MIN_WIDTH the reviews stack, Review B lands roughly three screens under
+   Review A, and one trial costs ~6 screens of scrolling instead of ~2 (measured
+   at 390px and 360px). The instrument asks which review better names the
+   affected code, which assumes both are readable together, so narrow screens
+   are turned away rather than silently given a different task. */
+#smallScreen{display:none;position:fixed;inset:0;z-index:10000;background:var(--bg0);
+  padding:32px 24px;overflow-y:auto;align-items:center;justify-content:center;text-align:center}
+#smallScreen.show{display:flex}
+#smallScreen .ss-inner{max-width:460px}
+#smallScreen h2{font-size:1.15rem;color:var(--blue);margin-bottom:14px}
+#smallScreen p{color:var(--t2);font-size:.92rem;line-height:1.65;margin-bottom:12px}
+#smallScreen .ss-note{color:var(--t3);font-size:.85rem}
+#smallScreen .ss-width{color:var(--t3);font-size:.85rem}
+/* Two audiences reach this screen: a phone, which cannot fix it, and a desktop
+   with a narrow window or a high zoom level, which can. Telling the second
+   group to "use a laptop" reads as broken when they are already on one. */
+#smallScreen .ss-only-window{display:none}
+#smallScreen.narrow-window .ss-only-window{display:block}
+#smallScreen.narrow-window .ss-only-device{display:none}
+#smallScreen.narrow-window .ss-note{display:none}
+.review-card{background:var(--bg1);border:1px solid var(--brd);border-radius:10px;overflow:hidden;display:flex;flex-direction:column}
+.review-card-header{padding:8px 14px;font-weight:700;font-size:.85rem;border-bottom:1px solid var(--bg3);display:flex;align-items:center;gap:8px}
+/* Cap was 600px, which every one of the 12 reviews exceeded (measured at
+   639-957px across 1280-1920px screens), so every trial began with two
+   independent inner scrollbars. At 1000px no review scrolls internally: the
+   page scrolls as one unit and the two columns stay aligned. */
+.review-card-body{padding:12px;overflow-y:auto;flex:1;max-height:1000px}
+.rsummary{background:var(--bg3);border:1px solid var(--brd);border-radius:8px;padding:8px 10px 8px 12px;margin-bottom:12px}
+.rsummary-label{font-size:.66rem;font-weight:800;letter-spacing:.6px;text-transform:uppercase;color:var(--t3);margin-bottom:5px;display:flex;align-items:center;gap:5px}
+.rsummary-label::before{content:"";width:6px;height:6px;border-radius:50%;background:var(--t3);display:inline-block}
+.rsummary ul{margin:0;padding-left:16px}
+.rsummary li{font-size:.78rem;line-height:1.45;margin-bottom:3px;color:var(--t2)}
+.rsummary li:last-child{margin-bottom:0}
+.rsummary code{font-size:.74rem}
+/* concrete-item count strip (LLM-precomputed, see generate_review_counts.py) */
+.rcounts{margin-bottom:12px;border:1px solid var(--brd);border-radius:8px;padding:8px 10px;background:var(--bg2)}
+.rcounts-label{font-size:.66rem;font-weight:800;letter-spacing:.6px;text-transform:uppercase;color:var(--t3);margin-bottom:6px;display:flex;align-items:center;gap:5px}
+.rcounts-label::before{content:"#";font-weight:900;color:var(--t3)}
+.rcounts-chips{display:flex;flex-wrap:wrap;gap:6px}
+.rcount-chip{display:inline-flex;align-items:center;gap:5px;font-size:.72rem;color:var(--t2);background:var(--bg1);border:1px solid var(--brd);border-radius:20px;padding:2px 9px;cursor:default}
+.rcount-chip b{font-size:.76rem;font-weight:800;color:var(--blue);min-width:10px;text-align:center}
+.rcount-chip.zero{opacity:.45}.rcount-chip.zero b{color:var(--t3)}
+/* Inline file-reference annotation. Replaces the former "File check" strip,
+   whose badge palette differed systematically between the two arms and so
+   acted as an un-blinding cue. Every reference gets one identical neutral
+   indicator regardless of what the audit found; the status is carried only
+   by the tooltip prose. Do not add status-dependent colour here. */
+.fref{border-bottom:1px dashed var(--t3);cursor:help;text-decoration:none}
+.fref:focus{outline:1px dotted var(--t3);outline-offset:2px}
+.ftip{position:fixed;z-index:9999;max-width:300px;padding:7px 9px;border-radius:6px;
+  background:#1c1f24;color:#f0f2f5;border:1px solid #3a3f46;
+  font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+  font-size:.72rem;line-height:1.4;font-weight:400;text-transform:none;letter-spacing:0;
+  box-shadow:0 4px 14px rgba(0,0,0,.45);pointer-events:none;opacity:0;transition:opacity .1s}
+.ftip.on{opacity:1}
+.ftip-path{display:block;font-family:'SF Mono',SFMono-Regular,Consolas,monospace;
+  font-size:.68rem;color:#c9ced6;margin-bottom:3px;word-break:break-all}
+.rcontent{font-size:.83rem;line-height:1.5}
+.rcontent h1,.rcontent h2,.rcontent h3{margin-top:10px;margin-bottom:3px;color:var(--t2);font-weight:600;text-transform:uppercase;letter-spacing:.5px;padding-top:6px;border-top:1px solid var(--bg3)}
+.rcontent h1:first-child,.rcontent h2:first-child,.rcontent h3:first-child{margin-top:0;padding-top:0;border-top:none}
+.rcontent h1{font-size:.76rem}.rcontent h2{font-size:.74rem}.rcontent h3{font-size:.72rem}
+.rcontent p{margin:0 0 4px}
+.rcontent p:empty{display:none}
+.rcontent ul,.rcontent ol{margin-left:14px;margin-bottom:4px}
+.rcontent li{margin-bottom:1px}
+.rcontent code{font-family:monospace;font-size:.82em;background:var(--bg2);padding:1px 4px;border-radius:3px}
+.rcontent strong{color:var(--orange)}
+/* unique-sentence highlighting */
+.rcontent .uniq-A{background:rgba(88,166,255,0.16);border-left:3px solid #58a6ff;padding-left:6px;margin-left:-9px;border-radius:2px}
+.rcontent .uniq-B{background:rgba(163,113,247,0.16);border-left:3px solid #a371f7;padding-left:6px;margin-left:-9px;border-radius:2px}
+#diffLegend,#warmDiffLegend{display:flex;gap:10px;align-items:center;font-size:.78rem;color:var(--t2);margin:0 0 10px;flex-wrap:wrap}
+#diffLegend .swatch,#warmDiffLegend .swatch{display:inline-block;width:12px;height:12px;border-radius:2px;margin-right:5px;vertical-align:middle}
+/* The toggle used to be a muted underlined link below the reviews, so raters
+   met the aid only after they had finished reading. It is now a labelled control
+   above the pair. The default stays off: highlighting shades about twice as much
+   text in one arm as the other, so making it automatic would impose that
+   salience difference on every trial (see ANALYSIS_PLAN.md, contrast C2). */
+#diffLegend .toggle-uniq,#warmDiffLegend .toggle-uniq{cursor:pointer;color:var(--blue);font-size:.8rem;font-weight:600;background:var(--bg2);border:1px solid var(--blue);border-radius:16px;padding:5px 13px;transition:background .15s,color .15s}
+#diffLegend .toggle-uniq:hover,#warmDiffLegend .toggle-uniq:hover{background:var(--blue);color:#fff}
+#diffLegend .toggle-uniq.on,#warmDiffLegend .toggle-uniq.on{background:var(--blue);color:#fff}
+#diffLegend .hl-hint,#warmDiffLegend .hl-hint{color:var(--t3)}
+#diffLegend .hl-key,#warmDiffLegend .hl-key{display:none;gap:14px}
+#diffLegend.on .hl-key,#warmDiffLegend.on .hl-key{display:flex}
+#diffLegend.on .hl-hint,#warmDiffLegend.on .hl-hint{display:none}
+.diff-hidden .uniq-A,.diff-hidden .uniq-B{background:transparent;border-left:0;padding-left:0;margin-left:0}
+
+/* ── 5-point Preference Scale ── */
+.pref5-section{margin:18px 0;padding:18px;background:var(--bg1);border:1px solid var(--brd);border-radius:10px}
+.pref5-section h4{font-size:.95rem;color:var(--t1);margin-bottom:6px;font-weight:600}
+.pref5-section .pref5-sub{font-size:.82rem;color:var(--t3);margin-bottom:14px}
+.pref5-opts{display:flex;gap:0;width:100%}
+.pref5-opts label{flex:1;text-align:center;cursor:pointer;padding:12px 6px;border:1px solid var(--brd);background:var(--bg2);color:var(--t3);font-size:.8rem;font-weight:600;transition:all .15s;line-height:1.3}
+.pref5-opts label:first-child{border-radius:8px 0 0 8px}
+.pref5-opts label:last-child{border-radius:0 8px 8px 0}
+.pref5-opts label:hover{background:var(--bg3);color:var(--t2)}
+.pref5-opts input{display:none}
+.pref5-opts label[data-v="2"].selected{background:rgba(88,166,255,.2);border-color:#58a6ff;color:#58a6ff}
+.pref5-opts label[data-v="1"].selected{background:rgba(88,166,255,.1);border-color:#58a6ff;color:#58a6ff}
+.pref5-opts label[data-v="0"].selected{background:var(--blue);border-color:var(--blue);color:#fff}
+.pref5-opts label[data-v="-1"].selected{background:rgba(163,113,247,.1);border-color:#a371f7;color:#a371f7}
+.pref5-opts label[data-v="-2"].selected{background:rgba(163,113,247,.2);border-color:#a371f7;color:#a371f7}
+.pref5-missing{box-shadow:0 0 0 2px var(--red),0 0 0 4px rgba(248,81,73,.25);border-radius:8px}
+/* Per-criterion relevance grid (Review A / Both / Neither / Review B per criterion) */
+.crit-grid{display:flex;flex-direction:column;gap:10px}
+.crit-row{display:grid;grid-template-columns:1fr 400px;gap:16px;align-items:center;padding:11px 13px;background:var(--bg2);border:1px solid var(--brd);border-radius:8px;transition:box-shadow .15s}
+.crit-q{font-size:.85rem;color:var(--t1);line-height:1.4}
+.crit-q .crit-cat{display:block;font-size:.7rem;font-weight:700;color:var(--t3);text-transform:uppercase;letter-spacing:.04em;margin-bottom:3px}
+.crit-q .crit-short{display:block;font-size:.92rem;font-weight:700;color:var(--t1);margin-bottom:2px}
+.crit-q .crit-desc{display:block;font-size:.78rem;color:var(--t2)}
+.crit-opts{display:flex;gap:0}
+.crit-opts label{flex:1;text-align:center;cursor:pointer;padding:9px 6px;border:1px solid var(--brd);background:var(--bg1);color:var(--t3);font-size:.78rem;font-weight:600;transition:all .15s;white-space:nowrap}
+.crit-opts label:first-child{border-radius:7px 0 0 7px}
+.crit-opts label:last-child{border-radius:0 7px 7px 0}
+.crit-opts label:hover{background:var(--bg3);color:var(--t2)}
+.crit-opts input{display:none}
+.crit-opts label[data-c="A"].selected{background:rgba(88,166,255,.18);border-color:#58a6ff;color:#58a6ff}
+.crit-opts label[data-c="both"].selected{background:rgba(63,185,80,.16);border-color:#3fb950;color:#3fb950}
+.crit-opts label[data-c="neither"].selected{background:rgba(139,148,158,.2);border-color:#8b949e;color:#c9d1d9}
+.crit-opts label[data-c="B"].selected{background:rgba(163,113,247,.18);border-color:#a371f7;color:#a371f7}
+.crit-row.crit-missing{box-shadow:0 0 0 2px var(--red),0 0 0 3px rgba(248,81,73,.2)}
+@media(max-width:720px){.crit-row{grid-template-columns:1fr}}
+
+/* Overall holistic preference (one question, in addition to the 6 criteria) */
+.overall-section{margin:12px 0;padding:14px;background:var(--bg1);border:1px solid var(--brd);border-radius:10px}
+.overall-section h4{font-size:.85rem;color:var(--t2);margin-bottom:6px;font-weight:600}
+.overall-section .pref5-sub{margin-bottom:10px}
+.overall-opts{display:flex;gap:10px;flex-wrap:wrap}
+.overall-opts label{flex:1;min-width:150px;text-align:center;cursor:pointer;background:var(--bg2);border:1px solid var(--brd);border-radius:8px;padding:11px 12px;font-size:.84rem;font-weight:600;color:var(--t3);transition:all .15s}
+.overall-opts label:hover{background:var(--bg3);color:var(--t2)}
+.overall-opts input{display:none}
+.overall-opts label[data-c="A"].selected{background:rgba(88,166,255,.18);border-color:#58a6ff;color:#58a6ff}
+.overall-opts label[data-c="equal"].selected{background:var(--bg3);border-color:var(--t2);color:var(--t1)}
+.overall-opts label[data-c="B"].selected{background:rgba(163,113,247,.18);border-color:#a371f7;color:#a371f7}
+.overall-section.overall-missing{box-shadow:0 0 0 2px var(--red),0 0 0 3px rgba(248,81,73,.2)}
+
+/* ── Why textarea ── */
+.why-section{margin:12px 0;padding:14px;background:var(--bg1);border:1px solid var(--brd);border-radius:10px}
+.why-section h4{font-size:.85rem;color:var(--t2);margin-bottom:6px;font-weight:600}
+.why-section .why-sub{font-size:.78rem;color:var(--t3);margin-bottom:8px}
+.why-section textarea{width:100%;min-height:70px;max-height:160px;background:var(--bg2);border:1px solid var(--brd);border-radius:6px;padding:8px 10px;color:var(--t1);font-size:.82rem;font-family:inherit;resize:vertical;outline:none}
+.why-section textarea:focus{border-color:var(--blue)}
+.why-section textarea::placeholder{color:var(--t3)}
+
+/* ── Difficulty ── */
+.difficulty-section{margin:14px 0;padding:14px;background:var(--bg1);border:1px solid var(--brd);border-radius:10px}
+.difficulty-section h4{font-size:.88rem;color:var(--t2);margin-bottom:10px}
+.diff-scale{display:flex;gap:0;justify-content:center}
+.diff-scale label{flex:1;max-width:140px;text-align:center;cursor:pointer;padding:10px 8px;border:1px solid var(--brd);background:var(--bg2);color:var(--t3);font-size:.78rem;font-weight:600;transition:all .15s;white-space:nowrap}
+.diff-scale label:first-child{border-radius:8px 0 0 8px}
+.diff-scale label:last-child{border-radius:0 8px 8px 0}
+.diff-scale label:hover{background:var(--bg3);color:var(--t2)}
+.diff-scale input{display:none}
+.diff-scale label.selected{background:var(--blue);border-color:var(--blue);color:#fff}
+
+/* ── Nav ── */
+.navbar{display:flex;align-items:center;justify-content:space-between;padding:14px 0;border-top:1px solid var(--brd);margin-top:6px}
+.uwarn{color:var(--red);font-size:.85rem;font-weight:700;display:none}
+
+/* ── Feedback ── */
+#feedback.active{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:70vh;text-align:center}
+.feedback-card{background:var(--bg1);border:1px solid var(--brd);border-radius:12px;padding:28px 32px;max-width:700px;width:100%;text-align:left}
+/* Submission receipt. The POST is a simple cross-origin request (text/plain),
+   so the Apps Script reply is readable and the page can state whether the data
+   actually arrived instead of asking the rater to keep a backup just in case. */
+.sstatus{margin:14px auto 0;padding:14px 18px;border:1px solid var(--brd);border-radius:10px;max-width:560px;background:var(--bg1)}
+.sstatus .ss-line{display:flex;align-items:center;justify-content:center;gap:9px;margin:0;font-size:.92rem;color:var(--t1)}
+.sstatus .ss-mark{width:18px;height:18px;border-radius:50%;flex-shrink:0;display:inline-block}
+.sstatus.checking .ss-mark{border:2px solid var(--bg3);border-top-color:var(--blue);animation:ssSpin .7s linear infinite}
+@keyframes ssSpin{to{transform:rotate(360deg)}}
+.sstatus.ok{border-color:var(--green)}
+.sstatus.ok .ss-mark{background:var(--green);position:relative}
+.sstatus.ok .ss-mark::after{content:"";position:absolute;left:6px;top:2px;width:4px;height:9px;border:solid #fff;border-width:0 2px 2px 0;transform:rotate(45deg)}
+.sstatus.fail{border-color:var(--orange)}
+.sstatus.fail .ss-mark{background:var(--orange);color:#fff;font-weight:800;font-size:.8rem;line-height:18px;text-align:center}
+.sstatus.fail .ss-mark::after{content:"!"}
+.sstatus .ss-sub{font-size:.85rem;color:var(--t2);margin:10px 0 12px}
+.sstatus #ssFail{display:none}
+.sstatus.fail #ssFail{display:block}
+.feedback-card h2{font-size:1.15rem;color:var(--blue);margin-bottom:8px;text-align:center}
+.feedback-card p{color:var(--t2);font-size:.88rem;margin-bottom:16px;text-align:center}
+.feedback-card textarea{width:100%;min-height:120px;background:var(--bg2);border:1px solid var(--brd);border-radius:8px;padding:12px;color:var(--t1);font-size:.9rem;font-family:inherit;resize:vertical;outline:none}
+.feedback-card textarea:focus{border-color:var(--blue)}
+.feedback-card .fb-btns{display:flex;justify-content:center;gap:12px;margin-top:16px}
+
+/* ── Completion ── */
+#completion{text-align:center;padding-top:10vh}
+#completion h1{font-size:1.8rem;color:var(--green);margin-bottom:10px}
+#completion p{color:var(--t2);margin-bottom:20px}
+.sgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px;max-width:550px;margin:0 auto 28px}
+.scard{background:var(--bg1);border:1px solid var(--brd);border-radius:10px;padding:14px}
+.scard .sl{font-size:.75rem;color:var(--t3);text-transform:uppercase;letter-spacing:.5px}
+.scard .sv{font-size:1.4rem;font-weight:700;color:var(--blue)}
+
+kbd{display:inline-block;font-family:monospace;font-size:.7rem;background:var(--bg2);border:1px solid var(--brd);border-radius:3px;padding:1px 4px;color:var(--t3);vertical-align:middle}
+.jump-btn{position:fixed;bottom:80px;right:24px;z-index:100;padding:10px 18px;border-radius:8px;border:none;background:var(--blue);color:#fff;font-weight:700;font-size:.82rem;cursor:pointer;box-shadow:0 4px 12px rgba(0,0,0,.4);transition:all .2s;opacity:0;pointer-events:none}
+.jump-btn.visible{opacity:1;pointer-events:auto}
+.jump-btn:hover{filter:brightness(1.15);transform:translateY(-1px)}
+.theme-toggle{position:fixed;top:16px;right:16px;z-index:200;width:38px;height:38px;border-radius:50%;border:1px solid var(--brd);background:var(--bg1);color:var(--t2);cursor:pointer;font-size:1.1rem;display:flex;align-items:center;justify-content:center;transition:all .15s;box-shadow:0 2px 8px rgba(0,0,0,.15)}
+.theme-toggle:hover{background:var(--bg2);border-color:var(--t3);transform:scale(1.08)}
+#warmup .topbar{border-bottom-color:var(--orange)}
+
+/* PR body rendered markdown */
+#bodyC .md-h3{font-size:.96rem;font-weight:600;margin:.85em 0 .3em;color:var(--t1)}
+#bodyC .md-h4{font-size:.9rem;font-weight:600;margin:.7em 0 .25em;color:var(--t1)}
+#bodyC .md-p{margin:.45em 0;line-height:1.55}
+#bodyC .md-p:first-child{margin-top:0}
+#bodyC .md-p:last-child{margin-bottom:0}
+#bodyC .md-ul,#bodyC .md-ol{margin:.45em 0;padding-left:1.4em}
+#bodyC .md-ul li,#bodyC .md-ol li{margin:.15em 0;line-height:1.5}
+#bodyC strong{color:var(--t1);font-weight:600}
+#bodyC em{font-style:italic}
+#bodyC a{color:var(--blue);text-decoration:underline}
+#bodyC .md-code{background:var(--bg2);border:1px solid var(--bg3);border-radius:3px;padding:.5px 4px;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:.84em;color:var(--t1)}
+#bodyC .md-pre{margin:.55em 0;padding:8px 10px;background:var(--bg2);border:1px solid var(--bg3);border-radius:4px;overflow-x:auto;font-size:.82em;line-height:1.4}
+#bodyC .md-img{display:inline-block;padding:1px 6px;margin:0 2px;background:var(--bg2);border:1px solid var(--bg3);border-radius:3px;font-size:.78em;color:var(--t2);font-style:italic}
+/* Practice mirrors the final instrument: summaries and inline file-reference
+   tooltips are present, counts are omitted, and highlighting starts off. */
+#warmup .rcounts{display:none!important}
+#warmup:not(.highlights-on) .uniq-A,#warmup:not(.highlights-on) .uniq-B{background:transparent!important;border-left:0!important;padding-left:0!important;margin-left:0!important}
+</style>
+</head>
+<body>
+
+<div id="smallScreen">
+  <div class="ss-inner">
+    <h2 class="ss-only-device">Please open this on a larger screen</h2>
+    <h2 class="ss-only-window">Your browser window is a little too narrow</h2>
+    <p>This study asks you to compare two code reviews <strong>side by side</strong>. Below <span id="ssMin">900</span>px the two reviews stack one under the other, which makes that comparison much harder and would change what we are measuring.</p>
+    <p class="ss-only-device">Please open this page on a laptop or desktop. Any window at least <span class="ss-min">900</span>px wide will do.</p>
+    <p class="ss-only-window">Widen the window, or zoom out with <strong>Ctrl</strong>/<strong>Cmd</strong> and <strong>&minus;</strong>. The study reappears the moment there is room, and nothing you have answered is lost.</p>
+    <p class="ss-width">Your window is currently <strong id="ssNow">&mdash;</strong>px wide.</p>
+    <p class="ss-note">Nothing is lost &mdash; the link works whenever you come back, and any progress is saved on the device you started on.</p>
+  </div>
+</div>
+<button class="theme-toggle" id="themeToggle" title="Toggle light/dark mode">&#9790;</button>
+<div class="container">
+
+<!-- ═══ WELCOME ═══ -->
+<div id="welcome" class="screen active">
+  <h1>PR Review Evaluation Study</h1>
+  <p class="sub">Human evaluation of AI-generated code review comments &mdash; HPI Master's Thesis</p>
+  <div class="wcard">
+    <p>You will read <strong>6 Pull Requests</strong> from real open-source projects and compare two AI-generated reviews for each.</p>
+    <p style="color:var(--t3);font-size:.85rem;margin-bottom:16px">Takes about 25&ndash;35 minutes. Progress is saved on this device, so you can stop at any point and pick up where you left off.</p>
+    <div class="igroup">
+      <input type="text" id="raterInput" placeholder="Enter your name or a nickname" autocomplete="off" />
+      <button class="btn btn-p" id="startBtn" disabled>Start</button>
+    </div>
+    <p id="resumeNote"></p>
+    <p id="tabWarn"></p>
+  </div>
+</div>
+
+<!-- ═══ CONSENT ═══ -->
+<div id="consent" class="screen">
+  <div class="consent-card">
+    <h2>Informed Consent</h2>
+    <p>You are being invited to participate in a research study on AI-assisted code review quality, conducted as part of a Master's thesis at the Hasso Plattner Institute, University of Potsdam.</p>
+    <p><strong>What you will do:</strong> For each of 6 Pull Requests, you will read a plain-language description and two AI-generated reviews side by side, then judge which review is more useful. The code diff is shown alongside them. The study takes about 25&ndash;35 minutes; progress is saved after every Pull Request, so you can take breaks.</p>
+    <p><strong>What is recorded:</strong></p>
+    <ul>
+      <li>The identifier you enter. It does not have to be your real name &mdash; any nickname you will remember is fine, and it lets you resume if you take a break.</li>
+      <li>Background you provide: occupation, years of programming experience, and how often you review pull requests.</li>
+      <li>Your answers: the per-criterion choices, your overall preference, the difficulty rating, and any reasoning you choose to write.</li>
+      <li>How you used the page: time spent on each comparison, when the session started and finished, how many times you opened the Pull Request on GitHub, and whether you switched on the optional highlighting.</li>
+      <li>Optional open-ended feedback at the end.</li>
+    </ul>
+    <p>The form does not ask for your email address or IP address.</p>
+    <p><strong>Where your answers are stored.</strong> Each comparison you submit is sent over an encrypted connection to a cloud storage service and is accessible only to the research team named below. A copy is also kept in this browser's local storage so you can take breaks; clearing your browser data removes it.</p>
+    <p><strong>Legal basis and retention.</strong> Processing is based on your consent (Art. 6(1)(a) GDPR). Responses are kept until the thesis has been examined and any resulting publication is complete, and are deleted no later than 31 December 2027. Only aggregated or de-identified results appear in the thesis or in any publication.</p>
+    <p><strong>Your rights.</strong> Participation is voluntary. You may stop at any time, without giving a reason and without any disadvantage. You may also withdraw your consent after submitting, and request access to, correction of, or deletion of your data &mdash; quote the identifier you entered so it can be located. You have the right to lodge a complaint with the competent data protection supervisory authority.</p>
+    <p><strong>Who is running this study.</strong> The study is conducted by <a href="mailto:Abdelrahman.Khattab@student.hpi.uni-potsdam.de" style="color:var(--blue)">Abdelrahman Khattab</a> as part of a Master's thesis, under the supervision of <a href="mailto:christian.adriano@hpi.de" style="color:var(--blue)">Dr. Christian Medeiros Adriano</a> and Prof. Dr. Holger Giese, System Analysis and Modeling group, Hasso Plattner Institute, University of Potsdam. You may contact either the researcher or the supervisor with questions about the study or to exercise the rights described above.</p>
+    <div class="consent-check">
+      <input type="checkbox" id="consentBox" />
+      <label for="consentBox">I have read and understood the above. I voluntarily agree to participate.</label>
+    </div>
+    <div style="text-align:center">
+      <button class="btn btn-s" onclick="showScreen('welcome')" style="margin-right:8px">&larr; Back</button>
+      <button class="btn btn-p" id="consentBtn" disabled>I Agree &mdash; Continue &rarr;</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ DEMOGRAPHICS ═══ -->
+<div id="demographics" class="screen">
+  <div class="demo-card">
+    <h2>About You</h2>
+    <p class="demo-sub">Three background questions.</p>
+    <div class="demo-group">
+      <span class="demo-q">Primary occupation</span>
+      <div class="demo-opts wrap2" data-field="role">
+        <label onclick="demoSelect(this)"><input type="radio" name="d_role" value="student">Student</label>
+        <label onclick="demoSelect(this)"><input type="radio" name="d_role" value="phd_researcher">PhD / Researcher</label>
+        <label onclick="demoSelect(this)"><input type="radio" name="d_role" value="junior_dev">Junior Developer</label>
+        <label onclick="demoSelect(this)"><input type="radio" name="d_role" value="mid_level_dev">Mid-level Developer</label>
+        <label onclick="demoSelect(this)"><input type="radio" name="d_role" value="senior_dev">Senior Developer</label>
+        <label onclick="demoSelect(this)"><input type="radio" name="d_role" value="other">Other</label>
+      </div>
+      <input id="roleOther" class="demo-other" type="text" maxlength="80" placeholder="How would you describe it? (optional)">
+    </div>
+    <div class="demo-group">
+      <span class="demo-q">Years of programming experience</span>
+      <div class="demo-opts" data-field="exp_years">
+        <label onclick="demoSelect(this)"><input type="radio" name="d_exp" value="<1">&lt;1</label>
+        <label onclick="demoSelect(this)"><input type="radio" name="d_exp" value="1-3">1&ndash;3</label>
+        <label onclick="demoSelect(this)"><input type="radio" name="d_exp" value="3-5">3&ndash;5</label>
+        <label onclick="demoSelect(this)"><input type="radio" name="d_exp" value="5-10">5&ndash;10</label>
+        <label onclick="demoSelect(this)"><input type="radio" name="d_exp" value="10+">10+</label>
+      </div>
+    </div>
+    <div class="demo-group">
+      <span class="demo-q">How often do you review Pull Requests / Merge Requests?</span>
+      <div class="demo-opts" data-field="freq_review_pr">
+        <label onclick="demoSelect(this)"><input type="radio" name="d_rpr" value="never">Never</label>
+        <label onclick="demoSelect(this)"><input type="radio" name="d_rpr" value="rarely">Rarely</label>
+        <label onclick="demoSelect(this)"><input type="radio" name="d_rpr" value="monthly">Monthly</label>
+        <label onclick="demoSelect(this)"><input type="radio" name="d_rpr" value="weekly">Weekly</label>
+        <label onclick="demoSelect(this)"><input type="radio" name="d_rpr" value="daily">Daily</label>
+      </div>
+    </div>
+    <div style="text-align:center;margin-top:20px">
+      <button class="btn btn-s" onclick="showScreen('consent')" style="margin-right:8px">&larr; Back</button>
+      <button class="btn btn-p" id="demoBtn" disabled>Continue &rarr;</button>
+    </div>
+    <p id="demoWarn" style="display:none;color:var(--orange);font-size:.82rem;text-align:center;margin-top:8px;font-weight:600"></p>
+  </div>
+</div>
+
+<!-- ═══ BRIEFING ═══ -->
+<div id="briefing" class="screen">
+  <div class="brief-card">
+    <h2>What You'll Do</h2>
+    <p>For each of <strong>6 real Pull Requests</strong> from open-source projects, you will:</p>
+    <ol>
+      <li><strong>Read the PR context</strong> &mdash; every PR starts with a short plain-language box explaining what the project is and what the change does (no knowledge of the project or of Python is needed). The code diff is shown below it, <strong>open by default</strong> &mdash; use it to check whether a review describes a real risk in the changed code, and collapse it if you would rather work from the plain-language box alone.</li>
+      <li><strong>Read both AI-generated reviews</strong> side by side &mdash; <strong style="color:#58a6ff">Review A</strong> and <strong style="color:#a371f7">Review B</strong>. You won't know which AI strategy produced which review. Judge only what each review actually says.</li>
+      <li><strong>Judge each review on 6 criteria</strong> &mdash; for every criterion, mark whether <strong style="color:#58a6ff">Review A</strong> does it better, <strong style="color:#a371f7">Review B</strong> does it better, <strong style="color:#3fb950">Both</strong> address it about equally, or <strong>Neither</strong> addresses it.</li>
+      <li><strong>Give one overall preference</strong> &mdash; after the 6 criteria, make a single holistic call: which review is more useful overall (or about the same).</li>
+      <li><strong>Explain your choice</strong> in a text box (optional).</li>
+      <li><strong>Rate the difficulty</strong> of the comparison (1&ndash;5).</li>
+    </ol>
+
+    <h3>What makes a review more useful?</h3>
+    <p>Imagine you are the <strong>author</strong> of the PR. A useful review:</p>
+    <ul>
+      <li>Identifies <strong>specific</strong> problems or risks &mdash; not generic advice</li>
+      <li>Points to <strong>concrete</strong> code locations, file names, or function names</li>
+      <li>Explains <strong>why</strong> something is a problem, not just that it is</li>
+      <li>Mentions <strong>specific test files</strong> or test scenarios that should be covered</li>
+      <li>Covers the <strong>main issues</strong> without obvious gaps</li>
+    </ul>
+    <p><strong>Concrete example of the difference:</strong></p>
+    <table style="width:100%;border-collapse:collapse;font-size:.85rem;margin:10px 0 14px">
+      <tr>
+        <td style="padding:8px 10px;background:rgba(248,81,73,.07);border:1px solid var(--brd);border-radius:4px 0 0 0;vertical-align:top;width:50%"><span style="color:var(--red);font-weight:700">Vague (less useful)</span><br><span style="color:var(--t2)">"The test coverage may be insufficient for edge cases."</span></td>
+        <td style="padding:8px 10px;background:rgba(63,185,80,.07);border:1px solid var(--brd);border-radius:0 4px 0 0;vertical-align:top"><span style="color:var(--green);font-weight:700">Specific (more useful)</span><br><span style="color:var(--t2)">"The new test <code>test_bayes.py:185</code> does not cover the <code>fit_intercept=False</code> path, so that variant goes untested."</span></td>
+      </tr>
+    </table>
+    <p style="color:var(--t3);font-size:.88rem">You do <em>not</em> need deep knowledge of the codebase. Judge the review text itself: is it specific and grounded in the diff, or vague and generic?</p>
+
+    <h3>Reading aids</h3>
+    <p>Each review begins with a short summary of what that review claims. Where a review names a file, that file path is marked with a dotted underline &mdash; hover over it (or focus it with the keyboard) to see what we found about that file when we checked the project. These notes describe the file only; they do not say that the review is correct. Above each pair of reviews there is a button, <strong>Highlight what differs</strong>, which shades the points that appear in only one of the two reviews; it is optional, starts off, and you can switch it on and off at any time. Naming more files is not automatically better.</p>
+
+    <h3>Using the diff</h3>
+    <p>The diff shows exactly what code changed, and it is open by default so you can check whether a review describes a real risk in the changed code or a hypothetical one. Collapse it with the header if you prefer to work from the plain-language box.</p>
+    <p>One thing to keep in mind: the diff contains only the files this PR changed. A review may also mention code elsewhere in the project that the change could affect. The diff can neither confirm nor refute those mentions &mdash; use <strong>Open this PR on GitHub</strong>, the button at the top right of each PR, if you want to check one.</p>
+
+    <h3>Tips</h3>
+    <ul>
+      <li>There are no right or wrong answers.</li>
+      <li>Some pairs will look similar. A small but concrete difference is still a difference.</li>
+      <li>Where neither review is better, <strong>Both</strong>, <strong>Neither</strong> and <strong>About the same</strong> are valid answers.</li>
+    </ul>
+  </div>
+
+  <div class="brief-card">
+    <h2>The 6 Criteria</h2>
+    <p>Before the overall judgement, you compare the reviews on <strong>6 specific criteria</strong>. For <em>each</em> one you choose one of four: <strong style="color:#58a6ff">Review A</strong> does it better, <strong style="color:#a371f7">Review B</strong> does it better, <strong style="color:#3fb950">Both</strong> address it about equally well, or <strong>Neither</strong> addresses it at all.</p>
+    <table style="width:100%;border-collapse:collapse;font-size:.86rem;margin-top:10px">
+      <tr style="border-bottom:1px solid var(--brd)">
+        <td style="padding:8px 10px;color:var(--t1);font-weight:700;white-space:nowrap;vertical-align:top">Names the affected code</td>
+        <td style="padding:8px 10px;color:var(--t2)">Names concrete components, APIs, or design patterns affected by the change</td>
+      </tr>
+      <tr style="border-bottom:1px solid var(--brd)">
+        <td style="padding:8px 10px;color:var(--t1);font-weight:700;white-space:nowrap;vertical-align:top">Describes failure cases</td>
+        <td style="padding:8px 10px;color:var(--t2)">Describes concrete edge cases, boundary conditions, or error-handling gaps</td>
+      </tr>
+      <tr style="border-bottom:1px solid var(--brd)">
+        <td style="padding:8px 10px;color:var(--t1);font-weight:700;white-space:nowrap;vertical-align:top">Points to tests</td>
+        <td style="padding:8px 10px;color:var(--t2)">References concrete test files or says which tests should be added/updated</td>
+      </tr>
+      <tr style="border-bottom:1px solid var(--brd)">
+        <td style="padding:8px 10px;color:var(--t1);font-weight:700;white-space:nowrap;vertical-align:top">Explains why</td>
+        <td style="padding:8px 10px;color:var(--t2)">Gives a concrete reason for each suggestion (e.g. "X could cause Y")</td>
+      </tr>
+      <tr style="border-bottom:1px solid var(--brd)">
+        <td style="padding:8px 10px;color:var(--t1);font-weight:700;white-space:nowrap;vertical-align:top">Comments on code clarity</td>
+        <td style="padding:8px 10px;color:var(--t2)">Comments on code clarity, naming conventions, or function organization</td>
+      </tr>
+      <tr>
+        <td style="padding:8px 10px;color:var(--t1);font-weight:700;white-space:nowrap;vertical-align:top">Covers the important issues</td>
+        <td style="padding:8px 10px;color:var(--t2)">Covers the obvious issues in the PR without obvious gaps</td>
+      </tr>
+    </table>
+    <p style="margin-top:12px;color:var(--t3);font-size:.85rem">Use <strong style="color:#3fb950">Both</strong> and <strong>Neither</strong> freely &mdash; pick <strong>Both</strong> when the two reviews handle a criterion about equally well, and <strong>Neither</strong> when <em>neither</em> review addresses it. Only pick A or B when one is genuinely better <em>for that specific criterion</em>.</p>
+  </div>
+
+  <div class="brief-nav">
+    <button class="btn btn-s" onclick="showScreen('demographics')">&larr; Back</button>
+    <button class="btn btn-p" id="beginBtn">Continue to the practice round &rarr;</button>
+  </div>
+</div>
+
+<!-- ═══ WARMUP ═══ -->
+<div id="warmup" class="screen">
+  <div class="topbar">
+    <div style="display:flex;align-items:center;gap:14px">
+      <span class="logo">Practice Round</span>
+      <span style="font-size:.82rem;color:var(--orange);font-weight:600">Not recorded &mdash; for familiarity with the interface</span>
+    </div>
+  </div>
+
+  <div class="prh">
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:4px">
+      <span style="font-size:.75rem;font-weight:700;background:var(--orange);color:#fff;padding:2px 8px;border-radius:4px">Practice</span>
+      <span class="title">Add retry logic to API client</span>
+    </div>
+    <div class="meta"><span>example/web-service</span></div>
+  </div>
+
+  <div class="diff-section">
+    <div class="diff-header" onclick="this.closest('.diff-section').classList.toggle('collapsed');this.querySelector('.diff-toggle').textContent=this.closest('.diff-section').classList.contains('collapsed')?'click to expand':'click to collapse'">
+      <span>Diff &mdash; the exact code changes</span><span class="diff-toggle">click to collapse</span>
+    </div>
+    <div class="diff-view">
+      <div class="diff-file">
+        <div class="diff-fname">src/api_client.py</div>
+        <table class="diff-tbl">
+          <tr class="hunk"><td class="dg">@@</td><td class="dc">@@ -12,8 +12,19 @@ class ApiClient:</td></tr>
+          <tr class="ctx"><td class="dg"></td><td class="dc">     def __init__(self, base_url, timeout=30):</td></tr>
+          <tr class="ctx"><td class="dg"></td><td class="dc">         self.base_url = base_url</td></tr>
+          <tr class="add"><td class="dg">+</td><td class="dc">         self.max_retries = 3</td></tr>
+          <tr class="del"><td class="dg">&#8722;</td><td class="dc">     def fetch(self, endpoint):</td></tr>
+          <tr class="del"><td class="dg">&#8722;</td><td class="dc">         response = requests.get(f"{self.base_url}/{endpoint}", timeout=self.timeout)</td></tr>
+          <tr class="del"><td class="dg">&#8722;</td><td class="dc">         return response.json()</td></tr>
+          <tr class="add"><td class="dg">+</td><td class="dc">     def fetch(self, endpoint, retries=None):</td></tr>
+          <tr class="add"><td class="dg">+</td><td class="dc">         retries = retries or self.max_retries</td></tr>
+          <tr class="add"><td class="dg">+</td><td class="dc">         for attempt in range(retries):</td></tr>
+          <tr class="add"><td class="dg">+</td><td class="dc">             try:</td></tr>
+          <tr class="add"><td class="dg">+</td><td class="dc">                 response = requests.get(f"{self.base_url}/{endpoint}", timeout=self.timeout)</td></tr>
+          <tr class="add"><td class="dg">+</td><td class="dc">                 return response.json()</td></tr>
+          <tr class="add"><td class="dg">+</td><td class="dc">             except requests.RequestException:</td></tr>
+          <tr class="add"><td class="dg">+</td><td class="dc">                 if attempt == retries - 1: raise</td></tr>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <div id="warmDiffLegend">
+    <button class="toggle-uniq" id="warmToggleUniqBtn" type="button">Highlight what differs</button>
+    <span class="hl-hint">Optional. Shades the points that appear in only one of the two reviews. It stays available on every comparison.</span>
+    <span class="hl-key">
+      <span><span class="swatch" style="background:rgba(88,166,255,0.16);border-left:3px solid #58a6ff"></span>only in Review A</span>
+      <span><span class="swatch" style="background:rgba(163,113,247,0.16);border-left:3px solid #a371f7"></span>only in Review B</span>
+    </span>
+  </div>
+  <div class="comparison-grid">
+    <div class="review-card">
+      <div class="review-card-header"><span style="width:24px;height:24px;border-radius:6px;background:#58a6ff;display:inline-flex;align-items:center;justify-content:center;font-size:.75rem;font-weight:800;color:#fff">A</span><span style="color:#58a6ff">Review A</span></div>
+      <div class="review-card-body"><div class="rsummary"><div class="rsummary-label">Summary of this review's claims &mdash; not verified facts</div><ul><li>Flags that the retry loop has <strong>no backoff</strong> between attempts, risking a burst of requests on transient failures.</li><li>Recommends <strong>exponential backoff</strong> and a test in <code>tests/test_api_client.py</code> for the exhausted-retries case.</li></ul></div><div class="rcounts"><div class="rcounts-label">Concrete items named (auto-counted &mdash; hover to see them)</div><div class="rcounts-chips"><span class="rcount-chip" title="Components/APIs:&#10;• ApiClient.fetch()&#10;• RequestException">Components/APIs <b>2</b></span><span class="rcount-chip" title="Files:&#10;• tests/test_api_client.py">Files <b>1</b></span><span class="rcount-chip" title="Test targets:&#10;• tests/test_api_client.py&#10;• exhausted-retries case">Test targets <b>2</b></span><span class="rcount-chip" title="Edge cases:&#10;• transient failure / rate limiting">Edge cases <b>1</b></span><span class="rcount-chip" title="Reasoned claims:&#10;• no backoff could overwhelm the server">Reasoned claims <b>1</b></span></div></div><div class="rcontent"><h2>Problems found</h2><p>The <code>fetch()</code> retry loop has <span class="uniq-A">no backoff between attempts</span>, so a transient failure turns into a tight burst of requests against the upstream service.</p><h2>Files and lines referenced</h2><p><code>ApiClient.fetch()</code>: <span class="uniq-A">the retry loop catches all <code>RequestException</code> subtypes including <code>ConnectionError</code> and <code>Timeout</code>, with no delay between attempts.</span></p><h2>What could go wrong</h2><p>Without backoff, rapid repeated requests could overwhelm the server or trigger rate limiting under transient failures.</p><h2>Suggestions</h2><p><span class="uniq-A">Add exponential backoff (e.g. <code>time.sleep(2 ** attempt)</code>) between retries. Add tests in <code class="fref" tabindex="0" data-tip="This file exists in the project." data-tip-path="tests/test_api_client.py" aria-label="tests/test_api_client.py. This file exists in the project.">tests/test_api_client.py</code> covering the exhausted-retries case.</span></p></div></div>
+    </div>
+    <div class="review-card">
+      <div class="review-card-header"><span style="width:24px;height:24px;border-radius:6px;background:#a371f7;display:inline-flex;align-items:center;justify-content:center;font-size:.75rem;font-weight:800;color:#fff">B</span><span style="color:#a371f7">Review B</span></div>
+      <div class="review-card-body"><div class="rsummary"><div class="rsummary-label">Summary of this review's claims &mdash; not verified facts</div><ul><li>Says the retry logic <em>may not be robust enough</em>, but doesn't pinpoint why.</li><li>Suggests adding error handling and tests in general terms, without naming files or cases.</li></ul></div><div class="rcounts"><div class="rcounts-label">Concrete items named (auto-counted &mdash; hover to see them)</div><div class="rcounts-chips"><span class="rcount-chip" title="Components/APIs:&#10;• fetch()">Components/APIs <b>1</b></span><span class="rcount-chip zero" title="Files:&#10;none">Files <b>0</b></span><span class="rcount-chip zero" title="Test targets:&#10;none">Test targets <b>0</b></span><span class="rcount-chip zero" title="Edge cases:&#10;none">Edge cases <b>0</b></span><span class="rcount-chip zero" title="Reasoned claims:&#10;none">Reasoned claims <b>0</b></span></div></div><div class="rcontent"><h2>Problems found</h2><p>The retry logic in <code>fetch()</code> may not handle failures robustly enough.</p><h2>Files and lines referenced</h2><p><code>fetch()</code> method retry loop.</p><h2>What could go wrong</h2><p>The retry mechanism looks reasonable but could be improved.</p><h2>Suggestions</h2><p>Consider adding some error handling and tests. <span class="uniq-B">The code should also follow best practices for retry logic.</span></p></div></div>
+    </div>
+  </div>
+
+  <div class="pref5-section">
+    <h4>For each criterion, which review better addresses it?</h4>
+    <p class="pref5-sub">For each criterion, choose <strong style="color:#58a6ff">Review A</strong>, <strong style="color:#a371f7">Review B</strong>, <strong style="color:#3fb950">Both</strong>, or <strong>Neither</strong>. Scroll up to re-read the reviews if needed.</p>
+    <div class="crit-grid" id="warmCritGrid"></div>
+  </div>
+
+  <div class="overall-section">
+    <h4>Overall, which review is more useful?</h4>
+    <p class="pref5-sub">One holistic call, taking everything above together.</p>
+    <div class="overall-opts">
+      <label data-c="A"><input type="radio" name="overall_warm" value="A">Review A is more useful</label>
+      <label data-c="equal"><input type="radio" name="overall_warm" value="equal">About the same</label>
+      <label data-c="B"><input type="radio" name="overall_warm" value="B">Review B is more useful</label>
+    </div>
+  </div>
+
+  <div class="why-section">
+    <h4>Why did you choose that? <span style="font-weight:400;color:var(--t3);font-size:.82rem">(optional)</span></h4>
+    <p class="why-sub">Which difference between the two reviews decided it?</p>
+    <textarea id="warmWhy" placeholder="e.g. Review A named the file and explained the backoff risk; Review B stayed general."></textarea>
+  </div>
+
+  <div class="difficulty-section">
+    <h4>How difficult was this comparison?</h4>
+    <div class="diff-scale" id="warmDiffScale">
+      <label onclick="diffScaleSelect(this,'warmDiffScale')"><input type="radio" name="warmDiff" value="1"><span>1 &mdash; Very Easy</span></label>
+      <label onclick="diffScaleSelect(this,'warmDiffScale')"><input type="radio" name="warmDiff" value="2"><span>2</span></label>
+      <label onclick="diffScaleSelect(this,'warmDiffScale')"><input type="radio" name="warmDiff" value="3"><span>3</span></label>
+      <label onclick="diffScaleSelect(this,'warmDiffScale')"><input type="radio" name="warmDiff" value="4"><span>4</span></label>
+      <label onclick="diffScaleSelect(this,'warmDiffScale')"><input type="radio" name="warmDiff" value="5"><span>5 &mdash; Very Hard</span></label>
+    </div>
+  </div>
+
+  <div style="text-align:center;padding:20px 0;border-top:1px solid var(--brd);margin-top:6px">
+    <p style="color:var(--t3);font-size:.85rem;margin-bottom:14px">Answer all 6 criteria and the difficulty rating to continue.</p>
+    <button class="btn btn-g" id="warmDoneBtn" style="font-size:1rem;padding:12px 28px" disabled>Start the study &rarr;</button>
+  </div>
+</div>
+
+<!-- ═══ EVALUATION ═══ -->
+<div id="evaluation" class="screen">
+  <div class="topbar">
+    <div style="display:flex;align-items:center;gap:14px">
+      <span class="logo">PR Review Study</span>
+      <span class="pbar"><span class="pfill" id="pFill"></span></span>
+      <span class="ptxt" id="pTxt">0 / 6</span>
+    </div>
+    <span class="timer" id="timer">0:00</span>
+  </div>
+
+  <div class="prh">
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:4px">
+      <span style="font-size:.75rem;font-weight:700;background:var(--blue);color:#fff;padding:2px 8px;border-radius:4px;white-space:nowrap" id="prCounter"></span>
+      <span class="title" id="prTitle"></span>
+    </div>
+    <div class="meta">
+      <span id="prRepo"></span>
+      <span id="prNumber" style="color:var(--t3)"></span>
+      <a id="prLink" href="#" target="_blank" rel="noopener">Open this PR on GitHub <span class="ext" aria-hidden="true">&#8599;</span></a>
+    </div>
+    <div id="ctxSection" style="display:none;margin-top:10px;padding:10px 12px;background:var(--bg2);border:1px solid var(--bg3);border-radius:8px;font-size:.9rem;color:var(--t1);line-height:1.55">
+      <div style="font-size:.72rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--t3);margin-bottom:5px">What this PR does — plain language</div>
+      <div id="ctxC"></div>
+    </div>
+    <div id="bodySection" style="display:none;margin-top:10px;padding-top:10px;border-top:1px solid var(--bg3);font-size:.88rem;color:var(--t1);line-height:1.5">
+      <div style="font-size:.72rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--t3);margin-bottom:5px">Original PR description</div>
+      <div id="bodyC"></div>
+    </div>
+  </div>
+
+  <div class="diff-section" id="diffSection">
+    <div class="diff-header" onclick="document.getElementById('diffSection').classList.toggle('collapsed');this.querySelector('.diff-toggle').textContent=this.closest('.diff-section').classList.contains('collapsed')?'click to expand':'click to collapse'">
+      <span>Diff &mdash; the exact code changes (only the files this PR changed; a review may also mention code elsewhere in the project)</span><span class="diff-toggle">click to collapse</span>
+    </div>
+    <div class="diff-view" id="diffC"></div>
+  </div>
+
+  <div id="diffLegend">
+    <button class="toggle-uniq" id="toggleUniqBtn" type="button">Highlight what differs</button>
+    <span class="hl-hint">Optional. Shades the points that appear in only one of the two reviews.</span>
+    <span class="hl-key">
+      <span><span class="swatch" style="background:rgba(88,166,255,0.16);border-left:3px solid #58a6ff"></span>only in Review A</span>
+      <span><span class="swatch" style="background:rgba(163,113,247,0.16);border-left:3px solid #a371f7"></span>only in Review B</span>
+    </span>
+  </div>
+  <div class="comparison-grid" id="reviewGrid"></div>
+
+  <button class="jump-btn" id="jumpBtn">&#8595; Jump to Questions</button>
+
+  <div class="pref5-section" id="pref5Section">
+    <h4>For each criterion, which review better addresses it?</h4>
+    <p class="pref5-sub">Don't pick an overall winner. For each criterion below, choose: <strong style="color:#58a6ff">Review A</strong> does it better, <strong style="color:#a371f7">Review B</strong> does it better, <strong style="color:#3fb950">Both</strong> address it about equally, or <strong>Neither</strong> addresses it. Naming more files or items is <strong>not automatically better</strong>; judge whether what a review says actually matters for this PR.</p>
+    <div class="crit-grid" id="critGrid"></div>
+  </div>
+
+  <div class="overall-section" id="overallSection">
+    <h4>Overall, which review is more useful?</h4>
+    <p class="pref5-sub">One holistic call, taking everything above together. This is your single overall preference for this PR.</p>
+    <div class="overall-opts" id="overallOpts">
+      <label data-c="A"><input type="radio" name="overall_task" value="A">Review A is more useful</label>
+      <label data-c="equal"><input type="radio" name="overall_task" value="equal">About the same</label>
+      <label data-c="B"><input type="radio" name="overall_task" value="B">Review B is more useful</label>
+    </div>
+  </div>
+
+  <div class="why-section">
+    <h4>Why did you choose that? <span style="font-weight:400;color:var(--t3);font-size:.82rem">(optional)</span></h4>
+    <p class="why-sub">Which difference between the two reviews decided it?</p>
+    <textarea id="whyText" placeholder="e.g. Review A named the exact test file; Review B only said 'add tests'."></textarea>
+  </div>
+
+  <div class="difficulty-section">
+    <h4>How difficult was this comparison?</h4>
+    <div class="diff-scale" id="diffScale"></div>
+  </div>
+
+  <div class="navbar">
+    <button class="btn btn-s" id="prevBtn">&#8592; Previous</button>
+    <span class="uwarn" id="uWarn"></span>
+    <button class="btn btn-p" id="nextBtn">Submit &amp; Next &#8594;</button>
+  </div>
+</div>
+
+<!-- ═══ FEEDBACK ═══ -->
+<div id="feedback" class="screen">
+  <div class="feedback-card">
+    <h2>Feedback</h2>
+    <p>Optional, and the last step.</p>
+    <textarea id="feedbackText" placeholder="Anything that was unclear, and any suggestions for the study."></textarea>
+    <div class="fb-btns">
+      <button class="btn btn-s" id="skipFbBtn">Skip</button>
+      <button class="btn btn-p" id="submitFbBtn">Submit Feedback</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ COMPLETION ═══ -->
+<div id="completion" class="screen">
+  <h1>Study Complete</h1>
+  <p>Thank you for participating!</p>
+  <div class="sgrid">
+    <div class="scard"><div class="sl">PRs reviewed</div><div class="sv" id="stR">6</div></div>
+    <div class="scard"><div class="sl">Total Time</div><div class="sv" id="stT">--</div></div>
+    <div class="scard"><div class="sl">Avg / PR</div><div class="sv" id="stA">--</div></div>
+  </div>
+  <div id="submitStatus" class="sstatus checking">
+    <p class="ss-line"><span class="ss-mark"></span><span id="ssText">Confirming your submission&hellip;</span></p>
+    <div id="ssFail">
+      <p class="ss-sub">Your answers are stored in this browser, so nothing is lost. Try again, or download the file and send it to the researcher.</p>
+      <button id="retrySubmitBtn" class="btn btn-p" style="font-size:.9rem">Try again</button>
+      <button id="downloadBackupBtn" class="btn btn-s" style="font-size:.9rem;margin-left:8px">Download my responses (.json)</button>
+    </div>
+  </div>
+</div>
+
+</div><!-- .container -->
+
+<script>
+/* ═══════════════════════════════════════════════════════
+   Human Evaluation Study — Python PRs
+   - 6 PRs from small familiar Python repos (requests, flask, click)
+   - baseline_strict vs kg pairs with claim summaries, inline file-reference
+     tooltips, and optional highlighting; criterion-mapped count strip and the
+     former file-check badge strip both omitted
+   - Order randomized per rater (seeded shuffle)
+   - Single comparison per PR: baseline vs KG (blind A/B)
+   - Task: per-criterion relevance (Review A / Both / Neither / Review B
+     on each of 6 criteria) + why text + difficulty
+   - Tests whether humans perceive the KG review's affected-code grounding
+   ═══════════════════════════════════════════════════════ */
+
+const STUDY_ID = "human_eval_v4_python_20260808";
+let STUDY = null;
+
+async function loadStudy() {
+  if (window.__STUDY_DATA) { STUDY = window.__STUDY_DATA; return; }
+  // Always revalidate. Every submitted response is tagged with the version
+  // carried in this file, so a returning rater holding a cached copy from a
+  // previous instrument would file responses under the wrong version while
+  // seeing the current UI. "no-cache" still permits a 304.
+  const r = await fetch("study_data.json", { cache: "no-cache" });
+  STUDY = await r.json();
+}
+
+let raterId = "", taskOrder = [], modeMap = {}, ratings = {},
+    curTask = 0, taskMs = 0, taskStartedAt = 0, taskBaseMs = 0,
+    timerH = null, startedAt = null,
+    demographics = {}, githubClickLog = {}, highlightUseLog = {},
+    submittedSig = {}, consented = false, warmupSeen = false;
+
+// A rating counts as finished once the mandatory fields are present
+// (criteria, preference, difficulty). The "why" rationale became optional
+// in v2 (2026-08-01, pilot feedback); empty notes are still recorded and
+// surfaced through the notes quality flags. firstOpen() relies on this so
+// a partially-filled task that the rater navigated away from is still
+// revisited on resume rather than silently skipped.
+function isComplete(r) {
+  return !!r
+    && critComplete(r.criteria)
+    && !!r.overall
+    && !!r.difficulty;
+}
+
+/* ═══ Seeded RNG (for reproducible A/B flip per rater) ═══ */
+function hash(s) { let h=0; for(let i=0;i<s.length;i++) h=((h<<5)-h+s.charCodeAt(i))|0; return h>>>0; }
+function rng(seed) {
+  return function() {
+    seed|=0; seed=(seed+0x6d2b79f5)|0;
+    let t=Math.imul(seed^(seed>>>15),1|seed);
+    t=(t+Math.imul(t^(t>>>7),61|t))^t;
+    return((t^(t>>>14))>>>0)/4294967296;
+  };
+}
+
+/* ═══ Build task order ═══ */
+function buildOrder() {
+  const r = rng(hash(raterId));
+  // Shuffle PR order per rater so no one sees wins-then-losses pattern
+  const prIndices = STUDY.prs.map((_,i) => i);
+  for (let i = prIndices.length - 1; i > 0; i--) {
+    const j = Math.floor(r() * (i + 1));
+    [prIndices[i], prIndices[j]] = [prIndices[j], prIndices[i]];
+  }
+  // Side assignment is balanced, not an independent coin per trial: half the
+  // trials show mode_a on the left, half on the right, then shuffled. An
+  // independent coin left 22% of raters with 5 or 6 of their 6 trials on the
+  // same side, a bias this n cannot average out.
+  const nTrials = prIndices.length * STUDY.comparisons.length;
+  const flips = Array.from({length: nTrials}, (_, i) => i < Math.floor(nTrials / 2));
+  if (nTrials % 2) flips[nTrials - 1] = r() < 0.5;
+  for (let i = flips.length - 1; i > 0; i--) {
+    const j = Math.floor(r() * (i + 1));
+    [flips[i], flips[j]] = [flips[j], flips[i]];
+  }
+  taskOrder = []; modeMap = {}; let flipIdx = 0;
+  for (let pi of prIndices) {
+    const pr = STUDY.prs[pi];
+    for (let ci = 0; ci < STUDY.comparisons.length; ci++) {
+      const comp = STUDY.comparisons[ci];
+      const flip = flips[flipIdx++];
+      const left  = flip ? comp.mode_b : comp.mode_a;
+      const right = flip ? comp.mode_a : comp.mode_b;
+      const taskId = `${pr.pr_id}_${comp.id}`;
+      taskOrder.push({ prIdx: pi, compIdx: ci, taskId });
+      modeMap[taskId] = { A: left, B: right };
+    }
+  }
+}
+
+/* ═══ Storage ═══ */
+function storageKey(id) { return "heval_" + STUDY_ID + "_" + id; }
+function sKey() { return storageKey(raterId); }
+function save() {
+  localStorage.setItem(sKey(), JSON.stringify({
+    studyId: STUDY_ID, instrumentVersion: STUDY.version,
+    raterId, startedAt, curTask, ratings, modeMap, taskOrder, demographics,
+    githubClickLog, highlightUseLog, submittedSig, consented, warmupSeen
+  }));
+}
+function load() {
+  try {
+    const d = JSON.parse(localStorage.getItem(sKey()));
+    if (d && d.studyId === STUDY_ID
+          && d.instrumentVersion === STUDY.version
+          && d.taskOrder && d.ratings) {
+      taskOrder=d.taskOrder; ratings=d.ratings; modeMap=d.modeMap;
+      startedAt=d.startedAt; demographics=d.demographics||{};
+      githubClickLog=d.githubClickLog||{};
+      highlightUseLog=d.highlightUseLog||{};
+      submittedSig=d.submittedSig||{};
+      consented=!!d.consented; warmupSeen=!!d.warmupSeen;
+      curTask=firstOpen();
+      return true;
+    }
+  } catch(e) {}
+  return false;
+}
+function firstOpen() {
+  for (let i=0; i<taskOrder.length; i++) {
+    if (!isComplete(ratings[taskOrder[i].taskId])) return i;
+  }
+  return taskOrder.length;
+}
+
+/* ═══ Inline-only markdown (for AI summary bullets) ═══ */
+function mdInline(s) {
+  return (s||"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;")
+    .replace(/\*\*(.+?)\*\*/g,"<strong>$1</strong>")
+    .replace(/`([^`]+)`/g,"<code>$1</code>");
+}
+
+/* ═══ Simple Markdown ═══ */
+function md(s) {
+  if (!s) return "";
+  s = s.replace(/\r\n/g,"\n").replace(/\n{3,}/g,"\n\n");
+  return s.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;")
+    .replace(/^### (.+)$/gm,"<h3>$1</h3>").replace(/^## (.+)$/gm,"<h2>$1</h2>").replace(/^# (.+)$/gm,"<h1>$1</h1>")
+    .replace(/\*\*(.+?)\*\*/g,"<strong>$1</strong>").replace(/\*(.+?)\*/g,"<em>$1</em>")
+    .replace(/`([^`]+)`/g,"<code>$1</code>")
+    .replace(/^[\-\*] (.+)$/gm,"<li>$1</li>").replace(/^\d+\. (.+)$/gm,"<li>$1</li>")
+    .replace(/\[([^\]]+)\]\(([^)]+)\)/g,'<a href="$2" target="_blank">$1</a>')
+    .replace(/((?:<li>.*?<\/li>\n?)+)/g,m=>"<ul>"+m+"</ul>")
+    .replace(/\n\n/g,"</p><p>").replace(/\n/g," ")
+    .replace(/^/,"<p>").replace(/$/,"</p>")
+    .replace(/<p>\s*(<h[123]>)/g,"$1").replace(/(<\/h[123]>)\s*<\/p>/g,"$1")
+    .replace(/<p>\s*(<ul>)/g,"$1").replace(/(<\/ul>)\s*<\/p>/g,"$1")
+    .replace(/<p>\s*<\/p>/g,"");
+}
+
+function renderPRBody(text) {
+  if (!text) return "";
+  const esc = s => s.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+  const fenced = [];
+  text = text.replace(/```(\w*)\n?([\s\S]*?)```/g, (_,_l,b) => {
+    fenced.push(`<pre class="md-pre"><code>${esc(b.replace(/\n$/,""))}</code></pre>`);
+    return ` F${fenced.length-1} `;
+  });
+  const inline = [];
+  text = text.replace(/`([^`\n]+?)`/g, (_,b) => {
+    inline.push(`<code class="md-code">${esc(b)}</code>`);
+    return ` I${inline.length-1} `;
+  });
+  text = esc(text);
+  text = text.replace(/!\[([^\]]*)\]\(([^)]+)\)/g, (_,alt) => `<span class="md-img">[image: ${alt||"image"}]</span>`);
+  text = text.replace(/\[([^\]]+)\]\(([^)]+)\)/g, (_,t,u) => `<a href="${u}" target="_blank" rel="noopener">${t}</a>`);
+  text = text.replace(/\*\*([^*\n]+?)\*\*/g, "<strong>$1</strong>");
+  text = text.replace(/(^|[^*\w])\*([^*\n]+?)\*(?!\w)/g, "$1<em>$2</em>");
+  const lines = text.split(/\r?\n/);
+  const out = []; let listKind=null, paraBuf=[];
+  const closeList = () => { if(listKind){out.push(`</${listKind}>`);listKind=null;} };
+  const flushPara = () => { if(paraBuf.length){out.push(`<p class="md-p">${paraBuf.join("<br>")}</p>`);paraBuf=[];} };
+  for (const ln of lines) {
+    let m;
+    if ((m=ln.match(/^(#{1,3})\s+(.+)$/))) { flushPara();closeList(); const lvl=m[1].length+2; out.push(`<h${lvl} class="md-h${lvl}">${m[2].trim()}</h${lvl}>`); }
+    else if ((m=ln.match(/^\s*[-*+]\s+(.+)$/))) { flushPara(); if(listKind!=="ul"){closeList();out.push(`<ul class="md-ul">`);listKind="ul"} out.push(`<li>${m[1]}</li>`); }
+    else if ((m=ln.match(/^\s*\d+\.\s+(.+)$/))) { flushPara(); if(listKind!=="ol"){closeList();out.push(`<ol class="md-ol">`);listKind="ol"} out.push(`<li>${m[1]}</li>`); }
+    else if (ln.trim()==="") { flushPara();closeList(); }
+    else { closeList(); paraBuf.push(ln); }
+  }
+  flushPara(); closeList();
+  let html = out.join("\n");
+  html = html.replace(/ I(\d+) /g, (_,n) => inline[+n]);
+  html = html.replace(/ F(\d+) /g, (_,n) => fenced[+n]);
+  return html;
+}
+
+function renderDiff(d) {
+  if (!d) return "<span style='color:var(--t3)'>No diff available</span>";
+  const esc = s => s.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+  const lines = d.split("\n");
+  let html="", curFile=null, rows=[];
+  function flush() {
+    if (!rows.length) return;
+    let out = "";
+    if (curFile) out += `<div class="diff-fname">${esc(curFile)}</div>`;
+    out += `<table class="diff-tbl">${rows.join("")}</table>`;
+    html += `<div class="diff-file">${out}</div>`;
+    rows = [];
+  }
+  for (const l of lines) {
+    if (l.startsWith("diff ")) { flush(); curFile=null; continue; }
+    if (l.startsWith("index ")||l.startsWith("new file")||l.startsWith("deleted file")) continue;
+    if (l.startsWith("--- ")) continue;
+    if (l.startsWith("+++ ")) { flush(); let f=l.slice(4); if(f.startsWith("b/"))f=f.slice(2); curFile=f; continue; }
+    if (l.startsWith("@@")) {
+      const label = esc(l.match(/@@ .+? @@/)?.[0]||l);
+      const m = l.match(/@@ .+? @@(.*)/);
+      const ctx = m&&m[1]?` ${esc(m[1].trim())}` : "";
+      rows.push(`<tr class="hunk"><td class="dg">@@</td><td class="dc">${label}${ctx}</td></tr>`);
+    } else if (l.startsWith("+")) {
+      rows.push(`<tr class="add"><td class="dg">+</td><td class="dc">${esc(l.slice(1))}</td></tr>`);
+    } else if (l.startsWith("-")) {
+      rows.push(`<tr class="del"><td class="dg">−</td><td class="dc">${esc(l.slice(1))}</td></tr>`);
+    } else {
+      rows.push(`<tr class="ctx"><td class="dg"></td><td class="dc">${esc(l)}</td></tr>`);
+    }
+  }
+  flush();
+  return html;
+}
+
+/* ═══ Curated semantic uniqueness (Chris spec): highlight only blocks whose
+   text contains a genuinely-unique key for that mode; shared/paraphrased
+   points carry no key and stay unshaded. ═══ */
+function shadeByKeys(html, keys, cls) {
+  const t = document.createElement("div"); t.innerHTML = html;
+  const lk = (keys || []).map(k => k.toLowerCase());
+  if (lk.length) {
+    t.querySelectorAll("p,li").forEach(el => {
+      const txt = (el.textContent || "").toLowerCase();
+      if (lk.some(k => txt.includes(k))) el.classList.add(cls);
+    });
+  }
+  return t.innerHTML;
+}
+
+/* ═══ Lexical fallback (legacy) ═══ */
+const SIM_THRESHOLD = 0.50;
+function _normTokens(s) {
+  return new Set((s||"").toLowerCase().replace(/[`*_~]/g,"").replace(/[^a-z0-9 ]/g," ").split(/\s+/).filter(t=>t.length>=3));
+}
+function _jaccard(a,b) {
+  if (!a.size && !b.size) return 1;
+  let inter=0; for(const t of a) if(b.has(t)) inter++;
+  const uni = a.size+b.size-inter;
+  return uni===0 ? 1 : inter/uni;
+}
+function shadeUniqueBlocks(htmlA, htmlB) {
+  const tA=document.createElement("div"); tA.innerHTML=htmlA;
+  const tB=document.createElement("div"); tB.innerHTML=htmlB;
+  const bA=Array.from(tA.querySelectorAll("p,li"));
+  const bB=Array.from(tB.querySelectorAll("p,li"));
+  const tokB=bB.map(b=>_normTokens(b.textContent));
+  const tokA=bA.map(a=>_normTokens(a.textContent));
+  bA.forEach((el,i)=>{ const t=tokA[i]; if(t.size<2)return; let best=0; for(const u of tokB) best=Math.max(best,_jaccard(t,u)); if(best<SIM_THRESHOLD) el.classList.add("uniq-A"); });
+  bB.forEach((el,i)=>{ const t=tokB[i]; if(t.size<2)return; let best=0; for(const u of tokA) best=Math.max(best,_jaccard(t,u)); if(best<SIM_THRESHOLD) el.classList.add("uniq-B"); });
+  return [tA.innerHTML, tB.innerHTML];
+}
+
+/* ═══ Build review pair ═══ */
+function buildReviewPair(pr, taskId) {
+  const grid = document.getElementById("reviewGrid");
+  grid.innerHTML = "";
+  const asgn = modeMap[taskId];
+  const rawHtml = { A: md(pr.reviews[asgn.A]), B: md(pr.reviews[asgn.B]) };
+  const uniq = pr.review_unique || null;
+  let shadedA, shadedB;
+  if (uniq) {
+    shadedA = shadeByKeys(rawHtml.A, uniq[asgn.A] || [], "uniq-A");
+    shadedB = shadeByKeys(rawHtml.B, uniq[asgn.B] || [], "uniq-B");
+  } else {
+    [shadedA, shadedB] = shadeUniqueBlocks(rawHtml.A, rawHtml.B);
+  }
+  const summaries = pr.review_summaries || {};
+  ["A","B"].forEach(lbl => {
+    const color = lbl==="A" ? "#58a6ff" : "#a371f7";
+    const card = document.createElement("div");
+    card.className = "review-card";
+    const summ = summaries[asgn[lbl]] || [];
+    const summHtml = summ.length
+      ? `<div class="rsummary"><div class="rsummary-label">Summary of this review's claims &mdash; not verified facts</div><ul>${summ.map(b=>`<li>${mdInline(b)}</li>`).join("")}</ul></div>`
+      : "";
+    // File-audit findings are attached inline to each path in the review text.
+    // Deliberately no count strip: its Components/APIs and Files values map
+    // too directly to the primary F3* outcome.
+    const reviewHtml = annotateFileRefs(lbl==="A" ? shadedA : shadedB,
+                                        (pr.answer_key || {})[asgn[lbl]]);
+    card.innerHTML = `<div class="review-card-header"><span style="width:24px;height:24px;border-radius:6px;background:${color};display:inline-flex;align-items:center;justify-content:center;font-size:.75rem;font-weight:800;color:#fff;flex-shrink:0">${lbl}</span><span style="color:${color}">Review ${lbl}</span></div><div class="review-card-body">${summHtml}<div class="rcontent">${reviewHtml}</div></div>`;
+    grid.appendChild(card);
+  });
+}
+
+/* ═══ Concrete-item count strip (precomputed, blinding-safe) ═══ */
+const COUNT_LABELS = {
+  components_apis: "Components/APIs",
+  files: "Files",
+  test_targets: "Test targets",
+  edge_cases: "Edge cases",
+  reasoned_claims: "Reasoned claims",
+};
+function _attr(s) {
+  return (s||"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
+}
+function buildCountStrip(c) {
+  if (!c) return "";
+  const chips = Object.keys(COUNT_LABELS).map(cat => {
+    const cell = c[cat] || { n: 0, items: [] };
+    const n = cell.n || 0;
+    const tip = (cell.items && cell.items.length)
+      ? cell.items.map(s => "• " + s).join("\n") : "none";
+    return `<span class="rcount-chip${n===0?" zero":""}" title="${_attr(COUNT_LABELS[cat] + ":\n" + tip)}">${COUNT_LABELS[cat]} <b>${n}</b></span>`;
+  }).join("");
+  return `<div class="rcounts"><div class="rcounts-label">Concrete items named (auto-counted &mdash; hover to see them)</div><div class="rcounts-chips">${chips}</div></div>`;
+}
+
+/* ═══ Inline file-reference annotation (precomputed offline at the PR commit).
+   The audit's finding for a referenced file is attached to that file where it
+   is mentioned in the review, instead of being hoisted into a separate strip.
+   The strip was withdrawn because its badge palette was a perfect arm
+   signature on the frozen stimuli: baseline reviews produced an all-"in this
+   PR" strip while kg reviews produced a mixed one, letting a rater sort the
+   arms without reading a word. Every reference now looks identical and only
+   the tooltip text differs.
+
+   The tooltip deliberately reports EXISTENCE ONLY. It must never surface the
+   audit's `basis` or `relationship` fields. Existence is a fact about the
+   repository that a rater can confirm independently by expanding the diff;
+   `basis` and `relationship` are this project's own adjudication of whether a
+   review's claim holds, which is the judgement the rater is being asked to
+   make. Rendering them would answer the question the instrument is supposed to
+   ask, in either direction and for either arm, and would import information
+   that is not present in the stimulus. The asymmetry this leaves — baseline
+   cites only files the PR changed, kg also cites cross-file dependencies — is
+   a property of the reviews themselves and is recorded as an accepted residual
+   in ANALYSIS_PLAN.md. Keep this function limited to existence. ═══ */
+function _tipText(ev) {
+  if (!ev) return "";
+  const existence = typeof ev === "string" ? ev : ev.existence;
+  const changed = typeof ev === "string"
+    ? ev === "in_diff"
+    : ev.relationship === "changed";
+  if (existence === "not_found") return "This file was not found in the project.";
+  if (changed) return "This file is changed by this PR.";
+  return "This file exists in the project.";
+}
+
+/* Wrap each audited path where it occurs in the rendered review. Returns HTML.
+   Matching is by prefix so that "src/click/utils.py:232-311" is annotated by
+   the entry for "src/click/utils.py". */
+function annotateFileRefs(html, ak) {
+  if (!ak || !Object.keys(ak).length) return html;
+  const root = document.createElement("div");
+  root.innerHTML = html;
+  // Longest first, so a nested path never gets claimed by a shorter prefix.
+  const paths = Object.keys(ak).sort((a, b) => b.length - a.length);
+
+  const annotate = (el) => {
+    const tip = (p) => _tipText(ak[p]);
+    // Inline code spans usually carry the whole reference, range suffix and all.
+    el.querySelectorAll("code").forEach(c => {
+      if (c.closest("pre") || c.classList.contains("fref")) return;
+      const t = c.textContent || "";
+      const hit = paths.find(p => t.includes(p));
+      if (!hit) return;
+      c.classList.add("fref");
+      c.setAttribute("tabindex", "0");
+      c.dataset.tip = tip(hit);
+      c.dataset.tipPath = hit;
+      c.setAttribute("aria-label", `${t}. ${tip(hit)}`);
+    });
+    // Any remaining bare-text mentions outside code spans.
+    const walker = document.createTreeWalker(el, NodeFilter.SHOW_TEXT, {
+      acceptNode: n => (n.parentElement.closest("pre,code,.fref"))
+        ? NodeFilter.FILTER_REJECT : NodeFilter.FILTER_ACCEPT
+    });
+    const targets = [];
+    let n;
+    while ((n = walker.nextNode())) {
+      const hit = paths.find(p => n.nodeValue.includes(p));
+      if (hit) targets.push([n, hit]);
+    }
+    targets.forEach(([node, hit]) => {
+      const idx = node.nodeValue.indexOf(hit);
+      const after = node.splitText(idx);
+      after.splitText(hit.length);
+      const span = document.createElement("span");
+      span.className = "fref";
+      span.setAttribute("tabindex", "0");
+      span.dataset.tip = tip(hit);
+      span.dataset.tipPath = hit;
+      span.setAttribute("aria-label", `${hit}. ${tip(hit)}`);
+      span.textContent = hit;
+      after.parentNode.replaceChild(span, after);
+    });
+  };
+  annotate(root);
+  return root.innerHTML;
+}
+
+/* One shared tooltip on <body>. The review card is overflow:hidden, so a
+   pseudo-element tooltip would be clipped inside the scrolling panel. */
+let _ftipEl = null;
+function _ftip() {
+  if (!_ftipEl) {
+    _ftipEl = document.createElement("div");
+    _ftipEl.className = "ftip";
+    document.body.appendChild(_ftipEl);
+  }
+  return _ftipEl;
+}
+function _showTip(el) {
+  const tip = el.dataset.tip;
+  if (!tip) return;
+  const t = _ftip();
+  t.innerHTML = `<span class="ftip-path">${_attr(el.dataset.tipPath || "")}</span>${_attr(tip)}`;
+  t.classList.add("on");
+  const r = el.getBoundingClientRect();
+  const tr = t.getBoundingClientRect();
+  let left = r.left + r.width / 2 - tr.width / 2;
+  left = Math.max(8, Math.min(left, window.innerWidth - tr.width - 8));
+  let top = r.top - tr.height - 8;
+  if (top < 8) top = r.bottom + 8;          // flip below when clipped at the top
+  t.style.left = left + "px";
+  t.style.top = top + "px";
+}
+function _hideTip() { if (_ftipEl) _ftipEl.classList.remove("on"); }
+
+// Delegated, so it covers warmup and main trials and survives re-rendering.
+document.addEventListener("mouseover", e => {
+  const el = e.target.closest && e.target.closest(".fref");
+  if (el) _showTip(el);
+});
+document.addEventListener("mouseout", e => {
+  if (e.target.closest && e.target.closest(".fref")) _hideTip();
+});
+document.addEventListener("focusin", e => {
+  const el = e.target.closest && e.target.closest(".fref");
+  if (el) _showTip(el);
+});
+document.addEventListener("focusout", e => {
+  if (e.target.closest && e.target.closest(".fref")) _hideTip();
+});
+window.addEventListener("scroll", _hideTip, true);
+document.addEventListener("keydown", e => { if (e.key === "Escape") _hideTip(); });
+
+/* ═══ Per-criterion relevance (Review A / Both / Neither / Review B for each of 6 criteria) ═══ */
+// Criterion ids contain "*" (F3*, F2*), which is invalid in a radio name —
+// sanitise to a safe key for the input name, but always store answers keyed
+// by the real criterion id from STUDY.criteria.
+function critKey(id) { return id.replace(/[^a-z0-9]/gi, ""); }
+
+function buildCritGrid(containerId, namePrefix) {
+  const el = document.getElementById(containerId);
+  if (!el) return;
+  el.innerHTML = "";
+  (STUDY.criteria || []).forEach(c => {
+    const k = namePrefix + "_" + critKey(c.id);
+    const row = document.createElement("div");
+    row.className = "crit-row";
+    row.dataset.cid = c.id;
+    row.innerHTML =
+      `<div class="crit-q"><span class="crit-cat">${c.category}</span>` +
+      (c.short ? `<strong class="crit-short">${c.short}</strong><span class="crit-desc">${c.description}</span>`
+               : c.description) +
+      `</div>` +
+      `<div class="crit-opts">` +
+      `<label data-c="A"><input type="radio" name="${k}" value="A">Review A</label>` +
+      `<label data-c="both"><input type="radio" name="${k}" value="both">Both</label>` +
+      `<label data-c="neither"><input type="radio" name="${k}" value="neither">Neither</label>` +
+      `<label data-c="B"><input type="radio" name="${k}" value="B">Review B</label>` +
+      `</div>`;
+    row.querySelectorAll(".crit-opts label").forEach(lab => {
+      lab.onclick = () => {
+        row.querySelectorAll(".crit-opts label").forEach(l => l.classList.remove("selected"));
+        lab.classList.add("selected");
+        row.classList.remove("crit-missing");
+      };
+    });
+    el.appendChild(row);
+  });
+}
+
+function getCriteria(namePrefix) {
+  const out = {};
+  (STUDY.criteria || []).forEach(c => {
+    const ch = document.querySelector(`input[name="${namePrefix + "_" + critKey(c.id)}"]:checked`);
+    out[c.id] = ch ? ch.value : null;
+  });
+  return out;
+}
+
+function critComplete(obj) {
+  if (!obj) return false;
+  return (STUDY.criteria || []).every(c => ["A", "B", "both", "neither"].includes(obj[c.id]));
+}
+
+/* ═══ Overall holistic preference (one question per PR, alongside the 6 criteria) ═══ */
+function wireOverall(prefix) {
+  document.querySelectorAll(`.overall-opts input[name="overall_${prefix}"]`).forEach(inp => {
+    inp.closest("label").onclick = () => {
+      const grp = inp.closest(".overall-opts");
+      grp.querySelectorAll("label").forEach(l => l.classList.remove("selected"));
+      inp.closest("label").classList.add("selected");
+      inp.checked = true;
+      const sec = grp.closest(".overall-section");
+      if (sec) sec.classList.remove("overall-missing");
+    };
+  });
+}
+function getOverall(prefix) {
+  const ch = document.querySelector(`.overall-opts input[name="overall_${prefix}"]:checked`);
+  return ch ? ch.value : null;
+}
+function clearOverall(prefix) {
+  document.querySelectorAll(`.overall-opts input[name="overall_${prefix}"]`).forEach(i => {
+    i.checked = false; i.closest("label").classList.remove("selected");
+  });
+}
+function restoreOverall(prefix, val) {
+  if (!val) return;
+  const r = document.querySelector(`.overall-opts input[name="overall_${prefix}"][value="${val}"]`);
+  if (r) { r.checked = true; r.closest("label").classList.add("selected"); }
+}
+
+// Convenience signal for analysis: net lean across criteria (+ = toward A).
+function critNet(obj) {
+  if (!obj) return 0;
+  let n = 0;
+  (STUDY.criteria || []).forEach(c => { if (obj[c.id] === "A") n++; else if (obj[c.id] === "B") n--; });
+  return n;
+}
+
+function clearCrit(containerId) {
+  const el = document.getElementById(containerId);
+  if (!el) return;
+  el.querySelectorAll(".crit-opts label").forEach(l => l.classList.remove("selected"));
+  el.querySelectorAll("input").forEach(r => { r.checked = false; });
+  el.querySelectorAll(".crit-row").forEach(r => r.classList.remove("crit-missing"));
+}
+
+function restoreCrit(containerId, namePrefix, obj) {
+  if (!obj) return;
+  (STUDY.criteria || []).forEach(c => {
+    const v = obj[c.id];
+    if (!v) return;
+    const radio = document.querySelector(`input[name="${namePrefix + "_" + critKey(c.id)}"][value="${v}"]`);
+    if (radio) { radio.checked = true; radio.closest("label").classList.add("selected"); }
+  });
+}
+
+/* ═══ Difficulty scale ═══ */
+function buildDiffScale() {
+  const el = document.getElementById("diffScale");
+  const labels = ["1 &mdash; Very Easy","2","3","4","5 &mdash; Very Hard"];
+  el.innerHTML = "";
+  labels.forEach((txt,i) => {
+    const lab = document.createElement("label");
+    lab.innerHTML = `<input type="radio" name="taskDiff" value="${i+1}"><span>${txt}</span>`;
+    lab.onclick = () => diffScaleSelect(lab, "diffScale");
+    el.appendChild(lab);
+  });
+}
+function diffScaleSelect(label, containerId) {
+  document.getElementById(containerId).querySelectorAll("label").forEach(l => l.classList.remove("selected"));
+  label.classList.add("selected");
+}
+function getDifficulty() {
+  const checked = document.querySelector('input[name="taskDiff"]:checked');
+  return checked ? parseInt(checked.value) : 0;
+}
+
+/* ═══ Timer ═══ */
+function startT() {
+  clearInterval(timerH);
+  const task = taskOrder[curTask];
+  taskBaseMs = task && ratings[task.taskId]
+    ? Number(ratings[task.taskId].time_spent_ms || 0) : 0;
+  taskStartedAt = Date.now();
+  const el=document.getElementById("timer");
+  const update=()=>{ taskMs=taskBaseMs+(Date.now()-taskStartedAt); const s=Math.floor(taskMs/1000); const txt=Math.floor(s/60)+":"+String(s%60).padStart(2,"0"); if(el.textContent!==txt)el.textContent=txt; };
+  update();
+  timerH=setInterval(update,1000);
+}
+function stopT() {
+  clearInterval(timerH);
+  taskMs=taskBaseMs+(Date.now()-taskStartedAt);
+  taskBaseMs=taskMs;
+  taskStartedAt=Date.now();
+  return taskMs;
+}
+
+/* ═══ Render task ═══ */
+function render(idx) {
+  if (idx >= taskOrder.length) { showFeedback(); return; }
+  const task = taskOrder[idx];
+  const pr   = STUDY.prs[task.prIdx];
+
+  document.getElementById("prCounter").textContent = `PR ${curTask+1} of ${taskOrder.length}`;
+  document.getElementById("prTitle").textContent   = pr.title;
+  document.getElementById("prRepo").textContent    = pr.repo;
+  document.getElementById("prNumber").textContent  = `#${pr.pr_number}`;
+  const ghLink = document.getElementById("prLink");
+  ghLink.href = pr.url;
+  ghLink.onclick = function() { if(!githubClickLog[task.taskId]) githubClickLog[task.taskId]=0; githubClickLog[task.taskId]++; save(); };
+
+  if (pr.pr_context) { document.getElementById("ctxSection").style.display="block"; document.getElementById("ctxC").innerHTML=mdInline(pr.pr_context); }
+  else document.getElementById("ctxSection").style.display="none";
+
+  if (pr.body) { document.getElementById("bodySection").style.display="block"; document.getElementById("bodyC").innerHTML=renderPRBody(pr.body); }
+  else document.getElementById("bodySection").style.display="none";
+
+  document.getElementById("diffC").innerHTML = renderDiff(pr.diff);
+  // r14 (2026-08-24): the diff opens on every trial. It was collapsed from
+  // 2026-08-01 on pilot reading-load feedback, at the cost of letting F3* be
+  // answered without ever seeing the code. Reset per trial so a rater who
+  // collapses it on one PR still gets the code in front of them on the next.
+  const ds = document.getElementById("diffSection");
+  ds.classList.remove("collapsed");
+  ds.querySelector(".diff-toggle").textContent = "click to collapse";
+
+  buildReviewPair(pr, task.taskId);
+
+  // Optional semantic highlighting starts off on every trial.
+  const toggleBtn = document.getElementById("toggleUniqBtn");
+  const legend = document.getElementById("diffLegend");
+  const grid = document.getElementById("reviewGrid");
+  grid.classList.add("diff-hidden");
+  legend.classList.remove("on");
+  toggleBtn.classList.remove("on");
+  toggleBtn.textContent = "Highlight what differs";
+  toggleBtn.onclick = function() {
+    const hidden = grid.classList.toggle("diff-hidden");
+    legend.classList.toggle("on", !hidden);
+    toggleBtn.classList.toggle("on", !hidden);
+    toggleBtn.textContent = hidden ? "Highlight what differs" : "Hide highlighting";
+    if (!hidden) {
+      highlightUseLog[task.taskId] = true;
+      save();
+    }
+  };
+
+  clearCrit("critGrid");
+  clearOverall("task");
+  document.getElementById("whyText").value = "";
+  buildDiffScale();
+
+  // Restore if returning
+  if (ratings[task.taskId]) {
+    const saved = ratings[task.taskId];
+    restoreCrit("critGrid", "task", saved.criteria);
+    restoreOverall("task", saved.overall);
+    if (saved.why) document.getElementById("whyText").value = saved.why;
+    if (saved.difficulty) {
+      const radio = document.querySelector(`input[name="taskDiff"][value="${saved.difficulty}"]`);
+      if (radio) { radio.checked=true; radio.closest("label").classList.add("selected"); }
+    }
+  }
+
+  document.getElementById("uWarn").style.display = "none";
+  updProg();
+  startT();
+
+  document.getElementById("prevBtn").disabled = idx===0;
+  const nb = document.getElementById("nextBtn");
+  if (idx === taskOrder.length-1) { nb.innerHTML="Submit &amp; Finish &#10003;"; nb.classList.add("btn-g"); nb.classList.remove("btn-p"); }
+  else { nb.innerHTML="Submit &amp; Next &#8594;"; nb.classList.add("btn-p"); nb.classList.remove("btn-g"); }
+
+  window.scrollTo({ top:0, behavior:"smooth" });
+}
+
+function updProg() {
+  const total = taskOrder.length;
+  document.getElementById("pFill").style.width = ((curTask+1)/total*100)+"%";
+  document.getElementById("pTxt").textContent   = (curTask+1)+" / "+total;
+}
+
+/* ═══ Submit task ═══ */
+function submitTask() {
+  const crit = getCriteria("task");
+  const overall = getOverall("task");
+  const why  = document.getElementById("whyText").value.trim();
+  const diff = getDifficulty();
+
+  if (!critComplete(crit)) {
+    let first = null;
+    document.querySelectorAll("#critGrid .crit-row").forEach(row => {
+      if (!row.querySelector("input:checked")) {
+        row.classList.add("crit-missing");
+        if (!first) first = row;
+      }
+    });
+    const w = document.getElementById("uWarn");
+    w.textContent = "⚠ Please answer every criterion (Review A / Both / Neither / Review B)";
+    w.style.display = "inline";
+    if (first) first.scrollIntoView({ behavior:"smooth", block:"center" });
+    return false;
+  }
+  if (!overall) {
+    const sec = document.getElementById("overallSection");
+    sec.classList.add("overall-missing");
+    const w = document.getElementById("uWarn");
+    w.textContent = "⚠ Please pick the overall more-useful review";
+    w.style.display = "inline";
+    sec.scrollIntoView({ behavior:"smooth", block:"center" });
+    return false;
+  }
+  // v2 (2026-08-01): "why" is optional — pilot feedback; empty notes are
+  // still recorded and surfaced via the notes quality flags.
+  if (!diff) {
+    const w = document.getElementById("uWarn");
+    w.textContent = "⚠ Please rate the difficulty (1–5)";
+    w.style.display = "inline";
+    return false;
+  }
+
+  document.getElementById("uWarn").style.display = "none";
+
+  const task = taskOrder[curTask];
+  ratings[task.taskId] = {
+    taskId: task.taskId,
+    criteria: crit,
+    overall: overall,
+    why: why,
+    difficulty: diff,
+    time_spent_ms: stopT(),
+    github_clicks: githubClickLog[task.taskId] || 0,
+  };
+  save();
+  submitTaskToSheet(task.taskId);
+  return true;
+}
+
+function goNext() { if (!submitTask()) return; curTask++; curTask>=taskOrder.length ? showFeedback() : render(curTask); }
+function goPrev() {
+  const task = taskOrder[curTask];
+  const crit = getCriteria("task");
+  const overall = getOverall("task");
+  const why  = document.getElementById("whyText").value.trim();
+  const diff = getDifficulty();
+  if (Object.values(crit).some(v => v) || overall || why || diff) {
+    ratings[task.taskId] = { taskId:task.taskId, criteria:crit, overall:overall, why:why, difficulty:diff, time_spent_ms:stopT(), github_clicks:githubClickLog[task.taskId]||0 };
+    save();
+  }
+  if (curTask > 0) { curTask--; render(curTask); }
+}
+
+/* ═══ Webhook ═══ */
+// Apps Script v4-2026-08-19. A *new* deployment mints a new /exec URL, so this
+// constant must be updated whenever one is created; editing an existing
+// deployment ("Manage deployments" -> pencil -> New version) keeps the URL and
+// avoids this step. The previous v3 deployment is still reachable and still
+// corrupts ranged demographics values, so nothing may point at it.
+const SHEET_URL = "https://script.google.com/macros/s/AKfycbyzMBMt16gj4JhjY1I-aEaKG7nYv2xCQPkBCMIUFJHQdzSiOBTp2X5ePMY7yIpcd-Ig/exec";
+
+function _outboxKey() { return "heval4_outbox_"+STUDY_ID+"_"+STUDY.version+"_"+(raterId||"_anon"); }
+function appendToOutbox(payload) {
+  const id = Date.now()+"_"+Math.random().toString(36).slice(2,8);
+  try { const key=_outboxKey(); const cur=JSON.parse(localStorage.getItem(key)||"[]"); cur.push({id:id,queued_at:new Date().toISOString(),acked:false,payload:payload}); localStorage.setItem(key,JSON.stringify(cur)); } catch(e) {}
+  return id;
+}
+function loadOutbox() { try { return JSON.parse(localStorage.getItem(_outboxKey())||"[]"); } catch(e) { return []; } }
+function markAcked(id) {
+  try {
+    const key=_outboxKey(); const cur=JSON.parse(localStorage.getItem(key)||"[]");
+    let hit=false;
+    cur.forEach(it=>{ if(it && it.id===id){ it.acked=true; hit=true; } });
+    if (hit) localStorage.setItem(key,JSON.stringify(cur));
+  } catch(e) {}
+}
+// Entries written before receipts existed carry no `acked` flag; treating them
+// as unconfirmed is the safe reading, and a resend is deduplicated downstream
+// by (rater_id, pr_id, comparison).
+function pendingOutbox() { return loadOutbox().filter(it => it && it.payload && !it.acked); }
+function downloadResponseBackup() {
+  const data={study_id:STUDY_ID,instrument_version:STUDY.version,rater_id:raterId,exported_at:new Date().toISOString(),payloads:loadOutbox()};
+  const blob=new Blob([JSON.stringify(data,null,2)],{type:"application/json"});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement("a"); a.href=url; a.download=STUDY_ID+"_"+(raterId||"anon")+"_"+new Date().toISOString().replace(/[:.]/g,"-")+".json";
+  document.body.appendChild(a); a.click(); document.body.removeChild(a); URL.revokeObjectURL(url);
+}
+/* Resolves true only when the endpoint answered {ok:true}. The request is kept
+   CORS-simple (text/plain, no custom headers) so the browser sends it without a
+   preflight and lets us read the reply; the Apps Script reads the raw body and
+   does not care about the declared content type. */
+function postPayload(payload, retries=3) {
+  const body = JSON.stringify(payload);
+  function attempt(n) {
+    return fetch(SHEET_URL, {method:"POST", headers:{"Content-Type":"text/plain;charset=utf-8"}, body:body})
+      .then(r => r.ok ? r.text() : Promise.reject(new Error("HTTP "+r.status)))
+      .then(t => { let j=null; try { j=JSON.parse(t); } catch(_) {}
+                   if (j && j.ok === true) return true;
+                   throw new Error(j && j.error ? j.error : "no confirmation"); })
+      .catch(() => n > 1
+        ? new Promise(res => setTimeout(res, 1500*(4-n))).then(() => attempt(n-1))
+        : false);
+  }
+  return attempt(retries);
+}
+let inFlight = [];
+function sendToSheet(payload, retries=3) {
+  const id = appendToOutbox(payload);
+  const p = postPayload(payload, retries).then(ok => { if (ok) markAcked(id); return ok; });
+  inFlight.push(p);
+  return p;
+}
+/* Resends only what has not been confirmed, and reports how much is still
+   unconfirmed so the completion screen can tell the rater the truth. */
+function flushOutbox() {
+  const waiting = inFlight.slice();
+  return Promise.all(waiting.map(p => p.catch(() => false))).then(() => {
+    inFlight = inFlight.filter(p => waiting.indexOf(p) === -1);
+    const pending = pendingOutbox();
+    if (!pending.length) return 0;
+    return Promise.all(pending.map(it =>
+      postPayload(it.payload, 2).then(ok => { if (ok && it.id) markAcked(it.id); return ok; })
+    )).then(() => pendingOutbox().length);
+  });
+}
+function replayOutbox() { return flushOutbox(); }
+function submitTaskToSheet(taskId) {
+  const r = ratings[taskId]; if (!r) return;
+  const parts = taskId.split("_");
+  const prId  = parseInt(parts[0]);
+  const compId= parts.slice(1).join("_");
+  const asgn  = modeMap[taskId];
+  // Skip re-POSTing an unchanged answer. submitTask() runs on every
+  // "Submit & Next", so navigating Prev -> Next without editing would
+  // otherwise write a duplicate Sheet row for the same (rater, pr,
+  // comparison). We only resend when the answer actually changed; the
+  // analysis should still dedupe by (rater_id, pr_id, comparison),
+  // keeping the latest, in case a genuine edit produces two rows.
+  const sig = JSON.stringify([r.criteria, r.overall, r.why, r.difficulty,
+                              r.time_spent_ms, r.github_clicks,
+                              !!highlightUseLog[taskId]]);
+  if (submittedSig[taskId] === sig) return;
+  submittedSig[taskId] = sig;
+  const payload = {
+    study_id: STUDY_ID,
+    instrument_version: STUDY.version,
+    build_id: BUILD_ID,                 // which deployed build produced this row
+    viewport: window.innerWidth + "x" + window.innerHeight,
+    device_token: deviceToken(),        // repeat completions from one browser
+    rater_id: raterId,
+    started_at: startedAt,              // without this the sheet has no session duration
+    completed_at: new Date().toISOString(),
+    demographics: demographics,
+    ratings: [{
+      pr_id: prId,
+      comparison: compId,
+      mode_A: asgn.A,
+      mode_B: asgn.B,
+      criteria: r.criteria,             // {criterion_id: "A"|"B"|"both"|"neither"} for all 6
+      criteria_net: critNet(r.criteria),// + = leans A, - = leans B, 0 = both/neither/balanced
+      overall: r.overall,               // holistic preference: "A" | "equal" | "B"
+      why: r.why,
+      difficulty: r.difficulty,
+      time_spent_ms: r.time_spent_ms,
+      github_clicks: r.github_clicks,
+      highlight_used: !!highlightUseLog[taskId],
+    }]
+  };
+  sendToSheet(payload);
+  save();
+}
+function submitFeedbackToSheet(text) {
+  if (!text) return;
+  sendToSheet({study_id:STUDY_ID,instrument_version:STUDY.version,build_id:BUILD_ID,viewport:window.innerWidth+"x"+window.innerHeight,device_token:deviceToken(),rater_id:raterId,completed_at:new Date().toISOString(),feedback:text});
+}
+
+/* ═══ Feedback & completion ═══ */
+function showFeedback() {
+  showScreen("feedback");
+  document.getElementById("skipFbBtn").onclick  = showDone;
+  document.getElementById("submitFbBtn").onclick = () => { const txt=document.getElementById("feedbackText").value.trim(); if(txt) submitFeedbackToSheet(txt); showDone(); };
+}
+function showDone() {
+  showScreen("completion");
+  const n = Object.keys(ratings).length;
+  document.getElementById("stR").textContent = n;
+  let tt=0;
+  for (const r of Object.values(ratings)) tt += r.time_spent_ms||0;
+  const m = Math.round(tt/60000);
+  document.getElementById("stT").textContent = m<60 ? m+"m" : Math.floor(m/60)+"h "+m%60+"m";
+  document.getElementById("stA").textContent = n>0 ? Math.round(tt/n/1000)+"s" : "--";
+  const dlBtn = document.getElementById("downloadBackupBtn");
+  if (dlBtn) dlBtn.onclick = downloadResponseBackup;
+  const retryBtn = document.getElementById("retrySubmitBtn");
+  if (retryBtn) retryBtn.onclick = confirmSubmission;
+  confirmSubmission();
+}
+function setSubmitStatus(state, text) {
+  const box = document.getElementById("submitStatus");
+  if (!box) return;
+  box.className = "sstatus " + state;
+  document.getElementById("ssText").textContent = text;
+}
+function confirmSubmission() {
+  setSubmitStatus("checking", "Confirming your submission\u2026");
+  return flushOutbox().then(pending => {
+    if (pending === 0) setSubmitStatus("ok", "Your responses have been received. Thank you \u2014 you can close this page.");
+    else setSubmitStatus("fail", "We could not confirm that all your responses reached the server.");
+  }).catch(() => {
+    setSubmitStatus("fail", "We could not confirm that all your responses reached the server.");
+  });
+}
+
+/* ═══ Screen routing ═══ */
+function showScreen(id) { document.querySelectorAll(".screen").forEach(s=>s.classList.remove("active")); document.getElementById(id).classList.add("active"); }
+
+/* ═══ Demographics ═══ */
+function demoSelect(label) {
+  const group = label.closest('.demo-opts');
+  group.querySelectorAll('label').forEach(l=>l.classList.remove('selected'));
+  label.classList.add('selected');
+  if (group.dataset.field === 'role') {
+    // Free text is offered only for "other", so the catch-all bucket stays
+    // interpretable instead of collapsing everyone unusual into one code.
+    const box = document.getElementById('roleOther');
+    const isOther = label.querySelector('input').value === 'other';
+    box.classList.toggle('show', isOther);
+    if (!isOther) box.value = '';
+  }
+  let ok=true;
+  document.querySelectorAll('#demographics .demo-opts').forEach(f=>{if(!f.querySelector('label.selected'))ok=false});
+  document.getElementById('demoBtn').disabled=!ok;
+}
+function getDemographics() {
+  const r={};
+  document.querySelectorAll('#demographics .demo-opts').forEach(c=>{const s=c.querySelector('input:checked');if(s)r[c.dataset.field]=s.value});
+  const box = document.getElementById('roleOther');
+  if (box && r.role === 'other' && box.value.trim()) r.role_other = box.value.trim().slice(0, 80);
+  return r;
+}
+
+/* ═══ Jump button ═══ */
+function setupJumpBtn() {
+  const btn=document.getElementById("jumpBtn");
+  const matrixEl=document.getElementById("pref5Section");
+  const gridEl=document.getElementById("reviewGrid");
+  if(!matrixEl||!gridEl)return;
+  const matrixObs=new IntersectionObserver(([e])=>{
+    if(e.isIntersecting){btn.innerHTML="&#8593; Back to Reviews";btn.onclick=()=>gridEl.scrollIntoView({behavior:"smooth"})}
+    else{btn.innerHTML="&#8595; Jump to Questions";btn.onclick=()=>matrixEl.scrollIntoView({behavior:"smooth"})}
+  },{threshold:0});
+  matrixObs.observe(matrixEl);
+  const topbar=document.querySelector("#evaluation .topbar");
+  if(topbar){
+    const topObs=new IntersectionObserver(([e])=>{btn.classList.toggle("visible",!e.isIntersecting)},{threshold:0});
+    topObs.observe(topbar);
+  }
+}
+
+/* ═══ Warmup ═══ */
+function warmupComplete() {
+  if (!critComplete(getCriteria("warm"))) return false;
+  if (!getOverall("warm")) return false;
+  if (!document.querySelector('input[name="warmDiff"]:checked')) return false;
+  return true;
+}
+function showWarmup() {
+  showScreen("warmup");
+  const warm = document.getElementById("warmup");
+  const highlightBtn = document.getElementById("warmToggleUniqBtn");
+  const warmLegend = document.getElementById("warmDiffLegend");
+  warm.classList.remove("highlights-on");
+  warmLegend.classList.remove("on");
+  highlightBtn.classList.remove("on");
+  highlightBtn.textContent = "Highlight what differs";
+  highlightBtn.onclick = () => {
+    const on = warm.classList.toggle("highlights-on");
+    warmLegend.classList.toggle("on", on);
+    highlightBtn.classList.toggle("on", on);
+    highlightBtn.textContent = on ? "Hide highlighting" : "Highlight what differs";
+  };
+  buildCritGrid("warmCritGrid", "warm");
+  wireOverall("warm");
+  const btn=document.getElementById("warmDoneBtn"); btn.disabled=true;
+  const refresh=()=>{btn.disabled=!warmupComplete()};
+  warm.addEventListener("click",refresh);
+  btn.onclick=()=>{if(warmupComplete()){warmupSeen=true;save();beginEval()}};
+}
+function beginEval() {
+  showScreen("evaluation");
+  buildCritGrid("critGrid", "task");
+  wireOverall("task");
+  document.getElementById("nextBtn").onclick = goNext;
+  document.getElementById("prevBtn").onclick = goPrev;
+  setupJumpBtn();
+  render(curTask);
+}
+
+/* ═══ Init ═══ */
+/* Bump on any deploy that changes behaviour raters or the data path depend on.
+   A run on 2026-08-19 13:53Z posted to the previous Apps Script deployment,
+   eleven minutes after its replacement went live, because the browser held a
+   cached index.html carrying the old SHEET_URL — and nothing in the payload
+   revealed which build had produced it. The check below compares this constant
+   against the copy served now and reloads once past the cache if they differ;
+   BUILD_ID also travels on every payload, so `raw_log` can always answer which
+   build a response came from. */
+const BUILD_ID = "2026-08-24-data-epoch";
+
+/* Matches the 899px grid breakpoint above: at 900px the reviews are still two
+   columns. The gate is re-evaluated on resize and rotation rather than latched,
+   so widening a window or turning a tablet to landscape lifts it, and no state
+   is discarded while it is up. */
+const MIN_WIDTH = 900;
+/* Width decides whether the study can run; this only decides which explanation
+   to give. Touch-primary input is the signal, not screen size: a 1280x800
+   laptop is physically smaller than an iPad Pro, so any size threshold would
+   misclassify one of them. A desktop at 150% zoom reports innerWidth 853 and
+   lands here too, which is why the second message talks about zoom. */
+function isHandheld() {
+  const touchPrimary = window.matchMedia("(pointer: coarse)").matches
+                    && window.matchMedia("(hover: none)").matches;
+  const phoneSized = Math.min(screen.width, screen.height) <= 500;
+  return touchPrimary || phoneSized;
+}
+function applyViewportGate() {
+  const gate = document.getElementById("smallScreen");
+  if (!gate) return;
+  const narrow = window.innerWidth < MIN_WIDTH;
+  gate.classList.toggle("show", narrow);
+  if (!narrow) return;
+  gate.classList.toggle("narrow-window", !isHandheld());
+  const now = document.getElementById("ssNow");
+  if (now) now.textContent = window.innerWidth;
+  gate.querySelectorAll("#ssMin, .ss-min").forEach(el => { el.textContent = MIN_WIDTH; });
+}
+/* Bumped by hand when a change makes answers given before it incomparable with
+   answers given after. A version bump already has this effect on its own, since
+   load() refuses a saved session whose instrumentVersion differs; this is the
+   switch for the copy-only builds that ride on BUILD_ID and deliberately keep
+   progress. It is not tied to BUILD_ID, because then a typo fix would discard
+   the work of everyone who is mid-study. */
+const DATA_EPOCH = "2026-08-24";
+function applyDataEpoch() {
+  const key = "heval4_data_epoch";
+  let prev;
+  try { prev = localStorage.getItem(key); } catch (e) { return; }
+  if (prev === DATA_EPOCH) return;
+  /* Saved progress only. Outbox entries can still hold a submission the server
+     has not acknowledged, which is the one thing here that exists nowhere else,
+     and the theme is not study data. Comparisons already acknowledged are safe
+     on the server; a rater who redoes one produces a second row for the same
+     (rater, PR), and the analysis keeps the later of the two. */
+  if (prev !== null) {
+    Object.keys(localStorage)
+      .filter(k => k.indexOf("heval_" + STUDY_ID + "_") === 0 || k === "heval4_last_rater")
+      .forEach(k => localStorage.removeItem(k));
+  }
+  try { localStorage.setItem(key, DATA_EPOCH); } catch (e) {}
+}
+async function ensureFreshBuild() {
+  try {
+    const r = await fetch(location.pathname + "?freshcheck=" + Date.now(), {cache:"no-store"});
+    if (!r.ok) return;
+    const m = (await r.text()).match(/const BUILD_ID = "([^"]+)"/);
+    if (!m || m[1] === BUILD_ID) return;
+    if (sessionStorage.getItem("heval4_reloaded_for") === m[1]) return;  // never loop
+    sessionStorage.setItem("heval4_reloaded_for", m[1]);
+    location.replace(location.pathname + "?b=" + encodeURIComponent(m[1]));
+  } catch (e) { /* offline or blocked: carry on with what is loaded */ }
+}
+
+let hasExistingProgress = false;
+async function init() {
+  ensureFreshBuild();
+  applyDataEpoch();
+  applyViewportGate();
+  window.addEventListener("resize", applyViewportGate);
+  window.addEventListener("orientationchange", applyViewportGate);
+  await loadStudy();
+  const inp=document.getElementById("raterInput"), btn=document.getElementById("startBtn");
+  function reflectProgress(v) {
+    const note=document.getElementById("resumeNote");
+    if(!v){ note.style.display="none"; return; }
+    try {
+      const d=JSON.parse(localStorage.getItem(storageKey(v)));
+      if(d&&d.studyId===STUDY_ID&&d.instrumentVersion===STUDY.version&&d.ratings){
+        const n=Object.values(d.ratings).filter(isComplete).length;
+        note.style.display="block";
+        note.textContent=`Welcome back, ${v} — ${n} of ${STUDY.prs.length} comparisons done. Click Start to carry on, or type a different name if this isn't you.`;
+      } else note.style.display="none";
+    } catch(e) { note.style.display="none"; }
+  }
+  inp.addEventListener("input", () => { const v=inp.value.trim(); btn.disabled=!v; document.getElementById("tabWarn").style.display="none"; lockWarned=false; reflectProgress(v); });
+  // Returning raters had to retype the exact name they used before, and a typo
+  // silently started an empty session instead of resuming. The last name used
+  // on this device is restored so the saved progress is reachable by default.
+  const lastRater=localStorage.getItem("heval4_last_rater");
+  if(lastRater && localStorage.getItem(storageKey(lastRater))){
+    inp.value=lastRater; btn.disabled=false; reflectProgress(lastRater);
+  }
+  btn.onclick = start;
+  inp.addEventListener("keydown", e=>{if(e.key==="Enter"&&inp.value.trim())start()});
+
+  const cb=document.getElementById("consentBox"), cbtn=document.getElementById("consentBtn");
+  cb.onchange=()=>{cbtn.disabled=!cb.checked};
+  cbtn.onclick=()=>{ consented=true; if(raterId) save();
+    if(hasExistingProgress&&Object.keys(demographics).length>0) showScreen("briefing"); else showScreen("demographics"); };
+  document.getElementById("demoBtn").onclick=function(){demographics=getDemographics();save();showScreen("briefing")};
+  document.getElementById("beginBtn").onclick=function(){if(warmupSeen)beginEval();else showWarmup()};
+}
+
+/* The previous check stored a timestamp under heval4_lock_<id> and warned if it
+   was less than five minutes old. Nothing cleared it on unload, and a timestamp
+   cannot distinguish a live tab from a closed one, so closing the study and
+   reopening it within that window always warned — the common case, not the rare
+   one. A Web Lock is held only while the holding tab is alive and the browser
+   releases it on close or crash, so this can only fire when a second tab really
+   does hold it. Where the API is missing the warning is dropped entirely: a
+   false alarm that trains raters to dismiss dialogs costs more than the
+   concurrent-tab case it was guarding against. */
+/* A random value minted once per browser profile and reused for every
+   submission, so a second completion from the same browser is visible as a
+   repeated token. Deliberately not derived from anything about the machine or
+   the network: it identifies a browser profile, nothing else, and carries no
+   address, location, or hardware detail. */
+function deviceToken() {
+  let t = localStorage.getItem("heval4_device");
+  if (!t) {
+    t = (crypto.randomUUID ? crypto.randomUUID()
+         : String(Date.now()) + "-" + Math.random().toString(36).slice(2));
+    localStorage.setItem("heval4_device", t);
+  }
+  return t;
+}
+
+let lockHeldFor = null;
+function claimRaterLock(id) {
+  // A tab must not collide with itself: without this, pressing Start a second
+  // time in the same tab asks for a lock this document already holds and the
+  // refusal looks identical to a real second tab.
+  if (lockHeldFor === id) return Promise.resolve(true);
+  if (!navigator.locks || !navigator.locks.request) return Promise.resolve(true);
+  return new Promise(resolve => {
+    navigator.locks.request("heval4_rater_" + id, { ifAvailable: true }, lock => {
+      if (!lock) { resolve(false); return; }
+      lockHeldFor = id;
+      resolve(true);
+      return new Promise(() => {});  // held for the lifetime of this tab
+    }).catch(() => resolve(true));
+  });
+}
+
+let lockWarned = false;
+async function start() {
+  raterId=document.getElementById("raterInput").value.trim(); if(!raterId)return;
+  localStorage.removeItem("heval4_lock_"+raterId);  // retire the old timestamp lock
+  const free = await claimRaterLock(raterId);
+  const warn = document.getElementById("tabWarn");
+  if (!free && !lockWarned) {
+    lockWarned = true;
+    warn.style.display = "block";
+    warn.textContent = "This name is already open in another tab of this browser. Answering in two tabs at once can lose progress. Click Start again to continue here anyway.";
+    return;
+  }
+  warn.style.display = "none";
+  localStorage.setItem("heval4_last_rater", raterId);
+  buildOrder();
+  hasExistingProgress=load();
+  if(hasExistingProgress) replayOutbox();
+  if(!hasExistingProgress) startedAt=new Date().toISOString();
+  // Consent is given once and recorded; re-asking on every resume is friction
+  // without meaning. The consent text stays reachable from the briefing.
+  if(hasExistingProgress && consented && Object.keys(demographics).length>0) showScreen("briefing");
+  else showScreen("consent");
+}
+
+/* ═══ Theme toggle ═══ */
+(function(){
+  const btn=document.getElementById("themeToggle");
+  const saved=localStorage.getItem("heval_theme");
+  if(saved==="light"){document.documentElement.setAttribute("data-theme","light");btn.innerHTML="&#9728;"}
+  btn.onclick=()=>{
+    const isLight=document.documentElement.getAttribute("data-theme")==="light";
+    if(isLight){document.documentElement.removeAttribute("data-theme");btn.innerHTML="&#9790;";localStorage.setItem("heval_theme","dark")}
+    else{document.documentElement.setAttribute("data-theme","light");btn.innerHTML="&#9728;";localStorage.setItem("heval_theme","light")}
+  };
+})();
+
+window.addEventListener("online",()=>{if(raterId)replayOutbox()});
+init();
+</script>
+</body>
+</html>

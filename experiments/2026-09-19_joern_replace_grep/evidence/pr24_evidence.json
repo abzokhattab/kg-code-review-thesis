@@ -1,0 +1,873 @@
+{
+  "pr": {
+    "number": 26836,
+    "title": "CLN clean up some repeated code related to SLEP006",
+    "body": "This creates a `_raise_for_params` to move the raise statement and the message to one place, which we're gonna have in more places than what's already in `main`.\r\n\r\nAlso uses the fixture to enable metadata routing in tests when appropriate, instead of directly using the context manager.\r\n\r\ncc @OmarManzoor @glemaitre ",
+    "url": "https://github.com/scikit-learn/scikit-learn/pull/26836",
+    "repo": "scikit-learn/scikit-learn",
+    "base_branch": "main",
+    "head_branch": "slep6/cleanup",
+    "merged_at": "2023-07-17T10:26:41Z",
+    "state": "MERGED"
+  },
+  "changed_files": [
+    {
+      "path": "sklearn/linear_model/_logistic.py",
+      "language": "python",
+      "added": 3,
+      "deleted": 11
+    },
+    {
+      "path": "sklearn/linear_model/tests/test_logistic.py",
+      "language": "python",
+      "added": 1,
+      "deleted": 1
+    },
+    {
+      "path": "sklearn/metrics/_scorer.py",
+      "language": "python",
+      "added": 2,
+      "deleted": 5
+    },
+    {
+      "path": "sklearn/metrics/tests/test_score_objects.py",
+      "language": "python",
+      "added": 67,
+      "deleted": 67
+    },
+    {
+      "path": "sklearn/multioutput.py",
+      "language": "python",
+      "added": 3,
+      "deleted": 10
+    },
+    {
+      "path": "sklearn/pipeline.py",
+      "language": "python",
+      "added": 4,
+      "deleted": 15
+    },
+    {
+      "path": "sklearn/utils/_metadata_requests.py",
+      "language": "python",
+      "added": 34,
+      "deleted": 0
+    },
+    {
+      "path": "sklearn/utils/metadata_routing.py",
+      "language": "python",
+      "added": 1,
+      "deleted": 0
+    }
+  ],
+  "nearest_tests": [
+    {
+      "path": "sklearn/linear_model/tests/test_logistic.py",
+      "relationship": "tests",
+      "source_file": "sklearn/linear_model/_logistic.py"
+    },
+    {
+      "path": "sklearn/tests/test_multioutput.py",
+      "relationship": "tests",
+      "source_file": "sklearn/multioutput.py"
+    },
+    {
+      "path": "sklearn/tests/test_pipeline.py",
+      "relationship": "tests",
+      "source_file": "sklearn/pipeline.py"
+    },
+    {
+      "path": "sklearn/neighbors/tests/test_neighbors_pipeline.py",
+      "relationship": "tests",
+      "source_file": "sklearn/pipeline.py"
+    },
+    {
+      "path": "sklearn/tests/test_metadata_routing.py",
+      "relationship": "tests",
+      "source_file": "sklearn/utils/metadata_routing.py"
+    },
+    {
+      "path": "sklearn/tests/test_metaestimators_metadata_routing.py",
+      "relationship": "tests",
+      "source_file": "sklearn/utils/metadata_routing.py"
+    }
+  ],
+  "dependent_files": [
+    "_glm/tests/test_glm.py",
+    "_logistic.py",
+    "tests/test_logistic.py",
+    "tests/test_ridge.py"
+  ],
+  "diff_summary": "8 files changed",
+  "full_diff": "diff --git a/sklearn/linear_model/_logistic.py b/sklearn/linear_model/_logistic.py\nindex 5c3978c226af0..1a9bc7216a0b5 100644\n--- a/sklearn/linear_model/_logistic.py\n+++ b/sklearn/linear_model/_logistic.py\n@@ -38,6 +38,7 @@\n from ..utils.metadata_routing import (\n     MetadataRouter,\n     MethodMapping,\n+    _raise_for_params,\n     _routing_enabled,\n     process_routing,\n )\n@@ -1791,11 +1792,7 @@ def fit(self, X, y, sample_weight=None, **params):\n         self : object\n             Fitted LogisticRegressionCV estimator.\n         \"\"\"\n-        if params and not _routing_enabled():\n-            raise ValueError(\n-                \"params is only supported if enable_metadata_routing=True.\"\n-                \" See the User Guide for more information.\"\n-            )\n+        _raise_for_params(params, self, \"fit\")\n \n         solver = _check_solver(self.solver, self.penalty, self.dual)\n \n@@ -2146,12 +2143,7 @@ def score(self, X, y, sample_weight=None, **score_params):\n         score : float\n             Score of self.predict(X) w.r.t. y.\n         \"\"\"\n-        if score_params and not _routing_enabled():\n-            raise ValueError(\n-                \"score_params is only supported if enable_metadata_routing=True.\"\n-                \" See the User Guide for more information.\"\n-                \" https://scikit-learn.org/stable/metadata_routing.html\"\n-            )\n+        _raise_for_params(score_params, self, \"score\")\n \n         scoring = self._get_scorer()\n         if _routing_enabled():\ndiff --git a/sklearn/linear_model/tests/test_logistic.py b/sklearn/linear_model/tests/test_logistic.py\nindex e3942098b848e..72e1e92be3e47 100644\n--- a/sklearn/linear_model/tests/test_logistic.py\n+++ b/sklearn/linear_model/tests/test_logistic.py\n@@ -2167,7 +2167,7 @@ def test_passing_params_without_enabling_metadata_routing():\n     are passed while not supported when `enable_metadata_routing=False`.\"\"\"\n     X, y = make_classification(n_samples=10, random_state=0)\n     lr_cv = LogisticRegressionCV()\n-    msg = \"params is only supported if enable_metadata_routing=True\"\n+    msg = \"is only supported if enable_metadata_routing=True\"\n \n     with config_context(enable_metadata_routing=False):\n         params = {\"extra_param\": 1.0}\ndiff --git a/sklearn/metrics/_scorer.py b/sklearn/metrics/_scorer.py\nindex c8969acba1744..aee1615c55630 100644\n--- a/sklearn/metrics/_scorer.py\n+++ b/sklearn/metrics/_scorer.py\n@@ -35,6 +35,7 @@\n     MetadataRequest,\n     MetadataRouter,\n     _MetadataRequester,\n+    _raise_for_params,\n     _routing_enabled,\n     get_routing_for_object,\n     process_routing,\n@@ -253,11 +254,7 @@ def __call__(self, estimator, X, y_true, sample_weight=None, **kwargs):\n         score : float\n             Score function applied to prediction of estimator on X.\n         \"\"\"\n-        if kwargs and not _routing_enabled():\n-            raise ValueError(\n-                \"kwargs is only supported if enable_metadata_routing=True. See\"\n-                \" the User Guide for more information.\"\n-            )\n+        _raise_for_params(kwargs, self, None)\n \n         _kwargs = copy.deepcopy(kwargs)\n         if sample_weight is not None:\ndiff --git a/sklearn/metrics/tests/test_score_objects.py b/sklearn/metrics/tests/test_score_objects.py\nindex ffcb0ed4fda10..480b85db5ad05 100644\n--- a/sklearn/metrics/tests/test_score_objects.py\n+++ b/sklearn/metrics/tests/test_score_objects.py\n@@ -1197,6 +1197,7 @@ def test_scorer_no_op_multiclass_select_proba():\n     scorer(lr, X_test, y_test)\n \n \n+@pytest.mark.usefixtures(\"enable_slep006\")\n @pytest.mark.parametrize(\"name\", get_scorer_names(), ids=get_scorer_names())\n def test_scorer_metadata_request(name):\n     \"\"\"Testing metadata requests for scorers.\n@@ -1204,90 +1205,87 @@ def test_scorer_metadata_request(name):\n     This test checks many small things in a large test, to reduce the\n     boilerplate required for each section.\n     \"\"\"\n-    with config_context(enable_metadata_routing=True):\n-        # Make sure they expose the routing methods.\n-        scorer = get_scorer(name)\n-        assert hasattr(scorer, \"set_score_request\")\n-        assert hasattr(scorer, \"get_metadata_routing\")\n-\n-        # Check that by default no metadata is requested.\n-        assert_request_is_empty(scorer.get_metadata_routing())\n-\n-        weighted_scorer = scorer.set_score_request(sample_weight=True)\n-        # set_score_request should mutate the instance, rather than returning a\n-        # new instance\n-        assert weighted_scorer is scorer\n-\n-        # make sure the scorer doesn't request anything on methods other than\n-        # `score`, and that the requested value on `score` is correct.\n-        assert_request_is_empty(weighted_scorer.get_metadata_routing(), exclude=\"score\")\n-        assert (\n-            weighted_scorer.get_metadata_routing().score.requests[\"sample_weight\"]\n-            is True\n-        )\n+    # Make sure they expose the routing methods.\n+    scorer = get_scorer(name)\n+    assert hasattr(scorer, \"set_score_request\")\n+    assert hasattr(scorer, \"get_metadata_routing\")\n+\n+    # Check that by default no metadata is requested.\n+    assert_request_is_empty(scorer.get_metadata_routing())\n+\n+    weighted_scorer = scorer.set_score_request(sample_weight=True)\n+    # set_score_request should mutate the instance, rather than returning a\n+    # new instance\n+    assert weighted_scorer is scorer\n+\n+    # make sure the scorer doesn't request anything on methods other than\n+    # `score`, and that the requested value on `score` is correct.\n+    assert_request_is_empty(weighted_scorer.get_metadata_routing(), exclude=\"score\")\n+    assert (\n+        weighted_scorer.get_metadata_routing().score.requests[\"sample_weight\"] is True\n+    )\n \n-        # make sure putting the scorer in a router doesn't request anything by\n-        # default\n-        router = MetadataRouter(owner=\"test\").add(\n-            method_mapping=\"score\", scorer=get_scorer(name)\n-        )\n-        # make sure `sample_weight` is refused if passed.\n-        with pytest.raises(TypeError, match=\"got unexpected argument\"):\n-            router.validate_metadata(params={\"sample_weight\": 1}, method=\"score\")\n-        # make sure `sample_weight` is not routed even if passed.\n-        routed_params = router.route_params(params={\"sample_weight\": 1}, caller=\"score\")\n-        assert not routed_params.scorer.score\n-\n-        # make sure putting weighted_scorer in a router requests sample_weight\n-        router = MetadataRouter(owner=\"test\").add(\n-            scorer=weighted_scorer, method_mapping=\"score\"\n-        )\n+    # make sure putting the scorer in a router doesn't request anything by\n+    # default\n+    router = MetadataRouter(owner=\"test\").add(\n+        method_mapping=\"score\", scorer=get_scorer(name)\n+    )\n+    # make sure `sample_weight` is refused if passed.\n+    with pytest.raises(TypeError, match=\"got unexpected argument\"):\n         router.validate_metadata(params={\"sample_weight\": 1}, method=\"score\")\n-        routed_params = router.route_params(params={\"sample_weight\": 1}, caller=\"score\")\n-        assert list(routed_params.scorer.score.keys()) == [\"sample_weight\"]\n+    # make sure `sample_weight` is not routed even if passed.\n+    routed_params = router.route_params(params={\"sample_weight\": 1}, caller=\"score\")\n+    assert not routed_params.scorer.score\n+\n+    # make sure putting weighted_scorer in a router requests sample_weight\n+    router = MetadataRouter(owner=\"test\").add(\n+        scorer=weighted_scorer, method_mapping=\"score\"\n+    )\n+    router.validate_metadata(params={\"sample_weight\": 1}, method=\"score\")\n+    routed_params = router.route_params(params={\"sample_weight\": 1}, caller=\"score\")\n+    assert list(routed_params.scorer.score.keys()) == [\"sample_weight\"]\n \n \n+@pytest.mark.usefixtures(\"enable_slep006\")\n def test_metadata_kwarg_conflict():\n     \"\"\"This test makes sure the right warning is raised if the user passes\n     some metadata both as a constructor to make_scorer, and during __call__.\n     \"\"\"\n-    with config_context(enable_metadata_routing=True):\n-        X, y = make_classification(\n-            n_classes=3, n_informative=3, n_samples=20, random_state=0\n-        )\n-        lr = LogisticRegression().fit(X, y)\n+    X, y = make_classification(\n+        n_classes=3, n_informative=3, n_samples=20, random_state=0\n+    )\n+    lr = LogisticRegression().fit(X, y)\n \n-        scorer = make_scorer(\n-            roc_auc_score,\n-            needs_proba=True,\n-            multi_class=\"ovo\",\n-            labels=lr.classes_,\n-        )\n-        with pytest.warns(UserWarning, match=\"already set as kwargs\"):\n-            scorer.set_score_request(labels=True)\n+    scorer = make_scorer(\n+        roc_auc_score,\n+        needs_proba=True,\n+        multi_class=\"ovo\",\n+        labels=lr.classes_,\n+    )\n+    with pytest.warns(UserWarning, match=\"already set as kwargs\"):\n+        scorer.set_score_request(labels=True)\n \n-        with config_context(enable_metadata_routing=True):\n-            with pytest.warns(UserWarning, match=\"There is an overlap\"):\n-                scorer(lr, X, y, labels=lr.classes_)\n+    with pytest.warns(UserWarning, match=\"There is an overlap\"):\n+        scorer(lr, X, y, labels=lr.classes_)\n \n \n+@pytest.mark.usefixtures(\"enable_slep006\")\n def test_PassthroughScorer_metadata_request():\n     \"\"\"Test that _PassthroughScorer properly routes metadata.\n \n     _PassthroughScorer should behave like a consumer, mirroring whatever is the\n     underlying score method.\n     \"\"\"\n-    with config_context(enable_metadata_routing=True):\n-        scorer = _PassthroughScorer(\n-            estimator=LinearSVC()\n-            .set_score_request(sample_weight=\"alias\")\n-            .set_fit_request(sample_weight=True)\n-        )\n-        # test that _PassthroughScorer leaves everything other than `score` empty\n-        assert_request_is_empty(scorer.get_metadata_routing(), exclude=\"score\")\n-        # test that _PassthroughScorer doesn't behave like a router and leaves\n-        # the request as is.\n-        assert scorer.get_metadata_routing().score.requests[\"sample_weight\"] == \"alias\"\n+    scorer = _PassthroughScorer(\n+        estimator=LinearSVC()\n+        .set_score_request(sample_weight=\"alias\")\n+        .set_fit_request(sample_weight=True)\n+    )\n+    # test that _PassthroughScorer leaves everything other than `score` empty\n+    assert_request_is_empty(scorer.get_metadata_routing(), exclude=\"score\")\n+    # test that _PassthroughScorer doesn't behave like a router and leaves\n+    # the request as is.\n+    assert scorer.get_metadata_routing().score.requests[\"sample_weight\"] == \"alias\"\n \n \n def test_multimetric_scoring_metadata_routing():\n@@ -1344,5 +1342,7 @@ def score(y_true, y_pred, param=None):\n     clf = DecisionTreeClassifier().fit(X, y)\n     scorer = make_scorer(score)\n     with config_context(enable_metadata_routing=False):\n-        with pytest.raises(ValueError, match=\"kwargs is only supported if\"):\n+        with pytest.raises(\n+            ValueError, match=\"is only supported if enable_metadata_routing=True\"\n+        ):\n             scorer(clf, X, y, param=\"blah\")\ndiff --git a/sklearn/multioutput.py b/sklearn/multioutput.py\nindex 89baa96893d39..8bd71924f954b 100644\n--- a/sklearn/multioutput.py\n+++ b/sklearn/multioutput.py\n@@ -36,6 +36,7 @@\n from .utils.metadata_routing import (\n     MetadataRouter,\n     MethodMapping,\n+    _raise_for_params,\n     _routing_enabled,\n     process_routing,\n )\n@@ -148,11 +149,7 @@ def partial_fit(self, X, y, classes=None, sample_weight=None, **partial_fit_para\n         self : object\n             Returns a fitted instance.\n         \"\"\"\n-        if partial_fit_params and not _routing_enabled():\n-            raise ValueError(\n-                \"partial_fit_params is only supported if enable_metadata_routing=True.\"\n-                \" See the User Guide for more information.\"\n-            )\n+        _raise_for_params(partial_fit_params, self, \"partial_fit\")\n \n         first_time = not hasattr(self, \"estimators_\")\n \n@@ -919,11 +916,7 @@ def fit(self, X, Y, **fit_params):\n         self : object\n             Class instance.\n         \"\"\"\n-        if fit_params and not _routing_enabled():\n-            raise ValueError(\n-                \"fit_params is only supported if enable_metadata_routing=True. \"\n-                \"See the User Guide for more information.\"\n-            )\n+        _raise_for_params(fit_params, self, \"fit\")\n \n         super().fit(X, Y, **fit_params)\n         self.classes_ = [\ndiff --git a/sklearn/pipeline.py b/sklearn/pipeline.py\nindex 6cc22a7101da5..d6ad0001ad257 100644\n--- a/sklearn/pipeline.py\n+++ b/sklearn/pipeline.py\n@@ -27,6 +27,7 @@\n from .utils.metadata_routing import (\n     MetadataRouter,\n     MethodMapping,\n+    _raise_for_params,\n     _routing_enabled,\n     process_routing,\n )\n@@ -742,11 +743,7 @@ def decision_function(self, X, **params):\n         y_score : ndarray of shape (n_samples, n_classes)\n             Result of calling `decision_function` on the final estimator.\n         \"\"\"\n-        if params and not _routing_enabled():\n-            raise ValueError(\n-                \"params is only supported if enable_metadata_routing=True.\"\n-                \" See the User Guide for more information.\"\n-            )\n+        _raise_for_params(params, self, \"decision_function\")\n \n         # not branching here since params is only available if\n         # enable_metadata_routing=True\n@@ -881,11 +878,7 @@ def transform(self, X, **params):\n         Xt : ndarray of shape (n_samples, n_transformed_features)\n             Transformed data.\n         \"\"\"\n-        if not _routing_enabled() and params:\n-            raise ValueError(\n-                \"params is only supported if enable_metadata_routing=True.\"\n-                \" See the User Guide for more information.\"\n-            )\n+        _raise_for_params(params, self, \"transform\")\n \n         # not branching here since params is only available if\n         # enable_metadata_routing=True\n@@ -928,11 +921,7 @@ def inverse_transform(self, Xt, **params):\n             Inverse transformed data, that is, data in the original feature\n             space.\n         \"\"\"\n-        if not _routing_enabled() and params:\n-            raise ValueError(\n-                \"params is only supported if enable_metadata_routing=True. See\"\n-                \" the User Guide for more information.\"\n-            )\n+        _raise_for_params(params, self, \"inverse_transform\")\n \n         # we don't have to branch here, since params is only non-empty if\n         # enable_metadata_routing=True.\ndiff --git a/sklearn/utils/_metadata_requests.py b/sklearn/utils/_metadata_requests.py\nindex 8dbd5a4ad386d..6027e562fa1d8 100644\n--- a/sklearn/utils/_metadata_requests.py\n+++ b/sklearn/utils/_metadata_requests.py\n@@ -127,6 +127,40 @@ def _routing_enabled():\n     return get_config().get(\"enable_metadata_routing\", False)\n \n \n+def _raise_for_params(params, owner, method):\n+    \"\"\"Raise an error if metadata routing is not enabled and params are passed.\n+\n+    .. versionadded:: 1.4\n+\n+    Parameters\n+    ----------\n+    params : dict\n+        The metadata passed to a method.\n+\n+    owner : object\n+        The object to which the method belongs.\n+\n+    method : str\n+        The name of the method, e.g. \"fit\".\n+\n+    Raises\n+    ------\n+    ValueError\n+        If metadata routing is not enabled and params are passed.\n+    \"\"\"\n+    caller = (\n+        f\"{owner.__class__.__name__}.{method}\" if method else owner.__class__.__name__\n+    )\n+    if not _routing_enabled() and params:\n+        raise ValueError(\n+            f\"Passing extra keyword arguments to {caller} is only supported if\"\n+            \" enable_metadata_routing=True, which you can set using\"\n+            \" `sklearn.set_config`. See the User Guide\"\n+            \" <https://scikit-learn.org/stable/metadata_routing.html> for more\"\n+            \" details.\"\n+        )\n+\n+\n # Request values\n # ==============\n # Each request value needs to be one of the following values, or an alias.\ndiff --git a/sklearn/utils/metadata_routing.py b/sklearn/utils/metadata_routing.py\nindex 0dd25951376c0..b8af5794ee248 100644\n--- a/sklearn/utils/metadata_routing.py\n+++ b/sklearn/utils/metadata_routing.py\n@@ -16,3 +16,4 @@\n from ._metadata_requests import process_routing  # noqa\n from ._metadata_requests import _MetadataRequester  # noqa\n from ._metadata_requests import _routing_enabled  # noqa\n+from ._metadata_requests import _raise_for_params  # noqa\n",
+  "metadata": {
+    "v2_fetcher_version": 1,
+    "v2_fetched_at_unix": 1777501360,
+    "v2_diff_cap_bytes": 50000,
+    "v2_body_cap_bytes": 8000,
+    "v2_diff_truncated": false,
+    "v2_raw_diff_chars": 16483,
+    "v2_raw_body_chars": 318,
+    "v2_rag_source": "merged_from_v1",
+    "v2_rag_chunks_copied": 8,
+    "joern_enriched": true,
+    "joern_callers_count": 18,
+    "joern_functions_count": 50
+  },
+  "similar_chunks": [
+    {
+      "file": "sklearn/linear_model/tests/test_passive_aggressive.py",
+      "start_line": 114,
+      "end_line": 170,
+      "similarity": 0.7248,
+      "related_to": "sklearn/linear_model/tests/test_logistic.py",
+      "content_preview": "r_partial_fit(csr_container, average):\n    classes = np.unique(y)\n    data = csr_container(X) if csr_container is not None else X\n    clf = PassiveAggressiveClassifier(random_state=0, average=average, max_iter=5)\n    for t in range(30):\n        clf.partial_fit(data, y, classes)\n    score = clf.score(data, y)\n    assert score > 0.79\n    if average:\n        assert hasattr(clf, \"_average_coef\")\n        assert hasattr(clf, \"_average_intercept\")\n        assert hasattr(clf, \"_standard_intercept\")\n        assert hasattr(clf, \"_standard_coef\")\n\n\n@pytest.mark.filterwarnings(\"ignore::FutureWarning\")\ndef test_classifier_refit():\n    # Classifier can be retrained on different labels and features.\n    clf = PassiveAggressiveClassifier(max_iter=5).fit(X, y)\n    assert_array_equal(clf.classes_, np.unique"
+    },
+    {
+      "file": "sklearn/linear_model/tests/test_sag.py",
+      "start_line": 602,
+      "end_line": 671,
+      "similarity": 0.7194,
+      "related_to": "sklearn/linear_model/tests/test_logistic.py",
+      "content_preview": "\n    tol = 0.00001\n    fit_intercept = True\n    X, y = make_blobs(n_samples=n_samples, centers=2, random_state=0, cluster_std=0.1)\n    step_size = get_step_size(X, alpha, fit_intercept, classification=True)\n    classes = np.unique(y)\n    y_tmp = np.ones(n_samples)\n    y_tmp[y != classes[1]] = -1\n    y = y_tmp\n\n    clf1 = LogisticRegression(\n        solver=\"sag\",\n        C=1.0 / alpha / n_samples,\n        max_iter=n_iter,\n        tol=tol,\n        random_state=77,\n        fit_intercept=fit_intercept,\n    )\n    clf2 = clone(clf1)\n\n    clf1.fit(X, y)\n    clf2.fit(csr_container(X), y)\n\n    spweights, spintercept = sag_sparse(\n        X,\n        y,\n        step_size,\n        alpha,\n        n_iter=n_iter,\n        dloss=log_dloss,\n        fit_intercept=fit_intercept,\n    )\n    spweights2, spinterc"
+    },
+    {
+      "file": "sklearn/linear_model/tests/test_sgd.py",
+      "start_line": 460,
+      "end_line": 514,
+      "similarity": 0.7042,
+      "related_to": "sklearn/linear_model/tests/test_logistic.py",
+      "content_preview": "is_classifier(clf2):\n        cv = StratifiedShuffleSplit(test_size=validation_fraction, random_state=seed)\n    else:\n        cv = ShuffleSplit(test_size=validation_fraction, random_state=seed)\n    idx_train, idx_val = next(cv.split(X, Y))\n    idx_train = np.sort(idx_train)  # remove shuffling\n    clf2.fit(X[idx_train], Y[idx_train])\n    assert clf2.n_iter_ == max_iter\n\n    assert_array_equal(clf1.coef_, clf2.coef_)\n\n\n@pytest.mark.parametrize(\n    \"klass\", [SGDClassifier, SparseSGDClassifier, SGDRegressor, SparseSGDRegressor]\n)\ndef test_n_iter_no_change(klass):\n    X, Y = iris.data, iris.target\n    # test that n_iter_ increases monotonically with n_iter_no_change\n    for early_stopping in [True, False]:\n        n_iter_list = [\n            klass(\n                early_stopping=early_stopping"
+    },
+    {
+      "file": "sklearn/linear_model/tests/test_sag.py",
+      "start_line": 298,
+      "end_line": 373,
+      "similarity": 0.7033,
+      "related_to": "sklearn/linear_model/tests/test_logistic.py",
+      "content_preview": "intercept, clf.intercept_, decimal=9)\n        assert_array_almost_equal(weights2, clf.coef_, decimal=9)\n        assert_array_almost_equal(intercept2, clf.intercept_, decimal=9)\n\n\ndef test_regressor_matching():\n    n_samples = 10\n    n_features = 5\n\n    rng = np.random.RandomState(10)\n    X = rng.normal(size=(n_samples, n_features))\n    true_w = rng.normal(size=n_features)\n    y = X.dot(true_w)\n\n    alpha = 1.0\n    n_iter = 100\n    fit_intercept = True\n\n    step_size = get_step_size(X, alpha, fit_intercept, classification=False)\n    clf = Ridge(\n        fit_intercept=fit_intercept,\n        tol=0.00000000001,\n        solver=\"sag\",\n        alpha=alpha * n_samples,\n        max_iter=n_iter,\n    )\n    clf.fit(X, y)\n\n    weights1, intercept1 = sag_sparse(\n        X,\n        y,\n        step_size,\n"
+    },
+    {
+      "file": "sklearn/linear_model/tests/test_sag.py",
+      "start_line": 663,
+      "end_line": 736,
+      "similarity": 0.7026,
+      "related_to": "sklearn/linear_model/tests/test_logistic.py",
+      "content_preview": "np.unique(y)\n\n    clf1 = OneVsRestClassifier(\n        LogisticRegression(\n            solver=\"sag\",\n            C=1.0 / alpha / n_samples,\n            max_iter=max_iter,\n            tol=tol,\n            random_state=77,\n            fit_intercept=fit_intercept,\n        )\n    )\n    clf2 = clone(clf1)\n\n    clf1.fit(X, y)\n    clf2.fit(csr_container(X), y)\n\n    coef1 = []\n    intercept1 = []\n    coef2 = []\n    intercept2 = []\n    for cl in classes:\n        y_encoded = np.ones(n_samples)\n        y_encoded[y != cl] = -1\n\n        spweights1, spintercept1 = sag_sparse(\n            X,\n            y_encoded,\n            step_size,\n            alpha,\n            dloss=log_dloss,\n            n_iter=max_iter,\n            fit_intercept=fit_intercept,\n        )\n        spweights2, spintercept2 = sag_spars"
+    },
+    {
+      "file": "sklearn/linear_model/tests/test_passive_aggressive.py",
+      "start_line": 264,
+      "end_line": 320,
+      "similarity": 0.7025,
+      "related_to": "sklearn/linear_model/tests/test_logistic.py",
+      "content_preview": "verage, max_iter=100)\n    for t in range(50):\n        reg.partial_fit(data, y_bin)\n    pred = reg.predict(data)\n    assert np.mean((pred - y_bin) ** 2) < 1.7\n    if average:\n        assert hasattr(reg, \"_average_coef\")\n        assert hasattr(reg, \"_average_intercept\")\n        assert hasattr(reg, \"_standard_intercept\")\n        assert hasattr(reg, \"_standard_coef\")\n\n\n# TODO(1.10): Move to test_sgd.py\n@pytest.mark.filterwarnings(\"ignore::FutureWarning\")\n@pytest.mark.parametrize(\"csr_container\", [None, *CSR_CONTAINERS])\n@pytest.mark.parametrize(\"loss\", (\"epsilon_insensitive\", \"squared_epsilon_insensitive\"))\ndef test_regressor_correctness(loss, csr_container):\n    y_bin = y.copy()\n    y_bin[y != 1] = -1\n    data = csr_container(X) if csr_container is not None else X\n\n    reg1 = MyPassiveAggress"
+    },
+    {
+      "file": "sklearn/linear_model/tests/test_passive_aggressive.py",
+      "start_line": 214,
+      "end_line": 270,
+      "similarity": 0.6946,
+      "related_to": "sklearn/linear_model/tests/test_logistic.py",
+      "content_preview": "dule\n    assert_almost_equal(clf.coef_, clf_weighted.coef_, decimal=2)\n    assert_almost_equal(clf.coef_, clf_balanced.coef_, decimal=2)\n\n\n@pytest.mark.filterwarnings(\"ignore::FutureWarning\")\ndef test_wrong_class_weight_label():\n    # ValueError due to wrong class_weight label.\n    X2 = np.array([[-1.0, -1.0], [-1.0, 0], [-0.8, -1.0], [1.0, 1.0], [1.0, 0.0]])\n    y2 = [1, 1, 1, -1, -1]\n\n    clf = PassiveAggressiveClassifier(class_weight={0: 0.5}, max_iter=100)\n    with pytest.raises(ValueError):\n        clf.fit(X2, y2)\n\n\n@pytest.mark.filterwarnings(\"ignore::FutureWarning\")\n@pytest.mark.parametrize(\"average\", [False, True])\n@pytest.mark.parametrize(\"fit_intercept\", [True, False])\n@pytest.mark.parametrize(\"csr_container\", [None, *CSR_CONTAINERS])\ndef test_regressor_mse(csr_container, fit_int"
+    },
+    {
+      "file": "sklearn/linear_model/tests/test_quantile.py",
+      "start_line": 200,
+      "end_line": 252,
+      "similarity": 0.6883,
+      "related_to": "sklearn/linear_model/tests/test_logistic.py",
+      "content_preview": "del1.intercept_, rel=1e-5)\n    assert_allclose(model2.coef_, -a * model1.coef_, rtol=1e-5)\n\n    # coef(q; y + X @ g, X) = coef(q; y, X) + g\n    g_intercept, g_coef = rng.randn(), rng.randn(n_features)\n    model2 = QuantileRegressor(quantile=quantile, **params)\n    model2.fit(X, y + X @ g_coef + g_intercept)\n    assert model2.intercept_ == approx(model1.intercept_ + g_intercept)\n    assert_allclose(model2.coef_, model1.coef_ + g_coef, rtol=1e-6)\n\n    # coef(q; y, X @ A) = A^-1 @ coef(q; y, X)\n    A = rng.randn(n_features, n_features)\n    model2 = QuantileRegressor(quantile=quantile, **params)\n    model2.fit(X @ A, y)\n    assert model2.intercept_ == approx(model1.intercept_, rel=1e-5)\n    assert_allclose(model2.coef_, np.linalg.solve(A, model1.coef_), rtol=1e-5)\n\n\n@pytest.mark.skipif(\n    pa"
+    }
+  ],
+  "rag_evidence": {
+    "similar_code": [
+      {
+        "file": "sklearn/linear_model/tests/test_passive_aggressive.py",
+        "start_line": 114,
+        "end_line": 170,
+        "similarity": 0.7248,
+        "related_to": "sklearn/linear_model/tests/test_logistic.py",
+        "content_preview": "r_partial_fit(csr_container, average):\n    classes = np.unique(y)\n    data = csr_container(X) if csr_container is not None else X\n    clf = PassiveAggressiveClassifier(random_state=0, average=average, max_iter=5)\n    for t in range(30):\n        clf.partial_fit(data, y, classes)\n    score = clf.score(data, y)\n    assert score > 0.79\n    if average:\n        assert hasattr(clf, \"_average_coef\")\n        assert hasattr(clf, \"_average_intercept\")\n        assert hasattr(clf, \"_standard_intercept\")\n        assert hasattr(clf, \"_standard_coef\")\n\n\n@pytest.mark.filterwarnings(\"ignore::FutureWarning\")\ndef test_classifier_refit():\n    # Classifier can be retrained on different labels and features.\n    clf = PassiveAggressiveClassifier(max_iter=5).fit(X, y)\n    assert_array_equal(clf.classes_, np.unique"
+      },
+      {
+        "file": "sklearn/linear_model/tests/test_sag.py",
+        "start_line": 602,
+        "end_line": 671,
+        "similarity": 0.7194,
+        "related_to": "sklearn/linear_model/tests/test_logistic.py",
+        "content_preview": "\n    tol = 0.00001\n    fit_intercept = True\n    X, y = make_blobs(n_samples=n_samples, centers=2, random_state=0, cluster_std=0.1)\n    step_size = get_step_size(X, alpha, fit_intercept, classification=True)\n    classes = np.unique(y)\n    y_tmp = np.ones(n_samples)\n    y_tmp[y != classes[1]] = -1\n    y = y_tmp\n\n    clf1 = LogisticRegression(\n        solver=\"sag\",\n        C=1.0 / alpha / n_samples,\n        max_iter=n_iter,\n        tol=tol,\n        random_state=77,\n        fit_intercept=fit_intercept,\n    )\n    clf2 = clone(clf1)\n\n    clf1.fit(X, y)\n    clf2.fit(csr_container(X), y)\n\n    spweights, spintercept = sag_sparse(\n        X,\n        y,\n        step_size,\n        alpha,\n        n_iter=n_iter,\n        dloss=log_dloss,\n        fit_intercept=fit_intercept,\n    )\n    spweights2, spinterc"
+      },
+      {
+        "file": "sklearn/linear_model/tests/test_sgd.py",
+        "start_line": 460,
+        "end_line": 514,
+        "similarity": 0.7042,
+        "related_to": "sklearn/linear_model/tests/test_logistic.py",
+        "content_preview": "is_classifier(clf2):\n        cv = StratifiedShuffleSplit(test_size=validation_fraction, random_state=seed)\n    else:\n        cv = ShuffleSplit(test_size=validation_fraction, random_state=seed)\n    idx_train, idx_val = next(cv.split(X, Y))\n    idx_train = np.sort(idx_train)  # remove shuffling\n    clf2.fit(X[idx_train], Y[idx_train])\n    assert clf2.n_iter_ == max_iter\n\n    assert_array_equal(clf1.coef_, clf2.coef_)\n\n\n@pytest.mark.parametrize(\n    \"klass\", [SGDClassifier, SparseSGDClassifier, SGDRegressor, SparseSGDRegressor]\n)\ndef test_n_iter_no_change(klass):\n    X, Y = iris.data, iris.target\n    # test that n_iter_ increases monotonically with n_iter_no_change\n    for early_stopping in [True, False]:\n        n_iter_list = [\n            klass(\n                early_stopping=early_stopping"
+      },
+      {
+        "file": "sklearn/linear_model/tests/test_sag.py",
+        "start_line": 298,
+        "end_line": 373,
+        "similarity": 0.7033,
+        "related_to": "sklearn/linear_model/tests/test_logistic.py",
+        "content_preview": "intercept, clf.intercept_, decimal=9)\n        assert_array_almost_equal(weights2, clf.coef_, decimal=9)\n        assert_array_almost_equal(intercept2, clf.intercept_, decimal=9)\n\n\ndef test_regressor_matching():\n    n_samples = 10\n    n_features = 5\n\n    rng = np.random.RandomState(10)\n    X = rng.normal(size=(n_samples, n_features))\n    true_w = rng.normal(size=n_features)\n    y = X.dot(true_w)\n\n    alpha = 1.0\n    n_iter = 100\n    fit_intercept = True\n\n    step_size = get_step_size(X, alpha, fit_intercept, classification=False)\n    clf = Ridge(\n        fit_intercept=fit_intercept,\n        tol=0.00000000001,\n        solver=\"sag\",\n        alpha=alpha * n_samples,\n        max_iter=n_iter,\n    )\n    clf.fit(X, y)\n\n    weights1, intercept1 = sag_sparse(\n        X,\n        y,\n        step_size,\n"
+      },
+      {
+        "file": "sklearn/linear_model/tests/test_sag.py",
+        "start_line": 663,
+        "end_line": 736,
+        "similarity": 0.7026,
+        "related_to": "sklearn/linear_model/tests/test_logistic.py",
+        "content_preview": "np.unique(y)\n\n    clf1 = OneVsRestClassifier(\n        LogisticRegression(\n            solver=\"sag\",\n            C=1.0 / alpha / n_samples,\n            max_iter=max_iter,\n            tol=tol,\n            random_state=77,\n            fit_intercept=fit_intercept,\n        )\n    )\n    clf2 = clone(clf1)\n\n    clf1.fit(X, y)\n    clf2.fit(csr_container(X), y)\n\n    coef1 = []\n    intercept1 = []\n    coef2 = []\n    intercept2 = []\n    for cl in classes:\n        y_encoded = np.ones(n_samples)\n        y_encoded[y != cl] = -1\n\n        spweights1, spintercept1 = sag_sparse(\n            X,\n            y_encoded,\n            step_size,\n            alpha,\n            dloss=log_dloss,\n            n_iter=max_iter,\n            fit_intercept=fit_intercept,\n        )\n        spweights2, spintercept2 = sag_spars"
+      },
+      {
+        "file": "sklearn/linear_model/tests/test_passive_aggressive.py",
+        "start_line": 264,
+        "end_line": 320,
+        "similarity": 0.7025,
+        "related_to": "sklearn/linear_model/tests/test_logistic.py",
+        "content_preview": "verage, max_iter=100)\n    for t in range(50):\n        reg.partial_fit(data, y_bin)\n    pred = reg.predict(data)\n    assert np.mean((pred - y_bin) ** 2) < 1.7\n    if average:\n        assert hasattr(reg, \"_average_coef\")\n        assert hasattr(reg, \"_average_intercept\")\n        assert hasattr(reg, \"_standard_intercept\")\n        assert hasattr(reg, \"_standard_coef\")\n\n\n# TODO(1.10): Move to test_sgd.py\n@pytest.mark.filterwarnings(\"ignore::FutureWarning\")\n@pytest.mark.parametrize(\"csr_container\", [None, *CSR_CONTAINERS])\n@pytest.mark.parametrize(\"loss\", (\"epsilon_insensitive\", \"squared_epsilon_insensitive\"))\ndef test_regressor_correctness(loss, csr_container):\n    y_bin = y.copy()\n    y_bin[y != 1] = -1\n    data = csr_container(X) if csr_container is not None else X\n\n    reg1 = MyPassiveAggress"
+      },
+      {
+        "file": "sklearn/linear_model/tests/test_passive_aggressive.py",
+        "start_line": 214,
+        "end_line": 270,
+        "similarity": 0.6946,
+        "related_to": "sklearn/linear_model/tests/test_logistic.py",
+        "content_preview": "dule\n    assert_almost_equal(clf.coef_, clf_weighted.coef_, decimal=2)\n    assert_almost_equal(clf.coef_, clf_balanced.coef_, decimal=2)\n\n\n@pytest.mark.filterwarnings(\"ignore::FutureWarning\")\ndef test_wrong_class_weight_label():\n    # ValueError due to wrong class_weight label.\n    X2 = np.array([[-1.0, -1.0], [-1.0, 0], [-0.8, -1.0], [1.0, 1.0], [1.0, 0.0]])\n    y2 = [1, 1, 1, -1, -1]\n\n    clf = PassiveAggressiveClassifier(class_weight={0: 0.5}, max_iter=100)\n    with pytest.raises(ValueError):\n        clf.fit(X2, y2)\n\n\n@pytest.mark.filterwarnings(\"ignore::FutureWarning\")\n@pytest.mark.parametrize(\"average\", [False, True])\n@pytest.mark.parametrize(\"fit_intercept\", [True, False])\n@pytest.mark.parametrize(\"csr_container\", [None, *CSR_CONTAINERS])\ndef test_regressor_mse(csr_container, fit_int"
+      },
+      {
+        "file": "sklearn/linear_model/tests/test_quantile.py",
+        "start_line": 200,
+        "end_line": 252,
+        "similarity": 0.6883,
+        "related_to": "sklearn/linear_model/tests/test_logistic.py",
+        "content_preview": "del1.intercept_, rel=1e-5)\n    assert_allclose(model2.coef_, -a * model1.coef_, rtol=1e-5)\n\n    # coef(q; y + X @ g, X) = coef(q; y, X) + g\n    g_intercept, g_coef = rng.randn(), rng.randn(n_features)\n    model2 = QuantileRegressor(quantile=quantile, **params)\n    model2.fit(X, y + X @ g_coef + g_intercept)\n    assert model2.intercept_ == approx(model1.intercept_ + g_intercept)\n    assert_allclose(model2.coef_, model1.coef_ + g_coef, rtol=1e-6)\n\n    # coef(q; y, X @ A) = A^-1 @ coef(q; y, X)\n    A = rng.randn(n_features, n_features)\n    model2 = QuantileRegressor(quantile=quantile, **params)\n    model2.fit(X @ A, y)\n    assert model2.intercept_ == approx(model1.intercept_, rel=1e-5)\n    assert_allclose(model2.coef_, np.linalg.solve(A, model1.coef_), rtol=1e-5)\n\n\n@pytest.mark.skipif(\n    pa"
+      }
+    ]
+  },
+  "callers": [
+    {
+      "path": "_glm/tests/test_glm.py",
+      "from_function": "test_tags",
+      "calls_function": "__sklearn_tags__",
+      "caller_line": 944,
+      "callee_file": "_logistic.py",
+      "callee_line": 1354
+    },
+    {
+      "path": "_logistic.py",
+      "from_function": "_logistic_regression_path",
+      "calls_function": "_check_solver",
+      "caller_line": 86,
+      "callee_file": "_logistic.py",
+      "callee_line": 63
+    },
+    {
+      "path": "_logistic.py",
+      "from_function": "_log_reg_scoring_path",
+      "calls_function": "_logistic_regression_path",
+      "caller_line": 520,
+      "callee_file": "_logistic.py",
+      "callee_line": 86
+    },
+    {
+      "path": "_logistic.py",
+      "from_function": "_log_reg_scoring_path",
+      "calls_function": "__init__",
+      "caller_line": 520,
+      "callee_file": "_logistic.py",
+      "callee_line": 1053
+    },
+    {
+      "path": "_logistic.py",
+      "from_function": "fit",
+      "calls_function": "_check_solver",
+      "caller_line": 1087,
+      "callee_file": "_logistic.py",
+      "callee_line": 63
+    },
+    {
+      "path": "_logistic.py",
+      "from_function": "fit",
+      "calls_function": "_logistic_regression_path",
+      "caller_line": 1087,
+      "callee_file": "_logistic.py",
+      "callee_line": 86
+    },
+    {
+      "path": "_logistic.py",
+      "from_function": "predict_log_proba",
+      "calls_function": "predict_proba",
+      "caller_line": 1333,
+      "callee_file": "_logistic.py",
+      "callee_line": 1302
+    },
+    {
+      "path": "_logistic.py",
+      "from_function": "fit",
+      "calls_function": "_check_solver",
+      "caller_line": 1750,
+      "callee_file": "_logistic.py",
+      "callee_line": 63
+    },
+    {
+      "path": "_logistic.py",
+      "from_function": "fit",
+      "calls_function": "_logistic_regression_path",
+      "caller_line": 1750,
+      "callee_file": "_logistic.py",
+      "callee_line": 86
+    },
+    {
+      "path": "_logistic.py",
+      "from_function": "score",
+      "calls_function": "_get_scorer",
+      "caller_line": 2153,
+      "callee_file": "_logistic.py",
+      "callee_line": 2231
+    },
+    {
+      "path": "_logistic.py",
+      "from_function": "get_metadata_routing",
+      "calls_function": "_get_scorer",
+      "caller_line": 2200,
+      "callee_file": "_logistic.py",
+      "callee_line": 2231
+    },
+    {
+      "path": "tests/test_logistic.py",
+      "from_function": "test_predict_2_classes",
+      "calls_function": "check_predictions",
+      "caller_line": 76,
+      "callee_file": "tests/test_logistic.py",
+      "callee_line": 57
+    },
+    {
+      "path": "tests/test_logistic.py",
+      "from_function": "test_predict_3_classes",
+      "calls_function": "check_predictions",
+      "caller_line": 90,
+      "callee_file": "tests/test_logistic.py",
+      "callee_line": 57
+    },
+    {
+      "path": "tests/test_logistic.py",
+      "from_function": "test_logistic_cv_mock_scorer",
+      "calls_function": "__init__",
+      "caller_line": 463,
+      "callee_file": "tests/test_logistic.py",
+      "callee_line": 467
+    },
+    {
+      "path": "tests/test_logistic.py",
+      "from_function": "test_logistic_regression_class_weights",
+      "calls_function": "_compute_class_weight_dictionary",
+      "caller_line": 1155,
+      "callee_file": "tests/test_logistic.py",
+      "callee_line": 1146
+    },
+    {
+      "path": "tests/test_logistic.py",
+      "from_function": "test_LogisticRegression_elastic_net_objective",
+      "calls_function": "enet_objective",
+      "caller_line": 1714,
+      "callee_file": "tests/test_logistic.py",
+      "callee_line": 1744
+    },
+    {
+      "path": "tests/test_ridge.py",
+      "from_function": "check_array_api_attributes",
+      "calls_function": "fit",
+      "caller_line": 1239,
+      "callee_file": "_logistic.py",
+      "callee_line": 1087
+    },
+    {
+      "path": "tests/test_ridge.py",
+      "from_function": "test_ridge_classifier_multilabel_array_api",
+      "calls_function": "fit",
+      "caller_line": 1326,
+      "callee_file": "_logistic.py",
+      "callee_line": 1087
+    }
+  ],
+  "call_graph_edges": [
+    {
+      "from": "_glm/tests/test_glm.py::test_tags",
+      "to": "_logistic.py::__sklearn_tags__"
+    },
+    {
+      "from": "_logistic.py::_logistic_regression_path",
+      "to": "_logistic.py::_check_solver"
+    },
+    {
+      "from": "_logistic.py::_log_reg_scoring_path",
+      "to": "_logistic.py::_logistic_regression_path"
+    },
+    {
+      "from": "_logistic.py::_log_reg_scoring_path",
+      "to": "_logistic.py::__init__"
+    },
+    {
+      "from": "_logistic.py::fit",
+      "to": "_logistic.py::_check_solver"
+    },
+    {
+      "from": "_logistic.py::fit",
+      "to": "_logistic.py::_logistic_regression_path"
+    },
+    {
+      "from": "_logistic.py::predict_log_proba",
+      "to": "_logistic.py::predict_proba"
+    },
+    {
+      "from": "_logistic.py::fit",
+      "to": "_logistic.py::_check_solver"
+    },
+    {
+      "from": "_logistic.py::fit",
+      "to": "_logistic.py::_logistic_regression_path"
+    },
+    {
+      "from": "_logistic.py::score",
+      "to": "_logistic.py::_get_scorer"
+    },
+    {
+      "from": "_logistic.py::get_metadata_routing",
+      "to": "_logistic.py::_get_scorer"
+    },
+    {
+      "from": "tests/test_logistic.py::test_predict_2_classes",
+      "to": "tests/test_logistic.py::check_predictions"
+    },
+    {
+      "from": "tests/test_logistic.py::test_predict_3_classes",
+      "to": "tests/test_logistic.py::check_predictions"
+    },
+    {
+      "from": "tests/test_logistic.py::test_logistic_cv_mock_scorer",
+      "to": "tests/test_logistic.py::__init__"
+    },
+    {
+      "from": "tests/test_logistic.py::test_logistic_regression_class_weights",
+      "to": "tests/test_logistic.py::_compute_class_weight_dictionary"
+    },
+    {
+      "from": "tests/test_logistic.py::test_LogisticRegression_elastic_net_objective",
+      "to": "tests/test_logistic.py::enet_objective"
+    },
+    {
+      "from": "tests/test_ridge.py::check_array_api_attributes",
+      "to": "_logistic.py::fit"
+    },
+    {
+      "from": "tests/test_ridge.py::test_ridge_classifier_multilabel_array_api",
+      "to": "_logistic.py::fit"
+    }
+  ],
+  "functions_in_changed_files": [
+    {
+      "name": "_check_solver",
+      "full_name": "_logistic.py:<module>._check_solver",
+      "file": "_logistic.py",
+      "start_line": 63,
+      "end_line": 85,
+      "signature": ""
+    },
+    {
+      "name": "_logistic_regression_path",
+      "full_name": "_logistic.py:<module>._logistic_regression_path",
+      "file": "_logistic.py",
+      "start_line": 86,
+      "end_line": 519,
+      "signature": ""
+    },
+    {
+      "name": "_log_reg_scoring_path",
+      "full_name": "_logistic.py:<module>._log_reg_scoring_path",
+      "file": "_logistic.py",
+      "start_line": 520,
+      "end_line": 734,
+      "signature": ""
+    },
+    {
+      "name": "__init__",
+      "full_name": "_logistic.py:<module>.LogisticRegression.__init__",
+      "file": "_logistic.py",
+      "start_line": 1053,
+      "end_line": 1086,
+      "signature": ""
+    },
+    {
+      "name": "fit",
+      "full_name": "_logistic.py:<module>.LogisticRegression.fit",
+      "file": "_logistic.py",
+      "start_line": 1087,
+      "end_line": 1302,
+      "signature": ""
+    },
+    {
+      "name": "predict_proba",
+      "full_name": "_logistic.py:<module>.LogisticRegression.predict_proba",
+      "file": "_logistic.py",
+      "start_line": 1302,
+      "end_line": 1333,
+      "signature": ""
+    },
+    {
+      "name": "predict_log_proba",
+      "full_name": "_logistic.py:<module>.LogisticRegression.predict_log_proba",
+      "file": "_logistic.py",
+      "start_line": 1333,
+      "end_line": 1354,
+      "signature": ""
+    },
+    {
+      "name": "__sklearn_tags__",
+      "full_name": "_logistic.py:<module>.LogisticRegression.__sklearn_tags__",
+      "file": "_logistic.py",
+      "start_line": 1354,
+      "end_line": 1362,
+      "signature": ""
+    },
+    {
+      "name": "__init__",
+      "full_name": "_logistic.py:<module>.LogisticRegressionCV.__init__",
+      "file": "_logistic.py",
+      "start_line": 1710,
+      "end_line": 1749,
+      "signature": ""
+    },
+    {
+      "name": "fit",
+      "full_name": "_logistic.py:<module>.LogisticRegressionCV.fit",
+      "file": "_logistic.py",
+      "start_line": 1750,
+      "end_line": 2153,
+      "signature": ""
+    },
+    {
+      "name": "score",
+      "full_name": "_logistic.py:<module>.LogisticRegressionCV.score",
+      "file": "_logistic.py",
+      "start_line": 2153,
+      "end_line": 2200,
+      "signature": ""
+    },
+    {
+      "name": "get_metadata_routing",
+      "full_name": "_logistic.py:<module>.LogisticRegressionCV.get_metadata_routing",
+      "file": "_logistic.py",
+      "start_line": 2200,
+      "end_line": 2231,
+      "signature": ""
+    },
+    {
+      "name": "_get_scorer",
+      "full_name": "_logistic.py:<module>.LogisticRegressionCV._get_scorer",
+      "file": "_logistic.py",
+      "start_line": 2231,
+      "end_line": 2238,
+      "signature": ""
+    },
+    {
+      "name": "__sklearn_tags__",
+      "full_name": "_logistic.py:<module>.LogisticRegressionCV.__sklearn_tags__",
+      "file": "_logistic.py",
+      "start_line": 2238,
+      "end_line": 2241,
+      "signature": ""
+    },
+    {
+      "name": "check_predictions",
+      "full_name": "tests/test_logistic.py:<module>.check_predictions",
+      "file": "tests/test_logistic.py",
+      "start_line": 57,
+      "end_line": 74,
+      "signature": ""
+    },
+    {
+      "name": "test_predict_2_classes",
+      "full_name": "tests/test_logistic.py:<module>.test_predict_2_classes",
+      "file": "tests/test_logistic.py",
+      "start_line": 76,
+      "end_line": 88,
+      "signature": ""
+    },
+    {
+      "name": "test_predict_3_classes",
+      "full_name": "tests/test_logistic.py:<module>.test_predict_3_classes",
+      "file": "tests/test_logistic.py",
+      "start_line": 90,
+      "end_line": 94,
+      "signature": ""
+    },
+    {
+      "name": "test_logistic_glmnet",
+      "full_name": "tests/test_logistic.py:<module>.test_logistic_glmnet",
+      "file": "tests/test_logistic.py",
+      "start_line": 97,
+      "end_line": 166,
+      "signature": ""
+    },
+    {
+      "name": "test_check_solver_option",
+      "full_name": "tests/test_logistic.py:<module>.test_check_solver_option",
+      "file": "tests/test_logistic.py",
+      "start_line": 169,
+      "end_line": 215,
+      "signature": ""
+    },
+    {
+      "name": "test_elasticnet_l1_ratio_err_helpful",
+      "full_name": "tests/test_logistic.py:<module>.test_elasticnet_l1_ratio_err_helpful",
+      "file": "tests/test_logistic.py",
+      "start_line": 221,
+      "end_line": 228,
+      "signature": ""
+    },
+    {
+      "name": "test_sparsify",
+      "full_name": "tests/test_logistic.py:<module>.test_sparsify",
+      "file": "tests/test_logistic.py",
+      "start_line": 230,
+      "end_line": 253,
+      "signature": ""
+    },
+    {
+      "name": "test_inconsistent_input",
+      "full_name": "tests/test_logistic.py:<module>.test_inconsistent_input",
+      "file": "tests/test_logistic.py",
+      "start_line": 254,
+      "end_line": 275,
+      "signature": ""
+    },
+    {
+      "name": "test_write_parameters",
+      "full_name": "tests/test_logistic.py:<module>.test_write_parameters",
+      "file": "tests/test_logistic.py",
+      "start_line": 276,
+      "end_line": 284,
+      "signature": ""
+    },
+    {
+      "name": "test_nan",
+      "full_name": "tests/test_logistic.py:<module>.test_nan",
+      "file": "tests/test_logistic.py",
+      "start_line": 285,
+      "end_line": 295,
+      "signature": ""
+    },
+    {
+      "name": "test_consistency_path",
+      "full_name": "tests/test_logistic.py:<module>.test_consistency_path",
+      "file": "tests/test_logistic.py",
+      "start_line": 296,
+      "end_line": 359,
+      "signature": ""
+    },
+    {
+      "name": "test_logistic_regression_path_convergence_fail",
+      "full_name": "tests/test_logistic.py:<module>.test_logistic_regression_path_convergence_fail",
+      "file": "tests/test_logistic.py",
+      "start_line": 360,
+      "end_line": 383,
+      "signature": ""
+    },
+    {
+      "name": "test_liblinear_dual_random_state",
+      "full_name": "tests/test_logistic.py:<module>.test_liblinear_dual_random_state",
+      "file": "tests/test_logistic.py",
+      "start_line": 385,
+      "end_line": 418,
+      "signature": ""
+    },
+    {
+      "name": "test_logistic_cv",
+      "full_name": "tests/test_logistic.py:<module>.test_logistic_cv",
+      "file": "tests/test_logistic.py",
+      "start_line": 420,
+      "end_line": 462,
+      "signature": ""
+    },
+    {
+      "name": "test_logistic_cv_mock_scorer",
+      "full_name": "tests/test_logistic.py:<module>.test_logistic_cv_mock_scorer",
+      "file": "tests/test_logistic.py",
+      "start_line": 463,
+      "end_line": 503,
+      "signature": ""
+    },
+    {
+      "name": "__init__",
+      "full_name": "tests/test_logistic.py:<module>.test_logistic_cv_mock_scorer.MockScorer.__init__",
+      "file": "tests/test_logistic.py",
+      "start_line": 467,
+      "end_line": 471,
+      "signature": ""
+    },
+    {
+      "name": "__call__",
+      "full_name": "tests/test_logistic.py:<module>.test_logistic_cv_mock_scorer.MockScorer.__call__",
+      "file": "tests/test_logistic.py",
+      "start_line": 471,
+      "end_line": 476,
+      "signature": ""
+    },
+    {
+      "name": "test_logistic_cv_multinomial_score",
+      "full_name": "tests/test_logistic.py:<module>.test_logistic_cv_multinomial_score",
+      "file": "tests/test_logistic.py",
+      "start_line": 519,
+      "end_line": 561,
+      "signature": ""
+    },
+    {
+      "name": "test_multinomial_logistic_regression_string_inputs",
+      "full_name": "tests/test_logistic.py:<module>.test_multinomial_logistic_regression_string_inputs",
+      "file": "tests/test_logistic.py",
+      "start_line": 562,
+      "end_line": 613,
+      "signature": ""
+    },
+    {
+      "name": "test_multinomial_cv_iris",
+      "full_name": "tests/test_logistic.py:<module>.test_multinomial_cv_iris",
+      "file": "tests/test_logistic.py",
+      "start_line": 615,
+      "end_line": 749,
+      "signature": ""
+    },
+    {
+      "name": "test_logistic_regression_solvers",
+      "full_name": "tests/test_logistic.py:<module>.test_logistic_regression_solvers",
+      "file": "tests/test_logistic.py",
+      "start_line": 750,
+      "end_line": 775,
+      "signature": ""
+    },
+    {
+      "name": "test_logistic_regression_solvers_multiclass",
+      "full_name": "tests/test_logistic.py:<module>.test_logistic_regression_solvers_multiclass",
+      "file": "tests/test_logistic.py",
+      "start_line": 777,
+      "end_line": 844,
+      "signature": ""
+    },
+    {
+      "name": "test_logistic_regression_solvers_multiclass_unpenalized",
+      "full_name": "tests/test_logistic.py:<module>.test_logistic_regression_solvers_multiclass_unpenalized",
+      "file": "tests/test_logistic.py",
+      "start_line": 846,
+      "end_line": 914,
+      "signature": ""
+    },
+    {
+      "name": "test_logistic_cv_sparse",
+      "full_name": "tests/test_logistic.py:<module>.test_logistic_cv_sparse",
+      "file": "tests/test_logistic.py",
+      "start_line": 917,
+      "end_line": 935,
+      "signature": ""
+    },
+    {
+      "name": "test_logistic_regressioncv_class_weights",
+      "full_name": "tests/test_logistic.py:<module>.test_logistic_regressioncv_class_weights",
+      "file": "tests/test_logistic.py",
+      "start_line": 938,
+      "end_line": 985,
+      "signature": ""
+    },
+    {
+      "name": "test_logistic_regression_sample_weights",
+      "full_name": "tests/test_logistic.py:<module>.test_logistic_regression_sample_weights",
+      "file": "tests/test_logistic.py",
+      "start_line": 989,
+      "end_line": 1055,
+      "signature": ""
+    },
+    {
+      "name": "test_logistic_regression_solver_class_weights",
+      "full_name": "tests/test_logistic.py:<module>.test_logistic_regression_solver_class_weights",
+      "file": "tests/test_logistic.py",
+      "start_line": 1057,
+      "end_line": 1086,
+      "signature": ""
+    },
+    {
+      "name": "test_sample_and_class_weight_equivalence_liblinear",
+      "full_name": "tests/test_logistic.py:<module>.test_sample_and_class_weight_equivalence_liblinear",
+      "file": "tests/test_logistic.py",
+      "start_line": 1087,
+      "end_line": 1145,
+      "signature": ""
+    },
+    {
+      "name": "_compute_class_weight_dictionary",
+      "full_name": "tests/test_logistic.py:<module>._compute_class_weight_dictionary",
+      "file": "tests/test_logistic.py",
+      "start_line": 1146,
+      "end_line": 1153,
+      "signature": ""
+    },
+    {
+      "name": "test_logistic_regression_class_weights",
+      "full_name": "tests/test_logistic.py:<module>.test_logistic_regression_class_weights",
+      "file": "tests/test_logistic.py",
+      "start_line": 1155,
+      "end_line": 1193,
+      "signature": ""
+    },
+    {
+      "name": "test_liblinear_decision_function_zero",
+      "full_name": "tests/test_logistic.py:<module>.test_liblinear_decision_function_zero",
+      "file": "tests/test_logistic.py",
+      "start_line": 1194,
+      "end_line": 1212,
+      "signature": ""
+    },
+    {
+      "name": "test_logreg_intercept_scaling_zero",
+      "full_name": "tests/test_logistic.py:<module>.test_logreg_intercept_scaling_zero",
+      "file": "tests/test_logistic.py",
+      "start_line": 1213,
+      "end_line": 1222,
+      "signature": ""
+    },
+    {
+      "name": "test_logreg_l1",
+      "full_name": "tests/test_logistic.py:<module>.test_logreg_l1",
+      "file": "tests/test_logistic.py",
+      "start_line": 1225,
+      "end_line": 1263,
+      "signature": ""
+    },
+    {
+      "name": "test_logistic_regression_cv_refit",
+      "full_name": "tests/test_logistic.py:<module>.test_logistic_regression_cv_refit",
+      "file": "tests/test_logistic.py",
+      "start_line": 1265,
+      "end_line": 1295,
+      "signature": ""
+    },
+    {
+      "name": "test_logreg_predict_proba_multinomial",
+      "full_name": "tests/test_logistic.py:<module>.test_logreg_predict_proba_multinomial",
+      "file": "tests/test_logistic.py",
+      "start_line": 1296,
+      "end_line": 1321,
+      "signature": ""
+    },
+    {
+      "name": "test_max_iter",
+      "full_name": "tests/test_logistic.py:<module>.test_max_iter",
+      "file": "tests/test_logistic.py",
+      "start_line": 1340,
+      "end_line": 1359,
+      "signature": ""
+    }
+  ]
+}

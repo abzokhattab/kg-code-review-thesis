@@ -1,0 +1,334 @@
+{
+  "pr": {
+    "number": 124099,
+    "title": "DataSources: Send generateName with requests from the UI",
+    "body": "This reverts https://github.com/grafana/grafana/pull/123802 and requires sending `name` or `generateName` on POST request.\r\n\r\nThis is the k8s rationale for this design choice:\r\nhttps://github.com/kubernetes/community/blob/main/contributors/devel/sig-architecture/api-conventions.md#idempotency",
+    "url": "https://github.com/grafana/grafana/pull/124099",
+    "repo": "grafana/grafana",
+    "base_branch": "main",
+    "head_branch": "send-generate-name",
+    "merged_at": "2026-05-05T11:36:18Z",
+    "state": "MERGED"
+  },
+  "changed_files": [
+    {
+      "path": "pkg/registry/apis/datasource/register.go",
+      "language": "go",
+      "added": 4,
+      "deleted": 5
+    },
+    {
+      "path": "pkg/registry/apis/datasource/storage.go",
+      "language": "go",
+      "added": 0,
+      "deleted": 31
+    },
+    {
+      "path": "public/app/features/datasources/api.ts",
+      "language": "typescript",
+      "added": 12,
+      "deleted": 12
+    }
+  ],
+  "nearest_tests": [
+    {
+      "path": "apps/advisor/pkg/app/checktyperegisterer/checktyperegisterer_test.go",
+      "relationship": "tests",
+      "source_file": "pkg/registry/apis/datasource/register.go"
+    },
+    {
+      "path": "pkg/registry/apis/userstorage/register_test.go",
+      "relationship": "tests",
+      "source_file": "pkg/registry/apis/datasource/register.go"
+    },
+    {
+      "path": "pkg/registry/apis/dashboard/register_test.go",
+      "relationship": "tests",
+      "source_file": "pkg/registry/apis/datasource/register.go"
+    },
+    {
+      "path": "pkg/registry/apis/folders/register_test.go",
+      "relationship": "tests",
+      "source_file": "pkg/registry/apis/datasource/register.go"
+    },
+    {
+      "path": "pkg/registry/apps/alerting/rules/register_test.go",
+      "relationship": "tests",
+      "source_file": "pkg/registry/apis/datasource/register.go"
+    },
+    {
+      "path": "pkg/cmd/grafana-cli/commands/datamigrations/to_unified_storage_test.go",
+      "relationship": "tests",
+      "source_file": "pkg/registry/apis/datasource/storage.go"
+    },
+    {
+      "path": "pkg/infra/remotecache/redis_storage_integration_test.go",
+      "relationship": "tests",
+      "source_file": "pkg/registry/apis/datasource/storage.go"
+    },
+    {
+      "path": "pkg/infra/remotecache/memcached_storage_integration_test.go",
+      "relationship": "tests",
+      "source_file": "pkg/registry/apis/datasource/storage.go"
+    },
+    {
+      "path": "pkg/infra/remotecache/redis_storage_test.go",
+      "relationship": "tests",
+      "source_file": "pkg/registry/apis/datasource/storage.go"
+    },
+    {
+      "path": "pkg/infra/remotecache/database_storage_test.go",
+      "relationship": "tests",
+      "source_file": "pkg/registry/apis/datasource/storage.go"
+    },
+    {
+      "path": "public/app/features/datasources/api.test.ts",
+      "relationship": "tests",
+      "source_file": "public/app/features/datasources/api.ts"
+    },
+    {
+      "path": "public/app/features/dashboard/api/dashboard_api.test.ts",
+      "relationship": "tests",
+      "source_file": "public/app/features/datasources/api.ts"
+    },
+    {
+      "path": "pkg/cmd/grafana-cli/services/api_client_test.go",
+      "relationship": "tests",
+      "source_file": "public/app/features/datasources/api.ts"
+    },
+    {
+      "path": "pkg/infra/usagestats/service/api_test.go",
+      "relationship": "tests",
+      "source_file": "public/app/features/datasources/api.ts"
+    },
+    {
+      "path": "pkg/infra/filestorage/api_test.go",
+      "relationship": "tests",
+      "source_file": "public/app/features/datasources/api.ts"
+    }
+  ],
+  "dependent_files": [
+    {
+      "path": "e2e-playwright/various-suite/perf-test.spec.ts",
+      "relationship": "imports",
+      "source_file": "pkg/registry/apis/datasource/register.go"
+    },
+    {
+      "path": "e2e-playwright/utils/RequestsRecorder.ts",
+      "relationship": "imports",
+      "source_file": "pkg/registry/apis/datasource/register.go"
+    },
+    {
+      "path": "public/app/core/components/AppChrome/ExtensionSidebar/ExtensionSidebarProvider.tsx",
+      "relationship": "imports",
+      "source_file": "pkg/registry/apis/datasource/register.go"
+    },
+    {
+      "path": "public/app/core/components/AppChrome/MegaMenu/MegaMenuExtensionPoint.tsx",
+      "relationship": "imports",
+      "source_file": "pkg/registry/apis/datasource/register.go"
+    },
+    {
+      "path": "public/app/core/components/AppChrome/TopBar/TopBarExtensionPoint.tsx",
+      "relationship": "imports",
+      "source_file": "pkg/registry/apis/datasource/register.go"
+    },
+    {
+      "path": "public/app/core/components/NavLandingPage/NavLandingPage.tsx",
+      "relationship": "imports",
+      "source_file": "pkg/registry/apis/datasource/register.go"
+    },
+    {
+      "path": "public/app/core/components/Signup/SignupPage.tsx",
+      "relationship": "imports",
+      "source_file": "pkg/registry/apis/datasource/register.go"
+    },
+    {
+      "path": "public/app/core/components/Signup/VerifyEmail.tsx",
+      "relationship": "imports",
+      "source_file": "pkg/registry/apis/datasource/register.go"
+    },
+    {
+      "path": "public/app/core/components/ValidationLabels/ValidationLabels.tsx",
+      "relationship": "imports",
+      "source_file": "pkg/registry/apis/datasource/register.go"
+    },
+    {
+      "path": "public/app/core/components/AppNotifications/AppNotificationList.tsx",
+      "relationship": "imports",
+      "source_file": "pkg/registry/apis/datasource/register.go"
+    },
+    {
+      "path": "devenv/docker/blocks/prometheus_high_card/main.go",
+      "relationship": "imports",
+      "source_file": "pkg/registry/apis/datasource/storage.go"
+    },
+    {
+      "path": "e2e-playwright/various-suite/verify-i18n.spec.ts",
+      "relationship": "imports",
+      "source_file": "pkg/registry/apis/datasource/storage.go"
+    },
+    {
+      "path": "e2e-playwright/test-plugins/grafana-extensionstest-app/tests/useExposedComponent.spec.ts",
+      "relationship": "imports",
+      "source_file": "pkg/registry/apis/datasource/storage.go"
+    },
+    {
+      "path": "e2e-playwright/dashboards-suite/dashboard-timepicker.spec.ts",
+      "relationship": "imports",
+      "source_file": "pkg/registry/apis/datasource/storage.go"
+    },
+    {
+      "path": "e2e-playwright/panels-suite/panelEdit_base.spec.ts",
+      "relationship": "imports",
+      "source_file": "pkg/registry/apis/datasource/storage.go"
+    }
+  ],
+  "diff_summary": "3 files changed",
+  "full_diff": "diff --git a/pkg/registry/apis/datasource/register.go b/pkg/registry/apis/datasource/register.go\nindex 052e9a426f779..f43be537f9f65 100644\n--- a/pkg/registry/apis/datasource/register.go\n+++ b/pkg/registry/apis/datasource/register.go\n@@ -15,6 +15,8 @@ import (\n \tgenericapiserver \"k8s.io/apiserver/pkg/server\"\n \topenapi \"k8s.io/kube-openapi/pkg/common\"\n \n+\t\"go.opentelemetry.io/otel/attribute\"\n+\n \t\"github.com/grafana/grafana-plugin-sdk-go/backend\"\n \t\"github.com/grafana/grafana-plugin-sdk-go/experimental/pluginschema\"\n \t\"github.com/grafana/grafana/pkg/apimachinery/utils\"\n@@ -32,7 +34,6 @@ import (\n \t\"github.com/grafana/grafana/pkg/services/featuremgmt\"\n \t\"github.com/grafana/grafana/pkg/setting\"\n \t\"github.com/grafana/grafana/pkg/storage/unified/apistore\"\n-\t\"go.opentelemetry.io/otel/attribute\"\n )\n \n var (\n@@ -255,17 +256,15 @@ func (b *DataSourceAPIBuilder) UpdateAPIGroupInfo(apiGroupInfo *genericapiserver\n \t\t\tresourceInfo:                    &ds,\n \t\t\tdsConfigHandlerRequestsDuration: b.dataSourceCRUDMetric,\n \t\t}\n+\t\t// NOTE! there is currently NO PATH that is using unified storage to read!\n \t\tunified, err := grafanaregistry.NewRegistryStore(opts.Scheme, ds, opts.OptsGetter)\n \t\tif err != nil {\n \t\t\treturn err\n \t\t}\n-\t\tdualStore, err := opts.DualWriteBuilder(ds.GroupResource(), legacyStore, unified)\n+\t\tstorage[ds.StoragePath()], err = opts.DualWriteBuilder(ds.GroupResource(), legacyStore, unified)\n \t\tif err != nil {\n \t\t\treturn err\n \t\t}\n-\t\t// generatedNameStorage assigns a server-generated name when the client\n-\t\t// sends none, which is the normal datasource create flow.\n-\t\tstorage[ds.StoragePath()] = &generatedNameStorage{Storage: dualStore}\n \t\tstorage[ds.StoragePath(\"access\")] = &subAccessREST{\n \t\t\tbuilder: b,\n \t\t\tgetter:  legacyStore,\ndiff --git a/pkg/registry/apis/datasource/storage.go b/pkg/registry/apis/datasource/storage.go\ndeleted file mode 100644\nindex 6d747798bd11c..0000000000000\n--- a/pkg/registry/apis/datasource/storage.go\n+++ /dev/null\n@@ -1,31 +0,0 @@\n-package datasource\n-\n-import (\n-\t\"context\"\n-\n-\tmetav1 \"k8s.io/apimachinery/pkg/apis/meta/v1\"\n-\t\"k8s.io/apimachinery/pkg/runtime\"\n-\t\"k8s.io/apiserver/pkg/registry/rest\"\n-\n-\t\"github.com/grafana/grafana/pkg/apimachinery/utils\"\n-\tgrafanarest \"github.com/grafana/grafana/pkg/apiserver/rest\"\n-\t\"github.com/grafana/grafana/pkg/util\"\n-)\n-\n-// generatedNameStorage wraps a Storage to assign a server-generated name when\n-// the incoming object has neither name nor generateName set. Datasource\n-// creation relies on server-side UID generation: the frontend sends no name\n-// and expects the legacy SQL store to assign one. The dualwriter requires a\n-// name before calling the legacy store, so this wrapper generates one upfront\n-// using the same short-UID format that the SQL store would use.\n-type generatedNameStorage struct {\n-\tgrafanarest.Storage\n-}\n-\n-func (s *generatedNameStorage) Create(ctx context.Context, in runtime.Object, createValidation rest.ValidateObjectFunc, options *metav1.CreateOptions) (runtime.Object, error) {\n-\tacc, err := utils.MetaAccessor(in)\n-\tif err == nil && acc.GetName() == \"\" && acc.GetGenerateName() == \"\" {\n-\t\tacc.SetName(util.GenerateShortUID())\n-\t}\n-\treturn s.Storage.Create(ctx, in, createValidation, options)\n-}\ndiff --git a/public/app/features/datasources/api.ts b/public/app/features/datasources/api.ts\nindex e5e1def7e7334..cea5047e6b8ae 100644\n--- a/public/app/features/datasources/api.ts\n+++ b/public/app/features/datasources/api.ts\n@@ -1,3 +1,4 @@\n+import { isString } from 'lodash';\n import { lastValueFrom } from 'rxjs';\n \n import { type DataSourceSettings, type DataSourceJsonData } from '@grafana/data';\n@@ -14,11 +15,12 @@ export const getDataSources = async (): Promise<DataSourceSettings[]> => {\n const LEGACY_DATASOURCE_SECURE_VALUE_NAME_PREFIX = 'lds-sv-';\n \n export interface K8sMetadata {\n-  name: string;\n   namespace: string;\n-  uid?: string;\n+  name: string; // Equivalent to legacy UID\n+  generateName?: string; // only valid for create\n+  uid?: string; // do not confuse this with legacy UID\n   resourceVersion: string;\n-  generation?: number;\n+  generation?: number; // increments when the spec changes\n   creationTimestamp?: string;\n   labels: { [key: string]: string };\n   annotations: { [key: string]: string };\n@@ -66,7 +68,7 @@ export const getDataSourceK8sGroup = (uid: string): string => {\n export const convertLegacyDatasourceSettingsPartialToK8sDatasourceSettings = (\n   dsSettings: Partial<DataSourceSettings>,\n   version: string\n-): Partial<DataSourceSettingsK8s> => {\n+): Partial<DataSourceSettingsK8s & {}> => {\n   let k8sSpec: DatasourceInstanceK8sSpec = {\n     access: dsSettings.access ? dsSettings.access : '',\n     jsonData: dsSettings.jsonData ? dsSettings.jsonData : {},\n@@ -241,17 +243,15 @@ export const createDataSourceWithK8sAPI = async (dataSource: Partial<DataSourceS\n   if (dataSource.secureJsonData) {\n     dsK8sSettings.secure = {};\n     for (let [k, v] of Object.entries(dataSource.secureJsonData)) {\n-      if (v !== '') {\n-        let value = {\n-          create: v,\n-          name: k,\n-        };\n-        if (isRecordOfString(value)) {\n-          dsK8sSettings.secure[k] = value;\n-        }\n+      if (v !== '' && isString(v)) {\n+        dsK8sSettings.secure[k] = { create: v };\n       }\n     }\n   }\n+  // K8s apis require an explicit name, or request to generate the name for POST\n+  if (!(dsK8sSettings.metadata!.name || dsK8sSettings.metadata!.generateName)) {\n+    dsK8sSettings.metadata!.generateName = 'g'; // prefix for server generated unique name\n+  }\n   return getBackendSrv().post(\n     `/apis/${dsK8sSettings.apiVersion}/namespaces/${config.namespace}/datasources`,\n     dsK8sSettings\n",
+  "metadata": {
+    "v2_fetcher_version": 1,
+    "v2_fetched_at_unix": 1777987680,
+    "v2_diff_cap_bytes": 50000,
+    "v2_body_cap_bytes": 8000,
+    "v2_diff_truncated": false,
+    "v2_raw_diff_chars": 5676,
+    "v2_raw_body_chars": 293,
+    "v2_rag_source": "fresh_for_v2_25pr_expansion",
+    "v2_rag_chunks_copied": 8
+  },
+  "similar_chunks": [
+    {
+      "file": "pkg/registry/apis/datasource/converter.go",
+      "start_line": 1,
+      "end_line": 67,
+      "similarity": 0.7476,
+      "related_to": "pkg/registry/apis/datasource/register.go",
+      "content_preview": "package datasource\n\nimport (\n\t\"crypto/sha256\"\n\t\"encoding/hex\"\n\t\"fmt\"\n\t\"iter\"\n\t\"maps\"\n\t\"slices\"\n\t\"strconv\"\n\t\"strings\"\n\t\"time\"\n\n\tmetav1 \"k8s.io/apimachinery/pkg/apis/meta/v1\"\n\n\t\"github.com/grafana/authlib/types\"\n\tcommon \"github.com/grafana/grafana/pkg/apimachinery/apis/common/v0alpha1\"\n\t\"github.com/grafana/grafana/pkg/apimachinery/utils\"\n\tdatasourceV0 \"github.com/grafana/grafana/pkg/apis/datasource/v0alpha1\"\n\t\"github.com/grafana/grafana/pkg/components/simplejson\"\n\t\"github.com/grafana/grafana/pkg/services/apiserver/endpoints/request\"\n\tgapiutil \"github.com/grafana/grafana/pkg/services/apiserver/utils\"\n\t\"github.com/grafana/grafana/pkg/services/datasources\"\n\t\"github.com/grafana/grafana/pkg/storage/unified/apistore\"\n)\n\ntype converter struct {\n\tmapper request.NamespaceMapper\n\tgroup  string   // th"
+    },
+    {
+      "file": "public/app/features/datasources/hooks.ts",
+      "start_line": 1,
+      "end_line": 56,
+      "similarity": 0.7439,
+      "related_to": "public/app/features/datasources/api.ts",
+      "content_preview": "import { useCallback, useEffect, useRef } from 'react';\nimport * as React from 'react';\nimport { useLocalStorage } from 'react-use';\nimport { Observable } from 'rxjs';\n\nimport { DataSourceInstanceSettings, DataSourceRef } from '@grafana/data';\nimport { GetDataSourceListFilters, getDataSourceSrv } from '@grafana/runtime';\n\nexport const LOCAL_STORAGE_KEY = 'grafana.features.datasources.components.picker.DataSourceDropDown.history';\n\n/**\n * Stores the uid of the last 5 data sources selected by the user. The last UID is the one most recently used.\n */\nexport function useRecentlyUsedDataSources(): [string[], (ds: DataSourceInstanceSettings) => void] {\n  const [value = [], setStorage] = useLocalStorage<string[]>(LOCAL_STORAGE_KEY, []);\n\n  const pushRecentlyUsedDataSource = useCallback(\n    (ds: "
+    },
+    {
+      "file": "pkg/registry/apis/datasource/plugincontext.go",
+      "start_line": 1,
+      "end_line": 51,
+      "similarity": 0.7278,
+      "related_to": "pkg/registry/apis/datasource/register.go",
+      "content_preview": "package datasource\n\nimport (\n\t\"context\"\n\t\"fmt\"\n\n\t\"github.com/grafana/grafana-plugin-sdk-go/backend\"\n\t\"github.com/grafana/grafana/pkg/apimachinery/identity\"\n\tdatasourceV0 \"github.com/grafana/grafana/pkg/apis/datasource/v0alpha1\"\n\t\"github.com/grafana/grafana/pkg/plugins\"\n\t\"github.com/grafana/grafana/pkg/services/apiserver/endpoints/request\"\n\t\"github.com/grafana/grafana/pkg/services/datasources\"\n\t\"github.com/grafana/grafana/pkg/services/pluginsintegration/plugincontext\"\n\t\"github.com/grafana/grafana/pkg/setting\"\n)\n\n// This provides access to settings saved in the database.\n// Authorization checks will happen within each function, and the user in ctx will\n// limit which namespace/tenant/org we are talking to\ntype PluginDatasourceProvider interface {\n\t// Get a single data source (any type)\n\tGetD"
+    },
+    {
+      "file": "public/app/features/datasources/api.test.ts",
+      "start_line": 1,
+      "end_line": 38,
+      "similarity": 0.7183,
+      "related_to": "public/app/features/datasources/api.ts",
+      "content_preview": "import { of } from 'rxjs';\n\nimport { BackendSrvRequest, FetchResponse } from '@grafana/runtime';\nimport { getBackendSrv } from 'app/core/services/backend_srv';\n\nimport { getDataSourceByUid } from './api';\n\njest.mock('app/core/services/backend_srv');\njest.mock('@grafana/runtime', () => ({\n  ...jest.requireActual('@grafana/runtime'),\n  getBackendSrv: jest.fn(),\n}));\n\nconst mockResponse = (response: Partial<FetchResponse>) => {\n  (getBackendSrv as jest.Mock).mockReturnValueOnce({\n    fetch: (options: BackendSrvRequest) => {\n      return of(response as FetchResponse);\n    },\n  });\n};\n\ndescribe('Datasources / API', () => {\n  describe('getDataSourceByUid()', () => {\n    it('should resolve to the datasource object in case it is fetched using a UID', async () => {\n      const response = {\n        "
+    },
+    {
+      "file": "public/app/features/datasources/types.ts",
+      "start_line": 1,
+      "end_line": 21,
+      "similarity": 0.7183,
+      "related_to": "public/app/features/datasources/api.ts",
+      "content_preview": "import { DataQuery, DataSourceApi, DataSourceJsonData, DataSourcePlugin } from '@grafana/data';\n\nimport { RelativeUrl } from '../alerting/unified/utils/url';\n\nexport type GenericDataSourcePlugin = DataSourcePlugin<DataSourceApi<DataQuery, DataSourceJsonData>>;\n\nexport type DataSourceRights = {\n  readOnly: boolean;\n  hasWriteRights: boolean;\n  hasDeleteRights: boolean;\n};\n\nexport type DataSourcesRoutes = {\n  New: RelativeUrl;\n  Edit: RelativeUrl;\n  List: RelativeUrl;\n  Dashboards: RelativeUrl;\n};\n\nexport type DataSourceTestStatus = 'success' | 'warning' | 'error';\n"
+    },
+    {
+      "file": "pkg/registry/apis/collections/register.go",
+      "start_line": 1,
+      "end_line": 63,
+      "similarity": 0.7057,
+      "related_to": "pkg/registry/apis/datasource/register.go",
+      "content_preview": "package collections\n\nimport (\n\t\"fmt\"\n\n\tmetav1 \"k8s.io/apimachinery/pkg/apis/meta/v1\"\n\t\"k8s.io/apimachinery/pkg/runtime\"\n\t\"k8s.io/apimachinery/pkg/runtime/schema\"\n\t\"k8s.io/apiserver/pkg/authorization/authorizer\"\n\t\"k8s.io/apiserver/pkg/registry/rest\"\n\tgenericapiserver \"k8s.io/apiserver/pkg/server\"\n\t\"k8s.io/kube-openapi/pkg/common\"\n\t\"k8s.io/kube-openapi/pkg/spec3\"\n\t\"k8s.io/kube-openapi/pkg/validation/spec\"\n\n\tcollections \"github.com/grafana/grafana/apps/collections/pkg/apis/collections/v1alpha1\"\n\tgrafanaregistry \"github.com/grafana/grafana/pkg/apiserver/registry/generic\"\n\tgrafanarest \"github.com/grafana/grafana/pkg/apiserver/rest\"\n\t\"github.com/grafana/grafana/pkg/infra/db\"\n\t\"github.com/grafana/grafana/pkg/registry/apis/collections/legacy\"\n\t\"github.com/grafana/grafana/pkg/registry/apis/preferen"
+    },
+    {
+      "file": "pkg/registry/apis/datasource/openapi.go",
+      "start_line": 1,
+      "end_line": 63,
+      "similarity": 0.7041,
+      "related_to": "pkg/registry/apis/datasource/register.go",
+      "content_preview": "package datasource\n\nimport (\n\t\"fmt\"\n\n\t\"k8s.io/kube-openapi/pkg/spec3\"\n\t\"k8s.io/kube-openapi/pkg/validation/spec\"\n\n\t\"github.com/grafana/grafana/pkg/registry/apis/query/queryschema\"\n)\n\nfunc (b *DataSourceAPIBuilder) PostProcessOpenAPI(oas *spec3.OpenAPI) (*spec3.OpenAPI, error) {\n\t// The plugin description\n\toas.Info.Description = b.pluginJSON.Info.Description\n\n\t// Add plugin information\n\tinfo := map[string]any{\n\t\t\"id\": b.pluginJSON.ID,\n\t}\n\tif b.pluginJSON.Info.Version != \"\" {\n\t\tinfo[\"version\"] = b.pluginJSON.Info.Version\n\t}\n\tif b.pluginJSON.Info.Build.Time > 0 {\n\t\tinfo[\"build\"] = b.pluginJSON.Info.Build.Time\n\t}\n\toas.Info.AddExtension(\"x-grafana-plugin\", info)\n\n\t// The root api URL\n\troot := \"/apis/\" + b.datasourceResourceInfo.GroupVersion().String() + \"/\"\n\n\t// Add queries to the request prope"
+    },
+    {
+      "file": "pkg/registry/apis/preferences/register.go",
+      "start_line": 1,
+      "end_line": 67,
+      "similarity": 0.694,
+      "related_to": "pkg/registry/apis/datasource/register.go",
+      "content_preview": "package preferences\n\nimport (\n\t\"context\"\n\t\"fmt\"\n\n\tapierrors \"k8s.io/apimachinery/pkg/api/errors\"\n\tmetav1 \"k8s.io/apimachinery/pkg/apis/meta/v1\"\n\t\"k8s.io/apimachinery/pkg/runtime\"\n\t\"k8s.io/apimachinery/pkg/runtime/schema\"\n\t\"k8s.io/apiserver/pkg/admission\"\n\t\"k8s.io/apiserver/pkg/authorization/authorizer\"\n\t\"k8s.io/apiserver/pkg/registry/rest\"\n\tgenericapiserver \"k8s.io/apiserver/pkg/server\"\n\t\"k8s.io/kube-openapi/pkg/common\"\n\t\"k8s.io/kube-openapi/pkg/validation/spec\"\n\n\tpreferences \"github.com/grafana/grafana/apps/preferences/pkg/apis/preferences/v1alpha1\"\n\t\"github.com/grafana/grafana/pkg/infra/db\"\n\t\"github.com/grafana/grafana/pkg/registry/apis/preferences/legacy\"\n\t\"github.com/grafana/grafana/pkg/registry/apis/preferences/utils\"\n\t\"github.com/grafana/grafana/pkg/services/apiserver/builder\"\n\t\"gith"
+    }
+  ],
+  "rag_evidence": {
+    "similar_code": [
+      {
+        "file": "pkg/registry/apis/datasource/converter.go",
+        "start_line": 1,
+        "end_line": 67,
+        "similarity": 0.7476,
+        "related_to": "pkg/registry/apis/datasource/register.go",
+        "content_preview": "package datasource\n\nimport (\n\t\"crypto/sha256\"\n\t\"encoding/hex\"\n\t\"fmt\"\n\t\"iter\"\n\t\"maps\"\n\t\"slices\"\n\t\"strconv\"\n\t\"strings\"\n\t\"time\"\n\n\tmetav1 \"k8s.io/apimachinery/pkg/apis/meta/v1\"\n\n\t\"github.com/grafana/authlib/types\"\n\tcommon \"github.com/grafana/grafana/pkg/apimachinery/apis/common/v0alpha1\"\n\t\"github.com/grafana/grafana/pkg/apimachinery/utils\"\n\tdatasourceV0 \"github.com/grafana/grafana/pkg/apis/datasource/v0alpha1\"\n\t\"github.com/grafana/grafana/pkg/components/simplejson\"\n\t\"github.com/grafana/grafana/pkg/services/apiserver/endpoints/request\"\n\tgapiutil \"github.com/grafana/grafana/pkg/services/apiserver/utils\"\n\t\"github.com/grafana/grafana/pkg/services/datasources\"\n\t\"github.com/grafana/grafana/pkg/storage/unified/apistore\"\n)\n\ntype converter struct {\n\tmapper request.NamespaceMapper\n\tgroup  string   // th"
+      },
+      {
+        "file": "public/app/features/datasources/hooks.ts",
+        "start_line": 1,
+        "end_line": 56,
+        "similarity": 0.7439,
+        "related_to": "public/app/features/datasources/api.ts",
+        "content_preview": "import { useCallback, useEffect, useRef } from 'react';\nimport * as React from 'react';\nimport { useLocalStorage } from 'react-use';\nimport { Observable } from 'rxjs';\n\nimport { DataSourceInstanceSettings, DataSourceRef } from '@grafana/data';\nimport { GetDataSourceListFilters, getDataSourceSrv } from '@grafana/runtime';\n\nexport const LOCAL_STORAGE_KEY = 'grafana.features.datasources.components.picker.DataSourceDropDown.history';\n\n/**\n * Stores the uid of the last 5 data sources selected by the user. The last UID is the one most recently used.\n */\nexport function useRecentlyUsedDataSources(): [string[], (ds: DataSourceInstanceSettings) => void] {\n  const [value = [], setStorage] = useLocalStorage<string[]>(LOCAL_STORAGE_KEY, []);\n\n  const pushRecentlyUsedDataSource = useCallback(\n    (ds: "
+      },
+      {
+        "file": "pkg/registry/apis/datasource/plugincontext.go",
+        "start_line": 1,
+        "end_line": 51,
+        "similarity": 0.7278,
+        "related_to": "pkg/registry/apis/datasource/register.go",
+        "content_preview": "package datasource\n\nimport (\n\t\"context\"\n\t\"fmt\"\n\n\t\"github.com/grafana/grafana-plugin-sdk-go/backend\"\n\t\"github.com/grafana/grafana/pkg/apimachinery/identity\"\n\tdatasourceV0 \"github.com/grafana/grafana/pkg/apis/datasource/v0alpha1\"\n\t\"github.com/grafana/grafana/pkg/plugins\"\n\t\"github.com/grafana/grafana/pkg/services/apiserver/endpoints/request\"\n\t\"github.com/grafana/grafana/pkg/services/datasources\"\n\t\"github.com/grafana/grafana/pkg/services/pluginsintegration/plugincontext\"\n\t\"github.com/grafana/grafana/pkg/setting\"\n)\n\n// This provides access to settings saved in the database.\n// Authorization checks will happen within each function, and the user in ctx will\n// limit which namespace/tenant/org we are talking to\ntype PluginDatasourceProvider interface {\n\t// Get a single data source (any type)\n\tGetD"
+      },
+      {
+        "file": "public/app/features/datasources/api.test.ts",
+        "start_line": 1,
+        "end_line": 38,
+        "similarity": 0.7183,
+        "related_to": "public/app/features/datasources/api.ts",
+        "content_preview": "import { of } from 'rxjs';\n\nimport { BackendSrvRequest, FetchResponse } from '@grafana/runtime';\nimport { getBackendSrv } from 'app/core/services/backend_srv';\n\nimport { getDataSourceByUid } from './api';\n\njest.mock('app/core/services/backend_srv');\njest.mock('@grafana/runtime', () => ({\n  ...jest.requireActual('@grafana/runtime'),\n  getBackendSrv: jest.fn(),\n}));\n\nconst mockResponse = (response: Partial<FetchResponse>) => {\n  (getBackendSrv as jest.Mock).mockReturnValueOnce({\n    fetch: (options: BackendSrvRequest) => {\n      return of(response as FetchResponse);\n    },\n  });\n};\n\ndescribe('Datasources / API', () => {\n  describe('getDataSourceByUid()', () => {\n    it('should resolve to the datasource object in case it is fetched using a UID', async () => {\n      const response = {\n        "
+      },
+      {
+        "file": "public/app/features/datasources/types.ts",
+        "start_line": 1,
+        "end_line": 21,
+        "similarity": 0.7183,
+        "related_to": "public/app/features/datasources/api.ts",
+        "content_preview": "import { DataQuery, DataSourceApi, DataSourceJsonData, DataSourcePlugin } from '@grafana/data';\n\nimport { RelativeUrl } from '../alerting/unified/utils/url';\n\nexport type GenericDataSourcePlugin = DataSourcePlugin<DataSourceApi<DataQuery, DataSourceJsonData>>;\n\nexport type DataSourceRights = {\n  readOnly: boolean;\n  hasWriteRights: boolean;\n  hasDeleteRights: boolean;\n};\n\nexport type DataSourcesRoutes = {\n  New: RelativeUrl;\n  Edit: RelativeUrl;\n  List: RelativeUrl;\n  Dashboards: RelativeUrl;\n};\n\nexport type DataSourceTestStatus = 'success' | 'warning' | 'error';\n"
+      },
+      {
+        "file": "pkg/registry/apis/collections/register.go",
+        "start_line": 1,
+        "end_line": 63,
+        "similarity": 0.7057,
+        "related_to": "pkg/registry/apis/datasource/register.go",
+        "content_preview": "package collections\n\nimport (\n\t\"fmt\"\n\n\tmetav1 \"k8s.io/apimachinery/pkg/apis/meta/v1\"\n\t\"k8s.io/apimachinery/pkg/runtime\"\n\t\"k8s.io/apimachinery/pkg/runtime/schema\"\n\t\"k8s.io/apiserver/pkg/authorization/authorizer\"\n\t\"k8s.io/apiserver/pkg/registry/rest\"\n\tgenericapiserver \"k8s.io/apiserver/pkg/server\"\n\t\"k8s.io/kube-openapi/pkg/common\"\n\t\"k8s.io/kube-openapi/pkg/spec3\"\n\t\"k8s.io/kube-openapi/pkg/validation/spec\"\n\n\tcollections \"github.com/grafana/grafana/apps/collections/pkg/apis/collections/v1alpha1\"\n\tgrafanaregistry \"github.com/grafana/grafana/pkg/apiserver/registry/generic\"\n\tgrafanarest \"github.com/grafana/grafana/pkg/apiserver/rest\"\n\t\"github.com/grafana/grafana/pkg/infra/db\"\n\t\"github.com/grafana/grafana/pkg/registry/apis/collections/legacy\"\n\t\"github.com/grafana/grafana/pkg/registry/apis/preferen"
+      },
+      {
+        "file": "pkg/registry/apis/datasource/openapi.go",
+        "start_line": 1,
+        "end_line": 63,
+        "similarity": 0.7041,
+        "related_to": "pkg/registry/apis/datasource/register.go",
+        "content_preview": "package datasource\n\nimport (\n\t\"fmt\"\n\n\t\"k8s.io/kube-openapi/pkg/spec3\"\n\t\"k8s.io/kube-openapi/pkg/validation/spec\"\n\n\t\"github.com/grafana/grafana/pkg/registry/apis/query/queryschema\"\n)\n\nfunc (b *DataSourceAPIBuilder) PostProcessOpenAPI(oas *spec3.OpenAPI) (*spec3.OpenAPI, error) {\n\t// The plugin description\n\toas.Info.Description = b.pluginJSON.Info.Description\n\n\t// Add plugin information\n\tinfo := map[string]any{\n\t\t\"id\": b.pluginJSON.ID,\n\t}\n\tif b.pluginJSON.Info.Version != \"\" {\n\t\tinfo[\"version\"] = b.pluginJSON.Info.Version\n\t}\n\tif b.pluginJSON.Info.Build.Time > 0 {\n\t\tinfo[\"build\"] = b.pluginJSON.Info.Build.Time\n\t}\n\toas.Info.AddExtension(\"x-grafana-plugin\", info)\n\n\t// The root api URL\n\troot := \"/apis/\" + b.datasourceResourceInfo.GroupVersion().String() + \"/\"\n\n\t// Add queries to the request prope"
+      },
+      {
+        "file": "pkg/registry/apis/preferences/register.go",
+        "start_line": 1,
+        "end_line": 67,
+        "similarity": 0.694,
+        "related_to": "pkg/registry/apis/datasource/register.go",
+        "content_preview": "package preferences\n\nimport (\n\t\"context\"\n\t\"fmt\"\n\n\tapierrors \"k8s.io/apimachinery/pkg/api/errors\"\n\tmetav1 \"k8s.io/apimachinery/pkg/apis/meta/v1\"\n\t\"k8s.io/apimachinery/pkg/runtime\"\n\t\"k8s.io/apimachinery/pkg/runtime/schema\"\n\t\"k8s.io/apiserver/pkg/admission\"\n\t\"k8s.io/apiserver/pkg/authorization/authorizer\"\n\t\"k8s.io/apiserver/pkg/registry/rest\"\n\tgenericapiserver \"k8s.io/apiserver/pkg/server\"\n\t\"k8s.io/kube-openapi/pkg/common\"\n\t\"k8s.io/kube-openapi/pkg/validation/spec\"\n\n\tpreferences \"github.com/grafana/grafana/apps/preferences/pkg/apis/preferences/v1alpha1\"\n\t\"github.com/grafana/grafana/pkg/infra/db\"\n\t\"github.com/grafana/grafana/pkg/registry/apis/preferences/legacy\"\n\t\"github.com/grafana/grafana/pkg/registry/apis/preferences/utils\"\n\t\"github.com/grafana/grafana/pkg/services/apiserver/builder\"\n\t\"gith"
+      }
+    ]
+  }
+}

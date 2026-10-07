@@ -1,0 +1,57 @@
+{
+  "candidate_mentions": [
+    {
+      "basename_collision": false,
+      "end": 601,
+      "evidence_id": "M002",
+      "excerpt": "t in unhandled edge cases.\n\n## Evidence\n- `packages/grafana-data/src/field/fieldState.ts:109`: The function signature has changed, but dependent files such as `processDataFrame.ts` and `fieldDisplay.ts` have not been updated to pass the new `requiredCtx` parameter.\n- `packages/grafana-data/src/field/fieldState.test.ts`: Existing tests do not cover scenarios involving the new `requiredCtx` parameter.\n\n## Impact\n- **Technical Impact:** T",
+      "finding_passage_id": "P007",
+      "match_kind": "basename",
+      "match_text": "processDataFrame.ts",
+      "oracle_path": "packages/grafana-data/src/dataframe/processDataFrame.ts",
+      "start": 582
+    },
+    {
+      "basename_collision": false,
+      "end": 623,
+      "evidence_id": "M003",
+      "excerpt": "\n\n## Evidence\n- `packages/grafana-data/src/field/fieldState.ts:109`: The function signature has changed, but dependent files such as `processDataFrame.ts` and `fieldDisplay.ts` have not been updated to pass the new `requiredCtx` parameter.\n- `packages/grafana-data/src/field/fieldState.test.ts`: Existing tests do not cover scenarios involving the new `requiredCtx` parameter.\n\n## Impact\n- **Technical Impact:** The changes could cause",
+      "finding_passage_id": "P007",
+      "match_kind": "basename",
+      "match_text": "fieldDisplay.ts",
+      "oracle_path": "packages/grafana-data/src/field/fieldDisplay.ts",
+      "start": 608
+    },
+    {
+      "basename_collision": false,
+      "end": 741,
+      "evidence_id": "M005",
+      "excerpt": "ignature has changed, but dependent files such as `processDataFrame.ts` and `fieldDisplay.ts` have not been updated to pass the new `requiredCtx` parameter.\n- `packages/grafana-data/src/field/fieldState.test.ts`: Existing tests do not cover scenarios involving the new `requiredCtx` parameter.\n\n## Impact\n- **Technical Impact:** The changes could cause runtime errors in any module that calls `getFieldDisplayName` without the updated parameter, potentially breaking fun",
+      "finding_passage_id": "P008",
+      "match_kind": "full_path",
+      "match_text": "packages/grafana-data/src/field/fieldState.test.ts",
+      "oracle_path": "packages/grafana-data/src/field/fieldState.test.ts",
+      "start": 691
+    }
+  ],
+  "causal_passage_id": "P010",
+  "decision_source": "llm_causal_adjudication",
+  "detected": true,
+  "evidence_id": "M002",
+  "evidence_id_normalized": false,
+  "executed_at_utc": "2026-09-19T15:45:34.744384+00:00",
+  "finding_passage_id": "P007",
+  "judge": "deepseek:deepseek-v4-pro",
+  "manifest_sha256": "5d4371a93d1b09f0491ecc12279f9f3ff5de23053b7a5e74650a749f58b472b0",
+  "model_alias": "deepseek:deepseek-v4-pro",
+  "model_evidence_id": "M002",
+  "model_snapshot": "unavailable-from-original-wrapper",
+  "original_verdict": null,
+  "prompt_sha256": "892f69a55c87a8531f57e937720ddd203b2d950635753c9f5307407c17287846",
+  "reason_code": "specific_cross_file_link",
+  "response_wrapper": "bare",
+  "review_sha256": "b2c9fb83d628e7792b11fb40aa88d756a4f4d90a8978c20e340c2ef6e1a8de8b",
+  "schema_sha256": "f70f714868ecd3d25508bb3e00b32ecbe6761b0ebc05f454ee10fa4d28efd013",
+  "schema_version": "exp2-adjudication-v3",
+  "system_sha256": "030b5e701c798b32afdabbbeb22db38f664db8c8fd8b862d2fcb98df63b6fb6b"
+}

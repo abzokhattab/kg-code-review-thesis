@@ -1,0 +1,176 @@
+{
+  "pr": {
+    "number": 119349,
+    "title": "Add undo/redo support for Pilot Mode camera movement",
+    "body": "<!--\r\nPlease target the `master` branch. We will take care of backporting relevant fixes to older versions.\r\n\r\nBefore submitting, please read our checklist for new contributors:\r\nhttps://contributing.godotengine.org/en/latest/engine/introduction.html#checklist-for-new-contributors\r\n-->\r\n\r\n* Addresses issue brought up for feature added to v4.7: https://github.com/godotengine/godot/pull/109945#issuecomment-4397492373\r\n\r\n**Note:** The camera transform is committed to the undo/redo manager after 500ms to allow for multiple movement in short sequence without spamming.\r\n\r\nhttps://github.com/user-attachments/assets/7370575d-a179-48cf-8945-1c915462abca\r\n\r\n\r\n",
+    "url": "https://github.com/godotengine/godot/pull/119349",
+    "repo": "godotengine/godot",
+    "base_branch": "master",
+    "head_branch": "camera-pilot-undo",
+    "merged_at": "2026-05-11T16:12:55Z",
+    "state": "MERGED"
+  },
+  "changed_files": [
+    {
+      "path": "editor/scene/3d/node_3d_editor_plugin.cpp",
+      "language": "cpp",
+      "added": 53,
+      "deleted": 0
+    },
+    {
+      "path": "editor/scene/3d/node_3d_editor_plugin.h",
+      "language": "cpp",
+      "added": 8,
+      "deleted": 0
+    }
+  ],
+  "nearest_tests": [],
+  "dependent_files": [],
+  "diff_summary": "2 files changed",
+  "full_diff": "diff --git a/editor/scene/3d/node_3d_editor_plugin.cpp b/editor/scene/3d/node_3d_editor_plugin.cpp\nindex 050315d1da1a..bba5036d83bf 100644\n--- a/editor/scene/3d/node_3d_editor_plugin.cpp\n+++ b/editor/scene/3d/node_3d_editor_plugin.cpp\n@@ -3039,7 +3039,9 @@ void Node3DEditorViewport::_cursor_interpolated() {\n \tlast_camera_transform = view_3d_controller->interp_to_camera_transform();\n \n \tif (previewing_camera && previewing && pilot_preview_enabled) {\n+\t\t_pilot_ensure_undo_session();\n \t\tpreviewing->set_global_transform(last_camera_transform);\n+\t\tpilot_undo_idle_time = 0.0;\n \t} else if (!previewing_camera) {\n \t\tcamera->set_global_transform(last_camera_transform);\n \t}\n@@ -3072,6 +3074,45 @@ void Node3DEditorViewport::_freelook_changed() {\n \tspatial_editor->set_freelook_viewport(view_3d_controller->is_freelook_enabled() ? this : nullptr);\n }\n \n+void Node3DEditorViewport::_pilot_ensure_undo_session() {\n+\tif (pilot_undo_session_active || !previewing) {\n+\t\treturn;\n+\t}\n+\tpilot_undo_initial_transform = previewing->get_global_transform();\n+\tpilot_undo_session_active = true;\n+\tpilot_undo_idle_time = 0.0;\n+}\n+\n+void Node3DEditorViewport::_pilot_commit_undo_session() {\n+\tif (!pilot_undo_session_active) {\n+\t\treturn;\n+\t}\n+\tpilot_undo_session_active = false;\n+\tpilot_undo_idle_time = 0.0;\n+\tif (!previewing) {\n+\t\treturn;\n+\t}\n+\tconst Transform3D current_transform = previewing->get_global_transform();\n+\tif (current_transform.is_equal_approx(pilot_undo_initial_transform)) {\n+\t\treturn;\n+\t}\n+\tEditorUndoRedoManager *undo_redo = EditorUndoRedoManager::get_singleton();\n+\tundo_redo->create_action(vformat(TTR(\"Move Camera \\\"%s\\\"\"), previewing->get_name()), UndoRedo::MERGE_ENDS);\n+\tundo_redo->add_do_method(previewing, \"set_global_transform\", current_transform);\n+\tundo_redo->add_undo_method(previewing, \"set_global_transform\", pilot_undo_initial_transform);\n+\tundo_redo->commit_action(false);\n+}\n+\n+void Node3DEditorViewport::_pilot_tick_undo_session(real_t p_delta) {\n+\tif (!pilot_undo_session_active) {\n+\t\treturn;\n+\t}\n+\tpilot_undo_idle_time += p_delta;\n+\tif (pilot_undo_idle_time > 0.15) {\n+\t\t_pilot_commit_undo_session();\n+\t}\n+}\n+\n void Node3DEditorViewport::_freelook_speed_scaled() {\n \tzoom_indicator_delay = ZOOM_FREELOOK_INDICATOR_DELAY_S;\n \tsurface->queue_redraw();\n@@ -3244,6 +3285,7 @@ void Node3DEditorViewport::_notification(int p_what) {\n \t\t\t\t_update_name();\n \t\t\t} else {\n \t\t\t\tview_3d_controller->set_freelook_enabled(false);\n+\t\t\t\t_pilot_commit_undo_session();\n \t\t\t}\n \t\t\tcallable_mp(this, &Node3DEditorViewport::update_transform_gizmo_view).call_deferred();\n \t\t} break;\n@@ -3570,6 +3612,7 @@ void Node3DEditorViewport::_notification(int p_what) {\n \t\t\t\tif (cam != nullptr && cam != previewing) {\n \t\t\t\t\t//then switch the viewport's camera to the scene's viewport camera\n \t\t\t\t\tif (previewing != nullptr) {\n+\t\t\t\t\t\t_pilot_commit_undo_session();\n \t\t\t\t\t\tpreviewing->disconnect(SceneStringName(tree_exited), callable_mp(this, &Node3DEditorViewport::_preview_exited_scene));\n \t\t\t\t\t\tpreviewing->disconnect(CoreStringName(property_list_changed), callable_mp(this, &Node3DEditorViewport::_preview_camera_property_changed));\n \t\t\t\t\t}\n@@ -3583,12 +3626,16 @@ void Node3DEditorViewport::_notification(int p_what) {\n \n \t\t\tif (_camera_moved_externally()) {\n \t\t\t\t// If camera moved after this plugin last set it, presumably a tool script has moved it, accept the new camera transform as the cursor position.\n+\t\t\t\tpilot_undo_session_active = false;\n+\t\t\t\tpilot_undo_idle_time = 0.0;\n \t\t\t\t_apply_camera_transform_to_cursor();\n \t\t\t\tview_3d_controller->update_camera();\n \t\t\t} else {\n \t\t\t\tview_3d_controller->update_camera(delta);\n \t\t\t}\n \n+\t\t\t_pilot_tick_undo_session(delta);\n+\n \t\t\tconst HashMap<ObjectID, Object *> &selection = editor_selection->get_selection();\n \n \t\t\tbool changed = false;\n@@ -4856,6 +4903,7 @@ void Node3DEditorViewport::_toggle_camera_preview(bool p_activate) {\n \t_update_navigation_controls_visibility();\n \n \tif (!p_activate) {\n+\t\t_pilot_commit_undo_session();\n \t\tpreviewing->disconnect(SceneStringName(tree_exiting), callable_mp(this, &Node3DEditorViewport::_preview_exited_scene));\n \t\tpreviewing->disconnect(CoreStringName(property_list_changed), callable_mp(this, &Node3DEditorViewport::_preview_camera_property_changed));\n \t\tpreviewing = nullptr;\n@@ -4893,6 +4941,9 @@ void Node3DEditorViewport::_toggle_camera_preview(bool p_activate) {\n }\n \n void Node3DEditorViewport::_toggle_pilot_preview(bool p_activate) {\n+\tif (!p_activate) {\n+\t\t_pilot_commit_undo_session();\n+\t}\n \tpilot_preview_enabled = p_activate;\n \tif (p_activate && previewing) {\n \t\t_sync_cursor_from_transform(previewing->get_global_transform());\n@@ -4956,6 +5007,8 @@ void Node3DEditorViewport::switch_preview_camera(Camera3D *p_new_camera) {\n \t\treturn;\n \t}\n \n+\t_pilot_commit_undo_session();\n+\n \tpreviewing->disconnect(SceneStringName(tree_exiting), callable_mp(this, &Node3DEditorViewport::_preview_exited_scene));\n \tpreviewing->disconnect(CoreStringName(property_list_changed), callable_mp(this, &Node3DEditorViewport::_preview_camera_property_changed));\n \ndiff --git a/editor/scene/3d/node_3d_editor_plugin.h b/editor/scene/3d/node_3d_editor_plugin.h\nindex 5e7310922fd6..cc33c5d2b861 100644\n--- a/editor/scene/3d/node_3d_editor_plugin.h\n+++ b/editor/scene/3d/node_3d_editor_plugin.h\n@@ -438,6 +438,14 @@ class Node3DEditorViewport : public Control {\n \tbool previewing_cinema = false;\n \tint times_focused_consecutively = 0;\n \tbool pilot_preview_enabled = false;\n+\n+\tbool pilot_undo_session_active = false;\n+\treal_t pilot_undo_idle_time = 0.0;\n+\tTransform3D pilot_undo_initial_transform;\n+\tvoid _pilot_ensure_undo_session();\n+\tvoid _pilot_commit_undo_session();\n+\tvoid _pilot_tick_undo_session(real_t p_delta);\n+\n \tbool _is_node_locked(const Node *p_node) const;\n \tvoid _preview_exited_scene();\n \tvoid _preview_camera_property_changed();\n",
+  "metadata": {
+    "v2_fetcher_version": 1,
+    "v2_fetched_at_unix": 1778582797,
+    "v2_diff_cap_bytes": 50000,
+    "v2_body_cap_bytes": 8000,
+    "v2_diff_truncated": false,
+    "v2_raw_diff_chars": 5816,
+    "v2_raw_body_chars": 658,
+    "v2_rag_source": "fresh_for_v2_40pr_expansion",
+    "v2_rag_chunks_copied": 8
+  },
+  "similar_chunks": [
+    {
+      "file": "editor/scene/3d/mesh_instance_3d_editor_plugin.h",
+      "start_line": 24,
+      "end_line": 99,
+      "similarity": 0.8423,
+      "related_to": "editor/scene/3d/node_3d_editor_plugin.h",
+      "content_preview": "OR A PARTICULAR PURPOSE AND NONINFRINGEMENT. */\n/* IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY   */\n/* CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,   */\n/* TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE      */\n/* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */\n/**************************************************************************/\n\n#pragma once\n\n#include \"editor/plugins/editor_plugin.h\"\n#include \"scene/3d/mesh_instance_3d.h\"\n#include \"scene/gui/option_button.h\"\n\nclass AcceptDialog;\nclass AspectRatioContainer;\nclass ConfirmationDialog;\nclass MenuButton;\nclass SpinBox;\n\nclass MeshInstance3DEditor : public Control {\n\tGDCLASS(MeshInstance3DEditor, Control);\n\n\tenum Menu {\n\t\tMENU_OPTION_CREATE_COL"
+    },
+    {
+      "file": "editor/scene/2d/sprite_2d_editor_plugin.h",
+      "start_line": 24,
+      "end_line": 97,
+      "similarity": 0.8216,
+      "related_to": "editor/scene/3d/node_3d_editor_plugin.h",
+      "content_preview": "OR A PARTICULAR PURPOSE AND NONINFRINGEMENT. */\n/* IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY   */\n/* CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,   */\n/* TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE      */\n/* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */\n/**************************************************************************/\n\n#pragma once\n\n#include \"editor/plugins/editor_plugin.h\"\n#include \"scene/2d/sprite_2d.h\"\n#include \"scene/gui/spin_box.h\"\n\nclass AcceptDialog;\nclass Button;\nclass ConfirmationDialog;\nclass EditorZoomWidget;\nclass HBoxContainer;\nclass MenuButton;\nclass Panel;\nclass ViewPanner;\n\nclass Sprite2DEditor : public Control {\n\tGDCLASS(Sprite2DEditor, Control);\n\n\tenum Menu {\n\t"
+    },
+    {
+      "file": "editor/scene/3d/node_3d_editor_gizmos.cpp",
+      "start_line": 1,
+      "end_line": 26,
+      "similarity": 0.8177,
+      "related_to": "editor/scene/3d/node_3d_editor_plugin.cpp",
+      "content_preview": "/**************************************************************************/\n/*  node_3d_editor_gizmos.cpp                                             */\n/**************************************************************************/\n/*                         This file is part of:                          */\n/*                             GODOT ENGINE                               */\n/*                        https://godotengine.org                         */\n/**************************************************************************/\n/* Copyright (c) 2014-present Godot Engine contributors (see AUTHORS.md). */\n/* Copyright (c) 2007-2014 Juan Linietsky, Ariel Manzur.                  */\n/*                                                                        */\n/* Permission is hereby grante"
+    },
+    {
+      "file": "editor/scene/canvas_item_editor_plugin.h",
+      "start_line": 24,
+      "end_line": 115,
+      "similarity": 0.8149,
+      "related_to": "editor/scene/3d/node_3d_editor_plugin.h",
+      "content_preview": "OR A PARTICULAR PURPOSE AND NONINFRINGEMENT. */\n/* IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY   */\n/* CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,   */\n/* TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE      */\n/* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */\n/**************************************************************************/\n\n#pragma once\n\n#include \"editor/plugins/editor_plugin.h\"\n#include \"scene/gui/box_container.h\"\n\nclass AcceptDialog;\nclass Button;\nclass ButtonGroup;\nclass CanvasItemEditorViewport;\nclass ConfirmationDialog;\nclass EditorData;\nclass EditorSelection;\nclass EditorZoomWidget;\nclass HScrollBar;\nclass HSplitContainer;\nclass MenuButton;\nclass PanelContainer;\nclass StyleBoxT"
+    },
+    {
+      "file": "editor/scene/canvas_item_editor_plugin.cpp",
+      "start_line": 24,
+      "end_line": 69,
+      "similarity": 0.8133,
+      "related_to": "editor/scene/3d/node_3d_editor_plugin.cpp",
+      "content_preview": "OR A PARTICULAR PURPOSE AND NONINFRINGEMENT. */\n/* IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY   */\n/* CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,   */\n/* TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE      */\n/* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */\n/**************************************************************************/\n\n#include \"canvas_item_editor_plugin.h\"\n\n#include \"core/config/project_settings.h\"\n#include \"core/input/input.h\"\n#include \"core/os/keyboard.h\"\n#include \"core/string/translation_server.h\"\n#include \"editor/animation/animation_player_editor_plugin.h\"\n#include \"editor/debugger/editor_debugger_node.h\"\n#include \"editor/docks/scene_tree_dock.h\"\n#include \"editor/editor_mai"
+    },
+    {
+      "file": "editor/scene/3d/multimesh_editor_plugin.h",
+      "start_line": 24,
+      "end_line": 95,
+      "similarity": 0.804,
+      "related_to": "editor/scene/3d/node_3d_editor_plugin.h",
+      "content_preview": "OR A PARTICULAR PURPOSE AND NONINFRINGEMENT. */\n/* IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY   */\n/* CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,   */\n/* TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE      */\n/* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */\n/**************************************************************************/\n\n#pragma once\n\n#include \"editor/plugins/editor_plugin.h\"\n#include \"scene/3d/multimesh_instance_3d.h\"\n#include \"scene/gui/slider.h\"\n#include \"scene/gui/spin_box.h\"\n\nclass AcceptDialog;\nclass ConfirmationDialog;\nclass MenuButton;\nclass OptionButton;\nclass SceneTreeDialog;\n\nclass MultiMeshEditor : public Control {\n\tGDCLASS(MultiMeshEditor, Control);\n\n\tfriend class Mul"
+    },
+    {
+      "file": "editor/scene/3d/path_3d_editor_plugin.h",
+      "start_line": 24,
+      "end_line": 83,
+      "similarity": 0.8009,
+      "related_to": "editor/scene/3d/node_3d_editor_plugin.h",
+      "content_preview": "OR A PARTICULAR PURPOSE AND NONINFRINGEMENT. */\n/* IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY   */\n/* CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,   */\n/* TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE      */\n/* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */\n/**************************************************************************/\n\n#pragma once\n\n#include \"editor/plugins/editor_plugin.h\"\n#include \"editor/scene/3d/node_3d_editor_gizmos.h\"\n#include \"scene/3d/camera_3d.h\"\n#include \"scene/3d/path_3d.h\"\n\nclass HBoxContainer;\nclass MenuButton;\nclass ConfirmationDialog;\n\nclass Path3DGizmo : public EditorNode3DGizmo {\n\tGDCLASS(Path3DGizmo, EditorNode3DGizmo);\n\n\t// Map handle id to control point id an"
+    },
+    {
+      "file": "editor/scene/3d/node_3d_editor_gizmos.h",
+      "start_line": 1,
+      "end_line": 26,
+      "similarity": 0.7988,
+      "related_to": "editor/scene/3d/node_3d_editor_plugin.cpp",
+      "content_preview": "/**************************************************************************/\n/*  node_3d_editor_gizmos.h                                               */\n/**************************************************************************/\n/*                         This file is part of:                          */\n/*                             GODOT ENGINE                               */\n/*                        https://godotengine.org                         */\n/**************************************************************************/\n/* Copyright (c) 2014-present Godot Engine contributors (see AUTHORS.md). */\n/* Copyright (c) 2007-2014 Juan Linietsky, Ariel Manzur.                  */\n/*                                                                        */\n/* Permission is hereby grante"
+    }
+  ],
+  "rag_evidence": {
+    "similar_code": [
+      {
+        "file": "editor/scene/3d/mesh_instance_3d_editor_plugin.h",
+        "start_line": 24,
+        "end_line": 99,
+        "similarity": 0.8423,
+        "related_to": "editor/scene/3d/node_3d_editor_plugin.h",
+        "content_preview": "OR A PARTICULAR PURPOSE AND NONINFRINGEMENT. */\n/* IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY   */\n/* CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,   */\n/* TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE      */\n/* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */\n/**************************************************************************/\n\n#pragma once\n\n#include \"editor/plugins/editor_plugin.h\"\n#include \"scene/3d/mesh_instance_3d.h\"\n#include \"scene/gui/option_button.h\"\n\nclass AcceptDialog;\nclass AspectRatioContainer;\nclass ConfirmationDialog;\nclass MenuButton;\nclass SpinBox;\n\nclass MeshInstance3DEditor : public Control {\n\tGDCLASS(MeshInstance3DEditor, Control);\n\n\tenum Menu {\n\t\tMENU_OPTION_CREATE_COL"
+      },
+      {
+        "file": "editor/scene/2d/sprite_2d_editor_plugin.h",
+        "start_line": 24,
+        "end_line": 97,
+        "similarity": 0.8216,
+        "related_to": "editor/scene/3d/node_3d_editor_plugin.h",
+        "content_preview": "OR A PARTICULAR PURPOSE AND NONINFRINGEMENT. */\n/* IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY   */\n/* CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,   */\n/* TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE      */\n/* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */\n/**************************************************************************/\n\n#pragma once\n\n#include \"editor/plugins/editor_plugin.h\"\n#include \"scene/2d/sprite_2d.h\"\n#include \"scene/gui/spin_box.h\"\n\nclass AcceptDialog;\nclass Button;\nclass ConfirmationDialog;\nclass EditorZoomWidget;\nclass HBoxContainer;\nclass MenuButton;\nclass Panel;\nclass ViewPanner;\n\nclass Sprite2DEditor : public Control {\n\tGDCLASS(Sprite2DEditor, Control);\n\n\tenum Menu {\n\t"
+      },
+      {
+        "file": "editor/scene/3d/node_3d_editor_gizmos.cpp",
+        "start_line": 1,
+        "end_line": 26,
+        "similarity": 0.8177,
+        "related_to": "editor/scene/3d/node_3d_editor_plugin.cpp",
+        "content_preview": "/**************************************************************************/\n/*  node_3d_editor_gizmos.cpp                                             */\n/**************************************************************************/\n/*                         This file is part of:                          */\n/*                             GODOT ENGINE                               */\n/*                        https://godotengine.org                         */\n/**************************************************************************/\n/* Copyright (c) 2014-present Godot Engine contributors (see AUTHORS.md). */\n/* Copyright (c) 2007-2014 Juan Linietsky, Ariel Manzur.                  */\n/*                                                                        */\n/* Permission is hereby grante"
+      },
+      {
+        "file": "editor/scene/canvas_item_editor_plugin.h",
+        "start_line": 24,
+        "end_line": 115,
+        "similarity": 0.8149,
+        "related_to": "editor/scene/3d/node_3d_editor_plugin.h",
+        "content_preview": "OR A PARTICULAR PURPOSE AND NONINFRINGEMENT. */\n/* IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY   */\n/* CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,   */\n/* TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE      */\n/* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */\n/**************************************************************************/\n\n#pragma once\n\n#include \"editor/plugins/editor_plugin.h\"\n#include \"scene/gui/box_container.h\"\n\nclass AcceptDialog;\nclass Button;\nclass ButtonGroup;\nclass CanvasItemEditorViewport;\nclass ConfirmationDialog;\nclass EditorData;\nclass EditorSelection;\nclass EditorZoomWidget;\nclass HScrollBar;\nclass HSplitContainer;\nclass MenuButton;\nclass PanelContainer;\nclass StyleBoxT"
+      },
+      {
+        "file": "editor/scene/canvas_item_editor_plugin.cpp",
+        "start_line": 24,
+        "end_line": 69,
+        "similarity": 0.8133,
+        "related_to": "editor/scene/3d/node_3d_editor_plugin.cpp",
+        "content_preview": "OR A PARTICULAR PURPOSE AND NONINFRINGEMENT. */\n/* IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY   */\n/* CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,   */\n/* TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE      */\n/* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */\n/**************************************************************************/\n\n#include \"canvas_item_editor_plugin.h\"\n\n#include \"core/config/project_settings.h\"\n#include \"core/input/input.h\"\n#include \"core/os/keyboard.h\"\n#include \"core/string/translation_server.h\"\n#include \"editor/animation/animation_player_editor_plugin.h\"\n#include \"editor/debugger/editor_debugger_node.h\"\n#include \"editor/docks/scene_tree_dock.h\"\n#include \"editor/editor_mai"
+      },
+      {
+        "file": "editor/scene/3d/multimesh_editor_plugin.h",
+        "start_line": 24,
+        "end_line": 95,
+        "similarity": 0.804,
+        "related_to": "editor/scene/3d/node_3d_editor_plugin.h",
+        "content_preview": "OR A PARTICULAR PURPOSE AND NONINFRINGEMENT. */\n/* IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY   */\n/* CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,   */\n/* TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE      */\n/* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */\n/**************************************************************************/\n\n#pragma once\n\n#include \"editor/plugins/editor_plugin.h\"\n#include \"scene/3d/multimesh_instance_3d.h\"\n#include \"scene/gui/slider.h\"\n#include \"scene/gui/spin_box.h\"\n\nclass AcceptDialog;\nclass ConfirmationDialog;\nclass MenuButton;\nclass OptionButton;\nclass SceneTreeDialog;\n\nclass MultiMeshEditor : public Control {\n\tGDCLASS(MultiMeshEditor, Control);\n\n\tfriend class Mul"
+      },
+      {
+        "file": "editor/scene/3d/path_3d_editor_plugin.h",
+        "start_line": 24,
+        "end_line": 83,
+        "similarity": 0.8009,
+        "related_to": "editor/scene/3d/node_3d_editor_plugin.h",
+        "content_preview": "OR A PARTICULAR PURPOSE AND NONINFRINGEMENT. */\n/* IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY   */\n/* CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,   */\n/* TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE      */\n/* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */\n/**************************************************************************/\n\n#pragma once\n\n#include \"editor/plugins/editor_plugin.h\"\n#include \"editor/scene/3d/node_3d_editor_gizmos.h\"\n#include \"scene/3d/camera_3d.h\"\n#include \"scene/3d/path_3d.h\"\n\nclass HBoxContainer;\nclass MenuButton;\nclass ConfirmationDialog;\n\nclass Path3DGizmo : public EditorNode3DGizmo {\n\tGDCLASS(Path3DGizmo, EditorNode3DGizmo);\n\n\t// Map handle id to control point id an"
+      },
+      {
+        "file": "editor/scene/3d/node_3d_editor_gizmos.h",
+        "start_line": 1,
+        "end_line": 26,
+        "similarity": 0.7988,
+        "related_to": "editor/scene/3d/node_3d_editor_plugin.cpp",
+        "content_preview": "/**************************************************************************/\n/*  node_3d_editor_gizmos.h                                               */\n/**************************************************************************/\n/*                         This file is part of:                          */\n/*                             GODOT ENGINE                               */\n/*                        https://godotengine.org                         */\n/**************************************************************************/\n/* Copyright (c) 2014-present Godot Engine contributors (see AUTHORS.md). */\n/* Copyright (c) 2007-2014 Juan Linietsky, Ariel Manzur.                  */\n/*                                                                        */\n/* Permission is hereby grante"
+      }
+    ]
+  }
+}

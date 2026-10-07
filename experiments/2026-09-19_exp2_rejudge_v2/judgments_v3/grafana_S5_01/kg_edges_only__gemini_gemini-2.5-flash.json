@@ -1,0 +1,66 @@
+{
+  "candidate_mentions": [
+    {
+      "basename_collision": false,
+      "end": 662,
+      "evidence_id": "M003",
+      "excerpt": "ckages/grafana-data/src/index.ts:180`: The `getDisplayProcessor` export is removed.\n- Call-graph indicates multiple dependencies on `getDisplayProcessor`:\n  - `packages/grafana-data/src/field/fieldDisplay.ts::createNoValuesFieldDisplay`\n  - `packages/grafana-data/src/field/fieldDisplay.ts::getFieldDisplayValues`\n  - `packages/grafana-data/src/field/fieldOverrides.ts::<lambda>1`\n  - `packages/grafana-data/src/field/getFieldDisplayValuesProxy.ts::get`\n  - `packages",
+      "finding_passage_id": "P009",
+      "match_kind": "full_path",
+      "match_text": "packages/grafana-data/src/field/fieldDisplay.ts",
+      "oracle_path": "packages/grafana-data/src/field/fieldDisplay.ts",
+      "start": 615
+    },
+    {
+      "basename_collision": false,
+      "end": 823,
+      "evidence_id": "M005",
+      "excerpt": "`packages/grafana-data/src/field/fieldDisplay.ts::createNoValuesFieldDisplay`\n  - `packages/grafana-data/src/field/fieldDisplay.ts::getFieldDisplayValues`\n  - `packages/grafana-data/src/field/fieldOverrides.ts::<lambda>1`\n  - `packages/grafana-data/src/field/getFieldDisplayValuesProxy.ts::get`\n  - `packages/grafana-data/src/transformations/transformers/histogram.ts::buildHistogram`\n  - `packages/grafana-data/src/transformations/transformers/histogram.ts::histogramF",
+      "finding_passage_id": "P011",
+      "match_kind": "full_path",
+      "match_text": "packages/grafana-data/src/field/fieldOverrides.ts",
+      "oracle_path": "packages/grafana-data/src/field/fieldOverrides.ts",
+      "start": 774
+    },
+    {
+      "basename_collision": false,
+      "end": 902,
+      "evidence_id": "M006",
+      "excerpt": "ldDisplay`\n  - `packages/grafana-data/src/field/fieldDisplay.ts::getFieldDisplayValues`\n  - `packages/grafana-data/src/field/fieldOverrides.ts::<lambda>1`\n  - `packages/grafana-data/src/field/getFieldDisplayValuesProxy.ts::get`\n  - `packages/grafana-data/src/transformations/transformers/histogram.ts::buildHistogram`\n  - `packages/grafana-data/src/transformations/transformers/histogram.ts::histogramFieldsToFrame`\n\n## Impact\nRemoving the export of `getDisplayProcessor` could lea",
+      "finding_passage_id": "P012",
+      "match_kind": "full_path",
+      "match_text": "packages/grafana-data/src/field/getFieldDisplayValuesProxy.ts",
+      "oracle_path": "packages/grafana-data/src/field/getFieldDisplayValuesProxy.ts",
+      "start": 841
+    },
+    {
+      "basename_collision": false,
+      "end": 981,
+      "evidence_id": "M007",
+      "excerpt": "DisplayValues`\n  - `packages/grafana-data/src/field/fieldOverrides.ts::<lambda>1`\n  - `packages/grafana-data/src/field/getFieldDisplayValuesProxy.ts::get`\n  - `packages/grafana-data/src/transformations/transformers/histogram.ts::buildHistogram`\n  - `packages/grafana-data/src/transformations/transformers/histogram.ts::histogramFieldsToFrame`\n\n## Impact\nRemoving the export of `getDisplayProcessor` could lead to runtime errors in modules that rely on this function. This could result in",
+      "finding_passage_id": "P013",
+      "match_kind": "full_path",
+      "match_text": "packages/grafana-data/src/transformations/transformers/histogram.ts",
+      "oracle_path": "packages/grafana-data/src/transformations/transformers/histogram.ts",
+      "start": 914
+    }
+  ],
+  "causal_passage_id": "P016",
+  "decision_source": "llm_causal_adjudication",
+  "detected": true,
+  "evidence_id": "M003",
+  "executed_at_utc": "2026-09-19T15:11:09.641903+00:00",
+  "finding_passage_id": "P009",
+  "judge": "gemini:gemini-2.5-flash",
+  "manifest_sha256": "5d4371a93d1b09f0491ecc12279f9f3ff5de23053b7a5e74650a749f58b472b0",
+  "model_alias": "gemini:gemini-2.5-flash",
+  "model_snapshot": "unavailable-from-original-wrapper",
+  "original_verdict": true,
+  "prompt_sha256": "5f5cd0bac357c683a28e51447409203ea1d4fc0d6f08715a997d28ac56bc8470",
+  "reason_code": "specific_cross_file_link",
+  "response_wrapper": "single_json_fence",
+  "review_sha256": "20584c25fc7fed30dc92581dc997808926137e928b3bb95d98048fa7701f20f6",
+  "schema_sha256": "f70f714868ecd3d25508bb3e00b32ecbe6761b0ebc05f454ee10fa4d28efd013",
+  "schema_version": "exp2-adjudication-v3",
+  "system_sha256": "030b5e701c798b32afdabbbeb22db38f664db8c8fd8b862d2fcb98df63b6fb6b"
+}

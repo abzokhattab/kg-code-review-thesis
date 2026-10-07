@@ -1,0 +1,41 @@
+{
+  "candidate_mentions": [
+    {
+      "basename_collision": false,
+      "end": 791,
+      "evidence_id": "M002",
+      "excerpt": "pendent modules.\n\n## Evidence\n- `sklearn/base.py:1348`: The return statement has been changed to return a tuple `(decorator, None)`.\n- Dependent files such as `sklearn/cluster/_agglomerative.py`, `sklearn/cluster/_optics.py`, etc., rely on `_fit_context` but do not show any changes to accommodate the new return type.\n\n## Impact\n- The change could lead to `TypeError` or unpacking errors in any dependent code that expects a single return value from `_",
+      "match_kind": "full_path",
+      "match_text": "sklearn/cluster/_agglomerative.py",
+      "oracle_path": "sklearn/cluster/_agglomerative.py",
+      "start": 758
+    },
+    {
+      "basename_collision": false,
+      "end": 821,
+      "evidence_id": "M010",
+      "excerpt": "arn/base.py:1348`: The return statement has been changed to return a tuple `(decorator, None)`.\n- Dependent files such as `sklearn/cluster/_agglomerative.py`, `sklearn/cluster/_optics.py`, etc., rely on `_fit_context` but do not show any changes to accommodate the new return type.\n\n## Impact\n- The change could lead to `TypeError` or unpacking errors in any dependent code that expects a single return value from `_fit_context`.\n- Without update",
+      "match_kind": "full_path",
+      "match_text": "sklearn/cluster/_optics.py",
+      "oracle_path": "sklearn/cluster/_optics.py",
+      "start": 795
+    }
+  ],
+  "causal_quote": "The change could lead to `TypeError` or unpacking errors in any dependent code that expects a single return value from `_fit_context`.",
+  "decision_source": "llm_causal_adjudication",
+  "detected": true,
+  "evidence_id": "M002",
+  "executed_at_utc": "2026-09-19T15:04:25.303480+00:00",
+  "finding_quote": "Dependent files such as `sklearn/cluster/_agglomerative.py`, `sklearn/cluster/_optics.py`, etc., rely on `_fit_context` but do not show any changes to accommodate the new return type.",
+  "judge": "openai:gpt-4o",
+  "manifest_sha256": "5d4371a93d1b09f0491ecc12279f9f3ff5de23053b7a5e74650a749f58b472b0",
+  "model_alias": "openai:gpt-4o",
+  "model_snapshot": "unavailable-from-original-wrapper",
+  "original_verdict": true,
+  "prompt_sha256": "f20c4690f954f7369f260b3bbb1f433c10b2afec05b80b29fb7416ec49fa9e49",
+  "reason_code": "specific_cross_file_link",
+  "review_sha256": "ae53234908344a21e2fc841e98492da1fc17c5dab80b061079e772d11612bc1f",
+  "schema_sha256": "6a22fcb256437ebed904ab2d879b36be1234fb2e06add1127ac8ea2ab46f60f0",
+  "schema_version": "exp2-adjudication-v2",
+  "system_sha256": "3634314a8fc4231391e4c51174e5c32d7346b0e2ceb5f8c4641e6ba866bd5939"
+}

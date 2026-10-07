@@ -1,0 +1,46 @@
+{
+  "candidate_mentions": [
+    {
+      "basename_collision": false,
+      "end": 553,
+      "evidence_id": "M002",
+      "excerpt": "mport or use `BaseEstimator`.\n\n## Evidence\n- `sklearn/base.py:156`: The class `BaseEstimator` is renamed to `BaseEstimatorInternal`.\n- Dependent files such as `sklearn/cluster/_agglomerative.py`, `sklearn/cluster/_optics.py`, etc., are not updated to reflect this name change.\n\n## Impact\n- The renaming could lead to `ImportError` or `AttributeError` in modules that still reference `BaseEstimator`.\n- This change might cause runtime failures in any cod",
+      "finding_passage_id": "P008",
+      "match_kind": "full_path",
+      "match_text": "sklearn/cluster/_agglomerative.py",
+      "oracle_path": "sklearn/cluster/_agglomerative.py",
+      "start": 520
+    },
+    {
+      "basename_collision": false,
+      "end": 583,
+      "evidence_id": "M009",
+      "excerpt": "dence\n- `sklearn/base.py:156`: The class `BaseEstimator` is renamed to `BaseEstimatorInternal`.\n- Dependent files such as `sklearn/cluster/_agglomerative.py`, `sklearn/cluster/_optics.py`, etc., are not updated to reflect this name change.\n\n## Impact\n- The renaming could lead to `ImportError` or `AttributeError` in modules that still reference `BaseEstimator`.\n- This change might cause runtime failures in any code that dynamically checks for ",
+      "finding_passage_id": "P008",
+      "match_kind": "full_path",
+      "match_text": "sklearn/cluster/_optics.py",
+      "oracle_path": "sklearn/cluster/_optics.py",
+      "start": 557
+    }
+  ],
+  "causal_passage_id": "P010",
+  "decision_source": "llm_causal_adjudication",
+  "detected": true,
+  "evidence_id": "M002",
+  "evidence_id_normalized": false,
+  "executed_at_utc": "2026-09-19T15:36:53.717428+00:00",
+  "finding_passage_id": "P008",
+  "judge": "anthropic:claude-sonnet-4-5",
+  "manifest_sha256": "5d4371a93d1b09f0491ecc12279f9f3ff5de23053b7a5e74650a749f58b472b0",
+  "model_alias": "anthropic:claude-sonnet-4-5",
+  "model_evidence_id": "M002",
+  "model_snapshot": "unavailable-from-original-wrapper",
+  "original_verdict": null,
+  "prompt_sha256": "78fc8bed79d1c0d8dda3a9c7d6b269cfc7856ebc0e56335772e6765742492ba6",
+  "reason_code": "specific_cross_file_link",
+  "response_wrapper": "bare",
+  "review_sha256": "0ff8a201ddec325bf29b137ef6d42e191c7679d4971aa7d21d51484a3f7f74dc",
+  "schema_sha256": "f70f714868ecd3d25508bb3e00b32ecbe6761b0ebc05f454ee10fa4d28efd013",
+  "schema_version": "exp2-adjudication-v3",
+  "system_sha256": "030b5e701c798b32afdabbbeb22db38f664db8c8fd8b862d2fcb98df63b6fb6b"
+}

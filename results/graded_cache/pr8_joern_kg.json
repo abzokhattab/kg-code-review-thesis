@@ -1,0 +1,51 @@
+{
+  "pr_id": 8,
+  "mode": "joern_kg",
+  "mean_scores": {
+    "F3": 3.0,
+    "F4": 1.5,
+    "P1": 0.0,
+    "R2": 2.0,
+    "T3": 3.0
+  },
+  "mean_graded_total": 9.5,
+  "per_judge": [
+    {
+      "model": "gemini:gemini-2.5-flash",
+      "scores": {
+        "F3": 3,
+        "F4": 1,
+        "P1": 0,
+        "R2": 2,
+        "T3": 3
+      },
+      "evidence": {
+        "F3": "Names multiple specific callers or dependent components with file paths or function names, and explains the concrete integration risk for each: 'This could impact public/app/features/dashboard/containers/DashboardPage.tsx when rendering dashboards with AdHoc variables.' and 'This could affect any component consuming variable values, such as public/app/plugins/datasource/azuremonitor/components/ArgQueryEditor/ArgQueryEditor.tsx or public/app/plugins/datasource/cloudwatch/variables.test.ts if they",
+        "F4": "Generically warns that callers or API consumers may be affected, without specifics: 'Users might be confused about the purpose of allowCustomValue for AdHoc variables, potentially leading to incorrect configurations or unexpected filtering behavior.' and 'This scenario could lead to inconsistent UI behavior, data validation issues, or unexpected query generation if a user attempts to enter a custom value for a single-select variable.' While it points to potential issues, it does not explicitly i",
+        "P1": "No mention of performance.",
+        "R2": "Points to a specific function or block that is unnecessarily complex and suggests a concrete simplification: 'Re-evaluate if allowCustomValue is truly necessary or meaningful for AdHocVariableModel. If it is, add specific documentation... If not, remove it from AdHocVariableModel and its associated forms.'",
+        "T3": "Names multiple specific test file paths, references the exact test scenarios or functions within those files that need coverage, and explains what edge cases are currently missing: 'Add a dedicated test case in public/app/features/dashboard-scene/settings/variables/editors/AdHocFiltersVariableEditor.test.tsx and public/app/features/dashboard-scene/utils/variables.test.ts to explicitly verify the behavior of allowCustomValue for AdHoc variables, including scenarios where it's enabled and disabled"
+      },
+      "error": ""
+    },
+    {
+      "model": "gemini:gemini-2.5-pro",
+      "scores": {
+        "F3": 3,
+        "F4": 2,
+        "P1": 0,
+        "R2": 2,
+        "T3": 3
+      },
+      "evidence": {
+        "F3": "Names multiple specific callers or dependent components with file paths or function names, and explains the concrete integration risk for each. For example: 'This could impact `public/app/features/dashboard/containers/DashboardPage.tsx` when rendering dashboards with AdHoc variables.' and 'This could affect any component consuming variable values, such as `public/app/plugins/datasource/azuremonitor/components/ArgQueryEditor/ArgQueryEditor.tsx` or `public/app/plugins/datasource/cloudwatch/variabl",
+        "F4": "Identifies a specific caller expectation that could break: 'It's unclear how a single-value variable (`multi: false`) would behave if `allowCustomValue` is enabled... This scenario could lead to inconsistent UI behavior... if a user attempts to enter a custom value for a single-select variable. This could affect any component consuming variable values... if they rely on strict option lists.'",
+        "P1": "The review does not mention performance.",
+        "R2": "Points to a specific part of the model that is unnecessarily complex and suggests a concrete simplification: 'Re-evaluate if `allowCustomValue` is truly necessary or meaningful for `AdHocVariableModel`. If it is, add specific documentation... If not, remove it from `AdHocVariableModel` and its associated forms.'",
+        "T3": "Names multiple specific test file paths and explains the missing edge cases: 'Add a dedicated test case in `public/app/features/dashboard-scene/settings/variables/editors/AdHocFiltersVariableEditor.test.tsx` and `public/app/features/dashboard-scene/utils/variables.test.ts` to explicitly verify the behavior of `allowCustomValue` for AdHoc variables... Add a new test case in `public/app/features/dashboard-scene/settings/variables/components/QueryVariableForm.test.tsx`...'"
+      },
+      "error": ""
+    }
+  ],
+  "timestamp": "2026-06-01T18:57:27.743919+00:00"
+}

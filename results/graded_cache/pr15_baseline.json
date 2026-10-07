@@ -1,0 +1,51 @@
+{
+  "pr_id": 15,
+  "mode": "baseline",
+  "mean_scores": {
+    "F3": 1.5,
+    "F4": 0.0,
+    "P1": 0.0,
+    "R2": 0.0,
+    "T3": 0.0
+  },
+  "mean_graded_total": 1.5,
+  "per_judge": [
+    {
+      "model": "gemini:gemini-2.5-flash",
+      "scores": {
+        "F3": 0,
+        "F4": 0,
+        "P1": 0,
+        "R2": 0,
+        "T3": 0
+      },
+      "evidence": {
+        "F3": "The review points to `packages/grafana-ui/src/components/DateTimePickers/TimeRangePicker/CalendarHeader.tsx` as the location of the UI/UX change, but does not name any specific callers, modules, or dependent files that are affected by how the change integrates with them. The impact described is on the user experience of the component itself, not its integration with other components.",
+        "F4": "The review discusses 'Potential UI/UX Regression' and 'Localization Gaps' but makes no mention of breaking changes to API contracts or how dependent code might be affected by such changes.",
+        "P1": "The review does not contain any mention of performance concerns or potential inefficiencies in the changed code.",
+        "R2": "The review does not comment on the complexity of the code or suggest any simplifications to its structure.",
+        "T3": "The review recommends 'accessibility testing' and 'regression tests' but does not name any specific test files, test suites, or provide file paths for where tests should be added or updated."
+      },
+      "error": ""
+    },
+    {
+      "model": "gemini:gemini-2.5-pro",
+      "scores": {
+        "F3": 3,
+        "F4": 0,
+        "P1": 0,
+        "R2": 0,
+        "T3": 0
+      },
+      "evidence": {
+        "F3": "The review names multiple specific dependent localization files with paths and explains the concrete integration risk: 'Localization Gaps: - public/locales/de-DE/grafana.json: Line 1252, 1269 - public/locales/es-ES/grafana.json: Line 1255, 1275... Localization Impact: Missing translations can lead to inconsistent user experiences for non-English users, potentially causing confusion.'",
+        "F4": "The review does not mention any breaking changes or API contract violations. It discusses potential UI/UX regressions, but not in the context of breaking contracts for callers or dependent code.",
+        "P1": "The review makes no mention of performance.",
+        "R2": "The review does not comment on code complexity or suggest simplifications.",
+        "T3": "The review only makes generic recommendations for testing, such as 'Conduct thorough accessibility testing' and 'Perform regression tests,' without naming any specific test files."
+      },
+      "error": ""
+    }
+  ],
+  "timestamp": "2026-06-01T18:57:27.141912+00:00"
+}

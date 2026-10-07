@@ -1,0 +1,32 @@
+{
+  "candidate_mentions": [
+    {
+      "basename_collision": false,
+      "end": 605,
+      "evidence_id": "M001",
+      "excerpt": "val of `k_means` does not affect other parts of the codebase.\n\n## Evidence\n- `sklearn/cluster/__init__.py:21`: The line removing `k_means` from the exports.\n- `sklearn/cluster/_spectral.py`: This file calls `k_means` via the `__init__.py` import, which may be affected by this change.\n\n## Impact\n- The removal of `k_means` from the exports could lead to `ImportError` for users who rely on importing it directly from `sklearn.cluster`.\n- If the `k_",
+      "match_kind": "full_path",
+      "match_text": "sklearn/cluster/_spectral.py",
+      "oracle_path": "sklearn/cluster/_spectral.py",
+      "start": 577
+    }
+  ],
+  "causal_quote": "- `sklearn/cluster/_spectral.py`: This file calls `k_means` via the `__init__.py` import, which may be affected by this change.",
+  "decision_source": "llm_causal_adjudication",
+  "detected": true,
+  "evidence_id": "M001",
+  "executed_at_utc": "2026-09-19T15:06:24.250555+00:00",
+  "finding_quote": "- `sklearn/cluster/_spectral.py`: This file calls `k_means` via the `__init__.py` import, which may be affected by this change.",
+  "judge": "openai:gpt-4o",
+  "manifest_sha256": "5d4371a93d1b09f0491ecc12279f9f3ff5de23053b7a5e74650a749f58b472b0",
+  "model_alias": "openai:gpt-4o",
+  "model_snapshot": "unavailable-from-original-wrapper",
+  "original_verdict": true,
+  "prompt_sha256": "639db070f690763146660d0ab332a16fab65f9e2fc4c3919adf9c114d1125e42",
+  "reason_code": "specific_cross_file_link",
+  "response_wrapper": "bare",
+  "review_sha256": "e363c4a704843b0db807c3eb50c8436faa954dea548a9dea8348d6c80299a3ed",
+  "schema_sha256": "6a22fcb256437ebed904ab2d879b36be1234fb2e06add1127ac8ea2ab46f60f0",
+  "schema_version": "exp2-adjudication-v2",
+  "system_sha256": "3634314a8fc4231391e4c51174e5c32d7346b0e2ceb5f8c4641e6ba866bd5939"
+}

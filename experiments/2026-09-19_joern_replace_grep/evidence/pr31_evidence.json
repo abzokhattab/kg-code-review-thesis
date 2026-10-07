@@ -1,0 +1,589 @@
+{
+  "pr": {
+    "number": 33918,
+    "title": "FIX BayesianRidge and ARDRegression predict to center X before computing std",
+    "body": "#### Reference Issues/PRs\r\nFixes #33757\r\n\r\n#### What does this implement/fix? Explain your changes.\r\n\r\nWhen `BayesianRidge` and `ARDRegression` are fit with `fit_intercept=True` (default), features are centered by subtracting the mean. However, `predict(return_std=True)` was using the raw (uncentered) test features for variance computation, causing the model to report lowest uncertainty at the origin instead of near the training data.\r\n\r\nThe fix simply subtracts `self.X_offset_` from `X` before the variance calculation, matching what happens during training.\r\n\r\n#### Any other comments?\r\n\r\nOriginally the bug report was just for `BayesianRidge`, but when writing the non-regression test I noticed that it also applied to `ARDRegression`.",
+    "url": "https://github.com/scikit-learn/scikit-learn/pull/33918",
+    "repo": "scikit-learn/scikit-learn",
+    "base_branch": "main",
+    "head_branch": "fix/bayesian-ridge-variance",
+    "merged_at": "2026-05-04T12:02:08Z",
+    "state": "MERGED"
+  },
+  "changed_files": [
+    {
+      "path": "doc/whats_new/upcoming_changes/sklearn.linear_model/33918.fix.rst",
+      "language": "rst",
+      "added": 3,
+      "deleted": 0
+    },
+    {
+      "path": "sklearn/linear_model/_bayes.py",
+      "language": "python",
+      "added": 2,
+      "deleted": 0
+    },
+    {
+      "path": "sklearn/linear_model/tests/test_bayes.py",
+      "language": "python",
+      "added": 15,
+      "deleted": 0
+    }
+  ],
+  "nearest_tests": [
+    {
+      "path": "sklearn/tests/test_naive_bayes.py",
+      "relationship": "tests",
+      "source_file": "sklearn/linear_model/_bayes.py"
+    },
+    {
+      "path": "sklearn/linear_model/tests/test_bayes.py",
+      "relationship": "tests",
+      "source_file": "sklearn/linear_model/_bayes.py"
+    },
+    {
+      "path": "sklearn/mixture/tests/test_bayesian_mixture.py",
+      "relationship": "tests",
+      "source_file": "sklearn/linear_model/_bayes.py"
+    }
+  ],
+  "dependent_files": [
+    "_bayes.py",
+    "tests/test_bayes.py",
+    "tests/test_least_angle.py",
+    "tests/test_logistic.py",
+    "tests/test_ridge.py"
+  ],
+  "diff_summary": "3 files changed",
+  "full_diff": "diff --git a/doc/whats_new/upcoming_changes/sklearn.linear_model/33918.fix.rst b/doc/whats_new/upcoming_changes/sklearn.linear_model/33918.fix.rst\nnew file mode 100644\nindex 0000000000000..985b44181980f\n--- /dev/null\n+++ b/doc/whats_new/upcoming_changes/sklearn.linear_model/33918.fix.rst\n@@ -0,0 +1,3 @@\n+- :class:`linear_model.BayesianRidge` and :class:`linear_model.ARDRegression` now\n+  center test features during :meth:`predict` to correctly compute predictive variance.\n+  By :user:`Danilo Silva (danilo-silva-ufsc)`.\ndiff --git a/sklearn/linear_model/_bayes.py b/sklearn/linear_model/_bayes.py\nindex 966a8bf1cf39f..7ea22b05f1f5c 100644\n--- a/sklearn/linear_model/_bayes.py\n+++ b/sklearn/linear_model/_bayes.py\n@@ -397,6 +397,7 @@ def predict(self, X, return_std=False):\n         if not return_std:\n             return y_mean\n         else:\n+            X = X - self.X_offset_\n             sigmas_squared_data = (np.dot(X, self.sigma_) * X).sum(axis=1)\n             y_std = np.sqrt(sigmas_squared_data + (1.0 / self.alpha_))\n             return y_mean, y_std\n@@ -818,6 +819,7 @@ def predict(self, X, return_std=False):\n             return y_mean\n         else:\n             col_index = self.lambda_ < self.threshold_lambda\n+            X = X - self.X_offset_\n             X = _safe_indexing(X, indices=col_index, axis=1)\n             sigmas_squared_data = (np.dot(X, self.sigma_) * X).sum(axis=1)\n             y_std = np.sqrt(sigmas_squared_data + (1.0 / self.alpha_))\ndiff --git a/sklearn/linear_model/tests/test_bayes.py b/sklearn/linear_model/tests/test_bayes.py\nindex e44d1ebf46027..abb21decb9484 100644\n--- a/sklearn/linear_model/tests/test_bayes.py\n+++ b/sklearn/linear_model/tests/test_bayes.py\n@@ -185,6 +185,21 @@ def test_std_bayesian_ridge_ard_with_constant_input(global_random_seed):\n         assert_array_less(y_std, expected_upper_boundary)\n \n \n+@pytest.mark.parametrize(\"Estimator\", [BayesianRidge, ARDRegression])\n+def test_std_bayesian_ridge_noncentered(Estimator, global_random_seed):\n+    # Test BayesianRidge and ARDRegression std when data is not centered.\n+    # The std should be smallest at the center of the data, not at the origin.\n+    # Non-regression test for issue #33757\n+    rng = np.random.RandomState(global_random_seed)\n+    n_samples = 4\n+    X_train = np.linspace(80, 100, n_samples).reshape(-1, 1)\n+    y_train = X_train.reshape(-1) + 10 * rng.standard_normal(n_samples)\n+    model = Estimator(fit_intercept=True).fit(X_train, y_train)\n+    X = np.array([[0.0], [90.0]])\n+    _, y_std = model.predict(X, return_std=True)\n+    assert y_std[1] < y_std[0]\n+\n+\n def test_update_of_sigma_in_ard():\n     # Checks that `sigma_` is updated correctly after the last iteration\n     # of the ARDRegression algorithm. See issue #10128.\n",
+  "metadata": {
+    "v2_fetcher_version": 1,
+    "v2_fetched_at_unix": 1777987718,
+    "v2_diff_cap_bytes": 50000,
+    "v2_body_cap_bytes": 8000,
+    "v2_diff_truncated": false,
+    "v2_raw_diff_chars": 2769,
+    "v2_raw_body_chars": 743,
+    "v2_rag_source": "fresh_for_v2_25pr_expansion",
+    "v2_rag_chunks_copied": 8,
+    "joern_enriched": true,
+    "joern_callers_count": 12,
+    "joern_functions_count": 29
+  },
+  "similar_chunks": [
+    {
+      "file": "sklearn/linear_model/tests/test_ridge.py",
+      "start_line": 996,
+      "end_line": 1059,
+      "similarity": 0.6877,
+      "related_to": "sklearn/linear_model/tests/test_bayes.py",
+      "content_preview": "r_is_better=False)\n    ridge_gcv2 = RidgeCV(fit_intercept=False, scoring=scoring)\n    f(ridge_gcv2.fit)(X, y_diabetes)\n    assert ridge_gcv2.alpha_ == pytest.approx(alpha_)\n\n    # check that we get same best alpha with custom score_func\n    def func(x, y):\n        return -mean_squared_error(x, y)\n\n    scoring = make_scorer(func)\n    ridge_gcv3 = RidgeCV(fit_intercept=False, scoring=scoring)\n    f(ridge_gcv3.fit)(X, y_diabetes)\n    assert ridge_gcv3.alpha_ == pytest.approx(alpha_)\n\n    # check that we get same best alpha with a scorer\n    scorer = get_scorer(\"neg_mean_squared_error\")\n    ridge_gcv4 = RidgeCV(fit_intercept=False, scoring=scorer)\n    ridge_gcv4.fit(X, y_diabetes)\n    assert ridge_gcv4.alpha_ == pytest.approx(alpha_)\n\n    # check that we get same best alpha with sample weights"
+    },
+    {
+      "file": "sklearn/linear_model/tests/test_ridge.py",
+      "start_line": 1145,
+      "end_line": 1200,
+      "similarity": 0.6821,
+      "related_to": "sklearn/linear_model/tests/test_bayes.py",
+      "content_preview": "arget=True are incompatible\"\n    with pytest.raises(ValueError, match=msg):\n        ridge_cv.fit(X, y)\n    ridge_cv = RidgeCV(alphas=alphas, cv=6, alpha_per_target=True)\n    with pytest.raises(ValueError, match=msg):\n        ridge_cv.fit(X, y)\n\n\ndef _test_ridge_diabetes(sparse_container):\n    X = X_diabetes if sparse_container is None else sparse_container(X_diabetes)\n    ridge = Ridge(fit_intercept=False)\n    ridge.fit(X, y_diabetes)\n    return np.round(ridge.score(X, y_diabetes), 5)\n\n\ndef _test_multi_ridge_diabetes(sparse_container):\n    # simulate several responses\n    X = X_diabetes if sparse_container is None else sparse_container(X_diabetes)\n    Y = np.vstack((y_diabetes, y_diabetes)).T\n    n_features = X_diabetes.shape[1]\n\n    ridge = Ridge(fit_intercept=False)\n    ridge.fit(X, Y)\n "
+    },
+    {
+      "file": "sklearn/linear_model/_ridge.py",
+      "start_line": 1049,
+      "end_line": 1093,
+      "similarity": 0.6753,
+      "related_to": "sklearn/linear_model/_bayes.py",
+      "content_preview": "tant that multiplies the L2 term, controlling regularization\n        strength. `alpha` must be a non-negative float i.e. in `[0, inf)`.\n\n        When `alpha = 0`, the objective is equivalent to ordinary least\n        squares, solved by the :class:`LinearRegression` object. For numerical\n        reasons, using `alpha = 0` with the `Ridge` object is not advised.\n        Instead, you should use the :class:`LinearRegression` object.\n\n        If an array is passed, penalties are assumed to be specific to the\n        targets. Hence they must correspond in number.\n\n        See :ref:`sphx_glr_auto_examples_linear_model_plot_ridge_coeffs.py`\n        for an illustration of the effect of alpha on the model coefficients.\n\n    fit_intercept : bool, default=True\n        Whether to fit the intercept for "
+    },
+    {
+      "file": "sklearn/linear_model/tests/test_ridge.py",
+      "start_line": 1196,
+      "end_line": 1250,
+      "similarity": 0.674,
+      "related_to": "sklearn/linear_model/tests/test_bayes.py",
+      "content_preview": "assifier_with_scoring(sparse_container, scoring, cv):\n    # non-regression test for #14672\n    # check that RidgeClassifierCV works with all sort of scoring and\n    # cross-validation\n    X = X_iris if sparse_container is None else sparse_container(X_iris)\n    scoring_ = make_scorer(scoring) if callable(scoring) else scoring\n    clf = RidgeClassifierCV(scoring=scoring_, cv=cv)\n    # Smoke test to check that fit/predict does not raise error\n    clf.fit(X, y_iris).predict(X)\n\n\n@pytest.mark.parametrize(\"cv\", [None, KFold(5)])\n@pytest.mark.parametrize(\"sparse_container\", [None] + CSR_CONTAINERS)\ndef test_ridge_regression_custom_scoring(sparse_container, cv):\n    # check that custom scoring is working as expected\n    # check the tie breaking strategy (keep the first alpha tried)\n\n    def _dummy"
+    },
+    {
+      "file": "sklearn/linear_model/_ridge.py",
+      "start_line": 1516,
+      "end_line": 1589,
+      "similarity": 0.6706,
+      "related_to": "sklearn/linear_model/_bayes.py",
+      "content_preview": "    n_features_in_ : int\n        Number of features seen during :term:`fit`.\n\n        .. versionadded:: 0.24\n\n    feature_names_in_ : ndarray of shape (`n_features_in_`,)\n        Names of features seen during :term:`fit`. Defined only when `X`\n        has feature names that are all strings.\n\n        .. versionadded:: 1.0\n\n    solver_ : str\n        The solver that was used at fit time by the computational\n        routines.\n\n        .. versionadded:: 1.5\n\n    See Also\n    --------\n    Ridge : Ridge regression.\n    RidgeClassifierCV :  Ridge classifier with built-in cross validation.\n\n    Notes\n    -----\n    For multi-class classification, n_class classifiers are trained in\n    a one-versus-all approach. Concretely, this is implemented by taking\n    advantage of the multi-variate response sup"
+    },
+    {
+      "file": "sklearn/linear_model/_ridge.py",
+      "start_line": 998,
+      "end_line": 1052,
+      "similarity": 0.6705,
+      "related_to": "sklearn/linear_model/_bayes.py",
+      "content_preview": "ed by _preprocess_data\n            self.intercept_ += y_offset\n\n        else:\n            if sparse.issparse(X) and self.fit_intercept:\n                # required to fit intercept with sparse_cg and lbfgs solver\n                params = {\"X_offset\": X_offset, \"X_scale\": X_scale}\n            else:\n                # for dense matrices or when intercept is set to 0\n                params = {}\n\n            self.coef_, self.n_iter_, self.solver_ = _ridge_regression(\n                X,\n                y,\n                alpha=self.alpha,\n                sample_weight=sample_weight,\n                max_iter=self.max_iter,\n                tol=self.tol,\n                solver=solver,\n                positive=self.positive,\n                random_state=self.random_state,\n                return_n_ite"
+    },
+    {
+      "file": "sklearn/covariance/tests/test_covariance.py",
+      "start_line": 3,
+      "end_line": 62,
+      "similarity": 0.6698,
+      "related_to": "sklearn/linear_model/tests/test_bayes.py",
+      "content_preview": "\nimport numpy as np\nimport pytest\n\nfrom sklearn import datasets\nfrom sklearn.covariance import (\n    OAS,\n    EmpiricalCovariance,\n    LedoitWolf,\n    ShrunkCovariance,\n    empirical_covariance,\n    ledoit_wolf,\n    ledoit_wolf_shrinkage,\n    oas,\n    shrunk_covariance,\n)\nfrom sklearn.covariance._shrunk_covariance import _ledoit_wolf, _oas\nfrom sklearn.utils._testing import (\n    assert_allclose,\n    assert_almost_equal,\n    assert_array_almost_equal,\n    assert_array_equal,\n)\n\nX, _ = datasets.load_diabetes(return_X_y=True)\nX_1d = X[:, 0]\nn_samples, n_features = X.shape\n\n\ndef test_covariance():\n    # Tests Covariance module on a simple dataset.\n    # test covariance fit from data\n    cov = EmpiricalCovariance()\n    cov.fit(X)\n    emp_cov = empirical_covariance(X)\n    assert_array_almost_eq"
+    },
+    {
+      "file": "sklearn/linear_model/_ridge.py",
+      "start_line": 2722,
+      "end_line": 2779,
+      "similarity": 0.6579,
+      "related_to": "sklearn/linear_model/_bayes.py",
+      "content_preview": "best_score_ : float or ndarray of shape (n_targets,)\n        Score of base estimator with best alpha, or, if\n        ``alpha_per_target=True``, a score for each target.\n\n        .. versionadded:: 0.23\n\n    n_features_in_ : int\n        Number of features seen during :term:`fit`.\n\n        .. versionadded:: 0.24\n\n    feature_names_in_ : ndarray of shape (`n_features_in_`,)\n        Names of features seen during :term:`fit`. Defined only when `X`\n        has feature names that are all strings.\n\n        .. versionadded:: 1.0\n\n    See Also\n    --------\n    Ridge : Ridge regression.\n    RidgeClassifier : Classifier based on ridge regression on {-1, 1} labels.\n    RidgeClassifierCV : Ridge classifier with built-in cross validation.\n\n    Examples\n    --------\n    >>> from sklearn.datasets import loa"
+    }
+  ],
+  "rag_evidence": {
+    "similar_code": [
+      {
+        "file": "sklearn/linear_model/tests/test_ridge.py",
+        "start_line": 996,
+        "end_line": 1059,
+        "similarity": 0.6877,
+        "related_to": "sklearn/linear_model/tests/test_bayes.py",
+        "content_preview": "r_is_better=False)\n    ridge_gcv2 = RidgeCV(fit_intercept=False, scoring=scoring)\n    f(ridge_gcv2.fit)(X, y_diabetes)\n    assert ridge_gcv2.alpha_ == pytest.approx(alpha_)\n\n    # check that we get same best alpha with custom score_func\n    def func(x, y):\n        return -mean_squared_error(x, y)\n\n    scoring = make_scorer(func)\n    ridge_gcv3 = RidgeCV(fit_intercept=False, scoring=scoring)\n    f(ridge_gcv3.fit)(X, y_diabetes)\n    assert ridge_gcv3.alpha_ == pytest.approx(alpha_)\n\n    # check that we get same best alpha with a scorer\n    scorer = get_scorer(\"neg_mean_squared_error\")\n    ridge_gcv4 = RidgeCV(fit_intercept=False, scoring=scorer)\n    ridge_gcv4.fit(X, y_diabetes)\n    assert ridge_gcv4.alpha_ == pytest.approx(alpha_)\n\n    # check that we get same best alpha with sample weights"
+      },
+      {
+        "file": "sklearn/linear_model/tests/test_ridge.py",
+        "start_line": 1145,
+        "end_line": 1200,
+        "similarity": 0.6821,
+        "related_to": "sklearn/linear_model/tests/test_bayes.py",
+        "content_preview": "arget=True are incompatible\"\n    with pytest.raises(ValueError, match=msg):\n        ridge_cv.fit(X, y)\n    ridge_cv = RidgeCV(alphas=alphas, cv=6, alpha_per_target=True)\n    with pytest.raises(ValueError, match=msg):\n        ridge_cv.fit(X, y)\n\n\ndef _test_ridge_diabetes(sparse_container):\n    X = X_diabetes if sparse_container is None else sparse_container(X_diabetes)\n    ridge = Ridge(fit_intercept=False)\n    ridge.fit(X, y_diabetes)\n    return np.round(ridge.score(X, y_diabetes), 5)\n\n\ndef _test_multi_ridge_diabetes(sparse_container):\n    # simulate several responses\n    X = X_diabetes if sparse_container is None else sparse_container(X_diabetes)\n    Y = np.vstack((y_diabetes, y_diabetes)).T\n    n_features = X_diabetes.shape[1]\n\n    ridge = Ridge(fit_intercept=False)\n    ridge.fit(X, Y)\n "
+      },
+      {
+        "file": "sklearn/linear_model/_ridge.py",
+        "start_line": 1049,
+        "end_line": 1093,
+        "similarity": 0.6753,
+        "related_to": "sklearn/linear_model/_bayes.py",
+        "content_preview": "tant that multiplies the L2 term, controlling regularization\n        strength. `alpha` must be a non-negative float i.e. in `[0, inf)`.\n\n        When `alpha = 0`, the objective is equivalent to ordinary least\n        squares, solved by the :class:`LinearRegression` object. For numerical\n        reasons, using `alpha = 0` with the `Ridge` object is not advised.\n        Instead, you should use the :class:`LinearRegression` object.\n\n        If an array is passed, penalties are assumed to be specific to the\n        targets. Hence they must correspond in number.\n\n        See :ref:`sphx_glr_auto_examples_linear_model_plot_ridge_coeffs.py`\n        for an illustration of the effect of alpha on the model coefficients.\n\n    fit_intercept : bool, default=True\n        Whether to fit the intercept for "
+      },
+      {
+        "file": "sklearn/linear_model/tests/test_ridge.py",
+        "start_line": 1196,
+        "end_line": 1250,
+        "similarity": 0.674,
+        "related_to": "sklearn/linear_model/tests/test_bayes.py",
+        "content_preview": "assifier_with_scoring(sparse_container, scoring, cv):\n    # non-regression test for #14672\n    # check that RidgeClassifierCV works with all sort of scoring and\n    # cross-validation\n    X = X_iris if sparse_container is None else sparse_container(X_iris)\n    scoring_ = make_scorer(scoring) if callable(scoring) else scoring\n    clf = RidgeClassifierCV(scoring=scoring_, cv=cv)\n    # Smoke test to check that fit/predict does not raise error\n    clf.fit(X, y_iris).predict(X)\n\n\n@pytest.mark.parametrize(\"cv\", [None, KFold(5)])\n@pytest.mark.parametrize(\"sparse_container\", [None] + CSR_CONTAINERS)\ndef test_ridge_regression_custom_scoring(sparse_container, cv):\n    # check that custom scoring is working as expected\n    # check the tie breaking strategy (keep the first alpha tried)\n\n    def _dummy"
+      },
+      {
+        "file": "sklearn/linear_model/_ridge.py",
+        "start_line": 1516,
+        "end_line": 1589,
+        "similarity": 0.6706,
+        "related_to": "sklearn/linear_model/_bayes.py",
+        "content_preview": "    n_features_in_ : int\n        Number of features seen during :term:`fit`.\n\n        .. versionadded:: 0.24\n\n    feature_names_in_ : ndarray of shape (`n_features_in_`,)\n        Names of features seen during :term:`fit`. Defined only when `X`\n        has feature names that are all strings.\n\n        .. versionadded:: 1.0\n\n    solver_ : str\n        The solver that was used at fit time by the computational\n        routines.\n\n        .. versionadded:: 1.5\n\n    See Also\n    --------\n    Ridge : Ridge regression.\n    RidgeClassifierCV :  Ridge classifier with built-in cross validation.\n\n    Notes\n    -----\n    For multi-class classification, n_class classifiers are trained in\n    a one-versus-all approach. Concretely, this is implemented by taking\n    advantage of the multi-variate response sup"
+      },
+      {
+        "file": "sklearn/linear_model/_ridge.py",
+        "start_line": 998,
+        "end_line": 1052,
+        "similarity": 0.6705,
+        "related_to": "sklearn/linear_model/_bayes.py",
+        "content_preview": "ed by _preprocess_data\n            self.intercept_ += y_offset\n\n        else:\n            if sparse.issparse(X) and self.fit_intercept:\n                # required to fit intercept with sparse_cg and lbfgs solver\n                params = {\"X_offset\": X_offset, \"X_scale\": X_scale}\n            else:\n                # for dense matrices or when intercept is set to 0\n                params = {}\n\n            self.coef_, self.n_iter_, self.solver_ = _ridge_regression(\n                X,\n                y,\n                alpha=self.alpha,\n                sample_weight=sample_weight,\n                max_iter=self.max_iter,\n                tol=self.tol,\n                solver=solver,\n                positive=self.positive,\n                random_state=self.random_state,\n                return_n_ite"
+      },
+      {
+        "file": "sklearn/covariance/tests/test_covariance.py",
+        "start_line": 3,
+        "end_line": 62,
+        "similarity": 0.6698,
+        "related_to": "sklearn/linear_model/tests/test_bayes.py",
+        "content_preview": "\nimport numpy as np\nimport pytest\n\nfrom sklearn import datasets\nfrom sklearn.covariance import (\n    OAS,\n    EmpiricalCovariance,\n    LedoitWolf,\n    ShrunkCovariance,\n    empirical_covariance,\n    ledoit_wolf,\n    ledoit_wolf_shrinkage,\n    oas,\n    shrunk_covariance,\n)\nfrom sklearn.covariance._shrunk_covariance import _ledoit_wolf, _oas\nfrom sklearn.utils._testing import (\n    assert_allclose,\n    assert_almost_equal,\n    assert_array_almost_equal,\n    assert_array_equal,\n)\n\nX, _ = datasets.load_diabetes(return_X_y=True)\nX_1d = X[:, 0]\nn_samples, n_features = X.shape\n\n\ndef test_covariance():\n    # Tests Covariance module on a simple dataset.\n    # test covariance fit from data\n    cov = EmpiricalCovariance()\n    cov.fit(X)\n    emp_cov = empirical_covariance(X)\n    assert_array_almost_eq"
+      },
+      {
+        "file": "sklearn/linear_model/_ridge.py",
+        "start_line": 2722,
+        "end_line": 2779,
+        "similarity": 0.6579,
+        "related_to": "sklearn/linear_model/_bayes.py",
+        "content_preview": "best_score_ : float or ndarray of shape (n_targets,)\n        Score of base estimator with best alpha, or, if\n        ``alpha_per_target=True``, a score for each target.\n\n        .. versionadded:: 0.23\n\n    n_features_in_ : int\n        Number of features seen during :term:`fit`.\n\n        .. versionadded:: 0.24\n\n    feature_names_in_ : ndarray of shape (`n_features_in_`,)\n        Names of features seen during :term:`fit`. Defined only when `X`\n        has feature names that are all strings.\n\n        .. versionadded:: 1.0\n\n    See Also\n    --------\n    Ridge : Ridge regression.\n    RidgeClassifier : Classifier based on ridge regression on {-1, 1} labels.\n    RidgeClassifierCV : Ridge classifier with built-in cross validation.\n\n    Examples\n    --------\n    >>> from sklearn.datasets import loa"
+      }
+    ]
+  },
+  "callers": [
+    {
+      "path": "_bayes.py",
+      "from_function": "fit",
+      "calls_function": "_update_coef_",
+      "caller_line": 217,
+      "callee_file": "_bayes.py",
+      "callee_line": 404
+    },
+    {
+      "path": "_bayes.py",
+      "from_function": "fit",
+      "calls_function": "_log_marginal_likelihood",
+      "caller_line": 217,
+      "callee_file": "_bayes.py",
+      "callee_line": 429
+    },
+    {
+      "path": "_bayes.py",
+      "from_function": "fit",
+      "calls_function": "update_coeff",
+      "caller_line": 640,
+      "callee_file": "_bayes.py",
+      "callee_line": 699
+    },
+    {
+      "path": "tests/test_bayes.py",
+      "from_function": "f_noise",
+      "calls_function": "f",
+      "caller_line": 234,
+      "callee_file": "tests/test_bayes.py",
+      "callee_line": 231
+    },
+    {
+      "path": "tests/test_bayes.py",
+      "from_function": "test_return_std",
+      "calls_function": "f_noise",
+      "caller_line": 229,
+      "callee_file": "tests/test_bayes.py",
+      "callee_line": 234
+    },
+    {
+      "path": "tests/test_least_angle.py",
+      "from_function": "test_collinearity",
+      "calls_function": "f",
+      "caller_line": 142,
+      "callee_file": "tests/test_bayes.py",
+      "callee_line": 231
+    },
+    {
+      "path": "tests/test_logistic.py",
+      "from_function": "test_consistency_path",
+      "calls_function": "f",
+      "caller_line": 296,
+      "callee_file": "tests/test_bayes.py",
+      "callee_line": 231
+    },
+    {
+      "path": "tests/test_ridge.py",
+      "from_function": "_test_ridge_loo",
+      "calls_function": "f",
+      "caller_line": 977,
+      "callee_file": "tests/test_bayes.py",
+      "callee_line": 231
+    },
+    {
+      "path": "tests/test_ridge.py",
+      "from_function": "check_array_api_attributes",
+      "calls_function": "fit",
+      "caller_line": 1239,
+      "callee_file": "_bayes.py",
+      "callee_line": 217
+    },
+    {
+      "path": "tests/test_ridge.py",
+      "from_function": "test_ridge_classifier_multilabel_array_api",
+      "calls_function": "fit",
+      "caller_line": 1326,
+      "callee_file": "_bayes.py",
+      "callee_line": 217
+    },
+    {
+      "path": "tests/test_ridge.py",
+      "from_function": "test_ridge_classifier_multilabel_array_api",
+      "calls_function": "predict",
+      "caller_line": 1326,
+      "callee_file": "_bayes.py",
+      "callee_line": 374
+    },
+    {
+      "path": "tests/test_ridge.py",
+      "from_function": "custom_multioutput_scorer",
+      "calls_function": "predict",
+      "caller_line": 2386,
+      "callee_file": "_bayes.py",
+      "callee_line": 374
+    }
+  ],
+  "call_graph_edges": [
+    {
+      "from": "_bayes.py::fit",
+      "to": "_bayes.py::_update_coef_"
+    },
+    {
+      "from": "_bayes.py::fit",
+      "to": "_bayes.py::_log_marginal_likelihood"
+    },
+    {
+      "from": "_bayes.py::fit",
+      "to": "_bayes.py::update_coeff"
+    },
+    {
+      "from": "tests/test_bayes.py::f_noise",
+      "to": "tests/test_bayes.py::f"
+    },
+    {
+      "from": "tests/test_bayes.py::test_return_std",
+      "to": "tests/test_bayes.py::f_noise"
+    },
+    {
+      "from": "tests/test_least_angle.py::test_collinearity",
+      "to": "tests/test_bayes.py::f"
+    },
+    {
+      "from": "tests/test_logistic.py::test_consistency_path",
+      "to": "tests/test_bayes.py::f"
+    },
+    {
+      "from": "tests/test_ridge.py::_test_ridge_loo",
+      "to": "tests/test_bayes.py::f"
+    },
+    {
+      "from": "tests/test_ridge.py::check_array_api_attributes",
+      "to": "_bayes.py::fit"
+    },
+    {
+      "from": "tests/test_ridge.py::test_ridge_classifier_multilabel_array_api",
+      "to": "_bayes.py::fit"
+    },
+    {
+      "from": "tests/test_ridge.py::test_ridge_classifier_multilabel_array_api",
+      "to": "_bayes.py::predict"
+    },
+    {
+      "from": "tests/test_ridge.py::custom_multioutput_scorer",
+      "to": "_bayes.py::predict"
+    }
+  ],
+  "functions_in_changed_files": [
+    {
+      "name": "__init__",
+      "full_name": "_bayes.py:<module>.BayesianRidge.__init__",
+      "file": "_bayes.py",
+      "start_line": 187,
+      "end_line": 216,
+      "signature": ""
+    },
+    {
+      "name": "fit",
+      "full_name": "_bayes.py:<module>.BayesianRidge.fit",
+      "file": "_bayes.py",
+      "start_line": 217,
+      "end_line": 374,
+      "signature": ""
+    },
+    {
+      "name": "predict",
+      "full_name": "_bayes.py:<module>.BayesianRidge.predict",
+      "file": "_bayes.py",
+      "start_line": 374,
+      "end_line": 404,
+      "signature": ""
+    },
+    {
+      "name": "_update_coef_",
+      "full_name": "_bayes.py:<module>.BayesianRidge._update_coef_",
+      "file": "_bayes.py",
+      "start_line": 404,
+      "end_line": 429,
+      "signature": ""
+    },
+    {
+      "name": "_log_marginal_likelihood",
+      "full_name": "_bayes.py:<module>.BayesianRidge._log_marginal_likelihood",
+      "file": "_bayes.py",
+      "start_line": 429,
+      "end_line": 465,
+      "signature": ""
+    },
+    {
+      "name": "__init__",
+      "full_name": "_bayes.py:<module>.ARDRegression.__init__",
+      "file": "_bayes.py",
+      "start_line": 612,
+      "end_line": 639,
+      "signature": ""
+    },
+    {
+      "name": "fit",
+      "full_name": "_bayes.py:<module>.ARDRegression.fit",
+      "file": "_bayes.py",
+      "start_line": 640,
+      "end_line": 765,
+      "signature": ""
+    },
+    {
+      "name": "update_coeff",
+      "full_name": "_bayes.py:<module>.ARDRegression.fit.update_coeff",
+      "file": "_bayes.py",
+      "start_line": 699,
+      "end_line": 705,
+      "signature": ""
+    },
+    {
+      "name": "_update_sigma_woodbury",
+      "full_name": "_bayes.py:<module>.ARDRegression._update_sigma_woodbury",
+      "file": "_bayes.py",
+      "start_line": 765,
+      "end_line": 783,
+      "signature": ""
+    },
+    {
+      "name": "_update_sigma",
+      "full_name": "_bayes.py:<module>.ARDRegression._update_sigma",
+      "file": "_bayes.py",
+      "start_line": 783,
+      "end_line": 794,
+      "signature": ""
+    },
+    {
+      "name": "predict",
+      "full_name": "_bayes.py:<module>.ARDRegression.predict",
+      "file": "_bayes.py",
+      "start_line": 794,
+      "end_line": 824,
+      "signature": ""
+    },
+    {
+      "name": "test_bayesian_ridge_scores",
+      "full_name": "tests/test_bayes.py:<module>.test_bayesian_ridge_scores",
+      "file": "tests/test_bayes.py",
+      "start_line": 24,
+      "end_line": 33,
+      "signature": ""
+    },
+    {
+      "name": "test_bayesian_ridge_score_values",
+      "full_name": "tests/test_bayes.py:<module>.test_bayesian_ridge_score_values",
+      "file": "tests/test_bayes.py",
+      "start_line": 34,
+      "end_line": 84,
+      "signature": ""
+    },
+    {
+      "name": "test_bayesian_ridge_parameter",
+      "full_name": "tests/test_bayes.py:<module>.test_bayesian_ridge_parameter",
+      "file": "tests/test_bayes.py",
+      "start_line": 85,
+      "end_line": 97,
+      "signature": ""
+    },
+    {
+      "name": "test_bayesian_covariance_matrix",
+      "full_name": "tests/test_bayes.py:<module>.test_bayesian_covariance_matrix",
+      "file": "tests/test_bayes.py",
+      "start_line": 99,
+      "end_line": 113,
+      "signature": ""
+    },
+    {
+      "name": "test_bayesian_sample_weights",
+      "full_name": "tests/test_bayes.py:<module>.test_bayesian_sample_weights",
+      "file": "tests/test_bayes.py",
+      "start_line": 114,
+      "end_line": 129,
+      "signature": ""
+    },
+    {
+      "name": "test_toy_bayesian_ridge_object",
+      "full_name": "tests/test_bayes.py:<module>.test_toy_bayesian_ridge_object",
+      "file": "tests/test_bayes.py",
+      "start_line": 130,
+      "end_line": 141,
+      "signature": ""
+    },
+    {
+      "name": "test_bayesian_initial_params",
+      "full_name": "tests/test_bayes.py:<module>.test_bayesian_initial_params",
+      "file": "tests/test_bayes.py",
+      "start_line": 142,
+      "end_line": 154,
+      "signature": ""
+    },
+    {
+      "name": "test_prediction_bayesian_ridge_ard_with_constant_input",
+      "full_name": "tests/test_bayes.py:<module>.test_prediction_bayesian_ridge_ard_with_constant_input",
+      "file": "tests/test_bayes.py",
+      "start_line": 155,
+      "end_line": 170,
+      "signature": ""
+    },
+    {
+      "name": "test_std_bayesian_ridge_ard_with_constant_input",
+      "full_name": "tests/test_bayes.py:<module>.test_std_bayesian_ridge_ard_with_constant_input",
+      "file": "tests/test_bayes.py",
+      "start_line": 171,
+      "end_line": 187,
+      "signature": ""
+    },
+    {
+      "name": "test_update_of_sigma_in_ard",
+      "full_name": "tests/test_bayes.py:<module>.test_update_of_sigma_in_ard",
+      "file": "tests/test_bayes.py",
+      "start_line": 188,
+      "end_line": 201,
+      "signature": ""
+    },
+    {
+      "name": "test_toy_ard_object",
+      "full_name": "tests/test_bayes.py:<module>.test_toy_ard_object",
+      "file": "tests/test_bayes.py",
+      "start_line": 202,
+      "end_line": 213,
+      "signature": ""
+    },
+    {
+      "name": "test_ard_accuracy_on_easy_problem",
+      "full_name": "tests/test_bayes.py:<module>.test_ard_accuracy_on_easy_problem",
+      "file": "tests/test_bayes.py",
+      "start_line": 215,
+      "end_line": 227,
+      "signature": ""
+    },
+    {
+      "name": "test_return_std",
+      "full_name": "tests/test_bayes.py:<module>.test_return_std",
+      "file": "tests/test_bayes.py",
+      "start_line": 229,
+      "end_line": 263,
+      "signature": ""
+    },
+    {
+      "name": "f",
+      "full_name": "tests/test_bayes.py:<module>.test_return_std.f",
+      "file": "tests/test_bayes.py",
+      "start_line": 231,
+      "end_line": 234,
+      "signature": ""
+    },
+    {
+      "name": "f_noise",
+      "full_name": "tests/test_bayes.py:<module>.test_return_std.f_noise",
+      "file": "tests/test_bayes.py",
+      "start_line": 234,
+      "end_line": 237,
+      "signature": ""
+    },
+    {
+      "name": "test_update_sigma",
+      "full_name": "tests/test_bayes.py:<module>.test_update_sigma",
+      "file": "tests/test_bayes.py",
+      "start_line": 264,
+      "end_line": 287,
+      "signature": ""
+    },
+    {
+      "name": "test_dtype_match",
+      "full_name": "tests/test_bayes.py:<module>.test_dtype_match",
+      "file": "tests/test_bayes.py",
+      "start_line": 290,
+      "end_line": 306,
+      "signature": ""
+    },
+    {
+      "name": "test_dtype_correctness",
+      "full_name": "tests/test_bayes.py:<module>.test_dtype_correctness",
+      "file": "tests/test_bayes.py",
+      "start_line": 308,
+      "end_line": 314,
+      "signature": ""
+    }
+  ]
+}

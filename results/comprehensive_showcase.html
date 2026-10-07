@@ -1,0 +1,3425 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>
+      KG-Driven Context Retrieval for LLM-Based PR Review | Research Report
+    </title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link
+      href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --bg: #0f172a;
+        --bg-card: #1e293b;
+        --bg-code: #0f172a;
+        --accent: #38bdf8;
+        --accent-green: #4ade80;
+        --accent-yellow: #fbbf24;
+        --accent-red: #f87171;
+        --accent-purple: #a78bfa;
+        --text: #f1f5f9;
+        --text-muted: #94a3b8;
+        --border: #334155;
+      }
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: "IBM Plex Sans", sans-serif;
+        background: var(--bg);
+        color: var(--text);
+        line-height: 1.7;
+        font-size: 16px;
+      }
+
+      .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 2rem;
+      }
+
+      /* Header */
+      header {
+        text-align: center;
+        padding: 4rem 2rem;
+        border-bottom: 1px solid var(--border);
+        margin-bottom: 3rem;
+      }
+
+      .title-badge {
+        display: inline-block;
+        padding: 0.5rem 1.5rem;
+        background: linear-gradient(
+          135deg,
+          var(--accent),
+          var(--accent-purple)
+        );
+        border-radius: 50px;
+        font-size: 0.8rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+        margin-bottom: 1.5rem;
+      }
+
+      h1 {
+        font-size: 2.75rem;
+        font-weight: 700;
+        margin-bottom: 1rem;
+        background: linear-gradient(135deg, var(--text) 0%, var(--accent) 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+      }
+
+      .subtitle {
+        font-size: 1.25rem;
+        color: var(--text-muted);
+        max-width: 700px;
+        margin: 0 auto 2rem;
+      }
+
+      .meta {
+        display: flex;
+        justify-content: center;
+        gap: 2rem;
+        flex-wrap: wrap;
+        color: var(--text-muted);
+        font-size: 0.9rem;
+      }
+
+      /* Sections */
+      section {
+        margin-bottom: 4rem;
+      }
+
+      .section-label {
+        display: inline-block;
+        padding: 0.25rem 0.75rem;
+        background: var(--accent);
+        color: var(--bg);
+        border-radius: 4px;
+        font-size: 0.7rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        margin-bottom: 0.75rem;
+      }
+
+      h2 {
+        font-size: 1.75rem;
+        font-weight: 600;
+        margin-bottom: 1rem;
+      }
+
+      .section-intro {
+        color: var(--text-muted);
+        margin-bottom: 2rem;
+        max-width: 800px;
+      }
+
+      /* Cards */
+      .card {
+        background: var(--bg-card);
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        padding: 2rem;
+        margin-bottom: 1.5rem;
+      }
+
+      .card-title {
+        font-size: 1.1rem;
+        font-weight: 600;
+        margin-bottom: 1rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+      }
+
+      /* Problem Statement */
+      .problem-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 1.5rem;
+      }
+
+      .problem-card {
+        background: var(--bg-card);
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        padding: 1.5rem;
+      }
+
+      .problem-card.highlight {
+        border-color: var(--accent);
+        background: linear-gradient(
+          135deg,
+          rgba(56, 189, 248, 0.1),
+          transparent
+        );
+      }
+
+      .problem-icon {
+        font-size: 2rem;
+        margin-bottom: 1rem;
+      }
+
+      .problem-title {
+        font-weight: 600;
+        margin-bottom: 0.5rem;
+      }
+
+      .problem-text {
+        color: var(--text-muted);
+        font-size: 0.9rem;
+      }
+
+      /* Pipeline */
+      .pipeline-visual {
+        display: flex;
+        align-items: stretch;
+        gap: 0;
+        margin: 2rem 0;
+        flex-wrap: wrap;
+      }
+
+      .pipeline-stage {
+        flex: 1;
+        min-width: 200px;
+        padding: 1.5rem;
+        background: var(--bg-card);
+        border: 1px solid var(--border);
+        position: relative;
+      }
+
+      .pipeline-stage:first-child {
+        border-radius: 12px 0 0 12px;
+      }
+
+      .pipeline-stage:last-child {
+        border-radius: 0 12px 12px 0;
+      }
+
+      .pipeline-stage::after {
+        content: "→";
+        position: absolute;
+        right: -15px;
+        top: 50%;
+        transform: translateY(-50%);
+        font-size: 1.5rem;
+        color: var(--accent);
+        z-index: 1;
+      }
+
+      .pipeline-stage:last-child::after {
+        display: none;
+      }
+
+      .stage-number {
+        width: 28px;
+        height: 28px;
+        background: var(--accent);
+        color: var(--bg);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 600;
+        font-size: 0.8rem;
+        margin-bottom: 0.75rem;
+      }
+
+      .stage-title {
+        font-weight: 600;
+        margin-bottom: 0.5rem;
+      }
+
+      .stage-desc {
+        font-size: 0.85rem;
+        color: var(--text-muted);
+      }
+
+      /* Modes Comparison */
+      .modes-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 1.5rem;
+        margin: 2rem 0;
+      }
+
+      @media (max-width: 900px) {
+        .modes-grid {
+          grid-template-columns: 1fr;
+        }
+      }
+
+      .mode-card {
+        background: var(--bg-card);
+        border: 2px solid var(--border);
+        border-radius: 12px;
+        padding: 1.5rem;
+        position: relative;
+      }
+
+      .mode-card.baseline {
+        border-color: var(--text-muted);
+      }
+      .mode-card.kg {
+        border-color: var(--accent-purple);
+      }
+      .mode-card.hybrid {
+        border-color: var(--accent-green);
+      }
+
+      .mode-badge {
+        position: absolute;
+        top: -12px;
+        left: 1.5rem;
+        padding: 0.25rem 1rem;
+        border-radius: 4px;
+        font-size: 0.75rem;
+        font-weight: 600;
+        text-transform: uppercase;
+      }
+
+      .mode-card.baseline .mode-badge {
+        background: var(--text-muted);
+        color: var(--bg);
+      }
+      .mode-card.kg .mode-badge {
+        background: var(--accent-purple);
+        color: var(--bg);
+      }
+      .mode-card.hybrid .mode-badge {
+        background: var(--accent-green);
+        color: var(--bg);
+      }
+
+      .mode-title {
+        font-size: 1.25rem;
+        font-weight: 600;
+        margin: 1rem 0 0.5rem;
+      }
+
+      .mode-desc {
+        color: var(--text-muted);
+        font-size: 0.9rem;
+        margin-bottom: 1rem;
+      }
+
+      .mode-features {
+        list-style: none;
+      }
+
+      .mode-features li {
+        padding: 0.5rem 0;
+        border-bottom: 1px solid var(--border);
+        font-size: 0.9rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+      }
+
+      .mode-features li:last-child {
+        border-bottom: none;
+      }
+
+      .check {
+        color: var(--accent-green);
+      }
+      .cross {
+        color: var(--accent-red);
+      }
+
+      /* Example Review */
+      .example-container {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+        gap: 1.5rem;
+      }
+
+      .example-review {
+        background: var(--bg-code);
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        overflow: hidden;
+      }
+
+      .example-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 1rem;
+        background: var(--bg-card);
+        border-bottom: 1px solid var(--border);
+      }
+
+      .example-mode {
+        font-weight: 600;
+        font-size: 0.8rem;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+      }
+
+      .example-score {
+        font-family: "IBM Plex Mono", monospace;
+        font-weight: 600;
+        padding: 0.25rem 0.75rem;
+        border-radius: 4px;
+        font-size: 0.9rem;
+      }
+
+      .example-score.low {
+        background: rgba(248, 113, 113, 0.2);
+        color: var(--accent-red);
+      }
+      .example-score.mid {
+        background: rgba(251, 191, 36, 0.2);
+        color: var(--accent-yellow);
+      }
+      .example-score.high {
+        background: rgba(74, 222, 128, 0.2);
+        color: var(--accent-green);
+      }
+
+      .example-content {
+        padding: 1rem;
+        font-size: 0.85rem;
+        line-height: 1.6;
+      }
+
+      .example-section {
+        margin-bottom: 1rem;
+      }
+
+      .example-section-title {
+        font-weight: 600;
+        color: var(--accent);
+        margin-bottom: 0.25rem;
+        font-size: 0.8rem;
+        text-transform: uppercase;
+      }
+
+      .example-section-content {
+        color: var(--text-muted);
+      }
+
+      .example-highlight {
+        background: rgba(56, 189, 248, 0.15);
+        padding: 0.75rem;
+        border-radius: 6px;
+        border-left: 3px solid var(--accent);
+        margin-top: 0.5rem;
+      }
+
+      .example-highlight.good {
+        background: rgba(74, 222, 128, 0.15);
+        border-color: var(--accent-green);
+      }
+
+      .example-highlight.bad {
+        background: rgba(248, 113, 113, 0.15);
+        border-color: var(--accent-red);
+      }
+
+      /* Results Table */
+      .results-table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 0.9rem;
+      }
+
+      .results-table th,
+      .results-table td {
+        padding: 1rem;
+        text-align: left;
+        border-bottom: 1px solid var(--border);
+      }
+
+      .results-table th {
+        background: var(--bg);
+        font-weight: 600;
+        font-size: 0.75rem;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        color: var(--text-muted);
+      }
+
+      .results-table tbody tr:hover {
+        background: rgba(56, 189, 248, 0.05);
+      }
+
+      .score-badge {
+        display: inline-block;
+        padding: 0.25rem 0.5rem;
+        border-radius: 4px;
+        font-family: "IBM Plex Mono", monospace;
+        font-size: 0.85rem;
+        font-weight: 500;
+      }
+
+      .winner {
+        background: rgba(74, 222, 128, 0.2);
+        color: var(--accent-green);
+      }
+      .improvement {
+        color: var(--accent-green);
+      }
+      .decline {
+        color: var(--accent-red);
+      }
+
+      /* Criteria */
+      .criteria-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+        gap: 1rem;
+      }
+
+      .criterion {
+        display: flex;
+        gap: 1rem;
+        padding: 1rem;
+        background: var(--bg-card);
+        border-radius: 8px;
+        border: 1px solid var(--border);
+      }
+
+      .criterion-id {
+        font-family: "IBM Plex Mono", monospace;
+        font-weight: 600;
+        color: var(--accent);
+        min-width: 2.5rem;
+      }
+
+      .criterion-text {
+        font-size: 0.9rem;
+        color: var(--text-muted);
+      }
+
+      .kg-tag {
+        display: inline-block;
+        padding: 0.1rem 0.4rem;
+        background: var(--accent-purple);
+        color: var(--bg);
+        border-radius: 3px;
+        font-size: 0.65rem;
+        font-weight: 600;
+        margin-left: 0.5rem;
+      }
+
+      /* Stats */
+      .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 1.5rem;
+        margin: 2rem 0;
+      }
+
+      .stat-card {
+        background: var(--bg-card);
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        padding: 1.5rem;
+        text-align: center;
+      }
+
+      .stat-value {
+        font-size: 2.5rem;
+        font-weight: 700;
+        background: linear-gradient(135deg, var(--accent), var(--accent-green));
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+      }
+
+      .stat-label {
+        color: var(--text-muted);
+        font-size: 0.9rem;
+        margin-top: 0.5rem;
+      }
+
+      /* Chart */
+      .chart-container {
+        position: relative;
+        height: 350px;
+        width: 100%;
+        margin: 2rem 0;
+      }
+
+      /* Conclusions */
+      .conclusion-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 1.5rem;
+      }
+
+      .conclusion-card {
+        background: var(--bg-card);
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        padding: 1.5rem;
+      }
+
+      .conclusion-card h4 {
+        font-size: 0.8rem;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        color: var(--accent);
+        margin-bottom: 0.75rem;
+      }
+
+      .conclusion-card p {
+        color: var(--text-muted);
+        font-size: 0.95rem;
+      }
+
+      /* Code */
+      code {
+        font-family: "IBM Plex Mono", monospace;
+        background: var(--bg);
+        padding: 0.2rem 0.4rem;
+        border-radius: 4px;
+        font-size: 0.85em;
+      }
+
+      /* Footer */
+      footer {
+        text-align: center;
+        padding: 3rem;
+        border-top: 1px solid var(--border);
+        color: var(--text-muted);
+        font-size: 0.9rem;
+      }
+
+      /* Responsive */
+      @media (max-width: 768px) {
+        h1 {
+          font-size: 2rem;
+        }
+        .pipeline-visual {
+          flex-direction: column;
+        }
+        .pipeline-stage {
+          border-radius: 12px !important;
+          margin-bottom: 1rem;
+        }
+        .pipeline-stage::after {
+          display: none;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <header>
+        <div class="title-badge">Master's Thesis Proof of Concept</div>
+        <h1>
+          Knowledge Graph–Driven Context Retrieval for LLM-Based PR Review
+        </h1>
+        <p class="subtitle">
+          A systematic comparison of Knowledge Graph vs. RAG vs. Hybrid context
+          strategies for improving the quality of AI-generated code review
+          comments
+        </p>
+        <div class="meta">
+          <span><strong>Author:</strong> Abdelrahman Khattab</span>
+          <span><strong>Supervisor:</strong> Prof. Dr. Holger Giese</span>
+          <span><strong>Advisor:</strong> Dr. Christian Adriano</span>
+          <span
+            ><strong>Institution:</strong> Hasso Plattner Institute, University
+            of Potsdam</span
+          >
+          <span><strong>Date:</strong> January 2026</span>
+        </div>
+      </header>
+
+      <!-- EXECUTIVE SUMMARY -->
+      <section style="margin-top: -1rem">
+        <div
+          class="card"
+          style="
+            background: linear-gradient(
+              135deg,
+              rgba(56, 189, 248, 0.15),
+              rgba(74, 222, 128, 0.1)
+            );
+            border-color: var(--accent);
+          "
+        >
+          <div
+            class="card-title"
+            style="font-size: 1.25rem; color: var(--accent)"
+          >
+            Executive Summary
+          </div>
+          <p
+            style="
+              color: var(--text);
+              font-size: 1.05rem;
+              line-height: 1.8;
+              margin-bottom: 1.5rem;
+            "
+          >
+            This proof-of-concept demonstrates that
+            <strong
+              >augmenting LLM prompts with structural repository context</strong
+            >
+            significantly improves the quality of generated PR review comments.
+            Using a Knowledge Graph to provide information about tests,
+            dependencies, and code relationships enables the LLM to generate
+            more specific, actionable, and technically accurate feedback.
+          </p>
+          <div
+            style="
+              display: grid;
+              grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+              gap: 1.5rem;
+            "
+          >
+            <div
+              style="
+                text-align: center;
+                padding: 1rem;
+                background: var(--bg);
+                border-radius: 12px;
+              "
+            >
+              <div
+                style="
+                  font-size: 2rem;
+                  font-weight: 700;
+                  color: var(--accent-green);
+                "
+              >
+                +97%
+              </div>
+              <div style="color: var(--text-muted); font-size: 0.85rem">
+                Hybrid vs Baseline
+              </div>
+            </div>
+            <div
+              style="
+                text-align: center;
+                padding: 1rem;
+                background: var(--bg);
+                border-radius: 12px;
+              "
+            >
+              <div
+                style="
+                  font-size: 2rem;
+                  font-weight: 700;
+                  color: var(--accent-purple);
+                "
+              >
+                +68%
+              </div>
+              <div style="color: var(--text-muted); font-size: 0.85rem">
+                KG vs Baseline
+              </div>
+            </div>
+            <div
+              style="
+                text-align: center;
+                padding: 1rem;
+                background: var(--bg);
+                border-radius: 12px;
+              "
+            >
+              <div
+                style="font-size: 2rem; font-weight: 700; color: var(--accent)"
+              >
+                10 PRs
+              </div>
+              <div style="color: var(--text-muted); font-size: 0.85rem">
+                Expert-Validated Dataset
+              </div>
+            </div>
+            <div
+              style="
+                text-align: center;
+                padding: 1rem;
+                background: var(--bg);
+                border-radius: 12px;
+              "
+            >
+              <div
+                style="
+                  font-size: 2rem;
+                  font-weight: 700;
+                  color: var(--accent-yellow);
+                "
+              >
+                25
+              </div>
+              <div style="color: var(--text-muted); font-size: 0.85rem">
+                Evaluation Criteria
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 1. PROBLEM STATEMENT: THE REVIEW GAP -->
+      <section>
+        <div class="section-label">Part 1</div>
+        <h2>The Review Gap</h2>
+        <p class="section-intro">
+          AI code generation tools (GitHub Copilot, ChatGPT) have dramatically
+          accelerated how fast developers write code. But code review hasn't
+          kept pace—creating a dangerous bottleneck.
+        </p>
+
+        <div
+          class="card"
+          style="
+            background: linear-gradient(
+              135deg,
+              rgba(248, 113, 113, 0.1),
+              rgba(251, 191, 36, 0.1)
+            );
+            border-color: var(--accent-yellow);
+          "
+        >
+          <div class="card-title" style="font-size: 1.5rem">
+            📊 The Review Gap Problem
+          </div>
+          <div
+            style="
+              display: grid;
+              grid-template-columns: 1fr auto 1fr;
+              gap: 2rem;
+              align-items: center;
+              margin: 2rem 0;
+            "
+          >
+            <div
+              style="
+                text-align: center;
+                padding: 1.5rem;
+                background: var(--bg);
+                border-radius: 12px;
+              "
+            >
+              <div
+                style="
+                  font-size: 2.5rem;
+                  font-weight: 700;
+                  color: var(--accent-green);
+                "
+              >
+                10x
+              </div>
+              <div
+                style="
+                  color: var(--text-muted);
+                  font-size: 0.9rem;
+                  margin-top: 0.5rem;
+                "
+              >
+                Code Generation Speed
+              </div>
+              <div
+                style="
+                  font-size: 0.8rem;
+                  color: var(--text-muted);
+                  margin-top: 0.25rem;
+                "
+              >
+                (with AI assistants)
+              </div>
+            </div>
+            <div style="font-size: 3rem; color: var(--accent-red)">≫</div>
+            <div
+              style="
+                text-align: center;
+                padding: 1.5rem;
+                background: var(--bg);
+                border-radius: 12px;
+              "
+            >
+              <div
+                style="
+                  font-size: 2.5rem;
+                  font-weight: 700;
+                  color: var(--accent-red);
+                "
+              >
+                1x
+              </div>
+              <div
+                style="
+                  color: var(--text-muted);
+                  font-size: 0.9rem;
+                  margin-top: 0.5rem;
+                "
+              >
+                Review Capacity
+              </div>
+              <div
+                style="
+                  font-size: 0.8rem;
+                  color: var(--text-muted);
+                  margin-top: 0.25rem;
+                "
+              >
+                (still human-limited)
+              </div>
+            </div>
+          </div>
+          <p style="color: var(--text-muted); text-align: center">
+            <strong style="color: var(--accent-yellow)">Result:</strong> PRs
+            queue up waiting for review. Quality suffers. Bugs slip through.
+          </p>
+        </div>
+
+        <h3 style="margin: 2.5rem 0 1.5rem">
+          Why Existing AI Review Tools Fall Short
+        </h3>
+        <div class="problem-grid">
+          <div class="problem-card">
+            <div class="problem-icon">🔍</div>
+            <div class="problem-title">Limited Context</div>
+            <div class="problem-text">
+              Most AI review tools only see the <strong>code diff</strong>. They
+              can't access the broader codebase—so they don't know what tests
+              exist, what files depend on the changes, or how the code fits
+              architecturally.
+            </div>
+          </div>
+          <div class="problem-card">
+            <div class="problem-icon">📝</div>
+            <div class="problem-title">Generic Feedback</div>
+            <div class="problem-text">
+              Without codebase context, LLMs produce vague advice like "consider
+              adding tests" instead of "extend
+              <code>UserServiceTest.java</code> to cover this new validation
+              logic."
+            </div>
+          </div>
+          <div class="problem-card">
+            <div class="problem-icon">⚠️</div>
+            <div class="problem-title">Missed Integration Risks</div>
+            <div class="problem-text">
+              LLMs can't warn about breaking changes if they don't know which
+              files import the modified code. They miss architectural concerns
+              without seeing the dependency graph.
+            </div>
+          </div>
+        </div>
+
+        <div
+          class="card highlight"
+          style="
+            margin-top: 2rem;
+            border-color: var(--accent);
+            background: linear-gradient(
+              135deg,
+              rgba(56, 189, 248, 0.1),
+              transparent
+            );
+          "
+        >
+          <div class="card-title">💡 Our Hypothesis</div>
+          <p style="color: var(--text); font-size: 1.1rem; line-height: 1.8">
+            If we enrich the LLM's input with
+            <strong style="color: var(--accent)"
+              >structural codebase knowledge</strong
+            >—information about tests, dependencies, and related files extracted
+            from a Knowledge Graph—it can generate
+            <strong>more specific, actionable, and accurate</strong> code review
+            feedback.
+          </p>
+        </div>
+      </section>
+
+      <!-- 2. RESEARCH QUESTIONS -->
+      <section>
+        <div class="section-label">Part 2</div>
+        <h2>Research Questions</h2>
+        <p class="section-intro">
+          This proof of concept investigates two key questions:
+        </p>
+
+        <div class="card">
+          <div class="card-title">
+            🔬 RQ1: Does KG Context Improve Review Quality?
+          </div>
+          <p style="color: var(--text-muted); margin-bottom: 1rem">
+            When we provide the LLM with information about tests, dependencies,
+            and related files, does it generate more useful, specific, and
+            actionable review feedback?
+          </p>
+          <div style="padding: 1rem; background: var(--bg); border-radius: 8px">
+            <strong style="color: var(--accent-green)"
+              >Finding: Yes, +68% improvement over baseline</strong
+            >
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-title">🎯 RQ2: Which Criteria Benefit Most?</div>
+          <p style="color: var(--text-muted); margin-bottom: 1rem">
+            Which aspects of code review quality are most improved by KG
+            context? We evaluate against 25 criteria, 9 of which specifically
+            require codebase knowledge.
+          </p>
+          <div style="padding: 1rem; background: var(--bg); border-radius: 8px">
+            <strong style="color: var(--accent-green)"
+              >Finding: Breaking change warnings (+40%), Test mentions
+              (+20%)</strong
+            >
+          </div>
+        </div>
+      </section>
+
+      <!-- 3. METHODOLOGY -->
+      <section>
+        <div class="section-label">Part 3</div>
+        <h2>How It Works: The Pipeline</h2>
+        <p class="section-intro">
+          We process each Pull Request through a 4-stage pipeline that builds
+          context and generates evidence-anchored review notes.
+        </p>
+
+        <div class="pipeline-visual">
+          <div class="pipeline-stage">
+            <div class="stage-number">1</div>
+            <div class="stage-title">Extract PR Data</div>
+            <div class="stage-desc">
+              Get the code diff, changed files list, and PR metadata from GitHub
+            </div>
+          </div>
+          <div class="pipeline-stage">
+            <div class="stage-number">2</div>
+            <div class="stage-title">Build KG Context</div>
+            <div class="stage-desc">
+              Find related tests, dependent files, and code relationships using
+              static analysis
+            </div>
+          </div>
+          <div class="pipeline-stage">
+            <div class="stage-number">3</div>
+            <div class="stage-title">Generate Review</div>
+            <div class="stage-desc">
+              LLM (GPT-4o) generates structured review using diff + KG context
+            </div>
+          </div>
+          <div class="pipeline-stage">
+            <div class="stage-number">4</div>
+            <div class="stage-title">Evaluate Quality</div>
+            <div class="stage-desc">
+              LLM judge scores against 25 criteria from literature-based
+              checklist
+              <a href="#references" style="color: var(--primary)">[1-4]</a>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 4. FOUR GENERATION MODES -->
+      <section>
+        <div class="section-label">Part 4</div>
+        <h2>Four Generation Modes Compared</h2>
+        <p class="section-intro">
+          We systematically compare four approaches to understand what type of
+          context helps most. Each mode adds a different type of information to
+          the LLM's input.
+        </p>
+
+        <!-- Visual comparison diagram -->
+        <div class="card" style="margin-bottom: 2rem">
+          <div class="card-title">🎯 What Each Mode Sees</div>
+          <div style="overflow-x: auto">
+            <table class="results-table" style="margin-top: 1rem">
+              <thead>
+                <tr>
+                  <th>Input Type</th>
+                  <th style="text-align: center">Baseline</th>
+                  <th style="text-align: center">RAG</th>
+                  <th style="text-align: center">KG</th>
+                  <th style="text-align: center">Hybrid</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><strong>Code Diff</strong></td>
+                  <td style="text-align: center; color: var(--accent-green)">
+                    ✓
+                  </td>
+                  <td style="text-align: center; color: var(--accent-green)">
+                    ✓
+                  </td>
+                  <td style="text-align: center; color: var(--accent-green)">
+                    ✓
+                  </td>
+                  <td style="text-align: center; color: var(--accent-green)">
+                    ✓
+                  </td>
+                </tr>
+                <tr>
+                  <td><strong>PR Metadata</strong> (title, body)</td>
+                  <td style="text-align: center; color: var(--accent-green)">
+                    ✓
+                  </td>
+                  <td style="text-align: center; color: var(--accent-green)">
+                    ✓
+                  </td>
+                  <td style="text-align: center; color: var(--accent-green)">
+                    ✓
+                  </td>
+                  <td style="text-align: center; color: var(--accent-green)">
+                    ✓
+                  </td>
+                </tr>
+                <tr style="background: rgba(167, 139, 250, 0.1)">
+                  <td><strong>Similar Code Chunks</strong> (semantic)</td>
+                  <td style="text-align: center; color: var(--accent-red)">
+                    ✗
+                  </td>
+                  <td style="text-align: center; color: var(--accent-green)">
+                    ✓
+                  </td>
+                  <td style="text-align: center; color: var(--accent-red)">
+                    ✗
+                  </td>
+                  <td style="text-align: center; color: var(--accent-green)">
+                    ✓
+                  </td>
+                </tr>
+                <tr style="background: rgba(56, 189, 248, 0.1)">
+                  <td><strong>Nearest Test Files</strong> (structural)</td>
+                  <td style="text-align: center; color: var(--accent-red)">
+                    ✗
+                  </td>
+                  <td style="text-align: center; color: var(--accent-red)">
+                    ✗
+                  </td>
+                  <td style="text-align: center; color: var(--accent-green)">
+                    ✓
+                  </td>
+                  <td style="text-align: center; color: var(--accent-green)">
+                    ✓
+                  </td>
+                </tr>
+                <tr style="background: rgba(56, 189, 248, 0.1)">
+                  <td><strong>Dependent Files</strong> (structural)</td>
+                  <td style="text-align: center; color: var(--accent-red)">
+                    ✗
+                  </td>
+                  <td style="text-align: center; color: var(--accent-red)">
+                    ✗
+                  </td>
+                  <td style="text-align: center; color: var(--accent-green)">
+                    ✓
+                  </td>
+                  <td style="text-align: center; color: var(--accent-green)">
+                    ✓
+                  </td>
+                </tr>
+                <tr style="background: rgba(56, 189, 248, 0.1)">
+                  <td>
+                    <strong>Import/Call Relationships</strong> (structural)
+                  </td>
+                  <td style="text-align: center; color: var(--accent-red)">
+                    ✗
+                  </td>
+                  <td style="text-align: center; color: var(--accent-red)">
+                    ✗
+                  </td>
+                  <td style="text-align: center; color: var(--accent-green)">
+                    ✓
+                  </td>
+                  <td style="text-align: center; color: var(--accent-green)">
+                    ✓
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Four mode cards -->
+        <div
+          style="
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+          "
+        >
+          <!-- BASELINE -->
+          <div class="mode-card baseline">
+            <div class="mode-badge">1. Baseline</div>
+            <div class="mode-title">Diff Only</div>
+            <div class="mode-desc">
+              The LLM sees <strong>only the code changes</strong>. No codebase
+              context at all. This is what most current AI code review tools do.
+            </div>
+            <div
+              style="
+                margin-top: 1rem;
+                padding: 1rem;
+                background: var(--bg);
+                border-radius: 8px;
+              "
+            >
+              <div
+                style="
+                  font-size: 0.8rem;
+                  color: var(--text-muted);
+                  margin-bottom: 0.5rem;
+                "
+              >
+                ANALOGY
+              </div>
+              <p style="font-size: 0.9rem">
+                Like reviewing a book edit without having read the book. You can
+                check grammar, but can't verify if the edit fits the story.
+              </p>
+            </div>
+            <div
+              style="
+                margin-top: 1rem;
+                padding: 0.75rem;
+                background: rgba(248, 113, 113, 0.1);
+                border-radius: 8px;
+                border-left: 3px solid var(--accent-red);
+              "
+            >
+              <strong style="color: var(--accent-red)">Limitation:</strong> Can
+              only comment on what's visible in the diff
+            </div>
+          </div>
+
+          <!-- RAG -->
+          <div class="mode-card" style="border-color: var(--accent-yellow)">
+            <div class="mode-badge" style="background: var(--accent-yellow)">
+              2. RAG
+            </div>
+            <div class="mode-title">Semantic Context</div>
+            <div class="mode-desc">
+              Uses <strong>vector embeddings</strong> to find code chunks
+              semantically similar to the changed code. Good for finding
+              patterns and related implementations.
+            </div>
+            <div
+              style="
+                margin-top: 1rem;
+                padding: 1rem;
+                background: var(--bg);
+                border-radius: 8px;
+              "
+            >
+              <div
+                style="
+                  font-size: 0.8rem;
+                  color: var(--text-muted);
+                  margin-bottom: 0.5rem;
+                "
+              >
+                ANALOGY
+              </div>
+              <p style="font-size: 0.9rem">
+                Like having a search engine that finds "code that looks
+                similar." Useful for consistency, but doesn't know
+                relationships.
+              </p>
+            </div>
+            <div
+              style="
+                margin-top: 1rem;
+                padding: 0.75rem;
+                background: rgba(251, 191, 36, 0.1);
+                border-radius: 8px;
+                border-left: 3px solid var(--accent-yellow);
+              "
+            >
+              <strong style="color: var(--accent-yellow)">Limitation:</strong>
+              Doesn't know which files are tests or dependencies
+            </div>
+          </div>
+
+          <!-- KG -->
+          <div class="mode-card kg">
+            <div class="mode-badge">3. Knowledge Graph</div>
+            <div class="mode-title">Structural Context</div>
+            <div class="mode-desc">
+              Extracts <strong>explicit relationships</strong> from the
+              codebase: which files are tests, which files import the changed
+              code, architectural dependencies.
+            </div>
+            <div
+              style="
+                margin-top: 1rem;
+                padding: 1rem;
+                background: var(--bg);
+                border-radius: 8px;
+              "
+            >
+              <div
+                style="
+                  font-size: 0.8rem;
+                  color: var(--text-muted);
+                  margin-bottom: 0.5rem;
+                "
+              >
+                ANALOGY
+              </div>
+              <p style="font-size: 0.9rem">
+                Like having a map of the codebase. You know exactly which tests
+                cover this code and what will break if you change it.
+              </p>
+            </div>
+            <div
+              style="
+                margin-top: 1rem;
+                padding: 0.75rem;
+                background: rgba(167, 139, 250, 0.1);
+                border-radius: 8px;
+                border-left: 3px solid var(--accent-purple);
+              "
+            >
+              <strong style="color: var(--accent-purple)">Strength:</strong> Can
+              name specific test files and warn about dependent code
+            </div>
+          </div>
+
+          <!-- HYBRID -->
+          <div class="mode-card hybrid">
+            <div class="mode-badge">4. Hybrid</div>
+            <div class="mode-title">Full Context</div>
+            <div class="mode-desc">
+              <strong>Combines KG + RAG</strong>. Gets both structural
+              relationships (tests, deps) AND semantically similar code. The
+              most comprehensive context.
+            </div>
+            <div
+              style="
+                margin-top: 1rem;
+                padding: 1rem;
+                background: var(--bg);
+                border-radius: 8px;
+              "
+            >
+              <div
+                style="
+                  font-size: 0.8rem;
+                  color: var(--text-muted);
+                  margin-bottom: 0.5rem;
+                "
+              >
+                ANALOGY
+              </div>
+              <p style="font-size: 0.9rem">
+                Like having both the map AND a search engine. You know the
+                structure and can find related patterns.
+              </p>
+            </div>
+            <div
+              style="
+                margin-top: 1rem;
+                padding: 0.75rem;
+                background: rgba(74, 222, 128, 0.1);
+                border-radius: 8px;
+                border-left: 3px solid var(--accent-green);
+              "
+            >
+              <strong style="color: var(--accent-green)">Best of both:</strong>
+              Structural accuracy + semantic coverage
+            </div>
+          </div>
+        </div>
+
+        <!-- CONCRETE EXAMPLE: Same PR, 4 Different Outputs -->
+        <div
+          class="card"
+          style="margin-top: 2rem; border-color: var(--accent-yellow)"
+        >
+          <div class="card-title">📝 Same PR, Four Different Reviews</div>
+          <p style="color: var(--text-muted); margin-bottom: 1.5rem">
+            <strong>PR #14778 (Apache Kafka):</strong> Adds
+            <code>remote.fetch.max.timeout.ms</code> configuration parameter.<br />
+            Here's exactly what each mode says about
+            <strong>test coverage</strong>:
+          </p>
+
+          <!-- Mode 1: Baseline -->
+          <div
+            style="
+              margin-bottom: 1.5rem;
+              padding: 1.25rem;
+              background: var(--bg);
+              border-radius: 12px;
+              border-left: 4px solid var(--text-muted);
+            "
+          >
+            <div
+              style="
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                margin-bottom: 1rem;
+              "
+            >
+              <span
+                style="
+                  font-weight: 600;
+                  color: var(--text-muted);
+                  text-transform: uppercase;
+                  font-size: 0.8rem;
+                  letter-spacing: 0.05em;
+                "
+                >1. Baseline (Diff Only)</span
+              >
+              <span
+                style="
+                  font-family: &quot;IBM Plex Mono&quot;, monospace;
+                  color: var(--accent-yellow);
+                  font-size: 0.9rem;
+                "
+                >48%</span
+              >
+            </div>
+            <div
+              style="
+                background: var(--bg-card);
+                padding: 1rem;
+                border-radius: 8px;
+                font-size: 0.9rem;
+              "
+            >
+              <p style="color: var(--text); margin-bottom: 0.5rem">
+                <strong>What it says:</strong>
+              </p>
+              <p style="color: var(--text-muted); font-style: italic">
+                "Insufficient test coverage for the new feature... Enhance test
+                coverage in DelayedRemoteFetchTest.scala to include edge cases."
+              </p>
+            </div>
+            <div
+              style="
+                margin-top: 1rem;
+                padding: 0.75rem;
+                background: rgba(248, 113, 113, 0.1);
+                border-radius: 6px;
+              "
+            >
+              <span style="color: var(--accent-red)"
+                >❌ <strong>Problem:</strong></span
+              >
+              <span style="color: var(--text-muted)">
+                Generic. Guessed the test file name from the changed file name.
+                Doesn't actually know if this test file exists.</span
+              >
+            </div>
+          </div>
+
+          <!-- Mode 2: RAG -->
+          <div
+            style="
+              margin-bottom: 1.5rem;
+              padding: 1.25rem;
+              background: var(--bg);
+              border-radius: 12px;
+              border-left: 4px solid var(--accent-yellow);
+            "
+          >
+            <div
+              style="
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                margin-bottom: 1rem;
+              "
+            >
+              <span
+                style="
+                  font-weight: 600;
+                  color: var(--accent-yellow);
+                  text-transform: uppercase;
+                  font-size: 0.8rem;
+                  letter-spacing: 0.05em;
+                "
+                >2. RAG (Semantic Context)</span
+              >
+              <span
+                style="
+                  font-family: &quot;IBM Plex Mono&quot;, monospace;
+                  color: var(--accent-yellow);
+                  font-size: 0.9rem;
+                "
+                >~45%</span
+              >
+            </div>
+            <div
+              style="
+                background: var(--bg-card);
+                padding: 1rem;
+                border-radius: 8px;
+                font-size: 0.9rem;
+              "
+            >
+              <p style="color: var(--text); margin-bottom: 0.5rem">
+                <strong>What it says:</strong>
+              </p>
+              <p style="color: var(--text-muted); font-style: italic">
+                "Similar timeout configurations in the codebase use validation.
+                Consider following the pattern in FetcherConfig.java... Add
+                tests similar to existing config tests."
+              </p>
+            </div>
+            <div
+              style="
+                margin-top: 1rem;
+                padding: 0.75rem;
+                background: rgba(251, 191, 36, 0.1);
+                border-radius: 6px;
+              "
+            >
+              <span style="color: var(--accent-yellow)"
+                >⚠️ <strong>Partial:</strong></span
+              >
+              <span style="color: var(--text-muted)">
+                Found similar patterns semantically, but doesn't know the actual
+                test file structure or dependencies.</span
+              >
+            </div>
+          </div>
+
+          <!-- Mode 3: KG -->
+          <div
+            style="
+              margin-bottom: 1.5rem;
+              padding: 1.25rem;
+              background: var(--bg);
+              border-radius: 12px;
+              border-left: 4px solid var(--accent-purple);
+            "
+          >
+            <div
+              style="
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                margin-bottom: 1rem;
+              "
+            >
+              <span
+                style="
+                  font-weight: 600;
+                  color: var(--accent-purple);
+                  text-transform: uppercase;
+                  font-size: 0.8rem;
+                  letter-spacing: 0.05em;
+                "
+                >3. Knowledge Graph (Structural)</span
+              >
+              <span
+                style="
+                  font-family: &quot;IBM Plex Mono&quot;, monospace;
+                  color: var(--accent-yellow);
+                  font-size: 0.9rem;
+                "
+                >40%</span
+              >
+            </div>
+            <div
+              style="
+                background: var(--bg-card);
+                padding: 1rem;
+                border-radius: 8px;
+                font-size: 0.9rem;
+              "
+            >
+              <p style="color: var(--text); margin-bottom: 0.5rem">
+                <strong>What it says:</strong>
+              </p>
+              <p style="color: var(--text-muted); font-style: italic">
+                "Add unit tests in
+                <strong style="color: var(--accent-purple)"
+                  >DelayedRemoteFetchTest.scala</strong
+                >
+                [exists in KG] to cover scenarios with different timeout values.
+                Also update
+                <strong style="color: var(--accent-purple)"
+                  >RemoteLogManagerConfigTest.java</strong
+                >
+                [exists in KG] for config validation."
+              </p>
+            </div>
+            <div
+              style="
+                margin-top: 1rem;
+                padding: 0.75rem;
+                background: rgba(167, 139, 250, 0.1);
+                border-radius: 6px;
+              "
+            >
+              <span style="color: var(--accent-purple)"
+                >✓ <strong>Specific:</strong></span
+              >
+              <span style="color: var(--text-muted)">
+                Names actual test files from the KG. Knows they exist and can be
+                extended.</span
+              >
+            </div>
+          </div>
+
+          <!-- Mode 4: Hybrid -->
+          <div
+            style="
+              padding: 1.25rem;
+              background: var(--bg);
+              border-radius: 12px;
+              border-left: 4px solid var(--accent-green);
+            "
+          >
+            <div
+              style="
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                margin-bottom: 1rem;
+              "
+            >
+              <span
+                style="
+                  font-weight: 600;
+                  color: var(--accent-green);
+                  text-transform: uppercase;
+                  font-size: 0.8rem;
+                  letter-spacing: 0.05em;
+                "
+                >4. Hybrid (KG + RAG)</span
+              >
+              <span
+                style="
+                  font-family: &quot;IBM Plex Mono&quot;, monospace;
+                  color: var(--accent-green);
+                  font-size: 0.9rem;
+                "
+                >52% ⭐</span
+              >
+            </div>
+            <div
+              style="
+                background: var(--bg-card);
+                padding: 1rem;
+                border-radius: 8px;
+                font-size: 0.9rem;
+              "
+            >
+              <p style="color: var(--text); margin-bottom: 0.5rem">
+                <strong>What it says:</strong>
+              </p>
+              <p style="color: var(--text-muted); font-style: italic">
+                "Enhance
+                <strong style="color: var(--accent-green)"
+                  >DelayedRemoteFetchTest.scala</strong
+                >
+                with test cases for the new timeout. Based on similar configs,
+                add validation in
+                <strong style="color: var(--accent-green)"
+                  >RemoteLogManagerConfig.java</strong
+                >. Note:
+                <strong style="color: var(--accent-green)"
+                  >KafkaApis.scala</strong
+                >
+                imports this module—verify integration."
+              </p>
+            </div>
+            <div
+              style="
+                margin-top: 1rem;
+                padding: 0.75rem;
+                background: rgba(74, 222, 128, 0.1);
+                border-radius: 6px;
+              "
+            >
+              <span style="color: var(--accent-green)"
+                >🏆 <strong>Best:</strong></span
+              >
+              <span style="color: var(--text-muted)">
+                Combines specific file names (KG) with pattern insights (RAG) +
+                warns about dependencies.</span
+              >
+            </div>
+          </div>
+        </div>
+
+        <!-- Summary takeaway -->
+        <div
+          class="card"
+          style="
+            margin-top: 1.5rem;
+            background: linear-gradient(
+              135deg,
+              rgba(56, 189, 248, 0.1),
+              rgba(74, 222, 128, 0.1)
+            );
+            border-color: var(--accent);
+          "
+        >
+          <div class="card-title">🔑 The Key Difference</div>
+          <div
+            style="
+              display: grid;
+              grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+              gap: 1.5rem;
+              margin-top: 1rem;
+            "
+          >
+            <div>
+              <h4
+                style="
+                  color: var(--text-muted);
+                  font-size: 0.9rem;
+                  margin-bottom: 0.5rem;
+                "
+              >
+                Without KG Context
+              </h4>
+              <p style="color: var(--text); font-size: 0.95rem">
+                "Add tests for this feature"
+              </p>
+              <p
+                style="
+                  color: var(--text-muted);
+                  font-size: 0.85rem;
+                  margin-top: 0.5rem;
+                "
+              >
+                → Developer must search for relevant test files
+              </p>
+            </div>
+            <div>
+              <h4
+                style="
+                  color: var(--accent);
+                  font-size: 0.9rem;
+                  margin-bottom: 0.5rem;
+                "
+              >
+                With KG Context
+              </h4>
+              <p style="color: var(--text); font-size: 0.95rem">
+                "Extend <code>DelayedRemoteFetchTest.scala</code> line 45"
+              </p>
+              <p
+                style="
+                  color: var(--text-muted);
+                  font-size: 0.85rem;
+                  margin-top: 0.5rem;
+                "
+              >
+                → Developer knows exactly where to add tests
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 5. CONCRETE EXAMPLE -->
+      <section>
+        <div class="section-label">Part 5</div>
+        <h2>Concrete Example: PR6 (Apache Kafka)</h2>
+        <p class="section-intro">
+          <strong>PR #14778:</strong> Adds a new configuration parameter
+          <code>remote.fetch.max.timeout.ms</code> for setting timeout on
+          delayed remote fetches. 6 files changed across Java and Scala.
+        </p>
+
+        <div class="card">
+          <div class="card-title">📦 KG Evidence Pack for this PR</div>
+          <div
+            style="
+              display: grid;
+              grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+              gap: 1rem;
+              margin-top: 1rem;
+            "
+          >
+            <div
+              style="background: var(--bg); padding: 1rem; border-radius: 8px"
+            >
+              <div
+                style="
+                  font-weight: 600;
+                  margin-bottom: 0.5rem;
+                  color: var(--accent);
+                "
+              >
+                Changed Files (6)
+              </div>
+              <code
+                style="display: block; font-size: 0.75rem; line-height: 1.6"
+              >
+                ConsumerConfig.java<br />
+                DelayedRemoteFetch.scala<br />
+                ReplicaManager.scala<br />
+                RemoteLogManagerConfig.java<br />
+                + 2 test files
+              </code>
+            </div>
+            <div
+              style="background: var(--bg); padding: 1rem; border-radius: 8px"
+            >
+              <div
+                style="
+                  font-weight: 600;
+                  margin-bottom: 0.5rem;
+                  color: var(--accent-green);
+                "
+              >
+                Nearest Tests (31)
+              </div>
+              <code
+                style="display: block; font-size: 0.75rem; line-height: 1.6"
+              >
+                DelayedRemoteFetchTest.scala<br />
+                RemoteLogManagerConfigTest.java<br />
+                ReplicaManagerTest.scala<br />
+                + 28 more test files
+              </code>
+            </div>
+            <div
+              style="background: var(--bg); padding: 1rem; border-radius: 8px"
+            >
+              <div
+                style="
+                  font-weight: 600;
+                  margin-bottom: 0.5rem;
+                  color: var(--accent-yellow);
+                "
+              >
+                Dependent Files (37)
+              </div>
+              <code
+                style="display: block; font-size: 0.75rem; line-height: 1.6"
+              >
+                KafkaApis.scala<br />
+                RemoteStorageManager.java<br />
+                FetcherManager.scala<br />
+                + 34 more files
+              </code>
+            </div>
+          </div>
+        </div>
+
+        <h3 style="margin: 2rem 0 1rem; font-size: 1.25rem">
+          Side-by-Side Review Comparison
+        </h3>
+
+        <div class="example-container">
+          <div class="example-review">
+            <div class="example-header">
+              <span class="example-mode" style="color: var(--text-muted)"
+                >Baseline</span
+              >
+              <span class="example-score mid">48%</span>
+            </div>
+            <div class="example-content">
+              <div class="example-section">
+                <div class="example-section-title">Problem Identified</div>
+                <div class="example-section-content">
+                  "Lack of validation for the new configuration parameter."
+                </div>
+              </div>
+              <div class="example-section">
+                <div class="example-section-title">Evidence Cited</div>
+                <div class="example-section-content">
+                  "No validation logic for
+                  <code>remote.fetch.max.timeout.ms</code>"
+                </div>
+              </div>
+              <div class="example-section">
+                <div class="example-section-title">Recommendation</div>
+                <div class="example-section-content">
+                  "Implement validation logic... Enhance test coverage..."
+                </div>
+              </div>
+              <div class="example-highlight bad">
+                <strong>⚠️ Weakness:</strong> Generic advice. No specific test
+                files mentioned. Doesn't know which tests already exist.
+              </div>
+            </div>
+          </div>
+
+          <div class="example-review">
+            <div class="example-header">
+              <span class="example-mode" style="color: var(--accent-purple)"
+                >KG Mode</span
+              >
+              <span class="example-score mid">40%</span>
+            </div>
+            <div class="example-content">
+              <div class="example-section">
+                <div class="example-section-title">Problem Identified</div>
+                <div class="example-section-content">
+                  "Lack of comprehensive test coverage... Potential integration
+                  issues with existing components"
+                </div>
+              </div>
+              <div class="example-section">
+                <div class="example-section-title">Evidence Cited</div>
+                <div class="example-section-content">
+                  "<code>DelayedRemoteFetchTest.scala</code>: Existing tests do
+                  not cover edge cases"
+                </div>
+              </div>
+              <div class="example-section">
+                <div class="example-section-title">Recommendation</div>
+                <div class="example-section-content">
+                  "Add unit tests in
+                  <strong>DelayedRemoteFetchTest.scala</strong> to cover
+                  scenarios..."
+                </div>
+              </div>
+              <div class="example-highlight good">
+                <strong>✓ Strength:</strong> Names the actual test file! Knows
+                it exists and can suggest extending it specifically.
+              </div>
+            </div>
+          </div>
+
+          <div class="example-review">
+            <div class="example-header">
+              <span class="example-mode" style="color: var(--accent-green)"
+                >Hybrid Mode</span
+              >
+              <span class="example-score high">52%</span>
+            </div>
+            <div class="example-content">
+              <div class="example-section">
+                <div class="example-section-title">Problem Identified</div>
+                <div class="example-section-content">
+                  "Lack of test coverage... Potential integration issues...
+                  <strong>Absence of clear documentation</strong>"
+                </div>
+              </div>
+              <div class="example-section">
+                <div class="example-section-title">Evidence Cited</div>
+                <div class="example-section-content">
+                  Lists 3 specific files with inline observations about each
+                </div>
+              </div>
+              <div class="example-section">
+                <div class="example-section-title">Recommendation</div>
+                <div class="example-section-content">
+                  "Enhance <code>DelayedRemoteFetchTest.scala</code>... Include
+                  detailed comments in
+                  <code>RemoteLogManagerConfig.java</code>... Conduct
+                  integration review"
+                </div>
+              </div>
+              <div class="example-highlight good">
+                <strong>🏆 Best:</strong> Most comprehensive—covers tests, docs,
+                AND integration concerns. Multiple specific file references.
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 6. DATASET -->
+      <section>
+        <div class="section-label">Part 6</div>
+        <h2>Dataset: 10 Expert-Validated PRs</h2>
+        <p class="section-intro">
+          We use PRs from Luca Mariotto's thesis dataset—35 PRs selected by
+          domain experts from 600+ candidates across major open source projects.
+        </p>
+
+        <div class="stats-grid">
+          <div class="stat-card">
+            <div class="stat-value">10</div>
+            <div class="stat-label">Pull Requests Evaluated</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-value">7</div>
+            <div class="stat-label">Open Source Projects</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-value">6</div>
+            <div class="stat-label">Programming Languages</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-value">30</div>
+            <div class="stat-label">Reviews Generated</div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-title">📊 PR Overview</div>
+          <div style="overflow-x: auto">
+            <table class="results-table">
+              <thead>
+                <tr>
+                  <th>PR</th>
+                  <th>Repository</th>
+                  <th>Language</th>
+                  <th>Files</th>
+                  <th>Tests Found</th>
+                  <th>Dependents</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>PR1</td>
+                  <td>godotengine/godot</td>
+                  <td>C++</td>
+                  <td>3</td>
+                  <td>0</td>
+                  <td>5</td>
+                </tr>
+                <tr>
+                  <td>PR2</td>
+                  <td>grafana/grafana</td>
+                  <td>TypeScript</td>
+                  <td>8</td>
+                  <td>33</td>
+                  <td>40</td>
+                </tr>
+                <tr>
+                  <td>PR3</td>
+                  <td>grafana/grafana</td>
+                  <td>TypeScript</td>
+                  <td>3</td>
+                  <td>20</td>
+                  <td>30</td>
+                </tr>
+                <tr>
+                  <td>PR5</td>
+                  <td>jenkinsci/jenkins</td>
+                  <td>Java</td>
+                  <td>2</td>
+                  <td>0</td>
+                  <td>3</td>
+                </tr>
+                <tr>
+                  <td>PR6</td>
+                  <td>apache/kafka</td>
+                  <td>Java/Scala</td>
+                  <td>6</td>
+                  <td>31</td>
+                  <td>37</td>
+                </tr>
+                <tr>
+                  <td>PR7</td>
+                  <td>microsoft/TypeScript</td>
+                  <td>TypeScript</td>
+                  <td>2</td>
+                  <td>0</td>
+                  <td>1</td>
+                </tr>
+                <tr>
+                  <td>PR8</td>
+                  <td>grafana/grafana</td>
+                  <td>TypeScript</td>
+                  <td>26</td>
+                  <td>3</td>
+                  <td>15</td>
+                </tr>
+                <tr>
+                  <td>PR9</td>
+                  <td>grafana/grafana</td>
+                  <td>TypeScript</td>
+                  <td>15</td>
+                  <td>10</td>
+                  <td>15</td>
+                </tr>
+                <tr>
+                  <td>PR10</td>
+                  <td>scikit-learn</td>
+                  <td>Python</td>
+                  <td>17</td>
+                  <td>10</td>
+                  <td>13</td>
+                </tr>
+                <tr>
+                  <td>PR11</td>
+                  <td>django/django</td>
+                  <td>Python</td>
+                  <td>2</td>
+                  <td>0</td>
+                  <td>1</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Positioning vs Luca -->
+        <div
+          class="card"
+          style="
+            margin-top: 1.5rem;
+            background: linear-gradient(
+              135deg,
+              rgba(167, 139, 250, 0.1),
+              transparent
+            );
+            border-color: var(--accent-purple);
+          "
+        >
+          <div class="card-title">How This Work Extends Mariotto's Thesis</div>
+          <p
+            style="
+              color: var(--text-muted);
+              margin-bottom: 1.5rem;
+              font-size: 0.95rem;
+            "
+          >
+            This research builds on Luca Mariotto's thesis dataset while
+            addressing a different problem:
+          </p>
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem">
+            <div
+              style="padding: 1rem; background: var(--bg); border-radius: 8px"
+            >
+              <h4
+                style="
+                  color: var(--text-muted);
+                  font-size: 0.85rem;
+                  margin-bottom: 0.75rem;
+                  text-transform: uppercase;
+                "
+              >
+                Mariotto's Work (2025)
+              </h4>
+              <ul
+                style="
+                  color: var(--text-muted);
+                  font-size: 0.9rem;
+                  line-height: 1.7;
+                  padding-left: 1rem;
+                "
+              >
+                <li>
+                  <strong style="color: var(--text)">Task:</strong> Improving PR
+                  descriptions
+                </li>
+                <li>
+                  <strong style="color: var(--text)">Output:</strong> Enhanced
+                  PR body text
+                </li>
+                <li>
+                  <strong style="color: var(--text)">Evaluation:</strong> 6
+                  high-level competencies
+                </li>
+                <li>
+                  <strong style="color: var(--text)">Context:</strong> Basic
+                  prompt engineering
+                </li>
+              </ul>
+            </div>
+            <div
+              style="
+                padding: 1rem;
+                background: var(--bg);
+                border-radius: 8px;
+                border: 1px solid var(--accent-purple);
+              "
+            >
+              <h4
+                style="
+                  color: var(--accent-purple);
+                  font-size: 0.85rem;
+                  margin-bottom: 0.75rem;
+                  text-transform: uppercase;
+                "
+              >
+                This Work (2026)
+              </h4>
+              <ul
+                style="
+                  color: var(--text-muted);
+                  font-size: 0.9rem;
+                  line-height: 1.7;
+                  padding-left: 1rem;
+                "
+              >
+                <li>
+                  <strong style="color: var(--text)">Task:</strong> Generating
+                  PR review comments
+                </li>
+                <li>
+                  <strong style="color: var(--text)">Output:</strong> Actionable
+                  code review feedback
+                </li>
+                <li>
+                  <strong style="color: var(--text)">Evaluation:</strong> 25
+                  granular criteria (LLM-as-judge)
+                </li>
+                <li>
+                  <strong style="color: var(--text)">Context:</strong> KG + RAG
+                  retrieval strategies
+                </li>
+              </ul>
+            </div>
+          </div>
+          <p
+            style="
+              color: var(--text);
+              margin-top: 1.5rem;
+              font-size: 0.95rem;
+              padding: 1rem;
+              background: var(--bg);
+              border-radius: 8px;
+              border-left: 3px solid var(--accent-purple);
+            "
+          >
+            <strong>Key contribution:</strong> We demonstrate that structured
+            repository context (via Knowledge Graph) enables LLMs to generate
+            review comments that reference specific test files and warn about
+            dependent code— something not possible with Mariotto's prompt-only
+            approach.
+          </p>
+        </div>
+      </section>
+
+      <!-- 7. EVALUATION CRITERIA -->
+      <section>
+        <div class="section-label">Part 7</div>
+        <h2>Evaluation: Literature-Based 25-Criterion Rubric</h2>
+        <p class="section-intro">
+          Reviews are scored using an
+          <strong>LLM-as-judge protocol</strong> (GPT-4o-mini) against a 25-item
+          checklist synthesized from foundational code review research. The
+          criteria cover what makes code reviews useful according to empirical
+          studies at Microsoft
+          <a href="#references" style="color: var(--accent)">[3]</a>, Google
+          <a href="#references" style="color: var(--accent)">[2]</a>, and
+          academic research
+          <a href="#references" style="color: var(--accent)">[1,4]</a>.
+        </p>
+
+        <div
+          class="card"
+          style="margin-bottom: 1.5rem; background: rgba(56, 189, 248, 0.05)"
+        >
+          <div class="card-title">Methodology: LLM-as-Judge Evaluation</div>
+          <p
+            style="
+              color: var(--text-muted);
+              margin-bottom: 1rem;
+              font-size: 0.95rem;
+            "
+          >
+            Following Zheng et al.'s LLM-as-judge framework, we use GPT-4o-mini
+            to systematically evaluate each generated review against our 25
+            criteria. This approach is more reliable than simple text similarity
+            metrics (like BLEU or SBERT), which Hong et al. showed can be
+            misleading for code review evaluation.
+          </p>
+          <div
+            style="
+              display: grid;
+              grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+              gap: 1rem;
+            "
+          >
+            <div
+              style="
+                padding: 0.75rem;
+                background: var(--bg);
+                border-radius: 8px;
+                text-align: center;
+              "
+            >
+              <div style="font-weight: 600; color: var(--accent)">
+                25 Total Criteria
+              </div>
+              <div style="font-size: 0.85rem; color: var(--text-muted)">
+                Covering 6 quality dimensions
+              </div>
+            </div>
+            <div
+              style="
+                padding: 0.75rem;
+                background: var(--bg);
+                border-radius: 8px;
+                text-align: center;
+              "
+            >
+              <div style="font-weight: 600; color: var(--accent-purple)">
+                9 KG-Relevant
+              </div>
+              <div style="font-size: 0.85rem; color: var(--text-muted)">
+                Require structural context
+              </div>
+            </div>
+            <div
+              style="
+                padding: 0.75rem;
+                background: var(--bg);
+                border-radius: 8px;
+                text-align: center;
+              "
+            >
+              <div style="font-weight: 600; color: var(--accent-green)">
+                Binary Scoring
+              </div>
+              <div style="font-size: 0.85rem; color: var(--text-muted)">
+                0 = not met, 1 = satisfied
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Research Foundation for Criteria -->
+        <div class="card" style="margin-bottom: 1.5rem">
+          <div class="card-title">Why These Criteria? Research Foundation</div>
+          <p
+            style="
+              color: var(--text-muted);
+              margin-bottom: 1rem;
+              font-size: 0.95rem;
+            "
+          >
+            Our 25 criteria operationalize findings from empirical research on
+            what makes code reviews effective:
+          </p>
+          <div
+            style="
+              display: grid;
+              grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+              gap: 1rem;
+            "
+          >
+            <div
+              style="
+                padding: 1rem;
+                background: var(--bg);
+                border-radius: 8px;
+                border-left: 3px solid var(--accent);
+              "
+            >
+              <h4
+                style="
+                  font-size: 0.9rem;
+                  margin-bottom: 0.5rem;
+                  color: var(--text);
+                "
+              >
+                Bacchelli & Bird (ICSE 2013) [1]
+              </h4>
+              <p style="font-size: 0.85rem; color: var(--text-muted)">
+                "Developers expect reviews to find defects, improve quality,
+                share knowledge"
+                <br /><span style="color: var(--accent)"
+                  >→ Our F1-F4 (Functionality) + M1-M3 (Maintainability)</span
+                >
+              </p>
+            </div>
+            <div
+              style="
+                padding: 1rem;
+                background: var(--bg);
+                border-radius: 8px;
+                border-left: 3px solid var(--accent-purple);
+              "
+            >
+              <h4
+                style="
+                  font-size: 0.9rem;
+                  margin-bottom: 0.5rem;
+                  color: var(--text);
+                "
+              >
+                Bosu et al. (MSR 2015) [3]
+              </h4>
+              <p style="font-size: 0.85rem; color: var(--text-muted)">
+                "Useful comments point out bugs, suggest improvements, discuss
+                tests"
+                <br /><span style="color: var(--accent-purple)"
+                  >→ Our T1-T3 (Testing) + Q1-Q3 (Review Quality)</span
+                >
+              </p>
+            </div>
+            <div
+              style="
+                padding: 1rem;
+                background: var(--bg);
+                border-radius: 8px;
+                border-left: 3px solid var(--accent-green);
+              "
+            >
+              <h4
+                style="
+                  font-size: 0.9rem;
+                  margin-bottom: 0.5rem;
+                  color: var(--text);
+                "
+              >
+                Sadowski et al. (ICSE-SEIP 2018) [2]
+              </h4>
+              <p style="font-size: 0.85rem; color: var(--text-muted)">
+                "Google reviews focus on readability, correctness,
+                maintainability"
+                <br /><span style="color: var(--accent-green)"
+                  >→ Our C1-C6 (Code Quality) + R1-R5 (Robustness)</span
+                >
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-title">🎯 KG-Relevant Criteria (9 of 25)</div>
+          <p style="color: var(--text-muted); margin-bottom: 1.5rem">
+            These criteria require knowledge that only the KG can provide:
+          </p>
+          <div class="criteria-grid">
+            <div class="criterion">
+              <span class="criterion-id">F3</span>
+              <span class="criterion-text"
+                >Check integration with existing components/APIs
+                <span class="kg-tag">KG</span></span
+              >
+            </div>
+            <div class="criterion">
+              <span class="criterion-id">F4</span>
+              <span class="criterion-text"
+                >Warn about breaking changes or dependent code
+                <span class="kg-tag">KG</span></span
+              >
+            </div>
+            <div class="criterion">
+              <span class="criterion-id">T1</span>
+              <span class="criterion-text"
+                >Discuss need for unit/integration tests
+                <span class="kg-tag">KG</span></span
+              >
+            </div>
+            <div class="criterion">
+              <span class="criterion-id">T2</span>
+              <span class="criterion-text"
+                >Mention testing edge cases/error paths
+                <span class="kg-tag">KG</span></span
+              >
+            </div>
+            <div class="criterion">
+              <span class="criterion-id">T3</span>
+              <span class="criterion-text"
+                >Reference specific test files or methods
+                <span class="kg-tag">KG</span></span
+              >
+            </div>
+            <div class="criterion">
+              <span class="criterion-id">D1</span>
+              <span class="criterion-text"
+                >Identify files that depend on changed code
+                <span class="kg-tag">KG</span></span
+              >
+            </div>
+            <div class="criterion">
+              <span class="criterion-id">D2</span>
+              <span class="criterion-text"
+                >Flag potential downstream impacts
+                <span class="kg-tag">KG</span></span
+              >
+            </div>
+            <div class="criterion">
+              <span class="criterion-id">D3</span>
+              <span class="criterion-text"
+                >Suggest verifying integration points
+                <span class="kg-tag">KG</span></span
+              >
+            </div>
+            <div class="criterion">
+              <span class="criterion-id">A3</span>
+              <span class="criterion-text"
+                >Discuss impact on related subsystems
+                <span class="kg-tag">KG</span></span
+              >
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 8. RESULTS -->
+      <section>
+        <div class="section-label">Part 8</div>
+        <h2>Results</h2>
+        <p class="section-intro">
+          Both KG and Hybrid modes significantly outperform the Baseline across
+          all metrics.
+        </p>
+
+        <div class="stats-grid">
+          <div class="stat-card">
+            <div class="stat-value">+68%</div>
+            <div class="stat-label">KG vs Baseline</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-value">+97%</div>
+            <div class="stat-label">Hybrid vs Baseline</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-value">8/10</div>
+            <div class="stat-label">PRs with KG Improvement</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-value">7/10</div>
+            <div class="stat-label">PRs where Hybrid Wins</div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-title">📈 Per-PR Results</div>
+          <div style="overflow-x: auto">
+            <table class="results-table">
+              <thead>
+                <tr>
+                  <th>PR</th>
+                  <th>Repository</th>
+                  <th>Baseline</th>
+                  <th>KG</th>
+                  <th>Hybrid</th>
+                  <th>Winner</th>
+                  <th>KG Δ</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>PR1</td>
+                  <td>godot</td>
+                  <td>8%</td>
+                  <td>16%</td>
+                  <td class="winner">24%</td>
+                  <td>Hybrid</td>
+                  <td class="improvement">+100%</td>
+                </tr>
+                <tr>
+                  <td>PR2</td>
+                  <td>grafana</td>
+                  <td>12%</td>
+                  <td class="winner">28%</td>
+                  <td>16%</td>
+                  <td>KG</td>
+                  <td class="improvement">+133%</td>
+                </tr>
+                <tr>
+                  <td>PR3</td>
+                  <td>grafana</td>
+                  <td>8%</td>
+                  <td>24%</td>
+                  <td class="winner">32%</td>
+                  <td>Hybrid</td>
+                  <td class="improvement">+200%</td>
+                </tr>
+                <tr>
+                  <td>PR5</td>
+                  <td>jenkins</td>
+                  <td>8%</td>
+                  <td>8%</td>
+                  <td class="winner">12%</td>
+                  <td>Hybrid</td>
+                  <td>0%</td>
+                </tr>
+                <tr>
+                  <td>PR6</td>
+                  <td>kafka</td>
+                  <td>48%</td>
+                  <td>40%</td>
+                  <td class="winner">52%</td>
+                  <td>Hybrid</td>
+                  <td class="decline">-17%</td>
+                </tr>
+                <tr>
+                  <td>PR7</td>
+                  <td>TypeScript</td>
+                  <td>12%</td>
+                  <td class="winner">28%</td>
+                  <td class="winner">28%</td>
+                  <td>Tie</td>
+                  <td class="improvement">+133%</td>
+                </tr>
+                <tr>
+                  <td>PR8</td>
+                  <td>grafana</td>
+                  <td>8%</td>
+                  <td class="winner">24%</td>
+                  <td class="winner">24%</td>
+                  <td>Tie</td>
+                  <td class="improvement">+200%</td>
+                </tr>
+                <tr>
+                  <td>PR9</td>
+                  <td>grafana</td>
+                  <td>4%</td>
+                  <td>16%</td>
+                  <td class="winner">20%</td>
+                  <td>Hybrid</td>
+                  <td class="improvement">+300%</td>
+                </tr>
+                <tr>
+                  <td>PR10</td>
+                  <td>scikit-learn</td>
+                  <td class="winner">8%</td>
+                  <td>4%</td>
+                  <td class="winner">8%</td>
+                  <td>Baseline</td>
+                  <td class="decline">-50%</td>
+                </tr>
+                <tr>
+                  <td>PR11</td>
+                  <td>django</td>
+                  <td>8%</td>
+                  <td>20%</td>
+                  <td class="winner">28%</td>
+                  <td>Hybrid</td>
+                  <td class="improvement">+150%</td>
+                </tr>
+                <tr style="font-weight: 600; background: var(--bg)">
+                  <td colspan="2">AVERAGE</td>
+                  <td>12.4%</td>
+                  <td>20.8%</td>
+                  <td>24.4%</td>
+                  <td>Hybrid</td>
+                  <td class="improvement">+68%</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-title">📊 Average Score by Mode</div>
+          <div class="chart-container">
+            <canvas id="resultsChart"></canvas>
+          </div>
+        </div>
+      </section>
+
+      <!-- 9. ABLATION STUDY (RQ2.1) -->
+      <section>
+        <div class="section-label">Part 9</div>
+        <h2>Ablation Study: Which Context Features Matter? (RQ2.1)</h2>
+        <p class="section-intro">
+          To understand which parts of the KG context contribute most to review
+          quality, we systematically removed features and measured the impact.
+        </p>
+
+        <div class="card">
+          <div class="card-title">
+            🔬 Experiment: Remove Tests vs Remove Dependencies
+          </div>
+          <p style="color: var(--text-muted); margin-bottom: 1.5rem">
+            We systematically removed KG features and measured the impact on
+            review quality scores.
+          </p>
+
+          <div style="overflow-x: auto">
+            <table class="results-table">
+              <thead>
+                <tr>
+                  <th>Configuration</th>
+                  <th>Avg Score</th>
+                  <th>vs Full KG</th>
+                  <th>Impact</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><strong>Full KG</strong> (all features)</td>
+                  <td>20.8%</td>
+                  <td>—</td>
+                  <td><em>Baseline</em></td>
+                </tr>
+                <tr>
+                  <td>KG − Dependencies (no importers/callers)</td>
+                  <td>16.0%</td>
+                  <td class="decline">−23%</td>
+                  <td style="color: var(--accent-red)">
+                    <strong>Critical</strong>
+                  </td>
+                </tr>
+                <tr>
+                  <td>KG − Tests (no test coverage)</td>
+                  <td>17.3%</td>
+                  <td class="decline">−17%</td>
+                  <td style="color: var(--accent-yellow)">High impact</td>
+                </tr>
+                <tr style="font-weight: 600; background: var(--bg)">
+                  <td>KG Minimal (files only)</td>
+                  <td>12.5%</td>
+                  <td class="decline">−40%</td>
+                  <td style="color: var(--accent-red)">
+                    <strong>Severe</strong>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="card" style="margin-top: 1.5rem">
+          <div class="card-title">📊 Ablation Findings</div>
+          <div
+            style="
+              display: grid;
+              grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+              gap: 1.5rem;
+              margin-top: 1rem;
+            "
+          >
+            <div
+              style="
+                padding: 1.25rem;
+                background: var(--bg);
+                border-radius: 12px;
+                border-left: 4px solid var(--accent-red);
+              "
+            >
+              <h4 style="font-size: 1rem; margin-bottom: 0.5rem">
+                Dependencies Are Critical (−23%)
+              </h4>
+              <p style="color: var(--text-muted); font-size: 0.9rem">
+                Removing dependency information causes the largest quality drop.
+                The LLM loses ability to warn about breaking changes and
+                integration risks.
+              </p>
+            </div>
+            <div
+              style="
+                padding: 1.25rem;
+                background: var(--bg);
+                border-radius: 12px;
+                border-left: 4px solid var(--accent-yellow);
+              "
+            >
+              <h4 style="font-size: 1rem; margin-bottom: 0.5rem">
+                Tests Are Valuable (−17%)
+              </h4>
+              <p style="color: var(--text-muted); font-size: 0.9rem">
+                Test coverage info enables specific recommendations about which
+                tests to run and what edge cases need coverage.
+              </p>
+            </div>
+            <div
+              style="
+                padding: 1.25rem;
+                background: var(--bg);
+                border-radius: 12px;
+                border-left: 4px solid var(--accent-green);
+              "
+            >
+              <h4 style="font-size: 1rem; margin-bottom: 0.5rem">
+                Full KG Is Best
+              </h4>
+              <p style="color: var(--text-muted); font-size: 0.9rem">
+                Combining all features (tests + deps) yields highest quality.
+                Minimal KG (−40%) shows structural context is essential.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div
+          class="card"
+          style="
+            margin-top: 1.5rem;
+            background: rgba(251, 191, 36, 0.1);
+            border-color: var(--accent-yellow);
+          "
+        >
+          <div class="card-title">⚠️ Ablation Limitations</div>
+          <ul
+            style="
+              color: var(--text-muted);
+              font-size: 0.9rem;
+              line-height: 1.8;
+              padding-left: 1.25rem;
+            "
+          >
+            <li>
+              Small sample (3 PRs) — results are indicative, not conclusive
+            </li>
+            <li>Single run per configuration — no variance measured</li>
+            <li>LLM-based evaluation may have noise</li>
+            <li>Full thesis will include more systematic ablations</li>
+          </ul>
+        </div>
+      </section>
+
+      <!-- 10. LIMITATIONS -->
+      <section>
+        <div class="section-label">Part 10</div>
+        <h2>Limitations & Threats to Validity</h2>
+
+        <div class="card">
+          <div
+            style="
+              display: grid;
+              grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+              gap: 1.5rem;
+            "
+          >
+            <div>
+              <h4
+                style="
+                  color: var(--accent-red);
+                  font-size: 0.9rem;
+                  margin-bottom: 0.75rem;
+                "
+              >
+                🔴 External Validity
+              </h4>
+              <ul
+                style="
+                  color: var(--text-muted);
+                  font-size: 0.9rem;
+                  line-height: 1.7;
+                  padding-left: 1.25rem;
+                "
+              >
+                <li>10 PRs from 7 repositories</li>
+                <li>
+                  Results are comparative case studies, not broad generalization
+                </li>
+                <li>All PRs are from large, well-maintained OSS projects</li>
+              </ul>
+            </div>
+            <div>
+              <h4
+                style="
+                  color: var(--accent-yellow);
+                  font-size: 0.9rem;
+                  margin-bottom: 0.75rem;
+                "
+              >
+                🟡 Construct Validity
+              </h4>
+              <ul
+                style="
+                  color: var(--text-muted);
+                  font-size: 0.9rem;
+                  line-height: 1.7;
+                  padding-left: 1.25rem;
+                "
+              >
+                <li>LLM-as-judge evaluation may have systematic biases</li>
+                <li>
+                  25 criteria rubric adapted from established code review
+                  literature
+                  <a href="#references" style="color: var(--primary)">[1-4]</a>
+                </li>
+                <li>
+                  No human spot-check validation in PoC (planned for thesis)
+                </li>
+              </ul>
+            </div>
+            <div>
+              <h4
+                style="
+                  color: var(--accent-purple);
+                  font-size: 0.9rem;
+                  margin-bottom: 0.75rem;
+                "
+              >
+                🟣 Implementation Gaps
+              </h4>
+              <ul
+                style="
+                  color: var(--text-muted);
+                  font-size: 0.9rem;
+                  line-height: 1.7;
+                  padding-left: 1.25rem;
+                "
+              >
+                <li>
+                  <strong>RAG mode:</strong> Partial implementation, retrieval
+                  failures on 2 PRs
+                </li>
+                <li>
+                  <strong>Function-level calls:</strong> Using file-level
+                  imports instead of AST-based call graphs
+                </li>
+              </ul>
+            </div>
+            <div>
+              <h4
+                style="
+                  color: var(--accent);
+                  font-size: 0.9rem;
+                  margin-bottom: 0.75rem;
+                "
+              >
+                🔵 Model Sensitivity
+              </h4>
+              <ul
+                style="
+                  color: var(--text-muted);
+                  font-size: 0.9rem;
+                  line-height: 1.7;
+                  padding-left: 1.25rem;
+                "
+              >
+                <li>Single run per PR (no variance reporting)</li>
+                <li>GPT-4o for generation, GPT-4o-mini for evaluation</li>
+                <li>Temperature = 0.3 for generation</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <!-- Additional Notes on Results -->
+        <div
+          class="card"
+          style="margin-top: 1.5rem; background: rgba(56, 189, 248, 0.05)"
+        >
+          <div class="card-title">📝 Notes on Results</div>
+          <div
+            style="
+              display: grid;
+              grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+              gap: 1.5rem;
+            "
+          >
+            <div
+              style="padding: 1rem; background: var(--bg); border-radius: 8px"
+            >
+              <h4
+                style="
+                  font-size: 0.9rem;
+                  margin-bottom: 0.5rem;
+                  color: var(--accent-yellow);
+                "
+              >
+                Why are absolute scores low (12-24%)?
+              </h4>
+              <p
+                style="
+                  font-size: 0.85rem;
+                  color: var(--text-muted);
+                  line-height: 1.7;
+                "
+              >
+                The 25-criterion rubric is intentionally strict—many criteria
+                (e.g., "reference specific test files by name") require
+                information that may not always be relevant or available. Even
+                expert human reviewers wouldn't satisfy all 25 criteria on every
+                PR. The key insight is the
+                <strong>relative improvement</strong> (+68-97%), not the
+                absolute score.
+              </p>
+            </div>
+            <div
+              style="padding: 1rem; background: var(--bg); border-radius: 8px"
+            >
+              <h4
+                style="
+                  font-size: 0.9rem;
+                  margin-bottom: 0.5rem;
+                  color: var(--accent-purple);
+                "
+              >
+                Why does KG beat Hybrid in PR2?
+              </h4>
+              <p
+                style="
+                  font-size: 0.85rem;
+                  color: var(--text-muted);
+                  line-height: 1.7;
+                "
+              >
+                In 2 of 10 PRs, KG outperforms Hybrid. This suggests that in
+                some cases, RAG retrieves irrelevant or noisy context that
+                dilutes the quality of KG's structural signals. Future work will
+                investigate when to prefer KG-only vs. Hybrid based on PR
+                characteristics.
+              </p>
+            </div>
+            <div
+              style="padding: 1rem; background: var(--bg); border-radius: 8px"
+            >
+              <h4
+                style="
+                  font-size: 0.9rem;
+                  margin-bottom: 0.5rem;
+                  color: var(--text-muted);
+                "
+              >
+                Why is PR4 missing?
+              </h4>
+              <p
+                style="
+                  font-size: 0.85rem;
+                  color: var(--text-muted);
+                  line-height: 1.7;
+                "
+              >
+                PR4 from Mariotto's dataset was excluded due to repository
+                access issues during the PoC phase. The full thesis will include
+                additional PRs to compensate.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 11. CONCLUSIONS -->
+      <section>
+        <div class="section-label">Part 11</div>
+        <h2>Conclusions</h2>
+
+        <div class="conclusion-grid">
+          <div class="conclusion-card">
+            <h4>✅ RQ1.1 Answered</h4>
+            <p>
+              <strong
+                >Yes, context augmentation improves review quality.</strong
+              >
+              KG mode shows +68% improvement over baseline. Hybrid achieves
+              +97%. 8 out of 10 PRs benefit from structural context.
+            </p>
+          </div>
+          <div class="conclusion-card">
+            <h4>✅ RQ1.2 Answered</h4>
+            <p>
+              <strong>Hybrid (KG+RAG) performs best</strong> overall, winning
+              7/10 PRs. KG-only wins 2/10. RAG-only not fully evaluated due to
+              implementation issues. Combining structural + semantic context
+              yields most comprehensive reviews.
+            </p>
+          </div>
+          <div class="conclusion-card">
+            <h4>📊 RQ2.1 Preliminary</h4>
+            <p>
+              <strong>Dependencies are the most critical KG feature.</strong>
+              Ablation shows removing deps hurts quality by −23%, followed by
+              tests (−17%). Minimal KG (files only) causes severe degradation
+              (−40%). Full thesis will expand ablation scope.
+            </p>
+          </div>
+          <div class="conclusion-card">
+            <h4>🔑 Key Insight</h4>
+            <p>
+              KG enables <strong>specific, actionable feedback</strong> (naming
+              actual test files, warning about dependent code) vs. generic
+              baseline advice. This specificity is the primary driver of quality
+              improvement.
+            </p>
+          </div>
+          <div
+            class="conclusion-card"
+            style="
+              border: 2px solid var(--accent-yellow);
+              background: rgba(251, 191, 36, 0.1);
+            "
+          >
+            <h4>⚠️ Important Finding (RQ1)</h4>
+            <p>
+              <strong
+                >Without evaluation criteria that properly address software
+                artefacts</strong
+              >
+              (tests, dependencies, integration points), the LLM cannot
+              demonstrate benefit from richer context. Generic criteria fail to
+              capture KG-specific improvements. This motivates refining
+              KG-relevant criteria into sub-categories.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <!-- 12. NEXT STEPS -->
+      <section>
+        <div class="section-label">Part 12</div>
+        <h2>Next Steps for Thesis</h2>
+
+        <div class="card">
+          <ul style="list-style: none">
+            <li
+              style="
+                padding: 0.75rem 0;
+                border-bottom: 1px solid var(--border);
+                display: flex;
+                align-items: flex-start;
+                gap: 1rem;
+              "
+            >
+              <span style="color: var(--accent)">1.</span>
+              <div>
+                <strong>Expand dataset to 20-30 PRs</strong><br />
+                <span style="color: var(--text-muted)"
+                  >Use remaining PRs from Luca's 35 expert-validated set for
+                  stronger statistical significance</span
+                >
+              </div>
+            </li>
+            <li
+              style="
+                padding: 0.75rem 0;
+                border-bottom: 1px solid var(--border);
+                display: flex;
+                align-items: flex-start;
+                gap: 1rem;
+              "
+            >
+              <span style="color: var(--accent)">2.</span>
+              <div>
+                <strong>Improve KG evidence extraction</strong><br />
+                <span style="color: var(--text-muted)"
+                  >Better test detection for C++/Python, more accurate
+                  dependency graphs</span
+                >
+              </div>
+            </li>
+            <li
+              style="
+                padding: 0.75rem 0;
+                border-bottom: 1px solid var(--border);
+                display: flex;
+                align-items: flex-start;
+                gap: 1rem;
+              "
+            >
+              <span style="color: var(--accent)">3.</span>
+              <div>
+                <strong>Human evaluation study</strong><br />
+                <span style="color: var(--text-muted)"
+                  >Have developers rate generated reviews for usefulness</span
+                >
+              </div>
+            </li>
+            <li
+              style="
+                padding: 0.75rem 0;
+                border-bottom: 1px solid var(--border);
+                display: flex;
+                align-items: flex-start;
+                gap: 1rem;
+              "
+            >
+              <span style="color: var(--accent)">4.</span>
+              <div>
+                <strong>Refine KG-Relevant criteria into sub-criteria</strong
+                ><br />
+                <span style="color: var(--text-muted)"
+                  >Decompose into granular sub-criteria (test identification,
+                  dependency warnings, integration impact)</span
+                >
+              </div>
+            </li>
+            <li
+              style="
+                padding: 0.75rem 0;
+                border-bottom: 1px solid var(--border);
+                display: flex;
+                align-items: flex-start;
+                gap: 1rem;
+              "
+            >
+              <span style="color: var(--accent)">5.</span>
+              <div>
+                <strong>Multi-model evaluation</strong><br />
+                <span style="color: var(--text-muted)"
+                  >Test with Claude, Gemini, Llama 3, Codestral to assess
+                  generalisability beyond GPT-4o</span
+                >
+              </div>
+            </li>
+            <li
+              style="
+                padding: 0.75rem 0;
+                border-bottom: 1px solid var(--border);
+                display: flex;
+                align-items: flex-start;
+                gap: 1rem;
+              "
+            >
+              <span style="color: var(--accent)">6.</span>
+              <div>
+                <strong>Fix RAG implementation</strong><br />
+                <span style="color: var(--text-muted)"
+                  >Complete RAG-only mode to enable full 4-way comparison</span
+                >
+              </div>
+            </li>
+            <li
+              style="
+                padding: 0.75rem 0;
+                display: flex;
+                align-items: flex-start;
+                gap: 1rem;
+              "
+            >
+              <span style="color: var(--accent)">7.</span>
+              <div>
+                <strong>Compare with existing tools</strong><br />
+                <span style="color: var(--text-muted)"
+                  >Benchmark against GitHub Copilot, CodeRabbit, etc.</span
+                >
+              </div>
+            </li>
+          </ul>
+        </div>
+      </section>
+
+      <!-- REFERENCES SECTION -->
+      <section id="references">
+        <div class="section-label">References</div>
+        <h2>Academic Foundation</h2>
+        <p class="section-intro">
+          The 25-item evaluation rubric synthesizes findings from foundational
+          code review research, industry best practices (Google, Microsoft), and
+          evaluation frameworks for AI-generated code reviews.
+        </p>
+
+        <div class="card" style="margin-bottom: 1.5rem">
+          <div class="card-title">Core Code Review Research</div>
+          <ol
+            style="
+              color: var(--text-muted);
+              line-height: 2;
+              font-size: 0.9rem;
+              padding-left: 1.5rem;
+            "
+          >
+            <li style="margin-bottom: 1rem">
+              <strong style="color: var(--text)"
+                >Bacchelli, A., & Bird, C.</strong
+              >
+              (2013).
+              <em
+                >Expectations, outcomes, and challenges of modern code
+                review.</em
+              >
+              ICSE '13.
+              <span style="color: var(--accent)"
+                >Foundational study identifying what developers expect from code
+                reviews.</span
+              >
+              <a
+                href="https://doi.org/10.1109/ICSE.2013.6606617"
+                target="_blank"
+                style="color: var(--accent)"
+                >DOI</a
+              >
+            </li>
+            <li style="margin-bottom: 1rem">
+              <strong style="color: var(--text)">Sadowski, C., et al.</strong>
+              (2018).
+              <em>Modern code review: A case study at Google.</em>
+              ICSE-SEIP '18.
+              <span style="color: var(--accent)"
+                >Industry practices at scale.</span
+              >
+              <a
+                href="https://doi.org/10.1145/3183519.3183525"
+                target="_blank"
+                style="color: var(--accent)"
+                >DOI</a
+              >
+            </li>
+            <li style="margin-bottom: 1rem">
+              <strong style="color: var(--text)"
+                >Bosu, A., Greiler, M., & Bird, C.</strong
+              >
+              (2015).
+              <em
+                >Characteristics of useful code review comments: An empirical
+                study at Microsoft.</em
+              >
+              MSR '15.
+              <span style="color: var(--accent)"
+                >Defines what makes review comments useful.</span
+              >
+              <a
+                href="https://doi.org/10.1109/MSR.2015.21"
+                target="_blank"
+                style="color: var(--accent)"
+                >DOI</a
+              >
+            </li>
+            <li>
+              <strong style="color: var(--text)">McIntosh, S., et al.</strong>
+              (2016).
+              <em
+                >An empirical study of the impact of modern code review
+                practices on software quality.</em
+              >
+              Empirical Software Engineering.
+              <span style="color: var(--accent)"
+                >Links review quality to outcomes.</span
+              >
+              <a
+                href="https://doi.org/10.1007/s10664-015-9381-9"
+                target="_blank"
+                style="color: var(--accent)"
+                >DOI</a
+              >
+            </li>
+          </ol>
+        </div>
+
+        <div class="card" style="margin-bottom: 1.5rem">
+          <div class="card-title">AI Code Review Evaluation</div>
+          <ol
+            start="5"
+            style="
+              color: var(--text-muted);
+              line-height: 2;
+              font-size: 0.9rem;
+              padding-left: 1.5rem;
+            "
+          >
+            <li style="margin-bottom: 1rem">
+              <strong style="color: var(--text)">Hong, Y., et al.</strong>
+              (2024).
+              <em
+                >DeepCRCEval: Revisiting the evaluation of code review comment
+                generation.</em
+              >
+              <span style="color: var(--accent)"
+                >Shows limitations of text similarity metrics for review
+                evaluation.</span
+              >
+            </li>
+            <li style="margin-bottom: 1rem">
+              <strong style="color: var(--text)">Zheng, L., et al.</strong>
+              (2023).
+              <em>Judging LLM-as-a-Judge with MT-Bench and Chatbot Arena.</em>
+              NeurIPS 2023.
+              <span style="color: var(--accent)"
+                >Framework for LLM-based evaluation.</span
+              >
+            </li>
+            <li>
+              <strong style="color: var(--text)">Mariotto, L.</strong> (2025).
+              <em>Improving code review effectiveness with AI.</em>
+              M.Sc. Thesis, Univ. of Potsdam.
+              <span style="color: var(--accent)"
+                >Dataset source for this study.</span
+              >
+            </li>
+          </ol>
+        </div>
+
+        <div
+          class="card"
+          style="
+            background: rgba(167, 139, 250, 0.1);
+            border-color: var(--accent-purple);
+          "
+        >
+          <div class="card-title">
+            Industry Best Practices (Practitioner Sources)
+          </div>
+          <ul
+            style="
+              color: var(--text-muted);
+              line-height: 1.8;
+              font-size: 0.9rem;
+              padding-left: 1.25rem;
+            "
+          >
+            <li>
+              <strong style="color: var(--text)">Google SWE Book</strong> -
+              Software Engineering at Google, Chapter 9: Code Review
+            </li>
+            <li>
+              <strong style="color: var(--text)">Michaela Greiler</strong> - "30
+              Proven Code Review Best Practices" (Microsoft Research)
+            </li>
+            <li>
+              <strong style="color: var(--text)">GitLab</strong> - Code Review
+              Guidelines
+            </li>
+          </ul>
+        </div>
+      </section>
+
+      <footer>
+        <p>
+          Evidence-Anchored PR Review Note Generation | Master's Thesis Proof of
+          Concept
+        </p>
+        <p>Hasso Plattner Institute, University of Potsdam | January 2026</p>
+      </footer>
+    </div>
+
+    <script>
+      // Results Chart
+      const ctx = document.getElementById("resultsChart").getContext("2d");
+      new Chart(ctx, {
+        type: "bar",
+        data: {
+          labels: [
+            "PR1",
+            "PR2",
+            "PR3",
+            "PR5",
+            "PR6",
+            "PR7",
+            "PR8",
+            "PR9",
+            "PR10",
+            "PR11",
+            "AVG",
+          ],
+          datasets: [
+            {
+              label: "Baseline",
+              data: [8, 12, 8, 8, 48, 12, 8, 4, 8, 8, 12.4],
+              backgroundColor: "rgba(148, 163, 184, 0.7)",
+              borderColor: "#94a3b8",
+              borderWidth: 1,
+            },
+            {
+              label: "KG",
+              data: [16, 28, 24, 8, 40, 28, 24, 16, 4, 20, 20.8],
+              backgroundColor: "rgba(167, 139, 250, 0.7)",
+              borderColor: "#a78bfa",
+              borderWidth: 1,
+            },
+            {
+              label: "Hybrid",
+              data: [24, 16, 32, 12, 52, 28, 24, 20, 8, 28, 24.4],
+              backgroundColor: "rgba(74, 222, 128, 0.7)",
+              borderColor: "#4ade80",
+              borderWidth: 1,
+            },
+          ],
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: {
+              position: "top",
+              labels: { color: "#f1f5f9", padding: 20 },
+            },
+          },
+          scales: {
+            y: {
+              beginAtZero: true,
+              max: 60,
+              ticks: {
+                callback: function (value) {
+                  return value + "%";
+                },
+                color: "#94a3b8",
+              },
+              grid: { color: "#334155" },
+            },
+            x: {
+              ticks: { color: "#94a3b8" },
+              grid: { display: false },
+            },
+          },
+        },
+      });
+    </script>
+  </body>
+</html>

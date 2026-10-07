@@ -1,0 +1,857 @@
+{
+  "seed": 2026,
+  "repo": "grafana",
+  "target_n": 28,
+  "operator": "S1 rename (breaks importers)",
+  "injections": [
+    {
+      "id": "grafana_T_01",
+      "repo": "grafana",
+      "language": "typescript",
+      "band": "T1",
+      "operator": "renamed function toDataFrame -> toDataFrameInternal",
+      "edit_file": "packages/grafana-data/src/dataframe/processDataFrame.ts",
+      "old": "export function toDataFrame(data: any): DataFrame {",
+      "new": "export function toDataFrameInternal(data: any): DataFrame {",
+      "symbol": "toDataFrame",
+      "true_test_dependents": [
+        "packages/grafana-data/src/dataframe/FieldCache.test.ts",
+        "packages/grafana-data/src/dataframe/frameComparisons.test.ts",
+        "packages/grafana-data/src/dataframe/processDataFrame.test.ts",
+        "packages/grafana-data/src/dataframe/utils.test.ts",
+        "packages/grafana-data/src/field/fieldDisplay.test.ts",
+        "packages/grafana-data/src/field/fieldOverrides.test.ts",
+        "packages/grafana-data/src/field/fieldState.test.ts",
+        "packages/grafana-data/src/field/getFieldDisplayValuesProxy.test.tsx",
+        "packages/grafana-data/src/transformations/matchers/fieldValueMatcher.test.ts",
+        "packages/grafana-data/src/transformations/matchers/nameMatcher.test.ts",
+        "packages/grafana-data/src/transformations/matchers/valueMatchers/equalMatchers.test.ts",
+        "packages/grafana-data/src/transformations/matchers/valueMatchers/nullMatchers.test.ts",
+        "packages/grafana-data/src/transformations/matchers/valueMatchers/numericMatchers.test.ts",
+        "packages/grafana-data/src/transformations/matchers/valueMatchers/rangeMatchers.test.ts",
+        "packages/grafana-data/src/transformations/matchers/valueMatchers/regexMatchers.test.ts",
+        "packages/grafana-data/src/transformations/matchers/valueMatchers/substringMatchers.test.ts",
+        "packages/grafana-data/src/transformations/transformDataFrame.test.ts",
+        "packages/grafana-data/src/transformations/transformers/calculateField.test.ts",
+        "packages/grafana-data/src/transformations/transformers/concat.test.ts",
+        "packages/grafana-data/src/transformations/transformers/convertFieldType.test.ts",
+        "packages/grafana-data/src/transformations/transformers/convertFrameType.test.ts",
+        "packages/grafana-data/src/transformations/transformers/ensureColumns.test.ts",
+        "packages/grafana-data/src/transformations/transformers/filter.test.ts",
+        "packages/grafana-data/src/transformations/transformers/filterByName.test.ts",
+        "packages/grafana-data/src/transformations/transformers/filterByRefId.test.ts",
+        "packages/grafana-data/src/transformations/transformers/filterByValue.test.ts",
+        "packages/grafana-data/src/transformations/transformers/formatString.test.ts",
+        "packages/grafana-data/src/transformations/transformers/formatTime.test.ts",
+        "packages/grafana-data/src/transformations/transformers/groupBy.test.ts",
+        "packages/grafana-data/src/transformations/transformers/groupToNestedTable.test.ts",
+        "packages/grafana-data/src/transformations/transformers/groupingToMatrix.test.ts",
+        "packages/grafana-data/src/transformations/transformers/histogram.test.ts",
+        "packages/grafana-data/src/transformations/transformers/joinByField.test.ts",
+        "packages/grafana-data/src/transformations/transformers/joinDataFrames.test.ts",
+        "packages/grafana-data/src/transformations/transformers/labelsToFields.test.ts",
+        "packages/grafana-data/src/transformations/transformers/limit.test.ts",
+        "packages/grafana-data/src/transformations/transformers/merge.test.ts",
+        "packages/grafana-data/src/transformations/transformers/order.test.ts",
+        "packages/grafana-data/src/transformations/transformers/organize.test.ts",
+        "packages/grafana-data/src/transformations/transformers/reduce.test.ts",
+        "packages/grafana-data/src/transformations/transformers/rename.test.ts",
+        "packages/grafana-data/src/transformations/transformers/renameByRegex.test.ts",
+        "packages/grafana-data/src/transformations/transformers/seriesToRows.test.ts",
+        "packages/grafana-data/src/transformations/transformers/sortBy.test.ts",
+        "packages/grafana-data/src/transformations/transformers/transpose.test.ts"
+      ],
+      "true_other_dependents": [
+        "packages/grafana-data/src/transformations/matchers/mocks.ts"
+      ],
+      "n_tests": 45,
+      "n_others": 1,
+      "resolver": "import-regex",
+      "oracle": "static-test-breakage",
+      "edge_type": "IMPORTS",
+      "pr_title": "refactor: internal naming cleanup in processDataFrame",
+      "pr_body": "Small internal cleanup as part of ongoing maintenance. No behavior change intended.",
+      "diff": "--- a/packages/grafana-data/src/dataframe/processDataFrame.ts\n+++ b/packages/grafana-data/src/dataframe/processDataFrame.ts\n@@ -305,7 +305,7 @@\n /**\n  * Inspect any object and return the results as a DataFrame\n  */\n-export function toDataFrame(data: any): DataFrame {\n+export function toDataFrameInternal(data: any): DataFrame {\n   if ('fields' in data) {\n     // DataFrameDTO does not have length\n     if ('length' in data && data.fields[0]?.values?.get) {\n",
+      "ground_truth": "The rename breaks every importer of this symbol. Among them these test files, which are not shown in the diff and will fail: FieldCache.test.ts, frameComparisons.test.ts, processDataFrame.test.ts, utils.test.ts, fieldDisplay.test.ts, fieldOverrides.test.ts, fieldState.test.ts, getFieldDisplayValuesProxy.test.tsx, fieldValueMatcher.test.ts, nameMatcher.test.ts, equalMatchers.test.ts, nullMatchers.test.ts, numericMatchers.test.ts, rangeMatchers.test.ts, regexMatchers.test.ts, substringMatchers.test.ts, transformDataFrame.test.ts, calculateField.test.ts, concat.test.ts, convertFieldType.test.ts, convertFrameType.test.ts, ensureColumns.test.ts, filter.test.ts, filterByName.test.ts, filterByRefId.test.ts, filterByValue.test.ts, formatString.test.ts, formatTime.test.ts, groupBy.test.ts, groupToNestedTable.test.ts, groupingToMatrix.test.ts, histogram.test.ts, joinByField.test.ts, joinDataFrames.test.ts, labelsToFields.test.ts, limit.test.ts, merge.test.ts, order.test.ts, organize.test.ts, reduce.test.ts, rename.test.ts, renameByRegex.test.ts, seriesToRows.test.ts, sortBy.test.ts, transpose.test.ts."
+    },
+    {
+      "id": "grafana_T_02",
+      "repo": "grafana",
+      "language": "typescript",
+      "band": "T1",
+      "operator": "renamed function createTheme -> createThemeInternal",
+      "edit_file": "packages/grafana-data/src/themes/createTheme.ts",
+      "old": "export function createTheme(",
+      "new": "export function createThemeInternal(",
+      "symbol": "createTheme",
+      "true_test_dependents": [
+        "packages/grafana-data/src/dataframe/utils.test.ts",
+        "packages/grafana-data/src/field/displayProcessor.test.ts",
+        "packages/grafana-data/src/field/fieldColor.test.ts",
+        "packages/grafana-data/src/field/fieldDisplay.test.ts",
+        "packages/grafana-data/src/field/fieldOverrides.test.ts",
+        "packages/grafana-data/src/field/getFieldDisplayValuesProxy.test.tsx",
+        "packages/grafana-data/src/field/scale.test.ts",
+        "packages/grafana-data/src/themes/createTheme.test.ts",
+        "packages/grafana-data/src/utils/csv.test.ts",
+        "packages/grafana-data/src/utils/namedColorsPalette.test.ts"
+      ],
+      "true_other_dependents": [
+        "packages/grafana-data/src/themes/context.tsx",
+        "packages/grafana-data/src/themes/registry.ts",
+        "packages/grafana-data/src/transformations/transformers/histogram.ts"
+      ],
+      "n_tests": 10,
+      "n_others": 3,
+      "resolver": "import-regex",
+      "oracle": "static-test-breakage",
+      "edge_type": "IMPORTS",
+      "pr_title": "refactor: internal naming cleanup in createTheme",
+      "pr_body": "Small internal cleanup as part of ongoing maintenance. No behavior change intended.",
+      "diff": "--- a/packages/grafana-data/src/themes/createTheme.ts\n+++ b/packages/grafana-data/src/themes/createTheme.ts\n@@ -27,7 +27,7 @@\n export type NewThemeOptions = z.infer<typeof NewThemeOptionsSchema>;\n \n /** @internal */\n-export function createTheme(\n+export function createThemeInternal(\n   options: Omit<NewThemeOptions, 'id' | 'name'> & {\n     name?: NewThemeOptions['name'];\n   } = {}\n",
+      "ground_truth": "The rename breaks every importer of this symbol. Among them these test files, which are not shown in the diff and will fail: utils.test.ts, displayProcessor.test.ts, fieldColor.test.ts, fieldDisplay.test.ts, fieldOverrides.test.ts, getFieldDisplayValuesProxy.test.tsx, scale.test.ts, createTheme.test.ts, csv.test.ts, namedColorsPalette.test.ts."
+    },
+    {
+      "id": "grafana_T_03",
+      "repo": "grafana",
+      "language": "typescript",
+      "band": "T1",
+      "operator": "renamed function getValueMatcher -> getValueMatcherInternal",
+      "edit_file": "packages/grafana-data/src/transformations/matchers.ts",
+      "old": "export function getValueMatcher(config: MatcherConfig): ValueMatcher {",
+      "new": "export function getValueMatcherInternal(config: MatcherConfig): ValueMatcher {",
+      "symbol": "getValueMatcher",
+      "true_test_dependents": [
+        "packages/grafana-data/src/transformations/matchers/valueMatchers/equalMatchers.test.ts",
+        "packages/grafana-data/src/transformations/matchers/valueMatchers/nullMatchers.test.ts",
+        "packages/grafana-data/src/transformations/matchers/valueMatchers/numericMatchers.test.ts",
+        "packages/grafana-data/src/transformations/matchers/valueMatchers/rangeMatchers.test.ts",
+        "packages/grafana-data/src/transformations/matchers/valueMatchers/regexMatchers.test.ts",
+        "packages/grafana-data/src/transformations/matchers/valueMatchers/substringMatchers.test.ts"
+      ],
+      "true_other_dependents": [
+        "packages/grafana-data/src/transformations/transformers/filterByValue.ts"
+      ],
+      "n_tests": 6,
+      "n_others": 1,
+      "resolver": "import-regex",
+      "oracle": "static-test-breakage",
+      "edge_type": "IMPORTS",
+      "pr_title": "refactor: internal naming cleanup in matchers",
+      "pr_body": "Small internal cleanup as part of ongoing maintenance. No behavior change intended.",
+      "diff": "--- a/packages/grafana-data/src/transformations/matchers.ts\n+++ b/packages/grafana-data/src/transformations/matchers.ts\n@@ -95,7 +95,7 @@\n  * Will throw an error if matcher can not be resolved.\n  * @public\n  */\n-export function getValueMatcher(config: MatcherConfig): ValueMatcher {\n+export function getValueMatcherInternal(config: MatcherConfig): ValueMatcher {\n   const info = valueMatchers.get(config.id);\n   if (!info) {\n     throw new Error('Unknown value matcher: ' + config.id);\n",
+      "ground_truth": "The rename breaks every importer of this symbol. Among them these test files, which are not shown in the diff and will fail: equalMatchers.test.ts, nullMatchers.test.ts, numericMatchers.test.ts, rangeMatchers.test.ts, regexMatchers.test.ts, substringMatchers.test.ts."
+    },
+    {
+      "id": "grafana_T_04",
+      "repo": "grafana",
+      "language": "typescript",
+      "band": "T1",
+      "operator": "renamed function getDisplayProcessor -> getDisplayProcessorInternal",
+      "edit_file": "packages/grafana-data/src/field/displayProcessor.ts",
+      "old": "export function getDisplayProcessor(options?: DisplayProcessorOptions): DisplayProcessor {",
+      "new": "export function getDisplayProcessorInternal(options?: DisplayProcessorOptions): DisplayProcessor {",
+      "symbol": "getDisplayProcessor",
+      "true_test_dependents": [
+        "packages/grafana-data/src/field/displayProcessor.test.ts",
+        "packages/grafana-data/src/field/fieldDisplay.test.ts",
+        "packages/grafana-data/src/field/fieldOverrides.test.ts",
+        "packages/grafana-data/src/utils/csv.test.ts"
+      ],
+      "true_other_dependents": [
+        "packages/grafana-data/src/field/fieldDisplay.ts",
+        "packages/grafana-data/src/field/fieldOverrides.ts",
+        "packages/grafana-data/src/field/getFieldDisplayValuesProxy.ts",
+        "packages/grafana-data/src/transformations/transformers/histogram.ts"
+      ],
+      "n_tests": 4,
+      "n_others": 4,
+      "resolver": "import-regex",
+      "oracle": "static-test-breakage",
+      "edge_type": "IMPORTS",
+      "pr_title": "refactor: internal naming cleanup in displayProcessor",
+      "pr_body": "Small internal cleanup as part of ongoing maintenance. No behavior change intended.",
+      "diff": "--- a/packages/grafana-data/src/field/displayProcessor.ts\n+++ b/packages/grafana-data/src/field/displayProcessor.ts\n@@ -39,7 +39,7 @@\n   dateTimeFromNow: true,\n };\n \n-export function getDisplayProcessor(options?: DisplayProcessorOptions): DisplayProcessor {\n+export function getDisplayProcessorInternal(options?: DisplayProcessorOptions): DisplayProcessor {\n   if (!options || isEmpty(options) || !options.field) {\n     return toStringProcessor;\n   }\n",
+      "ground_truth": "The rename breaks every importer of this symbol. Among them these test files, which are not shown in the diff and will fail: displayProcessor.test.ts, fieldDisplay.test.ts, fieldOverrides.test.ts, csv.test.ts."
+    },
+    {
+      "id": "grafana_T_05",
+      "repo": "grafana",
+      "language": "typescript",
+      "band": "T1",
+      "operator": "renamed function getFieldDisplayName -> getFieldDisplayNameInternal",
+      "edit_file": "packages/grafana-data/src/field/fieldState.ts",
+      "old": "export function getFieldDisplayName(field: Field, frame?: DataFrame, allFrames?: DataFrame[]): string {",
+      "new": "export function getFieldDisplayNameInternal(field: Field, frame?: DataFrame, allFrames?: DataFrame[]): string {",
+      "symbol": "getFieldDisplayName",
+      "true_test_dependents": [
+        "packages/grafana-data/src/dataframe/StreamingDataFrame.test.ts",
+        "packages/grafana-data/src/field/fieldOverrides.test.ts",
+        "packages/grafana-data/src/field/fieldState.test.ts",
+        "packages/grafana-data/src/transformations/transformers/joinDataFrames.test.ts"
+      ],
+      "true_other_dependents": [
+        "packages/grafana-data/src/dataframe/processDataFrame.ts",
+        "packages/grafana-data/src/field/fieldDisplay.ts",
+        "packages/grafana-data/src/transformations/matchers/nameMatcher.ts",
+        "packages/grafana-data/src/transformations/transformers/calculateField.ts",
+        "packages/grafana-data/src/transformations/transformers/filterByValue.ts",
+        "packages/grafana-data/src/transformations/transformers/groupBy.ts",
+        "packages/grafana-data/src/transformations/transformers/groupToNestedTable.ts",
+        "packages/grafana-data/src/transformations/transformers/labelsToFields.ts",
+        "packages/grafana-data/src/transformations/transformers/order.ts",
+        "packages/grafana-data/src/transformations/transformers/reduce.ts",
+        "packages/grafana-data/src/transformations/transformers/rename.ts",
+        "packages/grafana-data/src/transformations/transformers/renameByRegex.ts",
+        "packages/grafana-data/src/transformations/transformers/sortBy.ts",
+        "packages/grafana-data/src/utils/csv.ts"
+      ],
+      "n_tests": 4,
+      "n_others": 14,
+      "resolver": "import-regex",
+      "oracle": "static-test-breakage",
+      "edge_type": "IMPORTS",
+      "pr_title": "refactor: internal naming cleanup in fieldState",
+      "pr_body": "Small internal cleanup as part of ongoing maintenance. No behavior change intended.",
+      "diff": "--- a/packages/grafana-data/src/field/fieldState.ts\n+++ b/packages/grafana-data/src/field/fieldState.ts\n@@ -106,7 +106,7 @@\n   });\n }\n \n-export function getFieldDisplayName(field: Field, frame?: DataFrame, allFrames?: DataFrame[]): string {\n+export function getFieldDisplayNameInternal(field: Field, frame?: DataFrame, allFrames?: DataFrame[]): string {\n   const existingTitle = field.state?.displayName;\n   const multipleFrames = Boolean(allFrames && allFrames.length > 1);\n \n",
+      "ground_truth": "The rename breaks every importer of this symbol. Among them these test files, which are not shown in the diff and will fail: StreamingDataFrame.test.ts, fieldOverrides.test.ts, fieldState.test.ts, joinDataFrames.test.ts."
+    },
+    {
+      "id": "grafana_T_06",
+      "repo": "grafana",
+      "language": "typescript",
+      "band": "T1",
+      "operator": "renamed class DataFrameView -> DataFrameViewInternal",
+      "edit_file": "packages/grafana-data/src/dataframe/DataFrameView.ts",
+      "old": "export class DataFrameView<T extends object = any> extends FunctionalVector<T> {",
+      "new": "export class DataFrameViewInternal<T extends object = any> extends FunctionalVector<T> {",
+      "symbol": "DataFrameView",
+      "true_test_dependents": [
+        "packages/grafana-data/src/dataframe/DataFrameView.test.ts",
+        "packages/grafana-data/src/transformations/transformers/calculateField.test.ts",
+        "packages/grafana-data/src/transformations/transformers/reduce.test.ts"
+      ],
+      "true_other_dependents": [
+        "packages/grafana-data/src/field/fieldDisplay.ts"
+      ],
+      "n_tests": 3,
+      "n_others": 1,
+      "resolver": "import-regex",
+      "oracle": "static-test-breakage",
+      "edge_type": "IMPORTS",
+      "pr_title": "refactor: internal naming cleanup in DataFrameView",
+      "pr_body": "Small internal cleanup as part of ongoing maintenance. No behavior change intended.",
+      "diff": "--- a/packages/grafana-data/src/dataframe/DataFrameView.ts\n+++ b/packages/grafana-data/src/dataframe/DataFrameView.ts\n@@ -13,7 +13,7 @@\n  * @typeParam T - Type of object stored in the DataFrame.\n  * @beta\n  */\n-export class DataFrameView<T extends object = any> extends FunctionalVector<T> {\n+export class DataFrameViewInternal<T extends object = any> extends FunctionalVector<T> {\n   private index = 0;\n   private obj: T;\n   readonly fields: {\n",
+      "ground_truth": "The rename breaks every importer of this symbol. Among them these test files, which are not shown in the diff and will fail: DataFrameView.test.ts, calculateField.test.ts, reduce.test.ts."
+    },
+    {
+      "id": "grafana_T_07",
+      "repo": "grafana",
+      "language": "typescript",
+      "band": "T1",
+      "operator": "renamed class MutableDataFrame -> MutableDataFrameInternal",
+      "edit_file": "packages/grafana-data/src/dataframe/MutableDataFrame.ts",
+      "old": "export class MutableDataFrame<T = any> extends FunctionalVector<T> implements DataFrame {",
+      "new": "export class MutableDataFrameInternal<T = any> extends FunctionalVector<T> implements DataFrame {",
+      "symbol": "MutableDataFrame",
+      "true_test_dependents": [
+        "packages/grafana-data/src/dataframe/DataFrameView.test.ts",
+        "packages/grafana-data/src/dataframe/MutableDataFrame.test.ts",
+        "packages/grafana-data/src/utils/csv.test.ts"
+      ],
+      "true_other_dependents": [
+        "packages/grafana-data/src/dataframe/CircularDataFrame.ts",
+        "packages/grafana-data/src/transformations/transformers/merge.ts",
+        "packages/grafana-data/src/transformations/transformers/seriesToRows.ts",
+        "packages/grafana-data/src/utils/csv.ts"
+      ],
+      "n_tests": 3,
+      "n_others": 4,
+      "resolver": "import-regex",
+      "oracle": "static-test-breakage",
+      "edge_type": "IMPORTS",
+      "pr_title": "refactor: internal naming cleanup in MutableDataFrame",
+      "pr_body": "Small internal cleanup as part of ongoing maintenance. No behavior change intended.",
+      "diff": "--- a/packages/grafana-data/src/dataframe/MutableDataFrame.ts\n+++ b/packages/grafana-data/src/dataframe/MutableDataFrame.ts\n@@ -22,7 +22,7 @@\n  *\n  * @deprecated use standard DataFrame, or create one with PartialDataFrame\n  */\n-export class MutableDataFrame<T = any> extends FunctionalVector<T> implements DataFrame {\n+export class MutableDataFrameInternal<T = any> extends FunctionalVector<T> implements DataFrame {\n   name?: string;\n   refId?: string;\n   meta?: QueryResultMeta;\n",
+      "ground_truth": "The rename breaks every importer of this symbol. Among them these test files, which are not shown in the diff and will fail: DataFrameView.test.ts, MutableDataFrame.test.ts, csv.test.ts."
+    },
+    {
+      "id": "grafana_T_08",
+      "repo": "grafana",
+      "language": "typescript",
+      "band": "T1",
+      "operator": "renamed class PanelPlugin -> PanelPluginInternal",
+      "edit_file": "packages/grafana-data/src/panel/PanelPlugin.ts",
+      "old": "export class PanelPlugin<",
+      "new": "export class PanelPluginInternal<",
+      "symbol": "PanelPlugin",
+      "true_test_dependents": [
+        "packages/grafana-data/src/panel/PanelPlugin.test.tsx",
+        "packages/grafana-data/src/panel/getPanelOptionsWithDefaults.test.ts",
+        "packages/grafana-data/src/utils/throwIfAngular.test.ts"
+      ],
+      "true_other_dependents": [
+        "packages/grafana-data/src/field/fieldOverrides.ts",
+        "packages/grafana-data/src/panel/getPanelOptionsWithDefaults.ts",
+        "packages/grafana-data/src/utils/throwIfAngular.ts"
+      ],
+      "n_tests": 3,
+      "n_others": 3,
+      "resolver": "import-regex",
+      "oracle": "static-test-breakage",
+      "edge_type": "IMPORTS",
+      "pr_title": "refactor: internal naming cleanup in PanelPlugin",
+      "pr_body": "Small internal cleanup as part of ongoing maintenance. No behavior change intended.",
+      "diff": "--- a/packages/grafana-data/src/panel/PanelPlugin.ts\n+++ b/packages/grafana-data/src/panel/PanelPlugin.ts\n@@ -101,7 +101,7 @@\n   context: StandardEditorContext<TOptions>\n ) => void;\n \n-export class PanelPlugin<\n+export class PanelPluginInternal<\n   TOptions = any,\n   TFieldConfigOptions extends object = {},\n > extends GrafanaPlugin<PanelPluginMeta> {\n",
+      "ground_truth": "The rename breaks every importer of this symbol. Among them these test files, which are not shown in the diff and will fail: PanelPlugin.test.tsx, getPanelOptionsWithDefaults.test.ts, throwIfAngular.test.ts."
+    },
+    {
+      "id": "grafana_T_09",
+      "repo": "grafana",
+      "language": "typescript",
+      "band": "T1",
+      "operator": "renamed function formattedValueToString -> formattedValueToStringInternal",
+      "edit_file": "packages/grafana-data/src/valueFormats/valueFormats.ts",
+      "old": "export function formattedValueToString(val: FormattedValue): string {",
+      "new": "export function formattedValueToStringInternal(val: FormattedValue): string {",
+      "symbol": "formattedValueToString",
+      "true_test_dependents": [
+        "packages/grafana-data/src/valueFormats/arithmeticFormatters.test.ts",
+        "packages/grafana-data/src/valueFormats/dateTimeFormatters.test.ts",
+        "packages/grafana-data/src/valueFormats/valueFormats.test.ts"
+      ],
+      "true_other_dependents": [
+        "packages/grafana-data/src/field/getFieldDisplayValuesProxy.ts",
+        "packages/grafana-data/src/utils/csv.ts"
+      ],
+      "n_tests": 3,
+      "n_others": 2,
+      "resolver": "import-regex",
+      "oracle": "static-test-breakage",
+      "edge_type": "IMPORTS",
+      "pr_title": "refactor: internal naming cleanup in valueFormats",
+      "pr_body": "Small internal cleanup as part of ongoing maintenance. No behavior change intended.",
+      "diff": "--- a/packages/grafana-data/src/valueFormats/valueFormats.ts\n+++ b/packages/grafana-data/src/valueFormats/valueFormats.ts\n@@ -13,7 +13,7 @@\n   suffix?: string;\n }\n \n-export function formattedValueToString(val: FormattedValue): string {\n+export function formattedValueToStringInternal(val: FormattedValue): string {\n   return `${val.prefix ?? ''}${val.text}${val.suffix ?? ''}`;\n }\n \n",
+      "ground_truth": "The rename breaks every importer of this symbol. Among them these test files, which are not shown in the diff and will fail: arithmeticFormatters.test.ts, dateTimeFormatters.test.ts, valueFormats.test.ts."
+    },
+    {
+      "id": "grafana_T_10",
+      "repo": "grafana",
+      "language": "typescript",
+      "band": "T1",
+      "operator": "renamed function getPanelDataSummary -> getPanelDataSummaryInternal",
+      "edit_file": "packages/grafana-data/src/panel/suggestions/getPanelDataSummary.ts",
+      "old": "export function getPanelDataSummary(frames?: DataFrame[]): PanelDataSummary {",
+      "new": "export function getPanelDataSummaryInternal(frames?: DataFrame[]): PanelDataSummary {",
+      "symbol": "getPanelDataSummary",
+      "true_test_dependents": [
+        "packages/grafana-data/src/panel/PanelPlugin.test.tsx",
+        "packages/grafana-data/src/panel/suggestions/getPanelDataSummary.test.ts"
+      ],
+      "true_other_dependents": [
+        "packages/grafana-data/src/types/suggestions.ts"
+      ],
+      "n_tests": 2,
+      "n_others": 1,
+      "resolver": "import-regex",
+      "oracle": "static-test-breakage",
+      "edge_type": "IMPORTS",
+      "pr_title": "refactor: internal naming cleanup in getPanelDataSummary",
+      "pr_body": "Small internal cleanup as part of ongoing maintenance. No behavior change intended.",
+      "diff": "--- a/packages/grafana-data/src/panel/suggestions/getPanelDataSummary.ts\n+++ b/packages/grafana-data/src/panel/suggestions/getPanelDataSummary.ts\n@@ -139,6 +139,6 @@\n  * @param frames - dataframes to summarize\n  * @returns summary of the dataframes\n  */\n-export function getPanelDataSummary(frames?: DataFrame[]): PanelDataSummary {\n+export function getPanelDataSummaryInternal(frames?: DataFrame[]): PanelDataSummary {\n   return new PanelDataSummaryImpl(frames);\n }\n",
+      "ground_truth": "The rename breaks every importer of this symbol. Among them these test files, which are not shown in the diff and will fail: PanelPlugin.test.tsx, getPanelDataSummary.test.ts."
+    },
+    {
+      "id": "grafana_T_11",
+      "repo": "grafana",
+      "language": "typescript",
+      "band": "T1",
+      "operator": "renamed function createColors -> createColorsInternal",
+      "edit_file": "packages/grafana-data/src/themes/createColors.ts",
+      "old": "export function createColors(colors: ThemeColorsInput): ThemeColors {",
+      "new": "export function createColorsInternal(colors: ThemeColorsInput): ThemeColors {",
+      "symbol": "createColors",
+      "true_test_dependents": [
+        "packages/grafana-data/src/themes/createColors.test.ts",
+        "packages/grafana-data/src/themes/createVisualizationColors.test.ts"
+      ],
+      "true_other_dependents": [
+        "packages/grafana-data/src/themes/createTheme.ts"
+      ],
+      "n_tests": 2,
+      "n_others": 1,
+      "resolver": "import-regex",
+      "oracle": "static-test-breakage",
+      "edge_type": "IMPORTS",
+      "pr_title": "refactor: internal naming cleanup in createColors",
+      "pr_body": "Small internal cleanup as part of ongoing maintenance. No behavior change intended.",
+      "diff": "--- a/packages/grafana-data/src/themes/createColors.ts\n+++ b/packages/grafana-data/src/themes/createColors.ts\n@@ -277,7 +277,7 @@\n   tonalOffset = 0.2;\n }\n \n-export function createColors(colors: ThemeColorsInput): ThemeColors {\n+export function createColorsInternal(colors: ThemeColorsInput): ThemeColors {\n   const dark = new DarkColors();\n   const light = new LightColors();\n   const base = (colors.mode ?? 'dark') === 'dark' ? dark : light;\n",
+      "ground_truth": "The rename breaks every importer of this symbol. Among them these test files, which are not shown in the diff and will fail: createColors.test.ts, createVisualizationColors.test.ts."
+    },
+    {
+      "id": "grafana_T_12",
+      "repo": "grafana",
+      "language": "typescript",
+      "band": "T1",
+      "operator": "renamed function reduceField -> reduceFieldInternal",
+      "edit_file": "packages/grafana-data/src/transformations/fieldReducer.ts",
+      "old": "export function reduceField(options: ReduceFieldOptions): FieldCalcs {",
+      "new": "export function reduceFieldInternal(options: ReduceFieldOptions): FieldCalcs {",
+      "symbol": "reduceField",
+      "true_test_dependents": [
+        "packages/grafana-data/src/dataframe/StreamingDataFrame.test.ts",
+        "packages/grafana-data/src/transformations/fieldReducer.test.ts"
+      ],
+      "true_other_dependents": [
+        "packages/grafana-data/src/field/fieldColor.ts",
+        "packages/grafana-data/src/field/fieldDisplay.ts",
+        "packages/grafana-data/src/field/fieldOverrides.ts",
+        "packages/grafana-data/src/field/scale.ts",
+        "packages/grafana-data/src/transformations/matchers/fieldValueMatcher.ts",
+        "packages/grafana-data/src/transformations/transformers/groupBy.ts",
+        "packages/grafana-data/src/transformations/transformers/groupToNestedTable.ts",
+        "packages/grafana-data/src/transformations/transformers/reduce.ts"
+      ],
+      "n_tests": 2,
+      "n_others": 8,
+      "resolver": "import-regex",
+      "oracle": "static-test-breakage",
+      "edge_type": "IMPORTS",
+      "pr_title": "refactor: internal naming cleanup in fieldReducer",
+      "pr_body": "Small internal cleanup as part of ongoing maintenance. No behavior change intended.",
+      "diff": "--- a/packages/grafana-data/src/transformations/fieldReducer.ts\n+++ b/packages/grafana-data/src/transformations/fieldReducer.ts\n@@ -168,7 +168,7 @@\n  * NOTE: This will also modify the 'field.state' object,\n  * leaving values in a cache until cleared.\n  */\n-export function reduceField(options: ReduceFieldOptions): FieldCalcs {\n+export function reduceFieldInternal(options: ReduceFieldOptions): FieldCalcs {\n   const { field, reducers } = options;\n \n   if (!field || !reducers || reducers.length < 1) {\n",
+      "ground_truth": "The rename breaks every importer of this symbol. Among them these test files, which are not shown in the diff and will fail: StreamingDataFrame.test.ts, fieldReducer.test.ts."
+    },
+    {
+      "id": "grafana_T_13",
+      "repo": "grafana",
+      "language": "typescript",
+      "band": "T1",
+      "operator": "renamed class Registry -> RegistryInternal",
+      "edit_file": "packages/grafana-data/src/utils/Registry.ts",
+      "old": "export class Registry<T extends RegistryItem> {",
+      "new": "export class RegistryInternal<T extends RegistryItem> {",
+      "symbol": "Registry",
+      "true_test_dependents": [
+        "packages/grafana-data/src/field/fieldOverrides.test.ts",
+        "packages/grafana-data/src/utils/Registry.test.ts"
+      ],
+      "true_other_dependents": [
+        "packages/grafana-data/src/field/FieldConfigOptionsRegistry.tsx",
+        "packages/grafana-data/src/field/fieldColor.ts",
+        "packages/grafana-data/src/field/standardFieldConfigEditorRegistry.ts",
+        "packages/grafana-data/src/monaco/languageRegistry.ts",
+        "packages/grafana-data/src/themes/registry.ts",
+        "packages/grafana-data/src/transformations/fieldReducer.ts",
+        "packages/grafana-data/src/transformations/matchers.ts",
+        "packages/grafana-data/src/transformations/standardTransformersRegistry.ts",
+        "packages/grafana-data/src/types/OptionsUIRegistryBuilder.ts",
+        "packages/grafana-data/src/types/panel.ts",
+        "packages/grafana-data/src/utils/binaryOperators.ts",
+        "packages/grafana-data/src/utils/unaryOperators.ts"
+      ],
+      "n_tests": 2,
+      "n_others": 12,
+      "resolver": "import-regex",
+      "oracle": "static-test-breakage",
+      "edge_type": "IMPORTS",
+      "pr_title": "refactor: internal naming cleanup in Registry",
+      "pr_body": "Small internal cleanup as part of ongoing maintenance. No behavior change intended.",
+      "diff": "--- a/packages/grafana-data/src/utils/Registry.ts\n+++ b/packages/grafana-data/src/utils/Registry.ts\n@@ -36,7 +36,7 @@\n   current: Array<SelectableValue<string>>;\n }\n \n-export class Registry<T extends RegistryItem> {\n+export class RegistryInternal<T extends RegistryItem> {\n   private ordered: T[] = [];\n   private byId = new Map<string, T>();\n   private initialized = false;\n",
+      "ground_truth": "The rename breaks every importer of this symbol. Among them these test files, which are not shown in the diff and will fail: fieldOverrides.test.ts, Registry.test.ts."
+    },
+    {
+      "id": "grafana_T_14",
+      "repo": "grafana",
+      "language": "typescript",
+      "band": "T1",
+      "operator": "renamed function arrayToDataFrame -> arrayToDataFrameInternal",
+      "edit_file": "packages/grafana-data/src/dataframe/ArrayDataFrame.ts",
+      "old": "export function arrayToDataFrame(source: unknown[], names?: string[]): DataFrame {",
+      "new": "export function arrayToDataFrameInternal(source: unknown[], names?: string[]): DataFrame {",
+      "symbol": "arrayToDataFrame",
+      "true_test_dependents": [
+        "packages/grafana-data/src/dataframe/ArrayDataFrame.test.ts"
+      ],
+      "true_other_dependents": [
+        "packages/grafana-data/src/dataframe/processDataFrame.ts"
+      ],
+      "n_tests": 1,
+      "n_others": 1,
+      "resolver": "import-regex",
+      "oracle": "static-test-breakage",
+      "edge_type": "IMPORTS",
+      "pr_title": "refactor: internal naming cleanup in ArrayDataFrame",
+      "pr_body": "Small internal cleanup as part of ongoing maintenance. No behavior change intended.",
+      "diff": "--- a/packages/grafana-data/src/dataframe/ArrayDataFrame.ts\n+++ b/packages/grafana-data/src/dataframe/ArrayDataFrame.ts\n@@ -27,7 +27,7 @@\n  *\n  * @public\n  */\n-export function arrayToDataFrame(source: unknown[], names?: string[]): DataFrame {\n+export function arrayToDataFrameInternal(source: unknown[], names?: string[]): DataFrame {\n   const df: DataFrame = {\n     fields: [],\n     length: source.length,\n",
+      "ground_truth": "The rename breaks every importer of this symbol. Among them these test files, which are not shown in the diff and will fail: ArrayDataFrame.test.ts."
+    },
+    {
+      "id": "grafana_T_15",
+      "repo": "grafana",
+      "language": "typescript",
+      "band": "T1",
+      "operator": "renamed function dataFrameFromJSON -> dataFrameFromJSONInternal",
+      "edit_file": "packages/grafana-data/src/dataframe/DataFrameJSON.ts",
+      "old": "export function dataFrameFromJSON(dto: DataFrameJSON): DataFrame {",
+      "new": "export function dataFrameFromJSONInternal(dto: DataFrameJSON): DataFrame {",
+      "symbol": "dataFrameFromJSON",
+      "true_test_dependents": [
+        "packages/grafana-data/src/dataframe/DataFrameJSON.test.ts"
+      ],
+      "true_other_dependents": [
+        "packages/grafana-data/src/dataframe/processDataFrame.ts"
+      ],
+      "n_tests": 1,
+      "n_others": 1,
+      "resolver": "import-regex",
+      "oracle": "static-test-breakage",
+      "edge_type": "IMPORTS",
+      "pr_title": "refactor: internal naming cleanup in DataFrameJSON",
+      "pr_body": "Small internal cleanup as part of ongoing maintenance. No behavior change intended.",
+      "diff": "--- a/packages/grafana-data/src/dataframe/DataFrameJSON.ts\n+++ b/packages/grafana-data/src/dataframe/DataFrameJSON.ts\n@@ -163,7 +163,7 @@\n  *\n  * @alpha\n  */\n-export function dataFrameFromJSON(dto: DataFrameJSON): DataFrame {\n+export function dataFrameFromJSONInternal(dto: DataFrameJSON): DataFrame {\n   const { schema, data } = dto;\n \n   if (!schema || !schema.fields) {\n",
+      "ground_truth": "The rename breaks every importer of this symbol. Among them these test files, which are not shown in the diff and will fail: DataFrameJSON.test.ts."
+    },
+    {
+      "id": "grafana_T_16",
+      "repo": "grafana",
+      "language": "typescript",
+      "band": "T1",
+      "operator": "renamed function closestIdx -> closestIdxInternal",
+      "edit_file": "packages/grafana-data/src/dataframe/StreamingDataFrame.ts",
+      "old": "export function closestIdx(num: number, arr: number[], lo?: number, hi?: number) {",
+      "new": "export function closestIdxInternal(num: number, arr: number[], lo?: number, hi?: number) {",
+      "symbol": "closestIdx",
+      "true_test_dependents": [
+        "packages/grafana-data/src/dataframe/StreamingDataFrame.test.ts"
+      ],
+      "true_other_dependents": [
+        "packages/grafana-data/src/table/amendTimeSeries.ts"
+      ],
+      "n_tests": 1,
+      "n_others": 1,
+      "resolver": "import-regex",
+      "oracle": "static-test-breakage",
+      "edge_type": "IMPORTS",
+      "pr_title": "refactor: internal naming cleanup in StreamingDataFrame",
+      "pr_body": "Small internal cleanup as part of ongoing maintenance. No behavior change intended.",
+      "diff": "--- a/packages/grafana-data/src/dataframe/StreamingDataFrame.ts\n+++ b/packages/grafana-data/src/dataframe/StreamingDataFrame.ts\n@@ -506,7 +506,7 @@\n }\n \n // binary search for index of closest value\n-export function closestIdx(num: number, arr: number[], lo?: number, hi?: number) {\n+export function closestIdxInternal(num: number, arr: number[], lo?: number, hi?: number) {\n   let mid;\n   lo = lo || 0;\n   hi = hi || arr.length - 1;\n",
+      "ground_truth": "The rename breaks every importer of this symbol. Among them these test files, which are not shown in the diff and will fail: StreamingDataFrame.test.ts."
+    },
+    {
+      "id": "grafana_T_17",
+      "repo": "grafana",
+      "language": "typescript",
+      "band": "T1",
+      "operator": "renamed function compareArrayValues -> compareArrayValuesInternal",
+      "edit_file": "packages/grafana-data/src/dataframe/frameComparisons.ts",
+      "old": "export function compareArrayValues<T>(a: T[], b: T[], cmp: (a: T, b: T) => boolean) {",
+      "new": "export function compareArrayValuesInternal<T>(a: T[], b: T[], cmp: (a: T, b: T) => boolean) {",
+      "symbol": "compareArrayValues",
+      "true_test_dependents": [
+        "packages/grafana-data/src/dataframe/frameComparisons.test.ts"
+      ],
+      "true_other_dependents": [
+        "packages/grafana-data/src/field/fieldOverrides.ts"
+      ],
+      "n_tests": 1,
+      "n_others": 1,
+      "resolver": "import-regex",
+      "oracle": "static-test-breakage",
+      "edge_type": "IMPORTS",
+      "pr_title": "refactor: internal naming cleanup in frameComparisons",
+      "pr_body": "Small internal cleanup as part of ongoing maintenance. No behavior change intended.",
+      "diff": "--- a/packages/grafana-data/src/dataframe/frameComparisons.ts\n+++ b/packages/grafana-data/src/dataframe/frameComparisons.ts\n@@ -75,7 +75,7 @@\n  *\n  * @beta\n  */\n-export function compareArrayValues<T>(a: T[], b: T[], cmp: (a: T, b: T) => boolean) {\n+export function compareArrayValuesInternal<T>(a: T[], b: T[], cmp: (a: T, b: T) => boolean) {\n   if (a === b) {\n     return true;\n   }\n",
+      "ground_truth": "The rename breaks every importer of this symbol. Among them these test files, which are not shown in the diff and will fail: frameComparisons.test.ts."
+    },
+    {
+      "id": "grafana_T_18",
+      "repo": "grafana",
+      "language": "typescript",
+      "band": "T1",
+      "operator": "renamed function localTimeFormat -> localTimeFormatInternal",
+      "edit_file": "packages/grafana-data/src/datetime/formats.ts",
+      "old": "export function localTimeFormat(",
+      "new": "export function localTimeFormatInternal(",
+      "symbol": "localTimeFormat",
+      "true_test_dependents": [
+        "packages/grafana-data/src/datetime/formats.test.ts"
+      ],
+      "true_other_dependents": [
+        "packages/grafana-data/src/valueFormats/dateTimeFormatters.ts"
+      ],
+      "n_tests": 1,
+      "n_others": 1,
+      "resolver": "import-regex",
+      "oracle": "static-test-breakage",
+      "edge_type": "IMPORTS",
+      "pr_title": "refactor: internal naming cleanup in formats",
+      "pr_body": "Small internal cleanup as part of ongoing maintenance. No behavior change intended.",
+      "diff": "--- a/packages/grafana-data/src/datetime/formats.ts\n+++ b/packages/grafana-data/src/datetime/formats.ts\n@@ -91,7 +91,7 @@\n  * @param options DateTimeFormatOptions to format date\n  * @param fallback default format if Intl API is not present\n  */\n-export function localTimeFormat(\n+export function localTimeFormatInternal(\n   options: Intl.DateTimeFormatOptions,\n   locale?: string | string[] | null,\n   fallback?: string\n",
+      "ground_truth": "The rename breaks every importer of this symbol. Among them these test files, which are not shown in the diff and will fail: formats.test.ts."
+    },
+    {
+      "id": "grafana_T_19",
+      "repo": "grafana",
+      "language": "typescript",
+      "band": "T1",
+      "operator": "renamed function eventFactory -> eventFactoryInternal",
+      "edit_file": "packages/grafana-data/src/events/eventFactory.ts",
+      "old": "export function eventFactory<T = undefined>(name: string): AppEvent<T> {",
+      "new": "export function eventFactoryInternal<T = undefined>(name: string): AppEvent<T> {",
+      "symbol": "eventFactory",
+      "true_test_dependents": [
+        "packages/grafana-data/src/events/EventBus.test.ts"
+      ],
+      "true_other_dependents": [
+        "packages/grafana-data/src/types/legacyEvents.ts"
+      ],
+      "n_tests": 1,
+      "n_others": 1,
+      "resolver": "import-regex",
+      "oracle": "static-test-breakage",
+      "edge_type": "IMPORTS",
+      "pr_title": "refactor: internal naming cleanup in eventFactory",
+      "pr_body": "Small internal cleanup as part of ongoing maintenance. No behavior change intended.",
+      "diff": "--- a/packages/grafana-data/src/events/eventFactory.ts\n+++ b/packages/grafana-data/src/events/eventFactory.ts\n@@ -2,7 +2,7 @@\n \n const typeList: Set<string> = new Set();\n \n-export function eventFactory<T = undefined>(name: string): AppEvent<T> {\n+export function eventFactoryInternal<T = undefined>(name: string): AppEvent<T> {\n   if (typeList.has(name)) {\n     throw new Error(`There is already an event defined with type '${name}'`);\n   }\n",
+      "ground_truth": "The rename breaks every importer of this symbol. Among them these test files, which are not shown in the diff and will fail: EventBus.test.ts."
+    },
+    {
+      "id": "grafana_T_20",
+      "repo": "grafana",
+      "language": "typescript",
+      "band": "T1",
+      "operator": "renamed class BusEventWithPayload -> BusEventWithPayloadInternal",
+      "edit_file": "packages/grafana-data/src/events/types.ts",
+      "old": "export abstract class BusEventWithPayload<T> extends BusEventBase {",
+      "new": "export abstract class BusEventWithPayloadInternal<T> extends BusEventBase {",
+      "symbol": "BusEventWithPayload",
+      "true_test_dependents": [
+        "packages/grafana-data/src/events/EventBus.test.ts"
+      ],
+      "true_other_dependents": [
+        "packages/grafana-data/src/events/common.ts",
+        "packages/grafana-data/src/types/legacyEvents.ts",
+        "packages/grafana-data/src/types/logs.ts"
+      ],
+      "n_tests": 1,
+      "n_others": 3,
+      "resolver": "import-regex",
+      "oracle": "static-test-breakage",
+      "edge_type": "IMPORTS",
+      "pr_title": "refactor: internal naming cleanup in types",
+      "pr_body": "Small internal cleanup as part of ongoing maintenance. No behavior change intended.",
+      "diff": "--- a/packages/grafana-data/src/events/types.ts\n+++ b/packages/grafana-data/src/events/types.ts\n@@ -41,7 +41,7 @@\n  * @alpha\n  * Base event type with payload\n  */\n-export abstract class BusEventWithPayload<T> extends BusEventBase {\n+export abstract class BusEventWithPayloadInternal<T> extends BusEventBase {\n   readonly payload: T;\n \n   constructor(payload: T) {\n",
+      "ground_truth": "The rename breaks every importer of this symbol. Among them these test files, which are not shown in the diff and will fail: EventBus.test.ts."
+    },
+    {
+      "id": "grafana_T_21",
+      "repo": "grafana",
+      "language": "typescript",
+      "band": "T1",
+      "operator": "renamed function getScaleCalculator -> getScaleCalculatorInternal",
+      "edit_file": "packages/grafana-data/src/field/scale.ts",
+      "old": "export function getScaleCalculator(field: Field, theme: GrafanaTheme2): ScaleCalculator {",
+      "new": "export function getScaleCalculatorInternal(field: Field, theme: GrafanaTheme2): ScaleCalculator {",
+      "symbol": "getScaleCalculator",
+      "true_test_dependents": [
+        "packages/grafana-data/src/field/scale.test.ts"
+      ],
+      "true_other_dependents": [
+        "packages/grafana-data/src/field/displayProcessor.ts",
+        "packages/grafana-data/src/field/fieldColor.ts"
+      ],
+      "n_tests": 1,
+      "n_others": 2,
+      "resolver": "import-regex",
+      "oracle": "static-test-breakage",
+      "edge_type": "IMPORTS",
+      "pr_title": "refactor: internal naming cleanup in scale",
+      "pr_body": "Small internal cleanup as part of ongoing maintenance. No behavior change intended.",
+      "diff": "--- a/packages/grafana-data/src/field/scale.ts\n+++ b/packages/grafana-data/src/field/scale.ts\n@@ -16,7 +16,7 @@\n \n export type ScaleCalculator = (value: number) => ColorScaleValue;\n \n-export function getScaleCalculator(field: Field, theme: GrafanaTheme2): ScaleCalculator {\n+export function getScaleCalculatorInternal(field: Field, theme: GrafanaTheme2): ScaleCalculator {\n   if (field.type === FieldType.boolean) {\n     return getBooleanScaleCalculator(field, theme);\n   }\n",
+      "ground_truth": "The rename breaks every importer of this symbol. Among them these test files, which are not shown in the diff and will fail: scale.test.ts."
+    },
+    {
+      "id": "grafana_T_22",
+      "repo": "grafana",
+      "language": "typescript",
+      "band": "T1",
+      "operator": "renamed function getActiveThreshold -> getActiveThresholdInternal",
+      "edit_file": "packages/grafana-data/src/field/thresholds.ts",
+      "old": "export function getActiveThreshold(value: number, thresholds: Threshold[] | undefined): Threshold {",
+      "new": "export function getActiveThresholdInternal(value: number, thresholds: Threshold[] | undefined): Threshold {",
+      "symbol": "getActiveThreshold",
+      "true_test_dependents": [
+        "packages/grafana-data/src/field/thresholds.test.ts"
+      ],
+      "true_other_dependents": [
+        "packages/grafana-data/src/utils/valueMappings.ts"
+      ],
+      "n_tests": 1,
+      "n_others": 1,
+      "resolver": "import-regex",
+      "oracle": "static-test-breakage",
+      "edge_type": "IMPORTS",
+      "pr_title": "refactor: internal naming cleanup in thresholds",
+      "pr_body": "Small internal cleanup as part of ongoing maintenance. No behavior change intended.",
+      "diff": "--- a/packages/grafana-data/src/field/thresholds.ts\n+++ b/packages/grafana-data/src/field/thresholds.ts\n@@ -4,7 +4,7 @@\n \n export const fallBackThreshold: Threshold = { value: 0, color: FALLBACK_COLOR };\n \n-export function getActiveThreshold(value: number, thresholds: Threshold[] | undefined): Threshold {\n+export function getActiveThresholdInternal(value: number, thresholds: Threshold[] | undefined): Threshold {\n   if (!thresholds || thresholds.length === 0) {\n     return fallBackThreshold;\n   }\n",
+      "ground_truth": "The rename breaks every importer of this symbol. Among them these test files, which are not shown in the diff and will fail: thresholds.test.ts."
+    },
+    {
+      "id": "grafana_T_23",
+      "repo": "grafana",
+      "language": "typescript",
+      "band": "T1",
+      "operator": "renamed function sanitizeTextPanelContent -> sanitizeTextPanelContentInternal",
+      "edit_file": "packages/grafana-data/src/text/sanitize.ts",
+      "old": "export function sanitizeTextPanelContent(unsanitizedString: string): string {",
+      "new": "export function sanitizeTextPanelContentInternal(unsanitizedString: string): string {",
+      "symbol": "sanitizeTextPanelContent",
+      "true_test_dependents": [
+        "packages/grafana-data/src/text/sanitize.test.ts"
+      ],
+      "true_other_dependents": [
+        "packages/grafana-data/src/text/markdown.ts"
+      ],
+      "n_tests": 1,
+      "n_others": 1,
+      "resolver": "import-regex",
+      "oracle": "static-test-breakage",
+      "edge_type": "IMPORTS",
+      "pr_title": "refactor: internal naming cleanup in sanitize",
+      "pr_body": "Small internal cleanup as part of ongoing maintenance. No behavior change intended.",
+      "diff": "--- a/packages/grafana-data/src/text/sanitize.ts\n+++ b/packages/grafana-data/src/text/sanitize.ts\n@@ -95,7 +95,7 @@\n  * Info: https://github.com/leizongmin/js-xss#customize-css-filter\n  * Whitelist: https://github.com/leizongmin/js-css-filter/blob/master/lib/default.js\n  */\n-export function sanitizeTextPanelContent(unsanitizedString: string): string {\n+export function sanitizeTextPanelContentInternal(unsanitizedString: string): string {\n   try {\n     return sanitizeTextPanelWhitelist.process(unsanitizedString);\n   } catch (error) {\n",
+      "ground_truth": "The rename breaks every importer of this symbol. Among them these test files, which are not shown in the diff and will fail: sanitize.test.ts."
+    },
+    {
+      "id": "grafana_T_24",
+      "repo": "grafana",
+      "language": "typescript",
+      "band": "T1",
+      "operator": "renamed function escapeStringForRegex -> escapeStringForRegexInternal",
+      "edit_file": "packages/grafana-data/src/text/string.ts",
+      "old": "export function escapeStringForRegex(value: string) {",
+      "new": "export function escapeStringForRegexInternal(value: string) {",
+      "symbol": "escapeStringForRegex",
+      "true_test_dependents": [
+        "packages/grafana-data/src/text/string.test.ts"
+      ],
+      "true_other_dependents": [
+        "packages/grafana-data/src/transformations/matchers/refIdMatcher.ts"
+      ],
+      "n_tests": 1,
+      "n_others": 1,
+      "resolver": "import-regex",
+      "oracle": "static-test-breakage",
+      "edge_type": "IMPORTS",
+      "pr_title": "refactor: internal naming cleanup in string",
+      "pr_body": "Small internal cleanup as part of ongoing maintenance. No behavior change intended.",
+      "diff": "--- a/packages/grafana-data/src/text/string.ts\n+++ b/packages/grafana-data/src/text/string.ts\n@@ -5,7 +5,7 @@\n const specialCharEscape = new RegExp(specialMatcher, 'g');\n const specialCharUnescape = new RegExp('(\\\\\\\\)' + specialMatcher, 'g');\n \n-export function escapeStringForRegex(value: string) {\n+export function escapeStringForRegexInternal(value: string) {\n   if (!value) {\n     return value;\n   }\n",
+      "ground_truth": "The rename breaks every importer of this symbol. Among them these test files, which are not shown in the diff and will fail: string.test.ts."
+    },
+    {
+      "id": "grafana_T_25",
+      "repo": "grafana",
+      "language": "typescript",
+      "band": "T1",
+      "operator": "renamed function alpha -> alphaInternal",
+      "edit_file": "packages/grafana-data/src/themes/colorManipulator.ts",
+      "old": "export function alpha(color: string, value: number) {",
+      "new": "export function alphaInternal(color: string, value: number) {",
+      "symbol": "alpha",
+      "true_test_dependents": [
+        "packages/grafana-data/src/themes/colorManipulator.test.ts"
+      ],
+      "true_other_dependents": [
+        "packages/grafana-data/src/themes/createColors.ts"
+      ],
+      "n_tests": 1,
+      "n_others": 1,
+      "resolver": "import-regex",
+      "oracle": "static-test-breakage",
+      "edge_type": "IMPORTS",
+      "pr_title": "refactor: internal naming cleanup in colorManipulator",
+      "pr_body": "Small internal cleanup as part of ongoing maintenance. No behavior change intended.",
+      "diff": "--- a/packages/grafana-data/src/themes/colorManipulator.ts\n+++ b/packages/grafana-data/src/themes/colorManipulator.ts\n@@ -271,7 +271,7 @@\n  * @returns A CSS color string. Hex input values are returned as rgb\n  * @beta\n  */\n-export function alpha(color: string, value: number) {\n+export function alphaInternal(color: string, value: number) {\n   if (color === '') {\n     return '#000000';\n   }\n",
+      "ground_truth": "The rename breaks every importer of this symbol. Among them these test files, which are not shown in the diff and will fail: colorManipulator.test.ts."
+    },
+    {
+      "id": "grafana_T_26",
+      "repo": "grafana",
+      "language": "typescript",
+      "band": "T1",
+      "operator": "renamed function createSpacing -> createSpacingInternal",
+      "edit_file": "packages/grafana-data/src/themes/createSpacing.ts",
+      "old": "export function createSpacing(options: ThemeSpacingOptions = {}): ThemeSpacing {",
+      "new": "export function createSpacingInternal(options: ThemeSpacingOptions = {}): ThemeSpacing {",
+      "symbol": "createSpacing",
+      "true_test_dependents": [
+        "packages/grafana-data/src/themes/createSpacing.test.ts"
+      ],
+      "true_other_dependents": [
+        "packages/grafana-data/src/themes/createTheme.ts"
+      ],
+      "n_tests": 1,
+      "n_others": 1,
+      "resolver": "import-regex",
+      "oracle": "static-test-breakage",
+      "edge_type": "IMPORTS",
+      "pr_title": "refactor: internal naming cleanup in createSpacing",
+      "pr_body": "Small internal cleanup as part of ongoing maintenance. No behavior change intended.",
+      "diff": "--- a/packages/grafana-data/src/themes/createSpacing.ts\n+++ b/packages/grafana-data/src/themes/createSpacing.ts\n@@ -42,7 +42,7 @@\n };\n \n /** @internal */\n-export function createSpacing(options: ThemeSpacingOptions = {}): ThemeSpacing {\n+export function createSpacingInternal(options: ThemeSpacingOptions = {}): ThemeSpacing {\n   const { gridSize = 8 } = options;\n \n   const transform = (value: ThemeSpacingArgument) => {\n",
+      "ground_truth": "The rename breaks every importer of this symbol. Among them these test files, which are not shown in the diff and will fail: createSpacing.test.ts."
+    },
+    {
+      "id": "grafana_T_27",
+      "repo": "grafana",
+      "language": "typescript",
+      "band": "T1",
+      "operator": "renamed function createTransitions -> createTransitionsInternal",
+      "edit_file": "packages/grafana-data/src/themes/createTransitions.ts",
+      "old": "export function createTransitions(): ThemeTransitions {",
+      "new": "export function createTransitionsInternal(): ThemeTransitions {",
+      "symbol": "createTransitions",
+      "true_test_dependents": [
+        "packages/grafana-data/src/themes/createTransitions.test.ts"
+      ],
+      "true_other_dependents": [
+        "packages/grafana-data/src/themes/createTheme.ts"
+      ],
+      "n_tests": 1,
+      "n_others": 1,
+      "resolver": "import-regex",
+      "oracle": "static-test-breakage",
+      "edge_type": "IMPORTS",
+      "pr_title": "refactor: internal naming cleanup in createTransitions",
+      "pr_body": "Small internal cleanup as part of ongoing maintenance. No behavior change intended.",
+      "diff": "--- a/packages/grafana-data/src/themes/createTransitions.ts\n+++ b/packages/grafana-data/src/themes/createTransitions.ts\n@@ -84,7 +84,7 @@\n }\n \n /** @internal */\n-export function createTransitions(): ThemeTransitions {\n+export function createTransitionsInternal(): ThemeTransitions {\n   return {\n     create,\n     duration,\n",
+      "ground_truth": "The rename breaks every importer of this symbol. Among them these test files, which are not shown in the diff and will fail: createTransitions.test.ts."
+    },
+    {
+      "id": "grafana_T_28",
+      "repo": "grafana",
+      "language": "typescript",
+      "band": "T1",
+      "operator": "renamed function createVisualizationColors -> createVisualizationColorsInternal",
+      "edit_file": "packages/grafana-data/src/themes/createVisualizationColors.ts",
+      "old": "export function createVisualizationColors(",
+      "new": "export function createVisualizationColorsInternal(",
+      "symbol": "createVisualizationColors",
+      "true_test_dependents": [
+        "packages/grafana-data/src/themes/createVisualizationColors.test.ts"
+      ],
+      "true_other_dependents": [
+        "packages/grafana-data/src/themes/createTheme.ts"
+      ],
+      "n_tests": 1,
+      "n_others": 1,
+      "resolver": "import-regex",
+      "oracle": "static-test-breakage",
+      "edge_type": "IMPORTS",
+      "pr_title": "refactor: internal naming cleanup in createVisualizationColors",
+      "pr_body": "Small internal cleanup as part of ongoing maintenance. No behavior change intended.",
+      "diff": "--- a/packages/grafana-data/src/themes/createVisualizationColors.ts\n+++ b/packages/grafana-data/src/themes/createVisualizationColors.ts\n@@ -70,7 +70,7 @@\n /**\n  * @internal\n  */\n-export function createVisualizationColors(\n+export function createVisualizationColorsInternal(\n   colors: ThemeColors,\n   options: ThemeVisualizationColorsInput = {}\n ): ThemeVisualizationColors {\n",
+      "ground_truth": "The rename breaks every importer of this symbol. Among them these test files, which are not shown in the diff and will fail: createVisualizationColors.test.ts."
+    }
+  ]
+}

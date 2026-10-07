@@ -1,0 +1,42 @@
+{
+  "candidate_mentions": [
+    {
+      "basename_collision": false,
+      "end": 681,
+      "evidence_id": "M002",
+      "excerpt": "usion for future maintainers.\n\n## Evidence\n- `sklearn/linear_model/_linear_loss.py:36`: The class `LinearModelLoss` is renamed to `LinearModelLossInternal`.\n- `sklearn/linear_model/_glm/glm.py`: This file calls `LinearModelLoss`, and the change may affect its functionality if not updated.\n- `sklearn/linear_model/_logistic.py`: This file also calls `LinearModelLoss`, indicating potential integration issues if the renaming is not propagated.\n\n## Impa",
+      "match_kind": "full_path",
+      "match_text": "sklearn/linear_model/_glm/glm.py",
+      "oracle_path": "sklearn/linear_model/_glm/glm.py",
+      "start": 649
+    },
+    {
+      "basename_collision": false,
+      "end": 815,
+      "evidence_id": "M003",
+      "excerpt": "nearModelLossInternal`.\n- `sklearn/linear_model/_glm/glm.py`: This file calls `LinearModelLoss`, and the change may affect its functionality if not updated.\n- `sklearn/linear_model/_logistic.py`: This file also calls `LinearModelLoss`, indicating potential integration issues if the renaming is not propagated.\n\n## Impact\n- **Technical Impact:** The renaming could lead to runtime errors in any module or script that imports `LinearModelLoss` without up",
+      "match_kind": "full_path",
+      "match_text": "sklearn/linear_model/_logistic.py",
+      "oracle_path": "sklearn/linear_model/_logistic.py",
+      "start": 782
+    }
+  ],
+  "causal_quote": "- `sklearn/linear_model/_glm/glm.py`: This file calls `LinearModelLoss`, and the change may affect its functionality if not updated.",
+  "decision_source": "llm_causal_adjudication",
+  "detected": true,
+  "evidence_id": "M002",
+  "executed_at_utc": "2026-09-19T15:06:22.646176+00:00",
+  "finding_quote": "- `sklearn/linear_model/_glm/glm.py`: This file calls `LinearModelLoss`, and the change may affect its functionality if not updated.",
+  "judge": "openai:gpt-4o",
+  "manifest_sha256": "5d4371a93d1b09f0491ecc12279f9f3ff5de23053b7a5e74650a749f58b472b0",
+  "model_alias": "openai:gpt-4o",
+  "model_snapshot": "unavailable-from-original-wrapper",
+  "original_verdict": true,
+  "prompt_sha256": "f599535c4b64d5562d18f0474349fabadb1e8f1de15de939664ece8690bdc8f5",
+  "reason_code": "specific_cross_file_link",
+  "response_wrapper": "bare",
+  "review_sha256": "adc68449db2849a9b3aa66a480d253e6026f83d997e7541e3078771a2f22675b",
+  "schema_sha256": "6a22fcb256437ebed904ab2d879b36be1234fb2e06add1127ac8ea2ab46f60f0",
+  "schema_version": "exp2-adjudication-v2",
+  "system_sha256": "3634314a8fc4231391e4c51174e5c32d7346b0e2ceb5f8c4641e6ba866bd5939"
+}

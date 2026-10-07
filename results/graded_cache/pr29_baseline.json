@@ -1,0 +1,51 @@
+{
+  "pr_id": 29,
+  "mode": "baseline",
+  "mean_scores": {
+    "F3": 1.5,
+    "F4": 2.0,
+    "P1": 0.0,
+    "R2": 0.0,
+    "T3": 2.0
+  },
+  "mean_graded_total": 5.5,
+  "per_judge": [
+    {
+      "model": "gemini:gemini-2.5-flash",
+      "scores": {
+        "F3": 2,
+        "F4": 2,
+        "P1": 0,
+        "R2": 0,
+        "T3": 2
+      },
+      "evidence": {
+        "F3": "Changing the visibility of `requireNonNullAllCapsNonEmpty` to private could break other classes in the package that might be using this method, leading to compilation errors.",
+        "F4": "Changing the visibility of `requireNonNullAllCapsNonEmpty` to private could break other classes in the package that might be using this method, leading to compilation errors.",
+        "P1": "No mention of performance in the review.",
+        "R2": "No comment on complexity or code structure in the review.",
+        "T3": "`clients/src/test/java/org/apache/kafka/clients/admin/RaftVoterEndpointTest.java:0-128`: Tests do not cover edge cases for IPv6 addresses or invalid port numbers."
+      },
+      "error": ""
+    },
+    {
+      "model": "gemini:gemini-2.5-pro",
+      "scores": {
+        "F3": 1,
+        "F4": 2,
+        "P1": 0,
+        "R2": 0,
+        "T3": 2
+      },
+      "evidence": {
+        "F3": "The review notes that changing the method visibility \"may affect other classes relying on this method\" and \"could break other classes in the package\", but does not name any specific class or file that would be affected.",
+        "F4": "The review identifies a specific breaking change: \"The `requireNonNullAllCapsNonEmpty` method was changed from package-private to private\". It explains that this breaks the contract for other classes in the package that might be using it, leading to compilation errors.",
+        "P1": "The review does not mention performance.",
+        "R2": "The review does not comment on complexity or code structure.",
+        "T3": "The review names one specific test file that needs to be updated: `clients/src/test/java/org/apache/kafka/clients/admin/RaftVoterEndpointTest.java`."
+      },
+      "error": ""
+    }
+  ],
+  "timestamp": "2026-06-01T18:58:02.190711+00:00"
+}

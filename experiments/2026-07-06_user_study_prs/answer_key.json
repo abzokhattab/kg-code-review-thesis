@@ -1,0 +1,253 @@
+{
+ "requests_7433": {
+  "baseline_strict": {
+   "src/requests/models.py": {
+    "existence": "exists",
+    "relationship": "changed",
+    "basis": "This file is changed by the PR itself."
+   },
+   "tests/test_requests.py": {
+    "existence": "exists",
+    "relationship": "changed",
+    "basis": "This file is changed by the PR itself."
+   }
+  },
+  "kg": {
+   "src/requests/api.py": {
+    "existence": "exists",
+    "relationship": "indirect",
+    "basis": "Public API calls Session.request, which reaches request-body preparation."
+   },
+   "src/requests/models.py": {
+    "existence": "exists",
+    "relationship": "changed",
+    "basis": "This file is changed by the PR itself."
+   },
+   "src/requests/sessions.py": {
+    "existence": "exists",
+    "relationship": "indirect",
+    "basis": "Session prepares a PreparedRequest; PreparedRequest.prepare then calls prepare_body."
+   },
+   "tests/test_requests.py": {
+    "existence": "exists",
+    "relationship": "changed",
+    "basis": "This file is changed by the PR itself."
+   }
+  }
+ },
+ "flask_5637": {
+  "baseline_strict": {
+   "docs/config.rst": {
+    "existence": "exists",
+    "relationship": "changed",
+    "basis": "This file is changed by the PR itself."
+   },
+   "src/flask/app.py": {
+    "existence": "exists",
+    "relationship": "changed",
+    "basis": "This file is changed by the PR itself."
+   },
+   "tests/test_request.py": {
+    "existence": "exists",
+    "relationship": "changed",
+    "basis": "This file is changed by the PR itself."
+   }
+  },
+  "kg": {
+   "src/flask/app.py": {
+    "existence": "exists",
+    "relationship": "changed",
+    "basis": "This file is changed by the PR itself."
+   },
+   "src/flask/logging.py": {
+    "existence": "exists",
+    "relationship": "exists",
+    "basis": "Reads request.environ; no import of changed app.py or TRUSTED_HOSTS behavior connection was established."
+   },
+   "src/flask/sessions.py": {
+    "existence": "exists",
+    "relationship": "type_only",
+    "basis": "References Flask for typing; no host-validation behavior connection was established."
+   },
+   "tests/test_instance_config.py": {
+    "existence": "exists",
+    "relationship": "exists",
+    "basis": "File exists, but its tests do not establish a TRUSTED_HOSTS connection."
+   },
+   "tests/test_request.py": {
+    "existence": "exists",
+    "relationship": "changed",
+    "basis": "This file is changed by the PR itself."
+   }
+  }
+ },
+ "click_3493": {
+  "baseline_strict": {
+   "src/click/utils.py": {
+    "existence": "exists",
+    "relationship": "changed",
+    "basis": "This file is changed by the PR itself."
+   },
+   "tests/test_utils.py": {
+    "existence": "exists",
+    "relationship": "changed",
+    "basis": "This file is changed by the PR itself."
+   }
+  },
+  "kg": {
+   "src/click/core.py": {
+    "existence": "exists",
+    "relationship": "direct",
+    "basis": "Contains runtime call sites of echo, the function changed by this PR."
+   },
+   "src/click/termui.py": {
+    "existence": "exists",
+    "relationship": "direct",
+    "basis": "Contains runtime call sites of echo, the function changed by this PR."
+   },
+   "src/click/testing.py": {
+    "existence": "exists",
+    "relationship": "module_only",
+    "basis": "Imports utilities from the changed module, but no changed echo behavior connection was established."
+   },
+   "src/click/utils.py": {
+    "existence": "exists",
+    "relationship": "changed",
+    "basis": "This file is changed by the PR itself."
+   },
+   "tests/test_utils.py": {
+    "existence": "exists",
+    "relationship": "changed",
+    "basis": "This file is changed by the PR itself."
+   }
+  }
+ },
+ "requests_7328": {
+  "baseline_strict": {
+   "src/requests/sessions.py": {
+    "existence": "exists",
+    "relationship": "changed",
+    "basis": "This file is changed by the PR itself."
+   },
+   "tests/test_requests.py": {
+    "existence": "exists",
+    "relationship": "changed",
+    "basis": "This file is changed by the PR itself."
+   }
+  },
+  "kg": {
+   "src/requests/__init__.py": {
+    "existence": "exists",
+    "relationship": "indirect",
+    "basis": "Exports the public request API; redirect handling is reached indirectly through Session."
+   },
+   "src/requests/api.py": {
+    "existence": "exists",
+    "relationship": "indirect",
+    "basis": "Public API constructs a Session, whose redirect path reaches resolve_redirects."
+   },
+   "src/requests/sessions.py": {
+    "existence": "exists",
+    "relationship": "changed",
+    "basis": "This file is changed by the PR itself."
+   },
+   "tests/test_requests.py": {
+    "existence": "exists",
+    "relationship": "changed",
+    "basis": "This file is changed by the PR itself."
+   }
+  }
+ },
+ "flask_5799": {
+  "baseline_strict": {
+   "src/flask/helpers.py": {
+    "existence": "exists",
+    "relationship": "changed",
+    "basis": "This file is changed by the PR itself."
+   },
+   "tests/test_helpers.py": {
+    "existence": "exists",
+    "relationship": "changed",
+    "basis": "This file is changed by the PR itself."
+   }
+  },
+  "kg": {
+   "src/flask/blueprints.py": {
+    "existence": "exists",
+    "relationship": "module_only",
+    "basis": "Imports another helper from helpers.py; it does not use stream_with_context."
+   },
+   "src/flask/helpers.py": {
+    "existence": "exists",
+    "relationship": "changed",
+    "basis": "This file is changed by the PR itself."
+   },
+   "src/flask/templating.py": {
+    "existence": "exists",
+    "relationship": "direct",
+    "basis": "Directly imports and calls stream_with_context when streaming templates."
+   },
+   "tests/test_helpers.py": {
+    "existence": "exists",
+    "relationship": "changed",
+    "basis": "This file is changed by the PR itself."
+   }
+  }
+ },
+ "click_3578": {
+  "baseline_strict": {
+   "CHANGES.md": {
+    "existence": "exists",
+    "relationship": "changed",
+    "basis": "This file is changed by the PR itself."
+   },
+   "src/click/core.py": {
+    "existence": "exists",
+    "relationship": "changed",
+    "basis": "This file is changed by the PR itself."
+   },
+   "tests/test_basic.py": {
+    "existence": "exists",
+    "relationship": "changed",
+    "basis": "This file is changed by the PR itself."
+   }
+  },
+  "kg": {
+   "src/click/core.py": {
+    "existence": "exists",
+    "relationship": "changed",
+    "basis": "This file is changed by the PR itself."
+   },
+   "src/click/parser.py": {
+    "existence": "exists",
+    "relationship": "type_only",
+    "basis": "References core parameter classes only for typing; no make_metavar display connection was established."
+   },
+   "src/click/types.py": {
+    "existence": "exists",
+    "relationship": "related",
+    "basis": "Choice and DateTime provide bracketed metavar text consumed by Argument.make_metavar."
+   },
+   "tests/test_basic.py": {
+    "existence": "exists",
+    "relationship": "changed",
+    "basis": "This file is changed by the PR itself."
+   },
+   "tests/test_context.py": {
+    "existence": "exists",
+    "relationship": "exists",
+    "basis": "File exists, but no test of the changed metavar behavior was established."
+   },
+   "tests/test_defaults.py": {
+    "existence": "exists",
+    "relationship": "exists",
+    "basis": "File exists, but no test of the changed metavar behavior was established."
+   },
+   "tests/test_shell_completion.py": {
+    "existence": "exists",
+    "relationship": "exists",
+    "basis": "Tests Choice completion; no data-flow connection to changed usage-message formatting was established."
+   }
+  }
+ }
+}

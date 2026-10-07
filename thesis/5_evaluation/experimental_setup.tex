@@ -1,0 +1,119 @@
+\section{Experimental Setup}
+\label{sec:setup}
+
+\subsection{Models}
+
+One model, gpt-4o, generates every review in Experiments~1 and~2 and in the
+human study; the arms differ only in the context block and the sentence that
+names it (Appendix~\ref{app:prompts}). All reviews are generated at
+temperature~$0.0$, so temperature does not differ between experiments.
+Absolute score levels remain not directly comparable because the samples,
+builders, and outcomes differ.
+
+Two disclosures belong here. First, no run log survives for the original
+review generation, so the claim that Experiment~1 ran at temperature~$0.0$
+rests on the pipeline's default and recorded metadata of a later run with the
+same configuration. Second, gpt-4o is both the generator and one of the five
+judges, a self-preference risk mitigated by the remaining four judges being
+non-OpenAI models and by Experiment~2's oracle, where verdicts can be compared
+against ground truth.
+
+Scoring uses a panel of five judges (gpt-4o, gemini-2.5-flash,
+claude-sonnet-4.5, deepseek-v4-pro and grok-4.6) with the majority verdict
+as the cell of record; at least four valid votes are required and ties are
+resolved to zero, the conservative direction for every treatment arm.
+Table~\ref{tab:config} summarises the configuration.
+
+\begin{table}[htbp]
+    \centering
+    \caption{Configuration of both experiments.}
+    \label{tab:config}
+    \small
+    \begin{tabular}{lll}
+        \toprule
+                          & Experiment 1        & Experiment 2 \\
+        \midrule
+        Unit of analysis  & pull request & injected defect \\
+        $n$               & 35                  & 40 (28 structural, 12 control) \\
+        Repositories      & 5                   & 3 \\
+        Generator         & gpt-4o              & gpt-4o \\
+        Temperature       & 0.0                 & 0.0 \\
+        Diff cap          & 50\,000 chars       & 12\,000 chars \\
+        Graph builder     & \multicolumn{2}{l}{code property graph (Joern CPG; \S\ref{sec:approach-kg})} \\
+        Chunks shown      & \multicolumn{2}{l}{5 (formatter cap)} \\
+        Judges            & \multicolumn{2}{l}{five-provider panel (Table~\ref{tab:models})} \\
+        Aggregation       & \multicolumn{2}{l}{strict majority, $\geq 4$ valid votes; ties to 0} \\
+        Outcome           & rubric score out of 25 & defect detected \\
+        Ground truth      & judge panel         & static oracle \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+\subsection{Context Construction}
+\label{sec:context-construction}
+
+The four arms are nested. \baseline{} receives the title, description and
+diff. \kg{} adds a graph block, \rag{} adds a
+retrieval block, and \hybrid{} adds both. Because every arm contains
+everything \baseline{} contains, a context arm can only lose by diluting
+attention, never by withholding the change.
+
+Both experiments build the graph block from a Joern code property
+graph~(\S\ref{sec:approach-kg}). For each changed file, the CPG is
+queried for method-level call and import edges that cross
+file boundaries; the resulting dependent-file list and edge annotations are
+rendered into the prompt.
+
+Retrieval is conventional dense retrieval at the same commit, using the
+embedding model in Table~\ref{tab:models}. Each changed file's first
+4\,000~characters is embedded as the query; the five highest-scoring chunks
+from outside the diff are rendered into the prompt.
+
+\subsection{Models and Roles}
+\label{sec:model-inventory}
+
+\begin{table}[htbp]
+    \centering
+    \caption{Models used for review generation, judging, and embeddings.}
+    \label{tab:models}
+    \footnotesize
+    \begin{tabularx}{\textwidth}{@{}lXc@{}}
+        \toprule
+        Role & Model & $T$ \\
+        \midrule
+        Generator, Experiment~1 and human study
+          & GPT-4o & 0.0 \\
+        Generator, Experiment~2
+          & GPT-4o & 0.0 \\
+        \midrule
+        Substitute generators
+          & Claude Haiku 4.5; Gemini 2.5 Flash; DeepSeek Chat & 0.0 \\
+        \midrule
+        Judge panel
+          & GPT-4o; Gemini 2.5 Flash; Claude Sonnet 4.5;
+            DeepSeek V4 Pro; Grok 4.6 & 0.0 \\
+        \midrule
+        Embeddings & \texttt{text-embedding-\allowbreak3-small} & --- \\
+        \bottomrule
+    \end{tabularx}
+\end{table}
+
+The APIs were invoked through provider aliases rather than immutable snapshot
+identifiers, which limits exact model-level replication.
+
+\subsection{Reproducibility}
+\label{sec:repro}
+
+Temperature zero is not bit-deterministic for this model. A regeneration
+check on an earlier configuration (32~pull requests with byte-identical
+inputs) produced a mean score movement of $0.88$~points on the
+nine-criterion subscale, with scores landing on exactly the same value in
+only 14 of 32~cases. The movement is unbiased (signed difference $-0.19$,
+$p = 0.51$), which is why paired means over 35~pull requests remain
+trustworthy, but it sets a floor beneath every small effect of roughly the
+same size as the graph arm's advantage over the baseline.
+
+What is reproducible is everything except the model calls: the stimulus set,
+evidence packs, prompts, judge cache and analysis seed are all on disk. A
+replication would produce different review texts and slightly different scores
+from the same inputs.

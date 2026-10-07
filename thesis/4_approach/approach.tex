@@ -1,0 +1,230 @@
+\section{Overview}
+\label{sec:approach-overview}
+
+The system takes a pull request and produces a written review. Three design
+properties make the comparison in Chapter~\ref{chap:edas} a comparison of
+context rather than of pipelines.
+
+The pipeline splits into a construction stage and a generation stage, with a
+frozen artefact between them. Construction reads the repository once, at the
+pull request's head commit, and writes an \emph{evidence pack}: a JSON file
+holding the change, the structural facts, and the retrieved code snippets
+(Section~\ref{sec:approach-packs}). Generation reads that file and never
+touches the repository. Because all four conditions read the same pack, none
+can differ by accident of timing.
+
+The conditions are nested. \baseline{} receives the change alone. \kg{} adds a
+structural block, \rag{} adds a retrieval block, and \hybrid{} adds both. No
+condition is deprived of the diff. The context arms add evidence and a sentence
+that names its type, so the contrast includes both supplied information and
+context-specific instruction.
+
+Structural context is produced by a code property graph (CPG) built with
+Joern, a static-analysis platform that parses source into an interlinked
+representation of syntax, control flow, and data flow
+(Section~\ref{sec:approach-kg}). Throughout the thesis, \kg{}, the graph
+arm, the structural arm, and the CPG arm name this same condition.
+
+Three graph builders appear in total and should not be confused. The Joern
+CPG is the deployed builder for Experiments~1 and~2. The human study
+uses the same knowledge-graph block, with dependent edges resolved from
+Python import statements (Section~\ref{sec:approach-kg-ast}). An earlier
+text-heuristic file matcher, superseded by Joern, survives only in the
+generator-robustness and replication rows of
+Section~\ref{sec:results-exp1-robustness}, where it is labelled as such.
+Figure~\ref{fig:pipeline} shows the arrangement.
+
+\begin{figure}[htbp]
+    \centering
+    \resizebox{0.92\textwidth}{!}{%
+    \input{figures/fig_pipeline_fancy}%
+    }
+    \caption{End-to-end pipeline. Arrows denote data flow: each stage
+             reads the output of the stage above it. The repository is
+             processed once into a frozen evidence pack. Each mode reads the
+             same pack and differs only in which fields are rendered into the
+             prompt. Related tests are matched by filename, not resolved from
+             the graph. A five-model judge panel scores every review on 25
+             binary criteria. The human study uses the same pipeline with the
+             graph's dependent edges resolved from import statements
+             (Section~\ref{sec:approach-kg-ast}).}
+    \label{fig:pipeline}
+\end{figure}
+
+\section{Evidence Packs}
+\label{sec:approach-packs}
+
+An evidence pack is the unit of input to generation. It contains the pull
+request's metadata, the list of changed files, the unified diff, the
+structural facts from the graph builder, and the retrieved code chunks.
+
+\section{Knowledge Graph Construction}
+\label{sec:approach-kg}
+
+The structural context supplied to the reviewer is a subgraph of the
+repository's code property graph (CPG), built with Joern, a
+language-agnostic static-analysis platform~\cite{yamaguchi2014cpg}. The CPG
+represents syntax, control flow, and data flow in a single queryable
+structure; the pipeline queries it for the cross-file relationships that a
+diff-only reviewer cannot see.
+
+\subsection{The Code Property Graph}
+\label{sec:approach-kg-cpg}
+
+At the pull request's head commit the full repository is loaded into Joern,
+which parses every source file into an in-memory code property graph. The
+pipeline then queries the graph for five relationship types seeded from the
+changed files:
+%
+\begin{enumerate}[leftmargin=*,itemsep=2pt,label=(\roman*)]
+  \item incoming callers of changed functions, with caller name, file, and
+        line number;
+  \item outgoing callees;
+  \item file-level dependents (files that import a changed module);
+  \item related test files, identified by filename-convention matching; and
+  \item code owners read from the repository's \texttt{CODEOWNERS} file when
+        present.
+\end{enumerate}
+%
+Queries use exact name matching against the method and type nodes that Joern
+extracts: a changed function's fully qualified name is looked up in the
+call-graph overlay, and every node whose call target matches is returned.
+
+Same-file and duplicate edges are removed because the diff already exposes
+same-file context. The remaining edges are capped at forty per evidence pack
+to stay within the model's useful context window; the renderer presents the
+first twelve, ordered by query type, without learned relevance ranking. The
+cap of twelve was chosen to balance informativeness against prompt length in
+early pilot reviews.
+
+Joern's Go frontend does not emit method-level nodes, so five Go-only pull
+requests are excluded from Experiment~1, leaving $n = 35$.
+% Sources: experiments/2026-09-19_joern_replace_grep/,
+% prnote/joern_kg.py, prnote/kg.py.
+
+Experiment~2 additionally decomposes the structural arm into component
+conditions: one containing only file-level dependency pointers, one
+containing only the resolved call-graph edges, and one that adds
+independently resolved inheritance relations. This design isolates the
+contribution of call-graph edges from that of coarser pointers and measures
+the gain from inheritance edges that the base Joern queries omit.
+% Sources: experiments/2026-07-05_injection_exp2/harness/run_modes.py.
+
+\subsection{The Knowledge-Graph Block in the Human Study}
+\label{sec:approach-kg-ast}
+
+The human study uses the same knowledge-graph context block as
+Experiment~1: the same relations (changed files, dependents, related tests)
+in the same rendered format. For its Python stimuli the dependent edges are
+resolved from \texttt{import} statements rather than from the Joern CPG:
+each candidate file is parsed with Python's standard library, its
+\texttt{import} and \texttt{from} statements collected, and an edge
+recorded only if a module name matches the changed file's module path. These edges are correct but file-level, and a
+module-level import does not establish that a change to one function inside
+that module reaches the importer.
+
+\subsection{Rendering}
+\label{sec:approach-kg-render}
+
+Regardless of the builder, the pack's structural fields are rendered into a
+Markdown block headed \emph{Knowledge Graph Context}, with sections for
+changed files, related tests, dependents, code owners, functions, and callers.
+The dependents, callers, and functions come from the CPG queries described
+above or, in the human study, from import statements. Related tests are identified by filename-convention
+matching (files whose path contains \texttt{test} and that share a directory
+ancestor with a changed file), and code owners are read from the repository's
+\texttt{CODEOWNERS} file when one exists. These two fields are therefore
+text-matched, not statically resolved.
+The block is truncated at 8\,000~characters. A render-time filter keeps only
+paths whose language matches the changed files. Both constructions share the same renderer and evidence-pack schema, so
+they differ in what they put in, not how it is presented to the model.
+
+Figure~\ref{fig:kg-block-example} shows a truncated graph block as the model
+receives it.
+
+\begin{figure}[htbp]
+\centering
+\begin{minipage}{0.92\textwidth}
+{\footnotesize
+\begin{verbatim}
+**Knowledge Graph Context:**
+**Changed Files:** .../Drawer.tsx, .../Drawer.story.tsx,
+  .../SaveDashboardDrawer.tsx, .../InspectContent.tsx  [7 files]
+**Related Tests:** .../RolePickerDrawer.test.tsx,
+  .../SaveDashboardDrawer.test.tsx,
+  .../HelpWizard.test.tsx                              [8 files]
+**Files that depend on changes:**
+  .../SaveDashboardDrawer.tsx,
+  .../InspectContent.tsx                               [3 files]
+**Functions in Changed Files:**
+  SaveDashboardDrawerComponent (SaveDashboardDrawer.tsx);
+  InspectContent (InspectContent.tsx);
+  HelpWizard (HelpWizard.tsx)                         [15 entries]
+**Call-graph edges (caller -> callee):**
+  SaveDashboardDrawerComponent -> renderBody;
+  InspectContent -> getErrors;
+  InspectContent -> formatStats                        [4 edges]
+\end{verbatim}
+}
+\end{minipage}
+\caption{Truncated graph block from Grafana PR~\#96268 (Joern CPG). Paths
+         are abbreviated; bracket counts show the full list lengths. The model
+         receives this block between the diff and the closing instruction.}
+\label{fig:kg-block-example}
+\end{figure}
+
+\section{Retrieval-Augmented Context}
+\label{sec:approach-rag}
+
+The retrieval arm is conventional dense retrieval, included as the comparison
+that makes the structural arm interpretable. The repository is walked at the
+same commit, skipping vendored directories, keeping recognised source
+extensions; the first 200 candidates are indexed. Chunks of 2\,000~characters
+with 200-character overlap are embedded with \texttt{text-embedding-3-small}.
+
+The query is not the diff: each changed file's first 4\,000~characters is
+embedded separately. The highest-scoring eight unique chunks are retained,
+excluding chunks from changed files. The prompt formatter renders five, each
+with path, line range, similarity score, and up to 800~characters of code.
+
+\section{The Four Review-Generation Modes}
+\label{sec:approach-modes}
+
+A mode is a pair: a system prompt and a context builder.
+
+\begin{table}[htbp]
+    \centering
+    \caption{The four generation modes. Every mode receives the title,
+             description and diff; they differ in the context block appended.}
+    \label{tab:modes}
+    \small
+    \begin{tabular}{@{}lll@{}}
+        \toprule
+        Mode & Context block & Rendered by \\
+        \midrule
+        \baseline{} & none                     & --- \\
+        \kg{}       & structural facts         & \texttt{format\_kg\_context} \\
+        \rag{}      & five retrieved snippets  & \texttt{format\_rag\_context} \\
+        \hybrid{}   & both, concatenated       & both formatters \\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+The \hybrid{} mode is a concatenation, not a fusion. Its block is the graph
+block followed by the retrieval block, with no joint ranking and no shared
+budget. Its result therefore evaluates this simple concatenation, not all
+possible ways of combining structural and similarity context.
+Appendix~\ref{app:review-example-chapter} reproduces a side-by-side example
+of a baseline and graph-augmented review for one pull request.
+
+\section{Prompt Design}
+\label{sec:approach-prompts}
+
+All four modes share one system prompt, which casts the model as a senior
+engineer and prescribes a five-heading output format. Each mode appends a
+single paragraph naming the kind of context it has been given. The prompts are
+reproduced in Appendix~\ref{app:prompts}. Two properties are load-bearing: the
+fixed output format constrains what the evaluation can detect, and the per-arm
+paragraph means the arms differ by one sentence of instruction as well as by
+the block itself. The user message is assembled in a fixed order: title,
+description, diff, context block, closing instruction.

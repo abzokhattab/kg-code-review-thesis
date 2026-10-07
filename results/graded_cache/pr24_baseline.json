@@ -1,0 +1,51 @@
+{
+  "pr_id": 24,
+  "mode": "baseline",
+  "mean_scores": {
+    "F3": 3.0,
+    "F4": 2.5,
+    "P1": 0.0,
+    "R2": 0.0,
+    "T3": 1.0
+  },
+  "mean_graded_total": 6.5,
+  "per_judge": [
+    {
+      "model": "gemini:gemini-2.5-flash",
+      "scores": {
+        "F3": 3,
+        "F4": 3,
+        "P1": 0,
+        "R2": 0,
+        "T3": 1
+      },
+      "evidence": {
+        "F3": "Names multiple specific callers or dependent components with file paths or function names, and explains the concrete integration risk for each. Evidence: `sklearn/linear_model/_logistic.py:1792`: Replacement of inline error handling with `_raise_for_params`. `sklearn/metrics/_scorer.py:254`: Similar replacement in the scorer logic. `sklearn/multioutput.py:149`: Another instance of replacing inline checks with `_raise_for_params`. The refactoring might inadvertently change the behavior of existin",
+        "F4": "Identifies multiple specific contract violations with file/function references and explains exactly what downstream behavior would change. Evidence: The review lists multiple files (`sklearn/linear_model/_logistic.py:1792`, `sklearn/metrics/_scorer.py:254`, `sklearn/sklearn/multioutput.py:149`) where the change occurs. It explains the downstream behavior: 'The refactoring might inadvertently change the behavior of existing methods if `_raise_for_params` does not perfectly replicate the previous ",
+        "P1": "The review makes no mention of performance.",
+        "R2": "The review does not comment on the complexity of the changed code or suggest any simplification. It acknowledges the PR's goal of centralization but doesn't identify any unnecessary complexity in the proposed changes.",
+        "T3": "Mentions that tests should exist but does not name a file. Evidence: 'Add unit tests specifically for `_raise_for_params` to cover various scenarios, including edge cases where `params` might be empty or `None`.' and 'Ensure that existing integration tests cover the scenarios where these methods are used'. While specific about the scenarios, no specific test file paths are named."
+      },
+      "error": ""
+    },
+    {
+      "model": "gemini:gemini-2.5-pro",
+      "scores": {
+        "F3": 3,
+        "F4": 2,
+        "P1": 0,
+        "R2": 0,
+        "T3": 1
+      },
+      "evidence": {
+        "F3": "The review names multiple specific files affected by the change (`sklearn/linear_model/_logistic.py:1792`, `sklearn/metrics/_scorer.py:254`, `sklearn/multioutput.py:149`) and explains the concrete integration risk: 'The refactoring might inadvertently change the behavior of existing methods if `_raise_for_params` does not perfectly replicate the previous inline checks.'",
+        "F4": "The review identifies a specific caller expectation that could break: that the new centralized error handling in `_raise_for_params` must 'perfectly replicate the previous inline checks' to avoid changing the behavior of existing methods. It notes this could lead to 'unexpected runtime errors or incorrect error messages'.",
+        "P1": "The review does not mention performance, speed, or efficiency.",
+        "R2": "The review does not identify any unnecessary complexity or suggest simplifications in the proposed code. It discusses the risks of a refactoring intended to reduce complexity, but does not critique the new code's structure.",
+        "T3": "The review recommends adding 'unit tests specifically for `_raise_for_params`' and ensuring 'existing integration tests cover the scenarios', but it does not name any specific test files that should be added or updated."
+      },
+      "error": ""
+    }
+  ],
+  "timestamp": "2026-06-01T18:58:01.709760+00:00"
+}

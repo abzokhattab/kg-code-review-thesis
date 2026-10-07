@@ -1,0 +1,41 @@
+{
+  "candidate_mentions": [
+    {
+      "basename_collision": false,
+      "end": 748,
+      "evidence_id": "M001",
+      "excerpt": "odules.\n\n## Evidence\n- `sklearn/base.py:1348`: The return value of `_fit_context` is changed from `decorator` to `(decorator, None)`.\n- Multiple files such as `sklearn/cluster/_affinity_propagation.py`, `sklearn/cluster/_agglomerative.py`, etc., depend on `_fit_context` but are not updated to handle the tuple return type.\n\n## Impact\n- The change could lead to `TypeError` exceptions if the calling functions are not expecting a tuple. This could break cluste",
+      "match_kind": "full_path",
+      "match_text": "sklearn/cluster/_affinity_propagation.py",
+      "oracle_path": "sklearn/cluster/_affinity_propagation.py",
+      "start": 708
+    },
+    {
+      "basename_collision": false,
+      "end": 785,
+      "evidence_id": "M002",
+      "excerpt": "`: The return value of `_fit_context` is changed from `decorator` to `(decorator, None)`.\n- Multiple files such as `sklearn/cluster/_affinity_propagation.py`, `sklearn/cluster/_agglomerative.py`, etc., depend on `_fit_context` but are not updated to handle the tuple return type.\n\n## Impact\n- The change could lead to `TypeError` exceptions if the calling functions are not expecting a tuple. This could break clustering and decomposition functionalitie",
+      "match_kind": "full_path",
+      "match_text": "sklearn/cluster/_agglomerative.py",
+      "oracle_path": "sklearn/cluster/_agglomerative.py",
+      "start": 752
+    }
+  ],
+  "causal_quote": "The change could lead to `TypeError` exceptions if the calling functions are not expecting a tuple.",
+  "decision_source": "llm_causal_adjudication",
+  "detected": true,
+  "evidence_id": "M001",
+  "executed_at_utc": "2026-09-19T15:04:20.912129+00:00",
+  "finding_quote": "Multiple files such as `sklearn/cluster/_affinity_propagation.py`, `sklearn/cluster/_agglomerative.py`, etc., depend on `_fit_context` but are not updated to handle the tuple return type.",
+  "judge": "openai:gpt-4o-mini",
+  "manifest_sha256": "5d4371a93d1b09f0491ecc12279f9f3ff5de23053b7a5e74650a749f58b472b0",
+  "model_alias": "openai:gpt-4o-mini",
+  "model_snapshot": "unavailable-from-original-wrapper",
+  "original_verdict": true,
+  "prompt_sha256": "aba2cd8aa802e0a7d195e1c34ac4ebc2eb9935d1bb635b5d3af18412192f8865",
+  "reason_code": "specific_cross_file_link",
+  "review_sha256": "85adfe51e73525ffeed656d94c8bc57d5e00176f0ede3a61a647f5c9f449f6a3",
+  "schema_sha256": "6a22fcb256437ebed904ab2d879b36be1234fb2e06add1127ac8ea2ab46f60f0",
+  "schema_version": "exp2-adjudication-v2",
+  "system_sha256": "3634314a8fc4231391e4c51174e5c32d7346b0e2ceb5f8c4641e6ba866bd5939"
+}

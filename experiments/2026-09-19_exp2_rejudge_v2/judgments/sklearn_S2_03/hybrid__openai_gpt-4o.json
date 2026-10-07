@@ -1,0 +1,42 @@
+{
+  "candidate_mentions": [
+    {
+      "basename_collision": false,
+      "end": 553,
+      "evidence_id": "M001",
+      "excerpt": "ithout the new parameter.\n\n## Evidence\n- `sklearn/linear_model/_sag.py:87`: The `sag_solver` function signature has been modified to include `required_ctx`.\n- `sklearn/linear_model/_logistic.py:call_graph`: `_logistic_regression_path` calls `sag_solver` but is not updated to pass `required_ctx`.\n- `sklearn/linear_model/_ridge.py:call_graph`: `_ridge_regression` calls `sag_solver` but is not updated to pass `required_ctx`.\n\n## Impact\n- The lack of up",
+      "match_kind": "full_path",
+      "match_text": "sklearn/linear_model/_logistic.py",
+      "oracle_path": "sklearn/linear_model/_logistic.py",
+      "start": 520
+    },
+    {
+      "basename_collision": false,
+      "end": 690,
+      "evidence_id": "M002",
+      "excerpt": " `required_ctx`.\n- `sklearn/linear_model/_logistic.py:call_graph`: `_logistic_regression_path` calls `sag_solver` but is not updated to pass `required_ctx`.\n- `sklearn/linear_model/_ridge.py:call_graph`: `_ridge_regression` calls `sag_solver` but is not updated to pass `required_ctx`.\n\n## Impact\n- The lack of updates to the calling functions could lead to runtime errors or unexpected behavior due to missing required parameters.\n- The absence of d",
+      "match_kind": "full_path",
+      "match_text": "sklearn/linear_model/_ridge.py",
+      "oracle_path": "sklearn/linear_model/_ridge.py",
+      "start": 660
+    }
+  ],
+  "causal_quote": "- The lack of updates to the calling functions could lead to runtime errors or unexpected behavior due to missing required parameters.",
+  "decision_source": "llm_causal_adjudication",
+  "detected": true,
+  "evidence_id": "M001",
+  "executed_at_utc": "2026-09-19T15:05:52.167301+00:00",
+  "finding_quote": "- `sklearn/linear_model/_logistic.py:call_graph`: `_logistic_regression_path` calls `sag_solver` but is not updated to pass `required_ctx`.",
+  "judge": "openai:gpt-4o",
+  "manifest_sha256": "5d4371a93d1b09f0491ecc12279f9f3ff5de23053b7a5e74650a749f58b472b0",
+  "model_alias": "openai:gpt-4o",
+  "model_snapshot": "unavailable-from-original-wrapper",
+  "original_verdict": true,
+  "prompt_sha256": "bf640d2b72950f20ef0406026aeb588f3bd021df7bff3be3babd9e96b2ccbf6b",
+  "reason_code": "specific_cross_file_link",
+  "response_wrapper": "bare",
+  "review_sha256": "12f927323f709a09026c8cde950fcb181f97a6e23bc1fb869b2b04d21c3795cc",
+  "schema_sha256": "6a22fcb256437ebed904ab2d879b36be1234fb2e06add1127ac8ea2ab46f60f0",
+  "schema_version": "exp2-adjudication-v2",
+  "system_sha256": "3634314a8fc4231391e4c51174e5c32d7346b0e2ceb5f8c4641e6ba866bd5939"
+}

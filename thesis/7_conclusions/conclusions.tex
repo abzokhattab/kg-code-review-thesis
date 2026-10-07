@@ -1,0 +1,140 @@
+\section{Summary of Findings}
+\label{sec:conclusion-summary}
+
+This thesis asked how repository context changes review coverage, whether
+structural context enables cross-file reasoning, and whether human raters
+perceive that capability.
+
+\subsection*{RQ1: Comparative coverage}
+
+There is no single best review mode. Retrieval produces the largest gain on
+the full rubric ($+1.03$, $p = 0.002$), while the structural
+arm produces the largest gain on the nine structurally relevant criteria
+($+0.69$, $p = 0.003$).
+After correction for multiple comparisons, each retains the gain on the scale
+on which it leads; the hybrid retains neither. The structural-arm estimate is
+sensitive to regeneration: an earlier run of the same pipeline gave
+$+0.34$ ($p = 0.111$), so its magnitude should be read with the
+uncertainty reported in Section~\ref{sec:threats}.
+
+\subsection*{RQ2: Cross-file reasoning}
+
+Structural context enables a capability that the diff-only reviewer lacks. On
+28 defects whose consequences lie outside the edited file, the baseline
+detects none and the deployed CPG arm detects 18 ($p < 0.0001$); retrieval
+detects 5. The hybrid detects 21 but is not significantly better than the graph
+arm alone. Adding inheritance edges raises detection to 26 of 28, matching
+the idealised resolver. Component analyses show that dependency
+lists, resolved call edges, and test-file links each contribute within their
+evaluated settings. These results establish the capability on controlled
+synthetic defects; they do not estimate its prevalence in the broader
+population of pull requests.
+
+\subsection*{RQ3: Human preference}
+
+Twenty-seven raters preferred the graph-augmented review when asked which review names the affected code
+(0.710, $p = 0.0005$). They showed no preference on
+overall usefulness (0.512). After correction they preferred the baseline
+review on code clarity. The human-study result therefore corroborates the
+targeted affected-code benefit, not a general improvement in review quality.
+
+\subsection*{Synthesis}
+
+In the controlled experiment, structural context gives the language model a
+capability unavailable from the diff alone: identifying a consequence that is
+not in the diff. On the
+35-pull-request benchmark its average gain is small but sharply localised:
+96\% ($p = 0.003$) lands in the criteria the mechanism
+predicts.
+
+\section{Limitations}
+\label{sec:conclusion-limitations}
+
+This work has three boundaries. First, it models static relationships within
+one repository, not dynamic or cross-repository dependencies. Second, the
+evaluation uses selected pull requests, synthetic defects, and a small
+Python-only human study. Third, it measures review coverage, controlled
+defect detection, and preference rather than production defects or developer
+productivity. Section~\ref{sec:threats} discusses the methodological threats
+in detail.
+
+\section{Future Work}
+\label{sec:conclusion-future}
+
+\paragraph{Issue-guided cross-repository graphs.}
+The graphs in this thesis stop at the repository boundary and are seeded from
+the changed files. Future work should connect related repositories through
+APIs, schemas, package manifests, events, and test dependencies. Issue and
+pull-request descriptions can identify relevant entities and intended
+behaviour, then guide a demand-driven traversal of this larger graph. Textual
+descriptions should rank and restrict the retrieved subgraph rather than create
+structural edges by themselves. A controlled evaluation could compare a
+single-repository graph, a complete cross-repository graph, and an issue-guided
+cross-repository subgraph under the same context budget. Relevant outcomes
+include detection of downstream breakage, false-positive rate, context size,
+latency, and token cost.
+
+\paragraph{Review-history memory.}
+The current system treats each pull request independently. A temporal graph
+could connect code entities to earlier issues, pull requests, review comments,
+and the outcomes of those comments, including whether a finding was accepted,
+fixed, or rejected. A reviewer could then retrieve relevant precedents when a
+similar component or contract changes again. Evaluation should use a strict
+temporal split, allowing access only to history that predates each test pull
+request. Relevant outcomes include precision on later reviews, false-positive
+reduction, developer acceptance, and adaptation when project conventions
+change. Such a system would also need mechanisms for forgetting stale
+preferences and avoiding the reinforcement of incorrect historical decisions.
+
+\paragraph{Adaptive context selection.}
+The pipeline supplies the same context block to every pull request, although
+the structural arm's benefit is concentrated in changes with cross-file
+consequences (Section~\ref{sec:discussion-practical}). A lightweight gate
+could instead decide per pull request whether graph context is warranted.
+The simplest gate is deterministic: compute the change's structural fan-out
+from the code property graph before generation and supply the graph block
+only when the changed functions have dependents outside the edited files. A
+learned alternative would follow adaptive retrieval, where a small classifier
+or the generator itself predicts whether retrieval will help and skips it
+otherwise~\cite{jeong2024adaptiverag,asai2024selfrag,jiang2023flare};
+Repoformer applies this to repository-level code completion and reports that
+retrieval helps on only a minority of instances~\cite{wu2024repoformer}.
+Pull-request change-impact analysis already derives per-file risk from
+call-graph dependencies and history~\cite{gocmen2025changeimpact}, so the
+gate signal is available at review time. Evaluation should follow the
+routing literature: compare the gated pipeline with always-graph and
+never-graph baselines on rubric score and detection, report tokens and
+latency, and measure the gate's agreement with an oracle label marking the
+pull requests on which the graph arm outperformed the
+baseline~\cite{ong2025routellm,chen2024frugalgpt}. The risk is that a gate's
+false negatives reinstate the blind spot the graph was introduced to close,
+so recall on cross-file changes should be weighted above precision.
+
+\paragraph{Correctness-oriented and cross-language evaluation.} A rubric that
+asks whether a review's claims are \emph{grounded} (whether the component it
+names is genuinely affected) would measure what matters. Cross-repository
+contract tests and runtime traces could verify predicted breakage, while
+developer acceptance or rejection of review findings would measure practical
+utility. A follow-up human study should include pull requests from non-Python
+repositories and language-appropriate graph builders to test whether the
+affected-code preference and clarity trade-off generalise across languages.
+Together, these evaluations would expose cases in which syntactically valid
+but coarse-grained edges support irrelevant claims.
+
+\paragraph{Human calibration of the judge panel.}
+This thesis validates its LLM judges only against each other and never
+against human judgement. The human study and Experiment~1 also cannot be
+compared directly, since they differ in stimuli, graph construction and
+criteria. A direct calibration check would close this gap at low cost. The
+five-judge panel would score the twelve human-study reviews in the same
+pairwise format the raters used, with the H1--H6 wording unchanged. For each
+pull request and criterion, the panel's majority verdict would then be
+compared with the raters' majority preference, and their agreement reported.
+Each human criterion would also be mapped to its closest rubric criterion: H1
+to F3 and F4, H2 to F2, H3 to T3, and H5 to R1. This tests whether the
+effects point in the same direction in both instruments. Such a check would
+show whether the panel reproduces human preferences, which is the
+precondition for reading the 35-pull-request rubric results as evidence of
+review quality. With only six pull requests, the agreement estimates would be
+imprecise. The check should therefore be repeated on a larger stimulus set
+built with the Joern pipeline.

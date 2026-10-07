@@ -1,0 +1,42 @@
+\section{Statistical Methods}
+\label{sec:bg-stats}
+
+The analyses in Chapter~\ref{chap:results} use a small set of standard
+procedures, collected here so that the results chapter can apply them without
+digression. Observations are \emph{paired}: every arm is evaluated on the
+same pull requests, and scores are bounded counts rather than draws from a
+normal distribution.
+
+\paragraph{Agreement.}
+Cohen's $\kappa$ compares observed agreement between raters with the agreement
+expected by chance, giving $1$ for perfect and $0$ for chance-level
+agreement~\cite{cohen1960kappa}. Values are read against the bands of Landis
+and Koch ($0.41$--$0.60$ moderate, $0.61$--$0.80$ substantial, above $0.80$
+almost perfect)~\cite{landiskoch1977}.
+
+\paragraph{Confidence intervals.}
+Because the score distributions are neither normal nor of a known form,
+intervals are obtained by bootstrapping: the sample is resampled with
+replacement, the statistic recomputed on each resample, and the interval read
+off the percentiles~\cite{efron1993bootstrap}.
+
+\paragraph{Testing a paired difference.}
+A paired permutation test flips the sign of each difference at random and
+recomputes the mean; the $p$-value is the proportion of permutations producing
+a mean at least as extreme as observed. Where an ordinal reading is
+appropriate, the Wilcoxon signed-rank test is used
+instead~\cite{wilcoxon1945}.
+
+\paragraph{Effect size.}
+For paired data, $d_z$ is the mean difference divided by the standard
+deviation of the differences (small at $0.2$, medium at $0.5$, large at
+$0.8$). Both $p$-values and effect sizes are reported throughout, since with
+thirty-five observations a real but small effect and a null result can be hard to
+tell apart from the $p$-value alone.
+
+\paragraph{Multiple comparisons.}
+Holm's sequentially rejective procedure controls the family-wise error rate
+with more power than Bonferroni by ordering $p$-values and comparing each
+against a relaxing threshold~\cite{holm1979}. Chapter~\ref{chap:results}
+states for each family which correction was applied and over how many
+hypotheses.

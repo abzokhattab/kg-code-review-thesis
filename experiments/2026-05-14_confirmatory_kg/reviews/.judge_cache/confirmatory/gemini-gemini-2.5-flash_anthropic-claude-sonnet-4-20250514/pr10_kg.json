@@ -1,0 +1,331 @@
+{
+  "pr_id": 10,
+  "mode": "kg",
+  "total_score": 7,
+  "max_score": 25,
+  "percentage": 28.0,
+  "kg_relevant_score": 5,
+  "kg_relevant_max": 9,
+  "kg_relevant_percentage": 55.6,
+  "criteria_scores": [
+    {
+      "criterion_id": "F1",
+      "score": 0,
+      "evidence": "The review states the purpose of the PR but does not explicitly verify that the change successfully addresses the stated problem or requirement.",
+      "n_yes": 0,
+      "n_valid": 2,
+      "unanimous": true
+    },
+    {
+      "criterion_id": "F2",
+      "score": 0,
+      "evidence": "Review does not identify edge cases or boundary conditions related to version dependency changes",
+      "n_yes": 1,
+      "n_valid": 2,
+      "unanimous": false
+    },
+    {
+      "criterion_id": "F3",
+      "score": 1,
+      "evidence": "The entire 'Integration Risk' section details how the change integrates with various files and components, e.g., '`servers/rendering/rendering_server.cpp`: This file defines the global project setting. Its correctness is paramount as it's the entry point for the setting's value.'",
+      "n_yes": 2,
+      "n_valid": 2,
+      "unanimous": true
+    },
+    {
+      "criterion_id": "F4",
+      "score": 1,
+      "evidence": "Review warns: 'Misalignment could lead to runtime crashes or incorrect rendering.' and 'Incorrect bit allocation could lead to incorrect shader behavior.'",
+      "n_yes": 2,
+      "n_valid": 2,
+      "unanimous": true
+    },
+    {
+      "criterion_id": "T1",
+      "score": 1,
+      "evidence": "Review states: 'No test files are listed in the provided structural context. This indicates a complete lack of dedicated test coverage for the new `use_legacy_blending` project setting.'",
+      "n_yes": 2,
+      "n_valid": 2,
+      "unanimous": true
+    },
+    {
+      "criterion_id": "T2",
+      "score": 1,
+      "evidence": "Review mentions: 'Specific scenarios not tested include: Visual correctness of legacy blending with various fog colors (e.g., light, dark, neutral) and opacities.'",
+      "n_yes": 2,
+      "n_valid": 2,
+      "unanimous": true
+    },
+    {
+      "criterion_id": "T3",
+      "score": 0,
+      "evidence": "Review notes absence of test files but does not suggest specific test files that should be added",
+      "n_yes": 1,
+      "n_valid": 2,
+      "unanimous": false
+    },
+    {
+      "criterion_id": "R1",
+      "score": 0,
+      "evidence": "The review does not comment on code clarity, naming conventions, or function organization.",
+      "n_yes": 0,
+      "n_valid": 2,
+      "unanimous": true
+    },
+    {
+      "criterion_id": "R2",
+      "score": 0,
+      "evidence": "The review does not identify unnecessary complexity or suggest simplification.",
+      "n_yes": 0,
+      "n_valid": 2,
+      "unanimous": true
+    },
+    {
+      "criterion_id": "R3",
+      "score": 0,
+      "evidence": "The review does not check if code comments explain the 'why' behind decisions.",
+      "n_yes": 0,
+      "n_valid": 2,
+      "unanimous": true
+    },
+    {
+      "criterion_id": "M1",
+      "score": 0,
+      "evidence": "Review does not assess whether the change fits existing architecture or design patterns",
+      "n_yes": 1,
+      "n_valid": 2,
+      "unanimous": false
+    },
+    {
+      "criterion_id": "M2",
+      "score": 0,
+      "evidence": "The review does not flag if the PR scope is too large or should be split.",
+      "n_yes": 0,
+      "n_valid": 2,
+      "unanimous": true
+    },
+    {
+      "criterion_id": "M3",
+      "score": 0,
+      "evidence": "Review does not check if public APIs or interfaces are properly documented",
+      "n_yes": 1,
+      "n_valid": 2,
+      "unanimous": false
+    },
+    {
+      "criterion_id": "C1",
+      "score": 0,
+      "evidence": "The review does not check adherence to project style guides or coding conventions.",
+      "n_yes": 0,
+      "n_valid": 2,
+      "unanimous": true
+    },
+    {
+      "criterion_id": "C2",
+      "score": 0,
+      "evidence": "The review does not check if similar problems are solved consistently with existing patterns.",
+      "n_yes": 0,
+      "n_valid": 2,
+      "unanimous": true
+    },
+    {
+      "criterion_id": "P1",
+      "score": 0,
+      "evidence": "The review does not identify potential performance issues or inefficiencies.",
+      "n_yes": 0,
+      "n_valid": 2,
+      "unanimous": true
+    },
+    {
+      "criterion_id": "P2",
+      "score": 0,
+      "evidence": "The review does not ask about benchmarks or performance testing for critical paths.",
+      "n_yes": 0,
+      "n_valid": 2,
+      "unanimous": true
+    },
+    {
+      "criterion_id": "S1",
+      "score": 0,
+      "evidence": "The review does not check for proper input validation or sanitization.",
+      "n_yes": 0,
+      "n_valid": 2,
+      "unanimous": true
+    },
+    {
+      "criterion_id": "S2",
+      "score": 0,
+      "evidence": "The review does not flag hardcoded secrets, credentials, or sensitive data.",
+      "n_yes": 0,
+      "n_valid": 2,
+      "unanimous": true
+    },
+    {
+      "criterion_id": "S3",
+      "score": 0,
+      "evidence": "The review mentions potential failures ('runtime crashes', 'incorrect rendering') but does not assess the code's error handling or failure recovery mechanisms.",
+      "n_yes": 0,
+      "n_valid": 2,
+      "unanimous": true
+    },
+    {
+      "criterion_id": "Q1",
+      "score": 1,
+      "evidence": "The 'Scope' section provides an overall summary: 'This PR introduces a new project setting `rendering/environment/fog/use_legacy_blending` to revert volumetric fog blending behavior to pre-4.6 versions...'",
+      "n_yes": 2,
+      "n_valid": 2,
+      "unanimous": true
+    },
+    {
+      "criterion_id": "Q2",
+      "score": 1,
+      "evidence": "Review comments are anchored to specific file paths, e.g., '`doc/classes/ProjectSettings.xml`', '`servers/rendering/rendering_server.cpp`', '`servers/rendering/renderer_rd/shaders/environment/sky.glsl`'.",
+      "n_yes": 2,
+      "n_valid": 2,
+      "unanimous": true
+    },
+    {
+      "criterion_id": "Q3",
+      "score": 0,
+      "evidence": "Review does not distinguish between blocking issues and minor suggestions",
+      "n_yes": 1,
+      "n_valid": 2,
+      "unanimous": false
+    },
+    {
+      "criterion_id": "Q4",
+      "score": 0,
+      "evidence": "The review primarily makes statements and assertions about risks and missing tests, rather than asking clarifying questions.",
+      "n_yes": 0,
+      "n_valid": 2,
+      "unanimous": true
+    },
+    {
+      "criterion_id": "Q5",
+      "score": 1,
+      "evidence": "Review explains the reasoning behind identified risks, e.g., '`sky.h` modifies the `SkySceneState::UBO` struct, which is highly sensitive to `std140` packing rules and must precisely align with `servers/rendering/renderer_rd/shaders/environment/sky.glsl`. Misalignment could lead to runtime crashes or incorrect rendering.'",
+      "n_yes": 2,
+      "n_valid": 2,
+      "unanimous": true
+    }
+  ],
+  "per_judge": [
+    {
+      "model": "gemini:gemini-2.5-flash",
+      "scores": {
+        "F1": 0,
+        "F2": 1,
+        "F3": 1,
+        "F4": 1,
+        "T1": 1,
+        "T2": 1,
+        "T3": 1,
+        "R1": 0,
+        "R2": 0,
+        "R3": 0,
+        "M1": 1,
+        "M2": 0,
+        "M3": 1,
+        "C1": 0,
+        "C2": 0,
+        "P1": 0,
+        "P2": 0,
+        "S1": 0,
+        "S2": 0,
+        "S3": 0,
+        "Q1": 1,
+        "Q2": 1,
+        "Q3": 1,
+        "Q4": 0,
+        "Q5": 1
+      },
+      "evidence": {
+        "F1": "The review states the purpose of the PR but does not explicitly verify that the change successfully addresses the stated problem or requirement.",
+        "F2": "Review mentions: 'Specific scenarios not tested include: Visual correctness of legacy blending with various fog colors (e.g., light, dark, neutral) and opacities. Visual correctness of legacy blending when both standard fog and volumetric fog are active.'",
+        "F3": "The entire 'Integration Risk' section details how the change integrates with various files and components, e.g., '`servers/rendering/rendering_server.cpp`: This file defines the global project setting. Its correctness is paramount as it's the entry point for the setting's value.'",
+        "F4": "Review warns: 'Misalignment could lead to runtime crashes or incorrect rendering.' and 'Incorrect bit allocation could lead to incorrect shader behavior.'",
+        "T1": "Review states: 'No test files are listed in the provided structural context. This indicates a complete lack of dedicated test coverage for the new `use_legacy_blending` project setting.'",
+        "T2": "Review mentions: 'Specific scenarios not tested include: Visual correctness of legacy blending with various fog colors (e.g., light, dark, neutral) and opacities.'",
+        "T3": "Review suggests specific scenarios that should be tested, implying tests should be added: 'Specific scenarios not tested include: Visual correctness of legacy blending...'",
+        "R1": "The review does not comment on code clarity, naming conventions, or function organization.",
+        "R2": "The review does not identify unnecessary complexity or suggest simplification.",
+        "R3": "The review does not check if code comments explain the 'why' behind decisions.",
+        "M1": "The 'Integration Risk' section assesses how the change fits the existing architecture by detailing dependencies and potential misalignments across various rendering components, e.g., 'These files integrate the legacy blending flag into the `SkyRD` rendering path.'",
+        "M2": "The review does not flag if the PR scope is too large or should be split.",
+        "M3": "Review mentions: '`doc/classes/ProjectSettings.xml`: This documentation update depends on the `GLOBAL_DEF_RST` key... A mismatch would lead to incorrect documentation or a non-functional setting.'",
+        "C1": "The review does not check adherence to project style guides or coding conventions.",
+        "C2": "The review does not check if similar problems are solved consistently with existing patterns.",
+        "P1": "The review does not identify potential performance issues or inefficiencies.",
+        "P2": "The review does not ask about benchmarks or performance testing for critical paths.",
+        "S1": "The review does not check for proper input validation or sanitization.",
+        "S2": "The review does not flag hardcoded secrets, credentials, or sensitive data.",
+        "S3": "The review mentions potential failures ('runtime crashes', 'incorrect rendering') but does not assess the code's error handling or failure recovery mechanisms.",
+        "Q1": "The 'Scope' section provides an overall summary: 'This PR introduces a new project setting `rendering/environment/fog/use_legacy_blending` to revert volumetric fog blending behavior to pre-4.6 versions...'",
+        "Q2": "Review comments are anchored to specific file paths, e.g., '`doc/classes/ProjectSettings.xml`', '`servers/rendering/rendering_server.cpp`', '`servers/rendering/renderer_rd/shaders/environment/sky.glsl`'.",
+        "Q3": "The detailed 'Integration Risk' section and the 'Test Coverage Assessment' highlight critical areas with severe potential consequences ('runtime crashes', 'incorrect rendering', 'complete lack of dedicated test coverage'), implying these are blocking or major issues.",
+        "Q4": "The review primarily makes statements and assertions about risks and missing tests, rather than asking clarifying questions.",
+        "Q5": "Review explains the reasoning behind identified risks, e.g., '`sky.h` modifies the `SkySceneState::UBO` struct, which is highly sensitive to `std140` packing rules and must precisely align with `servers/rendering/renderer_rd/shaders/environment/sky.glsl`. Misalignment could lead to runtime crashes or incorrect rendering.'"
+      },
+      "error": ""
+    },
+    {
+      "model": "anthropic:claude-sonnet-4-20250514",
+      "scores": {
+        "F1": 0,
+        "F2": 0,
+        "F3": 1,
+        "F4": 1,
+        "T1": 1,
+        "T2": 1,
+        "T3": 0,
+        "R1": 0,
+        "R2": 0,
+        "R3": 0,
+        "M1": 0,
+        "M2": 0,
+        "M3": 0,
+        "C1": 0,
+        "C2": 0,
+        "P1": 0,
+        "P2": 0,
+        "S1": 0,
+        "S2": 0,
+        "S3": 0,
+        "Q1": 1,
+        "Q2": 1,
+        "Q3": 0,
+        "Q4": 0,
+        "Q5": 1
+      },
+      "evidence": {
+        "F1": "Review does not verify that the change addresses the stated problem of bumping joblib version dependency",
+        "F2": "Review does not identify edge cases or boundary conditions related to version dependency changes",
+        "F3": "Review extensively analyzes integration between components: 'This documentation update depends on the GLOBAL_DEF_RST key in servers/rendering/rendering_server.cpp matching the path'",
+        "F4": "Review warns about breaking changes: 'Misalignment could lead to runtime crashes or incorrect rendering'",
+        "T1": "Review explicitly discusses lack of tests: 'No test files are listed in the provided structural context. This indicates a complete lack of dedicated test coverage'",
+        "T2": "Review mentions specific testing scenarios: 'Visual correctness of legacy blending with various fog colors (e.g., light, dark, neutral) and opacities'",
+        "T3": "Review notes absence of test files but does not suggest specific test files that should be added",
+        "R1": "Review does not comment on code clarity, naming conventions, or function organization",
+        "R2": "Review does not identify unnecessary complexity or suggest simplification",
+        "R3": "Review does not check if code comments explain the 'why' behind decisions",
+        "M1": "Review does not assess whether the change fits existing architecture or design patterns",
+        "M2": "Review does not flag if PR scope is too large or should be split",
+        "M3": "Review does not check if public APIs or interfaces are properly documented",
+        "C1": "Review does not check adherence to project style guides or coding conventions",
+        "C2": "Review does not check if similar problems are solved consistently with existing patterns",
+        "P1": "Review does not identify potential performance issues or inefficiencies",
+        "P2": "Review does not ask about benchmarks or performance testing",
+        "S1": "Review does not check for proper input validation or sanitization",
+        "S2": "Review does not flag hardcoded secrets, credentials, or sensitive data",
+        "S3": "Review does not assess error handling and failure recovery",
+        "Q1": "Review provides overall summary: 'This PR introduces a new project setting rendering/environment/fog/use_legacy_blending to revert volumetric fog blending behavior'",
+        "Q2": "Review comments are anchored to specific files: 'doc/classes/ProjectSettings.xml', 'servers/rendering/rendering_server.cpp', etc.",
+        "Q3": "Review does not distinguish between blocking issues and minor suggestions",
+        "Q4": "Review does not ask clarifying questions",
+        "Q5": "Review explains reasoning: 'A mismatch would lead to incorrect documentation or a non-functional setting'"
+      },
+      "error": ""
+    }
+  ],
+  "evaluation_timestamp": "2026-05-14T17:41:16.786331Z"
+}

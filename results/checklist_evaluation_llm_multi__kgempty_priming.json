@@ -1,0 +1,2395 @@
+{
+  "metadata": {
+    "evaluation_method": "llm_multi_judge",
+    "judges": [
+      "openai:gpt-4o-mini",
+      "openai:gpt-4o",
+      "gemini:gemini-2.5-flash"
+    ],
+    "aggregation": "majority_vote (ties \u2192 0)",
+    "timestamp": "2026-04-24T23:46:45.262033Z",
+    "criteria_count": 25,
+    "kg_relevant_criteria_count": 9,
+    "outputs_dir": "outputs/kg_empty_priming"
+  },
+  "criteria_definitions": [
+    {
+      "id": "F1",
+      "category": "Functionality",
+      "description": "Does the review verify that the change addresses the stated problem or requirement?",
+      "kg_relevant": false
+    },
+    {
+      "id": "F2",
+      "category": "Functionality",
+      "description": "Does the review identify edge cases or boundary conditions that need handling?",
+      "kg_relevant": false
+    },
+    {
+      "id": "F3",
+      "category": "Functionality",
+      "description": "Does the review check how the change integrates with existing components, APIs, or modules?",
+      "kg_relevant": true
+    },
+    {
+      "id": "F4",
+      "category": "Functionality",
+      "description": "Does the review warn about potential breaking changes or impact on dependent code?",
+      "kg_relevant": true
+    },
+    {
+      "id": "T1",
+      "category": "Tests",
+      "description": "Does the review ask about or discuss the need for unit/integration tests?",
+      "kg_relevant": true
+    },
+    {
+      "id": "T2",
+      "category": "Tests",
+      "description": "Does the review mention testing edge cases, error paths, or failure scenarios?",
+      "kg_relevant": true
+    },
+    {
+      "id": "T3",
+      "category": "Tests",
+      "description": "Does the review reference specific test files or suggest which tests should be added/updated?",
+      "kg_relevant": true
+    },
+    {
+      "id": "R1",
+      "category": "Readability",
+      "description": "Does the review comment on code clarity, naming conventions, or function organization?",
+      "kg_relevant": false
+    },
+    {
+      "id": "R2",
+      "category": "Readability",
+      "description": "Does the review identify unnecessary complexity or suggest simplification?",
+      "kg_relevant": false
+    },
+    {
+      "id": "R3",
+      "category": "Readability",
+      "description": "Does the review check if code comments explain the 'why' behind decisions?",
+      "kg_relevant": false
+    },
+    {
+      "id": "M1",
+      "category": "Maintainability",
+      "description": "Does the review assess whether the change fits the existing architecture or design patterns?",
+      "kg_relevant": true
+    },
+    {
+      "id": "M2",
+      "category": "Maintainability",
+      "description": "Does the review flag if the PR scope is too large or should be split?",
+      "kg_relevant": false
+    },
+    {
+      "id": "M3",
+      "category": "Maintainability",
+      "description": "Does the review check if public APIs or interfaces are properly documented?",
+      "kg_relevant": true
+    },
+    {
+      "id": "C1",
+      "category": "Consistency",
+      "description": "Does the review check adherence to project style guides or coding conventions?",
+      "kg_relevant": false
+    },
+    {
+      "id": "C2",
+      "category": "Consistency",
+      "description": "Does the review check if similar problems are solved consistently with existing patterns?",
+      "kg_relevant": true
+    },
+    {
+      "id": "P1",
+      "category": "Performance",
+      "description": "Does the review identify potential performance issues or inefficiencies?",
+      "kg_relevant": false
+    },
+    {
+      "id": "P2",
+      "category": "Performance",
+      "description": "Does the review ask about benchmarks or performance testing for critical paths?",
+      "kg_relevant": false
+    },
+    {
+      "id": "S1",
+      "category": "Security",
+      "description": "Does the review check for proper input validation or sanitization?",
+      "kg_relevant": false
+    },
+    {
+      "id": "S2",
+      "category": "Security",
+      "description": "Does the review flag hardcoded secrets, credentials, or sensitive data?",
+      "kg_relevant": false
+    },
+    {
+      "id": "S3",
+      "category": "Security",
+      "description": "Does the review assess error handling and failure recovery?",
+      "kg_relevant": false
+    },
+    {
+      "id": "Q1",
+      "category": "Quality",
+      "description": "Does the review provide an overall summary or assessment of the changes?",
+      "kg_relevant": false
+    },
+    {
+      "id": "Q2",
+      "category": "Quality",
+      "description": "Are review comments anchored to specific code locations (file paths, line numbers)?",
+      "kg_relevant": true
+    },
+    {
+      "id": "Q3",
+      "category": "Quality",
+      "description": "Does the review distinguish between blocking issues and minor suggestions?",
+      "kg_relevant": false
+    },
+    {
+      "id": "Q4",
+      "category": "Quality",
+      "description": "Does the review ask clarifying questions rather than making assumptions?",
+      "kg_relevant": false
+    },
+    {
+      "id": "Q5",
+      "category": "Quality",
+      "description": "Does the review explain the reasoning behind suggestions (the 'why')?",
+      "kg_relevant": false
+    }
+  ],
+  "evaluations": [
+    {
+      "pr_id": 11,
+      "mode": "kgempty",
+      "total_score": 3,
+      "max_score": 25,
+      "percentage": 12.0,
+      "kg_relevant_score": 1,
+      "kg_relevant_max": 9,
+      "kg_relevant_percentage": 11.1,
+      "criteria_scores": [
+        {
+          "criterion_id": "F1",
+          "score": 0,
+          "evidence": "Review does not verify the change addresses the problem",
+          "n_yes": 1,
+          "n_valid": 3,
+          "unanimous": false
+        },
+        {
+          "criterion_id": "F2",
+          "score": 0,
+          "evidence": "Review does not identify any specific edge cases or boundary conditions.",
+          "n_yes": 0,
+          "n_valid": 3,
+          "unanimous": true
+        },
+        {
+          "criterion_id": "F3",
+          "score": 0,
+          "evidence": "Review does not check how the change integrates with existing components or APIs.",
+          "n_yes": 0,
+          "n_valid": 3,
+          "unanimous": true
+        },
+        {
+          "criterion_id": "F4",
+          "score": 0,
+          "evidence": "Review does not warn about potential breaking changes or impacts on dependent code.",
+          "n_yes": 1,
+          "n_valid": 3,
+          "unanimous": false
+        },
+        {
+          "criterion_id": "T1",
+          "score": 0,
+          "evidence": "Review does not discuss the need for unit/integration tests.",
+          "n_yes": 0,
+          "n_valid": 3,
+          "unanimous": true
+        },
+        {
+          "criterion_id": "T2",
+          "score": 0,
+          "evidence": "Review does not mention testing edge cases or failure scenarios.",
+          "n_yes": 0,
+          "n_valid": 3,
+          "unanimous": true
+        },
+        {
+          "criterion_id": "T3",
+          "score": 0,
+          "evidence": "Review does not reference specific test files or suggest tests to be added/updated.",
+          "n_yes": 0,
+          "n_valid": 3,
+          "unanimous": true
+        },
+        {
+          "criterion_id": "R1",
+          "score": 0,
+          "evidence": "No comments on code clarity or naming conventions",
+          "n_yes": 1,
+          "n_valid": 3,
+          "unanimous": false
+        },
+        {
+          "criterion_id": "R2",
+          "score": 0,
+          "evidence": "Review does not identify unnecessary complexity or suggest simplification.",
+          "n_yes": 1,
+          "n_valid": 3,
+          "unanimous": false
+        },
+        {
+          "criterion_id": "R3",
+          "score": 0,
+          "evidence": "Review does not check if code comments explain the 'why' behind decisions.",
+          "n_yes": 0,
+          "n_valid": 3,
+          "unanimous": true
+        },
+        {
+          "criterion_id": "M1",
+          "score": 0,
+          "evidence": "Review does not assess whether the change fits the existing architecture or design patterns.",
+          "n_yes": 0,
+          "n_valid": 3,
+          "unanimous": true
+        },
+        {
+          "criterion_id": "M2",
+          "score": 0,
+          "evidence": "Review does not flag if the PR scope is too large or should be split.",
+          "n_yes": 0,
+          "n_valid": 3,
+          "unanimous": true
+        },
+        {
+          "criterion_id": "M3",
+          "score": 0,
+          "evidence": "Review does not check if public APIs or interfaces are properly documented.",
+          "n_yes": 0,
+          "n_valid": 3,
+          "unanimous": true
+        },
+        {
+          "criterion_id": "C1",
+          "score": 0,
+          "evidence": "Review does not check adherence to project style guides or coding conventions.",
+          "n_yes": 0,
+          "n_valid": 3,
+          "unanimous": true
+        },
+        {
+          "criterion_id": "C2",
+          "score": 0,
+          "evidence": "Review does not check if similar problems are solved consistently with existing patterns.",
+          "n_yes": 0,
+          "n_valid": 3,
+          "unanimous": true
+        },
+        {
+          "criterion_id": "P1",
+          "score": 0,
+          "evidence": "Review does not identify potential performance issues or inefficiencies.",
+          "n_yes": 0,
+          "n_valid": 3,
+          "unanimous": true
+        },
+        {
+          "criterion_id": "P2",
+          "score": 0,
+          "evidence": "Review does not ask about benchmarks or performance testing.",
+          "n_yes": 0,
+          "n_valid": 3,
+          "unanimous": true
+        },
+        {
+          "criterion_id": "S1",
+          "score": 0,
+          "evidence": "Review does not check for proper input validation or sanitization.",
+          "n_yes": 0,
+          "n_valid": 3,
+          "unanimous": true
+        },
+        {
+          "criterion_id": "S2",
+          "score": 0,
+          "evidence": "Review does not flag hardcoded secrets or sensitive data.",
+          "n_yes": 0,
+          "n_valid": 3,
+          "unanimous": true
+        },
+        {
+          "criterion_id": "S3",
+          "score": 0,
+          "evidence": "Review does not assess error handling and failure recovery.",
+          "n_yes": 0,
+          "n_valid": 3,
+          "unanimous": true
+        },
+        {
+          "criterion_id": "Q1",
+          "score": 1,
+          "evidence": "Review provides an overall assessment of the changes and their impact.",
+          "n_yes": 3,
+          "n_valid": 3,
+          "unanimous": true
+        },
+        {
+          "criterion_id": "Q2",
+          "score": 1,
+          "evidence": "Review comments are anchored to specific code locations (line numbers in the documentation).",
+          "n_yes": 3,
+          "n_valid": 3,
+          "unanimous": true
+        },
+        {
+          "criterion_id": "Q3",
+          "score": 0,
+          "evidence": "Review does not distinguish between blocking issues and minor suggestions.",
+          "n_yes": 0,
+          "n_valid": 3,
+          "unanimous": true
+        },
+        {
+          "criterion_id": "Q4",
+          "score": 0,
+          "evidence": "Review does not ask clarifying questions.",
+          "n_yes": 0,
+          "n_valid": 3,
+          "unanimous": true
+        },
+        {
+          "criterion_id": "Q5",
+          "score": 1,
+          "evidence": "Review explains the reasoning behind suggestions for clarity and context.",
+          "n_yes": 3,
+          "n_valid": 3,
+          "unanimous": true
+        }
+      ],
+      "per_judge": [
+        {
+          "model": "openai:gpt-4o-mini",
+          "scores": {
+            "F1": 1,
+            "F2": 0,
+            "F3": 0,
+            "F4": 0,
+            "T1": 0,
+            "T2": 0,
+            "T3": 0,
+            "R1": 1,
+            "R2": 0,
+            "R3": 0,
+            "M1": 0,
+            "M2": 0,
+            "M3": 0,
+            "C1": 0,
+            "C2": 0,
+            "P1": 0,
+            "P2": 0,
+            "S1": 0,
+            "S2": 0,
+            "S3": 0,
+            "Q1": 1,
+            "Q2": 1,
+            "Q3": 0,
+            "Q4": 0,
+            "Q5": 1
+          },
+          "evidence": {
+            "F1": "Review identifies a lack of clarity on the criteria for when a DEP is necessary.",
+            "F2": "Review does not identify any specific edge cases or boundary conditions.",
+            "F3": "Review does not check how the change integrates with existing components or APIs.",
+            "F4": "Review does not warn about potential breaking changes or impacts on dependent code.",
+            "T1": "Review does not discuss the need for unit/integration tests.",
+            "T2": "Review does not mention testing edge cases or failure scenarios.",
+            "T3": "Review does not reference specific test files or suggest tests to be added/updated.",
+            "R1": "Review comments on the clarity of the documentation and the introduction of new terminology.",
+            "R2": "Review does not identify unnecessary complexity or suggest simplification.",
+            "R3": "Review does not check if code comments explain the 'why' behind decisions.",
+            "M1": "Review does not assess whether the change fits the existing architecture or design patterns.",
+            "M2": "Review does not flag if the PR scope is too large or should be split.",
+            "M3": "Review does not check if public APIs or interfaces are properly documented.",
+            "C1": "Review does not check adherence to project style guides or coding conventions.",
+            "C2": "Review does not check if similar problems are solved consistently with existing patterns.",
+            "P1": "Review does not identify potential performance issues or inefficiencies.",
+            "P2": "Review does not ask about benchmarks or performance testing.",
+            "S1": "Review does not check for proper input validation or sanitization.",
+            "S2": "Review does not flag hardcoded secrets or sensitive data.",
+            "S3": "Review does not assess error handling and failure recovery.",
+            "Q1": "Review provides an overall assessment of the changes and their impact.",
+            "Q2": "Review comments are anchored to specific code locations (line numbers in the documentation).",
+            "Q3": "Review does not distinguish between blocking issues and minor suggestions.",
+            "Q4": "Review does not ask clarifying questions.",
+            "Q5": "Review explains the reasoning behind suggestions for clarity and context."
+          },
+          "error": ""
+        },
+        {
+          "model": "openai:gpt-4o",
+          "scores": {
+            "F1": 0,
+            "F2": 0,
+            "F3": 0,
+            "F4": 1,
+            "T1": 0,
+            "T2": 0,
+            "T3": 0,
+            "R1": 0,
+            "R2": 0,
+            "R3": 0,
+            "M1": 0,
+            "M2": 0,
+            "M3": 0,
+            "C1": 0,
+            "C2": 0,
+            "P1": 0,
+            "P2": 0,
+            "S1": 0,
+            "S2": 0,
+            "S3": 0,
+            "Q1": 1,
+            "Q2": 1,
+            "Q3": 0,
+            "Q4": 0,
+            "Q5": 1
+          },
+          "evidence": {
+            "F1": "Review does not verify the change addresses the problem",
+            "F2": "No mention of edge cases or boundary conditions",
+            "F3": "No discussion on integration with existing components",
+            "F4": "Mentions potential confusion and missteps for contributors",
+            "T1": "No discussion on the need for tests",
+            "T2": "No mention of testing edge cases or failure scenarios",
+            "T3": "Does not reference specific test files or suggest tests",
+            "R1": "No comments on code clarity or naming conventions",
+            "R2": "Does not identify unnecessary complexity",
+            "R3": "No check if code comments explain the 'why'",
+            "M1": "Does not assess fit with existing architecture",
+            "M2": "Does not flag if PR scope is too large",
+            "M3": "No check if public APIs are documented",
+            "C1": "Does not check adherence to style guides",
+            "C2": "Does not check for consistency with existing patterns",
+            "P1": "No mention of performance issues",
+            "P2": "Does not ask about performance testing",
+            "S1": "No check for input validation or sanitization",
+            "S2": "Does not flag hardcoded secrets or sensitive data",
+            "S3": "Does not assess error handling",
+            "Q1": "Provides an overall assessment of the changes",
+            "Q2": "Comments are anchored to specific code locations",
+            "Q3": "Does not distinguish between blocking issues and minor suggestions",
+            "Q4": "Does not ask clarifying questions",
+            "Q5": "Explains reasoning behind suggestions, e.g., need for clarity on DEPs"
+          },
+          "error": ""
+        },
+        {
+          "model": "gemini:gemini-2.5-flash",
+          "scores": {
+            "F1": 0,
+            "F2": 0,
+            "F3": 0,
+            "F4": 0,
+            "T1": 0,
+            "T2": 0,
+            "T3": 0,
+            "R1": 0,
+            "R2": 1,
+            "R3": 0,
+            "M1": 0,
+            "M2": 0,
+            "M3": 0,
+            "C1": 0,
+            "C2": 0,
+            "P1": 0,
+            "P2": 0,
+            "S1": 0,
+            "S2": 0,
+            "S3": 0,
+            "Q1": 1,
+            "Q2": 1,
+            "Q3": 0,
+            "Q4": 0,
+            "Q5": 1
+          },
+          "evidence": {
+            "F1": "The review identifies problems *with* the change itself, rather than verifying the change addresses a pre-existing problem or requirement.",
+            "F2": "The review does not mention edge cases or boundary conditions.",
+            "F3": "The review discusses the clarity of documentation regarding a new process, not the integration of code components, APIs, or modules.",
+            "F4": "The review does not warn about potential breaking changes or impact on dependent code.",
+            "T1": "The review does not discuss the need for unit/integration tests.",
+            "T2": "The review does not mention testing edge cases, error paths, or failure scenarios.",
+            "T3": "The review does not reference specific test files or suggest which tests should be added/updated.",
+            "R1": "The review comments on documentation clarity and terminology ('Lack of clarity', 'new terminology'), not code clarity, naming conventions, or function organization.",
+            "R2": "The recommendation to 'Add a clear definition and criteria' and 'Provide a brief explanation or link to resources' suggests simplification of the documentation's explanation.",
+            "R3": "The review does not check if code comments explain the 'why' behind decisions.",
+            "M1": "The review assesses documentation about a process, not whether the change fits existing code architecture or design patterns.",
+            "M2": "The review does not flag if the PR scope is too large or should be split.",
+            "M3": "The PR is documentation about a process, not public APIs or interfaces.",
+            "C1": "The review does not check adherence to project style guides or coding conventions.",
+            "C2": "The review mentions 'similar processes (like Python's PEPs)' in the context of providing background, not checking if similar *problems* are solved consistently in code.",
+            "P1": "The review does not identify potential performance issues or inefficiencies.",
+            "P2": "The review does not ask about benchmarks or performance testing.",
+            "S1": "The review does not check for proper input validation or sanitization.",
+            "S2": "The review does not flag hardcoded secrets, credentials, or sensitive data.",
+            "S3": "The review does not assess error handling and failure recovery.",
+            "Q1": "The 'Scope' section provides an overall summary: 'This PR updates the Django documentation to clarify the process for submitting non-trivial contributions and introduces the concept of Django Enhancement Proposals (DEPs).'",
+            "Q2": "The 'Evidence' section anchors comments to specific code locations: 'docs/internals/contributing/writing-code/submitting-patches.txt:140-201'.",
+            "Q3": "The review presents 'Problems' and 'Recommendations' but does not explicitly distinguish between blocking issues and minor suggestions.",
+            "Q4": "The review makes statements and recommendations, but does not ask clarifying questions.",
+            "Q5": "The 'Problem' and 'Impact' sections clearly explain the reasoning behind the 'Recommendation' (e.g., 'Contributors may be uncertain about the appropriate process... leading to potential missteps or unnecessary work.')."
+          },
+          "error": ""
+        }
+      ],
+      "evaluation_timestamp": "2026-04-24T23:43:58.412237Z"
+    },
+    {
+      "pr_id": 12,
+      "mode": "kgempty",
+      "total_score": 8,
+      "max_score": 25,
+      "percentage": 32.0,
+      "kg_relevant_score": 4,
+      "kg_relevant_max": 9,
+      "kg_relevant_percentage": 44.4,
+      "criteria_scores": [
+        {
+          "criterion_id": "F1",
+          "score": 0,
+          "evidence": "Review does not verify the change addresses the problem",
+          "n_yes": 1,
+          "n_valid": 3,
+          "unanimous": false
+        },
+        {
+          "criterion_id": "F2",
+          "score": 1,
+          "evidence": "Review recommends adding unit tests for edge cases such as empty arrays and arrays with one element.",
+          "n_yes": 3,
+          "n_valid": 3,
+          "unanimous": true
+        },
+        {
+          "criterion_id": "F3",
+          "score": 0,
+          "evidence": "Review does not discuss how the change integrates with existing components or APIs.",
+          "n_yes": 0,
+          "n_valid": 3,
+          "unanimous": true
+        },
+        {
+          "criterion_id": "F4",
+          "score": 1,
+          "evidence": "Review warns about potential concurrency issues and unpredictable behavior in multi-threaded environments.",
+          "n_yes": 2,
+          "n_valid": 3,
+          "unanimous": false
+        },
+        {
+          "criterion_id": "T1",
+          "score": 1,
+          "evidence": "Review discusses the need for unit tests to ensure functionality and reliability.",
+          "n_yes": 3,
+          "n_valid": 3,
+          "unanimous": true
+        },
+        {
+          "criterion_id": "T2",
+          "score": 1,
+          "evidence": "Review mentions testing edge cases and suggests covering scenarios like empty arrays.",
+          "n_yes": 3,
+          "n_valid": 3,
+          "unanimous": true
+        },
+        {
+          "criterion_id": "T3",
+          "score": 0,
+          "evidence": "Review does not reference specific test files or suggest which tests should be added.",
+          "n_yes": 1,
+          "n_valid": 3,
+          "unanimous": false
+        },
+        {
+          "criterion_id": "R1",
+          "score": 0,
+          "evidence": "Review does not comment on code clarity, naming conventions, or function organization.",
+          "n_yes": 0,
+          "n_valid": 3,
+          "unanimous": true
+        },
+        {
+          "criterion_id": "R2",
+          "score": 0,
+          "evidence": "Review does not identify unnecessary complexity or suggest simplification.",
+          "n_yes": 0,
+          "n_valid": 3,
+          "unanimous": true
+        },
+        {
+          "criterion_id": "R3",
+          "score": 0,
+          "evidence": "Review does not check if code comments explain the 'why' behind decisions.",
+          "n_yes": 0,
+          "n_valid": 3,
+          "unanimous": true
+        },
+        {
+          "criterion_id": "M1",
+          "score": 0,
+          "evidence": "Review does not assess whether the change fits the existing architecture or design patterns.",
+          "n_yes": 1,
+          "n_valid": 3,
+          "unanimous": false
+        },
+        {
+          "criterion_id": "M2",
+          "score": 0,
+          "evidence": "Review does not flag if the PR scope is too large or should be split.",
+          "n_yes": 0,
+          "n_valid": 3,
+          "unanimous": true
+        },
+        {
+          "criterion_id": "M3",
+          "score": 0,
+          "evidence": "Review does not check if public APIs or interfaces are properly documented.",
+          "n_yes": 0,
+          "n_valid": 3,
+          "unanimous": true
+        },
+        {
+          "criterion_id": "C1",
+          "score": 0,
+          "evidence": "Review does not check adherence to project style guides or coding conventions.",
+          "n_yes": 0,
+          "n_valid": 3,
+          "unanimous": true
+        },
+        {
+          "criterion_id": "C2",
+          "score": 0,
+          "evidence": "Review does not check if similar problems are solved consistently with existing patterns.",
+          "n_yes": 1,
+          "n_valid": 3,
+          "unanimous": false
+        },
+        {
+          "criterion_id": "P1",
+          "score": 1,
+          "evidence": "Review identifies potential performance issues with `Math::rand()` in multi-threaded environments.",
+          "n_yes": 2,
+          "n_valid": 3,
+          "unanimous": false
+        },
+        {
+          "criterion_id": "P2",
+          "score": 0,
+          "evidence": "Review does not ask about benchmarks or performance testing for critical paths.",
+          "n_yes": 0,
+          "n_valid": 3,
+          "unanimous": true
+        },
+        {
+          "criterion_id": "S1",
+          "score": 0,
+          "evidence": "Review does not check for proper input validation or sanitization.",
+          "n_yes": 0,
+          "n_valid": 3,
+          "unanimous": true
+        },
+        {
+          "criterion_id": "S2",
+          "score": 0,
+          "evidence": "Review does not flag hardcoded secrets, credentials, or sensitive data.",
+          "n_yes": 0,
+          "n_valid": 3,
+          "unanimous": true
+        },
+        {
+          "criterion_id": "S3",
+          "score": 0,
+          "evidence": "Review does not assess error handling and failure recovery.",
+          "n_yes": 0,
+          "n_valid": 3,
+          "unanimous": true
+        },
+        {
+          "criterion_id": "Q1",
+          "score": 1,
+          "evidence": "Review provides a clear summary of the problems and recommendations.",
+          "n_yes": 2,
+          "n_valid": 3,
+          "unanimous": false
+        },
+        {
+          "criterion_id": "Q2",
+          "score": 1,
+          "evidence": "Review comments are anchored to specific code locations, e.g., `core/array.cpp:411`.",
+          "n_yes": 3,
+          "n_valid": 3,
+          "unanimous": true
+        },
+        {
+          "criterion_id": "Q3",
+          "score": 0,
+          "evidence": "Review does not distinguish between blocking issues and minor suggestions.",
+          "n_yes": 1,
+          "n_valid": 3,
+          "unanimous": false
+        },
+        {
+          "criterion_id": "Q4",
+          "score": 0,
+          "evidence": "Review does not ask clarifying questions.",
+          "n_yes": 0,
+          "n_valid": 3,
+          "unanimous": true
+        },
+        {
+          "criterion_id": "Q5",
+          "score": 1,
+          "evidence": "Review explains the reasoning behind suggestions, such as recommending a thread-safe random generator.",
+          "n_yes": 3,
+          "n_valid": 3,
+          "unanimous": true
+        }
+      ],
+      "per_judge": [
+        {
+          "model": "openai:gpt-4o-mini",
+          "scores": {
+            "F1": 1,
+            "F2": 1,
+            "F3": 0,
+            "F4": 1,
+            "T1": 1,
+            "T2": 1,
+            "T3": 0,
+            "R1": 0,
+            "R2": 0,
+            "R3": 0,
+            "M1": 0,
+            "M2": 0,
+            "M3": 0,
+            "C1": 0,
+            "C2": 0,
+            "P1": 1,
+            "P2": 0,
+            "S1": 0,
+            "S2": 0,
+            "S3": 0,
+            "Q1": 1,
+            "Q2": 1,
+            "Q3": 0,
+            "Q4": 0,
+            "Q5": 1
+          },
+          "evidence": {
+            "F1": "Review identifies problems with the `pick_random()` method and suggests improvements.",
+            "F2": "Review recommends adding unit tests for edge cases such as empty arrays and arrays with one element.",
+            "F3": "Review does not discuss how the change integrates with existing components or APIs.",
+            "F4": "Review warns about potential concurrency issues and unpredictable behavior in multi-threaded environments.",
+            "T1": "Review discusses the need for unit tests to ensure functionality and reliability.",
+            "T2": "Review mentions testing edge cases and suggests covering scenarios like empty arrays.",
+            "T3": "Review does not reference specific test files or suggest which tests should be added.",
+            "R1": "Review does not comment on code clarity, naming conventions, or function organization.",
+            "R2": "Review does not identify unnecessary complexity or suggest simplification.",
+            "R3": "Review does not check if code comments explain the 'why' behind decisions.",
+            "M1": "Review does not assess whether the change fits the existing architecture or design patterns.",
+            "M2": "Review does not flag if the PR scope is too large or should be split.",
+            "M3": "Review does not check if public APIs or interfaces are properly documented.",
+            "C1": "Review does not check adherence to project style guides or coding conventions.",
+            "C2": "Review does not check if similar problems are solved consistently with existing patterns.",
+            "P1": "Review identifies potential performance issues with `Math::rand()` in multi-threaded environments.",
+            "P2": "Review does not ask about benchmarks or performance testing for critical paths.",
+            "S1": "Review does not check for proper input validation or sanitization.",
+            "S2": "Review does not flag hardcoded secrets, credentials, or sensitive data.",
+            "S3": "Review does not assess error handling and failure recovery.",
+            "Q1": "Review provides a clear summary of the problems and recommendations.",
+            "Q2": "Review comments are anchored to specific code locations, e.g., `core/array.cpp:411`.",
+            "Q3": "Review does not distinguish between blocking issues and minor suggestions.",
+            "Q4": "Review does not ask clarifying questions.",
+            "Q5": "Review explains the reasoning behind suggestions, such as recommending a thread-safe random generator."
+          },
+          "error": ""
+        },
+        {
+          "model": "openai:gpt-4o",
+          "scores": {
+            "F1": 0,
+            "F2": 1,
+            "F3": 0,
+            "F4": 1,
+            "T1": 1,
+            "T2": 1,
+            "T3": 0,
+            "R1": 0,
+            "R2": 0,
+            "R3": 0,
+            "M1": 0,
+            "M2": 0,
+            "M3": 0,
+            "C1": 0,
+            "C2": 0,
+            "P1": 1,
+            "P2": 0,
+            "S1": 0,
+            "S2": 0,
+            "S3": 0,
+            "Q1": 1,
+            "Q2": 1,
+            "Q3": 0,
+            "Q4": 0,
+            "Q5": 1
+          },
+          "evidence": {
+            "F1": "Review does not verify the change addresses the problem",
+            "F2": "Review suggests adding tests for edge cases like empty arrays and arrays with one element.",
+            "F3": "Review does not discuss integration with existing components or APIs.",
+            "F4": "Review warns about potential concurrency issues with `Math::rand()`.",
+            "T1": "Review recommends adding unit tests for `pick_random()`.",
+            "T2": "Review mentions testing edge cases such as empty arrays.",
+            "T3": "Review does not reference specific test files or suggest which tests should be added/updated.",
+            "R1": "Review does not comment on code clarity or naming conventions.",
+            "R2": "Review does not identify unnecessary complexity or suggest simplification.",
+            "R3": "Review does not check if code comments explain the 'why' behind decisions.",
+            "M1": "Review does not assess whether the change fits the existing architecture or design patterns.",
+            "M2": "Review does not flag if the PR scope is too large or should be split.",
+            "M3": "Review does not check if public APIs or interfaces are properly documented.",
+            "C1": "Review does not check adherence to project style guides or coding conventions.",
+            "C2": "Review does not check if similar problems are solved consistently with existing patterns.",
+            "P1": "Review identifies potential performance issues with non-thread-safe `Math::rand()`.",
+            "P2": "Review does not ask about benchmarks or performance testing for critical paths.",
+            "S1": "Review does not check for proper input validation or sanitization.",
+            "S2": "Review does not flag hardcoded secrets, credentials, or sensitive data.",
+            "S3": "Review does not assess error handling and failure recovery.",
+            "Q1": "Review provides an overall assessment of the changes, highlighting issues and recommendations.",
+            "Q2": "Review comments are anchored to specific code locations, e.g., `core/array.cpp:411`.",
+            "Q3": "Review does not distinguish between blocking issues and minor suggestions.",
+            "Q4": "Review does not ask clarifying questions.",
+            "Q5": "Review explains the reasoning behind suggestions, such as the need for thread safety and deterministic behavior."
+          },
+          "error": ""
+        },
+        {
+          "model": "gemini:gemini-2.5-flash",
+          "scores": {
+            "F1": 0,
+            "F2": 1,
+            "F3": 0,
+            "F4": 0,
+            "T1": 1,
+            "T2": 1,
+            "T3": 1,
+            "R1": 0,
+            "R2": 0,
+            "R3": 0,
+            "M1": 1,
+            "M2": 0,
+            "M3": 0,
+            "C1": 0,
+            "C2": 1,
+            "P1": 0,
+            "P2": 0,
+            "S1": 0,
+            "S2": 0,
+            "S3": 0,
+            "Q1": 0,
+            "Q2": 1,
+            "Q3": 1,
+            "Q4": 0,
+            "Q5": 1
+          },
+          "evidence": {
+            "F1": "The PR description is N/A, so there's no stated problem to verify. The review identifies new problems introduced by the change, rather than verifying the original intent.",
+            "F2": "Review mentions: 'Add unit tests for pick_random() to cover edge cases such as empty arrays and arrays with one element.'",
+            "F3": "The review discusses the interaction with `Math::rand()` and `Math::random()` regarding thread safety, but it doesn't broadly check how the new method integrates with other existing components, APIs, or modules within the system.",
+            "F4": "The review warns about 'unpredictable behavior in multi-threaded environments' and 'non-deterministic behavior', which are runtime impacts, but it does not warn about breaking API changes or direct impact on existing dependent code in terms of compilation or functionality changes.",
+            "T1": "Review states: 'The method lacks test coverage to ensure its functionality and reliability.' and recommends: 'Add unit tests for pick_random()'.",
+            "T2": "Review mentions: 'Add unit tests for pick_random() to cover edge cases such as empty arrays and arrays with one element.'",
+            "T3": "Review mentions: 'Lack of tests in the test suite for Array methods to verify the behavior of pick_random().'",
+            "R1": "The review does not comment on code clarity, naming conventions, or function organization of the new method.",
+            "R2": "The review does not identify unnecessary complexity or suggest simplification.",
+            "R3": "The review does not check if code comments explain the 'why' behind decisions.",
+            "M1": "The review assesses the use of `Math::rand()` as 'not thread-safe' and recommends `Math::random()` or a mutex, which directly relates to fitting the change into a robust, concurrent architecture.",
+            "M2": "The review does not flag if the PR scope is too large or should be split.",
+            "M3": "The review does not check if public APIs or interfaces are properly documented.",
+            "C1": "The review does not check adherence to project style guides or coding conventions.",
+            "C2": "By recommending 'Replace `Math::rand()` with a thread-safe random number generator, such as `Math::random()`', the review implicitly suggests using a consistent, existing pattern for thread-safe random number generation.",
+            "P1": "The review focuses on correctness (thread-safety, determinism) and testability, not on potential performance issues or inefficiencies.",
+            "P2": "The review does not ask about benchmarks or performance testing.",
+            "S1": "While it mentions 'empty arrays' as an edge case for testing, it does not broadly check for proper input validation or sanitization in a security context.",
+            "S2": "The review does not flag hardcoded secrets, credentials, or sensitive data.",
+            "S3": "The review identifies potential issues ('crashes or incorrect data retrieval') but does not assess the method's internal error handling or failure recovery mechanisms.",
+            "Q1": "The review is structured as a problem/impact/recommendation report, but it does not provide a distinct overall summary or assessment of the changes' quality or readiness.",
+            "Q2": "Review provides: 'core/array.cpp:411: The method pick_random() uses Math::rand() for generating a random index.'",
+            "Q3": "The identified problems (thread-safety, lack of tests, non-determinism) are fundamental and critical, implying they are blocking issues rather than minor suggestions.",
+            "Q4": "The review makes direct statements and recommendations without posing clarifying questions.",
+            "Q5": "The 'Impact' section clearly explains the reasoning behind the problems and thus the recommendations, e.g., 'Using Math::rand() can lead to unpredictable behavior in multi-threaded environments, potentially causing crashes or incorrect data retrieval.'"
+          },
+          "error": ""
+        }
+      ],
+      "evaluation_timestamp": "2026-04-24T23:44:35.794158Z"
+    },
+    {
+      "pr_id": 13,
+      "mode": "kgempty",
+      "total_score": 8,
+      "max_score": 25,
+      "percentage": 32.0,
+      "kg_relevant_score": 5,
+      "kg_relevant_max": 9,
+      "kg_relevant_percentage": 55.6,
+      "criteria_scores": [
+        {
+          "criterion_id": "F1",
+          "score": 0,
+          "evidence": "Review does not verify the change addresses the problem directly.",
+          "n_yes": 1,
+          "n_valid": 3,
+          "unanimous": false
+        },
+        {
+          "criterion_id": "F2",
+          "score": 1,
+          "evidence": "Review emphasizes the need for unit tests specifically for edge cases.",
+          "n_yes": 2,
+          "n_valid": 3,
+          "unanimous": false
+        },
+        {
+          "criterion_id": "F3",
+          "score": 1,
+          "evidence": "Review discusses the risk of integration issues affecting multiple core math files.",
+          "n_yes": 3,
+          "n_valid": 3,
+          "unanimous": true
+        },
+        {
+          "criterion_id": "F4",
+          "score": 1,
+          "evidence": "Review warns that errors in fundamental math operations can lead to incorrect calculations.",
+          "n_yes": 3,
+          "n_valid": 3,
+          "unanimous": true
+        },
+        {
+          "criterion_id": "T1",
+          "score": 1,
+          "evidence": "Review recommends adding unit tests for the new methods.",
+          "n_yes": 3,
+          "n_valid": 3,
+          "unanimous": true
+        },
+        {
+          "criterion_id": "T2",
+          "score": 1,
+          "evidence": "Review specifically mentions testing edge cases to ensure correct behavior.",
+          "n_yes": 3,
+          "n_valid": 3,
+          "unanimous": true
+        },
+        {
+          "criterion_id": "T3",
+          "score": 0,
+          "evidence": "Review does not reference specific test files or suggest which tests should be added.",
+          "n_yes": 0,
+          "n_valid": 3,
+          "unanimous": true
+        },
+        {
+          "criterion_id": "R1",
+          "score": 0,
+          "evidence": "Review does not comment on code clarity or naming conventions.",
+          "n_yes": 0,
+          "n_valid": 3,
+          "unanimous": true
+        },
+        {
+          "criterion_id": "R2",
+          "score": 0,
+          "evidence": "Review does not identify unnecessary complexity or suggest simplification.",
+          "n_yes": 0,
+          "n_valid": 3,
+          "unanimous": true
+        },
+        {
+          "criterion_id": "R3",
+          "score": 0,
+          "evidence": "Review does not check if code comments explain the 'why' behind decisions.",
+          "n_yes": 0,
+          "n_valid": 3,
+          "unanimous": true
+        },
+        {
+          "criterion_id": "M1",
+          "score": 0,
+          "evidence": "Does not assess whether the change fits the existing architecture or design patterns.",
+          "n_yes": 1,
+          "n_valid": 3,
+          "unanimous": false
+        },
+        {
+          "criterion_id": "M2",
+          "score": 0,
+          "evidence": "Review does not flag if the PR scope is too large or should be split.",
+          "n_yes": 0,
+          "n_valid": 3,
+          "unanimous": true
+        },
+        {
+          "criterion_id": "M3",
+          "score": 0,
+          "evidence": "Review does not check if public APIs or interfaces are properly documented.",
+          "n_yes": 0,
+          "n_valid": 3,
+          "unanimous": true
+        },
+        {
+          "criterion_id": "C1",
+          "score": 0,
+          "evidence": "Review does not check adherence to project style guides or coding conventions.",
+          "n_yes": 0,
+          "n_valid": 3,
+          "unanimous": true
+        },
+        {
+          "criterion_id": "C2",
+          "score": 0,
+          "evidence": "Review does not check if similar problems are solved consistently with existing patterns.",
+          "n_yes": 0,
+          "n_valid": 3,
+          "unanimous": true
+        },
+        {
+          "criterion_id": "P1",
+          "score": 0,
+          "evidence": "Review does not identify potential performance issues or inefficiencies.",
+          "n_yes": 0,
+          "n_valid": 3,
+          "unanimous": true
+        },
+        {
+          "criterion_id": "P2",
+          "score": 0,
+          "evidence": "Review does not ask about benchmarks or performance testing.",
+          "n_yes": 0,
+          "n_valid": 3,
+          "unanimous": true
+        },
+        {
+          "criterion_id": "S1",
+          "score": 0,
+          "evidence": "Review does not check for proper input validation or sanitization.",
+          "n_yes": 0,
+          "n_valid": 3,
+          "unanimous": true
+        },
+        {
+          "criterion_id": "S2",
+          "score": 0,
+          "evidence": "Review does not flag hardcoded secrets or sensitive data.",
+          "n_yes": 0,
+          "n_valid": 3,
+          "unanimous": true
+        },
+        {
+          "criterion_id": "S3",
+          "score": 0,
+          "evidence": "Review does not assess error handling and failure recovery.",
+          "n_yes": 0,
+          "n_valid": 3,
+          "unanimous": true
+        },
+        {
+          "criterion_id": "Q1",
+          "score": 1,
+          "evidence": "Review provides an overall assessment of the changes and their impact.",
+          "n_yes": 3,
+          "n_valid": 3,
+          "unanimous": true
+        },
+        {
+          "criterion_id": "Q2",
+          "score": 1,
+          "evidence": "Review comments are anchored to specific code locations with line numbers.",
+          "n_yes": 3,
+          "n_valid": 3,
+          "unanimous": true
+        },
+        {
+          "criterion_id": "Q3",
+          "score": 0,
+          "evidence": "Review does not distinguish between blocking issues and minor suggestions.",
+          "n_yes": 1,
+          "n_valid": 3,
+          "unanimous": false
+        },
+        {
+          "criterion_id": "Q4",
+          "score": 0,
+          "evidence": "Review does not ask clarifying questions.",
+          "n_yes": 0,
+          "n_valid": 3,
+          "unanimous": true
+        },
+        {
+          "criterion_id": "Q5",
+          "score": 1,
+          "evidence": "Explains the reasoning behind suggestions, such as the need for tests.",
+          "n_yes": 2,
+          "n_valid": 3,
+          "unanimous": false
+        }
+      ],
+      "per_judge": [
+        {
+          "model": "openai:gpt-4o-mini",
+          "scores": {
+            "F1": 1,
+            "F2": 1,
+            "F3": 1,
+            "F4": 1,
+            "T1": 1,
+            "T2": 1,
+            "T3": 0,
+            "R1": 0,
+            "R2": 0,
+            "R3": 0,
+            "M1": 1,
+            "M2": 0,
+            "M3": 0,
+            "C1": 0,
+            "C2": 0,
+            "P1": 0,
+            "P2": 0,
+            "S1": 0,
+            "S2": 0,
+            "S3": 0,
+            "Q1": 1,
+            "Q2": 1,
+            "Q3": 0,
+            "Q4": 0,
+            "Q5": 0
+          },
+          "evidence": {
+            "F1": "Review identifies potential incorrect behavior due to lack of test coverage for new methods.",
+            "F2": "Review emphasizes the need for unit tests specifically for edge cases.",
+            "F3": "Review discusses the risk of integration issues affecting multiple core math files.",
+            "F4": "Review warns that errors in fundamental math operations can lead to incorrect calculations.",
+            "T1": "Review recommends adding unit tests for the new methods.",
+            "T2": "Review specifically mentions testing edge cases to ensure correct behavior.",
+            "T3": "Review does not reference specific test files or suggest which tests should be added.",
+            "R1": "Review does not comment on code clarity or naming conventions.",
+            "R2": "Review does not identify unnecessary complexity or suggest simplification.",
+            "R3": "Review does not check if code comments explain the 'why' behind decisions.",
+            "M1": "Review assesses the impact of changes on existing core math operations.",
+            "M2": "Review does not flag if the PR scope is too large or should be split.",
+            "M3": "Review does not check if public APIs or interfaces are properly documented.",
+            "C1": "Review does not check adherence to project style guides or coding conventions.",
+            "C2": "Review does not check if similar problems are solved consistently with existing patterns.",
+            "P1": "Review does not identify potential performance issues or inefficiencies.",
+            "P2": "Review does not ask about benchmarks or performance testing.",
+            "S1": "Review does not check for proper input validation or sanitization.",
+            "S2": "Review does not flag hardcoded secrets or sensitive data.",
+            "S3": "Review does not assess error handling and failure recovery.",
+            "Q1": "Review provides an overall assessment of the changes and their impact.",
+            "Q2": "Review comments are anchored to specific code locations with line numbers.",
+            "Q3": "Review does not distinguish between blocking issues and minor suggestions.",
+            "Q4": "Review does not ask clarifying questions.",
+            "Q5": "Review does not explain the reasoning behind suggestions."
+          },
+          "error": ""
+        },
+        {
+          "model": "openai:gpt-4o",
+          "scores": {
+            "F1": 0,
+            "F2": 0,
+            "F3": 1,
+            "F4": 1,
+            "T1": 1,
+            "T2": 1,
+            "T3": 0,
+            "R1": 0,
+            "R2": 0,
+            "R3": 0,
+            "M1": 0,
+            "M2": 0,
+            "M3": 0,
+            "C1": 0,
+            "C2": 0,
+            "P1": 0,
+            "P2": 0,
+            "S1": 0,
+            "S2": 0,
+            "S3": 0,
+            "Q1": 1,
+            "Q2": 1,
+            "Q3": 0,
+            "Q4": 0,
+            "Q5": 1
+          },
+          "evidence": {
+            "F1": "Review does not verify the change addresses the problem directly.",
+            "F2": "Review does not identify specific edge cases or boundary conditions.",
+            "F3": "Mentions integration issues affecting multiple core math files and editor components.",
+            "F4": "Warns about potential breaking changes affecting fundamental math operations.",
+            "T1": "Recommends adding unit tests for `min/max/clamp` methods.",
+            "T2": "Mentions the need for tests to ensure correct behavior with edge cases.",
+            "T3": "Does not reference specific test files or suggest which tests to add/update.",
+            "R1": "Does not comment on code clarity, naming conventions, or function organization.",
+            "R2": "Does not identify unnecessary complexity or suggest simplification.",
+            "R3": "Does not check if code comments explain the 'why' behind decisions.",
+            "M1": "Does not assess whether the change fits the existing architecture or design patterns.",
+            "M2": "Does not flag if the PR scope is too large or should be split.",
+            "M3": "Does not check if public APIs or interfaces are properly documented.",
+            "C1": "Does not check adherence to project style guides or coding conventions.",
+            "C2": "Does not check if similar problems are solved consistently with existing patterns.",
+            "P1": "Does not identify potential performance issues or inefficiencies.",
+            "P2": "Does not ask about benchmarks or performance testing for critical paths.",
+            "S1": "Does not check for proper input validation or sanitization.",
+            "S2": "Does not flag hardcoded secrets, credentials, or sensitive data.",
+            "S3": "Does not assess error handling and failure recovery.",
+            "Q1": "Provides an overall summary of the changes and their impact.",
+            "Q2": "Comments are anchored to specific code locations with file paths and line numbers.",
+            "Q3": "Does not distinguish between blocking issues and minor suggestions.",
+            "Q4": "Does not ask clarifying questions.",
+            "Q5": "Explains the reasoning behind suggestions, such as the need for tests."
+          },
+          "error": ""
+        },
+        {
+          "model": "gemini:gemini-2.5-flash",
+          "scores": {
+            "F1": 0,
+            "F2": 1,
+            "F3": 1,
+            "F4": 1,
+            "T1": 1,
+            "T2": 1,
+            "T3": 0,
+            "R1": 0,
+            "R2": 0,
+            "R3": 0,
+            "M1": 0,
+            "M2": 0,
+            "M3": 0,
+            "C1": 0,
+            "C2": 0,
+            "P1": 0,
+            "P2": 0,
+            "S1": 0,
+            "S2": 0,
+            "S3": 0,
+            "Q1": 1,
+            "Q2": 1,
+            "Q3": 1,
+            "Q4": 0,
+            "Q5": 1
+          },
+          "evidence": {
+            "F1": "The review identifies potential problems *with* the PR (lack of tests, integration risks) rather than verifying the PR addresses a stated problem or requirement. No problem/requirement was stated for the PR itself.",
+            "F2": "Review mentions: 'Lack of specific test cases for these new methods could result in undetected bugs, especially in edge cases.' and 'ensure they behave correctly with edge cases.'",
+            "F3": "Review mentions: 'Risk of integration issues as these changes affect multiple core math files and editor components.' and 'Conduct thorough integration testing to ensure that these changes do not break existing functionality.'",
+            "F4": "Review states: 'The changes affect fundamental math operations which are widely used across the codebase. Any error in these operations can lead to incorrect calculations or rendering issues.' and 'ensure that these changes do not break existing functionality.'",
+            "T1": "Review recommends: 'Add unit tests specifically for min/max/clamp methods' and 'Conduct thorough integration testing'.",
+            "T2": "Review mentions: 'Add unit tests specifically for min/max/clamp methods to ensure they behave correctly with edge cases.'",
+            "T3": "The review suggests *what* tests to add ('unit tests specifically for min/max/clamp methods') but does not reference specific test files or suggest *where* these tests should be added/updated.",
+            "R1": "The review does not comment on code clarity, naming conventions, or function organization.",
+            "R2": "The review does not identify unnecessary complexity or suggest simplification.",
+            "R3": "The review does not check if code comments explain the 'why' behind decisions.",
+            "M1": "The review notes the impact on 'fundamental math operations' but does not explicitly assess whether the *change itself* fits the existing architecture or design patterns.",
+            "M2": "The review does not flag if the PR scope is too large or should be split.",
+            "M3": "The review does not check if public APIs or interfaces are properly documented.",
+            "C1": "The review does not check adherence to project style guides or coding conventions.",
+            "C2": "The review does not check if similar problems are solved consistently with existing patterns. It focuses on the correctness and impact of the new pattern being introduced.",
+            "P1": "The review does not identify potential performance issues or inefficiencies.",
+            "P2": "The review does not ask about benchmarks or performance testing for critical paths.",
+            "S1": "The review does not check for proper input validation or sanitization.",
+            "S2": "The review does not flag hardcoded secrets, credentials, or sensitive data.",
+            "S3": "The review mentions 'incorrect calculations or rendering issues' as an impact, but does not assess error handling or failure recovery mechanisms.",
+            "Q1": "The 'Scope' section provides a clear summary: 'This PR refactors the code to use component-wise min/max/clamp functions for Vector* types where applicable.'",
+            "Q2": "The 'Evidence' section provides specific file paths and line numbers: 'core/math/aabb.h:104', 'core/math/delaunay_3d.h:284', 'editor/editor_atlas_packer.cpp:75'.",
+            "Q3": "The review clearly presents 'Problems' and 'Impact' that lead to 'Recommendations' which are significant and necessary steps (tests, integration testing, secondary review), implying they are not minor suggestions.",
+            "Q4": "The review is declarative, stating problems and recommendations, rather than asking clarifying questions.",
+            "Q5": "The review explains the reasoning behind suggestions, e.g., 'Add unit tests... to ensure they behave correctly with edge cases' and 'Conduct thorough integration testing to ensure that these changes do not break existing functionality.'"
+          },
+          "error": ""
+        }
+      ],
+      "evaluation_timestamp": "2026-04-24T23:45:12.070060Z"
+    },
+    {
+      "pr_id": 1,
+      "mode": "kgempty",
+      "total_score": 12,
+      "max_score": 25,
+      "percentage": 48.0,
+      "kg_relevant_score": 7,
+      "kg_relevant_max": 9,
+      "kg_relevant_percentage": 77.8,
+      "criteria_scores": [
+        {
+          "criterion_id": "F1",
+          "score": 1,
+          "evidence": "Review states: 'This PR replaces the OpenXR operating system alert dialog with a warning log message and adds a project setting to control the alert display.'",
+          "n_yes": 2,
+          "n_valid": 3,
+          "unanimous": false
+        },
+        {
+          "criterion_id": "F2",
+          "score": 1,
+          "evidence": "Review identifies potential issues with 'inconsistent behavior if the setting is not properly initialized or respected.'",
+          "n_yes": 3,
+          "n_valid": 3,
+          "unanimous": true
+        },
+        {
+          "criterion_id": "F3",
+          "score": 1,
+          "evidence": "Review discusses the integration of the new setting with existing alert logic.",
+          "n_yes": 3,
+          "n_valid": 3,
+          "unanimous": true
+        },
+        {
+          "criterion_id": "F4",
+          "score": 1,
+          "evidence": "Review mentions the impact of missing documentation and test coverage, which could lead to confusion.",
+          "n_yes": 2,
+          "n_valid": 3,
+          "unanimous": false
+        },
+        {
+          "criterion_id": "T1",
+          "score": 1,
+          "evidence": "Review recommends: 'Implement test cases to verify the correct behavior of the alert logic.'",
+          "n_yes": 3,
+          "n_valid": 3,
+          "unanimous": true
+        },
+        {
+          "criterion_id": "T2",
+          "score": 1,
+          "evidence": "Review suggests focusing on scenarios where the setting is toggled, indicating testing of edge cases.",
+          "n_yes": 3,
+          "n_valid": 3,
+          "unanimous": true
+        },
+        {
+          "criterion_id": "T3",
+          "score": 1,
+          "evidence": "Review references specific files and suggests adding tests for the new setting.",
+          "n_yes": 2,
+          "n_valid": 3,
+          "unanimous": false
+        },
+        {
+          "criterion_id": "R1",
+          "score": 0,
+          "evidence": "Review does not comment on code clarity or naming conventions.",
+          "n_yes": 0,
+          "n_valid": 3,
+          "unanimous": true
+        },
+        {
+          "criterion_id": "R2",
+          "score": 0,
+          "evidence": "Review does not identify unnecessary complexity or suggest simplification.",
+          "n_yes": 0,
+          "n_valid": 3,
+          "unanimous": true
+        },
+        {
+          "criterion_id": "R3",
+          "score": 0,
+          "evidence": "Review does not check if code comments explain the 'why' behind decisions.",
+          "n_yes": 0,
+          "n_valid": 3,
+          "unanimous": true
+        },
+        {
+          "criterion_id": "M1",
+          "score": 0,
+          "evidence": "The review does not assess whether the change fits the existing architecture or design patterns.",
+          "n_yes": 1,
+          "n_valid": 3,
+          "unanimous": false
+        },
+        {
+          "criterion_id": "M2",
+          "score": 0,
+          "evidence": "Review does not flag if the PR scope is too large or should be split.",
+          "n_yes": 0,
+          "n_valid": 3,
+          "unanimous": true
+        },
+        {
+          "criterion_id": "M3",
+          "score": 1,
+          "evidence": "The review highlights the lack of documentation for the new project setting.",
+          "n_yes": 2,
+          "n_valid": 3,
+          "unanimous": false
+        },
+        {
+          "criterion_id": "C1",
+          "score": 0,
+          "evidence": "Review does not check adherence to project style guides or coding conventions.",
+          "n_yes": 0,
+          "n_valid": 3,
+          "unanimous": true
+        },
+        {
+          "criterion_id": "C2",
+          "score": 0,
+          "evidence": "Review does not check if similar problems are solved consistently with existing patterns.",
+          "n_yes": 0,
+          "n_valid": 3,
+          "unanimous": true
+        },
+        {
+          "criterion_id": "P1",
+          "score": 0,
+          "evidence": "Review does not identify potential performance issues or inefficiencies.",
+          "n_yes": 0,
+          "n_valid": 3,
+          "unanimous": true
+        },
+        {
+          "criterion_id": "P2",
+          "score": 0,
+          "evidence": "Review does not ask about benchmarks or performance testing for critical paths.",
+          "n_yes": 0,
+          "n_valid": 3,
+          "unanimous": true
+        },
+        {
+          "criterion_id": "S1",
+          "score": 0,
+          "evidence": "Review does not check for proper input validation or sanitization.",
+          "n_yes": 0,
+          "n_valid": 3,
+          "unanimous": true
+        },
+        {
+          "criterion_id": "S2",
+          "score": 0,
+          "evidence": "Review does not flag hardcoded secrets, credentials, or sensitive data.",
+          "n_yes": 0,
+          "n_valid": 3,
+          "unanimous": true
+        },
+        {
+          "criterion_id": "S3",
+          "score": 0,
+          "evidence": "Review does not assess error handling and failure recovery.",
+          "n_yes": 0,
+          "n_valid": 3,
+          "unanimous": true
+        },
+        {
+          "criterion_id": "Q1",
+          "score": 1,
+          "evidence": "Review provides a clear summary of the identified problems and recommendations.",
+          "n_yes": 3,
+          "n_valid": 3,
+          "unanimous": true
+        },
+        {
+          "criterion_id": "Q2",
+          "score": 1,
+          "evidence": "Review comments are anchored to specific code locations (e.g., 'doc/classes/ProjectSettings.xml:2378-2381').",
+          "n_yes": 3,
+          "n_valid": 3,
+          "unanimous": true
+        },
+        {
+          "criterion_id": "Q3",
+          "score": 1,
+          "evidence": "Review distinguishes between critical issues (lack of documentation) and suggestions (adding tests).",
+          "n_yes": 3,
+          "n_valid": 3,
+          "unanimous": true
+        },
+        {
+          "criterion_id": "Q4",
+          "score": 0,
+          "evidence": "Review does not ask clarifying questions.",
+          "n_yes": 0,
+          "n_valid": 3,
+          "unanimous": true
+        },
+        {
+          "criterion_id": "Q5",
+          "score": 1,
+          "evidence": "The review explains the reasoning behind suggestions, such as the need for documentation and tests to prevent confusion and regressions.",
+          "n_yes": 2,
+          "n_valid": 3,
+          "unanimous": false
+        }
+      ],
+      "per_judge": [
+        {
+          "model": "openai:gpt-4o-mini",
+          "scores": {
+            "F1": 1,
+            "F2": 1,
+            "F3": 1,
+            "F4": 1,
+            "T1": 1,
+            "T2": 1,
+            "T3": 1,
+            "R1": 0,
+            "R2": 0,
+            "R3": 0,
+            "M1": 1,
+            "M2": 0,
+            "M3": 0,
+            "C1": 0,
+            "C2": 0,
+            "P1": 0,
+            "P2": 0,
+            "S1": 0,
+            "S2": 0,
+            "S3": 0,
+            "Q1": 1,
+            "Q2": 1,
+            "Q3": 1,
+            "Q4": 0,
+            "Q5": 0
+          },
+          "evidence": {
+            "F1": "Review states: 'This PR replaces the OpenXR operating system alert dialog with a warning log message and adds a project setting to control the alert display.'",
+            "F2": "Review identifies potential issues with 'inconsistent behavior if the setting is not properly initialized or respected.'",
+            "F3": "Review discusses the integration of the new setting with existing alert logic.",
+            "F4": "Review mentions the impact of missing documentation and test coverage, which could lead to confusion.",
+            "T1": "Review recommends: 'Implement test cases to verify the correct behavior of the alert logic.'",
+            "T2": "Review suggests focusing on scenarios where the setting is toggled, indicating testing of edge cases.",
+            "T3": "Review references specific files and suggests adding tests for the new setting.",
+            "R1": "Review does not comment on code clarity or naming conventions.",
+            "R2": "Review does not identify unnecessary complexity or suggest simplification.",
+            "R3": "Review does not check if code comments explain the 'why' behind decisions.",
+            "M1": "Review assesses the change's fit with existing alert logic and project settings.",
+            "M2": "Review does not flag if the PR scope is too large or should be split.",
+            "M3": "Review does not check if public APIs or interfaces are properly documented.",
+            "C1": "Review does not check adherence to project style guides or coding conventions.",
+            "C2": "Review does not check if similar problems are solved consistently with existing patterns.",
+            "P1": "Review does not identify potential performance issues or inefficiencies.",
+            "P2": "Review does not ask about benchmarks or performance testing for critical paths.",
+            "S1": "Review does not check for proper input validation or sanitization.",
+            "S2": "Review does not flag hardcoded secrets, credentials, or sensitive data.",
+            "S3": "Review does not assess error handling and failure recovery.",
+            "Q1": "Review provides a clear summary of the identified problems and recommendations.",
+            "Q2": "Review comments are anchored to specific code locations (e.g., 'doc/classes/ProjectSettings.xml:2378-2381').",
+            "Q3": "Review distinguishes between critical issues (lack of documentation) and suggestions (adding tests).",
+            "Q4": "Review does not ask clarifying questions.",
+            "Q5": "Review does not explain the reasoning behind suggestions."
+          },
+          "error": ""
+        },
+        {
+          "model": "openai:gpt-4o",
+          "scores": {
+            "F1": 1,
+            "F2": 1,
+            "F3": 1,
+            "F4": 1,
+            "T1": 1,
+            "T2": 1,
+            "T3": 1,
+            "R1": 0,
+            "R2": 0,
+            "R3": 0,
+            "M1": 0,
+            "M2": 0,
+            "M3": 1,
+            "C1": 0,
+            "C2": 0,
+            "P1": 0,
+            "P2": 0,
+            "S1": 0,
+            "S2": 0,
+            "S3": 0,
+            "Q1": 1,
+            "Q2": 1,
+            "Q3": 1,
+            "Q4": 0,
+            "Q5": 1
+          },
+          "evidence": {
+            "F1": "The review addresses the problem by discussing the lack of documentation and test coverage for the new setting.",
+            "F2": "The review identifies potential inconsistent behavior if the setting is not properly initialized or respected.",
+            "F3": "The review checks integration by mentioning the conditional logic in 'modules/openxr/register_types.cpp'.",
+            "F4": "The review warns about potential impact on alert behavior if the setting is not documented or tested.",
+            "T1": "The review recommends implementing test cases to verify the alert logic.",
+            "T2": "The review suggests focusing on scenarios where the setting is toggled.",
+            "T3": "The review references specific code locations that lack test cases, such as 'main/main.cpp:1829'.",
+            "R1": "The review does not comment on code clarity or naming conventions.",
+            "R2": "The review does not identify unnecessary complexity or suggest simplification.",
+            "R3": "The review does not check if code comments explain the 'why' behind decisions.",
+            "M1": "The review does not assess whether the change fits the existing architecture or design patterns.",
+            "M2": "The review does not flag if the PR scope is too large or should be split.",
+            "M3": "The review highlights the lack of documentation for the new project setting.",
+            "C1": "The review does not check adherence to project style guides or coding conventions.",
+            "C2": "The review does not check if similar problems are solved consistently with existing patterns.",
+            "P1": "The review does not identify potential performance issues or inefficiencies.",
+            "P2": "The review does not ask about benchmarks or performance testing for critical paths.",
+            "S1": "The review does not check for proper input validation or sanitization.",
+            "S2": "The review does not flag hardcoded secrets, credentials, or sensitive data.",
+            "S3": "The review does not assess error handling and failure recovery.",
+            "Q1": "The review provides an overall assessment of the changes, focusing on documentation and testing.",
+            "Q2": "Review comments are anchored to specific code locations, such as 'doc/classes/ProjectSettings.xml:2378-2381'.",
+            "Q3": "The review distinguishes between blocking issues (lack of documentation and tests) and suggestions.",
+            "Q4": "The review does not ask clarifying questions.",
+            "Q5": "The review explains the reasoning behind suggestions, such as the need for documentation and tests to prevent confusion and regressions."
+          },
+          "error": ""
+        },
+        {
+          "model": "gemini:gemini-2.5-flash",
+          "scores": {
+            "F1": 0,
+            "F2": 1,
+            "F3": 1,
+            "F4": 0,
+            "T1": 1,
+            "T2": 1,
+            "T3": 0,
+            "R1": 0,
+            "R2": 0,
+            "R3": 0,
+            "M1": 0,
+            "M2": 0,
+            "M3": 1,
+            "C1": 0,
+            "C2": 0,
+            "P1": 0,
+            "P2": 0,
+            "S1": 0,
+            "S2": 0,
+            "S3": 0,
+            "Q1": 1,
+            "Q2": 1,
+            "Q3": 1,
+            "Q4": 0,
+            "Q5": 1
+          },
+          "evidence": {
+            "F1": "The review focuses on issues with the implementation of the new setting and its completeness, rather than verifying if the core problem (replacing the dialog with a log message) is correctly addressed.",
+            "F2": "The review mentions: 'particularly focusing on scenarios where the setting is toggled' and 'if the setting is not correctly initialized or respected across different configurations'.",
+            "F3": "The review points to specific files like `doc/classes/ProjectSettings.xml`, `main/main.cpp`, and `modules/openxr/register_types.cpp`, indicating how the new setting integrates (or fails to integrate, e.g., missing documentation) with these components.",
+            "F4": "The review discusses impact on user confusion and potential bugs, but does not explicitly warn about 'breaking changes' or impact on 'dependent code' in the traditional sense.",
+            "T1": "The review states: 'The new project setting `xr/openxr/startup_alert` lacks ... test coverage.' and recommends 'Implement test cases to verify the correct behavior of the alert logic'.",
+            "T2": "The review mentions: 'Implement test cases to verify the correct behavior of the alert logic, particularly focusing on scenarios where the setting is toggled.'",
+            "T3": "The review points to code locations that need tests (`main/main.cpp:1829`) but does not suggest specific test files or which tests should be added/updated (e.g., a new test suite).",
+            "R1": "The review does not comment on code clarity, naming conventions, or function organization.",
+            "R2": "The review does not identify unnecessary complexity or suggest simplification.",
+            "R3": "The review focuses on the absence of documentation for the setting, not on the quality or presence of comments within the code explaining decisions.",
+            "M1": "The review identifies where the new setting is placed within the architecture, but does not explicitly assess whether the change fits existing design patterns or architecture.",
+            "M2": "The review does not comment on the PR's scope or suggest splitting it.",
+            "M3": "The review explicitly states: 'Addition of the `xr/openxr/startup_alert` setting without accompanying documentation.' Project settings are part of the public interface.",
+            "C1": "The review does not check adherence to project style guides or coding conventions.",
+            "C2": "The review does not compare the solution to how similar problems are solved consistently with existing patterns.",
+            "P1": "The review does not identify potential performance issues or inefficiencies.",
+            "P2": "The review does not ask about benchmarks or performance testing.",
+            "S1": "The review does not check for proper input validation or sanitization, as the change primarily involves a boolean project setting and logging.",
+            "S2": "The review does not flag hardcoded secrets, credentials, or sensitive data.",
+            "S3": "While it mentions 'inconsistent behavior' related to the setting's initialization, it does not broadly assess error handling and failure recovery for the overall change.",
+            "Q1": "The 'Scope' section provides a clear summary: 'This PR replaces the OpenXR operating system alert dialog with a warning log message and adds a project setting to control the alert display.'",
+            "Q2": "The 'Evidence' section provides specific file paths and line numbers: '`doc/classes/ProjectSettings.xml:2378-2381`', '`main/main.cpp:1829`', '`modules/openxr/register_types.cpp:114-127`'.",
+            "Q3": "The review clearly identifies significant 'Problem' areas (missing documentation, test coverage, potential inconsistency) that require resolution, implying they are blocking or high-priority issues rather than minor suggestions.",
+            "Q4": "The review makes direct statements about identified problems and recommendations, rather than asking clarifying questions.",
+            "Q5": ""
+          },
+          "error": ""
+        }
+      ],
+      "evaluation_timestamp": "2026-04-24T23:45:53.678961Z"
+    },
+    {
+      "pr_id": 5,
+      "mode": "kgempty",
+      "total_score": 7,
+      "max_score": 25,
+      "percentage": 28.0,
+      "kg_relevant_score": 2,
+      "kg_relevant_max": 9,
+      "kg_relevant_percentage": 22.2,
+      "criteria_scores": [
+        {
+          "criterion_id": "F1",
+          "score": 1,
+          "evidence": "Review identifies that the note about using 'curl.exe' is not prominently placed, which addresses the problem.",
+          "n_yes": 2,
+          "n_valid": 3,
+          "unanimous": false
+        },
+        {
+          "criterion_id": "F2",
+          "score": 0,
+          "evidence": "Review does not identify any specific edge cases or boundary conditions.",
+          "n_yes": 0,
+          "n_valid": 3,
+          "unanimous": true
+        },
+        {
+          "criterion_id": "F3",
+          "score": 0,
+          "evidence": "Review does not discuss how the change integrates with existing components or APIs.",
+          "n_yes": 0,
+          "n_valid": 3,
+          "unanimous": true
+        },
+        {
+          "criterion_id": "F4",
+          "score": 0,
+          "evidence": "Review does not warn about potential breaking changes or impacts on dependent code.",
+          "n_yes": 1,
+          "n_valid": 3,
+          "unanimous": false
+        },
+        {
+          "criterion_id": "T1",
+          "score": 1,
+          "evidence": "Review recommends adding a test or documentation check to ensure visibility of notes.",
+          "n_yes": 3,
+          "n_valid": 3,
+          "unanimous": true
+        },
+        {
+          "criterion_id": "T2",
+          "score": 0,
+          "evidence": "Review does not mention testing edge cases, error paths, or failure scenarios.",
+          "n_yes": 0,
+          "n_valid": 3,
+          "unanimous": true
+        },
+        {
+          "criterion_id": "T3",
+          "score": 0,
+          "evidence": "Review does not reference specific test files or suggest which tests should be added/updated.",
+          "n_yes": 0,
+          "n_valid": 3,
+          "unanimous": true
+        },
+        {
+          "criterion_id": "R1",
+          "score": 1,
+          "evidence": "Review comments on the clarity of the note's placement and suggests moving it for better visibility.",
+          "n_yes": 2,
+          "n_valid": 3,
+          "unanimous": false
+        },
+        {
+          "criterion_id": "R2",
+          "score": 0,
+          "evidence": "Review does not identify unnecessary complexity or suggest simplification.",
+          "n_yes": 0,
+          "n_valid": 3,
+          "unanimous": true
+        },
+        {
+          "criterion_id": "R3",
+          "score": 0,
+          "evidence": "Review does not check if code comments explain the 'why' behind decisions.",
+          "n_yes": 0,
+          "n_valid": 3,
+          "unanimous": true
+        },
+        {
+          "criterion_id": "M1",
+          "score": 0,
+          "evidence": "Review does not assess whether the change fits the existing architecture or design patterns.",
+          "n_yes": 0,
+          "n_valid": 3,
+          "unanimous": true
+        },
+        {
+          "criterion_id": "M2",
+          "score": 0,
+          "evidence": "Review does not flag if the PR scope is too large or should be split.",
+          "n_yes": 0,
+          "n_valid": 3,
+          "unanimous": true
+        },
+        {
+          "criterion_id": "M3",
+          "score": 0,
+          "evidence": "Review does not check if public APIs or interfaces are properly documented.",
+          "n_yes": 0,
+          "n_valid": 3,
+          "unanimous": true
+        },
+        {
+          "criterion_id": "C1",
+          "score": 0,
+          "evidence": "Review does not check adherence to project style guides or coding conventions.",
+          "n_yes": 0,
+          "n_valid": 3,
+          "unanimous": true
+        },
+        {
+          "criterion_id": "C2",
+          "score": 0,
+          "evidence": "Review does not check if similar problems are solved consistently with existing patterns.",
+          "n_yes": 0,
+          "n_valid": 3,
+          "unanimous": true
+        },
+        {
+          "criterion_id": "P1",
+          "score": 0,
+          "evidence": "Review does not identify potential performance issues or inefficiencies.",
+          "n_yes": 0,
+          "n_valid": 3,
+          "unanimous": true
+        },
+        {
+          "criterion_id": "P2",
+          "score": 0,
+          "evidence": "Review does not ask about benchmarks or performance testing for critical paths.",
+          "n_yes": 0,
+          "n_valid": 3,
+          "unanimous": true
+        },
+        {
+          "criterion_id": "S1",
+          "score": 0,
+          "evidence": "Review does not check for proper input validation or sanitization.",
+          "n_yes": 0,
+          "n_valid": 3,
+          "unanimous": true
+        },
+        {
+          "criterion_id": "S2",
+          "score": 0,
+          "evidence": "Review does not flag hardcoded secrets, credentials, or sensitive data.",
+          "n_yes": 0,
+          "n_valid": 3,
+          "unanimous": true
+        },
+        {
+          "criterion_id": "S3",
+          "score": 0,
+          "evidence": "Review does not assess error handling and failure recovery.",
+          "n_yes": 0,
+          "n_valid": 3,
+          "unanimous": true
+        },
+        {
+          "criterion_id": "Q1",
+          "score": 1,
+          "evidence": "Review provides an overall assessment of the changes and their impact.",
+          "n_yes": 3,
+          "n_valid": 3,
+          "unanimous": true
+        },
+        {
+          "criterion_id": "Q2",
+          "score": 1,
+          "evidence": "Review comments are anchored to specific code locations, such as 'core/src/main/resources/hudson/slaves/JNLPLauncher/main.jelly:60'.",
+          "n_yes": 3,
+          "n_valid": 3,
+          "unanimous": true
+        },
+        {
+          "criterion_id": "Q3",
+          "score": 1,
+          "evidence": "Review distinguishes between major issues (visibility of the note) and minor suggestions (adding examples).",
+          "n_yes": 2,
+          "n_valid": 3,
+          "unanimous": false
+        },
+        {
+          "criterion_id": "Q4",
+          "score": 0,
+          "evidence": "Review does not ask clarifying questions; it makes assumptions about user knowledge.",
+          "n_yes": 0,
+          "n_valid": 3,
+          "unanimous": true
+        },
+        {
+          "criterion_id": "Q5",
+          "score": 1,
+          "evidence": "Review explains the reasoning behind suggestions, such as moving the note for better visibility.",
+          "n_yes": 3,
+          "n_valid": 3,
+          "unanimous": true
+        }
+      ],
+      "per_judge": [
+        {
+          "model": "openai:gpt-4o-mini",
+          "scores": {
+            "F1": 1,
+            "F2": 0,
+            "F3": 0,
+            "F4": 0,
+            "T1": 1,
+            "T2": 0,
+            "T3": 0,
+            "R1": 1,
+            "R2": 0,
+            "R3": 0,
+            "M1": 0,
+            "M2": 0,
+            "M3": 0,
+            "C1": 0,
+            "C2": 0,
+            "P1": 0,
+            "P2": 0,
+            "S1": 0,
+            "S2": 0,
+            "S3": 0,
+            "Q1": 1,
+            "Q2": 1,
+            "Q3": 1,
+            "Q4": 0,
+            "Q5": 1
+          },
+          "evidence": {
+            "F1": "Review identifies that the note about using 'curl.exe' is not prominently placed, which addresses the problem.",
+            "F2": "Review does not identify any specific edge cases or boundary conditions.",
+            "F3": "Review does not discuss how the change integrates with existing components or APIs.",
+            "F4": "Review does not warn about potential breaking changes or impacts on dependent code.",
+            "T1": "Review recommends adding a test or documentation check to ensure visibility of notes.",
+            "T2": "Review does not mention testing edge cases, error paths, or failure scenarios.",
+            "T3": "Review does not reference specific test files or suggest which tests should be added/updated.",
+            "R1": "Review comments on the clarity of the note's placement and suggests moving it for better visibility.",
+            "R2": "Review does not identify unnecessary complexity or suggest simplification.",
+            "R3": "Review does not check if code comments explain the 'why' behind decisions.",
+            "M1": "Review does not assess whether the change fits the existing architecture or design patterns.",
+            "M2": "Review does not flag if the PR scope is too large or should be split.",
+            "M3": "Review does not check if public APIs or interfaces are properly documented.",
+            "C1": "Review does not check adherence to project style guides or coding conventions.",
+            "C2": "Review does not check if similar problems are solved consistently with existing patterns.",
+            "P1": "Review does not identify potential performance issues or inefficiencies.",
+            "P2": "Review does not ask about benchmarks or performance testing for critical paths.",
+            "S1": "Review does not check for proper input validation or sanitization.",
+            "S2": "Review does not flag hardcoded secrets, credentials, or sensitive data.",
+            "S3": "Review does not assess error handling and failure recovery.",
+            "Q1": "Review provides an overall assessment of the changes and their impact.",
+            "Q2": "Review comments are anchored to specific code locations, such as 'core/src/main/resources/hudson/slaves/JNLPLauncher/main.jelly:60'.",
+            "Q3": "Review distinguishes between major issues (visibility of the note) and minor suggestions (adding examples).",
+            "Q4": "Review does not ask clarifying questions; it makes assumptions about user knowledge.",
+            "Q5": "Review explains the reasoning behind suggestions, such as moving the note for better visibility."
+          },
+          "error": ""
+        },
+        {
+          "model": "openai:gpt-4o",
+          "scores": {
+            "F1": 1,
+            "F2": 0,
+            "F3": 0,
+            "F4": 1,
+            "T1": 1,
+            "T2": 0,
+            "T3": 0,
+            "R1": 0,
+            "R2": 0,
+            "R3": 0,
+            "M1": 0,
+            "M2": 0,
+            "M3": 0,
+            "C1": 0,
+            "C2": 0,
+            "P1": 0,
+            "P2": 0,
+            "S1": 0,
+            "S2": 0,
+            "S3": 0,
+            "Q1": 1,
+            "Q2": 1,
+            "Q3": 0,
+            "Q4": 0,
+            "Q5": 1
+          },
+          "evidence": {
+            "F1": "Review addresses the problem by suggesting moving the note for better visibility.",
+            "F2": "Review does not identify specific edge cases or boundary conditions.",
+            "F3": "Review does not discuss integration with existing components or APIs.",
+            "F4": "Review warns about potential impact on PowerShell users who might miss the note.",
+            "T1": "Review suggests adding a test or documentation check for note visibility.",
+            "T2": "Review does not mention testing edge cases or failure scenarios.",
+            "T3": "Review does not reference specific test files or suggest tests to be added/updated.",
+            "R1": "Review does not comment on code clarity or naming conventions.",
+            "R2": "Review does not identify unnecessary complexity or suggest simplification.",
+            "R3": "Review does not check if code comments explain the 'why' behind decisions.",
+            "M1": "Review does not assess fit with existing architecture or design patterns.",
+            "M2": "Review does not flag the PR scope as too large or suggest splitting.",
+            "M3": "Review does not check if public APIs or interfaces are documented.",
+            "C1": "Review does not check adherence to project style guides or coding conventions.",
+            "C2": "Review does not check for consistency with existing patterns.",
+            "P1": "Review does not identify potential performance issues or inefficiencies.",
+            "P2": "Review does not ask about benchmarks or performance testing.",
+            "S1": "Review does not check for input validation or sanitization.",
+            "S2": "Review does not flag hardcoded secrets or sensitive data.",
+            "S3": "Review does not assess error handling and failure recovery.",
+            "Q1": "Review provides an overall assessment of the changes and their impact.",
+            "Q2": "Review comments are anchored to specific code locations.",
+            "Q3": "Review does not distinguish between blocking issues and minor suggestions.",
+            "Q4": "Review does not ask clarifying questions.",
+            "Q5": "Review explains the reasoning behind suggestions, such as improving note visibility."
+          },
+          "error": ""
+        },
+        {
+          "model": "gemini:gemini-2.5-flash",
+          "scores": {
+            "F1": 0,
+            "F2": 0,
+            "F3": 0,
+            "F4": 0,
+            "T1": 1,
+            "T2": 0,
+            "T3": 0,
+            "R1": 1,
+            "R2": 0,
+            "R3": 0,
+            "M1": 0,
+            "M2": 0,
+            "M3": 0,
+            "C1": 0,
+            "C2": 0,
+            "P1": 0,
+            "P2": 0,
+            "S1": 0,
+            "S2": 0,
+            "S3": 0,
+            "Q1": 1,
+            "Q2": 1,
+            "Q3": 1,
+            "Q4": 0,
+            "Q5": 1
+          },
+          "evidence": {
+            "F1": "The review focuses on problems with the *presentation* of the solution, rather than explicitly verifying that changing to `curl.exe` addresses the original problem of `curl` not working with `-sO` flags in PowerShell.",
+            "F2": "The review discusses user scenarios (PowerShell users) but does not identify specific technical edge cases or boundary conditions for the `curl.exe` command or the JNLPLauncher.",
+            "F3": "The change is a documentation example; the review does not discuss how this documentation change integrates with existing code components, APIs, or modules.",
+            "F4": "The change is a documentation example and does not introduce breaking changes or impact dependent code, so this criterion is not applicable and not addressed.",
+            "T1": "Recommendation: 'Consider adding a test or a documentation check to ensure that such notes are prominently visible and contextually complete.'",
+            "T2": "While the 'Impact' section mentions users encountering errors, the 'Recommendation' for testing is general ('documentation check') and does not specifically suggest testing edge cases, error paths, or failure scenarios related to the `curl.exe` command itself.",
+            "T3": "The review suggests 'a test or a documentation check' but does not reference specific test files or suggest which types of tests should be added/updated beyond a general 'documentation check'.",
+            "R1": "Problem: 'The note does not provide a complete example or context for PowerShell users, which could lead to confusion.' This comments on the clarity and completeness of the documentation.",
+            "R2": "The review suggests adding more detail (a complete example) and improving placement, not identifying unnecessary complexity or suggesting simplification.",
+            "R3": "The change is a documentation example, not code with comments, so this criterion is not applicable.",
+            "M1": "The change is a documentation example; the review does not assess its fit with existing architecture or design patterns.",
+            "M2": "The review does not flag the PR scope as too large or suggest splitting it.",
+            "M3": "The change is an example in documentation, not the documentation of public APIs or interfaces.",
+            "C1": "The review does not comment on adherence to project style guides or coding conventions for documentation.",
+            "C2": "The review does not check if similar documentation problems are solved consistently with existing patterns.",
+            "P1": "The change is a documentation example; the review does not identify potential performance issues or inefficiencies.",
+            "P2": "The change is a documentation example; the review does not ask about benchmarks or performance testing.",
+            "S1": "The change is a documentation example; the review does not check for input validation or sanitization.",
+            "S2": "The change is a documentation example; the review does not flag hardcoded secrets or sensitive data.",
+            "S3": "The review mentions users encountering errors due to documentation, but it does not assess error handling or failure recovery within the system's code.",
+            "Q1": "Scope: 'This PR revises the curl example for the inbound agent in the Jenkins JNLPLauncher documentation.'",
+            "Q2": "Evidence: 'core/src/main/resources/hudson/slaves/JNLPLauncher/main.jelly:60'",
+            "Q3": "The review uses 'Problem' and 'Impact' sections to highlight significant issues that need to be addressed, clearly distinguishing them from minor suggestions.",
+            "Q4": "The review makes direct statements and recommendations rather than asking clarifying questions.",
+            "Q5": ""
+          },
+          "error": ""
+        }
+      ],
+      "evaluation_timestamp": "2026-04-24T23:46:45.260911Z"
+    }
+  ],
+  "summary": {
+    "by_mode": {
+      "kgempty": {
+        "count": 5,
+        "avg_total": 7.6,
+        "avg_percentage": 30.4,
+        "avg_kg_relevant": 3.8,
+        "avg_kg_percentage": 42.2,
+        "max_score": 25,
+        "kg_max": 9
+      }
+    },
+    "by_criterion": {
+      "F1": {
+        "description": "Does the review verify that the change addresses the stated problem or requirement?",
+        "category": "Functionality",
+        "kg_relevant": false,
+        "scores_by_mode": {
+          "kgempty": 40.0
+        }
+      },
+      "F2": {
+        "description": "Does the review identify edge cases or boundary conditions that need handling?",
+        "category": "Functionality",
+        "kg_relevant": false,
+        "scores_by_mode": {
+          "kgempty": 60.0
+        }
+      },
+      "F3": {
+        "description": "Does the review check how the change integrates with existing components, APIs, or modules?",
+        "category": "Functionality",
+        "kg_relevant": true,
+        "scores_by_mode": {
+          "kgempty": 40.0
+        }
+      },
+      "F4": {
+        "description": "Does the review warn about potential breaking changes or impact on dependent code?",
+        "category": "Functionality",
+        "kg_relevant": true,
+        "scores_by_mode": {
+          "kgempty": 60.0
+        }
+      },
+      "T1": {
+        "description": "Does the review ask about or discuss the need for unit/integration tests?",
+        "category": "Tests",
+        "kg_relevant": true,
+        "scores_by_mode": {
+          "kgempty": 80.0
+        }
+      },
+      "T2": {
+        "description": "Does the review mention testing edge cases, error paths, or failure scenarios?",
+        "category": "Tests",
+        "kg_relevant": true,
+        "scores_by_mode": {
+          "kgempty": 60.0
+        }
+      },
+      "T3": {
+        "description": "Does the review reference specific test files or suggest which tests should be added/updated?",
+        "category": "Tests",
+        "kg_relevant": true,
+        "scores_by_mode": {
+          "kgempty": 20.0
+        }
+      },
+      "R1": {
+        "description": "Does the review comment on code clarity, naming conventions, or function organization?",
+        "category": "Readability",
+        "kg_relevant": false,
+        "scores_by_mode": {
+          "kgempty": 20.0
+        }
+      },
+      "R2": {
+        "description": "Does the review identify unnecessary complexity or suggest simplification?",
+        "category": "Readability",
+        "kg_relevant": false,
+        "scores_by_mode": {
+          "kgempty": 0.0
+        }
+      },
+      "R3": {
+        "description": "Does the review check if code comments explain the 'why' behind decisions?",
+        "category": "Readability",
+        "kg_relevant": false,
+        "scores_by_mode": {
+          "kgempty": 0.0
+        }
+      },
+      "M1": {
+        "description": "Does the review assess whether the change fits the existing architecture or design patterns?",
+        "category": "Maintainability",
+        "kg_relevant": true,
+        "scores_by_mode": {
+          "kgempty": 0.0
+        }
+      },
+      "M2": {
+        "description": "Does the review flag if the PR scope is too large or should be split?",
+        "category": "Maintainability",
+        "kg_relevant": false,
+        "scores_by_mode": {
+          "kgempty": 0.0
+        }
+      },
+      "M3": {
+        "description": "Does the review check if public APIs or interfaces are properly documented?",
+        "category": "Maintainability",
+        "kg_relevant": true,
+        "scores_by_mode": {
+          "kgempty": 20.0
+        }
+      },
+      "C1": {
+        "description": "Does the review check adherence to project style guides or coding conventions?",
+        "category": "Consistency",
+        "kg_relevant": false,
+        "scores_by_mode": {
+          "kgempty": 0.0
+        }
+      },
+      "C2": {
+        "description": "Does the review check if similar problems are solved consistently with existing patterns?",
+        "category": "Consistency",
+        "kg_relevant": true,
+        "scores_by_mode": {
+          "kgempty": 0.0
+        }
+      },
+      "P1": {
+        "description": "Does the review identify potential performance issues or inefficiencies?",
+        "category": "Performance",
+        "kg_relevant": false,
+        "scores_by_mode": {
+          "kgempty": 20.0
+        }
+      },
+      "P2": {
+        "description": "Does the review ask about benchmarks or performance testing for critical paths?",
+        "category": "Performance",
+        "kg_relevant": false,
+        "scores_by_mode": {
+          "kgempty": 0.0
+        }
+      },
+      "S1": {
+        "description": "Does the review check for proper input validation or sanitization?",
+        "category": "Security",
+        "kg_relevant": false,
+        "scores_by_mode": {
+          "kgempty": 0.0
+        }
+      },
+      "S2": {
+        "description": "Does the review flag hardcoded secrets, credentials, or sensitive data?",
+        "category": "Security",
+        "kg_relevant": false,
+        "scores_by_mode": {
+          "kgempty": 0.0
+        }
+      },
+      "S3": {
+        "description": "Does the review assess error handling and failure recovery?",
+        "category": "Security",
+        "kg_relevant": false,
+        "scores_by_mode": {
+          "kgempty": 0.0
+        }
+      },
+      "Q1": {
+        "description": "Does the review provide an overall summary or assessment of the changes?",
+        "category": "Quality",
+        "kg_relevant": false,
+        "scores_by_mode": {
+          "kgempty": 100.0
+        }
+      },
+      "Q2": {
+        "description": "Are review comments anchored to specific code locations (file paths, line numbers)?",
+        "category": "Quality",
+        "kg_relevant": true,
+        "scores_by_mode": {
+          "kgempty": 100.0
+        }
+      },
+      "Q3": {
+        "description": "Does the review distinguish between blocking issues and minor suggestions?",
+        "category": "Quality",
+        "kg_relevant": false,
+        "scores_by_mode": {
+          "kgempty": 40.0
+        }
+      },
+      "Q4": {
+        "description": "Does the review ask clarifying questions rather than making assumptions?",
+        "category": "Quality",
+        "kg_relevant": false,
+        "scores_by_mode": {
+          "kgempty": 0.0
+        }
+      },
+      "Q5": {
+        "description": "Does the review explain the reasoning behind suggestions (the 'why')?",
+        "category": "Quality",
+        "kg_relevant": false,
+        "scores_by_mode": {
+          "kgempty": 100.0
+        }
+      }
+    },
+    "comparison": {}
+  },
+  "panel": {
+    "judges": [
+      "openai:gpt-4o-mini",
+      "openai:gpt-4o",
+      "gemini:gemini-2.5-flash"
+    ],
+    "by_judge_mode": {
+      "openai:gpt-4o-mini": {
+        "kgempty": {
+          "n_valid_cells": 125,
+          "yes_count": 41,
+          "yes_rate_pct": 32.8,
+          "api_errors": 0
+        }
+      },
+      "openai:gpt-4o": {
+        "kgempty": {
+          "n_valid_cells": 125,
+          "yes_count": 37,
+          "yes_rate_pct": 29.6,
+          "api_errors": 0
+        }
+      },
+      "gemini:gemini-2.5-flash": {
+        "kgempty": {
+          "n_valid_cells": 125,
+          "yes_count": 37,
+          "yes_rate_pct": 29.6,
+          "api_errors": 0
+        }
+      }
+    },
+    "inter_judge_agreement": {
+      "openai:gpt-4o-mini vs openai:gpt-4o": {
+        "cells": 125,
+        "agreed": 111,
+        "agreement_pct": 88.8,
+        "cohen_kappa": 0.739,
+        "yes_yes": 32,
+        "no_no": 79,
+        "a_yes_b_no": 9,
+        "a_no_b_yes": 5
+      },
+      "openai:gpt-4o-mini vs gemini:gemini-2.5-flash": {
+        "cells": 125,
+        "agreed": 103,
+        "agreement_pct": 82.4,
+        "cohen_kappa": 0.591,
+        "yes_yes": 28,
+        "no_no": 75,
+        "a_yes_b_no": 13,
+        "a_no_b_yes": 9
+      },
+      "openai:gpt-4o vs gemini:gemini-2.5-flash": {
+        "cells": 125,
+        "agreed": 107,
+        "agreement_pct": 85.6,
+        "cohen_kappa": 0.654,
+        "yes_yes": 28,
+        "no_no": 79,
+        "a_yes_b_no": 9,
+        "a_no_b_yes": 9
+      }
+    }
+  }
+}

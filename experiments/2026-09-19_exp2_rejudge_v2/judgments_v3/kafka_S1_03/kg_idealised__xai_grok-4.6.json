@@ -1,0 +1,57 @@
+{
+  "candidate_mentions": [
+    {
+      "basename_collision": false,
+      "end": 769,
+      "evidence_id": "M001",
+      "excerpt": "kafka/streams/errors/StreamsException.java`: Line 31, class name changed from `StreamsException` to `StreamsExceptionInternal`.\n- Dependent files such as:\n  - `streams/src/main/java/org/apache/kafka/streams/KafkaStreams.java` (calls `StreamsException`)\n  - `streams/src/main/java/org/apache/kafka/streams/errors/BrokerNotFoundException.java` (calls `StreamsException`)\n  - `streams/src/main/java/org/apache/kafka/streams/errors/TaskAssignmentException.java` (calls `StreamsException`)",
+      "finding_passage_id": "P009",
+      "match_kind": "full_path",
+      "match_text": "streams/src/main/java/org/apache/kafka/streams/KafkaStreams.java",
+      "oracle_path": "streams/src/main/java/org/apache/kafka/streams/KafkaStreams.java",
+      "start": 705
+    },
+    {
+      "basename_collision": false,
+      "end": 885,
+      "evidence_id": "M003",
+      "excerpt": "o `StreamsExceptionInternal`.\n- Dependent files such as:\n  - `streams/src/main/java/org/apache/kafka/streams/KafkaStreams.java` (calls `StreamsException`)\n  - `streams/src/main/java/org/apache/kafka/streams/errors/BrokerNotFoundException.java` (calls `StreamsException`)\n  - `streams/src/main/java/org/apache/kafka/streams/errors/TaskAssignmentException.java` (calls `StreamsException`)\n\n## Impact\n- **Backward Compatibility Risk:** External systems or plugins that catch or throw `StreamsException` wi",
+      "finding_passage_id": "P010",
+      "match_kind": "full_path",
+      "match_text": "streams/src/main/java/org/apache/kafka/streams/errors/BrokerNotFoundException.java",
+      "oracle_path": "streams/src/main/java/org/apache/kafka/streams/errors/BrokerNotFoundException.java",
+      "start": 803
+    },
+    {
+      "basename_collision": false,
+      "end": 1001,
+      "evidence_id": "M011",
+      "excerpt": "reams.java` (calls `StreamsException`)\n  - `streams/src/main/java/org/apache/kafka/streams/errors/BrokerNotFoundException.java` (calls `StreamsException`)\n  - `streams/src/main/java/org/apache/kafka/streams/errors/TaskAssignmentException.java` (calls `StreamsException`)\n\n## Impact\n- **Backward Compatibility Risk:** External systems or plugins that catch or throw `StreamsException` will face compilation errors unless they are updated to use the new class name.\n- **Integration Risk:** Any internal l",
+      "finding_passage_id": "P011",
+      "match_kind": "full_path",
+      "match_text": "streams/src/main/java/org/apache/kafka/streams/errors/TaskAssignmentException.java",
+      "oracle_path": "streams/src/main/java/org/apache/kafka/streams/errors/TaskAssignmentException.java",
+      "start": 919
+    }
+  ],
+  "causal_passage_id": "P005",
+  "decision_source": "llm_causal_adjudication",
+  "detected": true,
+  "evidence_id": "M001",
+  "evidence_id_normalized": false,
+  "executed_at_utc": "2026-09-19T15:41:53.114316+00:00",
+  "finding_passage_id": "P009",
+  "judge": "xai:grok-4.6",
+  "manifest_sha256": "5d4371a93d1b09f0491ecc12279f9f3ff5de23053b7a5e74650a749f58b472b0",
+  "model_alias": "xai:grok-4.6",
+  "model_evidence_id": "M001",
+  "model_snapshot": "unavailable-from-original-wrapper",
+  "original_verdict": null,
+  "prompt_sha256": "12236201a3d9710771a93d316b8667b0bbe7d5bb22d9f55086257395640e3b85",
+  "reason_code": "specific_cross_file_link",
+  "response_wrapper": "bare",
+  "review_sha256": "faa74890f1e2549c02dda7e6ca09b51f2aa23fe59c9322c672853cfb64d3dcd0",
+  "schema_sha256": "f70f714868ecd3d25508bb3e00b32ecbe6761b0ebc05f454ee10fa4d28efd013",
+  "schema_version": "exp2-adjudication-v3",
+  "system_sha256": "030b5e701c798b32afdabbbeb22db38f664db8c8fd8b862d2fcb98df63b6fb6b"
+}

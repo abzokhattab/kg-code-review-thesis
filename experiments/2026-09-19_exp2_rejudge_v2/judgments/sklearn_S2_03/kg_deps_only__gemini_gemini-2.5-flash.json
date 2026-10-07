@@ -1,0 +1,42 @@
+{
+  "candidate_mentions": [
+    {
+      "basename_collision": false,
+      "end": 615,
+      "evidence_id": "M001",
+      "excerpt": " parameter `required_ctx`.\n\n## Evidence\n- `sklearn/linear_model/_sag.py:87`: The `sag_solver` function signature has been changed to include `required_ctx`.\n- `sklearn/linear_model/_logistic.py`: This file imports and uses `sag_solver`, but there is no indication that it has been updated to pass the new `required_ctx` parameter.\n- `sklearn/linear_model/_ridge.py`: This file also depends on `sag_solver`, but similar to `_logistic.py`, there is no upd",
+      "match_kind": "full_path",
+      "match_text": "sklearn/linear_model/_logistic.py",
+      "oracle_path": "sklearn/linear_model/_logistic.py",
+      "start": 582
+    },
+    {
+      "basename_collision": false,
+      "end": 786,
+      "evidence_id": "M002",
+      "excerpt": "_model/_logistic.py`: This file imports and uses `sag_solver`, but there is no indication that it has been updated to pass the new `required_ctx` parameter.\n- `sklearn/linear_model/_ridge.py`: This file also depends on `sag_solver`, but similar to `_logistic.py`, there is no update to accommodate the new parameter.\n\n## Impact\n- The change could lead to runtime errors in modules that rely on `sag_solver` if they do not pass the newly required `req",
+      "match_kind": "full_path",
+      "match_text": "sklearn/linear_model/_ridge.py",
+      "oracle_path": "sklearn/linear_model/_ridge.py",
+      "start": 756
+    }
+  ],
+  "causal_quote": "The change could lead to runtime errors in modules that rely on `sag_solver` if they do not pass the newly required `required_ctx` parameter.",
+  "decision_source": "llm_causal_adjudication",
+  "detected": true,
+  "evidence_id": "M001",
+  "executed_at_utc": "2026-09-19T15:06:02.134004+00:00",
+  "finding_quote": "`sklearn/linear_model/_logistic.py`: This file imports and uses `sag_solver`, but there is no indication that it has been updated to pass the new `required_ctx` parameter.",
+  "judge": "gemini:gemini-2.5-flash",
+  "manifest_sha256": "5d4371a93d1b09f0491ecc12279f9f3ff5de23053b7a5e74650a749f58b472b0",
+  "model_alias": "gemini:gemini-2.5-flash",
+  "model_snapshot": "unavailable-from-original-wrapper",
+  "original_verdict": true,
+  "prompt_sha256": "8669d4d2ef72fa3ae2f560c7ef4c5c12d4b3d4573ef9a0736dad39bc24686ca2",
+  "reason_code": "specific_cross_file_link",
+  "response_wrapper": "single_json_fence",
+  "review_sha256": "0c5b3c6c04153c6eaa6a489e06f65343ffd06dad9c5ace85ce2bf0d14d2db694",
+  "schema_sha256": "6a22fcb256437ebed904ab2d879b36be1234fb2e06add1127ac8ea2ab46f60f0",
+  "schema_version": "exp2-adjudication-v2",
+  "system_sha256": "3634314a8fc4231391e4c51174e5c32d7346b0e2ceb5f8c4641e6ba866bd5939"
+}

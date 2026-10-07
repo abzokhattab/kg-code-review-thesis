@@ -1,0 +1,43 @@
+{
+  "useful": 6,
+  "generic": 1,
+  "wrong": 0,
+  "total": 7,
+  "signal": 6,
+  "noise": 1,
+  "snr": 0.857,
+  "points": [
+    {
+      "text": "Validation logic for `Group` and `Resource` is added directly in the `ListModifiedSince` method, which may not be the most appropriate location for input validation.",
+      "label": "useful"
+    },
+    {
+      "text": "The error handling mechanism in the `ListModifiedSince` method could lead to confusion, as it returns a sequence with an error instead of directly returning an error.",
+      "label": "useful"
+    },
+    {
+      "text": "Placing validation logic directly in the `ListModifiedSince` method could lead to code duplication if similar validation is needed elsewhere, reducing maintainability.",
+      "label": "useful"
+    },
+    {
+      "text": "The current error handling approach might lead to misuse or misunderstanding of the API, as consumers might not expect errors to be returned in a sequence.",
+      "label": "useful"
+    },
+    {
+      "text": "Consider moving the validation logic to a separate validation function or method to improve code organization and reusability.",
+      "label": "useful"
+    },
+    {
+      "text": "Refactor the error handling in `ListModifiedSince` to return an error directly if validation fails, rather than using a sequence to convey errors.",
+      "label": "useful"
+    },
+    {
+      "text": "Ensure comprehensive test coverage for the new validation logic to verify that it behaves consistently across different scenarios.",
+      "label": "generic"
+    }
+  ],
+  "parse_ok": true,
+  "pr_id": 36,
+  "mode": "baseline",
+  "tag": "verbose"
+}

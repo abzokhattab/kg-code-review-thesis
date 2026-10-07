@@ -1,0 +1,42 @@
+{
+  "candidate_mentions": [
+    {
+      "basename_collision": false,
+      "end": 681,
+      "evidence_id": "M001",
+      "excerpt": "eturn statement has been changed from `return decorator` to `return (decorator, None)`.\n- The `_fit_context` function is called by multiple modules, including `sklearn/cluster/_affinity_propagation.py`, `sklearn/cluster/_agglomerative.py`, and others, as per the call-graph context.\n\n## Impact\n- The change in the return type could lead to runtime errors in any module that calls `_fit_context` and does not handle the tuple return type. This could cause failu",
+      "match_kind": "full_path",
+      "match_text": "sklearn/cluster/_affinity_propagation.py",
+      "oracle_path": "sklearn/cluster/_affinity_propagation.py",
+      "start": 641
+    },
+    {
+      "basename_collision": false,
+      "end": 718,
+      "evidence_id": "M002",
+      "excerpt": "n decorator` to `return (decorator, None)`.\n- The `_fit_context` function is called by multiple modules, including `sklearn/cluster/_affinity_propagation.py`, `sklearn/cluster/_agglomerative.py`, and others, as per the call-graph context.\n\n## Impact\n- The change in the return type could lead to runtime errors in any module that calls `_fit_context` and does not handle the tuple return type. This could cause failures in clustering algorithms or any o",
+      "match_kind": "full_path",
+      "match_text": "sklearn/cluster/_agglomerative.py",
+      "oracle_path": "sklearn/cluster/_agglomerative.py",
+      "start": 685
+    }
+  ],
+  "causal_quote": "The change in the return type could lead to runtime errors in any module that calls `_fit_context` and does not handle the tuple return type.",
+  "decision_source": "llm_causal_adjudication",
+  "detected": true,
+  "evidence_id": "M001",
+  "executed_at_utc": "2026-09-19T15:05:23.024268+00:00",
+  "finding_quote": "The return statement has been changed from `return decorator` to `return (decorator, None)`.\n- The `_fit_context` function is called by multiple modules, including `sklearn/cluster/_affinity_propagation.py`, `sklearn/cluster/_agglomerative.py`, and others, as per the call-graph context.",
+  "judge": "openai:gpt-4o-mini",
+  "manifest_sha256": "5d4371a93d1b09f0491ecc12279f9f3ff5de23053b7a5e74650a749f58b472b0",
+  "model_alias": "openai:gpt-4o-mini",
+  "model_snapshot": "unavailable-from-original-wrapper",
+  "original_verdict": true,
+  "prompt_sha256": "6d61f423f8bdf72e02955c81647f0f9f64b74400f1a3e550aaa8f43698a856a0",
+  "reason_code": "specific_cross_file_link",
+  "response_wrapper": "bare",
+  "review_sha256": "068612c0e6155abd040b43d2dae8e897d213c017b04405f16335992453040b50",
+  "schema_sha256": "6a22fcb256437ebed904ab2d879b36be1234fb2e06add1127ac8ea2ab46f60f0",
+  "schema_version": "exp2-adjudication-v2",
+  "system_sha256": "3634314a8fc4231391e4c51174e5c32d7346b0e2ceb5f8c4641e6ba866bd5939"
+}

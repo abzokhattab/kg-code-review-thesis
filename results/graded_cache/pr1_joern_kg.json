@@ -1,0 +1,51 @@
+{
+  "pr_id": 1,
+  "mode": "joern_kg",
+  "mean_scores": {
+    "F3": 3.0,
+    "F4": 2.0,
+    "P1": 0.0,
+    "R2": 1.0,
+    "T3": 2.5
+  },
+  "mean_graded_total": 8.5,
+  "per_judge": [
+    {
+      "model": "gemini:gemini-2.5-flash",
+      "scores": {
+        "F3": 3,
+        "F4": 2,
+        "P1": 0,
+        "R2": 0,
+        "T3": 3
+      },
+      "evidence": {
+        "F3": "The review names multiple specific callers/dependent components and explains concrete integration risks: 'headless environments or CI/CD pipelines if the xr/openxr/startup_alert setting is left true. This could cause builds or tests to hang', 'Other critical module initialization failures (e.g., graphics, physics) might still use blocking alerts, leading to an inconsistent user experience', and 'main.cpp::setup indirectly calls initialize_openxr_module'.",
+        "F4": "The review identifies a specific user expectation that could break: 'Users expecting an immediate, blocking notification of OpenXR failure might now only see a warning in the console (if they check it) or no immediate feedback, leading to frustration and increased support requests.' This explains exactly what downstream behavior would change for the user.",
+        "P1": "The review makes no mention of performance, inefficiencies, or potential bottlenecks.",
+        "R2": "The review contains no comments on code complexity, structure, or suggestions for simplification.",
+        "T3": "The review names a specific test file path: 'new test files like tests/modules/openxr/test_openxr_init.cpp should be created.' It then references multiple exact test scenarios and functions within those files that need coverage, such as 'test that OS::get_singleton()->alert is not called when startup_alert is false' and 'Test the behavior in a simulated headless environment', explaining missing edge cases."
+      },
+      "error": ""
+    },
+    {
+      "model": "gemini:gemini-2.5-pro",
+      "scores": {
+        "F3": 3,
+        "F4": 2,
+        "P1": 0,
+        "R2": 2,
+        "T3": 2
+      },
+      "evidence": {
+        "F3": "Names multiple specific callers or dependent components with file paths or function names, and explains the concrete integration risk for each. Evidence: 'Call-graph edges: `main.cpp::setup` indirectly calls `initialize_openxr_module` as part of the engine's startup sequence.' and 'Inconsistent Error Reporting Across Modules: ... Other critical module initialization failures (e.g., graphics, physics) might still use blocking alerts...' and 'Potential for Unintended Blocking Behavior in Headless ",
+        "F4": "Identifies at least one specific caller expectation that could break. Evidence: 'User Experience Regression: Users expecting an immediate, blocking notification of OpenXR failure might now only see a warning in the console (if they check it) or no immediate feedback, leading to frustration and increased support requests.' and 'Potential for Unintended Blocking Behavior in Headless Environments: ... This could cause builds or tests to hang, defeating part of the PR's stated justification.'",
+        "P1": "The review does not mention performance, speed, or efficiency.",
+        "R2": "Points to a specific function or block that is unnecessarily complex and suggests a concrete simplification. The review identifies the complexity introduced by the new conditional alert logic and its default value. Evidence: 'Inconsistent Error Reporting Across Modules...' and suggests a simplification: 'Consider changing the default value of `xr/openxr/startup_alert` to `false` for non-editor builds, or introduce a separate setting/logic for headless environments.'",
+        "T3": "Names at least one specific test file path from the repository. Evidence: 'Specific Test Files: Since no existing test files are provided in the context, new test files like `tests/modules/openxr/test_openxr_init.cpp` should be created.'"
+      },
+      "error": ""
+    }
+  ],
+  "timestamp": "2026-06-01T18:57:37.144843+00:00"
+}

@@ -1,0 +1,41 @@
+{
+  "candidate_mentions": [
+    {
+      "basename_collision": false,
+      "end": 553,
+      "evidence_id": "M002",
+      "excerpt": "mport or use `BaseEstimator`.\n\n## Evidence\n- `sklearn/base.py:156`: The class `BaseEstimator` is renamed to `BaseEstimatorInternal`.\n- Dependent files such as `sklearn/cluster/_agglomerative.py`, `sklearn/cluster/_optics.py`, etc., are not updated to reflect this name change.\n\n## Impact\n- The renaming could lead to `ImportError` or `AttributeError` in modules that still reference `BaseEstimator`.\n- This change might cause runtime failures in any cod",
+      "match_kind": "full_path",
+      "match_text": "sklearn/cluster/_agglomerative.py",
+      "oracle_path": "sklearn/cluster/_agglomerative.py",
+      "start": 520
+    },
+    {
+      "basename_collision": false,
+      "end": 583,
+      "evidence_id": "M009",
+      "excerpt": "dence\n- `sklearn/base.py:156`: The class `BaseEstimator` is renamed to `BaseEstimatorInternal`.\n- Dependent files such as `sklearn/cluster/_agglomerative.py`, `sklearn/cluster/_optics.py`, etc., are not updated to reflect this name change.\n\n## Impact\n- The renaming could lead to `ImportError` or `AttributeError` in modules that still reference `BaseEstimator`.\n- This change might cause runtime failures in any code that dynamically checks for ",
+      "match_kind": "full_path",
+      "match_text": "sklearn/cluster/_optics.py",
+      "oracle_path": "sklearn/cluster/_optics.py",
+      "start": 557
+    }
+  ],
+  "causal_quote": "The renaming could lead to `ImportError` or `AttributeError` in modules that still reference `BaseEstimator`.",
+  "decision_source": "llm_causal_adjudication",
+  "detected": true,
+  "evidence_id": "M002",
+  "executed_at_utc": "2026-09-19T15:03:03.589100+00:00",
+  "finding_quote": "Dependent files such as `sklearn/cluster/_agglomerative.py`, `sklearn/cluster/_optics.py`, etc., are not updated to reflect this name change.",
+  "judge": "openai:gpt-4o-mini",
+  "manifest_sha256": "5d4371a93d1b09f0491ecc12279f9f3ff5de23053b7a5e74650a749f58b472b0",
+  "model_alias": "openai:gpt-4o-mini",
+  "model_snapshot": "unavailable-from-original-wrapper",
+  "original_verdict": true,
+  "prompt_sha256": "4822ed897198856cafbdc9d2fc22694ad9b294f1e30fbd991829f51dce535c95",
+  "reason_code": "specific_cross_file_link",
+  "review_sha256": "0ff8a201ddec325bf29b137ef6d42e191c7679d4971aa7d21d51484a3f7f74dc",
+  "schema_sha256": "6a22fcb256437ebed904ab2d879b36be1234fb2e06add1127ac8ea2ab46f60f0",
+  "schema_version": "exp2-adjudication-v2",
+  "system_sha256": "3634314a8fc4231391e4c51174e5c32d7346b0e2ceb5f8c4641e6ba866bd5939"
+}

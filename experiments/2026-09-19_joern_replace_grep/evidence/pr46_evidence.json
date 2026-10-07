@@ -1,0 +1,1199 @@
+{
+  "pr": {
+    "number": 119349,
+    "title": "Add undo/redo support for Pilot Mode camera movement",
+    "body": "<!--\r\nPlease target the `master` branch. We will take care of backporting relevant fixes to older versions.\r\n\r\nBefore submitting, please read our checklist for new contributors:\r\nhttps://contributing.godotengine.org/en/latest/engine/introduction.html#checklist-for-new-contributors\r\n-->\r\n\r\n* Addresses issue brought up for feature added to v4.7: https://github.com/godotengine/godot/pull/109945#issuecomment-4397492373\r\n\r\n**Note:** The camera transform is committed to the undo/redo manager after 500ms to allow for multiple movement in short sequence without spamming.\r\n\r\nhttps://github.com/user-attachments/assets/7370575d-a179-48cf-8945-1c915462abca\r\n\r\n\r\n",
+    "url": "https://github.com/godotengine/godot/pull/119349",
+    "repo": "godotengine/godot",
+    "base_branch": "master",
+    "head_branch": "camera-pilot-undo",
+    "merged_at": "2026-05-11T16:12:55Z",
+    "state": "MERGED"
+  },
+  "changed_files": [
+    {
+      "path": "editor/scene/3d/node_3d_editor_plugin.cpp",
+      "language": "cpp",
+      "added": 53,
+      "deleted": 0
+    },
+    {
+      "path": "editor/scene/3d/node_3d_editor_plugin.h",
+      "language": "cpp",
+      "added": 8,
+      "deleted": 0
+    }
+  ],
+  "nearest_tests": [],
+  "dependent_files": [
+    "3d/camera_3d_editor_plugin.cpp",
+    "3d/gizmos/camera_3d_gizmo_plugin.cpp",
+    "3d/gizmos/gizmo_3d_helper.cpp",
+    "3d/gizmos/gpu_particles_collision_3d_gizmo_plugin.cpp",
+    "3d/gizmos/light_3d_gizmo_plugin.cpp",
+    "3d/gizmos/occluder_instance_3d_gizmo_plugin.cpp",
+    "3d/gizmos/physics/collision_shape_3d_gizmo_plugin.cpp",
+    "3d/gizmos/reflection_probe_gizmo_plugin.cpp",
+    "3d/gizmos/visible_on_screen_notifier_3d_gizmo_plugin.cpp",
+    "3d/mesh_instance_3d_editor_plugin.cpp",
+    "3d/mesh_library_editor_plugin.cpp",
+    "3d/multimesh_editor_plugin.cpp",
+    "3d/node_3d_editor_gizmos.cpp"
+  ],
+  "diff_summary": "2 files changed",
+  "full_diff": "diff --git a/editor/scene/3d/node_3d_editor_plugin.cpp b/editor/scene/3d/node_3d_editor_plugin.cpp\nindex 050315d1da1a..bba5036d83bf 100644\n--- a/editor/scene/3d/node_3d_editor_plugin.cpp\n+++ b/editor/scene/3d/node_3d_editor_plugin.cpp\n@@ -3039,7 +3039,9 @@ void Node3DEditorViewport::_cursor_interpolated() {\n \tlast_camera_transform = view_3d_controller->interp_to_camera_transform();\n \n \tif (previewing_camera && previewing && pilot_preview_enabled) {\n+\t\t_pilot_ensure_undo_session();\n \t\tpreviewing->set_global_transform(last_camera_transform);\n+\t\tpilot_undo_idle_time = 0.0;\n \t} else if (!previewing_camera) {\n \t\tcamera->set_global_transform(last_camera_transform);\n \t}\n@@ -3072,6 +3074,45 @@ void Node3DEditorViewport::_freelook_changed() {\n \tspatial_editor->set_freelook_viewport(view_3d_controller->is_freelook_enabled() ? this : nullptr);\n }\n \n+void Node3DEditorViewport::_pilot_ensure_undo_session() {\n+\tif (pilot_undo_session_active || !previewing) {\n+\t\treturn;\n+\t}\n+\tpilot_undo_initial_transform = previewing->get_global_transform();\n+\tpilot_undo_session_active = true;\n+\tpilot_undo_idle_time = 0.0;\n+}\n+\n+void Node3DEditorViewport::_pilot_commit_undo_session() {\n+\tif (!pilot_undo_session_active) {\n+\t\treturn;\n+\t}\n+\tpilot_undo_session_active = false;\n+\tpilot_undo_idle_time = 0.0;\n+\tif (!previewing) {\n+\t\treturn;\n+\t}\n+\tconst Transform3D current_transform = previewing->get_global_transform();\n+\tif (current_transform.is_equal_approx(pilot_undo_initial_transform)) {\n+\t\treturn;\n+\t}\n+\tEditorUndoRedoManager *undo_redo = EditorUndoRedoManager::get_singleton();\n+\tundo_redo->create_action(vformat(TTR(\"Move Camera \\\"%s\\\"\"), previewing->get_name()), UndoRedo::MERGE_ENDS);\n+\tundo_redo->add_do_method(previewing, \"set_global_transform\", current_transform);\n+\tundo_redo->add_undo_method(previewing, \"set_global_transform\", pilot_undo_initial_transform);\n+\tundo_redo->commit_action(false);\n+}\n+\n+void Node3DEditorViewport::_pilot_tick_undo_session(real_t p_delta) {\n+\tif (!pilot_undo_session_active) {\n+\t\treturn;\n+\t}\n+\tpilot_undo_idle_time += p_delta;\n+\tif (pilot_undo_idle_time > 0.15) {\n+\t\t_pilot_commit_undo_session();\n+\t}\n+}\n+\n void Node3DEditorViewport::_freelook_speed_scaled() {\n \tzoom_indicator_delay = ZOOM_FREELOOK_INDICATOR_DELAY_S;\n \tsurface->queue_redraw();\n@@ -3244,6 +3285,7 @@ void Node3DEditorViewport::_notification(int p_what) {\n \t\t\t\t_update_name();\n \t\t\t} else {\n \t\t\t\tview_3d_controller->set_freelook_enabled(false);\n+\t\t\t\t_pilot_commit_undo_session();\n \t\t\t}\n \t\t\tcallable_mp(this, &Node3DEditorViewport::update_transform_gizmo_view).call_deferred();\n \t\t} break;\n@@ -3570,6 +3612,7 @@ void Node3DEditorViewport::_notification(int p_what) {\n \t\t\t\tif (cam != nullptr && cam != previewing) {\n \t\t\t\t\t//then switch the viewport's camera to the scene's viewport camera\n \t\t\t\t\tif (previewing != nullptr) {\n+\t\t\t\t\t\t_pilot_commit_undo_session();\n \t\t\t\t\t\tpreviewing->disconnect(SceneStringName(tree_exited), callable_mp(this, &Node3DEditorViewport::_preview_exited_scene));\n \t\t\t\t\t\tpreviewing->disconnect(CoreStringName(property_list_changed), callable_mp(this, &Node3DEditorViewport::_preview_camera_property_changed));\n \t\t\t\t\t}\n@@ -3583,12 +3626,16 @@ void Node3DEditorViewport::_notification(int p_what) {\n \n \t\t\tif (_camera_moved_externally()) {\n \t\t\t\t// If camera moved after this plugin last set it, presumably a tool script has moved it, accept the new camera transform as the cursor position.\n+\t\t\t\tpilot_undo_session_active = false;\n+\t\t\t\tpilot_undo_idle_time = 0.0;\n \t\t\t\t_apply_camera_transform_to_cursor();\n \t\t\t\tview_3d_controller->update_camera();\n \t\t\t} else {\n \t\t\t\tview_3d_controller->update_camera(delta);\n \t\t\t}\n \n+\t\t\t_pilot_tick_undo_session(delta);\n+\n \t\t\tconst HashMap<ObjectID, Object *> &selection = editor_selection->get_selection();\n \n \t\t\tbool changed = false;\n@@ -4856,6 +4903,7 @@ void Node3DEditorViewport::_toggle_camera_preview(bool p_activate) {\n \t_update_navigation_controls_visibility();\n \n \tif (!p_activate) {\n+\t\t_pilot_commit_undo_session();\n \t\tpreviewing->disconnect(SceneStringName(tree_exiting), callable_mp(this, &Node3DEditorViewport::_preview_exited_scene));\n \t\tpreviewing->disconnect(CoreStringName(property_list_changed), callable_mp(this, &Node3DEditorViewport::_preview_camera_property_changed));\n \t\tpreviewing = nullptr;\n@@ -4893,6 +4941,9 @@ void Node3DEditorViewport::_toggle_camera_preview(bool p_activate) {\n }\n \n void Node3DEditorViewport::_toggle_pilot_preview(bool p_activate) {\n+\tif (!p_activate) {\n+\t\t_pilot_commit_undo_session();\n+\t}\n \tpilot_preview_enabled = p_activate;\n \tif (p_activate && previewing) {\n \t\t_sync_cursor_from_transform(previewing->get_global_transform());\n@@ -4956,6 +5007,8 @@ void Node3DEditorViewport::switch_preview_camera(Camera3D *p_new_camera) {\n \t\treturn;\n \t}\n \n+\t_pilot_commit_undo_session();\n+\n \tpreviewing->disconnect(SceneStringName(tree_exiting), callable_mp(this, &Node3DEditorViewport::_preview_exited_scene));\n \tpreviewing->disconnect(CoreStringName(property_list_changed), callable_mp(this, &Node3DEditorViewport::_preview_camera_property_changed));\n \ndiff --git a/editor/scene/3d/node_3d_editor_plugin.h b/editor/scene/3d/node_3d_editor_plugin.h\nindex 5e7310922fd6..cc33c5d2b861 100644\n--- a/editor/scene/3d/node_3d_editor_plugin.h\n+++ b/editor/scene/3d/node_3d_editor_plugin.h\n@@ -438,6 +438,14 @@ class Node3DEditorViewport : public Control {\n \tbool previewing_cinema = false;\n \tint times_focused_consecutively = 0;\n \tbool pilot_preview_enabled = false;\n+\n+\tbool pilot_undo_session_active = false;\n+\treal_t pilot_undo_idle_time = 0.0;\n+\tTransform3D pilot_undo_initial_transform;\n+\tvoid _pilot_ensure_undo_session();\n+\tvoid _pilot_commit_undo_session();\n+\tvoid _pilot_tick_undo_session(real_t p_delta);\n+\n \tbool _is_node_locked(const Node *p_node) const;\n \tvoid _preview_exited_scene();\n \tvoid _preview_camera_property_changed();\n",
+  "metadata": {
+    "v2_fetcher_version": 1,
+    "v2_fetched_at_unix": 1778582797,
+    "v2_diff_cap_bytes": 50000,
+    "v2_body_cap_bytes": 8000,
+    "v2_diff_truncated": false,
+    "v2_raw_diff_chars": 5816,
+    "v2_raw_body_chars": 658,
+    "v2_rag_source": "fresh_for_v2_40pr_expansion",
+    "v2_rag_chunks_copied": 8,
+    "joern_enriched": true,
+    "joern_callers_count": 50,
+    "joern_functions_count": 50
+  },
+  "similar_chunks": [
+    {
+      "file": "editor/scene/3d/mesh_instance_3d_editor_plugin.h",
+      "start_line": 24,
+      "end_line": 99,
+      "similarity": 0.8423,
+      "related_to": "editor/scene/3d/node_3d_editor_plugin.h",
+      "content_preview": "OR A PARTICULAR PURPOSE AND NONINFRINGEMENT. */\n/* IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY   */\n/* CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,   */\n/* TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE      */\n/* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */\n/**************************************************************************/\n\n#pragma once\n\n#include \"editor/plugins/editor_plugin.h\"\n#include \"scene/3d/mesh_instance_3d.h\"\n#include \"scene/gui/option_button.h\"\n\nclass AcceptDialog;\nclass AspectRatioContainer;\nclass ConfirmationDialog;\nclass MenuButton;\nclass SpinBox;\n\nclass MeshInstance3DEditor : public Control {\n\tGDCLASS(MeshInstance3DEditor, Control);\n\n\tenum Menu {\n\t\tMENU_OPTION_CREATE_COL"
+    },
+    {
+      "file": "editor/scene/2d/sprite_2d_editor_plugin.h",
+      "start_line": 24,
+      "end_line": 97,
+      "similarity": 0.8216,
+      "related_to": "editor/scene/3d/node_3d_editor_plugin.h",
+      "content_preview": "OR A PARTICULAR PURPOSE AND NONINFRINGEMENT. */\n/* IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY   */\n/* CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,   */\n/* TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE      */\n/* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */\n/**************************************************************************/\n\n#pragma once\n\n#include \"editor/plugins/editor_plugin.h\"\n#include \"scene/2d/sprite_2d.h\"\n#include \"scene/gui/spin_box.h\"\n\nclass AcceptDialog;\nclass Button;\nclass ConfirmationDialog;\nclass EditorZoomWidget;\nclass HBoxContainer;\nclass MenuButton;\nclass Panel;\nclass ViewPanner;\n\nclass Sprite2DEditor : public Control {\n\tGDCLASS(Sprite2DEditor, Control);\n\n\tenum Menu {\n\t"
+    },
+    {
+      "file": "editor/scene/3d/node_3d_editor_gizmos.cpp",
+      "start_line": 1,
+      "end_line": 26,
+      "similarity": 0.8177,
+      "related_to": "editor/scene/3d/node_3d_editor_plugin.cpp",
+      "content_preview": "/**************************************************************************/\n/*  node_3d_editor_gizmos.cpp                                             */\n/**************************************************************************/\n/*                         This file is part of:                          */\n/*                             GODOT ENGINE                               */\n/*                        https://godotengine.org                         */\n/**************************************************************************/\n/* Copyright (c) 2014-present Godot Engine contributors (see AUTHORS.md). */\n/* Copyright (c) 2007-2014 Juan Linietsky, Ariel Manzur.                  */\n/*                                                                        */\n/* Permission is hereby grante"
+    },
+    {
+      "file": "editor/scene/canvas_item_editor_plugin.h",
+      "start_line": 24,
+      "end_line": 115,
+      "similarity": 0.8149,
+      "related_to": "editor/scene/3d/node_3d_editor_plugin.h",
+      "content_preview": "OR A PARTICULAR PURPOSE AND NONINFRINGEMENT. */\n/* IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY   */\n/* CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,   */\n/* TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE      */\n/* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */\n/**************************************************************************/\n\n#pragma once\n\n#include \"editor/plugins/editor_plugin.h\"\n#include \"scene/gui/box_container.h\"\n\nclass AcceptDialog;\nclass Button;\nclass ButtonGroup;\nclass CanvasItemEditorViewport;\nclass ConfirmationDialog;\nclass EditorData;\nclass EditorSelection;\nclass EditorZoomWidget;\nclass HScrollBar;\nclass HSplitContainer;\nclass MenuButton;\nclass PanelContainer;\nclass StyleBoxT"
+    },
+    {
+      "file": "editor/scene/canvas_item_editor_plugin.cpp",
+      "start_line": 24,
+      "end_line": 69,
+      "similarity": 0.8133,
+      "related_to": "editor/scene/3d/node_3d_editor_plugin.cpp",
+      "content_preview": "OR A PARTICULAR PURPOSE AND NONINFRINGEMENT. */\n/* IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY   */\n/* CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,   */\n/* TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE      */\n/* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */\n/**************************************************************************/\n\n#include \"canvas_item_editor_plugin.h\"\n\n#include \"core/config/project_settings.h\"\n#include \"core/input/input.h\"\n#include \"core/os/keyboard.h\"\n#include \"core/string/translation_server.h\"\n#include \"editor/animation/animation_player_editor_plugin.h\"\n#include \"editor/debugger/editor_debugger_node.h\"\n#include \"editor/docks/scene_tree_dock.h\"\n#include \"editor/editor_mai"
+    },
+    {
+      "file": "editor/scene/3d/multimesh_editor_plugin.h",
+      "start_line": 24,
+      "end_line": 95,
+      "similarity": 0.804,
+      "related_to": "editor/scene/3d/node_3d_editor_plugin.h",
+      "content_preview": "OR A PARTICULAR PURPOSE AND NONINFRINGEMENT. */\n/* IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY   */\n/* CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,   */\n/* TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE      */\n/* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */\n/**************************************************************************/\n\n#pragma once\n\n#include \"editor/plugins/editor_plugin.h\"\n#include \"scene/3d/multimesh_instance_3d.h\"\n#include \"scene/gui/slider.h\"\n#include \"scene/gui/spin_box.h\"\n\nclass AcceptDialog;\nclass ConfirmationDialog;\nclass MenuButton;\nclass OptionButton;\nclass SceneTreeDialog;\n\nclass MultiMeshEditor : public Control {\n\tGDCLASS(MultiMeshEditor, Control);\n\n\tfriend class Mul"
+    },
+    {
+      "file": "editor/scene/3d/path_3d_editor_plugin.h",
+      "start_line": 24,
+      "end_line": 83,
+      "similarity": 0.8009,
+      "related_to": "editor/scene/3d/node_3d_editor_plugin.h",
+      "content_preview": "OR A PARTICULAR PURPOSE AND NONINFRINGEMENT. */\n/* IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY   */\n/* CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,   */\n/* TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE      */\n/* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */\n/**************************************************************************/\n\n#pragma once\n\n#include \"editor/plugins/editor_plugin.h\"\n#include \"editor/scene/3d/node_3d_editor_gizmos.h\"\n#include \"scene/3d/camera_3d.h\"\n#include \"scene/3d/path_3d.h\"\n\nclass HBoxContainer;\nclass MenuButton;\nclass ConfirmationDialog;\n\nclass Path3DGizmo : public EditorNode3DGizmo {\n\tGDCLASS(Path3DGizmo, EditorNode3DGizmo);\n\n\t// Map handle id to control point id an"
+    },
+    {
+      "file": "editor/scene/3d/node_3d_editor_gizmos.h",
+      "start_line": 1,
+      "end_line": 26,
+      "similarity": 0.7988,
+      "related_to": "editor/scene/3d/node_3d_editor_plugin.cpp",
+      "content_preview": "/**************************************************************************/\n/*  node_3d_editor_gizmos.h                                               */\n/**************************************************************************/\n/*                         This file is part of:                          */\n/*                             GODOT ENGINE                               */\n/*                        https://godotengine.org                         */\n/**************************************************************************/\n/* Copyright (c) 2014-present Godot Engine contributors (see AUTHORS.md). */\n/* Copyright (c) 2007-2014 Juan Linietsky, Ariel Manzur.                  */\n/*                                                                        */\n/* Permission is hereby grante"
+    }
+  ],
+  "rag_evidence": {
+    "similar_code": [
+      {
+        "file": "editor/scene/3d/mesh_instance_3d_editor_plugin.h",
+        "start_line": 24,
+        "end_line": 99,
+        "similarity": 0.8423,
+        "related_to": "editor/scene/3d/node_3d_editor_plugin.h",
+        "content_preview": "OR A PARTICULAR PURPOSE AND NONINFRINGEMENT. */\n/* IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY   */\n/* CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,   */\n/* TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE      */\n/* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */\n/**************************************************************************/\n\n#pragma once\n\n#include \"editor/plugins/editor_plugin.h\"\n#include \"scene/3d/mesh_instance_3d.h\"\n#include \"scene/gui/option_button.h\"\n\nclass AcceptDialog;\nclass AspectRatioContainer;\nclass ConfirmationDialog;\nclass MenuButton;\nclass SpinBox;\n\nclass MeshInstance3DEditor : public Control {\n\tGDCLASS(MeshInstance3DEditor, Control);\n\n\tenum Menu {\n\t\tMENU_OPTION_CREATE_COL"
+      },
+      {
+        "file": "editor/scene/2d/sprite_2d_editor_plugin.h",
+        "start_line": 24,
+        "end_line": 97,
+        "similarity": 0.8216,
+        "related_to": "editor/scene/3d/node_3d_editor_plugin.h",
+        "content_preview": "OR A PARTICULAR PURPOSE AND NONINFRINGEMENT. */\n/* IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY   */\n/* CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,   */\n/* TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE      */\n/* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */\n/**************************************************************************/\n\n#pragma once\n\n#include \"editor/plugins/editor_plugin.h\"\n#include \"scene/2d/sprite_2d.h\"\n#include \"scene/gui/spin_box.h\"\n\nclass AcceptDialog;\nclass Button;\nclass ConfirmationDialog;\nclass EditorZoomWidget;\nclass HBoxContainer;\nclass MenuButton;\nclass Panel;\nclass ViewPanner;\n\nclass Sprite2DEditor : public Control {\n\tGDCLASS(Sprite2DEditor, Control);\n\n\tenum Menu {\n\t"
+      },
+      {
+        "file": "editor/scene/3d/node_3d_editor_gizmos.cpp",
+        "start_line": 1,
+        "end_line": 26,
+        "similarity": 0.8177,
+        "related_to": "editor/scene/3d/node_3d_editor_plugin.cpp",
+        "content_preview": "/**************************************************************************/\n/*  node_3d_editor_gizmos.cpp                                             */\n/**************************************************************************/\n/*                         This file is part of:                          */\n/*                             GODOT ENGINE                               */\n/*                        https://godotengine.org                         */\n/**************************************************************************/\n/* Copyright (c) 2014-present Godot Engine contributors (see AUTHORS.md). */\n/* Copyright (c) 2007-2014 Juan Linietsky, Ariel Manzur.                  */\n/*                                                                        */\n/* Permission is hereby grante"
+      },
+      {
+        "file": "editor/scene/canvas_item_editor_plugin.h",
+        "start_line": 24,
+        "end_line": 115,
+        "similarity": 0.8149,
+        "related_to": "editor/scene/3d/node_3d_editor_plugin.h",
+        "content_preview": "OR A PARTICULAR PURPOSE AND NONINFRINGEMENT. */\n/* IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY   */\n/* CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,   */\n/* TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE      */\n/* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */\n/**************************************************************************/\n\n#pragma once\n\n#include \"editor/plugins/editor_plugin.h\"\n#include \"scene/gui/box_container.h\"\n\nclass AcceptDialog;\nclass Button;\nclass ButtonGroup;\nclass CanvasItemEditorViewport;\nclass ConfirmationDialog;\nclass EditorData;\nclass EditorSelection;\nclass EditorZoomWidget;\nclass HScrollBar;\nclass HSplitContainer;\nclass MenuButton;\nclass PanelContainer;\nclass StyleBoxT"
+      },
+      {
+        "file": "editor/scene/canvas_item_editor_plugin.cpp",
+        "start_line": 24,
+        "end_line": 69,
+        "similarity": 0.8133,
+        "related_to": "editor/scene/3d/node_3d_editor_plugin.cpp",
+        "content_preview": "OR A PARTICULAR PURPOSE AND NONINFRINGEMENT. */\n/* IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY   */\n/* CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,   */\n/* TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE      */\n/* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */\n/**************************************************************************/\n\n#include \"canvas_item_editor_plugin.h\"\n\n#include \"core/config/project_settings.h\"\n#include \"core/input/input.h\"\n#include \"core/os/keyboard.h\"\n#include \"core/string/translation_server.h\"\n#include \"editor/animation/animation_player_editor_plugin.h\"\n#include \"editor/debugger/editor_debugger_node.h\"\n#include \"editor/docks/scene_tree_dock.h\"\n#include \"editor/editor_mai"
+      },
+      {
+        "file": "editor/scene/3d/multimesh_editor_plugin.h",
+        "start_line": 24,
+        "end_line": 95,
+        "similarity": 0.804,
+        "related_to": "editor/scene/3d/node_3d_editor_plugin.h",
+        "content_preview": "OR A PARTICULAR PURPOSE AND NONINFRINGEMENT. */\n/* IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY   */\n/* CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,   */\n/* TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE      */\n/* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */\n/**************************************************************************/\n\n#pragma once\n\n#include \"editor/plugins/editor_plugin.h\"\n#include \"scene/3d/multimesh_instance_3d.h\"\n#include \"scene/gui/slider.h\"\n#include \"scene/gui/spin_box.h\"\n\nclass AcceptDialog;\nclass ConfirmationDialog;\nclass MenuButton;\nclass OptionButton;\nclass SceneTreeDialog;\n\nclass MultiMeshEditor : public Control {\n\tGDCLASS(MultiMeshEditor, Control);\n\n\tfriend class Mul"
+      },
+      {
+        "file": "editor/scene/3d/path_3d_editor_plugin.h",
+        "start_line": 24,
+        "end_line": 83,
+        "similarity": 0.8009,
+        "related_to": "editor/scene/3d/node_3d_editor_plugin.h",
+        "content_preview": "OR A PARTICULAR PURPOSE AND NONINFRINGEMENT. */\n/* IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY   */\n/* CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,   */\n/* TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE      */\n/* SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                 */\n/**************************************************************************/\n\n#pragma once\n\n#include \"editor/plugins/editor_plugin.h\"\n#include \"editor/scene/3d/node_3d_editor_gizmos.h\"\n#include \"scene/3d/camera_3d.h\"\n#include \"scene/3d/path_3d.h\"\n\nclass HBoxContainer;\nclass MenuButton;\nclass ConfirmationDialog;\n\nclass Path3DGizmo : public EditorNode3DGizmo {\n\tGDCLASS(Path3DGizmo, EditorNode3DGizmo);\n\n\t// Map handle id to control point id an"
+      },
+      {
+        "file": "editor/scene/3d/node_3d_editor_gizmos.h",
+        "start_line": 1,
+        "end_line": 26,
+        "similarity": 0.7988,
+        "related_to": "editor/scene/3d/node_3d_editor_plugin.cpp",
+        "content_preview": "/**************************************************************************/\n/*  node_3d_editor_gizmos.h                                               */\n/**************************************************************************/\n/*                         This file is part of:                          */\n/*                             GODOT ENGINE                               */\n/*                        https://godotengine.org                         */\n/**************************************************************************/\n/* Copyright (c) 2014-present Godot Engine contributors (see AUTHORS.md). */\n/* Copyright (c) 2007-2014 Juan Linietsky, Ariel Manzur.                  */\n/*                                                                        */\n/* Permission is hereby grante"
+      }
+    ]
+  },
+  "callers": [
+    {
+      "path": "3d/camera_3d_editor_plugin.cpp",
+      "from_function": "_node_removed",
+      "calls_function": "get_singleton",
+      "caller_line": 39,
+      "callee_file": "3d/node_3d_editor_plugin.h",
+      "callee_line": 968
+    },
+    {
+      "path": "3d/camera_3d_editor_plugin.cpp",
+      "from_function": "_pressed",
+      "calls_function": "get_singleton",
+      "caller_line": 47,
+      "callee_file": "3d/node_3d_editor_plugin.h",
+      "callee_line": 968
+    },
+    {
+      "path": "3d/camera_3d_editor_plugin.cpp",
+      "from_function": "edit",
+      "calls_function": "get_singleton",
+      "caller_line": 52,
+      "callee_file": "3d/node_3d_editor_plugin.h",
+      "callee_line": 968
+    },
+    {
+      "path": "3d/camera_3d_editor_plugin.cpp",
+      "from_function": "_update_sub_viewport_size",
+      "calls_function": "get_camera_viewport_size",
+      "caller_line": 82,
+      "callee_file": "3d/node_3d_editor_plugin.h",
+      "callee_line": 970
+    },
+    {
+      "path": "3d/camera_3d_editor_plugin.cpp",
+      "from_function": "edit",
+      "calls_function": "get_singleton",
+      "caller_line": 110,
+      "callee_file": "3d/node_3d_editor_plugin.h",
+      "callee_line": 968
+    },
+    {
+      "path": "3d/camera_3d_editor_plugin.cpp",
+      "from_function": "make_visible",
+      "calls_function": "set_can_preview",
+      "caller_line": 118,
+      "callee_file": "3d/node_3d_editor_plugin.cpp",
+      "callee_line": 9048
+    },
+    {
+      "path": "3d/camera_3d_editor_plugin.cpp",
+      "from_function": "make_visible",
+      "calls_function": "get_singleton",
+      "caller_line": 118,
+      "callee_file": "3d/node_3d_editor_plugin.h",
+      "callee_line": 968
+    },
+    {
+      "path": "3d/gizmos/camera_3d_gizmo_plugin.cpp",
+      "from_function": "set_handle",
+      "calls_function": "is_snap_enabled",
+      "caller_line": 80,
+      "callee_file": "3d/node_3d_editor_plugin.h",
+      "callee_line": 984
+    },
+    {
+      "path": "3d/gizmos/camera_3d_gizmo_plugin.cpp",
+      "from_function": "set_handle",
+      "calls_function": "get_singleton",
+      "caller_line": 80,
+      "callee_file": "3d/node_3d_editor_plugin.h",
+      "callee_line": 968
+    },
+    {
+      "path": "3d/gizmos/camera_3d_gizmo_plugin.cpp",
+      "from_function": "set_handle",
+      "calls_function": "get_translate_snap",
+      "caller_line": 80,
+      "callee_file": "3d/node_3d_editor_plugin.h",
+      "callee_line": 985
+    },
+    {
+      "path": "3d/gizmos/gizmo_3d_helper.cpp",
+      "from_function": "box_set_handle",
+      "calls_function": "is_snap_enabled",
+      "caller_line": 79,
+      "callee_file": "3d/node_3d_editor_plugin.h",
+      "callee_line": 984
+    },
+    {
+      "path": "3d/gizmos/gizmo_3d_helper.cpp",
+      "from_function": "box_set_handle",
+      "calls_function": "get_singleton",
+      "caller_line": 79,
+      "callee_file": "3d/node_3d_editor_plugin.h",
+      "callee_line": 968
+    },
+    {
+      "path": "3d/gizmos/gizmo_3d_helper.cpp",
+      "from_function": "box_set_handle",
+      "calls_function": "get_translate_snap",
+      "caller_line": 79,
+      "callee_file": "3d/node_3d_editor_plugin.h",
+      "callee_line": 985
+    },
+    {
+      "path": "3d/gizmos/gizmo_3d_helper.cpp",
+      "from_function": "_cylinder_or_capsule_set_handle",
+      "calls_function": "is_snap_enabled",
+      "caller_line": 159,
+      "callee_file": "3d/node_3d_editor_plugin.h",
+      "callee_line": 984
+    },
+    {
+      "path": "3d/gizmos/gizmo_3d_helper.cpp",
+      "from_function": "_cylinder_or_capsule_set_handle",
+      "calls_function": "get_singleton",
+      "caller_line": 159,
+      "callee_file": "3d/node_3d_editor_plugin.h",
+      "callee_line": 968
+    },
+    {
+      "path": "3d/gizmos/gizmo_3d_helper.cpp",
+      "from_function": "_cylinder_or_capsule_set_handle",
+      "calls_function": "get_translate_snap",
+      "caller_line": 159,
+      "callee_file": "3d/node_3d_editor_plugin.h",
+      "callee_line": 985
+    },
+    {
+      "path": "3d/gizmos/gpu_particles_collision_3d_gizmo_plugin.cpp",
+      "from_function": "set_handle",
+      "calls_function": "is_snap_enabled",
+      "caller_line": 99,
+      "callee_file": "3d/node_3d_editor_plugin.h",
+      "callee_line": 984
+    },
+    {
+      "path": "3d/gizmos/gpu_particles_collision_3d_gizmo_plugin.cpp",
+      "from_function": "set_handle",
+      "calls_function": "get_singleton",
+      "caller_line": 99,
+      "callee_file": "3d/node_3d_editor_plugin.h",
+      "callee_line": 968
+    },
+    {
+      "path": "3d/gizmos/gpu_particles_collision_3d_gizmo_plugin.cpp",
+      "from_function": "set_handle",
+      "calls_function": "get_translate_snap",
+      "caller_line": 99,
+      "callee_file": "3d/node_3d_editor_plugin.h",
+      "callee_line": 985
+    },
+    {
+      "path": "3d/gizmos/light_3d_gizmo_plugin.cpp",
+      "from_function": "set_handle",
+      "calls_function": "is_snap_enabled",
+      "caller_line": 85,
+      "callee_file": "3d/node_3d_editor_plugin.h",
+      "callee_line": 984
+    },
+    {
+      "path": "3d/gizmos/light_3d_gizmo_plugin.cpp",
+      "from_function": "set_handle",
+      "calls_function": "get_singleton",
+      "caller_line": 85,
+      "callee_file": "3d/node_3d_editor_plugin.h",
+      "callee_line": 968
+    },
+    {
+      "path": "3d/gizmos/light_3d_gizmo_plugin.cpp",
+      "from_function": "set_handle",
+      "calls_function": "get_translate_snap",
+      "caller_line": 85,
+      "callee_file": "3d/node_3d_editor_plugin.h",
+      "callee_line": 985
+    },
+    {
+      "path": "3d/gizmos/occluder_instance_3d_gizmo_plugin.cpp",
+      "from_function": "set_handle",
+      "calls_function": "is_snap_enabled",
+      "caller_line": 100,
+      "callee_file": "3d/node_3d_editor_plugin.h",
+      "callee_line": 984
+    },
+    {
+      "path": "3d/gizmos/occluder_instance_3d_gizmo_plugin.cpp",
+      "from_function": "set_handle",
+      "calls_function": "get_singleton",
+      "caller_line": 100,
+      "callee_file": "3d/node_3d_editor_plugin.h",
+      "callee_line": 968
+    },
+    {
+      "path": "3d/gizmos/occluder_instance_3d_gizmo_plugin.cpp",
+      "from_function": "set_handle",
+      "calls_function": "get_translate_snap",
+      "caller_line": 100,
+      "callee_file": "3d/node_3d_editor_plugin.h",
+      "callee_line": 985
+    },
+    {
+      "path": "3d/gizmos/physics/collision_shape_3d_gizmo_plugin.cpp",
+      "from_function": "set_handle",
+      "calls_function": "is_snap_enabled",
+      "caller_line": 172,
+      "callee_file": "3d/node_3d_editor_plugin.h",
+      "callee_line": 984
+    },
+    {
+      "path": "3d/gizmos/physics/collision_shape_3d_gizmo_plugin.cpp",
+      "from_function": "set_handle",
+      "calls_function": "get_singleton",
+      "caller_line": 172,
+      "callee_file": "3d/node_3d_editor_plugin.h",
+      "callee_line": 968
+    },
+    {
+      "path": "3d/gizmos/physics/collision_shape_3d_gizmo_plugin.cpp",
+      "from_function": "set_handle",
+      "calls_function": "get_translate_snap",
+      "caller_line": 172,
+      "callee_file": "3d/node_3d_editor_plugin.h",
+      "callee_line": 985
+    },
+    {
+      "path": "3d/gizmos/reflection_probe_gizmo_plugin.cpp",
+      "from_function": "set_handle",
+      "calls_function": "is_snap_enabled",
+      "caller_line": 92,
+      "callee_file": "3d/node_3d_editor_plugin.h",
+      "callee_line": 984
+    },
+    {
+      "path": "3d/gizmos/reflection_probe_gizmo_plugin.cpp",
+      "from_function": "set_handle",
+      "calls_function": "get_singleton",
+      "caller_line": 92,
+      "callee_file": "3d/node_3d_editor_plugin.h",
+      "callee_line": 968
+    },
+    {
+      "path": "3d/gizmos/reflection_probe_gizmo_plugin.cpp",
+      "from_function": "set_handle",
+      "calls_function": "get_translate_snap",
+      "caller_line": 92,
+      "callee_file": "3d/node_3d_editor_plugin.h",
+      "callee_line": 985
+    },
+    {
+      "path": "3d/gizmos/visible_on_screen_notifier_3d_gizmo_plugin.cpp",
+      "from_function": "set_handle",
+      "calls_function": "is_snap_enabled",
+      "caller_line": 82,
+      "callee_file": "3d/node_3d_editor_plugin.h",
+      "callee_line": 984
+    },
+    {
+      "path": "3d/gizmos/visible_on_screen_notifier_3d_gizmo_plugin.cpp",
+      "from_function": "set_handle",
+      "calls_function": "get_singleton",
+      "caller_line": 82,
+      "callee_file": "3d/node_3d_editor_plugin.h",
+      "callee_line": 968
+    },
+    {
+      "path": "3d/gizmos/visible_on_screen_notifier_3d_gizmo_plugin.cpp",
+      "from_function": "set_handle",
+      "calls_function": "get_translate_snap",
+      "caller_line": 82,
+      "callee_file": "3d/node_3d_editor_plugin.h",
+      "callee_line": 985
+    },
+    {
+      "path": "3d/mesh_instance_3d_editor_plugin.cpp",
+      "from_function": "_create_collision_shape",
+      "calls_function": "get_singleton",
+      "caller_line": 316,
+      "callee_file": "3d/node_3d_editor_plugin.h",
+      "callee_line": 968
+    },
+    {
+      "path": "3d/mesh_instance_3d_editor_plugin.cpp",
+      "from_function": "_create_navigation_mesh",
+      "calls_function": "get_singleton",
+      "caller_line": 711,
+      "callee_file": "3d/node_3d_editor_plugin.h",
+      "callee_line": 968
+    },
+    {
+      "path": "3d/mesh_instance_3d_editor_plugin.cpp",
+      "from_function": "_create_outline_mesh",
+      "calls_function": "get_singleton",
+      "caller_line": 741,
+      "callee_file": "3d/node_3d_editor_plugin.h",
+      "callee_line": 968
+    },
+    {
+      "path": "3d/mesh_instance_3d_editor_plugin.cpp",
+      "from_function": "MeshInstance3DEditor",
+      "calls_function": "get_singleton",
+      "caller_line": 799,
+      "callee_file": "3d/node_3d_editor_plugin.h",
+      "callee_line": 968
+    },
+    {
+      "path": "3d/mesh_library_editor_plugin.cpp",
+      "from_function": "MeshLibraryEditor",
+      "calls_function": "get_singleton",
+      "caller_line": 262,
+      "callee_file": "3d/node_3d_editor_plugin.h",
+      "callee_line": 968
+    },
+    {
+      "path": "3d/multimesh_editor_plugin.cpp",
+      "from_function": "MultiMeshEditor",
+      "calls_function": "get_singleton",
+      "caller_line": 269,
+      "callee_file": "3d/node_3d_editor_plugin.h",
+      "callee_line": 968
+    },
+    {
+      "path": "3d/node_3d_editor_gizmos.cpp",
+      "from_function": "redraw",
+      "calls_function": "is_current_selected_gizmo",
+      "caller_line": 78,
+      "callee_file": "3d/node_3d_editor_plugin.cpp",
+      "callee_line": 8974
+    },
+    {
+      "path": "3d/node_3d_editor_gizmos.cpp",
+      "from_function": "redraw",
+      "calls_function": "get_singleton",
+      "caller_line": 78,
+      "callee_file": "3d/node_3d_editor_plugin.h",
+      "callee_line": 968
+    },
+    {
+      "path": "3d/node_3d_editor_gizmos.cpp",
+      "from_function": "redraw",
+      "calls_function": "update_transform_gizmo",
+      "caller_line": 78,
+      "callee_file": "3d/node_3d_editor_plugin.cpp",
+      "callee_line": 6791
+    },
+    {
+      "path": "3d/node_3d_editor_gizmos.cpp",
+      "from_function": "_update_bvh",
+      "calls_function": "get_singleton",
+      "caller_line": 249,
+      "callee_file": "3d/node_3d_editor_plugin.h",
+      "callee_line": 968
+    },
+    {
+      "path": "3d/node_3d_editor_gizmos.cpp",
+      "from_function": "add_handles",
+      "calls_function": "get_singleton",
+      "caller_line": 402,
+      "callee_file": "3d/node_3d_editor_plugin.h",
+      "callee_line": 968
+    },
+    {
+      "path": "3d/node_3d_editor_gizmos.cpp",
+      "from_function": "add_handles",
+      "calls_function": "get_current_hover_gizmo_handle",
+      "caller_line": 402,
+      "callee_file": "3d/node_3d_editor_plugin.h",
+      "callee_line": 1038
+    },
+    {
+      "path": "3d/node_3d_editor_gizmos.cpp",
+      "from_function": "is_subgizmo_selected",
+      "calls_function": "get_singleton",
+      "caller_line": 779,
+      "callee_file": "3d/node_3d_editor_plugin.h",
+      "callee_line": 968
+    },
+    {
+      "path": "3d/node_3d_editor_gizmos.cpp",
+      "from_function": "is_subgizmo_selected",
+      "calls_function": "is_current_selected_gizmo",
+      "caller_line": 779,
+      "callee_file": "3d/node_3d_editor_plugin.cpp",
+      "callee_line": 8974
+    },
+    {
+      "path": "3d/node_3d_editor_gizmos.cpp",
+      "from_function": "is_subgizmo_selected",
+      "calls_function": "is_subgizmo_selected",
+      "caller_line": 779,
+      "callee_file": "3d/node_3d_editor_plugin.cpp",
+      "callee_line": 8966
+    },
+    {
+      "path": "3d/node_3d_editor_gizmos.cpp",
+      "from_function": "get_subgizmo_selection",
+      "calls_function": "get_singleton",
+      "caller_line": 785,
+      "callee_file": "3d/node_3d_editor_plugin.h",
+      "callee_line": 968
+    }
+  ],
+  "call_graph_edges": [
+    {
+      "from": "3d/camera_3d_editor_plugin.cpp::_node_removed",
+      "to": "3d/node_3d_editor_plugin.h::get_singleton"
+    },
+    {
+      "from": "3d/camera_3d_editor_plugin.cpp::_pressed",
+      "to": "3d/node_3d_editor_plugin.h::get_singleton"
+    },
+    {
+      "from": "3d/camera_3d_editor_plugin.cpp::edit",
+      "to": "3d/node_3d_editor_plugin.h::get_singleton"
+    },
+    {
+      "from": "3d/camera_3d_editor_plugin.cpp::_update_sub_viewport_size",
+      "to": "3d/node_3d_editor_plugin.h::get_camera_viewport_size"
+    },
+    {
+      "from": "3d/camera_3d_editor_plugin.cpp::edit",
+      "to": "3d/node_3d_editor_plugin.h::get_singleton"
+    },
+    {
+      "from": "3d/camera_3d_editor_plugin.cpp::make_visible",
+      "to": "3d/node_3d_editor_plugin.cpp::set_can_preview"
+    },
+    {
+      "from": "3d/camera_3d_editor_plugin.cpp::make_visible",
+      "to": "3d/node_3d_editor_plugin.h::get_singleton"
+    },
+    {
+      "from": "3d/gizmos/camera_3d_gizmo_plugin.cpp::set_handle",
+      "to": "3d/node_3d_editor_plugin.h::is_snap_enabled"
+    },
+    {
+      "from": "3d/gizmos/camera_3d_gizmo_plugin.cpp::set_handle",
+      "to": "3d/node_3d_editor_plugin.h::get_singleton"
+    },
+    {
+      "from": "3d/gizmos/camera_3d_gizmo_plugin.cpp::set_handle",
+      "to": "3d/node_3d_editor_plugin.h::get_translate_snap"
+    },
+    {
+      "from": "3d/gizmos/gizmo_3d_helper.cpp::box_set_handle",
+      "to": "3d/node_3d_editor_plugin.h::is_snap_enabled"
+    },
+    {
+      "from": "3d/gizmos/gizmo_3d_helper.cpp::box_set_handle",
+      "to": "3d/node_3d_editor_plugin.h::get_singleton"
+    },
+    {
+      "from": "3d/gizmos/gizmo_3d_helper.cpp::box_set_handle",
+      "to": "3d/node_3d_editor_plugin.h::get_translate_snap"
+    },
+    {
+      "from": "3d/gizmos/gizmo_3d_helper.cpp::_cylinder_or_capsule_set_handle",
+      "to": "3d/node_3d_editor_plugin.h::is_snap_enabled"
+    },
+    {
+      "from": "3d/gizmos/gizmo_3d_helper.cpp::_cylinder_or_capsule_set_handle",
+      "to": "3d/node_3d_editor_plugin.h::get_singleton"
+    },
+    {
+      "from": "3d/gizmos/gizmo_3d_helper.cpp::_cylinder_or_capsule_set_handle",
+      "to": "3d/node_3d_editor_plugin.h::get_translate_snap"
+    },
+    {
+      "from": "3d/gizmos/gpu_particles_collision_3d_gizmo_plugin.cpp::set_handle",
+      "to": "3d/node_3d_editor_plugin.h::is_snap_enabled"
+    },
+    {
+      "from": "3d/gizmos/gpu_particles_collision_3d_gizmo_plugin.cpp::set_handle",
+      "to": "3d/node_3d_editor_plugin.h::get_singleton"
+    },
+    {
+      "from": "3d/gizmos/gpu_particles_collision_3d_gizmo_plugin.cpp::set_handle",
+      "to": "3d/node_3d_editor_plugin.h::get_translate_snap"
+    },
+    {
+      "from": "3d/gizmos/light_3d_gizmo_plugin.cpp::set_handle",
+      "to": "3d/node_3d_editor_plugin.h::is_snap_enabled"
+    },
+    {
+      "from": "3d/gizmos/light_3d_gizmo_plugin.cpp::set_handle",
+      "to": "3d/node_3d_editor_plugin.h::get_singleton"
+    },
+    {
+      "from": "3d/gizmos/light_3d_gizmo_plugin.cpp::set_handle",
+      "to": "3d/node_3d_editor_plugin.h::get_translate_snap"
+    },
+    {
+      "from": "3d/gizmos/occluder_instance_3d_gizmo_plugin.cpp::set_handle",
+      "to": "3d/node_3d_editor_plugin.h::is_snap_enabled"
+    },
+    {
+      "from": "3d/gizmos/occluder_instance_3d_gizmo_plugin.cpp::set_handle",
+      "to": "3d/node_3d_editor_plugin.h::get_singleton"
+    },
+    {
+      "from": "3d/gizmos/occluder_instance_3d_gizmo_plugin.cpp::set_handle",
+      "to": "3d/node_3d_editor_plugin.h::get_translate_snap"
+    },
+    {
+      "from": "3d/gizmos/physics/collision_shape_3d_gizmo_plugin.cpp::set_handle",
+      "to": "3d/node_3d_editor_plugin.h::is_snap_enabled"
+    },
+    {
+      "from": "3d/gizmos/physics/collision_shape_3d_gizmo_plugin.cpp::set_handle",
+      "to": "3d/node_3d_editor_plugin.h::get_singleton"
+    },
+    {
+      "from": "3d/gizmos/physics/collision_shape_3d_gizmo_plugin.cpp::set_handle",
+      "to": "3d/node_3d_editor_plugin.h::get_translate_snap"
+    },
+    {
+      "from": "3d/gizmos/reflection_probe_gizmo_plugin.cpp::set_handle",
+      "to": "3d/node_3d_editor_plugin.h::is_snap_enabled"
+    },
+    {
+      "from": "3d/gizmos/reflection_probe_gizmo_plugin.cpp::set_handle",
+      "to": "3d/node_3d_editor_plugin.h::get_singleton"
+    },
+    {
+      "from": "3d/gizmos/reflection_probe_gizmo_plugin.cpp::set_handle",
+      "to": "3d/node_3d_editor_plugin.h::get_translate_snap"
+    },
+    {
+      "from": "3d/gizmos/visible_on_screen_notifier_3d_gizmo_plugin.cpp::set_handle",
+      "to": "3d/node_3d_editor_plugin.h::is_snap_enabled"
+    },
+    {
+      "from": "3d/gizmos/visible_on_screen_notifier_3d_gizmo_plugin.cpp::set_handle",
+      "to": "3d/node_3d_editor_plugin.h::get_singleton"
+    },
+    {
+      "from": "3d/gizmos/visible_on_screen_notifier_3d_gizmo_plugin.cpp::set_handle",
+      "to": "3d/node_3d_editor_plugin.h::get_translate_snap"
+    },
+    {
+      "from": "3d/mesh_instance_3d_editor_plugin.cpp::_create_collision_shape",
+      "to": "3d/node_3d_editor_plugin.h::get_singleton"
+    },
+    {
+      "from": "3d/mesh_instance_3d_editor_plugin.cpp::_create_navigation_mesh",
+      "to": "3d/node_3d_editor_plugin.h::get_singleton"
+    },
+    {
+      "from": "3d/mesh_instance_3d_editor_plugin.cpp::_create_outline_mesh",
+      "to": "3d/node_3d_editor_plugin.h::get_singleton"
+    },
+    {
+      "from": "3d/mesh_instance_3d_editor_plugin.cpp::MeshInstance3DEditor",
+      "to": "3d/node_3d_editor_plugin.h::get_singleton"
+    },
+    {
+      "from": "3d/mesh_library_editor_plugin.cpp::MeshLibraryEditor",
+      "to": "3d/node_3d_editor_plugin.h::get_singleton"
+    },
+    {
+      "from": "3d/multimesh_editor_plugin.cpp::MultiMeshEditor",
+      "to": "3d/node_3d_editor_plugin.h::get_singleton"
+    },
+    {
+      "from": "3d/node_3d_editor_gizmos.cpp::redraw",
+      "to": "3d/node_3d_editor_plugin.cpp::is_current_selected_gizmo"
+    },
+    {
+      "from": "3d/node_3d_editor_gizmos.cpp::redraw",
+      "to": "3d/node_3d_editor_plugin.h::get_singleton"
+    },
+    {
+      "from": "3d/node_3d_editor_gizmos.cpp::redraw",
+      "to": "3d/node_3d_editor_plugin.cpp::update_transform_gizmo"
+    },
+    {
+      "from": "3d/node_3d_editor_gizmos.cpp::_update_bvh",
+      "to": "3d/node_3d_editor_plugin.h::get_singleton"
+    },
+    {
+      "from": "3d/node_3d_editor_gizmos.cpp::add_handles",
+      "to": "3d/node_3d_editor_plugin.h::get_singleton"
+    },
+    {
+      "from": "3d/node_3d_editor_gizmos.cpp::add_handles",
+      "to": "3d/node_3d_editor_plugin.h::get_current_hover_gizmo_handle"
+    },
+    {
+      "from": "3d/node_3d_editor_gizmos.cpp::is_subgizmo_selected",
+      "to": "3d/node_3d_editor_plugin.h::get_singleton"
+    },
+    {
+      "from": "3d/node_3d_editor_gizmos.cpp::is_subgizmo_selected",
+      "to": "3d/node_3d_editor_plugin.cpp::is_current_selected_gizmo"
+    },
+    {
+      "from": "3d/node_3d_editor_gizmos.cpp::is_subgizmo_selected",
+      "to": "3d/node_3d_editor_plugin.cpp::is_subgizmo_selected"
+    },
+    {
+      "from": "3d/node_3d_editor_gizmos.cpp::get_subgizmo_selection",
+      "to": "3d/node_3d_editor_plugin.h::get_singleton"
+    }
+  ],
+  "functions_in_changed_files": [
+    {
+      "name": "_notification",
+      "full_name": "ViewportNavigationControl._notification:void(int)",
+      "file": "3d/node_3d_editor_plugin.cpp",
+      "start_line": 135,
+      "end_line": 154,
+      "signature": "void(int)"
+    },
+    {
+      "name": "_draw",
+      "full_name": "ViewportNavigationControl._draw:void()",
+      "file": "3d/node_3d_editor_plugin.cpp",
+      "start_line": 156,
+      "end_line": 173,
+      "signature": "void()"
+    },
+    {
+      "name": "_process_click",
+      "full_name": "ViewportNavigationControl._process_click:void(int,Vector2,bool)",
+      "file": "3d/node_3d_editor_plugin.cpp",
+      "start_line": 175,
+      "end_line": 195,
+      "signature": "void(int,Vector2,bool)"
+    },
+    {
+      "name": "_process_drag",
+      "full_name": "ViewportNavigationControl._process_drag:void(int,Vector2,Vector2)",
+      "file": "3d/node_3d_editor_plugin.cpp",
+      "start_line": 197,
+      "end_line": 206,
+      "signature": "void(int,Vector2,Vector2)"
+    },
+    {
+      "name": "gui_input",
+      "full_name": "ViewportNavigationControl.gui_input:void(Ref&)",
+      "file": "3d/node_3d_editor_plugin.cpp",
+      "start_line": 208,
+      "end_line": 230,
+      "signature": "void(Ref&)"
+    },
+    {
+      "name": "_update_navigation",
+      "full_name": "ViewportNavigationControl._update_navigation:void()",
+      "file": "3d/node_3d_editor_plugin.cpp",
+      "start_line": 232,
+      "end_line": 287,
+      "signature": "void()"
+    },
+    {
+      "name": "set_navigation_mode",
+      "full_name": "ViewportNavigationControl.set_navigation_mode:void(Node3DEditorViewport.NavigationMode)",
+      "file": "3d/node_3d_editor_plugin.cpp",
+      "start_line": 289,
+      "end_line": 291,
+      "signature": "void(Node3DEditorViewport.NavigationMode)"
+    },
+    {
+      "name": "set_viewport",
+      "full_name": "ViewportNavigationControl.set_viewport:void(Node3DEditorViewport*)",
+      "file": "3d/node_3d_editor_plugin.cpp",
+      "start_line": 293,
+      "end_line": 295,
+      "signature": "void(Node3DEditorViewport*)"
+    },
+    {
+      "name": "_notification",
+      "full_name": "ViewportRotationControl._notification:void(int)",
+      "file": "3d/node_3d_editor_plugin.cpp",
+      "start_line": 297,
+      "end_line": 330,
+      "signature": "void(int)"
+    },
+    {
+      "name": "_draw",
+      "full_name": "ViewportRotationControl._draw:void()",
+      "file": "3d/node_3d_editor_plugin.cpp",
+      "start_line": 332,
+      "end_line": 345,
+      "signature": "void()"
+    },
+    {
+      "name": "_draw_axis",
+      "full_name": "ViewportRotationControl._draw_axis:void(ViewportRotationControl.Axis2D&)",
+      "file": "3d/node_3d_editor_plugin.cpp",
+      "start_line": 347,
+      "end_line": 379,
+      "signature": "void(ViewportRotationControl.Axis2D&)"
+    },
+    {
+      "name": "_get_sorted_axis",
+      "full_name": "ViewportRotationControl._get_sorted_axis:void(Vector&)",
+      "file": "3d/node_3d_editor_plugin.cpp",
+      "start_line": 381,
+      "end_line": 413,
+      "signature": "void(Vector&)"
+    },
+    {
+      "name": "_process_click",
+      "full_name": "ViewportRotationControl._process_click:void(int,Vector2,bool)",
+      "file": "3d/node_3d_editor_plugin.cpp",
+      "start_line": 415,
+      "end_line": 434,
+      "signature": "void(int,Vector2,bool)"
+    },
+    {
+      "name": "_process_drag",
+      "full_name": "ViewportRotationControl._process_drag:void(Ref,int,Vector2,Vector2)",
+      "file": "3d/node_3d_editor_plugin.cpp",
+      "start_line": 436,
+      "end_line": 450,
+      "signature": "void(Ref,int,Vector2,Vector2)"
+    },
+    {
+      "name": "gui_input",
+      "full_name": "ViewportRotationControl.gui_input:void(Ref&)",
+      "file": "3d/node_3d_editor_plugin.cpp",
+      "start_line": 452,
+      "end_line": 502,
+      "signature": "void(Ref&)"
+    },
+    {
+      "name": "_update_focus",
+      "full_name": "ViewportRotationControl._update_focus:void()",
+      "file": "3d/node_3d_editor_plugin.cpp",
+      "start_line": 504,
+      "end_line": 526,
+      "signature": "void()"
+    },
+    {
+      "name": "set_viewport",
+      "full_name": "ViewportRotationControl.set_viewport:void(Node3DEditorViewport*)",
+      "file": "3d/node_3d_editor_plugin.cpp",
+      "start_line": 528,
+      "end_line": 530,
+      "signature": "void(Node3DEditorViewport*)"
+    },
+    {
+      "name": "_view_settings_confirmed",
+      "full_name": "Node3DEditorViewport._view_settings_confirmed:void(real_t)",
+      "file": "3d/node_3d_editor_plugin.cpp",
+      "start_line": 532,
+      "end_line": 538,
+      "signature": "void(real_t)"
+    },
+    {
+      "name": "_update_navigation_controls_visibility",
+      "full_name": "Node3DEditorViewport._update_navigation_controls_visibility:void()",
+      "file": "3d/node_3d_editor_plugin.cpp",
+      "start_line": 540,
+      "end_line": 547,
+      "signature": "void()"
+    },
+    {
+      "name": "_is_rotation_arc_visible",
+      "full_name": "Node3DEditorViewport._is_rotation_arc_visible:bool()<const>",
+      "file": "3d/node_3d_editor_plugin.cpp",
+      "start_line": 549,
+      "end_line": 551,
+      "signature": "bool()<const>"
+    },
+    {
+      "name": "_update_camera",
+      "full_name": "Node3DEditorViewport._update_camera:void(real_t)",
+      "file": "3d/node_3d_editor_plugin.cpp",
+      "start_line": 553,
+      "end_line": 641,
+      "signature": "void(real_t)"
+    },
+    {
+      "name": "to_camera_transform",
+      "full_name": "Node3DEditorViewport.to_camera_transform:Transform3D(Node3DEditorViewport.Cursor&)<const>",
+      "file": "3d/node_3d_editor_plugin.cpp",
+      "start_line": 643,
+      "end_line": 656,
+      "signature": "Transform3D(Node3DEditorViewport.Cursor&)<const>"
+    },
+    {
+      "name": "get_selected_count",
+      "full_name": "Node3DEditorViewport.get_selected_count:int()<const>",
+      "file": "3d/node_3d_editor_plugin.cpp",
+      "start_line": 658,
+      "end_line": 678,
+      "signature": "int()<const>"
+    },
+    {
+      "name": "cancel_transform",
+      "full_name": "Node3DEditorViewport.cancel_transform:void()",
+      "file": "3d/node_3d_editor_plugin.cpp",
+      "start_line": 680,
+      "end_line": 712,
+      "signature": "void()"
+    },
+    {
+      "name": "_update_shrink",
+      "full_name": "Node3DEditorViewport._update_shrink:void()",
+      "file": "3d/node_3d_editor_plugin.cpp",
+      "start_line": 714,
+      "end_line": 718,
+      "signature": "void()"
+    },
+    {
+      "name": "get_znear",
+      "full_name": "Node3DEditorViewport.get_znear:float()<const>",
+      "file": "3d/node_3d_editor_plugin.cpp",
+      "start_line": 720,
+      "end_line": 722,
+      "signature": "float()<const>"
+    },
+    {
+      "name": "get_zfar",
+      "full_name": "Node3DEditorViewport.get_zfar:float()<const>",
+      "file": "3d/node_3d_editor_plugin.cpp",
+      "start_line": 724,
+      "end_line": 726,
+      "signature": "float()<const>"
+    },
+    {
+      "name": "get_fov",
+      "full_name": "Node3DEditorViewport.get_fov:float()<const>",
+      "file": "3d/node_3d_editor_plugin.cpp",
+      "start_line": 728,
+      "end_line": 730,
+      "signature": "float()<const>"
+    },
+    {
+      "name": "_get_camera_transform",
+      "full_name": "Node3DEditorViewport._get_camera_transform:Transform3D()<const>",
+      "file": "3d/node_3d_editor_plugin.cpp",
+      "start_line": 732,
+      "end_line": 734,
+      "signature": "Transform3D()<const>"
+    },
+    {
+      "name": "_get_camera_position",
+      "full_name": "Node3DEditorViewport._get_camera_position:Vector3()<const>",
+      "file": "3d/node_3d_editor_plugin.cpp",
+      "start_line": 736,
+      "end_line": 738,
+      "signature": "Vector3()<const>"
+    },
+    {
+      "name": "point_to_screen",
+      "full_name": "Node3DEditorViewport.point_to_screen:Point2(Vector3&)",
+      "file": "3d/node_3d_editor_plugin.cpp",
+      "start_line": 740,
+      "end_line": 742,
+      "signature": "Point2(Vector3&)"
+    },
+    {
+      "name": "get_ray_pos",
+      "full_name": "Node3DEditorViewport.get_ray_pos:Vector3(Vector2&)<const>",
+      "file": "3d/node_3d_editor_plugin.cpp",
+      "start_line": 744,
+      "end_line": 746,
+      "signature": "Vector3(Vector2&)<const>"
+    },
+    {
+      "name": "_get_camera_normal",
+      "full_name": "Node3DEditorViewport._get_camera_normal:Vector3()<const>",
+      "file": "3d/node_3d_editor_plugin.cpp",
+      "start_line": 748,
+      "end_line": 750,
+      "signature": "Vector3()<const>"
+    },
+    {
+      "name": "get_ray",
+      "full_name": "Node3DEditorViewport.get_ray:Vector3(Vector2&)<const>",
+      "file": "3d/node_3d_editor_plugin.cpp",
+      "start_line": 752,
+      "end_line": 754,
+      "signature": "Vector3(Vector2&)<const>"
+    },
+    {
+      "name": "_clear_selected",
+      "full_name": "Node3DEditorViewport._clear_selected:void()",
+      "file": "3d/node_3d_editor_plugin.cpp",
+      "start_line": 756,
+      "end_line": 774,
+      "signature": "void()"
+    },
+    {
+      "name": "_select_clicked",
+      "full_name": "Node3DEditorViewport._select_clicked:void(bool)",
+      "file": "3d/node_3d_editor_plugin.cpp",
+      "start_line": 776,
+      "end_line": 833,
+      "signature": "void(bool)"
+    },
+    {
+      "name": "_select_ray",
+      "full_name": "Node3DEditorViewport._select_ray:ObjectID(Point2&)<const>",
+      "file": "3d/node_3d_editor_plugin.cpp",
+      "start_line": 835,
+      "end_line": 900,
+      "signature": "ObjectID(Point2&)<const>"
+    },
+    {
+      "name": "_find_items_at_pos",
+      "full_name": "Node3DEditorViewport._find_items_at_pos:void(Point2&,Vector&,bool)",
+      "file": "3d/node_3d_editor_plugin.cpp",
+      "start_line": 902,
+      "end_line": 957,
+      "signature": "void(Point2&,Vector&,bool)"
+    },
+    {
+      "name": "_get_screen_to_space",
+      "full_name": "Node3DEditorViewport._get_screen_to_space:Vector3(Vector3&)",
+      "file": "3d/node_3d_editor_plugin.cpp",
+      "start_line": 959,
+      "end_line": 975,
+      "signature": "Vector3(Vector3&)"
+    },
+    {
+      "name": "_select_region",
+      "full_name": "Node3DEditorViewport._select_region:void()",
+      "file": "3d/node_3d_editor_plugin.cpp",
+      "start_line": 977,
+      "end_line": 1164,
+      "signature": "void()"
+    },
+    {
+      "name": "_update_name",
+      "full_name": "Node3DEditorViewport._update_name:void()",
+      "file": "3d/node_3d_editor_plugin.cpp",
+      "start_line": 1166,
+      "end_line": 1228,
+      "signature": "void()"
+    },
+    {
+      "name": "_compute_edit",
+      "full_name": "Node3DEditorViewport._compute_edit:void(Point2&)",
+      "file": "3d/node_3d_editor_plugin.cpp",
+      "start_line": 1230,
+      "end_line": 1267,
+      "signature": "void(Point2&)"
+    },
+    {
+      "name": "_get_key_modifier_setting",
+      "full_name": "_get_key_modifier_setting:Key(String&)",
+      "file": "3d/node_3d_editor_plugin.cpp",
+      "start_line": 1269,
+      "end_line": 1283,
+      "signature": "Key(String&)"
+    },
+    {
+      "name": "_get_key_modifier",
+      "full_name": "_get_key_modifier:Key(Ref)",
+      "file": "3d/node_3d_editor_plugin.cpp",
+      "start_line": 1285,
+      "end_line": 1299,
+      "signature": "Key(Ref)"
+    },
+    {
+      "name": "_transform_gizmo_select",
+      "full_name": "Node3DEditorViewport._transform_gizmo_select:bool(Vector2&,bool)",
+      "file": "3d/node_3d_editor_plugin.cpp",
+      "start_line": 1301,
+      "end_line": 1540,
+      "signature": "bool(Vector2&,bool)"
+    },
+    {
+      "name": "_transform_gizmo_apply",
+      "full_name": "Node3DEditorViewport._transform_gizmo_apply:void(Node3D*,Transform3D&,bool)",
+      "file": "3d/node_3d_editor_plugin.cpp",
+      "start_line": 1542,
+      "end_line": 1552,
+      "signature": "void(Node3D*,Transform3D&,bool)"
+    },
+    {
+      "name": "_compute_transform",
+      "full_name": "Node3DEditorViewport._compute_transform:Transform3D(Node3DEditorViewport.TransformMode,Transform3D&,Transform3D&,Vector3,double,bool,bool,bool)",
+      "file": "3d/node_3d_editor_plugin.cpp",
+      "start_line": 1554,
+      "end_line": 1614,
+      "signature": "Transform3D(Node3DEditorViewport.TransformMode,Transform3D&,Transform3D&,Vector3,double,bool,bool,bool)"
+    },
+    {
+      "name": "_reset_transform",
+      "full_name": "Node3DEditorViewport._reset_transform:void(Node3DEditorViewport.TransformType)",
+      "file": "3d/node_3d_editor_plugin.cpp",
+      "start_line": 1616,
+      "end_line": 1645,
+      "signature": "void(Node3DEditorViewport.TransformType)"
+    },
+    {
+      "name": "_surface_mouse_enter",
+      "full_name": "Node3DEditorViewport._surface_mouse_enter:void()",
+      "file": "3d/node_3d_editor_plugin.cpp",
+      "start_line": 1647,
+      "end_line": 1655,
+      "signature": "void()"
+    },
+    {
+      "name": "_surface_mouse_exit",
+      "full_name": "Node3DEditorViewport._surface_mouse_exit:void()",
+      "file": "3d/node_3d_editor_plugin.cpp",
+      "start_line": 1657,
+      "end_line": 1661,
+      "signature": "void()"
+    }
+  ]
+}

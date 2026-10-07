@@ -1,0 +1,51 @@
+{
+  "pr_id": 38,
+  "mode": "baseline",
+  "mean_scores": {
+    "F3": 0.5,
+    "F4": 1.0,
+    "P1": 0.0,
+    "R2": 0.0,
+    "T3": 2.0
+  },
+  "mean_graded_total": 3.5,
+  "per_judge": [
+    {
+      "model": "gemini:gemini-2.5-flash",
+      "scores": {
+        "F3": 0,
+        "F4": 0,
+        "P1": 0,
+        "R2": 0,
+        "T3": 2
+      },
+      "evidence": {
+        "F3": "The review describes the impact of the problem (broken redirects, unexpected navigation) and points to the file where the problem exists (`location.ts`), but does not discuss how the change in `location.ts` interacts with specific callers or dependents.",
+        "F4": "The review focuses on fixing existing bugs and improving test coverage. It does not mention any potential breaking changes or violations of API contracts.",
+        "P1": "The review does not mention performance at all.",
+        "R2": "The review mentions that the logic 'may not correctly handle all edge cases' and recommends to 'review and expand the logic', which addresses correctness and completeness, not unnecessary complexity or suggestions for simplification.",
+        "T3": "The review names one specific test file path (`packages/grafana-data/src/utils/location.test.ts`) and references line numbers, explaining what edge cases are currently missing ('complex query parameter combinations', 'nested query parameters and different subpath configurations'). However, it does not name *multiple* specific test file paths, which would be required for a score of 3."
+      },
+      "error": ""
+    },
+    {
+      "model": "gemini:gemini-2.5-pro",
+      "scores": {
+        "F3": 1,
+        "F4": 2,
+        "P1": 0,
+        "R2": 0,
+        "T3": 2
+      },
+      "evidence": {
+        "F3": "The review notes that incorrect URL handling could lead to 'broken redirects' and 'unexpected navigation behavior', which vaguely describes an impact on how components integrate, but it does not name any specific callers or dependent components that are affected.",
+        "F4": "The review identifies a specific expectation that could be broken: 'The logic for handling relative paths without a subpath prefix may not correctly handle all edge cases,' particularly for 'complex query parameters and subpath configurations.' This points to a specific contract (correctly handling all URL types) that is at risk.",
+        "P1": "The review does not mention performance.",
+        "R2": "The review does not comment on code complexity or suggest simplification. It focuses on correctness and missing edge cases rather than unnecessarily complex code.",
+        "T3": "The review names one specific test file to be updated: 'Add additional test cases in `location.test.ts`...'"
+      },
+      "error": ""
+    }
+  ],
+  "timestamp": "2026-06-01T18:58:25.449128+00:00"
+}

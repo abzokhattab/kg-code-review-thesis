@@ -1,0 +1,51 @@
+{
+  "pr_id": 19,
+  "mode": "baseline",
+  "mean_scores": {
+    "F3": 3.0,
+    "F4": 1.5,
+    "P1": 0.0,
+    "R2": 0.0,
+    "T3": 0.0
+  },
+  "mean_graded_total": 4.5,
+  "per_judge": [
+    {
+      "model": "gemini:gemini-2.5-flash",
+      "scores": {
+        "F3": 3,
+        "F4": 0,
+        "P1": 0,
+        "R2": 0,
+        "T3": 0
+      },
+      "evidence": {
+        "F3": "Evidence: `core/src/main/java/hudson/model/DirectoryBrowserSupport.java:663-667`: References to new SVG icons (`folder.svg`, `document.svg`, `folder-delete.svg`, `document-delete.svg`) without confirmation of their existence in the assets. (...) `core/src/main/resources/hudson/model/DirectoryBrowserSupport/dir.jelly:42`: Change from `icon-go-next` to `icon-next` without ensuring the new class is defined and styled appropriately. (...) Impact: If the SVG assets are missing, the icons will not ren",
+        "F4": "No mention of breaking changes or API contract violations. The review focuses on internal consistency and resource availability for the new implementation.",
+        "P1": "No mention of performance.",
+        "R2": "No comment on complexity or code structure.",
+        "T3": "Add tests to verify that the icons render correctly in the UI, possibly using a UI testing framework to automate this check."
+      },
+      "error": ""
+    },
+    {
+      "model": "gemini:gemini-2.5-pro",
+      "scores": {
+        "F3": 3,
+        "F4": 3,
+        "P1": 0,
+        "R2": 0,
+        "T3": 0
+      },
+      "evidence": {
+        "F3": "The review names multiple specific dependent components with file paths (`core/src/main/java/hudson/model/DirectoryBrowserSupport.java:663-667` and `core/src/main/resources/hudson/model/DirectoryBrowserSupport/dir.jelly:42`) and explains the concrete integration risk for each (missing SVG assets leading to a broken UI, and undefined CSS classes leading to styling issues).",
+        "F4": "The review identifies multiple specific contract violations with file references. It points out that the Java code (`DirectoryBrowserSupport.java:663-667`) now has a contract expecting specific SVG files to exist, and the Jelly template (`dir.jelly:42`) has a contract expecting the `icon-next` CSS class to be defined. It explains the downstream behavior for both potential breaks (broken UI, incorrect styling).",
+        "P1": "The review does not mention performance.",
+        "R2": "The review does not comment on complexity or suggest simplifications.",
+        "T3": "The review generically recommends to 'Add tests to verify that the icons render correctly in the UI' without naming any specific test files."
+      },
+      "error": ""
+    }
+  ],
+  "timestamp": "2026-06-01T18:57:54.971995+00:00"
+}

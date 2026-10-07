@@ -1,0 +1,51 @@
+{
+  "pr_id": 21,
+  "mode": "joern_kg",
+  "mean_scores": {
+    "F3": 3.0,
+    "F4": 3.0,
+    "P1": 0.0,
+    "R2": 0.0,
+    "T3": 2.0
+  },
+  "mean_graded_total": 8.0,
+  "per_judge": [
+    {
+      "model": "gemini:gemini-2.5-flash",
+      "scores": {
+        "F3": 3,
+        "F4": 3,
+        "P1": 0,
+        "R2": 0,
+        "T3": 2
+      },
+      "evidence": {
+        "F3": "Names multiple specific callers or dependent components with file paths or function names, and explains the concrete integration risk for each. For example: 'Components like `org.apache.kafka.common.network.SslTransportLayer.java::close` (which calls `ByteBufferUnmapper.unmap`) and any code using `Checksums` or `Crc32C` will fail if the underlying JVM is JDK 8. This could lead to unexpected crashes in core Kafka components.' and 'Callers of `SslConfigs` (e.g., `main/java/org/apache/kafka/common/",
+        "F4": "Identifies multiple specific contract violations with file/function references and explains exactly what downstream behavior would change. For example: 'The most critical issue is that the changes will cause runtime exceptions (e.g., `ClassNotFoundException`, `NoSuchMethodError`, `UnsupportedOperationException`) if the application is run on JDK 8... This represents a hard break for any environment not yet on JDK 11+.' with specific file references like `clients/src/main/java/org/apache/kafka/com",
+        "P1": "No mention of performance issues in the review.",
+        "R2": "No comment on complexity or code structure in the review.",
+        "T3": "Names at least one specific test file path from the repository: 'The removal of `clients/src/test/java/org/apache/kafka/common/utils/JavaTest.java` removes tests... However, no new tests are added to explicitly assert the behavior when running on an unsupported JDK.'"
+      },
+      "error": ""
+    },
+    {
+      "model": "gemini:gemini-2.5-pro",
+      "scores": {
+        "F3": 3,
+        "F4": 3,
+        "P1": 0,
+        "R2": 0,
+        "T3": 2
+      },
+      "evidence": {
+        "F3": "Names multiple specific callers or dependent components with file paths or function names, and explains the concrete integration risk for each. Specifically, it mentions `org.apache.kafka.common.network.SslTransportLayer.java::close` (which calls `ByteBufferUnmapper.unmap`) and `main/java/org/apache/kafka/common/config/ConfigDef.java::withClientSslSupport` as a caller of `SslConfigs`, explaining how each will fail or experience behavior changes on JDK 8.",
+        "F4": "Identifies multiple specific contract violations with file/function references and explains exactly what downstream behavior would change. For example, it notes that callers of `SslConfigs` (like `ConfigDef.java::withClientSslSupport`) will now get `TLSv1.3` instead of `TLSv1.2` on older JDKs. It also details multiple locations (`ByteBufferUnmapper.java:87`, `Crc32C.java:16`, etc.) that will now throw runtime exceptions on JDK 8, which is a hard breaking change.",
+        "P1": "The review does not mention performance, efficiency, or potential bottlenecks.",
+        "R2": "The review does not comment on code complexity or suggest simplifications.",
+        "T3": "Names at least one specific test file path from the repository. The review points to the removal of `clients/src/test/java/org/apache/kafka/common/utils/JavaTest.java` as evidence that tests for Java version compatibility were removed, but no new tests were added to cover the new edge case (running on an unsupported JDK)."
+      },
+      "error": ""
+    }
+  ],
+  "timestamp": "2026-06-01T18:58:02.188846+00:00"
+}

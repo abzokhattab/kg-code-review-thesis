@@ -1,0 +1,436 @@
+{
+  "pr": {
+    "number": 67809,
+    "title": "Drawer: Introduce a size property that set's width percentage and minWidth ",
+    "body": "Fixes #27426\r\n \r\nTrying to solve the problem of our drawer that scale poorly on smaller screens as we only set a fixed percentage width right now, and 40% or 50% of a small screen is way to small for many of our drawers. \r\n\r\n* Add size prop with values `sm` | `md` | `lg`  and deprecate width prop \r\n* size prop sets percentage-based width AND min-width \r\n* Adds media query to improve handling large drawer with high min-width on smaller screens\r\n* Adjust media query to leave a small margin where you can still see background to make it more clear you are in a drawer even on very small screens (before it was 100%). \r\n* Deprecates inline drawers that have been broken for 2 years (https://github.com/grafana/grafana/issues/39390)\r\n* Update Storybook & mdx \r\n\r\nOpen question:\r\n\r\n* Maybe with this we can remove the \"expandable\" feature? (the chevron which when clicked expands the drawer to 100%). That interaction could be a bit unnecessary after this PR and would simplify the drawer header. \r\n\r\n[New-Features-in-v7-4---gdev-dashboards---Dashboards---Grafana.webm](https://user-images.githubusercontent.com/10999/236156161-7d41fcc8-b719-463b-9511-1fe42cf9916f.webm)\r\n\r\nExample of a problem drawer:\r\n![Screenshot from 2023-05-04 10-52-45](https://user-images.githubusercontent.com/10999/236156947-85079a1b-bae7-4b24-b2b5-48a3c09da194.png)\r\n",
+    "url": "https://github.com/grafana/grafana/pull/67809",
+    "repo": "grafana/grafana",
+    "base_branch": "main",
+    "head_branch": "drawer-size",
+    "merged_at": "2023-05-05T09:31:03Z",
+    "state": "MERGED"
+  },
+  "changed_files": [
+    {
+      "path": "packages/grafana-ui/src/components/Drawer/Drawer.mdx",
+      "language": "mdx",
+      "added": 11,
+      "deleted": 1
+    },
+    {
+      "path": "packages/grafana-ui/src/components/Drawer/Drawer.story.tsx",
+      "language": "typescript",
+      "added": 1,
+      "deleted": 37
+    },
+    {
+      "path": "packages/grafana-ui/src/components/Drawer/Drawer.tsx",
+      "language": "typescript",
+      "added": 63,
+      "deleted": 28
+    },
+    {
+      "path": "public/app/core/components/AppChrome/News/NewsContainer.tsx",
+      "language": "typescript",
+      "added": 6,
+      "deleted": 1
+    },
+    {
+      "path": "public/app/features/dashboard/components/HelpWizard/HelpWizard.tsx",
+      "language": "typescript",
+      "added": 1,
+      "deleted": 1
+    },
+    {
+      "path": "public/app/features/dashboard/components/Inspector/InspectContent.tsx",
+      "language": "typescript",
+      "added": 0,
+      "deleted": 1
+    },
+    {
+      "path": "public/app/features/dashboard/components/SaveDashboard/SaveDashboardDrawer.tsx",
+      "language": "typescript",
+      "added": 0,
+      "deleted": 1
+    }
+  ],
+  "nearest_tests": [
+    {
+      "path": "public/app/core/components/RolePickerDrawer/RolePickerDrawer.test.tsx",
+      "relationship": "tests",
+      "source_file": "packages/grafana-ui/src/components/Drawer/Drawer.mdx"
+    },
+    {
+      "path": "public/app/features/alerting/unified/components/rule-list/extensions/EnrichmentDrawerExtension.test.tsx",
+      "relationship": "tests",
+      "source_file": "packages/grafana-ui/src/components/Drawer/Drawer.mdx"
+    },
+    {
+      "path": "public/app/features/dashboard/components/SaveDashboard/SaveDashboardDrawer.test.tsx",
+      "relationship": "tests",
+      "source_file": "packages/grafana-ui/src/components/Drawer/Drawer.mdx"
+    },
+    {
+      "path": "public/app/features/auth-config/AuthDrawer.test.tsx",
+      "relationship": "tests",
+      "source_file": "packages/grafana-ui/src/components/Drawer/Drawer.mdx"
+    },
+    {
+      "path": "public/app/features/dashboard-scene/sharing/ShareDrawer/ShareDrawer.test.tsx",
+      "relationship": "tests",
+      "source_file": "packages/grafana-ui/src/components/Drawer/Drawer.mdx"
+    },
+    {
+      "path": "public/app/features/dashboard/components/HelpWizard/HelpWizard.test.tsx",
+      "relationship": "tests",
+      "source_file": "public/app/features/dashboard/components/HelpWizard/HelpWizard.tsx"
+    },
+    {
+      "path": "public/app/features/dashboard-scene/inspect/HelpWizard/HelpWizard.test.tsx",
+      "relationship": "tests",
+      "source_file": "public/app/features/dashboard/components/HelpWizard/HelpWizard.tsx"
+    },
+    {
+      "path": "public/app/features/dashboard-scene/saving/SaveDashboardDrawer.test.tsx",
+      "relationship": "tests",
+      "source_file": "public/app/features/dashboard/components/SaveDashboard/SaveDashboardDrawer.tsx"
+    }
+  ],
+  "dependent_files": [
+    "features/dashboard-scene/saving/SaveDashboardDrawer.tsx",
+    "features/dashboard/components/Inspector/InspectContent.tsx",
+    "features/dashboard/components/SaveDashboard/SaveDashboardDrawer.tsx"
+  ],
+  "diff_summary": "7 files changed",
+  "full_diff": "diff --git a/packages/grafana-ui/src/components/Drawer/Drawer.mdx b/packages/grafana-ui/src/components/Drawer/Drawer.mdx\nindex f8afb9b5c3d04..26a2358e217e9 100644\n--- a/packages/grafana-ui/src/components/Drawer/Drawer.mdx\n+++ b/packages/grafana-ui/src/components/Drawer/Drawer.mdx\n@@ -21,10 +21,20 @@ onClose = () => {\n };\n \n return (\n-  <Drawer title=\"This a Drawer\" width=\"60%\" onClose={this.onClose}>\n+  <Drawer title=\"This a Drawer\" size=\"md\" onClose={this.onClose}>\n     <div>Put your Drawer content here</div>\n   </Drawer>\n );\n ```\n \n+## Sizes\n+\n+The Drawer supports 3 sizes: `sm`, `md`, and `lg`. This option defines a width in percentage and as well as a min-width.\n+\n+- sm: width = 25vh and min-width = 384px\n+- md: width = 50vh and min-width = 568px\n+- lg: width = 75vh and min-width = 744px\n+\n+## Props\n+\n <Props of={Drawer} />\ndiff --git a/packages/grafana-ui/src/components/Drawer/Drawer.story.tsx b/packages/grafana-ui/src/components/Drawer/Drawer.story.tsx\nindex 9ffec537740d5..d762336e43897 100644\n--- a/packages/grafana-ui/src/components/Drawer/Drawer.story.tsx\n+++ b/packages/grafana-ui/src/components/Drawer/Drawer.story.tsx\n@@ -22,7 +22,6 @@ const meta: ComponentMeta<typeof Drawer> = {\n   args: {\n     closeOnMaskClick: true,\n     scrollableContent: false,\n-    width: '40%',\n     expandable: false,\n     subtitle: 'This is a subtitle.',\n   },\n@@ -142,42 +141,6 @@ LongContent.args = {\n   title: 'Drawer title with long content',\n };\n \n-export const InLine: ComponentStory<typeof Drawer> = (args) => {\n-  const [isOpen, setIsOpen] = useState(false);\n-  return (\n-    <>\n-      <div\n-        style={{\n-          height: '300px',\n-          width: '500px',\n-          border: '1px solid white',\n-          position: 'relative',\n-          overflow: 'hidden',\n-        }}\n-      >\n-        <Button onClick={() => setIsOpen(true)}>Open drawer</Button>\n-        {isOpen && (\n-          <Drawer {...args} onClose={() => setIsOpen(false)}>\n-            <ul>\n-              <li>this</li>\n-              <li>is</li>\n-              <li>a</li>\n-              <li>list</li>\n-              <li>of</li>\n-              <li>menu</li>\n-              <li>items</li>\n-            </ul>\n-          </Drawer>\n-        )}\n-      </div>\n-    </>\n-  );\n-};\n-InLine.args = {\n-  title: 'Drawer title inline',\n-  inline: true,\n-};\n-\n export const WithTabs: ComponentStory<typeof Drawer> = (args) => {\n   const [isOpen, setIsOpen] = useState(false);\n   const [activeTab, setActiveTab] = useState('options');\n@@ -206,6 +169,7 @@ export const WithTabs: ComponentStory<typeof Drawer> = (args) => {\n     </>\n   );\n };\n+\n WithTabs.args = {\n   title: 'Drawer title with tabs',\n };\ndiff --git a/packages/grafana-ui/src/components/Drawer/Drawer.tsx b/packages/grafana-ui/src/components/Drawer/Drawer.tsx\nindex 7c5efda7ba748..1aad5038d3377 100644\n--- a/packages/grafana-ui/src/components/Drawer/Drawer.tsx\n+++ b/packages/grafana-ui/src/components/Drawer/Drawer.tsx\n@@ -1,9 +1,9 @@\n-import { css } from '@emotion/css';\n+import { css, cx } from '@emotion/css';\n import { useDialog } from '@react-aria/dialog';\n import { FocusScope } from '@react-aria/focus';\n import { useOverlay } from '@react-aria/overlays';\n import RcDrawer from 'rc-drawer';\n-import React, { CSSProperties, ReactNode, useState, useEffect } from 'react';\n+import React, { ReactNode, useState, useEffect } from 'react';\n \n import { GrafanaTheme2 } from '@grafana/data';\n import { selectors } from '@grafana/e2e-selectors';\n@@ -20,12 +20,21 @@ export interface Props {\n   subtitle?: ReactNode;\n   /** Should the Drawer be closable by clicking on the mask, defaults to true */\n   closeOnMaskClick?: boolean;\n-  /** Render the drawer inside a container on the page */\n+  /** @deprecated */\n   inline?: boolean;\n-  /** Either a number in px or a string with unit postfix */\n+  /**\n+   * @deprecated use the size property instead\n+   **/\n   width?: number | string;\n   /** Should the Drawer be expandable to full width */\n   expandable?: boolean;\n+  /**\n+   * Specifies the width and min-width.\n+   * sm = width 25vw & min-width 384px\n+   * md = width 50vw & min-width 568px\n+   * lg = width 75vw & min-width 744px\n+   **/\n+  size?: 'sm' | 'md' | 'lg';\n   /** Tabs */\n   tabs?: React.ReactNode;\n   /** Set to true if the component rendered within in drawer content has its own scroll */\n@@ -36,20 +45,19 @@ export interface Props {\n \n export function Drawer({\n   children,\n-  inline = false,\n   onClose,\n   closeOnMaskClick = true,\n   scrollableContent = false,\n   title,\n   subtitle,\n-  width = '40%',\n+  width,\n+  size = 'md',\n   expandable = false,\n   tabs,\n }: Props) {\n-  const drawerStyles = useStyles2(getStyles);\n+  const styles = useStyles2(getStyles);\n   const [isExpanded, setIsExpanded] = useState(false);\n   const [isOpen, setIsOpen] = useState(false);\n-  const currentWidth = isExpanded ? '100%' : width;\n   const overlayRef = React.useRef(null);\n   const { dialogProps, titleProps } = useDialog({}, overlayRef);\n   const { overlayProps } = useOverlay(\n@@ -66,31 +74,29 @@ export function Drawer({\n     setIsOpen(true);\n   }, []);\n \n-  const content = <div className={drawerStyles.content}>{children}</div>;\n-  const style: CSSProperties = {};\n-  if (inline) {\n-    style.position = 'absolute';\n-  }\n+  // deprecated width prop now defaults to empty string which make the size prop take over\n+  const fixedWidth = isExpanded ? '100%' : width ?? '';\n+  const rootClass = cx(styles.drawer, !fixedWidth && styles.sizes[size]);\n+  const content = <div className={styles.content}>{children}</div>;\n \n   return (\n     <RcDrawer\n       open={isOpen}\n       onClose={onClose}\n       placement=\"right\"\n-      width={currentWidth}\n-      getContainer={inline ? undefined : 'body'}\n-      style={style}\n-      className={drawerStyles.drawerContent}\n-      rootClassName={drawerStyles.drawer}\n+      width={fixedWidth}\n+      getContainer={'.main-view'}\n+      className={styles.drawerContent}\n+      rootClassName={rootClass}\n       motion={{\n         motionAppear: true,\n-        motionName: drawerStyles.drawerMotion,\n+        motionName: styles.drawerMotion,\n       }}\n-      maskClassName={drawerStyles.mask}\n+      maskClassName={styles.mask}\n       maskClosable={closeOnMaskClick}\n       maskMotion={{\n         motionAppear: true,\n-        motionName: drawerStyles.maskMotion,\n+        motionName: styles.maskMotion,\n       }}\n     >\n       <FocusScope restoreFocus contain autoFocus>\n@@ -100,14 +106,14 @@ export function Drawer({\n               ? selectors.components.Drawer.General.title(title)\n               : selectors.components.Drawer.General.title('no title')\n           }\n-          className={drawerStyles.container}\n+          className={styles.container}\n           {...overlayProps}\n           {...dialogProps}\n           ref={overlayRef}\n         >\n           {typeof title === 'string' && (\n-            <div className={drawerStyles.header}>\n-              <div className={drawerStyles.actions}>\n+            <div className={styles.header}>\n+              <div className={styles.actions}>\n                 {expandable && !isExpanded && (\n                   <IconButton\n                     name=\"angle-left\"\n@@ -131,16 +137,16 @@ export function Drawer({\n                   aria-label={selectors.components.Drawer.General.close}\n                 />\n               </div>\n-              <div className={drawerStyles.titleWrapper}>\n+              <div className={styles.titleWrapper}>\n                 <h3 {...titleProps}>{title}</h3>\n                 {typeof subtitle === 'string' && <div className=\"muted\">{subtitle}</div>}\n                 {typeof subtitle !== 'string' && subtitle}\n-                {tabs && <div className={drawerStyles.tabsWrapper}>{tabs}</div>}\n+                {tabs && <div className={styles.tabsWrapper}>{tabs}</div>}\n               </div>\n             </div>\n           )}\n           {typeof title !== 'string' && title}\n-          <div className={drawerStyles.contentScroll}>\n+          <div className={styles.contentScroll}>\n             {!scrollableContent ? content : <CustomScrollbar autoHeightMin=\"100%\">{content}</CustomScrollbar>}\n           </div>\n         </div>\n@@ -162,10 +168,39 @@ const getStyles = (theme: GrafanaTheme2) => {\n         box-shadow: ${theme.shadows.z3};\n \n         ${theme.breakpoints.down('sm')} {\n-          width: 100% !important;\n+          width: calc(100% - ${theme.spacing(2)}) !important;\n+          min-width: 0 !important;\n         }\n       }\n     `,\n+    sizes: {\n+      sm: css({\n+        '.rc-drawer-content-wrapper': {\n+          label: 'drawer-sm',\n+          width: '25vw',\n+          minWidth: theme.spacing(48),\n+        },\n+      }),\n+      md: css({\n+        '.rc-drawer-content-wrapper': {\n+          label: 'drawer-md',\n+          width: '50vw',\n+          minWidth: theme.spacing(66),\n+        },\n+      }),\n+      lg: css({\n+        '.rc-drawer-content-wrapper': {\n+          label: 'drawer-lg',\n+          width: '75vw',\n+          minWidth: theme.spacing(93),\n+\n+          [theme.breakpoints.down('md')]: {\n+            width: `calc(100% - ${theme.spacing(2)}) !important`,\n+            minWidth: 0,\n+          },\n+        },\n+      }),\n+    },\n     drawerContent: css`\n       background-color: ${theme.colors.background.primary} !important;\n       display: flex;\ndiff --git a/public/app/core/components/AppChrome/News/NewsContainer.tsx b/public/app/core/components/AppChrome/News/NewsContainer.tsx\nindex 727e412257096..80c6a2099f032 100644\n--- a/public/app/core/components/AppChrome/News/NewsContainer.tsx\n+++ b/public/app/core/components/AppChrome/News/NewsContainer.tsx\n@@ -22,7 +22,12 @@ export function NewsContainer({ className }: NewsContainerProps) {\n     <>\n       <ToolbarButton className={className} onClick={onChildClick} iconOnly icon=\"rss\" aria-label=\"News\" />\n       {showNewsDrawer && (\n-        <Drawer title={t('news.title', 'Latest from the blog')} scrollableContent onClose={onToggleShowNewsDrawer}>\n+        <Drawer\n+          title={t('news.title', 'Latest from the blog')}\n+          scrollableContent\n+          onClose={onToggleShowNewsDrawer}\n+          size=\"md\"\n+        >\n           <NewsWrapper feedUrl={DEFAULT_FEED_URL} />\n         </Drawer>\n       )}\ndiff --git a/public/app/features/dashboard/components/HelpWizard/HelpWizard.tsx b/public/app/features/dashboard/components/HelpWizard/HelpWizard.tsx\nindex f2af5932fbf65..541dc7bba11ff 100644\n--- a/public/app/features/dashboard/components/HelpWizard/HelpWizard.tsx\n+++ b/public/app/features/dashboard/components/HelpWizard/HelpWizard.tsx\n@@ -72,7 +72,7 @@ export function HelpWizard({ panel, plugin, onClose }: Props) {\n   return (\n     <Drawer\n       title={`Get help with this panel`}\n-      width=\"90%\"\n+      size=\"lg\"\n       onClose={onClose}\n       expandable\n       scrollableContent\ndiff --git a/public/app/features/dashboard/components/Inspector/InspectContent.tsx b/public/app/features/dashboard/components/Inspector/InspectContent.tsx\nindex 198dfec4f512d..af5446806b970 100644\n--- a/public/app/features/dashboard/components/Inspector/InspectContent.tsx\n+++ b/public/app/features/dashboard/components/Inspector/InspectContent.tsx\n@@ -68,7 +68,6 @@ export const InspectContent = ({\n     <Drawer\n       title={title}\n       subtitle={data && formatStats(data)}\n-      width=\"50%\"\n       onClose={onClose}\n       expandable\n       scrollableContent\ndiff --git a/public/app/features/dashboard/components/SaveDashboard/SaveDashboardDrawer.tsx b/public/app/features/dashboard/components/SaveDashboard/SaveDashboardDrawer.tsx\nindex a411d3e67ae51..5b02cbd731ebe 100644\n--- a/public/app/features/dashboard/components/SaveDashboard/SaveDashboardDrawer.tsx\n+++ b/public/app/features/dashboard/components/SaveDashboard/SaveDashboardDrawer.tsx\n@@ -131,7 +131,6 @@ export const SaveDashboardDrawer = ({ dashboard, onDismiss, onSaveSuccess, isCop\n     <Drawer\n       title={title}\n       onClose={onDismiss}\n-      width={'40%'}\n       subtitle={dashboard.title}\n       tabs={\n         <TabsBar>\n",
+  "metadata": {
+    "v2_fetcher_version": 1,
+    "v2_fetched_at_unix": 1777501255,
+    "v2_diff_cap_bytes": 50000,
+    "v2_body_cap_bytes": 8000,
+    "v2_diff_truncated": false,
+    "v2_raw_diff_chars": 12025,
+    "v2_raw_body_chars": 1343,
+    "v2_rag_source": "merged_from_v1",
+    "v2_rag_chunks_copied": 8,
+    "joern_enriched": true,
+    "joern_callers_count": 4,
+    "joern_functions_count": 16
+  },
+  "similar_chunks": [
+    {
+      "file": "public/app/features/dashboard/components/SaveDashboard/SaveDashboardErrorProxy.tsx",
+      "start_line": 1,
+      "end_line": 56,
+      "similarity": 0.8198,
+      "related_to": "public/app/features/dashboard/components/SaveDashboard/SaveDashboardDrawer.tsx",
+      "content_preview": "import { css } from '@emotion/css';\nimport * as React from 'react';\n\nimport { GrafanaTheme2 } from '@grafana/data';\nimport { Trans, t } from '@grafana/i18n';\nimport { config, FetchError } from '@grafana/runtime';\nimport { Dashboard } from '@grafana/schema';\nimport { Button, ConfirmModal, Modal, useStyles2 } from '@grafana/ui';\n\nimport { DashboardModel } from '../../state/DashboardModel';\n\nimport { SaveDashboardAsButton } from './SaveDashboardButton';\nimport { SaveDashboardModalProps } from './types';\nimport { useDashboardSave } from './useDashboardSave';\n\ninterface SaveDashboardErrorProxyProps {\n  /** original dashboard */\n  dashboard: DashboardModel;\n  /** dashboard save model with applied modifications, i.e. title */\n  dashboardSaveModel: Dashboard;\n  error: FetchError;\n  onDismiss: () ="
+    },
+    {
+      "file": "public/app/features/dashboard/components/SaveDashboard/types.ts",
+      "start_line": 1,
+      "end_line": 60,
+      "similarity": 0.7988,
+      "related_to": "public/app/features/dashboard/components/SaveDashboard/SaveDashboardDrawer.tsx",
+      "content_preview": "import { Dashboard } from '@grafana/schema';\nimport { ObjectMeta } from 'app/features/apiserver/types';\nimport { CloneOptions, DashboardModel } from 'app/features/dashboard/state/DashboardModel';\nimport { Diffs } from 'app/features/dashboard-scene/settings/version-history/utils';\nimport { SaveDashboardResponseDTO } from 'app/types/dashboard';\n\nexport interface SaveDashboardData {\n  clone: Dashboard; // cloned copy\n  diff: Diffs;\n  diffCount: number; // cumulative count\n  hasChanges: boolean; // not new and has changes\n}\n\nexport interface SaveDashboardOptions extends CloneOptions {\n  folderUid?: string;\n  overwrite?: boolean;\n  message?: string;\n  makeEditable?: boolean;\n  // for schema v2 we need to pass the k8s metadata\n  k8s?: Partial<ObjectMeta>;\n}\n\nexport interface SaveDashboardAsOptio"
+    },
+    {
+      "file": "public/app/features/dashboard/components/Inspector/hooks.ts",
+      "start_line": 1,
+      "end_line": 60,
+      "similarity": 0.7871,
+      "related_to": "public/app/features/dashboard/components/Inspector/InspectContent.tsx",
+      "content_preview": "import { useMemo } from 'react';\nimport useAsync from 'react-use/lib/useAsync';\n\nimport { DataSourceApi, PanelData, PanelPlugin } from '@grafana/data';\nimport { t } from '@grafana/i18n';\nimport { getDataSourceSrv } from '@grafana/runtime';\nimport { DashboardModel } from 'app/features/dashboard/state/DashboardModel';\nimport { PanelModel } from 'app/features/dashboard/state/PanelModel';\nimport { InspectTab } from 'app/features/inspector/types';\n\nimport { supportsDataQuery } from '../PanelEditor/utils';\n\n/**\n * Given PanelData return first data source supporting metadata inspector\n */\nexport const useDatasourceMetadata = (data?: PanelData) => {\n  const state = useAsync(async () => getDataSourceWithInspector(data), [data]);\n  return state.value;\n};\n\nexport async function getDataSourceWithInspe"
+    },
+    {
+      "file": "public/app/features/dashboard/components/SaveDashboard/SaveDashboardDiff.tsx",
+      "start_line": 1,
+      "end_line": 70,
+      "similarity": 0.767,
+      "related_to": "public/app/features/dashboard/components/SaveDashboard/SaveDashboardDrawer.tsx",
+      "content_preview": "import { ReactElement } from 'react';\nimport { useAsync } from 'react-use';\n\nimport { Trans, t } from '@grafana/i18n';\nimport { Alert, Box, Spinner, Stack } from '@grafana/ui';\nimport { Diffs } from 'app/features/dashboard-scene/settings/version-history/utils';\n\nimport { DiffGroup } from '../../../dashboard-scene/settings/version-history/DiffGroup';\nimport { DiffViewer } from '../../../dashboard-scene/settings/version-history/DiffViewer';\n\ninterface SaveDashboardDiffProps {\n  oldValue?: unknown;\n  newValue?: unknown;\n\n  // calculated by parent so we can see summary in tabs\n  diff?: Diffs;\n  hasFolderChanges?: boolean;\n  oldFolder?: string;\n  newFolder?: string;\n  hasMigratedToV2?: boolean;\n}\n\nexport const SaveDashboardDiff = ({\n  diff,\n  oldValue,\n  newValue,\n  hasFolderChanges,\n  oldFolde"
+    },
+    {
+      "file": "public/app/features/dashboard/components/Inspector/PanelInspector.tsx",
+      "start_line": 1,
+      "end_line": 61,
+      "similarity": 0.7661,
+      "related_to": "public/app/features/dashboard/components/Inspector/InspectContent.tsx",
+      "content_preview": "import { useState } from 'react';\nimport { connect, MapStateToProps } from 'react-redux';\nimport { useLocation } from 'react-router-dom-v5-compat';\n\nimport { PanelPlugin } from '@grafana/data';\nimport { locationService } from '@grafana/runtime';\nimport { DashboardModel } from 'app/features/dashboard/state/DashboardModel';\nimport { PanelModel } from 'app/features/dashboard/state/PanelModel';\nimport { InspectTab } from 'app/features/inspector/types';\nimport { getPanelStateForModel } from 'app/features/panel/state/selectors';\nimport { StoreState } from 'app/types/store';\n\nimport { GetDataOptions } from '../../../query/state/PanelQueryRunner';\nimport { HelpWizard } from '../HelpWizard/HelpWizard';\nimport { usePanelLatestData } from '../PanelEditor/usePanelLatestData';\n\nimport { InspectContent "
+    },
+    {
+      "file": "public/app/features/dashboard/components/SaveDashboard/useDashboardSave.tsx",
+      "start_line": 1,
+      "end_line": 51,
+      "similarity": 0.7489,
+      "related_to": "public/app/features/dashboard/components/SaveDashboard/SaveDashboardDrawer.tsx",
+      "content_preview": "import { cloneDeep } from 'lodash';\nimport { useAsyncFn } from 'react-use';\n\nimport { locationUtil } from '@grafana/data';\nimport { t } from '@grafana/i18n';\nimport { locationService } from '@grafana/runtime';\nimport { Dashboard } from '@grafana/schema';\nimport { appEvents } from 'app/core/app_events';\nimport { useAppNotification } from 'app/core/copy/appNotification';\nimport { updateDashboardName } from 'app/core/reducers/navBarTree';\nimport { useSaveDashboardMutation } from 'app/features/browse-dashboards/api/browseDashboardsAPI';\nimport { DashboardModel } from 'app/features/dashboard/state/DashboardModel';\nimport { DashboardInteractions } from 'app/features/dashboard-scene/utils/interactions';\nimport { DashboardSavedEvent } from 'app/types/events';\nimport { useDispatch } from 'app/types"
+    },
+    {
+      "file": "public/app/features/dashboard/components/SaveDashboard/SaveDashboardButton.tsx",
+      "start_line": 1,
+      "end_line": 62,
+      "similarity": 0.7414,
+      "related_to": "public/app/features/dashboard/components/SaveDashboard/SaveDashboardDrawer.tsx",
+      "content_preview": "import { selectors } from '@grafana/e2e-selectors';\nimport { Trans } from '@grafana/i18n';\nimport { reportInteraction } from '@grafana/runtime';\nimport { Button, ButtonVariant, ComponentSize, ModalsController } from '@grafana/ui';\nimport { DashboardModel } from 'app/features/dashboard/state/DashboardModel';\n\nimport { SaveDashboardDrawer } from './SaveDashboardDrawer';\n\ninterface SaveDashboardButtonProps {\n  dashboard: DashboardModel;\n  onSaveSuccess?: () => void;\n  size?: ComponentSize;\n  onClick?: () => void;\n}\n\nexport const SaveDashboardButton = ({ dashboard, onSaveSuccess, size }: SaveDashboardButtonProps) => {\n  return (\n    <ModalsController>\n      {({ showModal, hideModal }) => {\n        return (\n          <Button\n            size={size}\n            onClick={() => {\n              sho"
+    },
+    {
+      "file": "public/app/features/dashboard/components/Inspector/PanelInspector.tsx",
+      "start_line": 53,
+      "end_line": 87,
+      "similarity": 0.7282,
+      "related_to": "public/app/features/dashboard/components/Inspector/InspectContent.tsx",
+      "content_preview": "\n  if (defaultTab === InspectTab.Help) {\n    return <HelpWizard panel={panel} plugin={plugin} onClose={onClose} />;\n  }\n\n  return (\n    <InspectContent\n      dashboard={dashboard}\n      panel={panel}\n      plugin={plugin}\n      defaultTab={defaultTab}\n      tabs={tabs}\n      data={data}\n      isDataLoading={isLoading}\n      dataOptions={dataOptions}\n      onDataOptionsChange={setDataOptions}\n      metadataDatasource={metaDs}\n      onClose={onClose}\n    />\n  );\n};\n\nconst mapStateToProps: MapStateToProps<ConnectedProps, OwnProps, StoreState> = (state, props) => {\n  const panelState = getPanelStateForModel(state, props.panel);\n  if (!panelState) {\n    return { plugin: null };\n  }\n\n  return {\n    plugin: panelState.plugin,\n  };\n};\n\nexport const PanelInspector = connect(mapStateToProps)(PanelIn"
+    }
+  ],
+  "rag_evidence": {
+    "similar_code": [
+      {
+        "file": "public/app/features/dashboard/components/SaveDashboard/SaveDashboardErrorProxy.tsx",
+        "start_line": 1,
+        "end_line": 56,
+        "similarity": 0.8198,
+        "related_to": "public/app/features/dashboard/components/SaveDashboard/SaveDashboardDrawer.tsx",
+        "content_preview": "import { css } from '@emotion/css';\nimport * as React from 'react';\n\nimport { GrafanaTheme2 } from '@grafana/data';\nimport { Trans, t } from '@grafana/i18n';\nimport { config, FetchError } from '@grafana/runtime';\nimport { Dashboard } from '@grafana/schema';\nimport { Button, ConfirmModal, Modal, useStyles2 } from '@grafana/ui';\n\nimport { DashboardModel } from '../../state/DashboardModel';\n\nimport { SaveDashboardAsButton } from './SaveDashboardButton';\nimport { SaveDashboardModalProps } from './types';\nimport { useDashboardSave } from './useDashboardSave';\n\ninterface SaveDashboardErrorProxyProps {\n  /** original dashboard */\n  dashboard: DashboardModel;\n  /** dashboard save model with applied modifications, i.e. title */\n  dashboardSaveModel: Dashboard;\n  error: FetchError;\n  onDismiss: () ="
+      },
+      {
+        "file": "public/app/features/dashboard/components/SaveDashboard/types.ts",
+        "start_line": 1,
+        "end_line": 60,
+        "similarity": 0.7988,
+        "related_to": "public/app/features/dashboard/components/SaveDashboard/SaveDashboardDrawer.tsx",
+        "content_preview": "import { Dashboard } from '@grafana/schema';\nimport { ObjectMeta } from 'app/features/apiserver/types';\nimport { CloneOptions, DashboardModel } from 'app/features/dashboard/state/DashboardModel';\nimport { Diffs } from 'app/features/dashboard-scene/settings/version-history/utils';\nimport { SaveDashboardResponseDTO } from 'app/types/dashboard';\n\nexport interface SaveDashboardData {\n  clone: Dashboard; // cloned copy\n  diff: Diffs;\n  diffCount: number; // cumulative count\n  hasChanges: boolean; // not new and has changes\n}\n\nexport interface SaveDashboardOptions extends CloneOptions {\n  folderUid?: string;\n  overwrite?: boolean;\n  message?: string;\n  makeEditable?: boolean;\n  // for schema v2 we need to pass the k8s metadata\n  k8s?: Partial<ObjectMeta>;\n}\n\nexport interface SaveDashboardAsOptio"
+      },
+      {
+        "file": "public/app/features/dashboard/components/Inspector/hooks.ts",
+        "start_line": 1,
+        "end_line": 60,
+        "similarity": 0.7871,
+        "related_to": "public/app/features/dashboard/components/Inspector/InspectContent.tsx",
+        "content_preview": "import { useMemo } from 'react';\nimport useAsync from 'react-use/lib/useAsync';\n\nimport { DataSourceApi, PanelData, PanelPlugin } from '@grafana/data';\nimport { t } from '@grafana/i18n';\nimport { getDataSourceSrv } from '@grafana/runtime';\nimport { DashboardModel } from 'app/features/dashboard/state/DashboardModel';\nimport { PanelModel } from 'app/features/dashboard/state/PanelModel';\nimport { InspectTab } from 'app/features/inspector/types';\n\nimport { supportsDataQuery } from '../PanelEditor/utils';\n\n/**\n * Given PanelData return first data source supporting metadata inspector\n */\nexport const useDatasourceMetadata = (data?: PanelData) => {\n  const state = useAsync(async () => getDataSourceWithInspector(data), [data]);\n  return state.value;\n};\n\nexport async function getDataSourceWithInspe"
+      },
+      {
+        "file": "public/app/features/dashboard/components/SaveDashboard/SaveDashboardDiff.tsx",
+        "start_line": 1,
+        "end_line": 70,
+        "similarity": 0.767,
+        "related_to": "public/app/features/dashboard/components/SaveDashboard/SaveDashboardDrawer.tsx",
+        "content_preview": "import { ReactElement } from 'react';\nimport { useAsync } from 'react-use';\n\nimport { Trans, t } from '@grafana/i18n';\nimport { Alert, Box, Spinner, Stack } from '@grafana/ui';\nimport { Diffs } from 'app/features/dashboard-scene/settings/version-history/utils';\n\nimport { DiffGroup } from '../../../dashboard-scene/settings/version-history/DiffGroup';\nimport { DiffViewer } from '../../../dashboard-scene/settings/version-history/DiffViewer';\n\ninterface SaveDashboardDiffProps {\n  oldValue?: unknown;\n  newValue?: unknown;\n\n  // calculated by parent so we can see summary in tabs\n  diff?: Diffs;\n  hasFolderChanges?: boolean;\n  oldFolder?: string;\n  newFolder?: string;\n  hasMigratedToV2?: boolean;\n}\n\nexport const SaveDashboardDiff = ({\n  diff,\n  oldValue,\n  newValue,\n  hasFolderChanges,\n  oldFolde"
+      },
+      {
+        "file": "public/app/features/dashboard/components/Inspector/PanelInspector.tsx",
+        "start_line": 1,
+        "end_line": 61,
+        "similarity": 0.7661,
+        "related_to": "public/app/features/dashboard/components/Inspector/InspectContent.tsx",
+        "content_preview": "import { useState } from 'react';\nimport { connect, MapStateToProps } from 'react-redux';\nimport { useLocation } from 'react-router-dom-v5-compat';\n\nimport { PanelPlugin } from '@grafana/data';\nimport { locationService } from '@grafana/runtime';\nimport { DashboardModel } from 'app/features/dashboard/state/DashboardModel';\nimport { PanelModel } from 'app/features/dashboard/state/PanelModel';\nimport { InspectTab } from 'app/features/inspector/types';\nimport { getPanelStateForModel } from 'app/features/panel/state/selectors';\nimport { StoreState } from 'app/types/store';\n\nimport { GetDataOptions } from '../../../query/state/PanelQueryRunner';\nimport { HelpWizard } from '../HelpWizard/HelpWizard';\nimport { usePanelLatestData } from '../PanelEditor/usePanelLatestData';\n\nimport { InspectContent "
+      },
+      {
+        "file": "public/app/features/dashboard/components/SaveDashboard/useDashboardSave.tsx",
+        "start_line": 1,
+        "end_line": 51,
+        "similarity": 0.7489,
+        "related_to": "public/app/features/dashboard/components/SaveDashboard/SaveDashboardDrawer.tsx",
+        "content_preview": "import { cloneDeep } from 'lodash';\nimport { useAsyncFn } from 'react-use';\n\nimport { locationUtil } from '@grafana/data';\nimport { t } from '@grafana/i18n';\nimport { locationService } from '@grafana/runtime';\nimport { Dashboard } from '@grafana/schema';\nimport { appEvents } from 'app/core/app_events';\nimport { useAppNotification } from 'app/core/copy/appNotification';\nimport { updateDashboardName } from 'app/core/reducers/navBarTree';\nimport { useSaveDashboardMutation } from 'app/features/browse-dashboards/api/browseDashboardsAPI';\nimport { DashboardModel } from 'app/features/dashboard/state/DashboardModel';\nimport { DashboardInteractions } from 'app/features/dashboard-scene/utils/interactions';\nimport { DashboardSavedEvent } from 'app/types/events';\nimport { useDispatch } from 'app/types"
+      },
+      {
+        "file": "public/app/features/dashboard/components/SaveDashboard/SaveDashboardButton.tsx",
+        "start_line": 1,
+        "end_line": 62,
+        "similarity": 0.7414,
+        "related_to": "public/app/features/dashboard/components/SaveDashboard/SaveDashboardDrawer.tsx",
+        "content_preview": "import { selectors } from '@grafana/e2e-selectors';\nimport { Trans } from '@grafana/i18n';\nimport { reportInteraction } from '@grafana/runtime';\nimport { Button, ButtonVariant, ComponentSize, ModalsController } from '@grafana/ui';\nimport { DashboardModel } from 'app/features/dashboard/state/DashboardModel';\n\nimport { SaveDashboardDrawer } from './SaveDashboardDrawer';\n\ninterface SaveDashboardButtonProps {\n  dashboard: DashboardModel;\n  onSaveSuccess?: () => void;\n  size?: ComponentSize;\n  onClick?: () => void;\n}\n\nexport const SaveDashboardButton = ({ dashboard, onSaveSuccess, size }: SaveDashboardButtonProps) => {\n  return (\n    <ModalsController>\n      {({ showModal, hideModal }) => {\n        return (\n          <Button\n            size={size}\n            onClick={() => {\n              sho"
+      },
+      {
+        "file": "public/app/features/dashboard/components/Inspector/PanelInspector.tsx",
+        "start_line": 53,
+        "end_line": 87,
+        "similarity": 0.7282,
+        "related_to": "public/app/features/dashboard/components/Inspector/InspectContent.tsx",
+        "content_preview": "\n  if (defaultTab === InspectTab.Help) {\n    return <HelpWizard panel={panel} plugin={plugin} onClose={onClose} />;\n  }\n\n  return (\n    <InspectContent\n      dashboard={dashboard}\n      panel={panel}\n      plugin={plugin}\n      defaultTab={defaultTab}\n      tabs={tabs}\n      data={data}\n      isDataLoading={isLoading}\n      dataOptions={dataOptions}\n      onDataOptionsChange={setDataOptions}\n      metadataDatasource={metaDs}\n      onClose={onClose}\n    />\n  );\n};\n\nconst mapStateToProps: MapStateToProps<ConnectedProps, OwnProps, StoreState> = (state, props) => {\n  const panelState = getPanelStateForModel(state, props.panel);\n  if (!panelState) {\n    return { plugin: null };\n  }\n\n  return {\n    plugin: panelState.plugin,\n  };\n};\n\nexport const PanelInspector = connect(mapStateToProps)(PanelIn"
+      }
+    ]
+  },
+  "callers": [
+    {
+      "path": "features/dashboard-scene/saving/SaveDashboardDrawer.tsx",
+      "from_function": "SaveDashboardDrawerComponent",
+      "calls_function": "renderBody",
+      "caller_line": 51,
+      "callee_file": "features/dashboard-scene/saving/SaveDashboardDrawer.tsx",
+      "callee_line": 89
+    },
+    {
+      "path": "features/dashboard/components/Inspector/InspectContent.tsx",
+      "from_function": "InspectContent",
+      "calls_function": "getErrors",
+      "caller_line": 45,
+      "callee_file": "features/dashboard/components/Inspector/InspectContent.tsx",
+      "callee_line": 124
+    },
+    {
+      "path": "features/dashboard/components/Inspector/InspectContent.tsx",
+      "from_function": "InspectContent",
+      "calls_function": "formatStats",
+      "caller_line": 45,
+      "callee_file": "features/dashboard/components/Inspector/InspectContent.tsx",
+      "callee_line": 139
+    },
+    {
+      "path": "features/dashboard/components/SaveDashboard/SaveDashboardDrawer.tsx",
+      "from_function": "SaveDashboardDrawer",
+      "calls_function": "renderSaveBody",
+      "caller_line": 17,
+      "callee_file": "features/dashboard/components/SaveDashboard/SaveDashboardDrawer.tsx",
+      "callee_line": 58
+    }
+  ],
+  "call_graph_edges": [
+    {
+      "from": "features/dashboard-scene/saving/SaveDashboardDrawer.tsx::SaveDashboardDrawerComponent",
+      "to": "features/dashboard-scene/saving/SaveDashboardDrawer.tsx::renderBody"
+    },
+    {
+      "from": "features/dashboard/components/Inspector/InspectContent.tsx::InspectContent",
+      "to": "features/dashboard/components/Inspector/InspectContent.tsx::getErrors"
+    },
+    {
+      "from": "features/dashboard/components/Inspector/InspectContent.tsx::InspectContent",
+      "to": "features/dashboard/components/Inspector/InspectContent.tsx::formatStats"
+    },
+    {
+      "from": "features/dashboard/components/SaveDashboard/SaveDashboardDrawer.tsx::SaveDashboardDrawer",
+      "to": "features/dashboard/components/SaveDashboard/SaveDashboardDrawer.tsx::renderSaveBody"
+    }
+  ],
+  "functions_in_changed_files": [
+    {
+      "name": ":program",
+      "full_name": "features/dashboard-scene/inspect/HelpWizard/HelpWizard.tsx::program",
+      "file": "features/dashboard-scene/inspect/HelpWizard/HelpWizard.tsx",
+      "start_line": 1,
+      "end_line": 238,
+      "signature": ""
+    },
+    {
+      "name": "HelpWizard",
+      "full_name": "features/dashboard-scene/inspect/HelpWizard/HelpWizard.tsx::program:HelpWizard",
+      "file": "features/dashboard-scene/inspect/HelpWizard/HelpWizard.tsx",
+      "start_line": 36,
+      "end_line": 213,
+      "signature": ""
+    },
+    {
+      "name": "getStyles",
+      "full_name": "features/dashboard-scene/inspect/HelpWizard/HelpWizard.tsx::program:getStyles",
+      "file": "features/dashboard-scene/inspect/HelpWizard/HelpWizard.tsx",
+      "start_line": 215,
+      "end_line": 237,
+      "signature": ""
+    },
+    {
+      "name": ":program",
+      "full_name": "features/dashboard-scene/saving/SaveDashboardDrawer.tsx::program",
+      "file": "features/dashboard-scene/saving/SaveDashboardDrawer.tsx",
+      "start_line": 1,
+      "end_line": 132,
+      "signature": ""
+    },
+    {
+      "name": "SaveDashboardDrawerComponent",
+      "full_name": "features/dashboard-scene/saving/SaveDashboardDrawer.tsx::program:SaveDashboardDrawerComponent",
+      "file": "features/dashboard-scene/saving/SaveDashboardDrawer.tsx",
+      "start_line": 51,
+      "end_line": 131,
+      "signature": ""
+    },
+    {
+      "name": "renderBody",
+      "full_name": "features/dashboard-scene/saving/SaveDashboardDrawer.tsx::program:SaveDashboardDrawerComponent:renderBody",
+      "file": "features/dashboard-scene/saving/SaveDashboardDrawer.tsx",
+      "start_line": 89,
+      "end_line": 124,
+      "signature": ""
+    },
+    {
+      "name": ":program",
+      "full_name": "features/dashboard/components/HelpWizard/HelpWizard.tsx::program",
+      "file": "features/dashboard/components/HelpWizard/HelpWizard.tsx",
+      "start_line": 1,
+      "end_line": 235,
+      "signature": ""
+    },
+    {
+      "name": "HelpWizard",
+      "full_name": "features/dashboard/components/HelpWizard/HelpWizard.tsx::program:HelpWizard",
+      "file": "features/dashboard/components/HelpWizard/HelpWizard.tsx",
+      "start_line": 36,
+      "end_line": 213,
+      "signature": ""
+    },
+    {
+      "name": "getStyles",
+      "full_name": "features/dashboard/components/HelpWizard/HelpWizard.tsx::program:getStyles",
+      "file": "features/dashboard/components/HelpWizard/HelpWizard.tsx",
+      "start_line": 215,
+      "end_line": 234,
+      "signature": ""
+    },
+    {
+      "name": ":program",
+      "full_name": "features/dashboard/components/Inspector/InspectContent.tsx::program",
+      "file": "features/dashboard/components/Inspector/InspectContent.tsx",
+      "start_line": 1,
+      "end_line": 156,
+      "signature": ""
+    },
+    {
+      "name": "getErrors",
+      "full_name": "features/dashboard/components/Inspector/InspectContent.tsx::program:getErrors",
+      "file": "features/dashboard/components/Inspector/InspectContent.tsx",
+      "start_line": 124,
+      "end_line": 137,
+      "signature": ""
+    },
+    {
+      "name": "formatStats",
+      "full_name": "features/dashboard/components/Inspector/InspectContent.tsx::program:formatStats",
+      "file": "features/dashboard/components/Inspector/InspectContent.tsx",
+      "start_line": 139,
+      "end_line": 155,
+      "signature": ""
+    },
+    {
+      "name": "InspectContent",
+      "full_name": "features/dashboard/components/Inspector/InspectContent.tsx::program:InspectContent",
+      "file": "features/dashboard/components/Inspector/InspectContent.tsx",
+      "start_line": 45,
+      "end_line": 121,
+      "signature": ""
+    },
+    {
+      "name": ":program",
+      "full_name": "features/dashboard/components/SaveDashboard/SaveDashboardDrawer.tsx::program",
+      "file": "features/dashboard/components/SaveDashboard/SaveDashboardDrawer.tsx",
+      "start_line": 1,
+      "end_line": 142,
+      "signature": ""
+    },
+    {
+      "name": "SaveDashboardDrawer",
+      "full_name": "features/dashboard/components/SaveDashboard/SaveDashboardDrawer.tsx::program:SaveDashboardDrawer",
+      "file": "features/dashboard/components/SaveDashboard/SaveDashboardDrawer.tsx",
+      "start_line": 17,
+      "end_line": 141,
+      "signature": ""
+    },
+    {
+      "name": "renderSaveBody",
+      "full_name": "features/dashboard/components/SaveDashboard/SaveDashboardDrawer.tsx::program:<lambda>0:renderSaveBody",
+      "file": "features/dashboard/components/SaveDashboard/SaveDashboardDrawer.tsx",
+      "start_line": 58,
+      "end_line": 92,
+      "signature": ""
+    }
+  ]
+}

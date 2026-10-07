@@ -1,0 +1,90 @@
+{
+ "pr": {
+  "number": 7433,
+  "title": "Fix `prepare_body` stream detection for `__getattr__`-based file wrappers",
+  "body": "Resolves #7432 .\r\n\r\nAdd `hasattr(data, \"__iter__\")` as a fallback stream detector:\r\n```python\r\nif (\r\n    isinstance(data, Iterable) or hasattr(data, \"__iter__\")\r\n) and not isinstance(data, (str, bytes, list, tuple, Mapping)):\r\n```\r\nThis catches file-like objects that proxy their interface through `__getattr__`, restoring the 2.33.1 behavior without reverting the isinstance(Iterable) modernization for standard iterables.",
+  "repo": "psf/requests",
+  "head_sha": "ea1c36c1b1a8364e234b6ad49ea05e3261636f8a",
+  "merged_at": "2026-05-12T17:51:02Z"
+ },
+ "changed_files": [
+  {
+   "path": "src/requests/models.py",
+   "language": "python",
+   "added": 3,
+   "deleted": 3
+  },
+  {
+   "path": "tests/test_requests.py",
+   "language": "python",
+   "added": 15,
+   "deleted": 0
+  }
+ ],
+ "nearest_tests": [
+  {
+   "path": "tests/test_requests.py",
+   "relationship": "tests",
+   "source_file": "models"
+  }
+ ],
+ "dependent_files": [
+  {
+   "path": "src/requests/cookies.py",
+   "relationship": "imports",
+   "source_file": "models"
+  },
+  {
+   "path": "src/requests/auth.py",
+   "relationship": "imports",
+   "source_file": "models"
+  },
+  {
+   "path": "src/requests/sessions.py",
+   "relationship": "imports",
+   "source_file": "models"
+  },
+  {
+   "path": "src/requests/_types.py",
+   "relationship": "imports",
+   "source_file": "models"
+  },
+  {
+   "path": "src/requests/hooks.py",
+   "relationship": "imports",
+   "source_file": "models"
+  },
+  {
+   "path": "src/requests/__init__.py",
+   "relationship": "imports",
+   "source_file": "models"
+  },
+  {
+   "path": "src/requests/api.py",
+   "relationship": "imports",
+   "source_file": "models"
+  },
+  {
+   "path": "src/requests/utils.py",
+   "relationship": "imports",
+   "source_file": "models"
+  },
+  {
+   "path": "src/requests/exceptions.py",
+   "relationship": "imports",
+   "source_file": "models"
+  },
+  {
+   "path": "src/requests/adapters.py",
+   "relationship": "imports",
+   "source_file": "models"
+  }
+ ],
+ "diff_summary": "2 files changed",
+ "full_diff": "diff --git a/src/requests/models.py b/src/requests/models.py\nindex 4142f2a4bb..57e114866d 100644\n--- a/src/requests/models.py\n+++ b/src/requests/models.py\n@@ -596,9 +596,9 @@ def prepare_body(\n             if not isinstance(body, bytes):\n                 body = body.encode(\"utf-8\")\n \n-        if isinstance(data, Iterable) and not isinstance(\n-            data, (str, bytes, list, tuple, Mapping)\n-        ):\n+        # data that proxies attributes to underlying objects needs hasattr\n+        is_iterable = isinstance(data, Iterable) or hasattr(data, \"__iter__\")\n+        if is_iterable and not isinstance(data, (str, bytes, list, tuple, Mapping)):\n             try:\n                 length = super_len(data)\n             except (TypeError, AttributeError, UnsupportedOperation):\ndiff --git a/tests/test_requests.py b/tests/test_requests.py\nindex 09cd4a388a..571535fe79 100644\n--- a/tests/test_requests.py\n+++ b/tests/test_requests.py\n@@ -2073,6 +2073,21 @@ def __iter__(self):\n \n         assert \"Unable to rewind request body\" in str(e)\n \n+    def test_getattr_proxy_stream_follows_redirect(self, httpbin):\n+        \"\"\"Ensure stream wrappers that don't implement __iter__ directly are still detected.\"\"\"\n+\n+        class AttrProxy:\n+            def __init__(self):\n+                self._file = io.BytesIO(b\"data\")\n+\n+            def __getattr__(self, name):\n+                return getattr(self._file, name)\n+\n+        r = requests.post(\n+            httpbin(\"redirect-to?url=/post&status_code=307\"), data=AttrProxy()\n+        )\n+        assert r.json()[\"data\"] == \"data\"\n+\n     def _patch_adapter_gzipped_redirect(self, session, url):\n         adapter = session.get_adapter(url=url)\n         org_build_response = adapter.build_response\n",
+ "metadata": {
+  "kg_builder": "ast_import_resolver",
+  "built": "2026-07-06",
+  "note": "AST ImportFrom/Import resolution at PR head SHA; same relation class as deployed Joern+grep pipeline"
+ }
+}

@@ -1,0 +1,49 @@
+{
+  "body": "See [JENKINS-71089](https://issues.jenkins.io/browse/JENKINS-71089).\n\nRestores the `hasHeader = false` functionality.\n\n### Testing done\n\n[image]\n\n* Changed a hetero-list on `core` (as there isn't an existing one) to set the has header attribute to false, the title/dragdrop handle/help no longer shows now.\n\n### Proposed changelog entries\n\n- N/A\n\n\n\n### Proposed upgrade guidelines\n\nN/A\n\n### Submitter checklist\n\n- [ ] The Jira issue, if it exists, is well-described.\n- [ ] The changelog entries and upgrade guidelines are appropriate for the audience affected by the change (users or developers, depending on the change) and are in the imperative mood (see [examples](https://github.com/jenkins-infra/jenkins.io/blob/master/content/_data/changelogs/weekly.yml)).\n  - Fill in the **Proposed upgrade guidelines** section only if there are breaking changes or changes that may require extra steps from users during upgrade.\n- [ ] There is automated testing or an explanation as to why this change has no tests.\n- [ ] New public classes, fields, and methods are annotated with `@Restricted` or have `@since TODO` Javadocs, as appropriate.\n- [ ] New deprecations are annotated with `@Deprecated(since = \"TODO\")` or `@Deprecated(forRemoval = true, since = \"TODO\")`, if applicable.\n- [ ] New or substantially changed JavaScript is not defined inline and does not call `eval` to ease future introduction of Content Security Policy (CSP) directives (see [documentation](https://www.jenkins.io/doc/developer/security/csp/)).\n- [ ] For dependency updates, there are links to external changelogs and, if possible, full differentials.\n- [ ] For new APIs and extension points, there is a link to at least one consumer.\n\n### Desired reviewers\n\n@daniel-beck \n\n\n\n### Maintainer checklist\n\nBefore the changes are marked as `ready-for-merge`:\n\n- [ ] There are at least two (2) approvals for the pull request and no outstanding requests for change.\n- [ ] Conversations in the pull request are over, or it is explicit that a reviewer is not blocking the change.\n- [ ] Changelog entries in the pull request title and/or **Proposed changelog entries** are accurate, human-readable, and in the imperative mood.\n- [ ] Proper changelog labels are set so that the changelog can be generated automatically.\n- [ ] If the change needs additional upgrade steps from users, the `upgrade-guide-needed` label is set and there is a **Proposed upgrade guidelines** section in the pull request title (see [example](https://github.com/jenkinsci/jenkins/pull/4387)).\n- [ ] If it would make sense to backport the change to LTS, a Jira issue must exist, be a _Bug_ or _Improvement_, and be labeled as `lts-candidate` to be considered (see [query](https://issues.jenkins.io/issues/?filter=12146)).\n\n\n<a href=\"https://gitpod.io/#https://github.com/jenkinsci/jenkins/pull/7853\">[image]</a>",
+  "issue_comments": [
+    {
+      "body": "Caused [JENKINS-71156](https://issues.jenkins.io/browse/JENKINS-71156)",
+      "created_at": "2023-04-26T20:58:44Z",
+      "user": "NotMyFault"
+    },
+    {
+      "body": "@janfaracik I see your \ud83d\udc4d on the comment from @NotMyFault , but I don't see a pull request that resolves [JENKINS-71156](https://issues.jenkins.io/browse/JENKINS-71156).  Is there a fix in progress or should we consider reverting this change?\n\nThe report from @daniel-beck in [JENKINS-71089](https://issues.jenkins.io/browse/JENKINS-71089) did not seem to be as readily detected as [JENKINS-71156](https://issues.jenkins.io/browse/JENKINS-71156).  The behavior in JENKINS-71089 has existed since 2.335, while the behavior reported in JENKINS-71156 has only been seen since 2.402 and already has a duplicate report submitted.  I think that might give some indication that we should choose to resolve JENKINS-71156 and accept that by resolving JENKINS-71156 we are also bringing back JENKINS-71089.\n\nDo you have a different suggestion?",
+      "created_at": "2023-05-01T20:57:50Z",
+      "user": "MarkEWaite"
+    },
+    {
+      "body": "> @janfaracik I see your \ud83d\udc4d on the comment from @NotMyFault , but I don't see a pull request that resolves [JENKINS-71156](https://issues.jenkins.io/browse/JENKINS-71156). Is there a fix in progress or should we consider reverting this change?\n> \n> The report from @daniel-beck in [JENKINS-71089](https://issues.jenkins.io/browse/JENKINS-71089) did not seem to be as readily detected as [JENKINS-71156](https://issues.jenkins.io/browse/JENKINS-71156). The behavior in JENKINS-71089 has existed since 2.335, while the behavior reported in JENKINS-71156 has only been seen since 2.402 and already has a duplicate report submitted. I think that might give some indication that we should choose to resolve JENKINS-71156 and accept that by resolving JENKINS-71156 we are also bringing back JENKINS-71089.\n> \n> Do you have a different suggestion?\n\nHey, happy to either do a fix or revert. In the interest of time it might be best to do a revert and then I can do a follow up with a fix for both issues.\n\nDo we know if other hetero-lists are affected by the change in 71156 or if it's just limited to the parameterised job list?",
+      "created_at": "2023-05-02T14:23:59Z",
+      "user": "janfaracik"
+    },
+    {
+      "body": "@janfaracik The view configuration also doesn't work correctly ( /view/foo/configure). For each column, there is only an \"empty container\". This is on 2.403:\n![image](https://user-images.githubusercontent.com/406876/236177457-f97af4f4-05b6-4e5d-aa13-bc4260f65a71.png)",
+      "created_at": "2023-05-04T10:22:08Z",
+      "user": "Bananeweizen"
+    }
+  ],
+  "merged_at": "2023-04-19T21:48:57Z",
+  "owner_repo": "jenkinsci/jenkins",
+  "pr_id": 17,
+  "pr_number": 7853,
+  "review_comments": [],
+  "review_summaries": [
+    {
+      "body": "Thanks for the PR!",
+      "state": "APPROVED",
+      "user": "basil"
+    },
+    {
+      "body": "/label ready-for-merge\n\n----\n\nThis PR is now ready for merge, after ~24 hours, we will merge it if there's no negative feedback.\n\nThanks!",
+      "state": "APPROVED",
+      "user": "timja"
+    },
+    {
+      "body": "<details>\nTested a PR build with the same code I discovered the issue with originally.\n\n> [image]",
+      "state": "APPROVED",
+      "user": "daniel-beck"
+    }
+  ],
+  "title": "[JENKINS-71089] Fix `hasHeader` attribute for `f:hetero-list`",
+  "url": "https://github.com/jenkinsci/jenkins/pull/7853"
+}

@@ -1,0 +1,51 @@
+{
+  "pr_id": 14,
+  "mode": "baseline",
+  "mean_scores": {
+    "F3": 1.0,
+    "F4": 3.0,
+    "P1": 0.0,
+    "R2": 0.0,
+    "T3": 0.5
+  },
+  "mean_graded_total": 4.5,
+  "per_judge": [
+    {
+      "model": "gemini:gemini-2.5-flash",
+      "scores": {
+        "F3": 1,
+        "F4": 3,
+        "P1": 0,
+        "R2": 0,
+        "T3": 0
+      },
+      "evidence": {
+        "F3": "The deprecation of the `width` property is not fully backward compatible, potentially affecting existing implementations. ... Deprecating the `width` property without a clear migration path could lead to runtime errors or unexpected behavior in existing applications.",
+        "F4": "The `width` property is deprecated, but existing codebases using this property might not have a clear migration path. ... The inline drawer feature is removed, which might affect users who still rely on it despite its broken state. ... Deprecating the `width` property without a clear migration path could lead to runtime errors or unexpected behavior in existing applications. ... Removing the inline drawer feature might break functionality for users who have not transitioned away from it, leading",
+        "P1": "No mention of performance.",
+        "R2": "No comment on complexity or code structure.",
+        "T3": "Conduct thorough testing on various screen sizes and content types to ensure the media query adjustments handle all edge cases effectively."
+      },
+      "error": ""
+    },
+    {
+      "model": "gemini:gemini-2.5-pro",
+      "scores": {
+        "F3": 1,
+        "F4": 3,
+        "P1": 0,
+        "R2": 0,
+        "T3": 1
+      },
+      "evidence": {
+        "F3": "The review vaguely notes that integration may be affected by stating that deprecating the `width` property is 'potentially affecting existing implementations' and removing the inline drawer 'might impact users relying on this functionality', but it does not name any specific callers or dependent components.",
+        "F4": "The review identifies two specific contract violations with file references: 1. 'The `width` property is deprecated... `packages/grafana-ui/src/components/Drawer/Drawer.tsx:45`' and 2. 'The inline drawer feature is removed... `packages/grafana-ui/src/components/Drawer/Drawer.story.tsx:141`'. It also explains the downstream impact for each, such as 'could lead to runtime errors or unexpected behavior' and 'might break functionality'.",
+        "P1": "The review makes no mention of performance, efficiency, or potential bottlenecks.",
+        "R2": "The review does not comment on code complexity or suggest any simplifications or refactoring.",
+        "T3": "The review recommends to 'Conduct thorough testing on various screen sizes and content types'. This mentions that tests should exist but does not name a specific test file or suite."
+      },
+      "error": ""
+    }
+  ],
+  "timestamp": "2026-06-01T18:57:21.533918+00:00"
+}

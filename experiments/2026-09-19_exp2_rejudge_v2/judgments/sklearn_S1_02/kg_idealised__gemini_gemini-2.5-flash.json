@@ -1,0 +1,52 @@
+{
+  "candidate_mentions": [
+    {
+      "basename_collision": false,
+      "end": 665,
+      "evidence_id": "M001",
+      "excerpt": "lead to runtime errors.\n\n## Evidence\n- `sklearn/linear_model/_base.py:335`: The class `LinearClassifierMixin` is renamed to `LinearClassifierMixinInternal`.\n- `sklearn/linear_model/_logistic.py`: Imports `LinearClassifierMixin` from `_base.py`.\n- `sklearn/linear_model/_ridge.py`: Imports `LinearClassifierMixin` from `_base.py`.\n- `sklearn/linear_model/_stochastic_gradient.py`: Imports `LinearClassifierMixin` from `_base.py`.\n\n## Impact\nThe renaming ",
+      "match_kind": "full_path",
+      "match_text": "sklearn/linear_model/_logistic.py",
+      "oracle_path": "sklearn/linear_model/_logistic.py",
+      "start": 632
+    },
+    {
+      "basename_collision": false,
+      "end": 750,
+      "evidence_id": "M002",
+      "excerpt": "inearClassifierMixin` is renamed to `LinearClassifierMixinInternal`.\n- `sklearn/linear_model/_logistic.py`: Imports `LinearClassifierMixin` from `_base.py`.\n- `sklearn/linear_model/_ridge.py`: Imports `LinearClassifierMixin` from `_base.py`.\n- `sklearn/linear_model/_stochastic_gradient.py`: Imports `LinearClassifierMixin` from `_base.py`.\n\n## Impact\nThe renaming of the class without updating the dependent files can lead to `ImportError` or `Attri",
+      "match_kind": "full_path",
+      "match_text": "sklearn/linear_model/_ridge.py",
+      "oracle_path": "sklearn/linear_model/_ridge.py",
+      "start": 720
+    },
+    {
+      "basename_collision": false,
+      "end": 849,
+      "evidence_id": "M003",
+      "excerpt": "r_model/_logistic.py`: Imports `LinearClassifierMixin` from `_base.py`.\n- `sklearn/linear_model/_ridge.py`: Imports `LinearClassifierMixin` from `_base.py`.\n- `sklearn/linear_model/_stochastic_gradient.py`: Imports `LinearClassifierMixin` from `_base.py`.\n\n## Impact\nThe renaming of the class without updating the dependent files can lead to `ImportError` or `AttributeError` when these files attempt to use the old class name. This can disrupt the functionality o",
+      "match_kind": "full_path",
+      "match_text": "sklearn/linear_model/_stochastic_gradient.py",
+      "oracle_path": "sklearn/linear_model/_stochastic_gradient.py",
+      "start": 805
+    }
+  ],
+  "causal_quote": "The renaming of the class without updating the dependent files can lead to `ImportError` or `AttributeError` when these files attempt to use the old class name.",
+  "decision_source": "llm_causal_adjudication",
+  "detected": true,
+  "evidence_id": "M001",
+  "executed_at_utc": "2026-09-19T15:06:11.437715+00:00",
+  "finding_quote": "`sklearn/linear_model/_logistic.py`: Imports `LinearClassifierMixin` from `_base.py`.",
+  "judge": "gemini:gemini-2.5-flash",
+  "manifest_sha256": "5d4371a93d1b09f0491ecc12279f9f3ff5de23053b7a5e74650a749f58b472b0",
+  "model_alias": "gemini:gemini-2.5-flash",
+  "model_snapshot": "unavailable-from-original-wrapper",
+  "original_verdict": true,
+  "prompt_sha256": "a9a0f0d77f2c4633c73f1dc9a562e6bd9d6a3b977d8e5b2a0e12d5054669c57b",
+  "reason_code": "specific_cross_file_link",
+  "response_wrapper": "single_json_fence",
+  "review_sha256": "2b379ec031caee8a0823b9ccbcfdbaa3351effbb58ee39574ad02520e9a0a4a1",
+  "schema_sha256": "6a22fcb256437ebed904ab2d879b36be1234fb2e06add1127ac8ea2ab46f60f0",
+  "schema_version": "exp2-adjudication-v2",
+  "system_sha256": "3634314a8fc4231391e4c51174e5c32d7346b0e2ceb5f8c4641e6ba866bd5939"
+}

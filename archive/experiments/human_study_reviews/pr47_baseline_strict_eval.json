@@ -1,0 +1,331 @@
+{
+  "pr_id": 47,
+  "mode": "baseline_strict",
+  "total_score": 11,
+  "max_score": 25,
+  "percentage": 44.0,
+  "kg_relevant_score": 8,
+  "kg_relevant_max": 9,
+  "kg_relevant_percentage": 88.9,
+  "criteria_scores": [
+    {
+      "criterion_id": "F1",
+      "score": 0,
+      "evidence": "The review describes what the PR does in the 'Scope' and 'Evidence' sections, but it primarily focuses on the risks and issues introduced by the change rather than explicitly verifying if the solution correctly and completely addresses the original problem.",
+      "n_yes": 0,
+      "n_valid": 2,
+      "unanimous": true
+    },
+    {
+      "criterion_id": "F2",
+      "score": 1,
+      "evidence": "The review identifies: 'The test coverage does not explicitly verify scenarios where multiple agents have different offline causes, which could reveal issues with state retention across multiple nodes.'",
+      "n_yes": 2,
+      "n_valid": 2,
+      "unanimous": true
+    },
+    {
+      "criterion_id": "F3",
+      "score": 1,
+      "evidence": "The review states: 'Integration Risk: The change to `Node.setTemporaryOfflineCause` from package-private to public could inadvertently expose this method to external use...' and 'Risk Mitigation: Review other components that interact with `Node` and `Nodes` to assess potential integration risks.'",
+      "n_yes": 2,
+      "n_valid": 2,
+      "unanimous": true
+    },
+    {
+      "criterion_id": "F4",
+      "score": 1,
+      "evidence": "The review warns: 'Regression Risk: There is a risk of regression if other components rely on the previous behavior of node state management.'",
+      "n_yes": 2,
+      "n_valid": 2,
+      "unanimous": true
+    },
+    {
+      "criterion_id": "T1",
+      "score": 1,
+      "evidence": "The review discusses the need for tests: 'Test Gaps: The test coverage does not explicitly verify scenarios where multiple agents have different offline causes...' and 'Tests: Add tests to cover scenarios with multiple nodes having different offline causes to ensure comprehensive coverage.'",
+      "n_yes": 2,
+      "n_valid": 2,
+      "unanimous": true
+    },
+    {
+      "criterion_id": "T2",
+      "score": 1,
+      "evidence": "The review mentions testing edge cases: 'The current tests do not cover edge cases involving multiple nodes with different offline causes, which could lead to undetected bugs.'",
+      "n_yes": 2,
+      "n_valid": 2,
+      "unanimous": true
+    },
+    {
+      "criterion_id": "T3",
+      "score": 1,
+      "evidence": "The review references a specific test file: 'NodesTest.java:359: New test `setNodesRetainsOfflineCause` added to verify offline cause retention.' and suggests adding tests for specific scenarios.",
+      "n_yes": 2,
+      "n_valid": 2,
+      "unanimous": true
+    },
+    {
+      "criterion_id": "R1",
+      "score": 0,
+      "evidence": "The review does not comment on code clarity, naming conventions, or function organization.",
+      "n_yes": 0,
+      "n_valid": 2,
+      "unanimous": true
+    },
+    {
+      "criterion_id": "R2",
+      "score": 0,
+      "evidence": "The review suggests an alternative approach to mitigate risk, but does not identify the current implementation as unnecessarily complex or suggest simplification.",
+      "n_yes": 1,
+      "n_valid": 2,
+      "unanimous": false
+    },
+    {
+      "criterion_id": "R3",
+      "score": 0,
+      "evidence": "The review mentions API documentation gaps but does not check for code comments explaining decisions.",
+      "n_yes": 0,
+      "n_valid": 2,
+      "unanimous": true
+    },
+    {
+      "criterion_id": "M1",
+      "score": 1,
+      "evidence": "The review assesses architectural fit: 'Architecture Concerns: The modification to `Nodes.setNodes` introduces a dependency on the offline cause state, which may not align with the original design intent of stateless node configuration.'",
+      "n_yes": 2,
+      "n_valid": 2,
+      "unanimous": true
+    },
+    {
+      "criterion_id": "M2",
+      "score": 0,
+      "evidence": "The review does not flag if the PR scope is too large or should be split.",
+      "n_yes": 0,
+      "n_valid": 2,
+      "unanimous": true
+    },
+    {
+      "criterion_id": "M3",
+      "score": 1,
+      "evidence": "The review checks API documentation: 'Documentation Gaps: The change in method visibility and behavior is not accompanied by updates to API documentation...'",
+      "n_yes": 2,
+      "n_valid": 2,
+      "unanimous": true
+    },
+    {
+      "criterion_id": "C1",
+      "score": 0,
+      "evidence": "The review does not check adherence to project style guides or coding conventions.",
+      "n_yes": 0,
+      "n_valid": 2,
+      "unanimous": true
+    },
+    {
+      "criterion_id": "C2",
+      "score": 0,
+      "evidence": "The review does not check if the solution is consistent with existing patterns for similar problems.",
+      "n_yes": 1,
+      "n_valid": 2,
+      "unanimous": false
+    },
+    {
+      "criterion_id": "P1",
+      "score": 0,
+      "evidence": "The review does not identify potential performance issues or inefficiencies.",
+      "n_yes": 0,
+      "n_valid": 2,
+      "unanimous": true
+    },
+    {
+      "criterion_id": "P2",
+      "score": 0,
+      "evidence": "The review does not ask about benchmarks or performance testing.",
+      "n_yes": 0,
+      "n_valid": 2,
+      "unanimous": true
+    },
+    {
+      "criterion_id": "S1",
+      "score": 0,
+      "evidence": "The review does not check for proper input validation or sanitization.",
+      "n_yes": 0,
+      "n_valid": 2,
+      "unanimous": true
+    },
+    {
+      "criterion_id": "S2",
+      "score": 0,
+      "evidence": "The review does not flag hardcoded secrets, credentials, or sensitive data.",
+      "n_yes": 0,
+      "n_valid": 2,
+      "unanimous": true
+    },
+    {
+      "criterion_id": "S3",
+      "score": 0,
+      "evidence": "The review does not assess error handling and failure recovery.",
+      "n_yes": 0,
+      "n_valid": 2,
+      "unanimous": true
+    },
+    {
+      "criterion_id": "Q1",
+      "score": 1,
+      "evidence": "The 'Scope' section provides a summary of the changes, and the 'Problem' and 'Impact' sections provide an assessment of the issues.",
+      "n_yes": 2,
+      "n_valid": 2,
+      "unanimous": true
+    },
+    {
+      "criterion_id": "Q2",
+      "score": 1,
+      "evidence": "The 'Evidence' section anchors comments to specific code locations: 'Node.java:282', 'Nodes.java:124', 'NodesTest.java:359'.",
+      "n_yes": 2,
+      "n_valid": 2,
+      "unanimous": true
+    },
+    {
+      "criterion_id": "Q3",
+      "score": 0,
+      "evidence": "The review lists problems and recommendations but does not explicitly distinguish between blocking issues and minor suggestions.",
+      "n_yes": 1,
+      "n_valid": 2,
+      "unanimous": false
+    },
+    {
+      "criterion_id": "Q4",
+      "score": 0,
+      "evidence": "The review makes declarative statements about problems and impacts rather than asking clarifying questions.",
+      "n_yes": 0,
+      "n_valid": 2,
+      "unanimous": true
+    },
+    {
+      "criterion_id": "Q5",
+      "score": 1,
+      "evidence": "The 'Problem' section clearly explains the reasoning behind the identified issues, e.g., 'The change... could inadvertently expose this method to external use, despite the `@Restricted(NoExternalUse.class)` annotation.'",
+      "n_yes": 2,
+      "n_valid": 2,
+      "unanimous": true
+    }
+  ],
+  "per_judge": [
+    {
+      "model": "gemini:gemini-2.5-flash",
+      "scores": {
+        "F1": 0,
+        "F2": 1,
+        "F3": 1,
+        "F4": 1,
+        "T1": 1,
+        "T2": 1,
+        "T3": 1,
+        "R1": 0,
+        "R2": 1,
+        "R3": 0,
+        "M1": 1,
+        "M2": 0,
+        "M3": 1,
+        "C1": 0,
+        "C2": 1,
+        "P1": 0,
+        "P2": 0,
+        "S1": 0,
+        "S2": 0,
+        "S3": 0,
+        "Q1": 1,
+        "Q2": 1,
+        "Q3": 1,
+        "Q4": 0,
+        "Q5": 1
+      },
+      "evidence": {
+        "F1": "The review describes what the PR does in the 'Scope' and 'Evidence' sections, but it primarily focuses on the risks and issues introduced by the change rather than explicitly verifying if the solution correctly and completely addresses the original problem.",
+        "F2": "The review identifies: 'The test coverage does not explicitly verify scenarios where multiple agents have different offline causes, which could reveal issues with state retention across multiple nodes.'",
+        "F3": "The review states: 'Integration Risk: The change to `Node.setTemporaryOfflineCause` from package-private to public could inadvertently expose this method to external use...' and 'Risk Mitigation: Review other components that interact with `Node` and `Nodes` to assess potential integration risks.'",
+        "F4": "The review warns: 'Regression Risk: There is a risk of regression if other components rely on the previous behavior of node state management.'",
+        "T1": "The review discusses the need for tests: 'Test Gaps: The test coverage does not explicitly verify scenarios where multiple agents have different offline causes...' and 'Tests: Add tests to cover scenarios with multiple nodes having different offline causes to ensure comprehensive coverage.'",
+        "T2": "The review mentions testing edge cases: 'The current tests do not cover edge cases involving multiple nodes with different offline causes, which could lead to undetected bugs.'",
+        "T3": "The review references a specific test file: 'NodesTest.java:359: New test `setNodesRetainsOfflineCause` added to verify offline cause retention.' and suggests adding tests for specific scenarios.",
+        "R1": "The review does not comment on code clarity, naming conventions, or function organization.",
+        "R2": "The review suggests simplification: 'Consider maintaining the original method visibility and explore alternative ways to achieve the desired functionality without exposing the method.'",
+        "R3": "The review mentions API documentation gaps but does not check for code comments explaining decisions.",
+        "M1": "The review assesses architectural fit: 'Architecture Concerns: The modification to `Nodes.setNodes` introduces a dependency on the offline cause state, which may not align with the original design intent of stateless node configuration.'",
+        "M2": "The review does not flag if the PR scope is too large or should be split.",
+        "M3": "The review checks API documentation: 'Documentation Gaps: The change in method visibility and behavior is not accompanied by updates to API documentation...'",
+        "C1": "The review does not check adherence to project style guides or coding conventions.",
+        "C2": "The review checks for consistency with existing patterns: '...may not align with the original design intent of stateless node configuration.'",
+        "P1": "The review does not identify potential performance issues or inefficiencies.",
+        "P2": "The review does not ask about benchmarks or performance testing.",
+        "S1": "The review does not check for proper input validation or sanitization.",
+        "S2": "The review does not flag hardcoded secrets, credentials, or sensitive data.",
+        "S3": "The review does not assess error handling and failure recovery.",
+        "Q1": "The 'Scope' section provides a summary of the changes, and the 'Problem' and 'Impact' sections provide an assessment of the issues.",
+        "Q2": "The 'Evidence' section anchors comments to specific code locations: 'Node.java:282', 'Nodes.java:124', 'NodesTest.java:359'.",
+        "Q3": "The review implicitly distinguishes between significant issues ('Problem', 'Impact') and actionable steps ('Recommendation'), indicating a hierarchy of importance.",
+        "Q4": "The review makes declarative statements about problems and impacts rather than asking clarifying questions.",
+        "Q5": "The 'Problem' section clearly explains the reasoning behind the identified issues, e.g., 'The change... could inadvertently expose this method to external use, despite the `@Restricted(NoExternalUse.class)` annotation.'"
+      },
+      "error": ""
+    },
+    {
+      "model": "gemini:gemini-2.5-pro",
+      "scores": {
+        "F1": 0,
+        "F2": 1,
+        "F3": 1,
+        "F4": 1,
+        "T1": 1,
+        "T2": 1,
+        "T3": 1,
+        "R1": 0,
+        "R2": 0,
+        "R3": 0,
+        "M1": 1,
+        "M2": 0,
+        "M3": 1,
+        "C1": 0,
+        "C2": 0,
+        "P1": 0,
+        "P2": 0,
+        "S1": 0,
+        "S2": 0,
+        "S3": 0,
+        "Q1": 1,
+        "Q2": 1,
+        "Q3": 0,
+        "Q4": 0,
+        "Q5": 1
+      },
+      "evidence": {
+        "F1": "The review restates the PR's goal in the 'Scope' section but does not explicitly verify if the change successfully achieves it.",
+        "F2": "The review identifies a gap in test coverage for 'scenarios where multiple agents have different offline causes,' which is an edge case.",
+        "F3": "The review raises 'Integration Risk' and recommends to 'Review other components that interact with `Node` and `Nodes` to assess potential integration risks.'",
+        "F4": "The review warns about 'Regression Risk' if 'other components rely on the previous behavior of node state management.'",
+        "T1": "The review has a section on 'Test Gaps' and a recommendation to 'Add tests to cover scenarios with multiple nodes...'",
+        "T2": "The review explicitly mentions that 'The current tests do not cover edge cases involving multiple nodes with different offline causes...'",
+        "T3": "The review references a specific test file and line number under 'Evidence': 'NodesTest.java:359: New test setNodesRetainsOfflineCause added...'",
+        "R1": "The review does not comment on code clarity, naming, or organization.",
+        "R2": "The review suggests an alternative approach to mitigate risk, but does not identify the current implementation as unnecessarily complex or suggest simplification.",
+        "R3": "The review does not mention code comments.",
+        "M1": "The review raises 'Architecture Concerns,' stating the change 'may not align with the original design intent of stateless node configuration.'",
+        "M2": "The review does not suggest that the PR scope is too large or should be split.",
+        "M3": "The review identifies 'Documentation Gaps' and states the change 'is not accompanied by updates to API documentation.'",
+        "C1": "The review does not mention project style guides or coding conventions.",
+        "C2": "The review does not check if the solution is consistent with existing patterns for similar problems.",
+        "P1": "The review does not mention performance issues or inefficiencies.",
+        "P2": "The review does not ask for benchmarks or performance testing.",
+        "S1": "The review does not check for input validation or sanitization.",
+        "S2": "The review does not mention secrets, credentials, or sensitive data.",
+        "S3": "The review does not assess error handling or failure recovery.",
+        "Q1": "The review is structured with sections like 'Scope', 'Problem', and 'Impact' that collectively provide a summary and assessment of the changes.",
+        "Q2": "The 'Evidence' section anchors the review to specific code locations, e.g., 'Node.java:282' and 'Nodes.java:124'.",
+        "Q3": "The review lists problems and recommendations but does not explicitly distinguish between blocking issues and minor suggestions.",
+        "Q4": "The review makes declarative statements and recommendations rather than asking clarifying questions.",
+        "Q5": "The review explains the reasoning for its suggestions, for example, it identifies 'Documentation Gaps' to prevent 'misuse or misunderstanding of the method's intended use.'"
+      },
+      "error": ""
+    }
+  ],
+  "evaluation_timestamp": "2026-06-01T22:15:37.015467Z"
+}

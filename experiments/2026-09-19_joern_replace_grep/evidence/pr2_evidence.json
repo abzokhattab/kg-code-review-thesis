@@ -1,0 +1,1338 @@
+{
+  "pr": {
+    "number": 69259,
+    "title": "Dashboards: Data source template variable options now specify a current value using uid.",
+    "body": "<!--\r\n\r\nThank you for sending a pull request! Here are some tips:\r\n\r\n1. If this is your first time, please read our contribution guide at https://github.com/grafana/grafana/blob/main/CONTRIBUTING.md\r\n\r\n2. Ensure you include and run the appropriate tests as part of your Pull Request.\r\n\r\n3. In a new feature or configuration option, an update to the documentation is necessary. Everything related to the documentation is under the docs folder in the root of the repository.\r\n\r\n4. If the Pull Request is a work in progress, make use of GitHub's \"Draft PR\" feature and mark it as such.\r\n\r\n5. If you can not merge your Pull Request due to a merge conflict, Rebase it. This gets it in sync with the main branch.\r\n\r\n6. Name your PR as \"<FeatureArea>: Describe your change\", e.g. Alerting: Prevent race condition. If it's a fix or feature relevant for the changelog describe the user impact in the title. The PR title is used to auto-generate the changelog for issues marked with the \"add to changelog\" label.\r\n\r\n7. If your PR content should be added to the What's New document for the next major or minor release, add the **add to what's new** label to your PR. Note that you should add this label to the main PR that introduces the feature; do not add this label to smaller PRs for the feature.\r\n\r\n-->\r\n\r\n**What is this feature?**\r\n\r\nThe goal was to make it possible for a dashboard to specify a provisioned data source as the \"current\" option for a template variable. The only way to currently achieve this is to use the name of the datasource, but for our use case this would vary between grafana cloud instances. \r\n\r\nThe solution makes use of the `value` part of the `{text, value}` structure under a template variable's `options.current`. The `value` field was being completely ignored and was a duplicate of `text`: the name of data source. This PR now takes the `value` into consideration when resolving the initial template variable value, and for data source template variables, the `value` now corresponds to the uid. It will be reflected in new dashboard JSON accordingly. Old dashboard JSON which uses the data source name will still function as before.\r\n\r\n**Why do we need this feature?**\r\n\r\nWhen provisioning dashboards and datasources with specific uids, we might want a dashboard to initially select that specific datasource first, instead of defaulting to alphabetical order and choosing the first on the list. This should also make it possible to set a selected value for query-based template variables as well.\r\n\r\n**Who is this feature for?**\r\n\r\nSpecifically, cloud customers accessing the Cardinality management dashboards with multiple metrics datasources defined. We want the dashboards to choose the provisioned `grafanacloud-prom` to be selected first by default when opening the dashboard, instead of the datasource with the earliest name in alphabetical sort. Since the `grafanacloud-prom` datasource has a inconstant name: `grafanacloud-${instanceName}-prom`, it cannot be specified by setting the `current` value in dashboard JSON. This PR allows specifying that uid through the variable's `current.value` field.\r\n\r\n**Special notes for your reviewer:**\r\n\r\n- There didn't seem to be any place where the documentation needed to know about the specifics of this issue.\r\n- Previously, when a user changes their variable, the `current` fields of `text`, and `value` would both be set to the data source name. Now `text` gets the name, and `value` gets the uid. This will be reflected in the JSON. Old dashboards which use the name for both will still be compatible.\r\n \r\n\r\nPlease check that:\r\n- [x] It works as expected from a user's perspective.\r\n- [x] If this is a pre-GA feature, it is behind a feature toggle.\r\n- [x] The docs are updated, and if this is a [notable improvement](https://grafana.com/docs/writers-toolkit/writing-guide/contribute-release-notes/#how-to-determine-if-content-belongs-in-a-whats-new-document), it's added to our [What's New](https://grafana.com/docs/writers-toolkit/writing-guide/contribute-release-notes/) doc.\r\n\r\n\r\n# Release notice breaking change\r\n\r\nThe data source template variable type has changed the way it represents its options. The `text` field still represents the data source name, but the `value` has been changed to the `uid` of the data source. This allows dashboards to declare the currently selected option by `uid`, however it changes how a datasource template variable value will be rendered by default. If the name of the data source is expected, the variable syntax will have to be changed to specify the [text format](https://grafana.com/docs/grafana/latest/dashboards/variables/variable-syntax/#text).\r\n\r\nFor example, given a data source variable (datasourceVariable), the following string:\r\n\r\n```\r\n${datasourceVariable}<br/>\r\nName: ${datasourceVariable:text}<br/>\r\nUID: ${datasourceVariable:raw}\r\n```\r\nwas previously interpolated as:\r\n```\r\ngrafanacloud-k8smonitoring-prom\r\nName: grafanacloud-k8smonitoring-prom\r\nUID: grafanacloud-k8smonitoring-prom\r\n```\r\nAfter these changes, it's interpolated as:\r\n```\r\nd7bbe725-9e48-4af8-a0cb-6cb255d873a3\r\nName: grafanacloud-k8smonitoring-prom\r\nUID: d7bbe725-9e48-4af8-a0cb-6cb255d873a3\r\n```\r\nAny dashboards that are relying on the data source name being returned by `${datasourceVariable}` will have to update all their usages to `${datasourceVariable:text}` in order to get the previous behavior.\r\n\r\nAffected use cases:\r\n- Using `${datasourceVariable}` to display the data source name in text panel or in the panel title.\r\n- Using `${datasourceVariable}` to use the data source name as part of the query content.\r\n\r\nUnaffected use cases:\r\n- Using the `${datasourceVariable}` to choose which data source to use for a query (through its data source picker) will not be affected since it can use both the name and the uid",
+    "url": "https://github.com/grafana/grafana/pull/69259",
+    "repo": "grafana/grafana",
+    "base_branch": "main",
+    "head_branch": "darrenjaneczek/initial-datasource-variable-select-by-uid",
+    "merged_at": "2023-06-12T08:05:51Z",
+    "state": "MERGED"
+  },
+  "changed_files": [
+    {
+      "path": "devenv/datasources.yaml",
+      "language": "yaml",
+      "added": 1,
+      "deleted": 0
+    },
+    {
+      "path": "devenv/dev-dashboards/feature-templating/testdata-test-variable-output.json",
+      "language": "json",
+      "added": 32,
+      "deleted": 0
+    },
+    {
+      "path": "e2e/dashboards-suite/new-datasource-variable.spec.ts",
+      "language": "typescript",
+      "added": 2,
+      "deleted": 1
+    },
+    {
+      "path": "public/app/features/plugins/datasource_srv.ts",
+      "language": "typescript",
+      "added": 2,
+      "deleted": 1
+    },
+    {
+      "path": "public/app/features/plugins/tests/datasource_srv.test.ts",
+      "language": "typescript",
+      "added": 39,
+      "deleted": 4
+    },
+    {
+      "path": "public/app/features/variables/datasource/reducer.ts",
+      "language": "typescript",
+      "added": 1,
+      "deleted": 1
+    },
+    {
+      "path": "public/app/features/variables/shared/testing/helpers.ts",
+      "language": "typescript",
+      "added": 1,
+      "deleted": 1
+    },
+    {
+      "path": "public/app/features/variables/shared/testing/optionsVariableBuilder.ts",
+      "language": "typescript",
+      "added": 13,
+      "deleted": 7
+    },
+    {
+      "path": "public/app/features/variables/state/actions.test.ts",
+      "language": "typescript",
+      "added": 68,
+      "deleted": 0
+    },
+    {
+      "path": "public/app/features/variables/state/actions.ts",
+      "language": "typescript",
+      "added": 5,
+      "deleted": 2
+    }
+  ],
+  "nearest_tests": [
+    {
+      "path": "pkg/api/datasources_test.go",
+      "relationship": "tests",
+      "source_file": "devenv/datasources.yaml"
+    },
+    {
+      "path": "public/app/features/plugins/datasource_srv.test.ts",
+      "relationship": "tests",
+      "source_file": "public/app/features/plugins/datasource_srv.ts"
+    },
+    {
+      "path": "public/app/plugins/datasource/elasticsearch/components/reducerTester.ts",
+      "relationship": "tests",
+      "source_file": "public/app/features/variables/datasource/reducer.ts"
+    },
+    {
+      "path": "public/app/plugins/datasource/elasticsearch/components/QueryEditor/BucketAggregationsEditor/SettingsEditor/FiltersSettingsEditor/state/reducer.test.ts",
+      "relationship": "tests",
+      "source_file": "public/app/features/variables/datasource/reducer.ts"
+    },
+    {
+      "path": "public/app/plugins/datasource/elasticsearch/components/QueryEditor/BucketAggregationsEditor/state/reducer.test.ts",
+      "relationship": "tests",
+      "source_file": "public/app/features/variables/datasource/reducer.ts"
+    },
+    {
+      "path": "public/app/plugins/datasource/elasticsearch/components/QueryEditor/MetricAggregationsEditor/SettingsEditor/BucketScriptSettingsEditor/state/reducer.test.ts",
+      "relationship": "tests",
+      "source_file": "public/app/features/variables/datasource/reducer.ts"
+    },
+    {
+      "path": "public/app/plugins/datasource/elasticsearch/components/QueryEditor/MetricAggregationsEditor/state/reducer.test.ts",
+      "relationship": "tests",
+      "source_file": "public/app/features/variables/datasource/reducer.ts"
+    },
+    {
+      "path": "public/app/plugins/datasource/graphite/state/helpers.test.ts",
+      "relationship": "tests",
+      "source_file": "public/app/features/variables/shared/testing/helpers.ts"
+    },
+    {
+      "path": "public/app/plugins/datasource/graphite/components/helpers.test.ts",
+      "relationship": "tests",
+      "source_file": "public/app/features/variables/shared/testing/helpers.ts"
+    },
+    {
+      "path": "public/app/features/plugins/admin/helpers.test.ts",
+      "relationship": "tests",
+      "source_file": "public/app/features/variables/shared/testing/helpers.ts"
+    },
+    {
+      "path": "packages/grafana-ui/src/components/JSONFormatter/json_explorer/helpers.test.ts",
+      "relationship": "tests",
+      "source_file": "public/app/features/variables/shared/testing/helpers.ts"
+    },
+    {
+      "path": "packages/grafana-prometheus/src/querybuilder/components/metrics-modal/helpers.test.ts",
+      "relationship": "tests",
+      "source_file": "public/app/features/variables/shared/testing/helpers.ts"
+    },
+    {
+      "path": "public/app/features/datasources/state/actions.test.ts",
+      "relationship": "tests",
+      "source_file": "public/app/features/variables/state/actions.ts"
+    },
+    {
+      "path": "public/app/features/panel/state/actions.test.ts",
+      "relationship": "tests",
+      "source_file": "public/app/features/variables/state/actions.ts"
+    },
+    {
+      "path": "public/app/features/org/state/actions.test.ts",
+      "relationship": "tests",
+      "source_file": "public/app/features/variables/state/actions.ts"
+    }
+  ],
+  "dependent_files": [
+    "app.ts",
+    "core/services/backend_srv.ts",
+    "core/time_series2.ts",
+    "features/actions/utils.ts",
+    "features/admin/UserAdminPage.tsx",
+    "features/admin/ldap/LdapPage.tsx",
+    "features/admin/ldap/LdapTestDrawer.tsx",
+    "features/alerting/unified/components/folder-actions/FolderActionsButton.tsx",
+    "features/alerting/unified/components/rule-editor/query-and-alert-condition/reducer.ts",
+    "features/alerting/unified/group-details/validation.ts",
+    "features/auth-config/AuthDrawer.tsx",
+    "features/dashboard-scene/settings/version-history/DiffViewer.tsx",
+    "features/dashboard/components/DashboardPrompt/DashboardPrompt.tsx",
+    "features/dashboard/components/PanelEditor/VisualizationButton.tsx",
+    "features/dashboard/containers/DashboardPage.tsx",
+    "features/datasources/state/hooks.ts",
+    "features/explore/Logs/LiveLogs.tsx",
+    "features/explore/mocks/makeLogs.ts",
+    "features/explore/state/utils.ts",
+    "features/expressions/ExpressionDatasource.ts",
+    "features/library-panels/components/LibraryPanelsView/LibraryPanelsView.tsx",
+    "features/logs/components/mocks/logRow.ts",
+    "features/logs/components/panel/LogLine.tsx",
+    "features/logs/logsModel.ts",
+    "features/org/NewOrgPage.tsx",
+    "features/org/SelectOrgPage.tsx",
+    "features/panel/components/PanelDataErrorView.tsx",
+    "features/plugins/admin/components/InstallControls/InstallControlsButton.tsx"
+  ],
+  "diff_summary": "10 files changed",
+  "full_diff": "diff --git a/devenv/datasources.yaml b/devenv/datasources.yaml\nindex be050bbe38252..2f352935c23e2 100644\n--- a/devenv/datasources.yaml\n+++ b/devenv/datasources.yaml\n@@ -63,6 +63,7 @@ datasources:\n       prometheusVersion: 2.40.0\n \n   - name: gdev-slow-prometheus\n+    uid: gdev-slow-prometheus-uid\n     type: prometheus\n     access: proxy\n     url: http://localhost:3011\ndiff --git a/devenv/dev-dashboards/feature-templating/testdata-test-variable-output.json b/devenv/dev-dashboards/feature-templating/testdata-test-variable-output.json\nindex ed8abf12fd09a..02c4b8a00e7ec 100644\n--- a/devenv/dev-dashboards/feature-templating/testdata-test-variable-output.json\n+++ b/devenv/dev-dashboards/feature-templating/testdata-test-variable-output.json\n@@ -55,6 +55,38 @@\n       \"pluginVersion\": \"8.4.0-pre\",\n       \"title\": \"Panel Title\",\n       \"type\": \"text\"\n+    },\n+    {\n+      \"gridPos\": {\n+        \"h\": 9,\n+        \"w\": 12,\n+        \"x\": 0,\n+        \"y\": 9\n+      },\n+      \"id\": 2,\n+      \"options\": {\n+        \"mode\": \"markdown\",\n+        \"content\": \"VariableUnderTestText: ${VariableUnderTest:text}\"\n+      },\n+      \"pluginVersion\": \"8.4.0-pre\",\n+      \"title\": \"Panel Title\",\n+      \"type\": \"text\"\n+    },\n+    {\n+      \"gridPos\": {\n+        \"h\": 9,\n+        \"w\": 12,\n+        \"x\": 0,\n+        \"y\": 18\n+      },\n+      \"id\": 2,\n+      \"options\": {\n+        \"mode\": \"markdown\",\n+        \"content\": \"VariableUnderTestRaw: ${VariableUnderTest:raw}\"\n+      },\n+      \"pluginVersion\": \"8.4.0-pre\",\n+      \"title\": \"Panel Title\",\n+      \"type\": \"text\"\n     }\n   ],\n   \"schemaVersion\": 35,\ndiff --git a/e2e/dashboards-suite/new-datasource-variable.spec.ts b/e2e/dashboards-suite/new-datasource-variable.spec.ts\nindex 1008347464e64..1bc784b321315 100644\n--- a/e2e/dashboards-suite/new-datasource-variable.spec.ts\n+++ b/e2e/dashboards-suite/new-datasource-variable.spec.ts\n@@ -38,6 +38,7 @@ describe('Variables - Datasource', () => {\n     e2e.pages.Dashboard.SubMenu.submenuItemValueDropDownOptionTexts('gdev-slow-prometheus').click();\n \n     // Assert it was rendered\n-    e2e().get('.markdown-html').should('include.text', 'VariableUnderTest: gdev-slow-prometheus');\n+    e2e().get('.markdown-html').should('include.text', 'VariableUnderTest: gdev-slow-prometheus-uid');\n+    e2e().get('.markdown-html').should('include.text', 'VariableUnderTestText: gdev-slow-prometheus');\n   });\n });\ndiff --git a/public/app/features/plugins/datasource_srv.ts b/public/app/features/plugins/datasource_srv.ts\nindex c31c13c190081..0ebe1891ce290 100644\n--- a/public/app/features/plugins/datasource_srv.ts\n+++ b/public/app/features/plugins/datasource_srv.ts\n@@ -254,7 +254,8 @@ export class DatasourceSrv implements DataSourceService {\n           // Support for multi-value variables with only one selected datasource\n           dsValue = dsValue[0];\n         }\n-        const dsSettings = !Array.isArray(dsValue) && this.settingsMapByName[dsValue];\n+        const dsSettings =\n+          !Array.isArray(dsValue) && (this.settingsMapByName[dsValue] || this.settingsMapByUid[dsValue]);\n \n         if (dsSettings) {\n           const key = `$\\{${variable.name}\\}`;\ndiff --git a/public/app/features/plugins/tests/datasource_srv.test.ts b/public/app/features/plugins/tests/datasource_srv.test.ts\nindex 319cf5ed141e7..a6ff1cc3b2ca2 100644\n--- a/public/app/features/plugins/tests/datasource_srv.test.ts\n+++ b/public/app/features/plugins/tests/datasource_srv.test.ts\n@@ -18,6 +18,13 @@ const templateSrv: any = {\n         value: 'BBB',\n       },\n     },\n+    {\n+      type: 'datasource',\n+      name: 'datasourceByUid',\n+      current: {\n+        value: 'uid-code-DDDD',\n+      },\n+    },\n     {\n       type: 'datasource',\n       name: 'datasourceDefault',\n@@ -32,6 +39,7 @@ const templateSrv: any = {\n     }\n \n     let result = v.replace('${datasource}', 'BBB');\n+    result = result.replace('${datasourceByUid}', 'DDDD');\n     result = result.replace('${datasourceDefault}', 'default');\n     return result;\n   },\n@@ -103,6 +111,12 @@ describe('datasource_srv', () => {\n       meta: { metrics: true },\n       isDefault: true,\n     },\n+    DDDD: {\n+      type: 'test-db',\n+      name: 'DDDD',\n+      uid: 'uid-code-DDDD',\n+      meta: { metrics: true },\n+    },\n     Jaeger: {\n       type: 'jaeger-db',\n       name: 'Jaeger',\n@@ -165,7 +179,7 @@ describe('datasource_srv', () => {\n         expect(dataSourceSrv.getInstanceSettings({ uid: 'uid-code-mmm' })).toBe(ds);\n       });\n \n-      it('should work with variable', () => {\n+      it('should work with variable by ds name', () => {\n         const ds = dataSourceSrv.getInstanceSettings('${datasource}');\n         expect(ds?.name).toBe('${datasource}');\n         expect(ds?.uid).toBe('${datasource}');\n@@ -177,6 +191,18 @@ describe('datasource_srv', () => {\n         `);\n       });\n \n+      it('should work with variable by ds value (uid)', () => {\n+        const ds = dataSourceSrv.getInstanceSettings('${datasourceByUid}');\n+        expect(ds?.name).toBe('${datasourceByUid}');\n+        expect(ds?.uid).toBe('${datasourceByUid}');\n+        expect(ds?.rawRef).toMatchInlineSnapshot(`\n+          {\n+            \"type\": \"test-db\",\n+            \"uid\": \"uid-code-DDDD\",\n+          }\n+        `);\n+      });\n+\n       it('should work with variable via scopedVars', () => {\n         const ds = dataSourceSrv.getInstanceSettings('${datasource}', {\n           datasource: { text: 'Prom', value: 'uid-code-aaa' },\n@@ -247,7 +273,7 @@ describe('datasource_srv', () => {\n     describe('when getting external metric sources', () => {\n       it('should return list of explore sources', () => {\n         const externalSources = dataSourceSrv.getExternal();\n-        expect(externalSources.length).toBe(6);\n+        expect(externalSources.length).toBe(7);\n       });\n     });\n \n@@ -260,8 +286,9 @@ describe('datasource_srv', () => {\n \n     it('Can get list of data sources with variables: true', () => {\n       const list = dataSourceSrv.getList({ metrics: true, variables: true });\n-      expect(list[0].name).toBe('${datasourceDefault}');\n-      expect(list[1].name).toBe('${datasource}');\n+      expect(list[0].name).toBe('${datasourceByUid}');\n+      expect(list[1].name).toBe('${datasourceDefault}');\n+      expect(list[2].name).toBe('${datasource}');\n     });\n \n     it('Can get list of data sources with tracing: true', () => {\n@@ -300,6 +327,14 @@ describe('datasource_srv', () => {\n             \"type\": \"test-db\",\n             \"uid\": \"uid-code-BBB\",\n           },\n+          {\n+            \"meta\": {\n+              \"metrics\": true,\n+            },\n+            \"name\": \"DDDD\",\n+            \"type\": \"test-db\",\n+            \"uid\": \"uid-code-DDDD\",\n+          },\n           {\n             \"meta\": {\n               \"annotations\": true,\ndiff --git a/public/app/features/variables/datasource/reducer.ts b/public/app/features/variables/datasource/reducer.ts\nindex 9e422dae7b56a..d28abaf014f8b 100644\n--- a/public/app/features/variables/datasource/reducer.ts\n+++ b/public/app/features/variables/datasource/reducer.ts\n@@ -42,7 +42,7 @@ export const dataSourceVariableSlice = createSlice({\n         }\n \n         if (isValid(source, regex)) {\n-          options.push({ text: source.name, value: source.name, selected: false });\n+          options.push({ text: source.name, value: source.uid, selected: false });\n         }\n \n         if (isDefault(source, regex)) {\ndiff --git a/public/app/features/variables/shared/testing/helpers.ts b/public/app/features/variables/shared/testing/helpers.ts\nindex ea9abfb7f48d3..83e02bf29e24a 100644\n--- a/public/app/features/variables/shared/testing/helpers.ts\n+++ b/public/app/features/variables/shared/testing/helpers.ts\n@@ -3,7 +3,7 @@ import { DataSourceInstanceSettings, DataSourceJsonData, DataSourcePluginMeta }\n export function getDataSourceInstanceSetting(name: string, meta: DataSourcePluginMeta): DataSourceInstanceSettings {\n   return {\n     id: 1,\n-    uid: '',\n+    uid: name,\n     type: '',\n     name,\n     meta,\ndiff --git a/public/app/features/variables/shared/testing/optionsVariableBuilder.ts b/public/app/features/variables/shared/testing/optionsVariableBuilder.ts\nindex 18f2100e0b184..97bed58572a00 100644\n--- a/public/app/features/variables/shared/testing/optionsVariableBuilder.ts\n+++ b/public/app/features/variables/shared/testing/optionsVariableBuilder.ts\n@@ -3,14 +3,20 @@ import { VariableOption, VariableWithOptions } from 'app/features/variables/type\n import { VariableBuilder } from './variableBuilder';\n \n export class OptionsVariableBuilder<T extends VariableWithOptions> extends VariableBuilder<T> {\n-  withOptions(...texts: string[]) {\n+  withOptions(...options: Array<string | { text: string; value: string }>) {\n     this.variable.options = [];\n-    for (let index = 0; index < texts.length; index++) {\n-      this.variable.options.push({\n-        text: texts[index],\n-        value: texts[index],\n-        selected: false,\n-      });\n+    for (let index = 0; index < options.length; index++) {\n+      const option = options[index];\n+\n+      if (typeof option === 'string') {\n+        this.variable.options.push({\n+          text: option,\n+          value: option,\n+          selected: false,\n+        });\n+      } else {\n+        this.variable.options.push({ ...option, selected: false });\n+      }\n     }\n     return this;\n   }\ndiff --git a/public/app/features/variables/state/actions.test.ts b/public/app/features/variables/state/actions.test.ts\nindex 3ec73fe3137b9..675c39c3cb4d2 100644\n--- a/public/app/features/variables/state/actions.test.ts\n+++ b/public/app/features/variables/state/actions.test.ts\n@@ -381,6 +381,74 @@ describe('shared actions', () => {\n       });\n     });\n \n+    describe('and not multivalue, but with currentValue specified', () => {\n+      const A = { text: 'A', value: 'a-uid' };\n+      const B = { text: 'B', value: 'b-uid' };\n+      const C = { text: 'C', value: 'c-uid' };\n+\n+      it.each`\n+        withOptions  | currentText  | currentValue | defaultValue | expected\n+        ${[A, B, C]} | ${undefined} | ${undefined} | ${undefined} | ${A}\n+        ${[A, B, C]} | ${'B'}       | ${'b-uid'}   | ${undefined} | ${B}\n+        ${[A, B, C]} | ${'B'}       | ${undefined} | ${undefined} | ${B}\n+        ${[A, B, C]} | ${undefined} | ${'b-uid'}   | ${undefined} | ${B}\n+        ${[A, B, C]} | ${'Old B'}   | ${'b-uid'}   | ${undefined} | ${B}\n+        ${[A, B, C]} | ${undefined} | ${'x-uid'}   | ${'b-uid'}   | ${B}\n+        ${[A, B, C]} | ${undefined} | ${'b-uid'}   | ${'c-uid'}   | ${B}\n+        ${[A, B, C]} | ${undefined} | ${'x-uid'}   | ${undefined} | ${A}\n+        ${undefined} | ${undefined} | ${'b-uid'}   | ${undefined} | ${'should not dispatch setCurrentVariableValue'}\n+      `(\n+        'then correct actions are dispatched',\n+        async ({ withOptions, currentText, currentValue, defaultValue, expected }) => {\n+          let custom;\n+          const key = 'key';\n+          if (!withOptions) {\n+            custom = customBuilder()\n+              .withId('0')\n+              .withRootStateKey(key)\n+              .withCurrent(currentText, currentValue)\n+              .withoutOptions()\n+              .build();\n+          } else {\n+            custom = customBuilder()\n+              .withId('0')\n+              .withRootStateKey(key)\n+              .withOptions(...withOptions)\n+              .withCurrent(currentText, currentValue)\n+              .build();\n+          }\n+\n+          const tester = await reduxTester<TemplatingReducerType>()\n+            .givenRootReducer(getTemplatingRootReducer())\n+            .whenActionIsDispatched(\n+              toKeyedAction(key, addVariable(toVariablePayload(custom, { global: false, index: 0, model: custom })))\n+            )\n+            .whenAsyncActionIsDispatched(\n+              validateVariableSelectionState(toKeyedVariableIdentifier(custom), defaultValue),\n+              true\n+            );\n+\n+          await tester.thenDispatchedActionsPredicateShouldEqual((dispatchedActions) => {\n+            const expectedActions: AnyAction[] = withOptions\n+              ? [\n+                  toKeyedAction(\n+                    key,\n+                    setCurrentVariableValue(\n+                      toVariablePayload(\n+                        { type: 'custom', id: '0' },\n+                        { option: { text: expected.text, value: expected.value, selected: false } }\n+                      )\n+                    )\n+                  ),\n+                ]\n+              : [];\n+            expect(dispatchedActions).toEqual(expectedActions);\n+            return true;\n+          });\n+        }\n+      );\n+    });\n+\n     describe('and multivalue', () => {\n       it.each`\n         withOptions        | withCurrent   | defaultValue | expectedText  | expectedSelected\ndiff --git a/public/app/features/variables/state/actions.ts b/public/app/features/variables/state/actions.ts\nindex b2ce9dafc1c07..0b38df8740885 100644\n--- a/public/app/features/variables/state/actions.ts\n+++ b/public/app/features/variables/state/actions.ts\n@@ -60,6 +60,7 @@ import {\n   ensureStringValues,\n   ExtendedUrlQueryMap,\n   getCurrentText,\n+  getCurrentValue,\n   getVariableRefresh,\n   hasOngoingTransaction,\n   toKeyedVariableIdentifier,\n@@ -522,14 +523,16 @@ export const validateVariableSelectionState = (\n \n     // 1. find the current value\n     const text = getCurrentText(variableInState);\n-    option = variableInState.options?.find((v) => v.text === text);\n+    const value = getCurrentValue(variableInState);\n+\n+    option = variableInState.options?.find((v: VariableOption) => v.text === text || v.value === value);\n     if (option) {\n       return setValue(variableInState, option);\n     }\n \n     // 2. find the default value\n     if (defaultValue) {\n-      option = variableInState.options?.find((v) => v.text === defaultValue);\n+      option = variableInState.options?.find((v) => v.text === defaultValue || v.value === defaultValue);\n       if (option) {\n         return setValue(variableInState, option);\n       }\n",
+  "metadata": {
+    "v2_fetcher_version": 1,
+    "v2_fetched_at_unix": 1777501067,
+    "v2_diff_cap_bytes": 50000,
+    "v2_body_cap_bytes": 8000,
+    "v2_diff_truncated": false,
+    "v2_raw_diff_chars": 13989,
+    "v2_raw_body_chars": 5828,
+    "v2_rag_source": "rebuilt_v2_clean_changed_files",
+    "v2_rag_chunks_copied": 8,
+    "joern_enriched": true,
+    "joern_callers_count": 50,
+    "joern_functions_count": 50
+  },
+  "similar_chunks": [
+    {
+      "file": "public/app/features/variables/state/initVariableTransaction.test.ts",
+      "start_line": 40,
+      "end_line": 84,
+      "similarity": 0.8394,
+      "related_to": "public/app/features/variables/state/actions.test.ts",
+      "content_preview": "er(),\n  createConstantVariableAdapter(),\n  createAdHocVariableAdapter(),\n  createDataSourceVariableAdapter(),\n]);\n\nfunction getTestContext(variables?: VariableModel[]) {\n  const key = 'key';\n  const constant = constantBuilder().withId('constant').withName('constant').build();\n  const templating = { list: variables ?? [constant] };\n  const getInstanceSettingsMock = jest.fn().mockReturnValue(undefined);\n  setDataSourceSrv({\n    registerRuntimeDataSource: jest.fn(),\n    get: jest.fn().mockResolvedValue({}),\n    getList: jest.fn().mockReturnValue([]),\n    getInstanceSettings: getInstanceSettingsMock,\n    reload: jest.fn(),\n  });\n  const variableQueryRunner = {\n    cancelRequest: jest.fn(),\n    queueRequest: jest.fn(),\n    getResponse: () => toAsyncOfResult({ state: LoadingState.Done, identifie"
+    },
+    {
+      "file": "public/app/features/variables/state/onTimeRangeUpdated.test.ts",
+      "start_line": 1,
+      "end_line": 42,
+      "similarity": 0.8326,
+      "related_to": "public/app/features/variables/state/actions.test.ts",
+      "content_preview": "import { dateTime, TimeRange, VariableRefresh } from '@grafana/data';\nimport { config, DataSourceSrv } from '@grafana/runtime';\nimport * as runtime from '@grafana/runtime';\nimport { DashboardState } from 'app/types/dashboard';\n\nimport { reduxTester } from '../../../../test/core/redux/reduxTester';\nimport { silenceConsoleOutput } from '../../../../test/core/utils/silenceConsoleOutput';\nimport { appEvents } from '../../../core/app_events';\nimport { notifyApp } from '../../../core/reducers/appNotification';\nimport { DashboardModel } from '../../dashboard/state/DashboardModel';\nimport { createDashboardModelFixture } from '../../dashboard/state/__fixtures__/dashboardFixtures';\nimport { TemplateSrv } from '../../templating/template_srv';\nimport { variableAdapters } from '../adapters';\nimport { c"
+    },
+    {
+      "file": "public/app/features/variables/state/reducers.test.ts",
+      "start_line": 1,
+      "end_line": 61,
+      "similarity": 0.8273,
+      "related_to": "public/app/features/variables/state/actions.test.ts",
+      "content_preview": "import { createAction } from '@reduxjs/toolkit';\nimport { ComponentType } from 'react';\n\nimport { QueryVariableModel, VariableType } from '@grafana/data';\n\nimport { reducerTester } from '../../../../test/core/redux/reducerTester';\nimport { VariableAdapter, variableAdapters } from '../adapters';\nimport { VariableEditorProps } from '../editor/types';\nimport { VariablePickerProps } from '../pickers/types';\nimport { toVariablePayload } from '../utils';\n\nimport { createQueryVariable } from './__tests__/fixtures';\nimport { VariablePayload, VariablesState } from './types';\nimport { cleanVariables, variablesReducer } from './variablesReducer';\n\nconst variableAdapter: VariableAdapter<QueryVariableModel> = {\n  id: 'mock' as unknown as VariableType,\n  name: 'Mock label',\n  description: 'Mock descript"
+    },
+    {
+      "file": "public/app/features/variables/state/initVariableTransaction.test.ts",
+      "start_line": 81,
+      "end_line": 119,
+      "similarity": 0.8208,
+      "related_to": "public/app/features/variables/state/actions.test.ts",
+      "content_preview": "type);\n        expect(dispatchedActions[1].payload.action.payload.id).toEqual('__dashboard');\n        expect(dispatchedActions[2].payload.action.type).toEqual(addVariable.type);\n        expect(dispatchedActions[2].payload.action.payload.id).toEqual('__org');\n        expect(dispatchedActions[3].payload.action.type).toEqual(addVariable.type);\n        expect(dispatchedActions[3].payload.action.payload.id).toEqual('__user');\n        expect(dispatchedActions[4]).toEqual(\n          toKeyedAction(key, addVariable(toVariablePayload(constant, { global: false, index: 0, model: constant })))\n        );\n        expect(dispatchedActions[5]).toEqual(toKeyedAction(key, variableStateNotStarted(toVariablePayload(constant))));\n        expect(dispatchedActions[6]).toEqual(toKeyedAction(key, variableStateComp"
+    },
+    {
+      "file": "public/app/features/variables/state/processVariable.test.ts",
+      "start_line": 1,
+      "end_line": 48,
+      "similarity": 0.8118,
+      "related_to": "public/app/features/variables/state/actions.test.ts",
+      "content_preview": "import { UrlQueryMap, VariableRefresh } from '@grafana/data';\nimport { setDataSourceSrv } from '@grafana/runtime';\nimport { DashboardModel } from 'app/features/dashboard/state/DashboardModel';\nimport { DatasourceSrv } from 'app/features/plugins/datasource_srv';\n\nimport { reduxTester } from '../../../../test/core/redux/reduxTester';\nimport { variableAdapters } from '../adapters';\nimport { createCustomVariableAdapter } from '../custom/adapter';\nimport { createCustomOptionsFromQuery } from '../custom/reducer';\nimport { setVariableQueryRunner, VariableQueryRunner } from '../query/VariableQueryRunner';\nimport { createQueryVariableAdapter } from '../query/adapter';\nimport { updateVariableOptions } from '../query/reducer';\nimport { customBuilder, queryBuilder } from '../shared/testing/builders';\n"
+    },
+    {
+      "file": "public/app/features/variables/state/initVariableTransaction.test.ts",
+      "start_line": 1,
+      "end_line": 48,
+      "similarity": 0.8114,
+      "related_to": "public/app/features/variables/state/actions.test.ts",
+      "content_preview": "import { DataSourceRef, LoadingState } from '@grafana/data';\nimport { setDataSourceSrv } from '@grafana/runtime';\nimport { DashboardModel } from 'app/features/dashboard/state/DashboardModel';\n\nimport { reduxTester } from '../../../../test/core/redux/reduxTester';\nimport { toAsyncOfResult } from '../../query/state/DashboardQueryRunner/testHelpers';\nimport { variableAdapters } from '../adapters';\nimport { createAdHocVariableAdapter } from '../adhoc/adapter';\nimport { createConstantVariableAdapter } from '../constant/adapter';\nimport { createDataSourceVariableAdapter } from '../datasource/adapter';\nimport { createDataSourceOptions } from '../datasource/reducer';\nimport { cleanEditorState } from '../editor/reducer';\nimport { cleanPickerState } from '../pickers/OptionsPicker/reducer';\nimport { "
+    },
+    {
+      "file": "public/app/features/variables/state/sharedReducer.ts",
+      "start_line": 1,
+      "end_line": 45,
+      "similarity": 0.808,
+      "related_to": "public/app/features/variables/datasource/reducer.ts",
+      "content_preview": "import { createSlice, PayloadAction } from '@reduxjs/toolkit';\nimport { cloneDeep, defaults as lodashDefaults } from 'lodash';\n\nimport { LoadingState, VariableType, TypedVariableModel, VariableOption } from '@grafana/data';\n\nimport { variableAdapters } from '../adapters';\nimport { changeVariableNameSucceeded } from '../editor/reducer';\nimport { hasOptions } from '../guard';\nimport { ensureStringValues } from '../utils';\n\nimport { getInstanceState, getNextVariableIndex } from './selectors';\nimport { AddVariable, initialVariablesState, VariablePayload, VariablesState } from './types';\n\nconst sharedReducerSlice = createSlice({\n  name: 'templating/shared',\n  initialState: initialVariablesState,\n  reducers: {\n    addVariable: (state: VariablesState, action: PayloadAction<VariablePayload<AddVari"
+    },
+    {
+      "file": "public/app/features/variables/state/onTimeRangeUpdated.test.ts",
+      "start_line": 91,
+      "end_line": 169,
+      "similarity": 0.7924,
+      "related_to": "public/app/features/variables/state/actions.test.ts",
+      "content_preview": "\n  const startRefreshMock = jest.fn();\n  dashboard.templateVariableValueUpdated = templateVariableValueUpdatedMock;\n  dashboard.startRefresh = startRefreshMock;\n  const dashboardState = {\n    getModel: () => dashboard,\n  } as unknown as DashboardState;\n  const adapterInterval = variableAdapters.get('interval');\n  const adapterQuery = variableAdapters.get('query');\n  const templatingState = {\n    variables: {\n      'interval-0': { ...interval },\n      'constant-1': { ...constant },\n    },\n  };\n  const preloadedState = {\n    dashboard: dashboardState,\n    ...getPreloadedState(key, templatingState),\n  } as unknown as RootReducerType;\n\n  return {\n    key,\n    interval,\n    range,\n    dependencies,\n    adapterInterval,\n    adapterQuery,\n    preloadedState,\n    updateTimeRangeMock,\n    templateV"
+    }
+  ],
+  "rag_evidence": {
+    "similar_code": [
+      {
+        "file": "public/app/features/variables/state/initVariableTransaction.test.ts",
+        "start_line": 40,
+        "end_line": 84,
+        "similarity": 0.8394,
+        "related_to": "public/app/features/variables/state/actions.test.ts",
+        "content_preview": "er(),\n  createConstantVariableAdapter(),\n  createAdHocVariableAdapter(),\n  createDataSourceVariableAdapter(),\n]);\n\nfunction getTestContext(variables?: VariableModel[]) {\n  const key = 'key';\n  const constant = constantBuilder().withId('constant').withName('constant').build();\n  const templating = { list: variables ?? [constant] };\n  const getInstanceSettingsMock = jest.fn().mockReturnValue(undefined);\n  setDataSourceSrv({\n    registerRuntimeDataSource: jest.fn(),\n    get: jest.fn().mockResolvedValue({}),\n    getList: jest.fn().mockReturnValue([]),\n    getInstanceSettings: getInstanceSettingsMock,\n    reload: jest.fn(),\n  });\n  const variableQueryRunner = {\n    cancelRequest: jest.fn(),\n    queueRequest: jest.fn(),\n    getResponse: () => toAsyncOfResult({ state: LoadingState.Done, identifie"
+      },
+      {
+        "file": "public/app/features/variables/state/onTimeRangeUpdated.test.ts",
+        "start_line": 1,
+        "end_line": 42,
+        "similarity": 0.8326,
+        "related_to": "public/app/features/variables/state/actions.test.ts",
+        "content_preview": "import { dateTime, TimeRange, VariableRefresh } from '@grafana/data';\nimport { config, DataSourceSrv } from '@grafana/runtime';\nimport * as runtime from '@grafana/runtime';\nimport { DashboardState } from 'app/types/dashboard';\n\nimport { reduxTester } from '../../../../test/core/redux/reduxTester';\nimport { silenceConsoleOutput } from '../../../../test/core/utils/silenceConsoleOutput';\nimport { appEvents } from '../../../core/app_events';\nimport { notifyApp } from '../../../core/reducers/appNotification';\nimport { DashboardModel } from '../../dashboard/state/DashboardModel';\nimport { createDashboardModelFixture } from '../../dashboard/state/__fixtures__/dashboardFixtures';\nimport { TemplateSrv } from '../../templating/template_srv';\nimport { variableAdapters } from '../adapters';\nimport { c"
+      },
+      {
+        "file": "public/app/features/variables/state/reducers.test.ts",
+        "start_line": 1,
+        "end_line": 61,
+        "similarity": 0.8273,
+        "related_to": "public/app/features/variables/state/actions.test.ts",
+        "content_preview": "import { createAction } from '@reduxjs/toolkit';\nimport { ComponentType } from 'react';\n\nimport { QueryVariableModel, VariableType } from '@grafana/data';\n\nimport { reducerTester } from '../../../../test/core/redux/reducerTester';\nimport { VariableAdapter, variableAdapters } from '../adapters';\nimport { VariableEditorProps } from '../editor/types';\nimport { VariablePickerProps } from '../pickers/types';\nimport { toVariablePayload } from '../utils';\n\nimport { createQueryVariable } from './__tests__/fixtures';\nimport { VariablePayload, VariablesState } from './types';\nimport { cleanVariables, variablesReducer } from './variablesReducer';\n\nconst variableAdapter: VariableAdapter<QueryVariableModel> = {\n  id: 'mock' as unknown as VariableType,\n  name: 'Mock label',\n  description: 'Mock descript"
+      },
+      {
+        "file": "public/app/features/variables/state/initVariableTransaction.test.ts",
+        "start_line": 81,
+        "end_line": 119,
+        "similarity": 0.8208,
+        "related_to": "public/app/features/variables/state/actions.test.ts",
+        "content_preview": "type);\n        expect(dispatchedActions[1].payload.action.payload.id).toEqual('__dashboard');\n        expect(dispatchedActions[2].payload.action.type).toEqual(addVariable.type);\n        expect(dispatchedActions[2].payload.action.payload.id).toEqual('__org');\n        expect(dispatchedActions[3].payload.action.type).toEqual(addVariable.type);\n        expect(dispatchedActions[3].payload.action.payload.id).toEqual('__user');\n        expect(dispatchedActions[4]).toEqual(\n          toKeyedAction(key, addVariable(toVariablePayload(constant, { global: false, index: 0, model: constant })))\n        );\n        expect(dispatchedActions[5]).toEqual(toKeyedAction(key, variableStateNotStarted(toVariablePayload(constant))));\n        expect(dispatchedActions[6]).toEqual(toKeyedAction(key, variableStateComp"
+      },
+      {
+        "file": "public/app/features/variables/state/processVariable.test.ts",
+        "start_line": 1,
+        "end_line": 48,
+        "similarity": 0.8118,
+        "related_to": "public/app/features/variables/state/actions.test.ts",
+        "content_preview": "import { UrlQueryMap, VariableRefresh } from '@grafana/data';\nimport { setDataSourceSrv } from '@grafana/runtime';\nimport { DashboardModel } from 'app/features/dashboard/state/DashboardModel';\nimport { DatasourceSrv } from 'app/features/plugins/datasource_srv';\n\nimport { reduxTester } from '../../../../test/core/redux/reduxTester';\nimport { variableAdapters } from '../adapters';\nimport { createCustomVariableAdapter } from '../custom/adapter';\nimport { createCustomOptionsFromQuery } from '../custom/reducer';\nimport { setVariableQueryRunner, VariableQueryRunner } from '../query/VariableQueryRunner';\nimport { createQueryVariableAdapter } from '../query/adapter';\nimport { updateVariableOptions } from '../query/reducer';\nimport { customBuilder, queryBuilder } from '../shared/testing/builders';\n"
+      },
+      {
+        "file": "public/app/features/variables/state/initVariableTransaction.test.ts",
+        "start_line": 1,
+        "end_line": 48,
+        "similarity": 0.8114,
+        "related_to": "public/app/features/variables/state/actions.test.ts",
+        "content_preview": "import { DataSourceRef, LoadingState } from '@grafana/data';\nimport { setDataSourceSrv } from '@grafana/runtime';\nimport { DashboardModel } from 'app/features/dashboard/state/DashboardModel';\n\nimport { reduxTester } from '../../../../test/core/redux/reduxTester';\nimport { toAsyncOfResult } from '../../query/state/DashboardQueryRunner/testHelpers';\nimport { variableAdapters } from '../adapters';\nimport { createAdHocVariableAdapter } from '../adhoc/adapter';\nimport { createConstantVariableAdapter } from '../constant/adapter';\nimport { createDataSourceVariableAdapter } from '../datasource/adapter';\nimport { createDataSourceOptions } from '../datasource/reducer';\nimport { cleanEditorState } from '../editor/reducer';\nimport { cleanPickerState } from '../pickers/OptionsPicker/reducer';\nimport { "
+      },
+      {
+        "file": "public/app/features/variables/state/sharedReducer.ts",
+        "start_line": 1,
+        "end_line": 45,
+        "similarity": 0.808,
+        "related_to": "public/app/features/variables/datasource/reducer.ts",
+        "content_preview": "import { createSlice, PayloadAction } from '@reduxjs/toolkit';\nimport { cloneDeep, defaults as lodashDefaults } from 'lodash';\n\nimport { LoadingState, VariableType, TypedVariableModel, VariableOption } from '@grafana/data';\n\nimport { variableAdapters } from '../adapters';\nimport { changeVariableNameSucceeded } from '../editor/reducer';\nimport { hasOptions } from '../guard';\nimport { ensureStringValues } from '../utils';\n\nimport { getInstanceState, getNextVariableIndex } from './selectors';\nimport { AddVariable, initialVariablesState, VariablePayload, VariablesState } from './types';\n\nconst sharedReducerSlice = createSlice({\n  name: 'templating/shared',\n  initialState: initialVariablesState,\n  reducers: {\n    addVariable: (state: VariablesState, action: PayloadAction<VariablePayload<AddVari"
+      },
+      {
+        "file": "public/app/features/variables/state/onTimeRangeUpdated.test.ts",
+        "start_line": 91,
+        "end_line": 169,
+        "similarity": 0.7924,
+        "related_to": "public/app/features/variables/state/actions.test.ts",
+        "content_preview": "\n  const startRefreshMock = jest.fn();\n  dashboard.templateVariableValueUpdated = templateVariableValueUpdatedMock;\n  dashboard.startRefresh = startRefreshMock;\n  const dashboardState = {\n    getModel: () => dashboard,\n  } as unknown as DashboardState;\n  const adapterInterval = variableAdapters.get('interval');\n  const adapterQuery = variableAdapters.get('query');\n  const templatingState = {\n    variables: {\n      'interval-0': { ...interval },\n      'constant-1': { ...constant },\n    },\n  };\n  const preloadedState = {\n    dashboard: dashboardState,\n    ...getPreloadedState(key, templatingState),\n  } as unknown as RootReducerType;\n\n  return {\n    key,\n    interval,\n    range,\n    dependencies,\n    adapterInterval,\n    adapterQuery,\n    preloadedState,\n    updateTimeRangeMock,\n    templateV"
+      }
+    ]
+  },
+  "callers": [
+    {
+      "path": "app.ts",
+      "from_function": "initExtensions",
+      "calls_function": "init",
+      "caller_line": 339,
+      "callee_file": "features/plugins/datasource_srv.ts",
+      "callee_line": 44
+    },
+    {
+      "path": "app.ts",
+      "from_function": "init",
+      "calls_function": "init",
+      "caller_line": 132,
+      "callee_file": "features/plugins/datasource_srv.ts",
+      "callee_line": 44
+    },
+    {
+      "path": "core/services/backend_srv.ts",
+      "from_function": "initGrafanaDeviceID",
+      "calls_function": "get",
+      "caller_line": 108,
+      "callee_file": "features/plugins/datasource_srv.ts",
+      "callee_line": 153
+    },
+    {
+      "path": "core/time_series2.ts",
+      "from_function": "isMsResolutionNeeded",
+      "calls_function": "toString",
+      "caller_line": 336,
+      "callee_file": "features/variables/state/actions.ts",
+      "callee_line": 180
+    },
+    {
+      "path": "features/actions/utils.ts",
+      "from_function": "buildRequest",
+      "calls_function": "toString",
+      "caller_line": 248,
+      "callee_file": "features/variables/state/actions.ts",
+      "callee_line": 180
+    },
+    {
+      "path": "features/admin/UserAdminPage.tsx",
+      "from_function": "onPasswordChange",
+      "calls_function": "setUserPassword",
+      "caller_line": 71,
+      "callee_file": "features/admin/state/actions.ts",
+      "callee_line": 81
+    },
+    {
+      "path": "features/admin/UserAdminPage.tsx",
+      "from_function": "onGrafanaAdminChange",
+      "calls_function": "updateUserPermissions",
+      "caller_line": 77,
+      "callee_file": "features/admin/state/actions.ts",
+      "callee_line": 110
+    },
+    {
+      "path": "features/admin/UserAdminPage.tsx",
+      "from_function": "onOrgRemove",
+      "calls_function": "deleteOrgUser",
+      "caller_line": 83,
+      "callee_file": "features/admin/state/actions.ts",
+      "callee_line": 144
+    },
+    {
+      "path": "features/admin/UserAdminPage.tsx",
+      "from_function": "onOrgRoleChange",
+      "calls_function": "updateOrgUserRole",
+      "caller_line": 89,
+      "callee_file": "features/admin/state/actions.ts",
+      "callee_line": 136
+    },
+    {
+      "path": "features/admin/UserAdminPage.tsx",
+      "from_function": "onOrgAdd",
+      "calls_function": "addOrgUser",
+      "caller_line": 95,
+      "callee_file": "features/admin/state/actions.ts",
+      "callee_line": 125
+    },
+    {
+      "path": "features/admin/UserAdminPage.tsx",
+      "from_function": "onSessionRevoke",
+      "calls_function": "revokeSession",
+      "caller_line": 101,
+      "callee_file": "features/admin/state/actions.ts",
+      "callee_line": 180
+    },
+    {
+      "path": "features/admin/UserAdminPage.tsx",
+      "from_function": "onAllSessionsRevoke",
+      "calls_function": "revokeAllSessions",
+      "caller_line": 107,
+      "callee_file": "features/admin/state/actions.ts",
+      "callee_line": 188
+    },
+    {
+      "path": "features/admin/UserAdminPage.tsx",
+      "from_function": "onUserSync",
+      "calls_function": "syncLdapUser",
+      "caller_line": 113,
+      "callee_file": "features/admin/state/actions.ts",
+      "callee_line": 208
+    },
+    {
+      "path": "features/admin/ldap/LdapPage.tsx",
+      "from_function": "init",
+      "calls_function": "clearUserMappingInfo",
+      "caller_line": 63,
+      "callee_file": "features/admin/state/actions.ts",
+      "callee_line": 271
+    },
+    {
+      "path": "features/admin/ldap/LdapPage.tsx",
+      "from_function": "fetchLDAPStatus",
+      "calls_function": "loadLdapState",
+      "caller_line": 59,
+      "callee_file": "features/admin/state/actions.ts",
+      "callee_line": 217
+    },
+    {
+      "path": "features/admin/ldap/LdapPage.tsx",
+      "from_function": "fetchLDAPStatus",
+      "calls_function": "loadLdapSyncStatus",
+      "caller_line": 59,
+      "callee_file": "features/admin/state/actions.ts",
+      "callee_line": 197
+    },
+    {
+      "path": "features/admin/ldap/LdapPage.tsx",
+      "from_function": "onClearUserError",
+      "calls_function": "clearUserError",
+      "caller_line": 83,
+      "callee_file": "features/admin/state/actions.ts",
+      "callee_line": 265
+    },
+    {
+      "path": "features/admin/ldap/LdapTestDrawer.tsx",
+      "from_function": "init",
+      "calls_function": "clearUserMappingInfo",
+      "caller_line": 56,
+      "callee_file": "features/admin/state/actions.ts",
+      "callee_line": 271
+    },
+    {
+      "path": "features/admin/ldap/LdapTestDrawer.tsx",
+      "from_function": "fetchLDAPStatus",
+      "calls_function": "loadLdapState",
+      "caller_line": 52,
+      "callee_file": "features/admin/state/actions.ts",
+      "callee_line": 217
+    },
+    {
+      "path": "features/admin/ldap/LdapTestDrawer.tsx",
+      "from_function": "fetchLDAPStatus",
+      "calls_function": "loadLdapSyncStatus",
+      "caller_line": 52,
+      "callee_file": "features/admin/state/actions.ts",
+      "callee_line": 197
+    },
+    {
+      "path": "features/admin/ldap/LdapTestDrawer.tsx",
+      "from_function": "onClearUserError",
+      "calls_function": "clearUserError",
+      "caller_line": 78,
+      "callee_file": "features/admin/state/actions.ts",
+      "callee_line": 265
+    },
+    {
+      "path": "features/alerting/unified/components/folder-actions/FolderActionsButton.tsx",
+      "from_function": "redirectToListView",
+      "calls_function": "fetchAllPromRulesAction",
+      "caller_line": 105,
+      "callee_file": "features/alerting/unified/state/actions.ts",
+      "callee_line": 157
+    },
+    {
+      "path": "features/alerting/unified/components/folder-actions/FolderActionsButton.tsx",
+      "from_function": "redirectToListView",
+      "calls_function": "fetchAllPromAndRulerRulesAction",
+      "caller_line": 105,
+      "callee_file": "features/alerting/unified/state/actions.ts",
+      "callee_line": 122
+    },
+    {
+      "path": "features/alerting/unified/components/rule-editor/query-and-alert-condition/reducer.ts",
+      "from_function": "addQuery",
+      "calls_function": "defaultTimeRange",
+      "caller_line": 289,
+      "callee_file": "features/alerting/unified/components/rule-editor/query-and-alert-condition/reducer.ts",
+      "callee_line": 309
+    },
+    {
+      "path": "features/alerting/unified/group-details/validation.ts",
+      "from_function": "validate",
+      "calls_function": "rulesInSameGroupHaveInvalidFor",
+      "caller_line": 16,
+      "callee_file": "features/alerting/unified/state/actions.ts",
+      "callee_line": 256
+    },
+    {
+      "path": "features/auth-config/AuthDrawer.tsx",
+      "from_function": "oauthAllowInsecureEmailLookupOnChange",
+      "calls_function": "saveSettings",
+      "caller_line": 42,
+      "callee_file": "features/auth-config/state/actions.ts",
+      "callee_line": 65
+    },
+    {
+      "path": "features/auth-config/AuthDrawer.tsx",
+      "from_function": "oauthAllowInsecureEmailLookupOnChange",
+      "calls_function": "loadSettings",
+      "caller_line": 42,
+      "callee_file": "features/auth-config/state/actions.ts",
+      "callee_line": 22
+    },
+    {
+      "path": "features/auth-config/AuthDrawer.tsx",
+      "from_function": "resetButtonOnClick",
+      "calls_function": "saveSettings",
+      "caller_line": 58,
+      "callee_file": "features/auth-config/state/actions.ts",
+      "callee_line": 65
+    },
+    {
+      "path": "features/auth-config/AuthDrawer.tsx",
+      "from_function": "resetButtonOnClick",
+      "calls_function": "loadSettings",
+      "caller_line": 58,
+      "callee_file": "features/auth-config/state/actions.ts",
+      "callee_line": 22
+    },
+    {
+      "path": "features/dashboard-scene/settings/version-history/DiffViewer.tsx",
+      "from_function": "DiffViewer",
+      "calls_function": "toString",
+      "caller_line": 7,
+      "callee_file": "features/variables/state/actions.ts",
+      "callee_line": 180
+    },
+    {
+      "path": "features/dashboard/components/DashboardPrompt/DashboardPrompt.tsx",
+      "from_function": "onDiscard",
+      "calls_function": "discardPanelChanges",
+      "caller_line": 85,
+      "callee_file": "features/dashboard/components/PanelEditor/state/actions.ts",
+      "callee_line": 34
+    },
+    {
+      "path": "features/dashboard/components/DashboardPrompt/DashboardPrompt.tsx",
+      "from_function": "onHistoryBlock",
+      "calls_function": "exitPanelEditor",
+      "caller_line": 71,
+      "callee_file": "features/dashboard/components/PanelEditor/state/actions.ts",
+      "callee_line": 108
+    },
+    {
+      "path": "features/dashboard/components/PanelEditor/VisualizationButton.tsx",
+      "from_function": "onToggleOptionsPane",
+      "calls_function": "updatePanelEditorUIState",
+      "caller_line": 28,
+      "callee_file": "features/dashboard/components/PanelEditor/state/actions.ts",
+      "callee_line": 167
+    },
+    {
+      "path": "features/dashboard/containers/DashboardPage.tsx",
+      "from_function": "componentDidUpdate",
+      "calls_function": "templateVarsChangedInUrl",
+      "caller_line": 174,
+      "callee_file": "features/variables/state/actions.ts",
+      "callee_line": 842
+    },
+    {
+      "path": "features/datasources/state/hooks.ts",
+      "from_function": "onConfirm",
+      "calls_function": "deleteLoadedDataSource",
+      "caller_line": 104,
+      "callee_file": "features/datasources/state/actions.ts",
+      "callee_line": 315
+    },
+    {
+      "path": "features/explore/Logs/LiveLogs.tsx",
+      "from_function": "getStyles",
+      "calls_function": "toString",
+      "caller_line": 17,
+      "callee_file": "features/variables/state/actions.ts",
+      "callee_line": 180
+    },
+    {
+      "path": "features/explore/mocks/makeLogs.ts",
+      "from_function": "makeLogs",
+      "calls_function": "toString",
+      "caller_line": 3,
+      "callee_file": "features/variables/state/actions.ts",
+      "callee_line": 180
+    },
+    {
+      "path": "features/explore/state/utils.ts",
+      "from_function": "loadAndInitDatasource",
+      "calls_function": "get",
+      "caller_line": 102,
+      "callee_file": "features/plugins/datasource_srv.ts",
+      "callee_line": 153
+    },
+    {
+      "path": "features/explore/state/utils.ts",
+      "from_function": "loadAndInitDatasource",
+      "calls_function": "getDatasourceSrv",
+      "caller_line": 102,
+      "callee_file": "features/plugins/datasource_srv.ts",
+      "callee_line": 436
+    },
+    {
+      "path": "features/expressions/ExpressionDatasource.ts",
+      "from_function": "runMetaSQLExprQuery",
+      "calls_function": "toString",
+      "caller_line": 75,
+      "callee_file": "features/variables/state/actions.ts",
+      "callee_line": 180
+    },
+    {
+      "path": "features/library-panels/components/LibraryPanelsView/LibraryPanelsView.tsx",
+      "from_function": "onDelete",
+      "calls_function": "deleteLibraryPanel",
+      "caller_line": 86,
+      "callee_file": "features/library-panels/components/LibraryPanelsView/actions.ts",
+      "callee_line": 75
+    },
+    {
+      "path": "features/logs/components/mocks/logRow.ts",
+      "from_function": "createLogRow",
+      "calls_function": "toString",
+      "caller_line": 5,
+      "callee_file": "features/variables/state/actions.ts",
+      "callee_line": 180
+    },
+    {
+      "path": "features/logs/components/panel/LogLine.tsx",
+      "from_function": "getStyles",
+      "calls_function": "toString",
+      "caller_line": 471,
+      "callee_file": "features/variables/state/actions.ts",
+      "callee_line": 180
+    },
+    {
+      "path": "features/logs/logsModel.ts",
+      "from_function": "parseTime",
+      "calls_function": "toString",
+      "caller_line": 320,
+      "callee_file": "features/variables/state/actions.ts",
+      "callee_line": 180
+    },
+    {
+      "path": "features/org/NewOrgPage.tsx",
+      "from_function": "createOrg",
+      "calls_function": "createOrganization",
+      "caller_line": 31,
+      "callee_file": "features/org/state/actions.ts",
+      "callee_line": 45
+    },
+    {
+      "path": "features/org/SelectOrgPage.tsx",
+      "from_function": "setUserOrg",
+      "calls_function": "setUserOrganization",
+      "caller_line": 40,
+      "callee_file": "features/org/state/actions.ts",
+      "callee_line": 34
+    },
+    {
+      "path": "features/panel/components/PanelDataErrorView.tsx",
+      "from_function": "switchToTable",
+      "calls_function": "changePanelPlugin",
+      "caller_line": 60,
+      "callee_file": "features/panel/state/actions.ts",
+      "callee_line": 61
+    },
+    {
+      "path": "features/panel/components/PanelDataErrorView.tsx",
+      "from_function": "loadSuggestion",
+      "calls_function": "changePanelPlugin",
+      "caller_line": 79,
+      "callee_file": "features/panel/state/actions.ts",
+      "callee_line": 61
+    },
+    {
+      "path": "features/plugins/admin/components/InstallControls/InstallControlsButton.tsx",
+      "from_function": "shouldDisableUninstall",
+      "calls_function": "isDisabledAngularPlugin",
+      "caller_line": 218,
+      "callee_file": "features/plugins/admin/helpers.ts",
+      "callee_line": 464
+    },
+    {
+      "path": "features/plugins/admin/components/InstallControls/InstallControlsButton.tsx",
+      "from_function": "InstallControlsButton",
+      "calls_function": "isDisabledAngularPlugin",
+      "caller_line": 36,
+      "callee_file": "features/plugins/admin/helpers.ts",
+      "callee_line": 464
+    }
+  ],
+  "call_graph_edges": [
+    {
+      "from": "app.ts::initExtensions",
+      "to": "features/plugins/datasource_srv.ts::init"
+    },
+    {
+      "from": "app.ts::init",
+      "to": "features/plugins/datasource_srv.ts::init"
+    },
+    {
+      "from": "core/services/backend_srv.ts::initGrafanaDeviceID",
+      "to": "features/plugins/datasource_srv.ts::get"
+    },
+    {
+      "from": "core/time_series2.ts::isMsResolutionNeeded",
+      "to": "features/variables/state/actions.ts::toString"
+    },
+    {
+      "from": "features/actions/utils.ts::buildRequest",
+      "to": "features/variables/state/actions.ts::toString"
+    },
+    {
+      "from": "features/admin/UserAdminPage.tsx::onPasswordChange",
+      "to": "features/admin/state/actions.ts::setUserPassword"
+    },
+    {
+      "from": "features/admin/UserAdminPage.tsx::onGrafanaAdminChange",
+      "to": "features/admin/state/actions.ts::updateUserPermissions"
+    },
+    {
+      "from": "features/admin/UserAdminPage.tsx::onOrgRemove",
+      "to": "features/admin/state/actions.ts::deleteOrgUser"
+    },
+    {
+      "from": "features/admin/UserAdminPage.tsx::onOrgRoleChange",
+      "to": "features/admin/state/actions.ts::updateOrgUserRole"
+    },
+    {
+      "from": "features/admin/UserAdminPage.tsx::onOrgAdd",
+      "to": "features/admin/state/actions.ts::addOrgUser"
+    },
+    {
+      "from": "features/admin/UserAdminPage.tsx::onSessionRevoke",
+      "to": "features/admin/state/actions.ts::revokeSession"
+    },
+    {
+      "from": "features/admin/UserAdminPage.tsx::onAllSessionsRevoke",
+      "to": "features/admin/state/actions.ts::revokeAllSessions"
+    },
+    {
+      "from": "features/admin/UserAdminPage.tsx::onUserSync",
+      "to": "features/admin/state/actions.ts::syncLdapUser"
+    },
+    {
+      "from": "features/admin/ldap/LdapPage.tsx::init",
+      "to": "features/admin/state/actions.ts::clearUserMappingInfo"
+    },
+    {
+      "from": "features/admin/ldap/LdapPage.tsx::fetchLDAPStatus",
+      "to": "features/admin/state/actions.ts::loadLdapState"
+    },
+    {
+      "from": "features/admin/ldap/LdapPage.tsx::fetchLDAPStatus",
+      "to": "features/admin/state/actions.ts::loadLdapSyncStatus"
+    },
+    {
+      "from": "features/admin/ldap/LdapPage.tsx::onClearUserError",
+      "to": "features/admin/state/actions.ts::clearUserError"
+    },
+    {
+      "from": "features/admin/ldap/LdapTestDrawer.tsx::init",
+      "to": "features/admin/state/actions.ts::clearUserMappingInfo"
+    },
+    {
+      "from": "features/admin/ldap/LdapTestDrawer.tsx::fetchLDAPStatus",
+      "to": "features/admin/state/actions.ts::loadLdapState"
+    },
+    {
+      "from": "features/admin/ldap/LdapTestDrawer.tsx::fetchLDAPStatus",
+      "to": "features/admin/state/actions.ts::loadLdapSyncStatus"
+    },
+    {
+      "from": "features/admin/ldap/LdapTestDrawer.tsx::onClearUserError",
+      "to": "features/admin/state/actions.ts::clearUserError"
+    },
+    {
+      "from": "features/alerting/unified/components/folder-actions/FolderActionsButton.tsx::redirectToListView",
+      "to": "features/alerting/unified/state/actions.ts::fetchAllPromRulesAction"
+    },
+    {
+      "from": "features/alerting/unified/components/folder-actions/FolderActionsButton.tsx::redirectToListView",
+      "to": "features/alerting/unified/state/actions.ts::fetchAllPromAndRulerRulesAction"
+    },
+    {
+      "from": "features/alerting/unified/components/rule-editor/query-and-alert-condition/reducer.ts::addQuery",
+      "to": "features/alerting/unified/components/rule-editor/query-and-alert-condition/reducer.ts::defaultTimeRange"
+    },
+    {
+      "from": "features/alerting/unified/group-details/validation.ts::validate",
+      "to": "features/alerting/unified/state/actions.ts::rulesInSameGroupHaveInvalidFor"
+    },
+    {
+      "from": "features/auth-config/AuthDrawer.tsx::oauthAllowInsecureEmailLookupOnChange",
+      "to": "features/auth-config/state/actions.ts::saveSettings"
+    },
+    {
+      "from": "features/auth-config/AuthDrawer.tsx::oauthAllowInsecureEmailLookupOnChange",
+      "to": "features/auth-config/state/actions.ts::loadSettings"
+    },
+    {
+      "from": "features/auth-config/AuthDrawer.tsx::resetButtonOnClick",
+      "to": "features/auth-config/state/actions.ts::saveSettings"
+    },
+    {
+      "from": "features/auth-config/AuthDrawer.tsx::resetButtonOnClick",
+      "to": "features/auth-config/state/actions.ts::loadSettings"
+    },
+    {
+      "from": "features/dashboard-scene/settings/version-history/DiffViewer.tsx::DiffViewer",
+      "to": "features/variables/state/actions.ts::toString"
+    },
+    {
+      "from": "features/dashboard/components/DashboardPrompt/DashboardPrompt.tsx::onDiscard",
+      "to": "features/dashboard/components/PanelEditor/state/actions.ts::discardPanelChanges"
+    },
+    {
+      "from": "features/dashboard/components/DashboardPrompt/DashboardPrompt.tsx::onHistoryBlock",
+      "to": "features/dashboard/components/PanelEditor/state/actions.ts::exitPanelEditor"
+    },
+    {
+      "from": "features/dashboard/components/PanelEditor/VisualizationButton.tsx::onToggleOptionsPane",
+      "to": "features/dashboard/components/PanelEditor/state/actions.ts::updatePanelEditorUIState"
+    },
+    {
+      "from": "features/dashboard/containers/DashboardPage.tsx::componentDidUpdate",
+      "to": "features/variables/state/actions.ts::templateVarsChangedInUrl"
+    },
+    {
+      "from": "features/datasources/state/hooks.ts::onConfirm",
+      "to": "features/datasources/state/actions.ts::deleteLoadedDataSource"
+    },
+    {
+      "from": "features/explore/Logs/LiveLogs.tsx::getStyles",
+      "to": "features/variables/state/actions.ts::toString"
+    },
+    {
+      "from": "features/explore/mocks/makeLogs.ts::makeLogs",
+      "to": "features/variables/state/actions.ts::toString"
+    },
+    {
+      "from": "features/explore/state/utils.ts::loadAndInitDatasource",
+      "to": "features/plugins/datasource_srv.ts::get"
+    },
+    {
+      "from": "features/explore/state/utils.ts::loadAndInitDatasource",
+      "to": "features/plugins/datasource_srv.ts::getDatasourceSrv"
+    },
+    {
+      "from": "features/expressions/ExpressionDatasource.ts::runMetaSQLExprQuery",
+      "to": "features/variables/state/actions.ts::toString"
+    },
+    {
+      "from": "features/library-panels/components/LibraryPanelsView/LibraryPanelsView.tsx::onDelete",
+      "to": "features/library-panels/components/LibraryPanelsView/actions.ts::deleteLibraryPanel"
+    },
+    {
+      "from": "features/logs/components/mocks/logRow.ts::createLogRow",
+      "to": "features/variables/state/actions.ts::toString"
+    },
+    {
+      "from": "features/logs/components/panel/LogLine.tsx::getStyles",
+      "to": "features/variables/state/actions.ts::toString"
+    },
+    {
+      "from": "features/logs/logsModel.ts::parseTime",
+      "to": "features/variables/state/actions.ts::toString"
+    },
+    {
+      "from": "features/org/NewOrgPage.tsx::createOrg",
+      "to": "features/org/state/actions.ts::createOrganization"
+    },
+    {
+      "from": "features/org/SelectOrgPage.tsx::setUserOrg",
+      "to": "features/org/state/actions.ts::setUserOrganization"
+    },
+    {
+      "from": "features/panel/components/PanelDataErrorView.tsx::switchToTable",
+      "to": "features/panel/state/actions.ts::changePanelPlugin"
+    },
+    {
+      "from": "features/panel/components/PanelDataErrorView.tsx::loadSuggestion",
+      "to": "features/panel/state/actions.ts::changePanelPlugin"
+    },
+    {
+      "from": "features/plugins/admin/components/InstallControls/InstallControlsButton.tsx::shouldDisableUninstall",
+      "to": "features/plugins/admin/helpers.ts::isDisabledAngularPlugin"
+    },
+    {
+      "from": "features/plugins/admin/components/InstallControls/InstallControlsButton.tsx::InstallControlsButton",
+      "to": "features/plugins/admin/helpers.ts::isDisabledAngularPlugin"
+    }
+  ],
+  "functions_in_changed_files": [
+    {
+      "name": ":program",
+      "full_name": "features/admin/state/actions.ts::program",
+      "file": "features/admin/state/actions.ts",
+      "start_line": 1,
+      "end_line": 416,
+      "signature": ""
+    },
+    {
+      "name": "loadAdminUserPage",
+      "full_name": "features/admin/state/actions.ts::program:loadAdminUserPage",
+      "file": "features/admin/state/actions.ts",
+      "start_line": 41,
+      "end_line": 65,
+      "signature": ""
+    },
+    {
+      "name": "loadUserProfile",
+      "full_name": "features/admin/state/actions.ts::program:loadUserProfile",
+      "file": "features/admin/state/actions.ts",
+      "start_line": 67,
+      "end_line": 72,
+      "signature": ""
+    },
+    {
+      "name": "updateUser",
+      "full_name": "features/admin/state/actions.ts::program:updateUser",
+      "file": "features/admin/state/actions.ts",
+      "start_line": 74,
+      "end_line": 79,
+      "signature": ""
+    },
+    {
+      "name": "setUserPassword",
+      "full_name": "features/admin/state/actions.ts::program:setUserPassword",
+      "file": "features/admin/state/actions.ts",
+      "start_line": 81,
+      "end_line": 87,
+      "signature": ""
+    },
+    {
+      "name": "disableUser",
+      "full_name": "features/admin/state/actions.ts::program:disableUser",
+      "file": "features/admin/state/actions.ts",
+      "start_line": 89,
+      "end_line": 94,
+      "signature": ""
+    },
+    {
+      "name": "enableUser",
+      "full_name": "features/admin/state/actions.ts::program:enableUser",
+      "file": "features/admin/state/actions.ts",
+      "start_line": 96,
+      "end_line": 101,
+      "signature": ""
+    },
+    {
+      "name": "deleteUser",
+      "full_name": "features/admin/state/actions.ts::program:deleteUser",
+      "file": "features/admin/state/actions.ts",
+      "start_line": 103,
+      "end_line": 108,
+      "signature": ""
+    },
+    {
+      "name": "updateUserPermissions",
+      "full_name": "features/admin/state/actions.ts::program:updateUserPermissions",
+      "file": "features/admin/state/actions.ts",
+      "start_line": 110,
+      "end_line": 116,
+      "signature": ""
+    },
+    {
+      "name": "loadUserOrgs",
+      "full_name": "features/admin/state/actions.ts::program:loadUserOrgs",
+      "file": "features/admin/state/actions.ts",
+      "start_line": 118,
+      "end_line": 123,
+      "signature": ""
+    },
+    {
+      "name": "addOrgUser",
+      "full_name": "features/admin/state/actions.ts::program:addOrgUser",
+      "file": "features/admin/state/actions.ts",
+      "start_line": 125,
+      "end_line": 134,
+      "signature": ""
+    },
+    {
+      "name": "updateOrgUserRole",
+      "full_name": "features/admin/state/actions.ts::program:updateOrgUserRole",
+      "file": "features/admin/state/actions.ts",
+      "start_line": 136,
+      "end_line": 142,
+      "signature": ""
+    },
+    {
+      "name": "deleteOrgUser",
+      "full_name": "features/admin/state/actions.ts::program:deleteOrgUser",
+      "file": "features/admin/state/actions.ts",
+      "start_line": 144,
+      "end_line": 149,
+      "signature": ""
+    },
+    {
+      "name": "loadUserSessions",
+      "full_name": "features/admin/state/actions.ts::program:loadUserSessions",
+      "file": "features/admin/state/actions.ts",
+      "start_line": 151,
+      "end_line": 178,
+      "signature": ""
+    },
+    {
+      "name": "revokeSession",
+      "full_name": "features/admin/state/actions.ts::program:revokeSession",
+      "file": "features/admin/state/actions.ts",
+      "start_line": 180,
+      "end_line": 186,
+      "signature": ""
+    },
+    {
+      "name": "revokeAllSessions",
+      "full_name": "features/admin/state/actions.ts::program:revokeAllSessions",
+      "file": "features/admin/state/actions.ts",
+      "start_line": 188,
+      "end_line": 193,
+      "signature": ""
+    },
+    {
+      "name": "loadLdapSyncStatus",
+      "full_name": "features/admin/state/actions.ts::program:loadLdapSyncStatus",
+      "file": "features/admin/state/actions.ts",
+      "start_line": 197,
+      "end_line": 206,
+      "signature": ""
+    },
+    {
+      "name": "syncLdapUser",
+      "full_name": "features/admin/state/actions.ts::program:syncLdapUser",
+      "file": "features/admin/state/actions.ts",
+      "start_line": 208,
+      "end_line": 213,
+      "signature": ""
+    },
+    {
+      "name": "loadLdapState",
+      "full_name": "features/admin/state/actions.ts::program:loadLdapState",
+      "file": "features/admin/state/actions.ts",
+      "start_line": 217,
+      "end_line": 237,
+      "signature": ""
+    },
+    {
+      "name": "loadUserMapping",
+      "full_name": "features/admin/state/actions.ts::program:loadUserMapping",
+      "file": "features/admin/state/actions.ts",
+      "start_line": 239,
+      "end_line": 263,
+      "signature": ""
+    },
+    {
+      "name": "clearUserError",
+      "full_name": "features/admin/state/actions.ts::program:clearUserError",
+      "file": "features/admin/state/actions.ts",
+      "start_line": 265,
+      "end_line": 269,
+      "signature": ""
+    },
+    {
+      "name": "clearUserMappingInfo",
+      "full_name": "features/admin/state/actions.ts::program:clearUserMappingInfo",
+      "file": "features/admin/state/actions.ts",
+      "start_line": 271,
+      "end_line": 276,
+      "signature": ""
+    },
+    {
+      "name": "getFilters",
+      "full_name": "features/admin/state/actions.ts::program:getFilters",
+      "file": "features/admin/state/actions.ts",
+      "start_line": 280,
+      "end_line": 289,
+      "signature": ""
+    },
+    {
+      "name": "fetchUsers",
+      "full_name": "features/admin/state/actions.ts::program:fetchUsers",
+      "file": "features/admin/state/actions.ts",
+      "start_line": 291,
+      "end_line": 306,
+      "signature": ""
+    },
+    {
+      "name": "changeQuery",
+      "full_name": "features/admin/state/actions.ts::program:changeQuery",
+      "file": "features/admin/state/actions.ts",
+      "start_line": 310,
+      "end_line": 316,
+      "signature": ""
+    },
+    {
+      "name": "changeFilter",
+      "full_name": "features/admin/state/actions.ts::program:changeFilter",
+      "file": "features/admin/state/actions.ts",
+      "start_line": 318,
+      "end_line": 324,
+      "signature": ""
+    },
+    {
+      "name": "changePage",
+      "full_name": "features/admin/state/actions.ts::program:changePage",
+      "file": "features/admin/state/actions.ts",
+      "start_line": 326,
+      "end_line": 332,
+      "signature": ""
+    },
+    {
+      "name": "changeSort",
+      "full_name": "features/admin/state/actions.ts::program:changeSort",
+      "file": "features/admin/state/actions.ts",
+      "start_line": 334,
+      "end_line": 344,
+      "signature": ""
+    },
+    {
+      "name": "getAnonFilters",
+      "full_name": "features/admin/state/actions.ts::program:getAnonFilters",
+      "file": "features/admin/state/actions.ts",
+      "start_line": 347,
+      "end_line": 356,
+      "signature": ""
+    },
+    {
+      "name": "fetchUsersAnonymousDevices",
+      "full_name": "features/admin/state/actions.ts::program:fetchUsersAnonymousDevices",
+      "file": "features/admin/state/actions.ts",
+      "start_line": 358,
+      "end_line": 372,
+      "signature": ""
+    },
+    {
+      "name": "changeAnonUserSort",
+      "full_name": "features/admin/state/actions.ts::program:changeAnonUserSort",
+      "file": "features/admin/state/actions.ts",
+      "start_line": 376,
+      "end_line": 386,
+      "signature": ""
+    },
+    {
+      "name": "changeAnonQuery",
+      "full_name": "features/admin/state/actions.ts::program:changeAnonQuery",
+      "file": "features/admin/state/actions.ts",
+      "start_line": 388,
+      "end_line": 394,
+      "signature": ""
+    },
+    {
+      "name": "changeAnonPage",
+      "full_name": "features/admin/state/actions.ts::program:changeAnonPage",
+      "file": "features/admin/state/actions.ts",
+      "start_line": 396,
+      "end_line": 402,
+      "signature": ""
+    },
+    {
+      "name": ":program",
+      "full_name": "features/alerting/unified/components/rule-editor/query-and-alert-condition/reducer.ts::program",
+      "file": "features/alerting/unified/components/rule-editor/query-and-alert-condition/reducer.ts",
+      "start_line": 1,
+      "end_line": 316,
+      "signature": ""
+    },
+    {
+      "name": "findDataSourceFromExpression",
+      "full_name": "features/alerting/unified/components/rule-editor/query-and-alert-condition/reducer.ts::program:findDataSourceFromExpression",
+      "file": "features/alerting/unified/components/rule-editor/query-and-alert-condition/reducer.ts",
+      "start_line": 35,
+      "end_line": 48,
+      "signature": ""
+    },
+    {
+      "name": "addQuery",
+      "full_name": "features/alerting/unified/components/rule-editor/query-and-alert-condition/reducer.ts::program:addQuery",
+      "file": "features/alerting/unified/components/rule-editor/query-and-alert-condition/reducer.ts",
+      "start_line": 289,
+      "end_line": 307,
+      "signature": ""
+    },
+    {
+      "name": "defaultTimeRange",
+      "full_name": "features/alerting/unified/components/rule-editor/query-and-alert-condition/reducer.ts::program:defaultTimeRange",
+      "file": "features/alerting/unified/components/rule-editor/query-and-alert-condition/reducer.ts",
+      "start_line": 309,
+      "end_line": 315,
+      "signature": ""
+    },
+    {
+      "name": ":program",
+      "full_name": "features/alerting/unified/state/actions.ts::program",
+      "file": "features/alerting/unified/state/actions.ts",
+      "start_line": 1,
+      "end_line": 265,
+      "signature": ""
+    },
+    {
+      "name": "fetchPromAndRulerRulesAction",
+      "full_name": "features/alerting/unified/state/actions.ts::program:fetchPromAndRulerRulesAction",
+      "file": "features/alerting/unified/state/actions.ts",
+      "start_line": 88,
+      "end_line": 113,
+      "signature": ""
+    },
+    {
+      "name": "fetchAllPromAndRulerRulesAction",
+      "full_name": "features/alerting/unified/state/actions.ts::program:fetchAllPromAndRulerRulesAction",
+      "file": "features/alerting/unified/state/actions.ts",
+      "start_line": 122,
+      "end_line": 155,
+      "signature": ""
+    },
+    {
+      "name": "fetchAllPromRulesAction",
+      "full_name": "features/alerting/unified/state/actions.ts::program:fetchAllPromRulesAction",
+      "file": "features/alerting/unified/state/actions.ts",
+      "start_line": 157,
+      "end_line": 169,
+      "signature": ""
+    },
+    {
+      "name": "rulesInSameGroupHaveInvalidFor",
+      "full_name": "features/alerting/unified/state/actions.ts::program:rulesInSameGroupHaveInvalidFor",
+      "file": "features/alerting/unified/state/actions.ts",
+      "start_line": 256,
+      "end_line": 264,
+      "signature": ""
+    },
+    {
+      "name": ":program",
+      "full_name": "features/auth-config/state/actions.ts::program",
+      "file": "features/auth-config/state/actions.ts",
+      "start_line": 1,
+      "end_line": 96,
+      "signature": ""
+    },
+    {
+      "name": "loadSettings",
+      "full_name": "features/auth-config/state/actions.ts::program:loadSettings",
+      "file": "features/auth-config/state/actions.ts",
+      "start_line": 22,
+      "end_line": 38,
+      "signature": ""
+    },
+    {
+      "name": "loadProviders",
+      "full_name": "features/auth-config/state/actions.ts::program:loadProviders",
+      "file": "features/auth-config/state/actions.ts",
+      "start_line": 40,
+      "end_line": 46,
+      "signature": ""
+    },
+    {
+      "name": "loadProviderStatuses",
+      "full_name": "features/auth-config/state/actions.ts::program:loadProviderStatuses",
+      "file": "features/auth-config/state/actions.ts",
+      "start_line": 48,
+      "end_line": 63,
+      "signature": ""
+    },
+    {
+      "name": "saveSettings",
+      "full_name": "features/auth-config/state/actions.ts::program:saveSettings",
+      "file": "features/auth-config/state/actions.ts",
+      "start_line": 65,
+      "end_line": 95,
+      "signature": ""
+    },
+    {
+      "name": ":program",
+      "full_name": "features/browse-dashboards/state/actions.ts::program",
+      "file": "features/browse-dashboards/state/actions.ts",
+      "start_line": 1,
+      "end_line": 160,
+      "signature": ""
+    },
+    {
+      "name": ":program",
+      "full_name": "features/dashboard/components/PanelEditor/state/actions.ts::program",
+      "file": "features/dashboard/components/PanelEditor/state/actions.ts",
+      "start_line": 1,
+      "end_line": 178,
+      "signature": ""
+    },
+    {
+      "name": "hasPanelChangedInPanelEdit",
+      "full_name": "features/dashboard/components/PanelEditor/state/actions.ts::program:hasPanelChangedInPanelEdit",
+      "file": "features/dashboard/components/PanelEditor/state/actions.ts",
+      "start_line": 163,
+      "end_line": 165,
+      "signature": ""
+    }
+  ]
+}

@@ -1,0 +1,42 @@
+{
+  "candidate_mentions": [
+    {
+      "basename_collision": false,
+      "end": 659,
+      "evidence_id": "M001",
+      "excerpt": "ts expected use and type.\n\n## Evidence\n- `sklearn/linear_model/_sag.py:87`: The `sag_solver` function signature has been modified to include `required_ctx`.\n- `sklearn/linear_model/_logistic.py:call` and `sklearn/linear_model/_ridge.py:call`: These files call `sag_solver` but have not been updated to pass the new `required_ctx` parameter.\n\n## Impact\n- **Technical Impact:** The addition of a new parameter without updating the calling functions can ca",
+      "match_kind": "full_path",
+      "match_text": "sklearn/linear_model/_logistic.py",
+      "oracle_path": "sklearn/linear_model/_logistic.py",
+      "start": 626
+    },
+    {
+      "basename_collision": false,
+      "end": 701,
+      "evidence_id": "M002",
+      "excerpt": "earn/linear_model/_sag.py:87`: The `sag_solver` function signature has been modified to include `required_ctx`.\n- `sklearn/linear_model/_logistic.py:call` and `sklearn/linear_model/_ridge.py:call`: These files call `sag_solver` but have not been updated to pass the new `required_ctx` parameter.\n\n## Impact\n- **Technical Impact:** The addition of a new parameter without updating the calling functions can cause `TypeError` exceptions at runtime, dis",
+      "match_kind": "full_path",
+      "match_text": "sklearn/linear_model/_ridge.py",
+      "oracle_path": "sklearn/linear_model/_ridge.py",
+      "start": 671
+    }
+  ],
+  "causal_quote": "The addition of a new parameter without updating the calling functions can cause `TypeError` exceptions at runtime, disrupting the functionality of logistic regression and ridge regression models that rely on `sag_solver`.",
+  "decision_source": "llm_causal_adjudication",
+  "detected": true,
+  "evidence_id": "M001",
+  "executed_at_utc": "2026-09-19T15:06:05.497603+00:00",
+  "finding_quote": "`sklearn/linear_model/_logistic.py:call` and `sklearn/linear_model/_ridge.py:call`: These files call `sag_solver` but have not been updated to pass the new `required_ctx` parameter.",
+  "judge": "gemini:gemini-2.5-flash",
+  "manifest_sha256": "5d4371a93d1b09f0491ecc12279f9f3ff5de23053b7a5e74650a749f58b472b0",
+  "model_alias": "gemini:gemini-2.5-flash",
+  "model_snapshot": "unavailable-from-original-wrapper",
+  "original_verdict": true,
+  "prompt_sha256": "71b627aacb6d0754117f1e89fbba06330275c9c92b30c2f15b3bb51ee6e52873",
+  "reason_code": "specific_cross_file_link",
+  "response_wrapper": "single_json_fence",
+  "review_sha256": "dc7f150c25378d0ae01659ae46b85b8ac5b68bbb0abd913977612092eeb2244e",
+  "schema_sha256": "6a22fcb256437ebed904ab2d879b36be1234fb2e06add1127ac8ea2ab46f60f0",
+  "schema_version": "exp2-adjudication-v2",
+  "system_sha256": "3634314a8fc4231391e4c51174e5c32d7346b0e2ceb5f8c4641e6ba866bd5939"
+}

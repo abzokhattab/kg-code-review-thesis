@@ -1,0 +1,51 @@
+{
+  "pr_id": 23,
+  "mode": "joern_kg",
+  "mean_scores": {
+    "F3": 3.0,
+    "F4": 3.0,
+    "P1": 0.0,
+    "R2": 0.0,
+    "T3": 3.0
+  },
+  "mean_graded_total": 9.0,
+  "per_judge": [
+    {
+      "model": "gemini:gemini-2.5-flash",
+      "scores": {
+        "F3": 3,
+        "F4": 3,
+        "P1": 0,
+        "R2": 0,
+        "T3": 3
+      },
+      "evidence": {
+        "F3": "Impact 1: 'If `SequentialFeatureSelector.fit` does not explicitly raise a `ValueError` for `y=None`, then `check_estimator` (which calls `check_requires_y_none`) might incorrectly pass `SequentialFeatureSelector` as an estimator that handles `y=None` gracefully, leading to silent failures or unexpected behavior in downstream components that rely on `y` being present. This could violate caller expectations from `sklearn/feature_selection/__init__.py` or `sklearn/ensemble/_forest.py` if they use `",
+        "F4": "Problem 3: 'The completion of positional argument deprecation for `plot` and `mean_absolute_percentage_error` is a breaking API change. The docstrings for these functions do not appear to be updated to explicitly state that arguments must now be passed as keywords, which could lead to user confusion and violate API contracts.' Impact 1: 'This could violate caller expectations from `sklearn/feature_selection/__init__.py` or `sklearn/ensemble/_forest.py` if they use `SequentialFeatureSelector` in ",
+        "P1": "The review makes no mention of performance, inefficiencies, or resource usage.",
+        "R2": "The review does not comment on code complexity, structure, or suggest any simplifications.",
+        "T3": "Problem 2: 'there are no new tests to explicitly assert that calling the affected functions (`plot` in `PartialDependenceDisplay` and `mean_absolute_percentage_error`) with positional arguments now raises a `TypeError`.' Evidence 2: '`sklearn/metrics/tests/test_regression.py:444-453`: Removal of `test_deprecation_positional_arguments_mape`.' '`sklearn/inspection/_plot/tests/test_plot_partial_dependence.py`: Existing test file for `PartialDependenceDisplay.plot`.' Problem 4: 'The new `ValueError`"
+      },
+      "error": ""
+    },
+    {
+      "model": "gemini:gemini-2.5-pro",
+      "scores": {
+        "F3": 3,
+        "F4": 3,
+        "P1": 0,
+        "R2": 0,
+        "T3": 3
+      },
+      "evidence": {
+        "F3": "Names multiple specific dependent components and explains the integration risk: \"This could violate caller expectations from `sklearn/feature_selection/__init__.py` or `sklearn/ensemble/_forest.py` if they use `SequentialFeatureSelector` in a context where `y` is expected.\"",
+        "F4": "Identifies multiple specific contract violations with function references and explains the downstream behavior: \"The completion of positional argument deprecation for `plot` and `mean_absolute_percentage_error` is a breaking API change... Users migrating to 1.1 will encounter `TypeError`...\" and \"This could violate caller expectations from `sklearn/feature_selection/__init__.py` or `sklearn/ensemble/_forest.py`...\"",
+        "P1": "The review does not mention performance, efficiency, or bottlenecks.",
+        "R2": "The review does not comment on code complexity or suggest simplifications.",
+        "T3": "Names multiple specific test files (`sklearn/metrics/tests/test_regression.py`, `sklearn/inspection/_plot/tests/test_plot_partial_dependence.py`, `sklearn/compose/tests/test_target.py`) and explains the exact missing test scenarios for each (asserting `TypeError` for positional args, asserting `ValueError` for `y=None`)."
+      },
+      "error": ""
+    }
+  ],
+  "timestamp": "2026-06-01T18:57:56.985369+00:00"
+}

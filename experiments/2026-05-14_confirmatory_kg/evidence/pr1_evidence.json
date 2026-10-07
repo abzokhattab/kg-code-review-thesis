@@ -1,0 +1,98 @@
+{
+  "pr": {
+    "number": 124912,
+    "title": "apply security patches",
+    "body": "These two patches were added to release-13.0.2 but haven't been merged to main yet. :)\r\n\r\nhttps://github.com/grafana/grafana/pull/124896",
+    "url": "https://github.com/grafana/grafana/pull/124912",
+    "repo": "grafana/grafana",
+    "base_branch": "main",
+    "head_branch": "km/apply-security-patches",
+    "merged_at": "2026-05-14T16:27:18Z",
+    "state": "MERGED"
+  },
+  "changed_files": [
+    {
+      "path": "pkg/api/grafana_com_proxy.go",
+      "language": "go",
+      "added": 24,
+      "deleted": 1
+    },
+    {
+      "path": "pkg/registry/apis/dashboard/snapshot/routes.go",
+      "language": "go",
+      "added": 24,
+      "deleted": 11
+    }
+  ],
+  "nearest_tests": [
+    {
+      "path": "public/app/features/alerting/unified/utils/amroutes.test.ts",
+      "relationship": "tests",
+      "source_file": "pkg/registry/apis/dashboard/snapshot/routes.go"
+    }
+  ],
+  "dependent_files": [
+    {
+      "path": "apps/alerting/historian/pkg/apis/alertinghistorian_manifest.go",
+      "relationship": "imports",
+      "source_file": "pkg/registry/apis/dashboard/snapshot/routes.go"
+    },
+    {
+      "path": "apps/alerting/rules/pkg/apis/alerting_manifest.go",
+      "relationship": "imports",
+      "source_file": "pkg/registry/apis/dashboard/snapshot/routes.go"
+    },
+    {
+      "path": "apps/alerting/notifications/pkg/apis/alertingnotifications_manifest.go",
+      "relationship": "imports",
+      "source_file": "pkg/registry/apis/dashboard/snapshot/routes.go"
+    },
+    {
+      "path": "apps/alerting/notifications/pkg/apis/alertingnotifications/v0alpha1/routingtree_spec_gen.go",
+      "relationship": "imports",
+      "source_file": "pkg/registry/apis/dashboard/snapshot/routes.go"
+    },
+    {
+      "path": "apps/alerting/notifications/pkg/apis/alertingnotifications/v0alpha1/zz_openapi_gen.go",
+      "relationship": "imports",
+      "source_file": "pkg/registry/apis/dashboard/snapshot/routes.go"
+    },
+    {
+      "path": "apps/alerting/notifications/pkg/apis/alertingnotifications/v0alpha1/receiver_ext.go",
+      "relationship": "imports",
+      "source_file": "pkg/registry/apis/dashboard/snapshot/routes.go"
+    },
+    {
+      "path": "apps/advisor/pkg/apis/advisor_manifest.go",
+      "relationship": "imports",
+      "source_file": "pkg/registry/apis/dashboard/snapshot/routes.go"
+    },
+    {
+      "path": "apps/preferences/pkg/apis/manifestdata/preferences_manifest.go",
+      "relationship": "imports",
+      "source_file": "pkg/registry/apis/dashboard/snapshot/routes.go"
+    },
+    {
+      "path": "apps/playlist/pkg/apis/manifestdata/playlist_manifest.go",
+      "relationship": "imports",
+      "source_file": "pkg/registry/apis/dashboard/snapshot/routes.go"
+    },
+    {
+      "path": "apps/plugins/pkg/apis/plugins_manifest.go",
+      "relationship": "imports",
+      "source_file": "pkg/registry/apis/dashboard/snapshot/routes.go"
+    }
+  ],
+  "callers": [],
+  "call_graph_edges": [],
+  "full_diff": "diff --git a/pkg/api/grafana_com_proxy.go b/pkg/api/grafana_com_proxy.go\nindex d8a8c2f4e2d95..c096146ca4bed 100644\n--- a/pkg/api/grafana_com_proxy.go\n+++ b/pkg/api/grafana_com_proxy.go\n@@ -5,6 +5,7 @@ import (\n \t\"net/http\"\n \t\"net/http/httputil\"\n \t\"net/url\"\n+\t\"regexp\"\n \t\"time\"\n \n \t\"github.com/grafana/grafana/pkg/infra/log\"\n@@ -14,6 +15,28 @@ import (\n \t\"github.com/grafana/grafana/pkg/web\"\n )\n \n+// ssoTokenAllowedPaths are the GCOM paths that should receive the hg-auth token.\n+var ssoTokenAllowedPaths = []*regexp.Regexp{\n+\tregexp.MustCompile(`^/?plugins$`),\n+\tregexp.MustCompile(`^/?plugins/[^/]+$`),\n+\tregexp.MustCompile(`^/?plugins/[^/]+/versions$`),\n+\tregexp.MustCompile(`^/?plugins/[^/]+/versions/[^/]+$`),\n+\tregexp.MustCompile(`^/?plugins/[^/]+/versions/[^/]+/logos/[^/]+$`),\n+\tregexp.MustCompile(`^/?plugins/[^/]+/versions/[^/]+/images/.+$`),\n+\tregexp.MustCompile(`^/?plugins/[^/]+/versions/[^/]+/insights$`),\n+\tregexp.MustCompile(`^/?dashboards$`),\n+\tregexp.MustCompile(`^/?dashboards/[^/]+$`),\n+}\n+\n+func ssoTokenAllowedPath(proxyPath string) bool {\n+\tfor _, re := range ssoTokenAllowedPaths {\n+\t\tif re.MatchString(proxyPath) {\n+\t\t\treturn true\n+\t\t}\n+\t}\n+\treturn false\n+}\n+\n var grafanaComProxyTransport = &http.Transport{\n \tProxy: http.ProxyFromEnvironment,\n \tDialContext: (&net.Dialer{\n@@ -41,7 +64,7 @@ func ReverseProxyGnetReq(logger log.Logger, proxyPath, version, grafanaComAPIUrl\n \t\t// send the current Grafana version for each request proxied to GCOM\n \t\treq.Header.Add(\"grafana-version\", version)\n \n-\t\tif grafanaComAPIToken != \"\" {\n+\t\tif grafanaComAPIToken != \"\" && req.Method == http.MethodGet && ssoTokenAllowedPath(proxyPath) {\n \t\t\treq.Header.Set(\"Authorization\", \"Bearer \"+grafanaComAPIToken)\n \t\t}\n \t}\ndiff --git a/pkg/registry/apis/dashboard/snapshot/routes.go b/pkg/registry/apis/dashboard/snapshot/routes.go\nindex a01102aee9841..4e5904a153a41 100644\n--- a/pkg/registry/apis/dashboard/snapshot/routes.go\n+++ b/pkg/registry/apis/dashboard/snapshot/routes.go\n@@ -30,6 +30,7 @@ import (\n \tcontextmodel \"github.com/grafana/grafana/pkg/services/contexthandler/model\"\n \t\"github.com/grafana/grafana/pkg/services/dashboards\"\n \t\"github.com/grafana/grafana/pkg/services/dashboardsnapshots\"\n+\t\"github.com/grafana/grafana/pkg/services/user\"\n \t\"github.com/grafana/grafana/pkg/setting\"\n \t\"github.com/grafana/grafana/pkg/util\"\n \t\"github.com/grafana/grafana/pkg/util/errhttp\"\n@@ -164,20 +165,26 @@ func GetRoutes(service dashboardsnapshots.Service, options dashv0.SnapshotSharin\n \t\t\t\t},\n \t\t\t\tHandler: func(w http.ResponseWriter, r *http.Request) {\n \t\t\t\t\tctx := r.Context()\n-\t\t\t\t\tuser, err := identity.GetRequester(ctx)\n+\t\t\t\t\trequester, err := identity.GetRequester(ctx)\n \t\t\t\t\tif err != nil {\n \t\t\t\t\t\terrhttp.Write(ctx, err, w)\n \t\t\t\t\t\treturn\n \t\t\t\t\t}\n+\t\t\t\t\tsignedInUser, ok := requester.(*user.SignedInUser)\n+\t\t\t\t\tif !ok {\n+\t\t\t\t\t\terrhttp.Write(ctx, fmt.Errorf(\"expected SignedInUser identity, got %T\", requester), w)\n+\t\t\t\t\t\treturn\n+\t\t\t\t\t}\n \t\t\t\t\twrap := &contextmodel.ReqContext{\n \t\t\t\t\t\tContext: &web.Context{\n \t\t\t\t\t\t\tReq:  r,\n \t\t\t\t\t\t\tResp: web.NewResponseWriter(r.Method, w),\n \t\t\t\t\t\t},\n+\t\t\t\t\t\tSignedInUser: signedInUser,\n \t\t\t\t\t}\n \n \t\t\t\t\t// RBAC check for snapshot creation\n-\t\t\t\t\tif ok, err := accessControl.Evaluate(ctx, user, ac.EvalPermission(dashboards.ActionSnapshotsCreate)); !ok || err != nil {\n+\t\t\t\t\tif ok, err := accessControl.Evaluate(ctx, signedInUser, ac.EvalPermission(dashboards.ActionSnapshotsCreate)); !ok || err != nil {\n \t\t\t\t\t\twrap.JsonApiErr(http.StatusForbidden, \"access denied\", err)\n \t\t\t\t\t\treturn\n \t\t\t\t\t}\n@@ -194,9 +201,9 @@ func GetRoutes(service dashboardsnapshots.Service, options dashv0.SnapshotSharin\n \t\t\t\t\t\twrap.JsonApiErr(http.StatusBadRequest, \"expected namespace\", nil)\n \t\t\t\t\t\treturn\n \t\t\t\t\t}\n-\t\t\t\t\tif info.OrgID != user.GetOrgID() {\n+\t\t\t\t\tif info.OrgID != signedInUser.GetOrgID() {\n \t\t\t\t\t\twrap.JsonApiErr(http.StatusBadRequest,\n-\t\t\t\t\t\t\tfmt.Sprintf(\"user orgId does not match namespace (%d != %d)\", info.OrgID, user.GetOrgID()), nil)\n+\t\t\t\t\t\t\tfmt.Sprintf(\"user orgId does not match namespace (%d != %d)\", info.OrgID, signedInUser.GetOrgID()), nil)\n \t\t\t\t\t\treturn\n \t\t\t\t\t}\n \n@@ -224,15 +231,15 @@ func GetRoutes(service dashboardsnapshots.Service, options dashv0.SnapshotSharin\n \t\t\t\t\t}\n \t\t\t\t\t_, err = dashboardService.GetDashboard(ctx, &dashboards.GetDashboardQuery{\n \t\t\t\t\t\tUID:   dashboardUID,\n-\t\t\t\t\t\tOrgID: user.GetOrgID(),\n+\t\t\t\t\t\tOrgID: signedInUser.GetOrgID(),\n \t\t\t\t\t})\n \t\t\t\t\tif err != nil {\n \t\t\t\t\t\twrap.JsonApiErr(http.StatusBadRequest, fmt.Sprintf(\"dashboard with UID %q not found\", dashboardUID), nil)\n \t\t\t\t\t\treturn\n \t\t\t\t\t}\n \n-\t\t\t\t\tcmd.OrgID = user.GetOrgID()\n-\t\t\t\t\tcmd.UserID, _ = identity.UserIdentifier(user.GetID())\n+\t\t\t\t\tcmd.OrgID = signedInUser.GetOrgID()\n+\t\t\t\t\tcmd.UserID, _ = identity.UserIdentifier(signedInUser.GetID())\n \n \t\t\t\t\tvar snapshotURL string\n \n@@ -449,20 +456,26 @@ func GetRoutes(service dashboardsnapshots.Service, options dashv0.SnapshotSharin\n \t\t\t\t},\n \t\t\t\tHandler: func(w http.ResponseWriter, r *http.Request) {\n \t\t\t\t\tctx := r.Context()\n-\t\t\t\t\tuser, err := identity.GetRequester(ctx)\n+\t\t\t\t\trequester, err := identity.GetRequester(ctx)\n \t\t\t\t\tif err != nil {\n \t\t\t\t\t\terrhttp.Write(ctx, err, w)\n \t\t\t\t\t\treturn\n \t\t\t\t\t}\n+\t\t\t\t\tsignedInUser, ok := requester.(*user.SignedInUser)\n+\t\t\t\t\tif !ok {\n+\t\t\t\t\t\terrhttp.Write(ctx, fmt.Errorf(\"expected SignedInUser identity, got %T\", requester), w)\n+\t\t\t\t\t\treturn\n+\t\t\t\t\t}\n \t\t\t\t\twrap := &contextmodel.ReqContext{\n \t\t\t\t\t\tContext: &web.Context{\n \t\t\t\t\t\t\tReq:  r,\n \t\t\t\t\t\t\tResp: web.NewResponseWriter(r.Method, w),\n \t\t\t\t\t\t},\n+\t\t\t\t\t\tSignedInUser: signedInUser,\n \t\t\t\t\t}\n \n \t\t\t\t\t// RBAC check for reading snapshot settings\n-\t\t\t\t\tif ok, err := accessControl.Evaluate(ctx, user, ac.EvalPermission(dashboards.ActionSnapshotsRead)); !ok || err != nil {\n+\t\t\t\t\tif ok, err := accessControl.Evaluate(ctx, signedInUser, ac.EvalPermission(dashboards.ActionSnapshotsRead)); !ok || err != nil {\n \t\t\t\t\t\twrap.JsonApiErr(http.StatusForbidden, \"access denied\", err)\n \t\t\t\t\t\treturn\n \t\t\t\t\t}\n@@ -473,9 +486,9 @@ func GetRoutes(service dashboardsnapshots.Service, options dashv0.SnapshotSharin\n \t\t\t\t\t\twrap.JsonApiErr(http.StatusBadRequest, \"expected namespace\", nil)\n \t\t\t\t\t\treturn\n \t\t\t\t\t}\n-\t\t\t\t\tif info.OrgID != user.GetOrgID() {\n+\t\t\t\t\tif info.OrgID != signedInUser.GetOrgID() {\n \t\t\t\t\t\twrap.JsonApiErr(http.StatusBadRequest,\n-\t\t\t\t\t\t\tfmt.Sprintf(\"user orgId does not match namespace (%d != %d)\", info.OrgID, user.GetOrgID()), nil)\n+\t\t\t\t\t\t\tfmt.Sprintf(\"user orgId does not match namespace (%d != %d)\", info.OrgID, signedInUser.GetOrgID()), nil)\n \t\t\t\t\t\treturn\n \t\t\t\t\t}\n \n",
+  "diff_summary": "2 files changed",
+  "similar_chunks": [],
+  "metadata": {
+    "experiment": "confirmatory_kg_2026-05-14",
+    "local_id": 1,
+    "v2_diff_truncated": false,
+    "v2_raw_diff_chars": 6526,
+    "v2_raw_body_chars": 136
+  }
+}
