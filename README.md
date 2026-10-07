@@ -30,7 +30,7 @@ results/                  only the result files the thesis cites or its scripts 
 experiments/              dated experiment folders that produce the thesis numbers (below)
 archive/                  superseded runs and scripts, kept for navigation only (archive/README.md)
 thesis/                   LaTeX source of the thesis
-LARGE_ASSETS.md      large artefacts that are on Drive instead of here
+LARGE_ASSETS.md      large artefacts that are on Zenodo instead of here
 ```
 
 ### Experiments that produce the thesis numbers
@@ -113,7 +113,7 @@ Scripts fail loudly with `… environment variable required` if a key they
 need is missing. See `reproduce.sh` and the README/DESIGN file inside each
 experiment folder for cost and runtime. Rebuilding graphs from source
 additionally requires Joern and the repositories at the PR head SHAs, which
-are on Drive (see `LARGE_ASSETS.md`).
+are on Zenodo (see `LARGE_ASSETS.md`).
 
 ## Human study
 
