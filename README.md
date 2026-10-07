@@ -24,7 +24,8 @@ scripts/                  evaluation, statistics, sensitivity analyses, figure g
 dataset_v2/               construction of the 40-PR dataset (scripts + audit docs)
 data/evidence_packs_v2/   the 40 frozen evidence packs (diff, metadata, graph facts, RAG chunks)
 outputs/reviews_v2/       the 160 generated reviews (40 PRs x 4 modes) + per-judge verdict cache
-results/                  every result table and JSON the thesis cites (see "Where each number comes from")
+results/                  only the result files the thesis cites or its scripts read (~45 files);
+                          everything from earlier eras is in archive/results_other/
 experiments/              dated experiment folders that produce the thesis numbers (below)
 archive/                  superseded runs and scripts, kept for navigation only (archive/README.md)
 thesis/                   LaTeX source of the thesis
