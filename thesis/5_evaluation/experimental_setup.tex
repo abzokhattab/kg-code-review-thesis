@@ -7,16 +7,13 @@ One model, gpt-4o, generates every review in Experiments~1 and~2 and in the
 human study; the arms differ only in the context block and the sentence that
 names it (Appendix~\ref{app:prompts}). All reviews are generated at
 temperature~$0.0$, so temperature does not differ between experiments.
-Absolute score levels remain not directly comparable because the samples,
-builders, and outcomes differ.
+Absolute score levels remain not directly comparable because the samples
+and outcomes differ.
 
-Two disclosures belong here. First, no run log survives for the original
-review generation, so the claim that Experiment~1 ran at temperature~$0.0$
-rests on the pipeline's default and recorded metadata of a later run with the
-same configuration. Second, gpt-4o is both the generator and one of the five
-judges, a self-preference risk mitigated by the remaining four judges being
-non-OpenAI models and by Experiment~2's oracle, where verdicts can be compared
-against ground truth.
+One disclosure belongs here: no run log survives for the original review
+generation, so the claim that Experiment~1 ran at temperature~$0.0$ rests on
+the pipeline's default and recorded metadata of a later run with the same
+configuration.
 
 Scoring uses a panel of five judges (gpt-4o, gemini-2.5-flash,
 claude-sonnet-4.5, deepseek-v4-pro and grok-4.6) with the majority verdict
@@ -81,9 +78,7 @@ from outside the diff are rendered into the prompt.
         \toprule
         Role & Model & $T$ \\
         \midrule
-        Generator, Experiment~1 and human study
-          & GPT-4o & 0.0 \\
-        Generator, Experiment~2
+        Generator (all three studies)
           & GPT-4o & 0.0 \\
         \midrule
         Substitute generators
@@ -104,11 +99,10 @@ identifiers, which limits exact model-level replication.
 \subsection{Reproducibility}
 \label{sec:repro}
 
-Temperature zero is not bit-deterministic for this model. A regeneration
-check on an earlier configuration (32~pull requests with byte-identical
-inputs) produced a mean score movement of $0.88$~points on the
-nine-criterion subscale, with scores landing on exactly the same value in
-only 14 of 32~cases. The movement is unbiased (signed difference $-0.19$,
+Temperature zero is not bit-deterministic for this model. Regenerating the
+graph arm from byte-identical inputs moved the nine-criterion score by
+$0.88$~points on average, with fewer than half of the pull requests landing
+on exactly the same value. The movement is unbiased (signed difference $-0.19$,
 $p = 0.51$), which is why paired means over 35~pull requests remain
 trustworthy, but it sets a floor beneath every small effect of roughly the
 same size as the graph arm's advantage over the baseline.

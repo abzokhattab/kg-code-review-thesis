@@ -22,17 +22,11 @@ context-specific instruction.
 Structural context is produced by a code property graph (CPG) built with
 Joern, a static-analysis platform that parses source into an interlinked
 representation of syntax, control flow, and data flow
-(Section~\ref{sec:approach-kg}). Throughout the thesis, \kg{}, the graph
-arm, the structural arm, and the CPG arm name this same condition.
-
-Three graph builders appear in total and should not be confused. The Joern
-CPG is the deployed builder for Experiments~1 and~2. The human study
-uses the same knowledge-graph block, with dependent edges resolved from
-Python import statements (Section~\ref{sec:approach-kg-ast}). An earlier
-text-heuristic file matcher, superseded by Joern, survives only in the
-generator-robustness and replication rows of
-Section~\ref{sec:results-exp1-robustness}, where it is labelled as such.
-Figure~\ref{fig:pipeline} shows the arrangement.
+(Section~\ref{sec:approach-kg}). Throughout the thesis, \kg{} and ``the
+graph arm'' name this same condition. The human study uses the same
+knowledge-graph block, with dependent edges resolved from Python import
+statements (Section~\ref{sec:approach-kg-ast}). Figure~\ref{fig:pipeline}
+shows the arrangement.
 
 \begin{figure}[htbp]
     \centering
@@ -91,18 +85,12 @@ extracts: a changed function's fully qualified name is looked up in the
 call-graph overlay, and every node whose call target matches is returned.
 
 Same-file and duplicate edges are removed because the diff already exposes
-same-file context. The remaining edges are capped at forty per evidence pack
-to stay within the model's useful context window; the renderer presents the
-first twelve, ordered by query type, without learned relevance ranking. The
-cap of twelve was chosen to balance informativeness against prompt length in
-early pilot reviews.
-
-Joern's Go frontend does not emit method-level nodes, so five Go-only pull
-requests are excluded from Experiment~1, leaving $n = 35$.
+same-file context; the renderer presents up to twelve edges, ordered by
+query type, without learned relevance ranking.
 % Sources: experiments/2026-09-19_joern_replace_grep/,
 % prnote/joern_kg.py, prnote/kg.py.
 
-Experiment~2 additionally decomposes the structural arm into component
+Experiment~2 additionally decomposes the graph arm into component
 conditions: one containing only file-level dependency pointers, one
 containing only the resolved call-graph edges, and one that adds
 independently resolved inheritance relations. This design isolates the
@@ -134,10 +122,9 @@ above or, in the human study, from import statements. Related tests are identifi
 matching (files whose path contains \texttt{test} and that share a directory
 ancestor with a changed file), and code owners are read from the repository's
 \texttt{CODEOWNERS} file when one exists. These two fields are therefore
-text-matched, not statically resolved.
-The block is truncated at 8\,000~characters. A render-time filter keeps only
-paths whose language matches the changed files. Both constructions share the same renderer and evidence-pack schema, so
-they differ in what they put in, not how it is presented to the model.
+text-matched, not statically resolved. Both constructions share the same
+renderer and evidence-pack schema, so they differ in what they put in, not
+how it is presented to the model.
 
 Figure~\ref{fig:kg-block-example} shows a truncated graph block as the model
 receives it.
@@ -177,15 +164,12 @@ receives it.
 \label{sec:approach-rag}
 
 The retrieval arm is conventional dense retrieval, included as the comparison
-that makes the structural arm interpretable. The repository is walked at the
-same commit, skipping vendored directories, keeping recognised source
-extensions; the first 200 candidates are indexed. Chunks of 2\,000~characters
-with 200-character overlap are embedded with \texttt{text-embedding-3-small}.
-
-The query is not the diff: each changed file's first 4\,000~characters is
-embedded separately. The highest-scoring eight unique chunks are retained,
-excluding chunks from changed files. The prompt formatter renders five, each
-with path, line range, similarity score, and up to 800~characters of code.
+that makes the graph arm interpretable. The repository is walked at the same
+commit, skipping vendored directories and keeping recognised source
+extensions; the first 200 candidate files are chunked and embedded with
+\texttt{text-embedding-3-small}. Each changed file is embedded as a query,
+and the five highest-scoring chunks from outside the changed files are
+rendered into the prompt with their path, line range and a code excerpt.
 
 \section{The Four Review-Generation Modes}
 \label{sec:approach-modes}
@@ -198,14 +182,14 @@ A mode is a pair: a system prompt and a context builder.
              description and diff; they differ in the context block appended.}
     \label{tab:modes}
     \small
-    \begin{tabular}{@{}lll@{}}
+    \begin{tabular}{@{}ll@{}}
         \toprule
-        Mode & Context block & Rendered by \\
+        Mode & Context block \\
         \midrule
-        \baseline{} & none                     & --- \\
-        \kg{}       & structural facts         & \texttt{format\_kg\_context} \\
-        \rag{}      & five retrieved snippets  & \texttt{format\_rag\_context} \\
-        \hybrid{}   & both, concatenated       & both formatters \\
+        \baseline{} & none \\
+        \kg{}       & graph facts (dependents, callers, tests) \\
+        \rag{}      & five retrieved snippets \\
+        \hybrid{}   & both, concatenated \\
         \bottomrule
     \end{tabular}
 \end{table}

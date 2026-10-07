@@ -196,13 +196,11 @@ parity on local. This is what makes the result falsifiable.
 Forty injections were realised: 28 structural and 12 control, across three
 of the Experiment~1 repositories: \texttt{scikit-learn/scikit-learn}
 (Python), \texttt{apache/kafka} (Java) and \texttt{grafana/grafana}
-(TypeScript). The four deployed modes of
-Experiment~1 are carried over with the same prompts, builder and renderer;
-only the diff cap is tightened to 12\,000 characters
-(Table~\ref{tab:config}). Two further arms are included for the mechanism
-argument: an \emph{idealised} graph that is given the oracle's own list of
-true dependents (the ceiling), and a graph with inheritance edges added
-(\kg{} + inheritance).
+(TypeScript). The four modes of Experiment~1 are carried over with the same
+prompts, builder and renderer (Table~\ref{tab:config}). Two further arms are
+included for the mechanism argument: an \emph{idealised} graph that is given
+the oracle's own list of true dependents, and a graph with inheritance edges
+added (\kg{} + inheritance).
 
 Detection is binary and adjudicated in two stages. First, the review text is
 searched for exact full-path or basename matches against the statically
@@ -225,16 +223,10 @@ trail and both sets of verdicts are available for recomputation.
 Two pre-registered follow-ups isolate the structural evidence supplied to the
 reviewer. On the 28 structural injections, one ablation arm receives only the
 dependent-file list (without edge annotations) and another only the resolved
-call edges; both use the final five-judge adjudication. A separate
-\emph{test band} of 28 further Grafana/TypeScript injections, in which a
-renamed symbol breaks test files, tests the related-test section by
-removing and restoring it. It keeps its original three-judge panel and is
-reported in the appendix.
-
-A post-hoc relevance control holds the number of context items fixed while
-replacing them with unrelated or true-dependent edges. That control uses
-gpt-4o at $T=0.0$ and the corrected historical three-judge panel, so it is
-reported as supporting evidence rather than pooled with the headline rates.
+call edges; both use the final five-judge adjudication. Two further
+component probes, a related-test band and a context-relevance control, use
+the earlier three-judge panel and are reported in
+Appendix~\ref{app:supporting-components}.
 
 \subsection{Statistical Analysis}
 \label{sec:stats}

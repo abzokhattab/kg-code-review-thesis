@@ -12,21 +12,18 @@ the full rubric ($+1.03$, $p = 0.002$), while the structural
 arm produces the largest gain on the nine structurally relevant criteria
 ($+0.69$, $p = 0.003$).
 After correction for multiple comparisons, each retains the gain on the scale
-on which it leads; the hybrid retains neither. The structural-arm estimate is
-sensitive to regeneration: an earlier run of the same pipeline gave
-$+0.34$ ($p = 0.111$), so its magnitude should be read with the
-uncertainty reported in Section~\ref{sec:threats}.
+on which it leads; the hybrid retains neither. The graph-arm estimate is
+sensitive to regeneration and to the judge panel, so its magnitude should be
+read with the uncertainty reported in Section~\ref{sec:threats}.
 
 \subsection*{RQ2: Cross-file reasoning}
 
 Structural context enables a capability that the diff-only reviewer lacks. On
 28 defects whose consequences lie outside the edited file, the baseline
-detects none and the deployed CPG arm detects 18 ($p < 0.0001$); retrieval
+detects none and the graph arm detects 18 ($p < 0.0001$); retrieval
 detects 5. The hybrid detects 21 but is not significantly better than the graph
-arm alone. Adding inheritance edges raises detection to 26 of 28, matching
-the idealised resolver. Component analyses show that dependency
-lists, resolved call edges, and test-file links each contribute within their
-evaluated settings. These results establish the capability on controlled
+arm alone. Adding inheritance edges raises detection to 26 of 28. These
+results establish the capability on controlled
 synthetic defects; they do not estimate its prevalence in the broader
 population of pull requests.
 
@@ -88,7 +85,7 @@ preferences and avoiding the reinforcement of incorrect historical decisions.
 
 \paragraph{Adaptive context selection.}
 The pipeline supplies the same context block to every pull request, although
-the structural arm's benefit is concentrated in changes with cross-file
+the graph arm's benefit is concentrated in changes with cross-file
 consequences (Section~\ref{sec:discussion-practical}). A lightweight gate
 could instead decide per pull request whether graph context is warranted.
 The simplest gate is deterministic: compute the change's structural fan-out

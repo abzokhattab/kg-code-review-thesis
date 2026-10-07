@@ -2,11 +2,9 @@
 \label{sec:results-exp1}
 
 This section reports what adding repository context does on 35 pull
-requests scored by the rubric. Five Go-only pull requests are excluded
-because Joern's Go frontend does not emit the method-level nodes the
-queries require. The headline is not that context helps in general (the
-structural arm's aggregate effect is small and fragile) but that the two
-context types help different things: the structural arm concentrates its advantage in the nine
+requests scored by the rubric. The headline is not that context helps in general (the
+graph arm's aggregate effect is small and fragile) but that the two
+context types help different things: the graph arm concentrates its advantage in the nine
 criteria the mechanism predicts, while retrieval increases rubric coverage
 broadly and evenly. That crossing pattern, not any single number, is the
 principal result.
@@ -50,13 +48,9 @@ Figure~\ref{fig:exp1-effects} draws both scales together.
     \label{fig:exp1-effects}
 \end{figure}
 
-The pre-specified \kg{}-versus-\baseline{} contrast remains the governing
-analysis. A Friedman sensitivity detects an omnibus mode effect on the total
-score ($p = 0.003$) but not on the KG-relevant subscale ($p =
-0.084$). The planned contrast remains distinguishable under a
-Bonferroni-corrected Wilcoxon test ($p = 0.011$); this is
-concordance for that contrast, not evidence of an overall mode effect.
-Appendix~\ref{app:supporting-multiplicity} reports the full sensitivity.
+The planned contrast also holds under a Bonferroni-corrected Wilcoxon test
+($p = 0.011$); Appendix~\ref{app:supporting-multiplicity} reports the full
+multiplicity sensitivity.
 
 \subsection{Criterion-Level Attribution}
 \label{sec:results-exp1-attribution}
@@ -95,7 +89,7 @@ triage and less to clarity and input-validation commentary.
 The R1 decline is consistent with the human study's later finding that
 raters judged the baseline review the better commentary on code clarity
 (H5, Section~\ref{sec:results-human}).
-\rag{} produces a broad, even lift across both bands. The two modes differ
+\rag{} produces a broad, even lift across both groups. The two modes differ
 less in aggregate magnitude than in how selectively they act.
 
 A permutation test confirms the localisation inferentially. If the advantage
@@ -110,7 +104,7 @@ satisfaction rate for the \kg{} arm relative to the baseline.
     \centering
     \input{figures/fig_criterion_localisation}
     \caption{Change in criterion satisfaction rate, \kg{} versus \baseline{},
-             sorted by magnitude within each band. Daggers mark criteria at
+             sorted by magnitude within each group. Daggers mark criteria at
              ceiling or floor in both arms.}
     \label{fig:criterion-localisation}
 \end{figure}

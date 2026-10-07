@@ -59,19 +59,11 @@ combines their benefits.
 \subsection{Implications for Evaluation Design}
 \label{sec:discussion-measurement}
 
-Structural context produces a large detection gain under oracle-scored
-injection, but a smaller and evaluator-dependent coverage gain on the rubric.
-The studies use different outcomes, so their effect magnitudes are not directly
-comparable. Experiment~1 estimates average rubric coverage; Experiment~2 tests
-a cross-file capability under a known oracle.
-% Source: results/BOOTSTRAP_STATS_joern_parity.md.
-
-Three weaknesses were measured. The rubric magnitude is panel-dependent:
-the same reviews yield effects ranging from significant to not, depending on
-which judges are polled. It is generator-dependent: three substitute
-generators, tested in the earlier text-heuristic configuration, yield no
-significant effect. And it is structurally diluted: 7
-of 25 criteria sit at floor or ceiling and cannot register a difference.
+The rubric estimate has two measured weaknesses. It is panel-dependent: the
+same reviews yield effects ranging from significant to not, depending on
+which judges are polled. And it is generator-dependent: three substitute
+generators yield no significant effect
+(Appendix~\ref{app:supporting-robustness}).
 
 The practical recommendation generalises past this thesis: a
 generate-then-LLM-judge design should not be the sole evidence for a context
@@ -81,15 +73,11 @@ oracle, the oracle should be built.
 \subsection{Practical Implications}
 \label{sec:discussion-practical}
 
-Commercial AI review tools already index repositories before reviewing a
-change: CodeRabbit builds an AST-level dependency graph, and Greptile
-traverses a function-call graph to locate affected
-code~\cite{coderabbit2026,greptile2026}. In these systems the graph
-traversal is performed by the tool's own pipeline, and the model receives
-pre-digested findings. The experiments in this thesis show that a model
-given raw CPG context can itself name affected code outside the diff, and
-that the gain is sharply localised to cross-file criteria; no comparison
-with these commercial tools was run. Three positions follow for
+Commercial review tools such as CodeRabbit and Greptile already index
+repositories and hand the model pre-digested dependency
+findings~\cite{coderabbit2026,greptile2026}; this thesis shows that a model
+given raw graph context can itself name affected code outside the diff, with
+the gain localised to cross-file criteria. Three positions follow for
 pipeline builders.
 
 \emph{Supply the graph selectively.} The graph earns its place on changes
