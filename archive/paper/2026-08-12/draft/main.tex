@@ -1,0 +1,582 @@
+\documentclass[conference]{IEEEtran}
+\IEEEoverridecommandlockouts
+\usepackage{cite}
+\usepackage{amsmath,amssymb,amsfonts}
+\usepackage{graphicx}
+\usepackage{textcomp}
+\usepackage{xcolor}
+\usepackage{booktabs}
+\usepackage{siunitx}
+\usepackage{multirow}
+\usepackage{enumitem}
+\usepackage{url}
+\usepackage[colorlinks=false, hidelinks]{hyperref}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
+
+\def\BibTeX{{\rm B\kern-.05em{\sc i\kern-.025em b}\kern-.08em
+    T\kern-.1667em\lower.7ex\hbox{E}\kern-.125emX}}
+
+\begin{document}
+
+\title{Graph Context, Not More Context: Isolating What\\Repository Structure Adds to LLM Code Review}
+
+\author{
+\IEEEauthorblockN{Abdelrahman (Abdu) Khattab}
+\IEEEauthorblockA{\textit{Hasso Plattner Institute, University of Potsdam}\\
+Potsdam, Germany \\
+abdelrahman.khattab@student.hpi.de}
+% TODO: confirm co-author list and affiliations before submission.
+}
+
+\maketitle
+
+\begin{abstract} 
+Large language models review pull requests from the diff alone, which makes
+them structurally blind to defects whose consequences lie outside the changed
+file. A natural remedy is to supply repository context, but the literature
+tends to treat ``more context'' as a single lever and reports aggregate
+quality gains that cannot distinguish a real capability from a general
+verbosity effect. We separate the two. We compare a diff-only baseline
+against three context conditions --- a repository knowledge graph, embedding
+retrieval, and their combination --- under two complementary designs: an
+observational study of 40 merged pull requests from five open-source
+repositories, scored by a three-judge LLM panel on a 25-criterion rubric,
+and a controlled injection study of 40 synthetic defects with an objective
+static-structural oracle. The observational study shows modest aggregate
+gains that are easy to over-read; its diagnostic value lies in \emph{where}
+the gains land. Graph context concentrates its wins in the nine
+dependency-related criteria (net $+24$) and is flat elsewhere (net $+1$),
+whereas retrieval spreads its wins evenly across both bands ($+17$ and
+$+18$). The injection study makes the consequence unambiguous: on 28 defects
+whose effect is provably outside the changed file, the diff-only baseline
+detects $0$, embedding retrieval detects $1$, and graph context detects $15$
+($\Delta = +0.54$, 95\% CI $[+0.36, +0.71]$, $p<0.0001$). A placebo band of
+12 defects visible inside the diff shows no graph advantage
+($\Delta = -0.08$), which rules out a context-volume explanation. An
+idealised graph reaches $26/28$, locating most of the remaining gap in graph
+construction rather than in the language model. We conclude that the useful
+variable is the \emph{shape} of the retrieved context, not its quantity, and
+that cross-file defect detection is the capability worth measuring.
+\end{abstract}
+
+\begin{IEEEkeywords}
+code review, large language models, knowledge graphs,
+retrieval-augmented generation, program analysis, empirical evaluation
+\end{IEEEkeywords}
+
+\section{Introduction} 
+\label{sec:intro}
+
+Modern code review is expensive, and it is expensive in a specific way:
+reviewers spend much of their effort establishing what a change will affect
+beyond the lines they are reading~\cite{bacchelli2013, sadowski2018}. The
+comments practitioners rate as most useful are disproportionately the ones
+that connect a change to consequences elsewhere in the
+system~\cite{bosu2015}. Large language models have made automated review
+comments fluent enough to be worth deploying~\cite{li2022codereviewer,
+tufano2022codereview, fan2023llmse}, but the standard deployment feeds the
+model a diff and nothing else. Whatever the model knows about the rest of the
+repository it must have memorised during pre-training.
+
+This produces a blind spot that is structural rather than incidental. If a
+function signature changes and its callers live in other files, a diff-only
+reviewer has no mechanism for noticing them. The obvious response is to
+retrieve additional repository context, and two families of technique are
+available: embedding-based retrieval, which finds text that resembles the
+diff~\cite{lewis2020rag, zhang2023repocoder}, and graph-based
+representations, which encode the relations a compiler would
+resolve~\cite{allamanis2018programgraphs, guo2020graphcodebert,
+liu2024graphcoder, yang2025kgcompass}.
+
+Our concern is with how the benefit of such context is usually established.
+The common protocol reports an aggregate quality score before and after
+adding context. Such a score cannot separate three very different
+explanations for an improvement: the model acquired a capability it
+previously lacked; the model produced longer output and thereby satisfied
+more rubric items; or the judge rewarded the appearance of technical
+specificity. The distinction matters practically, because only the first
+explanation predicts that the system will catch a defect a human reviewer
+would have missed.
+
+We therefore pair an observational study with a controlled one. The
+observational study (Experiment 1) follows the conventional protocol closely
+enough to be comparable to prior work: 40 merged pull requests, four context
+conditions, a three-judge LLM panel, a 25-criterion rubric derived from the
+code review literature. We report its aggregate effects, but we treat them as
+weak evidence and use the study primarily as a diagnostic, by pre-declaring
+which nine criteria the graph context is supposed to affect and treating the
+remaining sixteen as a negative control band. The controlled study
+(Experiment 2) removes the judge from the ground truth entirely: we inject
+defects whose consequences are resolved statically, so that ``did the
+reviewer find it'' has an answer that does not depend on an LLM's opinion.
+
+The two studies disagree in a way we think is the paper's main finding. In
+aggregate the context conditions look interchangeable and unexciting --- the
+graph and retrieval conditions differ by a few tenths of a point on a
+25-point scale. On cross-file defect detection they are not remotely
+interchangeable: $15/28$ against $1/28$. An evaluation that stops at the
+aggregate score would have concluded that the choice between them barely
+matters.
+
+Our contributions are:
+
+\begin{itemize}[leftmargin=*]
+\item A within-subject comparison of graph and embedding context for LLM code
+      review on 40 real merged pull requests, reported with paired confidence
+      intervals and a pre-declared criterion split that separates targeted
+      from generic gains (Section~\ref{sec:exp1}).
+\item A controlled defect-injection methodology for code review context that
+      replaces judge opinion with a static-structural oracle, together with a
+      placebo band that distinguishes a structural capability from a
+      context-volume artefact (Section~\ref{sec:exp2}).
+\item Evidence that the two context types act through different mechanisms,
+      and that the graph advantage is bounded mainly by graph construction
+      rather than by the language model: an idealised resolver reaches
+      $26/28$ where the deployed one reaches $15/28$
+      (Section~\ref{sec:discussion}).
+\end{itemize}
+
+\section{Background and Related Work}
+\label{sec:related}
+
+\subsection{What makes a review comment useful}
+Studies of review practice consistently find that reviewers' central
+difficulty is understanding a change's context rather than reading its
+syntax~\cite{bacchelli2013, sadowski2018}. Bosu et al.\ characterise useful
+comments at Microsoft and find that comments identifying consequences beyond
+the immediate change carry disproportionate
+value~\cite{bosu2015}. Recent work continues to refine what reviewers
+actually act on, including the role of explanations~\cite{widyasari2025explanations}
+and of concrete suggestions~\cite{bouraffa2025suggestions}. We use this
+literature in two ways: to justify the rubric, and to justify our choice of
+cross-file consequence detection as the capability worth isolating.
+
+\subsection{Automated review comment generation and its evaluation}
+Pre-trained and instruction-tuned models have been applied to review comment
+generation with steadily improving fluency~\cite{li2022codereviewer,
+tufano2022codereview, fan2023llmse}. Evaluation has not kept pace. Hong
+et al.\ show that common benchmarks and reference-similarity metrics
+substantially misrank code review comment generators, and argue for
+evaluation that targets what reviewers need~\cite{hong2024deepcrceval}. LLM
+panels are now a standard substitute for human judgement, with known
+caveats around position and verbosity bias~\cite{zheng2023judging}. Our
+Experiment 1 inherits exactly these weaknesses, which is why we do not rest
+the paper's claim on it.
+
+\subsection{Repository context: text similarity versus program structure}
+Embedding retrieval extends a model's effective context by surfacing
+similar text~\cite{lewis2020rag}, and works well for repository-level code
+completion when the needed code resembles the code being
+written~\cite{zhang2023repocoder}. Structural representations take the
+opposite route, encoding relations that a compiler resolves --- calls,
+imports, inheritance, data flow~\cite{aho2006compilers,
+allamanis2018programgraphs, guo2020graphcodebert}. GraphCoder shows that
+code-context graphs improve completion~\cite{liu2024graphcoder}, and
+KGCompass uses a knowledge graph for issue-localisation
+retrieval~\cite{yang2025kgcompass}. The comparison we make is between these
+two families as \emph{context suppliers to a reviewer}, holding the reviewing
+model fixed. To our knowledge the specific question --- whether the two are
+substitutes or complements for cross-file defect detection --- has not been
+answered with an objective oracle.
+
+\subsection{Relation to the pull request assessment pipeline}
+Our pull request dataset and the surrounding tooling derive from Mariotto
+et al.'s work on assessing and enhancing pull requests at
+scale~\cite{mariotto2025, mariotto2025esem}, which aligns review output with
+developer competencies; related work in the same line studies the orders in
+which reviews are usefully organised~\cite{bouraffa2025orders}. That line of
+work asks how to shape review output for a reader. We ask a prior question:
+what does the reviewer need to be able to see at all.
+% TODO: citations still needed for (a) the Joern code property graph and the
+% original CPG formulation, (b) GraphRAG-style graph retrieval, (c) mutation
+% testing as the ancestor of our injection design. Do not invent keys.
+
+\section{Approach}
+\label{sec:approach}
+
+We hold the reviewing model, the prompt scaffold, and the scoring procedure
+fixed, and vary only the context block that is inserted into the prompt. Four
+conditions are compared throughout.
+
+\textbf{baseline} receives the pull request title, description, and diff, and
+nothing else. This is the prevailing deployment.
+
+\textbf{kg} additionally receives a rendered neighbourhood of the repository
+at the pull request's head commit, naming the changed files, the files
+reported as depending on them, the relation type by which each is reached, and
+the associated tests. The deployed builder for this condition is deliberately
+cheap, and we state its construction plainly because the term \emph{knowledge
+graph} invites a stronger reading: dependents are found by searching the
+repository for the basename of each changed file, filtering hits by source
+extension, and capping the result at fifteen per file. Nothing is parsed and no
+relation is verified, so the block over-collects and can label a file as a
+dependent on the strength of a mention in a comment or docstring. Any effect it
+produces is an effect of this construction rather than of graph-structured
+context in general, which is why we re-run the condition with a builder that
+resolves relations properly (Section~\ref{sec:exp1-builder}) and why the causal
+experiment uses that builder instead.
+
+\textbf{rag} additionally receives the eight highest-scoring chunks retrieved
+from the repository by embedding similarity. Files near the changed paths are
+chunked at 2\,000 characters with a 200-character overlap and embedded with
+\texttt{text-embedding-3-small}; the queries are the leading 4\,000 characters
+of each changed file rather than the diff itself, and chunks belonging to the
+changed files are excluded, so retrieval contributes only material from outside
+the diff. This is the conventional retrieval-augmented configuration.
+
+\textbf{hybrid} receives both blocks.
+
+Two properties of this design are worth stating because they carry the
+paper's internal validity. First, the conditions are nested rather than
+disjoint: every condition contains the baseline's information, so a
+condition can only lose by \emph{diluting} what the model attends to, never
+by withholding the diff. Second, the context blocks are of broadly
+comparable size, which is what allows the injection study's placebo band to
+function as a volume control (Section~\ref{sec:exp2}).
+
+\subsection{Graph construction}
+Three builders appear in this paper, and the differences between them are
+themselves a result. The first is the lexical one described above: it matches
+filenames, is language-agnostic and cheap, and buys recall at the cost of
+precision. The second parses each file's abstract syntax tree and matches
+resolved module paths, which removes the spurious relations but misses those
+requiring type resolution. The third uses a code property graph, resolving
+calls, data flow and inheritance across files at the cost of a
+language-specific frontend and a much higher build time. Experiment 1's
+headline uses the lexical builder, because that is the configuration the study
+was run and pre-registered with; we report the code property graph as a
+builder-sensitivity analysis within Experiment 1
+(Section~\ref{sec:exp1-builder}) and use it as the deployed builder in
+Experiment 2. The two experiments therefore do not share a graph
+construction, and we are careful not to let the causal result of the second
+vouch for the builder used in the first.
+% TODO: cite Joern / CPG formulation here once the key is added to the bib.
+
+\section{Experiment 1: Observational Study}
+\label{sec:exp1}
+
+\subsection{Design}
+We sample 40 merged pull requests from five open-source repositories
+(Grafana 13, Apache Kafka 8, scikit-learn 8, Godot 6, Jenkins 5), spanning
+Go, Java, Python, C++, and TypeScript. For each pull request we generate one
+review under each of the four conditions, giving 160 reviews. Each review is
+scored against 25 binary criteria by three LLM judges (gpt-4o-mini, gpt-4o,
+gemini-2.5-flash), and the majority of three is the cell of record, with ties
+resolved to zero. This yields $160 \times 25 \times 3 = 12\,000$ judged cells
+and $4\,000$ cells of record. Table~\ref{tab:config} gives the full
+configuration for both experiments.
+
+\input{tables/config}
+
+The rubric's 25 criteria are grounded in the review literature
+\cite{bacchelli2013, bosu2015, sadowski2018} and in ISO/IEC 25010.
+% TODO: add the ISO/IEC 25010 bib entry.
+Before looking at any scores we designated nine of them --- those concerning
+cross-file impact, dependency identification, and downstream consequence ---
+as the \emph{dependency subset}, and the remaining sixteen as a negative
+control band. This split is the study's main diagnostic instrument: graph
+context has a mechanism for improving the first group and no particular
+mechanism for improving the second.
+
+Uncertainty is reported by percentile bootstrap over pull requests
+($B=10\,000$) and paired sign-flip permutation tests
+($B=20\,000$), both with seed 2026. All comparisons are within-subject: each
+condition is compared against the baseline review of the \emph{same} pull
+request.
+
+\subsection{Aggregate results}
+Table~\ref{tab:exp1-means} reports per-condition means and
+Table~\ref{tab:exp1-deltas} the paired differences.
+
+\input{tables/exp1_means}
+\input{tables/exp1_deltas}
+
+Every context condition improves on the baseline, and every improvement is
+small: between $+0.63$ and $+0.88$ points on a 25-point scale. Read as a
+horse race, the result is uninformative --- retrieval wins on total score,
+the graph wins on the dependency subset, the hybrid is in between, and the
+confidence intervals overlap heavily. Notably, the graph condition's
+total-score effect does not reach significance ($p = 0.054$) while its
+dependency-subset effect does ($p = 0.0066$), and the pattern reverses for
+retrieval. This is the first hint that the two conditions are not doing the
+same thing, and it is the reason we do not report a single headline
+percentage for ``adding context.''
+
+\subsection{Where the gains land}
+\label{sec:exp1-attribution}
+
+Table~\ref{tab:exp1-attribution} decomposes each condition's gains into wins
+and losses per criterion band. A win is a criterion the treatment satisfies
+and the baseline does not, on the same pull request.
+
+\input{tables/exp1_attribution}
+
+The two conditions have almost the same total effect and clearly different
+signatures. Graph context nets $+24$ on the nine dependency criteria and
+$+1$ on the sixteen others: it changed what the reviewer could see about
+structure and left everything else alone. Retrieval nets $+17$ and $+18$:
+it improved the review broadly and roughly uniformly, which is what a
+general fluency or specificity lift looks like. The negative control band
+behaves as a control band should for one condition and not for the other.
+
+We stress how invisible this is at the aggregate level. The two conditions
+differ by $0.25$ points in total score, well inside the confidence interval;
+they differ by a factor of twenty-four in how selectively they act.
+
+\subsection{Builder sensitivity}
+\label{sec:exp1-builder}
+
+Because the graph condition's effect depends on how many true relations the
+builder resolves, we re-ran the graph and baseline arms with the code
+property graph builder on the same rubric and the same judge panel. The code
+property graph frontend cannot parse the five Go pull requests, so this
+comparison uses the 35 remaining ones. Table~\ref{tab:exp1-builder} reports
+both.
+
+\input{tables/exp1_builder}
+
+The stronger builder roughly doubles the total-score effect ($+0.63$ to
+$+1.17$) and moves it from inconclusive to significant, while the
+dependency-subset effect changes comparatively little ($+0.60$ to $+0.69$).
+The direction is what the mechanism predicts: resolving more true relations
+gives the reviewer more to say, and it is the criteria outside the dependency
+subset that had the most room to move. We report this as sensitivity rather
+than as a headline, for two reasons: the sample differs ($n=35$), and only
+the graph arm was rebuilt, so this file supports the baseline-versus-graph
+contrast and no other.
+
+\subsection{Reliability}
+Pairwise inter-judge agreement on the 25-criterion rubric is
+$\kappa = 0.72$ (gpt-4o-mini vs gpt-4o), $0.71$ (gpt-4o vs
+gemini-2.5-flash), and $0.59$ (gpt-4o-mini vs gemini-2.5-flash): substantial
+for two pairs and moderate for the third.\footnote{The Gemini judge returned
+usable labels for $3\,836$ of $4\,000$ cells; the majority-of-three rule with
+ties resolved to zero absorbs the remainder conservatively.}
+
+This is respectable reliability, and we want to be careful about what it does
+and does not buy. Agreement establishes that the judges are measuring
+\emph{something} consistently; it does not establish that they are measuring
+review usefulness. Three models drawn from an overlapping training
+distribution can agree with each other and be wrong in the same direction,
+and the biases documented for LLM panels --- verbosity and apparent
+specificity in particular~\cite{zheng2023judging} --- are exactly the ones
+that would inflate a context condition's score without any gain in
+capability. High $\kappa$ cannot detect that failure mode; only ground truth
+outside the panel can. Hence Experiment 2.
+
+\section{Experiment 2: Controlled Defect Injection}
+\label{sec:exp2}
+
+\subsection{Design}
+Experiment 1 leaves two gaps. Its ground truth is an LLM panel, and its
+outcome is a rubric score rather than a consequence anyone cares about
+directly. Experiment 2 closes both. The design was pre-registered before the
+run, including the arms, the bands, the decision thresholds, and an explicit
+rule against back-filling missing cases.
+
+We inject 40 synthetic defects into three repositories --- scikit-learn
+(Python), kafka-streams (Java), and grafana-data (TypeScript) --- in two
+kinds of band. \emph{Structural} bands ($n=28$) place a defect whose
+consequence is provably outside the changed file: the dependents are
+resolved independently of the reviewer and recorded with evidence lines in
+the manifest before any review is generated. \emph{Local control} bands
+($n=12$) place a defect whose consequence is visible inside the diff itself.
+
+The local control band is the design's load-bearing element. Every context
+condition adds tokens to the prompt, so any observed gain might simply
+reflect a longer, more thorough prompt. On local defects, extra repository
+context is irrelevant by construction, so a condition that gains there is
+gaining from volume rather than structure. We pre-registered a parity window
+of $[-0.15, +0.15]$ for this band.
+
+Defect sites were selected direction-blind, by structural fan-out, without
+consulting any review. Detection is judged by the same three-model panel with
+the same majority rule as Experiment 1, and separately validated against a
+deterministic oracle that checks whether the review actually names the
+affected dependent. Two arms are added beyond the four conditions: an
+\emph{idealised} graph, which is given the statically resolved dependents
+directly and therefore measures the ceiling available to a perfect builder,
+and an \emph{inheritance-augmented} graph, a pre-declared repair for a
+specific blind spot.
+
+\subsection{Structural results}
+\input{figures/detection_ladder}
+\input{tables/exp2_structural}
+
+Fig.~\ref{fig:detection-ladder} and Table~\ref{tab:exp2-structural} carry the
+paper's central result. The diff-only
+baseline detects none of the 28 cross-file defects. This is not a poor score;
+it is the expected score, and it is worth pausing on, because it means the
+capability is absent rather than weak. Embedding retrieval detects one. Graph
+context detects fifteen ($\Delta = +0.54$, $[+0.36, +0.71]$, $p<0.0001$),
+exceeding the pre-registered threshold of $+0.30$.
+
+The retrieval result deserves comment, because it is the sharpest contrast
+with Experiment 1, where retrieval scored \emph{highest} on total rubric
+score. Retrieval fails here for a principled reason rather than an
+implementation one: a defect's dependent is not textually similar to the
+defect. A function's callers do not resemble the function. Similarity search
+therefore retrieves the wrong neighbourhood, competently. The hybrid
+condition detects twelve, slightly \emph{below} the graph alone, consistent
+with retrieval's chunks diluting attention on the graph block rather than
+adding to it.
+
+\subsection{The placebo band}
+\input{tables/exp2_local}
+
+On the 12 local-control defects, every arm detects at a high rate --- the
+defect is in the diff, as designed --- and the graph condition's difference
+from baseline is $-0.08$ $[-0.25, +0.00]$, inside the pre-registered parity
+window. Added context does not make the reviewer generically more vigilant.
+Whatever produces $15/28$ on structural defects does not transfer to defects
+where structure is irrelevant, which is the signature of a capability rather
+than an artefact.
+
+\subsection{Where the remaining misses come from}
+The idealised graph detects $26/28$. Since it differs from the deployed
+graph only in how the dependents were resolved, the gap between $15$ and
+$26$ is attributable to graph construction rather than to the language
+model's ability to use the graph. Concretely, the deployed builder either
+missed relations or rendered them insalient.
+
+One pre-declared band isolates a specific instance. In the six defects whose
+consequence propagates through inheritance, adding import and inheritance
+edges raises detection from $2/6$ to $5/6$ ($\Delta = +0.50$, meeting the
+pre-registered $+0.30$ threshold). Across all 28 structural defects the
+augmented builder reaches $21/28$ against $15/28$
+($\Delta = +0.21$ $[+0.04, +0.39]$, $p = 0.071$).
+
+The failures are also informative. The Java repository is the deployed
+graph's weakest ($2/8$ structural), and in several of those misses the
+correct edges \emph{were present} in the graph. Edge presence is therefore
+necessary but not sufficient: how the neighbourhood is selected and rendered
+matters as much as whether it was resolved.
+
+\subsection{Judge validation}
+Against the deterministic mention-oracle, judge agreement is 72\%
+(gpt-4o-mini), 80\% (gpt-4o), and 93\% (gemini-2.5-flash). Critically, both
+OpenAI judges produced \emph{zero} ``detected without mention'' flags: no
+judge credited a detection the review did not actually contain. The panel's
+errors are therefore conservative --- missed detections, not invented ones ---
+so the reported detection rates are if anything lower bounds.
+
+\section{Discussion}
+\label{sec:discussion}
+
+\subsection{Context type dominates context quantity}
+The two experiments together support a claim neither supports alone. Graph
+and retrieval context produce statistically indistinguishable aggregate
+rubric scores and wildly different cross-file detection rates. If ``how much
+context'' were the operative variable, the hybrid condition --- which has the
+most --- would be best; it is not, on either the dependency subset in
+Experiment 1 or structural detection in Experiment 2. What varies is whether
+the retrieved context has the shape of the question being asked. Cross-file
+impact is a reachability question, and reachability is what a graph encodes
+and similarity does not.
+
+\subsection{Implications for evaluating review assistants}
+Our Experiment 1 is, by construction, a competent instance of the standard
+protocol, and on its own it would have licensed a much weaker and partly
+misleading conclusion: that context helps a little, and that the choice of
+context type is a matter of taste. We would not have detected the $0/28$
+versus $15/28$ gap. We take this as an argument for capability-targeted
+evaluation with objective ground truth alongside rubric scoring, in the
+spirit of Hong et al.'s critique of code review
+benchmarks~\cite{hong2024deepcrceval}. The negative-control band and the
+placebo band are both cheap to add and both did real work here.
+
+\subsection{Implications for building them}
+The ceiling result relocates the engineering problem. With a perfect
+resolver the reviewing model finds $26/28$, so the bottleneck is not the
+model's reasoning over graphs but the graph itself --- and, as the Java
+failures show, the selection and rendering of the neighbourhood as much as
+its construction. That is an encouraging division of labour, because static
+resolution improves with ordinary engineering effort.
+
+\section{Threats to Validity}
+\label{sec:threats}
+
+\textbf{Construct validity.} Experiment 1's outcome is an LLM panel's rubric
+judgement, which inherits verbosity and specificity
+biases~\cite{zheng2023judging} that its substantial inter-judge agreement
+cannot rule out. We therefore treat its
+aggregate effects as suggestive and rest the paper's claim on Experiment 2,
+whose ground truth is static and whose panel we validated against a
+mention-oracle. Experiment 2's outcome, detection of an injected defect, is
+narrower than review quality; we claim the capability, not overall
+usefulness.
+
+\textbf{Internal validity.} Injected defects are synthetic and may be easier
+or more stereotyped than real ones; we mitigated selection bias by choosing
+sites direction-blind on structural fan-out before generating any review.
+The builder-sensitivity comparison uses a different sample ($n=35$) and
+rebuilt only the graph arm, so it supports only the baseline-versus-graph
+contrast. Experiment 1's graph block is built by filename matching, so an
+unknown fraction of the relations it renders do not exist; we did not measure
+that fraction, and a precision estimate would strengthen the paper. A third
+variant that resolves relations by parsing was also run, and reduced the
+effect, but it regenerated its arms at a different generation temperature than
+the headline, so it confounds builder with temperature and we do not report it
+as a builder contrast. Generation temperature differs between the experiments ($0.0$ and
+$0.3$) because they call different pipeline entry points; within each
+experiment all arms share one setting, so no contrast is confounded, but the
+two experiments' absolute scores are not directly comparable. No generation
+seed is sent to the model on either path.
+
+\textbf{External validity.} Five repositories and 40 pull requests in
+Experiment 1, three repositories and 40 defects in Experiment 2, one
+generator model (gpt-4o). The pre-registered target of 48 injections was not
+met: two bands had insufficient supply (the operator band is Python-only,
+and the Java repository has no barrel-file equivalent), and we report the
+shortfall rather than back-filling it. One repository scope substitution was
+documented before the run because of a frontend gap. Results may differ for
+other languages, larger changes, and models with different context windows.
+
+\textbf{Statistical validity.} With $n=40$ and $n=28$, confidence intervals
+are wide, and several Experiment 1 effects sit near the significance
+boundary; we report intervals throughout and avoid claiming precision we do
+not have. Multiple conditions are compared against a shared baseline, so
+individual $p$-values should be read as descriptive.
+
+\section{Conclusion}
+\label{sec:conclusion}
+
+We compared graph-shaped and similarity-shaped repository context for LLM
+code review under two designs. Measured by aggregate rubric score on 40 real
+pull requests, the two are nearly interchangeable and both help modestly.
+Measured by detection of defects whose consequences provably lie outside the
+changed file, they are not interchangeable at all: $15/28$ against $1/28$,
+against a diff-only baseline that detects none. A placebo band rules out
+context volume as the explanation, and an idealised graph reaching $26/28$
+places most of the remaining gap in graph construction rather than in the
+model.
+
+The practical recommendation follows from the gap between those two
+measurements rather than from either one. If cross-file consequence is what
+reviewers most need help with, then it should be measured directly, because
+the aggregate score that a standard evaluation produces is nearly blind to
+it.
+
+% TODO before submission:
+%  - Human study (6 pull requests, pairwise preference) is instrumented and
+%    live but not yet analysed; add as a validation subsection or drop it
+%    cleanly. Do not cite results that do not exist yet.
+%  - Add missing bib entries flagged above; do not invent keys.
+%  - Confirm venue, page budget, and author list.
+%  - Consider a figure: the 0/28 vs 1/28 vs 15/28 vs 26/28 ladder is the
+%    paper's headline and currently only appears as a table.
+
+\section*{Data Availability}
+All artefacts referenced here are produced by scripted pipelines: evidence
+packs, the 160 generated reviews, per-judge votes, the injection manifest
+with its resolved-dependent evidence lines, and the bootstrap and
+permutation outputs. Every table in this paper is generated directly from
+those artefacts by a single script, and an independent verification script
+re-derives each reported number from the raw judge votes.
+% TODO: replace with an anonymised or public repository link at submission.
+
+\bibliographystyle{IEEEtran}
+\bibliography{references}
+
+\end{document}
