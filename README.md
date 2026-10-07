@@ -1,4 +1,4 @@
-# Knowledge-Graph-Augmented LLM Code Review — thesis replication package
+# Knowledge-Graph-Augmented LLM Code Review — code and assets
 
 Code, data and results for the Master's thesis
 *An Empirical Study of Knowledge-Graph-Driven Context Retrieval for LLM-Based
