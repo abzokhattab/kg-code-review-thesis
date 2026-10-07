@@ -521,8 +521,8 @@ def fig_exp1_robustness(boot: dict, single: dict, gen: dict, parity: dict,
         encode_significance=False,
     )
     return "\n".join(header([
-        "experiments/2026-09-23_five_judge_panel/RESULTS.json "
-        "(headline and individual judges)",
+        "results/JOERN_UNIFIED_FIVE_JUDGE.json "
+        "(headline and individual judges, n = 35)",
         "results/CROSS_GENERATOR_v2.json (generators)",
         "results/BOOTSTRAP_STATS_joern_parity.json (builder parity)",
         "results/BOOTSTRAP_STATS_confirmatory_clean.json (held-out)",
@@ -938,10 +938,14 @@ def main() -> int:
     def load(rel: str) -> dict:
         return json.loads((REPO_ROOT / rel).read_text())
 
+    # Experiment 1 figures use the Joern-unified five-judge panel (n = 35),
+    # which is the thesis headline; the 2026-09-23 file is the n = 40 panel
+    # and is used here only for Experiment 2 and the panel definition.
     final5 = load("experiments/2026-09-23_five_judge_panel/RESULTS.json")
-    boot = final5_bootstrap(final5)
-    conc = final5_concentration(final5)
-    single = final5["experiment1"]["individual_judges"]
+    unified = load("results/JOERN_UNIFIED_FIVE_JUDGE.json")
+    boot = final5_bootstrap(unified)
+    conc = final5_concentration(unified)
+    single = unified["experiment1"]["individual_judges"]
     gen = load("results/CROSS_GENERATOR_v2.json")
     builder = load("results/BOOTSTRAP_STATS_joern_parity.json")
     conf = load("results/BOOTSTRAP_STATS_confirmatory_clean.json")

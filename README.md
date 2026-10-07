@@ -69,13 +69,27 @@ python3 scripts/assemble_five_judge_panels.py        # five-judge aggregation fr
 python3 experiments/2026-07-06_user_study_prs/analyze_responses.py --selftest
 ```
 
-Re-generating reviews or re-judging them calls paid APIs. Copy `.env.example`
-to `.env`, fill in the keys, `source load_env.sh`, then see `reproduce.sh` and
-the README/DESIGN file inside each experiment folder for cost and runtime.
-Generation uses `gpt-4o` at temperature 0; judging uses the five-model panel
-(`gpt-4o`, `gemini-2.5-flash`, `claude-sonnet-4-5`, `deepseek-v4-pro`,
-`grok-4.6`). Rebuilding graphs from source requires Joern and the repositories
-at the PR head SHAs, which are on Drive (see `DRIVE_UPLOAD_LIST.md`).
+Re-generating reviews or re-judging them calls paid APIs and needs a `.env`
+file, which is not in the repository:
+
+```bash
+cp .env.example .env     # then fill in the keys below
+source load_env.sh
+```
+
+| Variable | Used for | Needed when |
+|---|---|---|
+| `OPENAI_API_KEY` | generator `gpt-4o`, judge `gpt-4o`, embeddings `text-embedding-3-small` | any review generation, RAG index build, or judging |
+| `GOOGLE_API_KEY` | judge `gemini-2.5-flash` | re-running the judge panel |
+| `ANTHROPIC_API_KEY` | judge `claude-sonnet-4-5` | re-running the judge panel |
+| `DEEPSEEK_API_KEY` | judge `deepseek-v4-pro` | re-running the judge panel |
+| `XAI_API_KEY` | judge `grok-4.6` | re-running the judge panel |
+
+Scripts fail loudly with `… environment variable required` if a key they
+need is missing. See `reproduce.sh` and the README/DESIGN file inside each
+experiment folder for cost and runtime. Rebuilding graphs from source
+additionally requires Joern and the repositories at the PR head SHAs, which
+are on Drive (see `DRIVE_UPLOAD_LIST.md`).
 
 ## Human-study data
 
