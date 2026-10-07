@@ -93,9 +93,18 @@ experiment folder for cost and runtime. Rebuilding graphs from source
 additionally requires Joern and the repositories at the PR head SHAs, which
 are on Drive (see `DRIVE_UPLOAD_LIST.md`).
 
-## Human-study data
+## Human study
+
+Everything that ran is in `experiments/2026-07-06_user_study_prs/`:
+
+| | |
+|---|---|
+| Stimuli | `evidence/`, `reviews/` (12 frozen reviews), `answer_key.json` |
+| Deployed UI (instrument r14) | `pilot/index.html`, `pilot/study_data.json` |
+| Submission webhook | `deploy/apps_script_webhook.gs` (Apps Script v5; hosting and data path in `deploy/README.md`) |
+| Pre-registration | `ANALYSIS_PLAN.md`, `POWER_ANALYSIS.md` |
+| Analysis | `analyze_responses.py` (`--selftest` runs without data) → `RESULTS_HUMAN_V4.{md,json}` |
 
 Raw responses and the rater pseudonym map are personal data and are not in
-this repository. The committed results are aggregated and pseudonymised
-(`P01…P27`). The analyser (`analyze_responses.py`) reads a local CSV export
-and reproduces `RESULTS_HUMAN_V4.*` from it.
+this repository; the committed results are aggregated and pseudonymised
+(`P01…P27`).
